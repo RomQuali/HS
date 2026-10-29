@@ -1420,6 +1420,52 @@ html.lite .title .t-scene::after{background:radial-gradient(60% 50% at 50% 42%,r
 .hrow .face{width:40px;height:40px;box-shadow:0 0 0 2px var(--brass)}
 .hrow b{font-family:var(--f-label);font-size:14px;color:var(--gold)}
 @media (max-width:720px){ .hrow{grid-template-columns:40px 1fr} .hrow .ftogs{grid-column:1 / -1} .uf{grid-template-columns:1fr} }
+/* ===================== CHOIX DES UNIVERS : LES ÉTENDARDS ===================== */
+.mp.wide{width:min(1180px,calc(100vw - 24px))}
+.upick{display:grid;gap:14px;margin:0}
+.bans{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.ban{position:relative;overflow:hidden;display:flex;flex-direction:column;gap:9px;padding:14px 12px 12px;border:0;cursor:pointer;text-align:left;font:inherit;color:#f1e4c6;
+  border-radius:14px 14px 30px 30px/14px 14px 18px 18px;background:linear-gradient(170deg,var(--uc) 0%,#2a1608 85%);opacity:.8;
+  box-shadow:inset 0 0 0 1.5px rgba(200,150,62,.4),0 10px 20px rgba(0,0,0,.45);transition:transform .15s,opacity .15s,box-shadow .2s}
+.ban::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 30%,rgba(10,5,2,.55))}
+.ban > *{position:relative;z-index:1}
+.ban:hover:not(:disabled){opacity:1;transform:translateY(-2px)}
+.ban.on{opacity:1;transform:translateY(-6px);box-shadow:0 0 0 3px var(--gold),0 0 26px rgba(242,193,78,.45),0 14px 26px rgba(0,0,0,.55)}
+.ban:disabled{cursor:default}
+.ban-rib{position:absolute!important;top:12px;right:-30px;z-index:2!important;transform:rotate(35deg);width:120px;padding:3px 0;text-align:center;font-family:var(--f-label);font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:#2e1c08;background:var(--gold);box-shadow:0 2px 6px rgba(0,0,0,.5)}
+.ban-hd{display:flex;align-items:center;gap:10px}
+.ban-em{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:50%;color:#fff6dc;background:var(--uc);box-shadow:0 0 0 2px var(--gold),0 0 0 4px #1d1008}
+.ban-em .ic{width:24px;height:24px}
+.ban-t{display:grid;gap:1px;min-width:0}
+.ban-t b{font-family:var(--f-label);font-weight:700;font-size:19px;line-height:1.05;color:#fff6dc}
+.ban-t i{font-size:12.5px;color:#e8d8b8}
+.ban-law{display:grid;gap:3px;padding:7px 9px;border-radius:10px;background:rgba(10,5,2,.45)}
+.ban-law b{font-family:var(--f-label);font-weight:700;font-size:13.5px;color:var(--gold)}
+.ban-law small{font-size:12px;line-height:1.35;color:#f1e4c6}
+.ban-fam{display:flex;flex-wrap:wrap;gap:4px}
+.ban-fam i{font-style:normal;padding:2px 8px;border-radius:99px;font-family:var(--f-label);font-weight:700;font-size:11px;color:#fff;background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.35)}
+.ban-her{display:flex;align-items:center;gap:3px;margin-top:auto}
+.ban-h .face{width:26px;height:26px;box-shadow:0 0 0 2px #2a1608}
+.ban-her small{margin-left:6px;font-size:12px;color:#e8d8b8}
+.ubar{display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:14px;background:rgba(10,5,2,.65);box-shadow:inset 0 0 0 1.5px rgba(200,150,62,.45)}
+.ubar-t{flex-grow:1;display:grid;gap:2px;min-width:0}
+.ubar-t b{font-family:var(--f-label);font-weight:700;font-size:17px;color:var(--gold)}
+.ubar-t span{font-size:13.5px;color:#d8c8a8}
+.ubar-r{display:inline-flex;align-items:center;gap:8px;height:46px}
+.ubar-r .ic{width:18px;height:18px}
+.ubar-r.on{box-shadow:inset 0 0 0 2px var(--gold),0 0 14px rgba(242,193,78,.4)}
+.ubar .t-go{height:46px;padding:0 24px}
+.ubar .mp-warn{max-width:360px}
+.lobby .upick{max-width:1040px;margin:16px auto 6px}
+@media (max-width:900px){ .bans{grid-template-columns:repeat(2,minmax(0,1fr))} }
+@media (max-width:520px){ .bans{gap:10px} .ban{padding:12px 10px 10px} .ban-law small{display:none} .ban-t i{display:none} .ubar{flex-wrap:wrap} .ubar-t{flex-basis:100%} .ubar .t-go,.ubar-r{flex:1 1 auto;justify-content:center} }
+@media (orientation:landscape) and (max-height:540px){ .bans{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px} .ban{gap:5px;padding:8px} .ban-law small,.ban-t i,.ban-her{display:none} .ban-em{width:32px;height:32px} .ban-t b{font-size:15px} .mp.wide{max-height:calc(100dvh - 10px)} }
+html.lite .ban,html.lite .ban.on{transition:none}
+/* fond plus sombre (retour vers l'ambiance d'origine) */
+#scene{filter:brightness(.5) saturate(.7) contrast(1.05)}
+#scene::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(75% 65% at 50% 45%,transparent 30%,rgba(6,3,1,.88) 100%),linear-gradient(180deg,rgba(6,3,1,.35),rgba(6,3,1,.6))}
+body.sc-lobby #scene{filter:brightness(.36) saturate(.65)}
+body.sc-game #scene,body.sc-atl #scene{filter:blur(6px) brightness(.24) saturate(.6)}
 </style>
 </head><body>
 
@@ -1575,14 +1621,14 @@ const DEFAULT_SETTINGS = {
     { id:'sq_foudre', n:'Zapou', col:'#ffd23a', bg:'sqfoudre', on:true },
   ],
   univ:[
-    { n:'Ténèbres', mech:'ames', tribes:['spec', 'vamp', 'garou', 'mort'] },
-    { n:'Royaumes anciens', mech:'serment', tribes:['nain', 'elfe', 'ogre', 'bete'] },
-    { n:'Ateliers et bas-fonds', mech:'marche', tribes:['meca', 'gob', 'nain', 'cors'] },
-    { n:'Terres sauvages', mech:'ruee', tribes:['bete', 'garou', 'elfe', 'drag'] },
-    { n:'Mers et cieux', mech:'pillage', tribes:['cors', 'drag', 'elem', 'spec'] },
-    { n:'Arcanes', mech:'resonance', tribes:['elem', 'elfe', 'meca', 'mort'] },
-    { n:'Montagnes', mech:'eboulement', tribes:['nain', 'ogre', 'gob', 'drag'] },
-    { n:'Squishys', mech:'fusion', tribes:['sq_feu', 'sq_eau', 'sq_terre', 'sq_vent', 'sq_glace', 'sq_foudre'] },
+    { n:'Ténèbres', col:'#6a2a8a', ic:'moon', lore:'Ici, mourir n\'est qu\'un contretemps.', mech:'ames', tribes:['spec', 'vamp', 'garou', 'mort'] },
+    { n:'Royaumes anciens', col:'#9a7228', ic:'crown', lore:'Les vieilles lignées tiennent parole.', mech:'serment', tribes:['nain', 'elfe', 'ogre', 'bete'] },
+    { n:'Ateliers et bas-fonds', col:'#4a6a86', ic:'gear', lore:'Tout se vend, surtout ce qui fume.', mech:'marche', tribes:['meca', 'gob', 'nain', 'cors'] },
+    { n:'Terres sauvages', col:'#4a7a2a', ic:'leaf', lore:'La meute charge d\'abord.', mech:'ruee', tribes:['bete', 'garou', 'elfe', 'drag'] },
+    { n:'Mers et cieux', col:'#1f6a96', ic:'wave', lore:'Chaque victoire a son butin.', mech:'pillage', tribes:['cors', 'drag', 'elem', 'spec'] },
+    { n:'Arcanes', col:'#5a3a9a', ic:'star', lore:'Un sort, et tout s\'illumine.', mech:'resonance', tribes:['elem', 'elfe', 'meca', 'mort'] },
+    { n:'Montagnes', col:'#6a5038', ic:'mount', lore:'Ils tombent… et tout s\'effondre.', mech:'eboulement', tribes:['nain', 'ogre', 'gob', 'drag'] },
+    { n:'Squishys', col:'#b04a6a', ic:'blob', lore:'Une grosse boule de câlins.', mech:'fusion', tribes:['sq_feu', 'sq_eau', 'sq_terre', 'sq_vent', 'sq_glace', 'sq_foudre'] },
   ],
   heroFam:{},
   neutral:{ n:'Neutre', col:'#8a5a30', bg:'neu' },
@@ -3343,6 +3389,11 @@ const ICONS = (() => {
     gear: `<path d="${gearD(12, 12, 10, 8, 3.6)}" fill="currentColor" fill-rule="evenodd"/>`,
     plus: '<path d="M12 4 V20 M4 12 H20" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>',
     back: '<path d="M14.5 5 L7.5 12 L14.5 19" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>',
+    moon: '<path d="M15 3a8 8 0 1 0 6 13A9 9 0 0 1 15 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+    wave: '<path d="M2 12c3-3 5-3 8 0s5 3 8 0 4-2 4-2M2 17c3-3 5-3 8 0s5 3 8 0" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
+    star: '<path d="M12 2l2.5 7H22l-6 4.5 2.5 7.5L12 16.5 5.5 21 8 13.5 2 9h7.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+    mount: '<path d="M2 20l7-12 4 6 3-4 6 10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+    blob: '<path d="M12 3c4 5 7 8 7 11a7 7 0 0 1-14 0c0-3 3-6 7-11z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
     sword: '<path d="M19.5 2.5 L21.5 4.5 L11 15 L9 13 Z" fill="currentColor"/><path d="M5.5 12.5 L11.5 18.5 L10 20 L8.4 18.4 L5 21.8 L2.2 19 L5.6 15.6 L4 14 Z" fill="currentColor"/>',
     users: '<circle cx="8.5" cy="8" r="3.6" fill="currentColor"/><path d="M1.8 20 C 2.4 15.4 5 13.2 8.5 13.2 C 12 13.2 14.6 15.4 15.2 20 Z" fill="currentColor"/><circle cx="16.5" cy="7.4" r="3" fill="currentColor" opacity=".75"/><path d="M15.6 12.4 C 19.4 12.2 21.8 14.6 22.2 19 L16.8 19 C 16.6 16.2 16.4 14 15.6 12.4 Z" fill="currentColor" opacity=".75"/>',
     key: '<circle cx="7.5" cy="12" r="4.6" fill="none" stroke="currentColor" stroke-width="2.6"/><path d="M12 12 H21.5 M18 12 V16 M21 12 V15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>',
@@ -4466,6 +4517,7 @@ function tribesTabH() {
 }
 
 /* ---------- onglet Univers ---------- */
+const UNIV_ICONS = [['moon', 'Lune'], ['crown', 'Couronne'], ['gear', 'Engrenage'], ['leaf', 'Feuille'], ['wave', 'Vague'], ['star', 'Étoile'], ['mount', 'Montagne'], ['blob', 'Goutte'], ['skull', 'Crâne'], ['bolt', 'Éclair'], ['drop', 'Larme'], ['wind', 'Vent'], ['twin', 'Anneaux'], ['sword', 'Épée'], ['book', 'Livre'], ['dice', 'Dé']];
 function univTabH() {
   const S = A.set, d = dis(); S.univ = S.univ || []; S.heroFam = S.heroFam || {};
   const fam = h => (Array.isArray(S.heroFam[h]) && S.heroFam[h].length ? S.heroFam[h] : (HEROES[h].fam || []));
@@ -4476,6 +4528,9 @@ function univTabH() {
       <div class="uf"><label class="f2"><span>Nom</span><input id="s-univ-${i}-n" data-s="univ.${i}.n" maxlength="28" value="${esc(u.n)}" ${d}></label>
         <label class="f2"><span>Loi de l'univers</span><select id="s-univ-${i}-mech" data-s="univ.${i}.mech" ${d}>${Object.keys(MECHS).map(k => `<option value="${k}" ${(u.mech || 'none') === k ? 'selected' : ''}>${esc(MECHS[k].n)}</option>`).join('')}</select></label></div>
       <p class="umd">${icon(M.ic)}<span>${esc(M.d)}</span></p>
+      <div class="uf"><label><span>Couleur</span><input type="color" id="s-univ-${i}-col" data-s="univ.${i}.col" value="${esc(univLook(u).col)}" ${d}></label>
+        <label><span>Emblème</span><select id="s-univ-${i}-ic" data-s="univ.${i}.ic" ${d}>${UNIV_ICONS.map(([k, l]) => `<option value="${k}" ${univLook(u).ic === k ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+        <label class="f2" style="grid-column:1 / -1"><span>Phrase d'ambiance</span><input id="s-univ-${i}-lore" data-s="univ.${i}.lore" maxlength="60" value="${esc(univLook(u).lore)}" ${d}></label></div>
       <div class="ufam"><span class="lbl">Familles</span><div class="ftogs">${S.tribes.map(t => `<button class="ftog${u.tribes.includes(t.id) ? ' on' : ''}" style="--c:${esc(t.col)}" data-act="atl-ufam" data-i="${i}" data-t="${esc(t.id)}" aria-pressed="${u.tribes.includes(t.id)}" ${d}>${esc(t.n)}</button>`).join('')}</div></div>
       <div class="upool"><span class="lbl">Vivier de héros · ${pool.length}</span><div class="uheroes">${pool.map(h => `<span class="uh">${faceH('art-h-' + h)}<small>${esc(HEROES[h].n.split(' ')[0])}</small></span>`).join('') || '<span class="mini">Aucun héros rattaché à ces familles pour l\'instant.</span>'}</div></div>
       ${ro() ? '' : `<div class="btns l"><button class="btn sm danger" data-act="atl-udel" data-i="${i}">Supprimer l'univers</button></div>`}
@@ -4954,7 +5009,7 @@ function menuPanelH(online, games) {
     const go = m === 'solo' ? '<button class="t-go" data-act="solo">Lancer la partie</button>'
       : online ? '<button class="t-go" data-act="create">Ouvrir la table</button>' : `<p class="mp-warn">${offlineWhy()}</p>`;
     body = head(m === 'solo' ? 'Partie solo' : 'Nouvelle table', m === 'solo' ? 'Toi contre sept IA.' : 'Tu reçois un code à partager. Les places libres sont prises par des IA au lancement.')
-      + univPickH(V.univSel, true) + `<div class="mp-go">${go}</div>`;
+      + univPickH(V.univSel, true, go);
   } else {
     const list = window.STANDALONE || !online ? '' : games.length
       ? `<h3 class="mp-sub">Tables ouvertes</h3><ul class="games-l">${games.map(g => `<li class="gi">${faceH(avatarSym(g.nm || 'Partie'))}<div><b>${esc(g.nm || 'Partie')}</b><small>${Number(g.n) || 1}/8 joueurs${g.st ? (g.end ? ' · terminée' : ' · en cours') : ' · en attente'}</small></div><button class="btn sm ${g.st ? '' : 'pri'}" data-act="join" data-code="${esc(g.code)}" ${g.st ? 'disabled' : ''}>${g.st ? 'En cours' : 'Rejoindre'}</button></li>`).join('')}</ul>`
@@ -4963,19 +5018,35 @@ function menuPanelH(online, games) {
       + `<div class="mp-code"><input id="jcode" class="code" maxlength="20" placeholder="tav-xxxxx" autocomplete="off" autocapitalize="off" spellcheck="false" value="${esc(V.jcode || '')}" ${online ? '' : 'disabled'}><button class="t-go" data-act="joincode" ${online ? '' : 'disabled'}>Rejoindre</button></div>`
       + (online ? '' : `<p class="mp-warn">${offlineWhy()}</p>`) + list;
   }
-  return `<div class="mp-back" data-act="m-close"></div><section class="mp" role="dialog" aria-modal="true">${body}</section>`;
+  return `<div class="mp-back" data-act="m-close"></div><section class="mp${m === 'join' ? '' : ' wide'}" role="dialog" aria-modal="true">${body}</section>`;
 }
 
-function univPickH(sel, edit) {
+// identité d'un univers (valeurs d'origine si l'univers enregistré ne les a pas)
+function univLook(u) { const d = (DEFAULT_SETTINGS.univ || []).find(x => x.n === u.n) || {}; return { col:u.col || d.col || '#5a3a1e', ic:u.ic || d.ic || 'dice', lore:u.lore != null ? u.lore : (d.lore || '') }; }
+/* le choix des univers : des étendards à lever */
+function univPickH(sel, edit, actions) {
   const on = SET.tribes.filter(t => t.on !== false).map(t => t.id);
   const us = (SET.univ || []).filter(u => u.tribes.some(t => on.includes(t)));
   const ch = univChosen(sel);
-  const dot = t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}" title="${esc(trName(t) || t)}"></i>`;
-  const chip = (u, k) => { const a = ch.us.includes(u.n), M = MECHS[u.mech] || null; return `<button class="uchip${a ? ' on' : ''}" ${edit ? `data-act="univ" data-u="${k}"` : 'disabled'} aria-pressed="${a}" ${M && u.mech !== 'none' ? `data-tip="${esc(M.n + ' : ' + M.d)}"` : ''}><b>${esc(u.n)}</b>${M && u.mech !== 'none' ? `<span class="umech">${icon(M.ic)}${esc(M.n)}</span>` : ''}<span class="udots">${u.tribes.filter(t => on.includes(t)).map(dot).join('')}</span></button>`; };
-  const rnd = !ch.us.length;
-  const n = +RU().tribesPerGame || 0;
-  const sum = rnd ? `Univers tirés au sort · ${n || on.length} familles` : `${ch.us.length} univers · ${ch.trs.length} familles : ${ch.trs.map(t => esc(trName(t) || t)).join(', ')}`;
-  return `<div class="upick"><span class="lbl">Univers de la partie</span><div class="uchips"><button class="uchip rnd${rnd ? ' on' : ''}" ${edit ? 'data-act="univ" data-u="-1"' : 'disabled'} aria-pressed="${rnd}"><b>Au hasard</b><span class="udots"><small>bans automatiques</small></span></button>${us.map(u => chip(u, (SET.univ || []).indexOf(u))).join('')}</div><p class="usum">${sum}</p></div>`;
+  const banner = u => {
+    const k = (SET.univ || []).indexOf(u), a = ch.us.includes(u.n), L = univLook(u), M = u.mech && u.mech !== 'none' ? MECHS[u.mech] : null;
+    const heroes = Object.keys(HEROES).filter(h => heroFam(h).some(t => u.tribes.includes(t)));
+    const fams = u.tribes.filter(t => on.includes(t));
+    return `<button type="button" class="ban${a ? ' on' : ''}" style="--uc:${esc(L.col)}" ${edit ? `data-act="univ" data-u="${k}"` : 'disabled'} aria-pressed="${a}">
+      ${a ? '<span class="ban-rib">Levé</span>' : ''}
+      <span class="ban-hd"><span class="ban-em">${icon(L.ic)}</span><span class="ban-t"><b>${esc(u.n)}</b>${L.lore ? `<i>${esc(L.lore)}</i>` : ''}</span></span>
+      ${M ? `<span class="ban-law"><b>Loi · ${esc(M.n)}</b><small>${esc(M.d)}</small></span>` : ''}
+      <span class="ban-fam">${fams.map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span>
+      <span class="ban-her">${heroes.slice(0, 6).map(h => `<span class="ban-h" title="${esc(HEROES[h].n)}">${faceH('art-h-' + h)}</span>`).join('')}<small>${heroes.length} héros</small></span>
+    </button>`;
+  };
+  const rnd = !ch.us.length, n = +RU().tribesPerGame || 0;
+  const sum = rnd ? `Au hasard · ${n || on.length} familles tirées au sort` : `${ch.us.length} univers · ${ch.trs.length} familles en jeu`;
+  const laws = rnd ? 'Les lois suivront les univers tirés.' : 'Lois actives : ' + ch.us.map(nm => { const u = SET.univ.find(x => x.n === nm); return u && MECHS[u.mech] && u.mech !== 'none' ? MECHS[u.mech].n : null; }).filter(Boolean).join(' · ');
+  return `<div class="upick">
+    <div class="bans">${us.map(banner).join('')}</div>
+    <div class="ubar"><div class="ubar-t"><b>${sum}</b><span>${esc(laws)}</span></div>${edit ? `<button type="button" class="btn ubar-r${rnd ? ' on' : ''}" data-act="univ" data-u="-1" aria-pressed="${rnd}">${icon('dice')}Au hasard</button>` : ''}${actions || ''}</div>
+  </div>`;
 }
 
 function offlineWhy() {
