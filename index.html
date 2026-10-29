@@ -1333,6 +1333,35 @@ body.sc-game #scene *,body.sc-atl #scene *{animation-play-state:paused!important
 .sc-fly.bat.b2{animation-delay:-5.5s;animation-duration:9s}
 @keyframes flybat{0%{transform:translate(1700px,230px) scaleY(1);opacity:1}10%{transform:translate(1500px,190px) scaleY(.6)}20%{transform:translate(1300px,220px) scaleY(1)}30%{transform:translate(1100px,170px) scaleY(.6)}40%{transform:translate(900px,200px) scaleY(1)}50%{transform:translate(700px,160px) scaleY(.6)}60%{transform:translate(500px,210px) scaleY(1)}70%{transform:translate(300px,180px) scaleY(.6)}80%{transform:translate(100px,220px) scaleY(1);opacity:1}82%,100%{transform:translate(-120px,220px);opacity:0}}
 .title .t-kick{display:none}
+/* la bande des Squishys */
+.sc-pow.pp{animation-duration:2.2s;animation-delay:-.6s}
+.sc-pow.ps{animation:pow5 3.2s ease-out infinite}
+.sc-pow.pw{animation-duration:5s;animation-delay:-1.2s}
+@keyframes pow5{0%,48%{transform:scale(0)}53%{transform:scale(1.3)}57%,72%{transform:scale(1)}78%,100%{transform:scale(0)}}
+.sc-squash{transform-box:fill-box;transform-origin:50% 100%;animation:squash 2.2s ease-in-out infinite}
+@keyframes squash{0%,100%{transform:scale(1,1)}20%{transform:scale(1.12,.86)}35%{transform:scale(.95,1.08)}50%{transform:scale(1.04,.96)}}
+.sc-lava{transform-box:fill-box;animation:lava 1.6s ease-out infinite;animation-delay:calc(var(--k) * -.4s)}
+@keyframes lava{0%{transform:translate(0,0) scale(.4);opacity:0}15%{opacity:1}50%{transform:translate(var(--dx),-70px) scale(1)}100%{transform:translate(calc(var(--dx) * 2),10px) scale(.6);opacity:0}}
+.sc-tornado{transform-box:fill-box;transform-origin:50% 100%;animation:tornado .32s ease-in-out infinite alternate}
+@keyframes tornado{from{transform:scaleX(1) skewX(-6deg) translateX(-4px)}to{transform:scaleX(.82) skewX(6deg) translateX(4px)}}
+.sc-suck{transform-box:fill-box;animation:suck 1.8s ease-in infinite;animation-delay:calc(var(--k) * -.6s)}
+@keyframes suck{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(calc(70px - var(--k) * 50px),-60px) scale(.2) rotate(360deg);opacity:0}}
+.sc-throw{transform-box:fill-box;transform-origin:50% 100%;animation:throw 3.2s ease-in-out infinite}
+@keyframes throw{0%,100%{transform:rotate(0)}6%{transform:rotate(-10deg)}12%{transform:rotate(8deg)}20%{transform:rotate(0)}}
+.sc-hit{transform-box:fill-box;transform-origin:50% 100%;animation:hitp 3.2s ease-out infinite}
+@keyframes hitp{0%,48%{transform:translate(0,0)}52%{transform:translate(12px,-4px) rotate(10deg)}58%{transform:translate(-6px,0) rotate(-6deg)}66%,100%{transform:translate(0,0)}}
+.sc-fly.snow{animation:flysnow 3.2s linear infinite}
+@keyframes flysnow{0%,10%{transform:translate(540px,640px);opacity:0}12%{opacity:1}30%{transform:translate(840px,500px) rotate(200deg);opacity:1}50%{transform:translate(1130px,650px) rotate(400deg);opacity:1}51%,100%{transform:translate(1130px,650px);opacity:0}}
+.sc-splat{transform-box:fill-box;transform-origin:center;animation:splat 3.2s ease-out infinite}
+@keyframes splat{0%,49%{transform:scale(0);opacity:0}53%{transform:scale(1.2);opacity:1}75%{transform:scale(1.4);opacity:0}100%{opacity:0}}
+.sc-slide{animation:slide 5s cubic-bezier(.3,0,.6,1) infinite}
+@keyframes slide{0%{transform:translate(560px,742px);opacity:0}6%{opacity:1}70%{transform:translate(1010px,742px) rotate(0);opacity:1}76%{transform:translate(1040px,742px) rotate(18deg);opacity:0}100%{transform:translate(1040px,742px);opacity:0}}
+.sc-jelly{transform-box:fill-box;animation:jelly 1.2s steps(1) infinite}
+@keyframes jelly{0%,40%{filter:none}45%{filter:brightness(2.2) saturate(.3)}55%{filter:none}62%{filter:brightness(2.2) saturate(.3)}70%,100%{filter:none}}
+.sc-zapb{opacity:0;animation:zapb 1.2s steps(1) infinite}
+@keyframes zapb{0%,40%{opacity:0}45%,55%{opacity:1}58%,60%{opacity:0}62%,68%{opacity:1}70%,100%{opacity:0}}
+.sc-fly.plume{animation:flyplume 12s ease-in-out infinite;animation-delay:-4s}
+@keyframes flyplume{0%{transform:translate(-80px,300px) rotate(-8deg);opacity:1}25%{transform:translate(400px,240px) rotate(8deg)}50%{transform:translate(800px,300px) rotate(-8deg)}75%{transform:translate(1200px,250px) rotate(8deg);opacity:1}100%{transform:translate(1700px,300px) rotate(-8deg);opacity:1}}
 </style>
 </head><body>
 
@@ -5329,7 +5358,7 @@ function sceneSVG() {
   const okH = id => HART[id] ? id : 'rivet';
   const heroes = [...new Set(SCENE_DUELS.flatMap(d => [okH(d[0]), okH(d[1])]))];
   const sym = heroes.map(id => `<symbol id="hs-${id}" viewBox="0 0 100 106" overflow="visible">${HART[id]()}</symbol>`).join('');
-  const CR = ['o_brute', 'g_alpha', 'o_bagarreur', 'gb_chapardeur', 'm_squelette', 'r_bombe', 'dg_dragonnet', 's_lueur', 'v_chauve', 'sf_braise', 'se_goutte', 'st_patate', 'b_chat', 'gb_dynamiteur', 'p_pilleur', 'd_brasseur'].filter(id => ART[id]);
+  const CR = ['o_brute', 'g_alpha', 'o_bagarreur', 'gb_chapardeur', 'm_squelette', 'r_bombe', 'dg_dragonnet', 's_lueur', 'v_chauve', 'sf_braise', 'se_goutte', 'st_patate', 'b_chat', 'gb_dynamiteur', 'p_pilleur', 'd_brasseur', 'sg_bonhomme', 'sf_piment', 'sg_pingouin', 'sz_zap', 'se_meduse', 'sv_tornade', 'se_baleine', 'sf_volcan', 'sv_plume', 'st_champi'].filter(id => ART[id]);
   const crs = CR.map(id => `<symbol id="cr-${id}" viewBox="0 0 100 100" overflow="visible">${ART[id]()}</symbol>`).join('');
   const defs = `<defs>${sym}${crs}
     <radialGradient id="sc-fb"><stop offset="0" stop-color="#fffbe0"/><stop offset=".35" stop-color="#ffd34d"/><stop offset=".7" stop-color="#ff6a1a"/><stop offset="1" stop-color="#ff3a0a" stop-opacity="0"/></radialGradient>
@@ -5466,6 +5495,23 @@ function chaosFront(O) {
   s += `<g transform="translate(190 830) rotate(-78)">${crU('m_squelette', -50, -50, 100)}</g>
     <g transform="translate(150 755)"><g class="sc-stars">${[0, 120, 240].map(a => `<path d="${starPath(Math.cos(a * Math.PI / 180) * 34, Math.sin(a * Math.PI / 180) * 12, 10, 4.4, 5)}" fill="#fff36a" stroke="#2a1204" stroke-width="2"/>`).join('')}</g></g>
     ${[[250, 860, 30], [110, 870, -20], [290, 820, 70]].map(([x, y, r]) => `<g transform="translate(${x} ${y}) rotate(${r})"><rect x="-16" y="-4" width="32" height="8" rx="4" fill="#f2ecdc" stroke="#1a0e06" stroke-width="2"/><circle cx="-16" cy="-4" r="5" fill="#f2ecdc" stroke="#1a0e06" stroke-width="2"/><circle cx="-16" cy="4" r="5" fill="#f2ecdc" stroke="#1a0e06" stroke-width="2"/><circle cx="16" cy="-4" r="5" fill="#f2ecdc" stroke="#1a0e06" stroke-width="2"/><circle cx="16" cy="4" r="5" fill="#f2ecdc" stroke="#1a0e06" stroke-width="2"/></g>`).join('')}`;
+  // ===== la bande des Squishys =====
+  // la Baleine dodue s'est assise en plein sur une partie en cours
+  s += `<g class="sc-squash">${crU('se_baleine', 990, 400, 130)}</g>${comic(1130, 405, 'POUF !', 'pp', 10, 28)}`;
+  // le Volcan rigolo entre en éruption sur une table
+  s += `${crU('sf_volcan', 500, 420, 100)}${[[-30, 0], [0, 1], [26, 2], [-12, 3]].map(([dx, k]) => `<circle class="sc-lava" style="--k:${k};--dx:${dx}px" cx="${550}" cy="${430}" r="${7 + k % 2 * 3}" fill="#ff7a2a" stroke="#2a1204" stroke-width="2"/>`).join('')}`;
+  // la Tornade gigoteuse aspire les pions de l'hologramme
+  s += `<g transform="translate(250 470)"><g class="sc-tornado">${crU('sv_tornade', -48, -60, 96)}</g>${[0, 1, 2].map(k => `<circle class="sc-suck" style="--k:${k}" cx="${-70 + k * 50}" cy="40" r="7" fill="${k % 2 ? '#5ab0ff' : '#ff6a5a'}" fill-opacity=".7" stroke="#fff" stroke-width="1.5"/>`).join('')}</g>`;
+  // bataille de boules de neige : glace contre feu
+  s += `<g class="sc-throw">${crU('sg_bonhomme', 452, 596, 104)}</g><g class="sc-hit">${crU('sf_piment', 1092, 606, 96)}</g>
+    <g class="sc-fly snow"><circle r="13" fill="#f4fbff" stroke="#2a1204" stroke-width="3"/><circle cx="-4" cy="-4" r="4" fill="#fff"/></g>
+    <g transform="translate(1140 660)"><g class="sc-splat">${[0, 60, 120, 180, 240, 300].map(a => `<circle cx="${f1(Math.cos(a * Math.PI / 180) * 22)}" cy="${f1(Math.sin(a * Math.PI / 180) * 22)}" r="7" fill="#f4fbff" stroke="#2a1204" stroke-width="2"/>`).join('')}</g></g>${comic(1150, 580, 'SPLOTCH !', 'ps', -8, 30)}`;
+  // le Pingouin glisse sur la bière
+  s += `<g class="sc-slide"><g transform="rotate(-78)">${crU('sg_pingouin', -45, -45, 90)}</g><path d="M50 30 L90 30 M46 44 L80 44" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".8"/></g>${comic(760, 770, 'WIIII !', 'pw', -6, 26)}`;
+  // le Petit zap électrise la Méduse gélatine
+  s += `<g class="sc-jelly">${crU('se_meduse', 1300, 470, 84)}</g>${crU('sz_zap', 1222, 476, 70)}<g class="sc-zapb"><path d="M1282 506 L1298 498 L1294 512 L1312 504" fill="none" stroke="#fff36a" stroke-width="5" stroke-linejoin="round"/><path d="M1282 516 L1300 522 L1292 530 L1312 534" fill="none" stroke="#fff" stroke-width="3" stroke-linejoin="round"/></g>`;
+  // Plumette s'envole avec une carte
+  s += `<g class="sc-fly plume">${crU('sv_plume', -36, -36, 72)}<rect x="22" y="12" width="20" height="28" rx="3" fill="#f2e6c8" stroke="#3a2010" stroke-width="2" transform="rotate(18 32 26)"/></g>`;
   // nuage de poison
   s += `<g transform="translate(70 800)">${[0, 1, 2, 3].map(k => `<circle class="sc-psn" style="--k:${k}" cx="${k * 26 - 30}" cy="${-k * 8}" r="${46 - k * 6}" fill="url(#sc-psn)"/>`).join('')}</g>`;
   // nuages de bagarre (poings, bottes, têtes)
