@@ -4760,7 +4760,7 @@ function fxLunge(fr) {
   const ra = a.getBoundingClientRect(), rt = t.getBoundingClientRect();
   F.dx = ((rt.left + rt.width / 2) - (ra.left + ra.width / 2)) * 0.82; F.dy = ((rt.top + rt.height / 2) - (ra.top + ra.height / 2)) * 0.82;
   a.style.zIndex = 9; t.classList.add('targeted');
-  a.animate([{ transform:'none' }, { transform:`translate(${f1(-F.dx * .07)}px,${f1(-F.dy * .07)}px) scale(1.12) rotate(${F.dx > 0 ? -4 : 4}deg)`, offset:.42 }, { transform:`translate(${f1(F.dx)}px,${f1(F.dy)}px) scale(1.06)` }], { duration:340, easing:'cubic-bezier(.55,0,.8,.4)', fill:'forwards' });
+F.lunge = a.animate([{ transform:'none' }, { transform:`translate(${f1(-F.dx * .07)}px,${f1(-F.dy * .07)}px) scale(1.12) rotate(${F.dx > 0 ? -4 : 4}deg)`, offset:.42 }, { transform:`translate(${f1(F.dx)}px,${f1(F.dy)}px) scale(1.06)` }], { duration:340, easing:'cubic-bezier(.55,0,.8,.4)', fill:'forwards' });
   return 340;
 }
 function fxFireball(fr) {
@@ -4769,7 +4769,9 @@ function fxFireball(fr) {
 }
 // effets de l'action qui a mené à l'image affichée
 function fxFrame() {
-  const F = V.fight; if (!F || FX_OFF()) return;
+  const F = V.fight; if (!F) return;
+  if (F.lunge) { try { F.lunge.cancel(); } catch (e) {} F.lunge = null; }
+  if (FX_OFF()) return;
   if (V.fi === 0) { fxIntro(); return; }
   const pa = F.r.frames[V.fi - 1];
   if (pa.at) {
@@ -4898,6 +4900,9 @@ function render() {
   fxAfter(flip);
   if (typeof sceneMode === 'function') sceneMode();
   if (V.aim == null && !DRAG && typeof aimHide === 'function') aimHide();
+  const inArena = !!document.querySelector('.arena');
+  if (V.hadArena && !inArena) arenaCleanup();
+  V.hadArena = inArena;
   for (const id in ks) { const el = document.getElementById(id); if (el) el.scrollTop = ks[id]; }
   if (fid) { const n = document.getElementById(fid); if (n) { try { n.focus({ preventScroll:true }); if (keep) n.setSelectionRange(keep[0], keep[1]); } catch (e) {} } }
 }
@@ -5258,7 +5263,7 @@ function doAct(act, btn) {
     case 'launch': hostLaunch(); break;
     case 'leave': leaveGame(); break;
     case 'hero': sendAct({ t:'hero', h:btn.dataset.h }); break;
-    case 'skip': if (V.fight) { clearTimeout(V.fightT); V.fi = V.fight.r.frames.length - 1; V.fight.done = true; render(); fxEnd(); } break;
+    case 'skip': if (V.fight) { clearTimeout(V.fightT); if (V.fight.lunge) { try { V.fight.lunge.cancel(); } catch (e) {} V.fight.lunge = null; } V.fi = V.fight.r.frames.length - 1; V.fight.done = true; render(); fxEnd(); } break;
     case 'buy': if (s) { sendAct({ t:'buy', i:s.i }); V.sel = null; } break;
     case 'buysp': sendAct({ t:'buysp' }); V.sel = null; break;
     case 'cast': if (s) { sendAct({ t:'cast', i:s.i }); V.sel = null; } break;
@@ -5923,6 +5928,15 @@ const famChips = trs => `<span class="famc">${trs.map(t => `<i style="--c:${esc(
 function lawsH(laws, compact) {
   if (!laws || !laws.length) return '';
   return `<div class="laws${compact ? ' compact' : ''}">${laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<div class="law" data-tip="${esc(M.n + ' : ' + M.d + ' Familles : ' + l.trs.map(trName).join(', ') + '.')}">${icon(M.ic, 'lic')}<span><b>${esc(M.n)}</b>${compact ? '' : `<small>${esc(l.u)} · ${esc(M.d)}</small>`}</span></div>`; }).join('')}</div>`;
+}
+
+/* après un combat : on efface toute trace d'animation sur les cartes réutilisées */
+function arenaCleanup() {
+  if (V.fight && V.fight.lunge) { try { V.fight.lunge.cancel(); } catch (e) {} V.fight.lunge = null; }
+  document.querySelectorAll('#app .mn, #app .cd').forEach(el => {
+    try { el.getAnimations().forEach(a => a.cancel()); } catch (e) {}
+    el.style.removeProperty('z-index'); el.style.removeProperty('transform');
+  });
 }
 </script>
 </body></html>
