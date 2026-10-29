@@ -1385,6 +1385,43 @@ html.lite .hud,html.lite .keeper-zone,html.lite .hero-zone{filter:none}
 html.lite #scene .sc-lan > g,html.lite #scene .sc-duelist,html.lite #scene .sc-hp,html.lite #scene .sc-tok,html.lite #scene .sc-spark,html.lite #scene .sc-ring,html.lite #scene .sc-twk,html.lite #scene .sc-limb,html.lite #scene .sc-psn,html.lite #scene .sc-candle,html.lite #scene .sc-suck,html.lite #scene .sc-lava,html.lite #scene .sc-jelly,html.lite #scene .sc-zapb,html.lite #scene .sc-tornado,html.lite #scene .sc-kick,html.lite #scene .sc-peek,html.lite #scene .sc-stars,html.lite #scene .sc-flames path,html.lite #scene .sc-fly.bat,html.lite #scene .sc-fly.plume,html.lite #scene .sc-ghost{animation:none!important}
 html.lite #scene .sc-brawl{animation-duration:.6s}
 html.lite .title .t-scene::after{background:radial-gradient(60% 50% at 50% 42%,rgba(10,5,2,.45),transparent 75%)}
+/* lois des univers */
+.famc{display:flex;flex-wrap:wrap;justify-content:center;gap:3px;margin:2px 0}
+.famc i{font-style:normal;font-family:var(--f-label);font-weight:700;font-size:10.5px;letter-spacing:.04em;padding:1px 7px;border-radius:99px;color:#fff;background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.35);text-shadow:0 1px 0 rgba(0,0,0,.5)}
+.umech{display:flex;align-items:center;gap:4px;font-size:11.5px;color:#cfe8ff;opacity:.9}
+.umech .ic{width:13px;height:13px;color:#8ff4ff}
+.laws{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;max-width:760px;margin:8px auto 4px;text-align:left}
+.law{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border-radius:10px;background:rgba(10,30,45,.55);box-shadow:inset 0 0 0 1px rgba(143,244,255,.35)}
+.law .lic{flex:none;width:28px;height:28px;padding:5px;border-radius:50%;color:#8ff4ff;background:rgba(0,0,0,.35);box-shadow:0 0 0 1.5px rgba(143,244,255,.5);box-sizing:border-box}
+.law b{display:block;font-family:var(--f-label);font-size:15px;color:var(--gold)}
+.law small{display:block;font-size:12.5px;line-height:1.35;color:var(--parch);opacity:.9}
+.hud-laws{display:flex;align-items:center;gap:6px;margin-left:10px}
+.hud-laws .hl{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;color:#8ff4ff;background:rgba(10,30,45,.8);box-shadow:0 0 0 1.5px rgba(143,244,255,.55),0 0 10px rgba(60,190,255,.3);cursor:help}
+.hud-laws .hl .ic{width:16px;height:16px}
+.souls{display:flex;align-items:center;gap:3px;padding:2px 8px 2px 4px;border-radius:99px;font-family:var(--f-num);font-size:15px;color:#e9d5ff;background:rgba(40,10,60,.75);box-shadow:0 0 0 1.5px rgba(180,140,255,.6);cursor:help}
+.souls .ic{width:16px;height:16px;color:#d8b8ff}
+.hc .famc{margin-top:2px}
+@media (orientation:landscape) and (max-height:540px){ .hud-laws .hl{width:22px;height:22px} .hud-laws .hl .ic{width:13px;height:13px} .laws{grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:5px} .law small{display:none} }
+/* atelier : univers */
+.ulist{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px;margin-bottom:14px}
+.ucard{display:grid;gap:10px;padding:14px;border-radius:14px;background:rgba(0,0,0,.25);box-shadow:inset 0 0 0 1px rgba(200,150,62,.3)}
+.uf{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.umd{display:flex;gap:8px;align-items:flex-start;margin:0;font-size:13px;line-height:1.35;color:var(--parch)}
+.umd .ic{flex:none;width:20px;height:20px;color:#8ff4ff}
+.ucard .lbl{display:block;margin-bottom:5px}
+.ftogs{display:flex;flex-wrap:wrap;gap:5px}
+.ftog{border:0;cursor:pointer;padding:4px 10px;border-radius:99px;font-family:var(--f-label);font-weight:600;font-size:12.5px;color:var(--parch);background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--c) 60%,transparent);opacity:.7}
+.ftog.on{opacity:1;color:#fff;background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.35);text-shadow:0 1px 0 rgba(0,0,0,.45)}
+.ftog.sm{font-size:11px;padding:3px 8px}
+.ftog:disabled{cursor:default}
+.uheroes{display:flex;flex-wrap:wrap;gap:8px}
+.uh{display:grid;justify-items:center;gap:2px;font-size:11px;color:var(--chalk-dim)}
+.uh .face{width:40px;height:40px;box-shadow:0 0 0 2px var(--brass)}
+.hlist{display:grid;gap:8px}
+.hrow{display:grid;grid-template-columns:40px 160px 1fr;align-items:center;gap:10px;padding:6px 8px;border-radius:10px;background:rgba(0,0,0,.2)}
+.hrow .face{width:40px;height:40px;box-shadow:0 0 0 2px var(--brass)}
+.hrow b{font-family:var(--f-label);font-size:14px;color:var(--gold)}
+@media (max-width:720px){ .hrow{grid-template-columns:40px 1fr} .hrow .ftogs{grid-column:1 / -1} .uf{grid-template-columns:1fr} }
 </style>
 </head><body>
 
@@ -1540,15 +1577,16 @@ const DEFAULT_SETTINGS = {
     { id:'sq_foudre', n:'Zapou', col:'#ffd23a', bg:'sqfoudre', on:true },
   ],
   univ:[
-    { n:'Ténèbres', tribes:['spec', 'vamp', 'garou', 'mort'] },
-    { n:'Royaumes anciens', tribes:['nain', 'elfe', 'ogre', 'bete'] },
-    { n:'Ateliers et bas-fonds', tribes:['meca', 'gob', 'nain', 'cors'] },
-    { n:'Terres sauvages', tribes:['bete', 'garou', 'elfe', 'drag'] },
-    { n:'Mers et cieux', tribes:['cors', 'drag', 'elem', 'spec'] },
-    { n:'Arcanes', tribes:['elem', 'elfe', 'meca', 'mort'] },
-    { n:'Montagnes', tribes:['nain', 'ogre', 'gob', 'drag'] },
-    { n:'Squishys', tribes:['sq_feu', 'sq_eau', 'sq_terre', 'sq_vent', 'sq_glace', 'sq_foudre'] },
+    { n:'Ténèbres', mech:'ames', tribes:['spec', 'vamp', 'garou', 'mort'] },
+    { n:'Royaumes anciens', mech:'serment', tribes:['nain', 'elfe', 'ogre', 'bete'] },
+    { n:'Ateliers et bas-fonds', mech:'marche', tribes:['meca', 'gob', 'nain', 'cors'] },
+    { n:'Terres sauvages', mech:'ruee', tribes:['bete', 'garou', 'elfe', 'drag'] },
+    { n:'Mers et cieux', mech:'pillage', tribes:['cors', 'drag', 'elem', 'spec'] },
+    { n:'Arcanes', mech:'resonance', tribes:['elem', 'elfe', 'meca', 'mort'] },
+    { n:'Montagnes', mech:'eboulement', tribes:['nain', 'ogre', 'gob', 'drag'] },
+    { n:'Squishys', mech:'fusion', tribes:['sq_feu', 'sq_eau', 'sq_terre', 'sq_vent', 'sq_glace', 'sq_foudre'] },
   ],
+  heroFam:{},
   neutral:{ n:'Neutre', col:'#8a5a30', bg:'neu' },
   kw:{
     t:{ n:'Provocation', d:'Les ennemis doivent l\'attaquer en premier.', c:1 },
@@ -1756,26 +1794,55 @@ const compLimit = rd => rd >= 6 ? 3 : rd >= 5 ? 2 : rd >= 3 ? 1 : 0;
 
 const SLOTS = { 1:3, 2:4, 3:4, 4:5, 5:5, 6:6 };
 const HEROES = {
-  rivet:   { n:'Rivet', tx:'Passif : votre première actualisation de chaque tour est gratuite.' },
-  egide:   { n:'Égide', cost:2, tx:'Donne Bouclier divin à un de vos serviteurs aléatoire.' },
-  ondine:  { n:'Ondine l\'alchimiste', cost:1, tx:'Donne +1/+2 à un de vos serviteurs aléatoire.' },
-  barnabe: { n:'Barnabé le marchand', tx:'Passif : +1 or au début de chaque tour pair.' },
-  maelle:  { n:'Maëlle la dompteuse', tx:'Passif : à la fin de votre tour, donne +1/+1 à votre serviteur le plus à gauche.' },
-  oren:    { n:'Oren l\'archiviste', cost:3, tx:'Ajoute à votre main un serviteur aléatoire de votre niveau de taverne.' },
-  gor:     { n:'Gor le colosse', tx:'Passif : commence la partie avec 5 PV de plus.' },
-  ilka:    { n:'Ilka la bâtisseuse', tx:'Passif : améliorer la taverne coûte 1 or de moins.' },
-  selene:  { n:'Sélène la comtesse', cost:1, tx:'Donne +1/+1 à un de vos serviteurs aléatoire et l\'enchante : « Après avoir attaqué, gagne +1/+1 ».' },
-  brok:    { n:'Brok Barbe-d\'acier', cost:2, tx:'Donne Provocation à un de vos serviteurs aléatoire qui n\'en a pas.' },
-  sylvara: { n:'Sylvara l\'archimage', tx:'Passif : le premier sort que vous achetez chaque tour coûte 1 or de moins.' },
-  grumbo:  { n:'Grumbo le glouton', cost:2, tx:'Donne +3/+3 à votre serviteur qui a le plus d\'attaque.' },
-  vaskor:  { n:'Vaskor le nécromancien', cost:1, tx:'Invoque un Squelette 1/1 avec Renaissance sur votre plateau.' },
-  pyra:    { n:'Pyra la chevaucheuse', tx:'Passif : au début de chaque combat, votre dragon souffle 2 dégâts sur un ennemi aléatoire (le surplus touche d\'autres ennemis).' },
-  paul:    { n:'Paul', cost:2, need:'sq_', el:'sq_feu', tx:'Ami du feu · Attise : un Flammou aléatoire gagne +2/+1 et vos autres Flammous gagnent +1 attaque.' },
-  leon:    { n:'Léon', need:'sq_', el:'sq_terre', tx:'Ami de la terre · Passif : quand vous jouez un Mottu, il gagne Provocation et +1/+2.' },
-  zoe:     { n:'Zoé', cost:1, need:'sq_', el:'sq_eau', tx:'Amie de l\'eau · Ajoute à votre main un Flotti aléatoire de votre niveau de taverne ou moins.' },
-  jeanne:  { n:'Jeanne', cost:2, need:'sq_', el:'sq_vent', tx:'Amie du vent · Prochain combat seulement : vos Zéphys gagnent +1/+1 pour chaque Zéphy sur votre plateau.' },
-  nono:    { n:'NonoJose', cost:1, minRound:3, tx:'Dès la manche 3 : lance une boule de feu de 3 dégâts sur un serviteur ennemi aléatoire au début du prochain combat ; les dégâts en trop touchent d\'autres ennemis. Chaque manche où le pouvoir n\'est pas utilisé, ses dégâts augmentent de 1 pour toute la partie.' },
+  rivet:   {fam:['meca', 'gob'], n:'Rivet', tx:'Passif : votre première actualisation de chaque tour est gratuite.' },
+  egide:   {fam:['nain', 'elfe'], n:'Égide', cost:2, tx:'Donne Bouclier divin à un de vos serviteurs aléatoire.' },
+  ondine:  {fam:['elem', 'cors'], n:'Ondine l\'alchimiste', cost:1, tx:'Donne +1/+2 à un de vos serviteurs aléatoire.' },
+  barnabe: {fam:['gob', 'cors'], n:'Barnabé le marchand', tx:'Passif : +1 or au début de chaque tour pair.' },
+  maelle:  {fam:['bete', 'garou'], n:'Maëlle la dompteuse', tx:'Passif : à la fin de votre tour, donne +1/+1 à votre serviteur le plus à gauche.' },
+  oren:    {fam:['elfe', 'mort'], n:'Oren l\'archiviste', cost:3, tx:'Ajoute à votre main un serviteur aléatoire de votre niveau de taverne.' },
+  gor:     {fam:['ogre'], n:'Gor le colosse', tx:'Passif : commence la partie avec 5 PV de plus.' },
+  ilka:    {fam:['nain', 'meca'], n:'Ilka la bâtisseuse', tx:'Passif : améliorer la taverne coûte 1 or de moins.' },
+  selene:  {fam:['vamp'], n:'Sélène la comtesse', cost:1, tx:'Donne +1/+1 à un de vos serviteurs aléatoire et l\'enchante : « Après avoir attaqué, gagne +1/+1 ».' },
+  brok:    {fam:['nain'], n:'Brok Barbe-d\'acier', cost:2, tx:'Donne Provocation à un de vos serviteurs aléatoire qui n\'en a pas.' },
+  sylvara: {fam:['elfe', 'elem'], n:'Sylvara l\'archimage', tx:'Passif : le premier sort que vous achetez chaque tour coûte 1 or de moins.' },
+  grumbo:  {fam:['ogre', 'gob'], n:'Grumbo le glouton', cost:2, tx:'Donne +3/+3 à votre serviteur qui a le plus d\'attaque.' },
+  vaskor:  {fam:['mort', 'spec'], n:'Vaskor le nécromancien', cost:1, tx:'Invoque un Squelette 1/1 avec Renaissance sur votre plateau.' },
+  pyra:    {fam:['drag'], n:'Pyra la chevaucheuse', tx:'Passif : au début de chaque combat, votre dragon souffle 2 dégâts sur un ennemi aléatoire (le surplus touche d\'autres ennemis).' },
+  paul:    {fam:['sq_feu'], n:'Paul', cost:2, el:'sq_feu', tx:'Ami du feu · Attise : un Flammou aléatoire gagne +2/+1 et vos autres Flammous gagnent +1 attaque.' },
+  leon:    {fam:['sq_terre'], n:'Léon', el:'sq_terre', tx:'Ami de la terre · Passif : quand vous jouez un Mottu, il gagne Provocation et +1/+2.' },
+  zoe:     {fam:['sq_eau'], n:'Zoé', cost:1, el:'sq_eau', tx:'Amie de l\'eau · Ajoute à votre main un Flotti aléatoire de votre niveau de taverne ou moins.' },
+  jeanne:  {fam:['sq_vent'], n:'Jeanne', cost:2, el:'sq_vent', tx:'Amie du vent · Prochain combat seulement : vos Zéphys gagnent +1/+1 pour chaque Zéphy sur votre plateau.' },
+  nono:    {fam:['drag', 'elem'], n:'NonoJose', cost:1, minRound:3, tx:'Dès la manche 3 : lance une boule de feu de 3 dégâts sur un serviteur ennemi aléatoire au début du prochain combat ; les dégâts en trop touchent d\'autres ennemis. Chaque manche où le pouvoir n\'est pas utilisé, ses dégâts augmentent de 1 pour toute la partie.' },
 };
+// familles d'un héros (modifiables dans l'atelier)
+const heroFam = h => (SET.heroFam && Array.isArray(SET.heroFam[h]) && SET.heroFam[h].length ? SET.heroFam[h] : (HEROES[h] && HEROES[h].fam) || []);
+
+/* ---------- les lois des univers : une mécanique signature par univers ---------- */
+const MECHS = {
+  none:{ n:'Aucune loi', ic:'dice', d:'Pas de règle particulière.' },
+  ames:{ n:'Moisson d\'âmes', ic:'skull', d:'Chaque serviteur de l\'univers qui meurt en combat vous rapporte une âme. Au début du tour, chaque tranche de 3 âmes donne +1/+1 à tous vos serviteurs de l\'univers.' },
+  serment:{ n:'Serment des anciens', ic:'crown', d:'Quand vous obtenez un serviteur doré de l\'univers, vos autres serviteurs de l\'univers gagnent +2/+2.' },
+  marche:{ n:'Marché noir', ic:'gear', d:'Vendre un serviteur de l\'univers rapporte 1 or de plus (deux fois par tour).' },
+  ruee:{ n:'Ruée sauvage', ic:'leaf', d:'Au début du combat, si vous avez au moins 3 serviteurs de l\'univers, ils gagnent +2/+0 pour ce combat.' },
+  pillage:{ n:'Pillage', ic:'drop', d:'Quand vous gagnez un combat avec un serviteur de l\'univers encore debout, vous recevez un sort aléatoire de votre niveau.' },
+  resonance:{ n:'Résonance', ic:'twin', d:'Chaque sort que vous lancez donne +1/+1 à deux de vos serviteurs de l\'univers.' },
+  eboulement:{ n:'Éboulement', ic:'up', d:'Quand un de vos serviteurs de l\'univers avec Provocation meurt, il inflige 3 dégâts à un ennemi aléatoire.' },
+  fusion:{ n:'Fusion élémentaire', ic:'wind', d:'À la fin du tour, si vous avez au moins 4 éléments Squishy différents, vos serviteurs de l\'univers gagnent +1/+1.' },
+};
+// familles concernées par une loi dans la partie en cours
+const mechTr = (G, k) => (G && G.mx && G.mx[k]) || null;
+const inMech = (G, k, m) => { const t = mechTr(G, k); return !!(t && m && t.includes(tribe(m))); };
+function setupMechs(G) {
+  G.mx = {}; G.laws = [];
+  const us = (SET.univ || []).filter(u => (G.univ || []).includes(u.n));
+  for (const u of us) {
+    const k = u.mech && MECHS[u.mech] ? u.mech : 'none'; if (k === 'none') continue;
+    const trs = u.tribes.filter(t => G.trs.includes(t)); if (!trs.length) continue;
+    G.mx[k] = [...new Set((G.mx[k] || []).concat(trs))];
+    G.laws.push({ u:u.n, k, trs });
+  }
+}
+
 const AI_NAMES = ['Morgane', 'Thibault', 'Sacha', 'Lucie', 'Basile', 'Inès', 'Gaspard', 'Nora', 'Hugo', 'Elsa'];
 
 /* ===================== utilitaires ===================== */
@@ -2045,7 +2112,8 @@ function simDeaths(S) {
       let i = arr.findIndex(x => x.h <= 0);
       while (i >= 0) {
         changed = true;
-        const d = arr[i]; arr.splice(i, 1);
+        const d = arr[i]; arr.splice(i, 1); S.dead[s].push(d.c);
+        if (S.mx.eboulement && has(d, 't') && S.mx.eboulement.includes(tribe(d))) { const o = S.sides[1 - s].filter(x => x.h > 0); if (o.length) simDamage(S, o[Math.floor(S.rng() * o.length)], 3, null); }
         for (const al of arr.slice()) if (al.h > 0) fxOf(al, 'die').forEach(e => runCombat(S, s, al, e, 0, d));
         const before = arr.length;
         const ndr = auraTimes(arr, 'aura_dr');
@@ -2061,12 +2129,12 @@ function simDeaths(S) {
   }
 }
 const snap = S => S.sides.map(arr => arr.map(m => ({ c:m.c, a:m.a, h:m.h, g:m.g, f:m.f, u:m.u })));
-function simulate(bA, bB, seed, tA, tB, fire) {
+function simulate(bA, bB, seed, tA, tB, fire, mx) {
   const BS0 = BSRC; BSRC = null;
-  try { return simulate0(bA, bB, seed, tA, tB, fire); } finally { BSRC = BS0; }
+  try { return simulate0(bA, bB, seed, tA, tB, fire, mx); } finally { BSRC = BS0; }
 }
-function simulate0(bA, bB, seed, tA, tB, fire) {
-  const S = { sides:[clone(bA), clone(bB)], rng:mulberry(seed), uid:1000000, frames:[] };
+function simulate0(bA, bB, seed, tA, tB, fire, mx) {
+  const S = { sides:[clone(bA), clone(bB)], rng:mulberry(seed), uid:1000000, frames:[], mx:mx || {}, dead:[[], []] };
   S.frames.push({ s:snap(S) });
   if (fire) for (const s of [0, 1]) {
     const en = S.sides[1 - s].filter(x => x.h > 0);
@@ -2082,6 +2150,7 @@ function simulate0(bA, bB, seed, tA, tB, fire) {
     simDeaths(S);
   }
   for (const s of [0, 1]) { const nsoc = auraTimes(S.sides[s], 'aura_soc'); for (const m of S.sides[s].slice()) for (let r = 0; r < nsoc; r++) fxOf(m, 'soc').forEach(e => runCombat(S, s, m, e)); }
+  if (S.mx.ruee) for (const s of [0, 1]) { const w = S.sides[s].filter(m => m.h > 0 && S.mx.ruee.includes(tribe(m))); if (w.length >= 3) w.forEach(m => buff(m, 2, 0)); }
   simDeaths(S);
   S.frames.push({ s:snap(S) });
   const lA = S.sides[0].length, lB = S.sides[1].length;
@@ -2115,7 +2184,7 @@ function simulate0(bA, bB, seed, tA, tB, fire) {
   let dmg = 0;
   if (w === 0) dmg = tA + S.sides[0].reduce((t, m) => t + tierOf(m), 0);
   if (w === 1) dmg = tB + S.sides[1].reduce((t, m) => t + tierOf(m), 0);
-  return { w, dmg, frames:S.frames };
+  return { w, dmg, frames:S.frames, dead:S.dead, alive:S.sides.map(a => a.map(m => m.c)) };
 }
 
 /* =====================================================================
@@ -2156,6 +2225,8 @@ function hostStart(humans, opt) {
     for (const t of shuffle(on.slice())) if (picked.length < n && !picked.includes(t)) picked.push(t);
     G.trs = picked;
   } else G.trs = on;
+  if (!G.univ.length) G.univ = (SET.univ || []).filter(u => u.tribes.length && u.tribes.every(t => G.trs.includes(t))).map(u => u.n);
+  setupMechs(G);
   G.ban = on.filter(t => !G.trs.includes(t));
   G.ids = POOL_IDS.filter(id => C[id].tr === 'neu' || G.trs.includes(C[id].tr));
   G.ids.forEach(id => G.pool[id] = +RU().pool[C[id].t] || 0);
@@ -2165,9 +2236,13 @@ function hostStart(humans, opt) {
     G.ps.push(h ? newPlayer(i, h.n, true, h.peer) : newPlayer(i, 'IA ' + names[i], false, null));
   }
   // chaque héros n'est proposé qu'à un seul joueur
-  const ids = shuffle(Object.keys(HEROES).filter(h => !HEROES[h].need || G.trs.some(t => t.startsWith(HEROES[h].need))));
+  // héros proposés : uniques, rattachés à au moins une famille en jeu ; repli sur les autres s'il n'y en a pas assez
+  const ok = h => heroFam(h).some(t => G.trs.includes(t));
+  const ids = shuffle(Object.keys(HEROES).filter(ok)), rest = shuffle(Object.keys(HEROES).filter(h => !ok(h)));
   G.ps.forEach(p => { p.ho = []; });
   for (let k = 0; k < 3; k++) for (const p of G.ps) if (ids.length) p.ho.push(ids.shift());
+  for (let k = 0; k < 3; k++) for (const p of G.ps) if (p.ho.length <= k && rest.length) p.ho.push(rest.shift());
+  for (const p of G.ps) while (p.ho.length < 2) { const h = pickR(Object.keys(HEROES).filter(x => !p.ho.includes(x))); if (!h) break; p.ho.push(h); }
   G.ps.forEach(p => { if (p.bot) p.hero = pickR(p.ho); });
   H.G = G;
   clearInterval(H.tick); H.tick = setInterval(hostTick, 200);
@@ -2196,6 +2271,7 @@ function checkTriple(G, p) {
     const gm = { c:id, a:b.a * 2 + copies.reduce((t, m) => t + m.a - b.a, 0), h:b.h * 2 + copies.reduce((t, m) => t + m.h - b.h, 0), g:1, f:b.f, u:UID++, tr:1 };
     copies.forEach(m => { for (const k of m.f || '') addF(gm, k); if (m.x) gm.x = (gm.x || []).concat(m.x); (m.bn || []).forEach(e => { const L = gm.bn || (gm.bn = []); const f = L.find(x => x.s === e.s); if (f) { f.a += e.a; f.h += e.h; f.n += e.n; for (const k of e.k || '') if (!(f.k || '').includes(k)) f.k = (f.k || '') + k; } else L.push({ ...e }); }); });
     p.hd.push(gm);
+    if (inMech(G, 'serment', gm)) withSrc('Serment des anciens', () => p.bd.concat(p.hd).forEach(x => { if (x !== gm && !x.sp && inMech(G, 'serment', x)) buff(x, 2, 2); }));
     return checkTriple(G, p);
   }
 }
@@ -2208,7 +2284,7 @@ const sellValue = m => 1 + fxOf(m, 'sell').reduce((t, e) => t + e.n * mult(m), 0
 
 const OPS = {
   buy(G, p, a) { const i = a.i; if (p.g < 3 || p.hd.length >= 10 || !p.sh[i]) return false; p.g -= 3; p.hd.push(p.sh.splice(i, 1)[0]); checkTriple(G, p); return true; },
-  sell(G, p, a) { const m = p.bd[a.i]; if (!m) return false; p.bd.splice(a.i, 1); p.g += 1; fxOf(m, 'sell').forEach(e => runRecruit(G, p, m, e)); toPool(G, m); return true; },
+  sell(G, p, a) { const m = p.bd[a.i]; if (!m) return false; p.bd.splice(a.i, 1); p.g += 1; if (inMech(G, 'marche', m) && (p.mkt || 0) < 2) { p.g += 1; p.mkt = (p.mkt || 0) + 1; } fxOf(m, 'sell').forEach(e => runRecruit(G, p, m, e)); toPool(G, m); return true; },
   play(G, p, a) {
     const m = p.hd[a.i]; if (!m || m.sp || p.bd.length >= 7) return false;
     p.hd.splice(a.i, 1);
@@ -2311,6 +2387,8 @@ function startRecruit() {
     p.pu = false; p.fbq = false; p.sylv = false; p.rr = 0; p.rdy = false; p.res = null;
     if (p.inc && p.inc.length) p.g += p.inc.shift() || 0;
     trigBoard(G, p, 'sot');
+    p.mkt = 0;
+    if (inMechAny(G, 'ames') && (p.souls || 0) >= 3) { const k = Math.floor(p.souls / 3); p.souls -= k * 3; withSrc('Moisson d\'âmes', () => p.bd.forEach(m => { if (inMech(G, 'ames', m)) buff(m, k, k); })); }
     p.bd.forEach(m => { delete m.tmp; }); p.tma = null;
   }
   G.ph = 'recruit';
@@ -2326,6 +2404,7 @@ function endRecruit() {
     const neot = auraTimes(p.bd, 'aura_eot');
     for (const m of p.bd.slice()) for (let r = 0; r < neot; r++) fxOf(m, 'eot').forEach(e => runRecruit(G, p, m, e));
     if (p.hero === 'maelle' && p.bd[0]) withSrc('Passif de Maëlle', () => buff(p.bd[0], 1, 1));
+    if (inMechAny(G, 'fusion') && elems(p.bd) >= 4) withSrc('Fusion élémentaire', () => p.bd.forEach(m => { if (inMech(G, 'fusion', m)) buff(m, 1, 1); }));
     if (p.hero === 'nono' && G.rd >= 3 && !p.pu) p.fb = (p.fb || 3) + 1;
     if (p.disc) OPS.pick(G, p, { i:aiBestIndex(p, p.disc) });
   }
@@ -2342,13 +2421,14 @@ function endRecruit() {
     const heat = x => (x.fbq ? (x.fb || 3) : 0) + (x.hero === 'pyra' ? 2 : 0);
     const fire = [heat(p), ghost ? 0 : heat(q)];
     const pb = combatBoard(p), qcb = combatBoard(ghost || q);
-    const r = simulate(pb, qcb, seed, p.t, qt, fire);
+    const r = simulate(pb, qcb, seed, p.t, qt, fire, G.mx);
+    lawsAfterFight(G, p, r, 0); if (!ghost) lawsAfterFight(G, q, r, 1);
     const d = Math.min(cap, r.dmg);
     if (r.w === 1) G.pend.push({ pid:p.pid, d });
     if (r.w === 0 && !ghost) G.pend.push({ pid:q.pid, d });
     p.res = { o:qn, r:r.w === 0 ? 'win' : r.w === 1 ? 'loss' : 'draw', d };
     if (!ghost) q.res = { o:p.n, r:r.w === 1 ? 'win' : r.w === 0 ? 'loss' : 'draw', d };
-    const base = { rd:G.rd, a:pb.map(fullM), b:qcb.map(fullM), seed, ta:p.t, tb:qt, cap, ha:p.hero, hb:ghost ? ghost.hero : q.hero, fire };
+    const base = { rd:G.rd, a:pb.map(fullM), b:qcb.map(fullM), seed, ta:p.t, tb:qt, cap, ha:p.hero, hb:ghost ? ghost.hero : q.hero, fire, mx:G.mx || {} };
     if (p.human && !p.bot) { deliverFight(p, Object.assign({ me:0, on:qn }, base)); maxFrames = Math.max(maxFrames, r.frames.length); }
     if (!ghost && q.human && !q.bot) { deliverFight(q, Object.assign({ me:1, on:p.n }, base)); maxFrames = Math.max(maxFrames, r.frames.length); }
     p.lastOpp = ghost ? null : q.pid; if (!ghost) q.lastOpp = p.pid;
@@ -2360,6 +2440,11 @@ function endRecruit() {
   G.end = Date.now() + (anyWatcher ? Math.min(50000, 3500 + maxFrames * 700) : 800);
   broadcast();
 }
+function lawsAfterFight(G, p, r, side) {
+  if (inMechAny(G, 'ames')) { const n = r.dead[side].filter(c => C[c] && G.mx.ames.includes(C[c].tr)).length; if (n) p.souls = (p.souls || 0) + n; }
+  if (G.mx && G.mx.pillage && r.w === side && r.alive[side].some(c => C[c] && G.mx.pillage.includes(C[c].tr)) && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) { p.hd.push(sp); p.loot = (p.loot || 0) + 1; } }
+}
+const inMechAny = (G, k) => !!(G && G.mx && G.mx[k]);
 function endCombat() {
   const G = H.G;
   for (const x of G.pend) G.ps[x.pid].hp -= x.d;
@@ -2393,12 +2478,12 @@ const fullM = m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g || 0, f:m.f || '', u
 function pubData() {
   const G = H.G;
   if (!G) return { ph:'lobby', code:H.code, cv:CAT_REV, us:(V.univSel || []).slice(), pl:H.roster.map(r => ({ n:r.n, pe:r.peer })) };
-  return { ph:G.ph, rd:G.rd, rem:Math.max(0, G.end - Date.now()), code:H.code, cv:CAT_REV, trs:G.trs, ban:G.ban, univ:G.univ, mhp:(+RU().hp || 40) + 10,
+  return { ph:G.ph, rd:G.rd, rem:Math.max(0, G.end - Date.now()), code:H.code, cv:CAT_REV, trs:G.trs, ban:G.ban, univ:G.univ, laws:G.laws || [], mhp:(+RU().hp || 40) + 10,
     pl:G.ps.map(p => ({ pid:p.pid, n:p.n, hp:p.hp, t:p.t, ai:!p.human, bot:p.bot, al:p.al, pl:p.place, r:p.rdy, h:p.hero, pe:p.peer, nb:p.bd.length })) };
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;
@@ -2449,7 +2534,8 @@ function applyLive() {
   const delT = SET.delTribes || [];
   for (const t of DEFAULT_SETTINGS.tribes) if (!SET.tribes.some(x => x.id === t.id) && !delT.includes(t.id)) SET.tribes.push(clone(t));
   SET.univ = SET.univ || [];
-  for (const u of DEFAULT_SETTINGS.univ) { const mine = SET.univ.find(x => x.n === u.n); if (!mine) SET.univ.push(clone(u)); else for (const t of u.tribes) if (!mine.tribes.includes(t) && !delT.includes(t)) mine.tribes.push(t); }
+  const delU = SET.delUniv || [];
+  for (const u of DEFAULT_SETTINGS.univ) { if (delU.includes(u.n)) continue; const mine = SET.univ.find(x => x.n === u.n); if (!mine) SET.univ.push(clone(u)); else { if (!mine.mech) mine.mech = u.mech; if (!mine.fixed) for (const t of u.tribes) if (!mine.tribes.includes(t) && !delT.includes(t)) mine.tribes.push(t); } }
   CARDS = clone(DEFAULT_CARDS);
   for (const id in (DATA.liveCards || {})) CARDS[id] = clone(DATA.liveCards[id]);
   for (const id of (SET.deleted || [])) delete CARDS[id];
@@ -4055,7 +4141,7 @@ function spellBlock(p, id, tgt) {
   if ((id === 'sp_tempete' || id === 'sp_ascension') && !p.bd.length) return 'Tu n\'as aucun serviteur.';
   return null;
 }
-function castSpell(G, p, hi, tg) { const it = p.hd[hi], S0 = it && SPELLS[it.sp]; return withSrc(S0 ? 'Sort : ' + S0.n : BSRC, () => castSpell0(G, p, hi, tg)); }
+function castSpell(G, p, hi, tg) { const it = p.hd[hi], S0 = it && SPELLS[it.sp]; const ok = withSrc(S0 ? 'Sort : ' + S0.n : BSRC, () => castSpell0(G, p, hi, tg)); if (ok && inMechAny(G, 'resonance')) withSrc('Résonance', () => { const c = p.bd.filter(m => inMech(G, 'resonance', m)); for (let k = 0; k < 2 && c.length; k++) buff(c.splice(Math.floor(Math.random() * c.length), 1)[0], 1, 1); }); return ok; }
 function castSpell0(G, p, hi, tg) {
   const id = p.hd[hi].sp, S = SPELLS[id]; if (!S) return false;
   const tgt = S.tg ? p.bd[tg] : null;
@@ -4202,7 +4288,7 @@ function spellCardH(id, z, i, o = {}) {
    ATELIER — création et équilibrage (admin = propriétaire ou éditeur)
    ===================================================================== */
 const A = { tab:'cards', fTr:'all', fT:'all', q:'', ed:null, edNew:false, set:null, setDirty:false, confirm:null };
-const TABS = [['cards', 'Cartes'], ['tribes', 'Tribus'], ['kw', 'Mots-clés'], ['val', 'Valeurs et budgets'], ['rules', 'Règles de partie']];
+const TABS = [['cards', 'Cartes'], ['tribes', 'Tribus'], ['univ', 'Univers'], ['kw', 'Mots-clés'], ['val', 'Valeurs et budgets'], ['rules', 'Règles de partie']];
 const newId = p => p + Date.now().toString(36) + Math.floor(Math.random() * 1296).toString(36);
 const rseed = () => Math.floor(Math.random() * 1e9) + 1;
 const fmtPts = v => (v > 0 ? '+' : '') + r1(v) + ' pt' + (Math.abs(v) >= 2 ? 's' : '');
@@ -4227,7 +4313,7 @@ function atelierH() {
   if (!DATA.db) note = window.STANDALONE ? 'Lecture seule. Cette version autonome utilise les cartes intégrées au fichier ; les modifications se font dans l\'atelier de la version claude.ai.' : 'Lecture seule. La sauvegarde partagée s\'active quand la page est ouverte sur claude.ai avec un compte connecté.';
   else if (!DATA.admin) note = 'Lecture seule. Seuls le propriétaire et les éditeurs du jeu peuvent créer ou modifier des cartes.';
   else if (DATA.ready && !DATA.seeded) note = 'Tu vois le contenu d\'origine. Chaque carte ou réglage que tu enregistres s\'applique ensuite à toutes les nouvelles parties.';
-  const body = { cards:cardsTabH, tribes:tribesTabH, kw:kwTabH, val:valTabH, rules:rulesTabH }[A.tab]();
+  const body = { cards:cardsTabH, tribes:tribesTabH, univ:univTabH, kw:kwTabH, val:valTabH, rules:rulesTabH }[A.tab]();
   const settingsTab = A.tab !== 'cards';
   return `<div class="atl">
     <header class="atl-top"><button class="btn sm" data-act="atl-back">${icon('back')}Menu</button>
@@ -4381,6 +4467,29 @@ function tribesTabH() {
     ${DATA.admin ? `<button class="btn pri" data-act="atl-tnew">${icon('plus')}Nouvelle tribu</button>` : ''}`;
 }
 
+/* ---------- onglet Univers ---------- */
+function univTabH() {
+  const S = A.set, d = dis(); S.univ = S.univ || []; S.heroFam = S.heroFam || {};
+  const fam = h => (Array.isArray(S.heroFam[h]) && S.heroFam[h].length ? S.heroFam[h] : (HEROES[h].fam || []));
+  const card = (u, i) => {
+    const M = MECHS[u.mech] || MECHS.none;
+    const pool = Object.keys(HEROES).filter(h => fam(h).some(t => u.tribes.includes(t)));
+    return `<article class="ucard">
+      <div class="uf"><label class="f2"><span>Nom</span><input id="s-univ-${i}-n" data-s="univ.${i}.n" maxlength="28" value="${esc(u.n)}" ${d}></label>
+        <label class="f2"><span>Loi de l'univers</span><select id="s-univ-${i}-mech" data-s="univ.${i}.mech" ${d}>${Object.keys(MECHS).map(k => `<option value="${k}" ${(u.mech || 'none') === k ? 'selected' : ''}>${esc(MECHS[k].n)}</option>`).join('')}</select></label></div>
+      <p class="umd">${icon(M.ic)}<span>${esc(M.d)}</span></p>
+      <div class="ufam"><span class="lbl">Familles</span><div class="ftogs">${S.tribes.map(t => `<button class="ftog${u.tribes.includes(t.id) ? ' on' : ''}" style="--c:${esc(t.col)}" data-act="atl-ufam" data-i="${i}" data-t="${esc(t.id)}" aria-pressed="${u.tribes.includes(t.id)}" ${d}>${esc(t.n)}</button>`).join('')}</div></div>
+      <div class="upool"><span class="lbl">Vivier de héros · ${pool.length}</span><div class="uheroes">${pool.map(h => `<span class="uh">${faceH('art-h-' + h)}<small>${esc(HEROES[h].n.split(' ')[0])}</small></span>`).join('') || '<span class="mini">Aucun héros rattaché à ces familles pour l\'instant.</span>'}</div></div>
+      ${ro() ? '' : `<div class="btns l"><button class="btn sm danger" data-act="atl-udel" data-i="${i}">Supprimer l'univers</button></div>`}
+    </article>`;
+  };
+  const heroRow = h => `<div class="hrow">${faceH('art-h-' + h)}<b>${esc(HEROES[h].n)}</b><div class="ftogs">${S.tribes.map(t => `<button class="ftog sm${fam(h).includes(t.id) ? ' on' : ''}" style="--c:${esc(t.col)}" data-act="atl-hfam" data-h="${h}" data-t="${esc(t.id)}" aria-pressed="${fam(h).includes(t.id)}" ${d}>${esc(t.n)}</button>`).join('')}</div></div>`;
+  return `<p class="atl-intro">Un univers regroupe des familles, une loi qui lui est propre et un vivier de héros. Une famille peut appartenir à plusieurs univers : elle profite alors de chaque loi. Un héros est proposé en début de partie dès qu'une de ses familles est en jeu.</p>
+    <div class="ulist">${S.univ.map(card).join('')}</div>
+    ${DATA.admin ? `<button class="btn pri" data-act="atl-unew">${icon('plus')}Nouvel univers</button>` : ''}
+    <section class="vsec"><h3 class="atl-h">Héros et familles</h3><p class="mini">Rattache chaque héros à une ou plusieurs familles. Il rejoint alors le vivier des univers qui contiennent ces familles.</p><div class="hlist">${Object.keys(HEROES).map(heroRow).join('')}</div></section>`;
+}
+
 /* ---------- onglet Mots-clés ---------- */
 function kwTabH() {
   const S = A.set, d = dis();
@@ -4519,6 +4628,8 @@ document.addEventListener('change', e => {
 function atlValidateSet(S) {
   for (const t of [1, 2, 3, 4, 5, 6]) if (!(+S.budget[t][0] <= +S.budget[t][1])) return `Le budget du niveau ${t} a un minimum plus grand que son maximum.`;
   if (S.tribes.some(t => !String(t.n || '').trim())) return 'Chaque tribu doit avoir un nom.';
+  if ((S.univ || []).some(u => !String(u.n || '').trim())) return 'Chaque univers doit avoir un nom.';
+  if (new Set((S.univ || []).map(u => u.n.trim())).size !== (S.univ || []).length) return 'Deux univers portent le même nom.';
   if (Object.values(S.kw).some(k => !String(k.n || '').trim())) return 'Chaque mot-clé doit avoir un nom.';
   return '';
 }
@@ -4556,6 +4667,16 @@ async function atlAct(act, btn) {
     }
     case 'atl-tnew': A.set.tribes.push({ id:newId('tr'), n:'Nouvelle tribu', col:'#7a5aa0', bg:'spec', on:true }); A.setDirty = true; break;
     case 'atl-tdel': { const t = A.set.tribes.splice(+btn.dataset.i, 1)[0]; if (t && DEFAULT_SETTINGS.tribes.some(x => x.id === t.id)) A.set.delTribes = (A.set.delTribes || []).concat(t.id); A.setDirty = true; break; }
+    case 'atl-unew': if (ro()) break; A.set.univ = (A.set.univ || []).concat({ n:'Nouvel univers', mech:'none', tribes:[], fixed:true }); A.setDirty = true; break;
+    case 'atl-udel': { if (ro()) break; const u = A.set.univ.splice(+btn.dataset.i, 1)[0]; if (u && DEFAULT_SETTINGS.univ.some(x => x.n === u.n)) A.set.delUniv = (A.set.delUniv || []).concat(u.n); A.setDirty = true; break; }
+    case 'atl-ufam': { if (ro()) break; const u = A.set.univ[+btn.dataset.i], t = btn.dataset.t; if (!u) break; u.tribes = u.tribes.includes(t) ? u.tribes.filter(x => x !== t) : u.tribes.concat(t); u.fixed = true; A.setDirty = true; break; }
+    case 'atl-hfam': {
+      if (ro()) break; const h = btn.dataset.h, t = btn.dataset.t; A.set.heroFam = A.set.heroFam || {};
+      const cur = Array.isArray(A.set.heroFam[h]) && A.set.heroFam[h].length ? A.set.heroFam[h] : (HEROES[h].fam || []);
+      const nx = cur.includes(t) ? cur.filter(x => x !== t) : cur.concat(t);
+      if (!nx.length) { toast('Un héros garde au moins une famille.'); break; }
+      A.set.heroFam[h] = nx; A.setDirty = true; break;
+    }
     case 'atl-kwnew': A.set.kw[newId('k_')] = { n:'Nouveau mot-clé', d:'', c:2, fx:newEffect('eot_self') }; A.setDirty = true; break;
     case 'atl-kwdel': delete A.set.kw[btn.dataset.k]; A.setDirty = true; break;
     case 'atl-discard': A.set = clone(SET); A.setDirty = false; break;
@@ -4613,7 +4734,7 @@ function onPriv(d) {
 function onFight(d) {
   if (!d || typeof d !== 'object' || !Array.isArray(d.a) || !Array.isArray(d.b)) return;
   if (V.fight && V.fight.rd === d.rd) return;
-  const r = simulate(d.a, d.b, d.seed, d.ta, d.tb, d.fire);
+  const r = simulate(d.a, d.b, d.seed, d.ta, d.tb, d.fire, d.mx);
   V.fight = { ...d, r, done:false }; V.fi = 0; V.sel = null;
   clearTimeout(V.fightT); stepFight();
 }
@@ -4847,7 +4968,7 @@ function univPickH(sel, edit) {
   const us = (SET.univ || []).filter(u => u.tribes.some(t => on.includes(t)));
   const ch = univChosen(sel);
   const dot = t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}" title="${esc(trName(t) || t)}"></i>`;
-  const chip = (u, k) => { const a = ch.us.includes(u.n); return `<button class="uchip${a ? ' on' : ''}" ${edit ? `data-act="univ" data-u="${k}"` : 'disabled'} aria-pressed="${a}"><b>${esc(u.n)}</b><span class="udots">${u.tribes.filter(t => on.includes(t)).map(dot).join('')}</span></button>`; };
+  const chip = (u, k) => { const a = ch.us.includes(u.n), M = MECHS[u.mech] || null; return `<button class="uchip${a ? ' on' : ''}" ${edit ? `data-act="univ" data-u="${k}"` : 'disabled'} aria-pressed="${a}" ${M && u.mech !== 'none' ? `data-tip="${esc(M.n + ' : ' + M.d)}"` : ''}><b>${esc(u.n)}</b>${M && u.mech !== 'none' ? `<span class="umech">${icon(M.ic)}${esc(M.n)}</span>` : ''}<span class="udots">${u.tribes.filter(t => on.includes(t)).map(dot).join('')}</span></button>`; };
   const rnd = !ch.us.length;
   const n = +RU().tribesPerGame || 0;
   const sum = rnd ? `Univers tirés au sort · ${n || on.length} familles` : `${ch.us.length} univers · ${ch.trs.length} familles : ${ch.trs.map(t => esc(trName(t) || t)).join(', ')}`;
@@ -4895,7 +5016,7 @@ function gameH() {
       <span class="op-face">${faceH(playerSym(p))}<b class="op-hp">${p.al ? Math.max(0, p.hp) : p.pl + 'e'}</b><span class="op-t">${p.t}</span>${d.ph === 'recruit' && p.r && p.al ? '<span class="op-r">✓</span>' : ''}</span>
       <span class="op-n">${esc(p.n)}</span></li>`).join('');
   const myInfo = d.pl.find(p => p.pid === myPid), alive = !!(myInfo && myInfo.al);
-  const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span><span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerTxt()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm" data-act="leave">Quitter</button></div>`;
+  const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span>${d.laws && d.laws.length && d.ph !== 'end' ? `<span class="hud-laws">${d.laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<span class="hl" data-hov="law" data-tip="${esc(M.n + ' : ' + M.d)}">${icon(M.ic)}</span>`; }).join('')}${V.me && V.me.souls ? `<span class="souls" data-tip="Âmes récoltées : toutes les 3 âmes, tes serviteurs des Ténèbres gagnent +1/+1 au début du tour.">${icon('skull')}<b>${V.me.souls}</b></span>` : ''}</span>` : ''}<span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerTxt()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm" data-act="leave">Quitter</button></div>`;
   let table;
   if (me && alive) {
     const canAct = d.ph === 'recruit';
@@ -5004,8 +5125,8 @@ function overlayH() {
   if (me && me.disc && d.ph === 'recruit') return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Découverte</h2><p class="ov-s">Choisis un serviteur. Les deux autres retournent dans la réserve.</p>
     <div class="disc">${me.disc.map((m, i) => `<button class="disc-b" data-act="pick" data-i="${i}" aria-label="Choisir ${esc(CD(m.c).n)}">${cardH(m, 'disc', i)}</button>`).join('')}</div></div></div>`;
   if (d.ph === 'hero' && me) {
-    if (!me.hero) return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Choisis ton héros</h2><p class="ov-s">Son pouvoir t'accompagne toute la partie.</p>${famH(d)}
-      <div class="heroes">${me.ho.map(h => { const x = HEROES[h]; return `<button class="hc" data-act="hero" data-h="${h}">${faceH('art-h-' + h)}<b>${esc(x.n)}</b><span class="kind">${x.cost ? `Pouvoir · ${x.cost} or` : 'Passif'}</span><small>${esc(x.tx)}</small>${COMPANIONS[h] && C[COMPANIONS[h]] ? `<span class="hc-comp">${faceH('art-' + COMPANIONS[h])}<span>Compagnon : <b>${esc(C[COMPANIONS[h]].n)}</b><br><small>${esc(fxText((C[COMPANIONS[h]].fx || [])[0] || {}))}</small></span></span>` : ''}</button>`; }).join('')}</div></div></div>`;
+    if (!me.hero) return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Choisis ton héros</h2><p class="ov-s">Son pouvoir t'accompagne toute la partie.</p>${famH(d)}${lawsH(d.laws)}
+      <div class="heroes">${me.ho.map(h => { const x = HEROES[h]; return `<button class="hc" data-act="hero" data-h="${h}">${faceH('art-h-' + h)}<b>${esc(x.n)}</b>${famChips(heroFam(h))}<span class="kind">${x.cost ? `Pouvoir · ${x.cost} or` : 'Passif'}</span><small>${esc(x.tx)}</small>${COMPANIONS[h] && C[COMPANIONS[h]] ? `<span class="hc-comp">${faceH('art-' + COMPANIONS[h])}<span>Compagnon : <b>${esc(C[COMPANIONS[h]].n)}</b><br><small>${esc(fxText((C[COMPANIONS[h]].fx || [])[0] || {}))}</small></span></span>` : ''}</button>`; }).join('')}</div></div></div>`;
     return `<div class="ov"><div class="ov-box wait">${faceH('art-h-' + me.hero, 'face big')}<h2 class="ov-t">${esc(HEROES[me.hero].n)}</h2><p class="ov-s">En attente des autres joueurs…</p></div></div>`;
   }
   if (d.ph === 'end') {
@@ -5315,7 +5436,7 @@ function showPeek(t, touch) {
     const [pw, ph] = peekSize(); placePeek(r, pw, ph + 30, touch); return true;
   }
   const hv = t.dataset.hov;
-  if (hv && (V.me || hv === 'op')) {
+  if (hv && hv !== 'law' && (V.me || hv === 'op')) {
     let html = '';
     if (hv === 'op' && V.pub) { const p = V.pub.pl.find(x => x.n === t.dataset.n); if (p && HEROES[p.h]) html = heroCardH(p.h, { who:p.n, foot:`${p.al ? Math.max(0, p.hp) + ' PV · taverne ' + p.t : 'Éliminé · ' + p.pl + 'e'}` }); }
     else if ((hv === 'pow' || hv === 'hero') && HEROES[V.me.hero]) { const h = HEROES[V.me.hero]; html = heroCardH(V.me.hero, { foot:h.cost ? (V.me.pu ? 'Déjà utilisé ce tour' : h.minRound && (V.me.rd || 0) < h.minRound ? `Disponible dès la manche ${h.minRound}` : 'Disponible') : 'Toujours actif' }); }
@@ -5537,6 +5658,7 @@ function heroCardH(hid, o = {}) {
     <div class="hc-nm">${esc(h.n)}</div>
     ${o.who && o.who !== h.n ? `<div class="hc-who">joué par ${esc(o.who)}</div>` : ''}
     <div class="hc-kind">${h.cost ? 'Pouvoir héroïque' : 'Pouvoir passif'} · ${aff ? esc(aff) : THN[th]}</div>
+    ${famChips(heroFam(hid))}
     ${ptitle ? `<div class="hc-pt">${esc(ptitle)}</div>` : ''}
     <p class="hc-tx">${esc(body)}</p>
     ${o.foot ? `<div class="hc-foot">${esc(o.foot)}</div>` : ''}
@@ -5796,6 +5918,13 @@ function sceneHeroes3D() {
     setTimeout(step, 16);
   };
   step();
+}
+
+/* ---------- affichage des lois des univers ---------- */
+const famChips = trs => `<span class="famc">${trs.map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span>`;
+function lawsH(laws, compact) {
+  if (!laws || !laws.length) return '';
+  return `<div class="laws${compact ? ' compact' : ''}">${laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<div class="law" data-tip="${esc(M.n + ' : ' + M.d + ' Familles : ' + l.trs.map(trName).join(', ') + '.')}">${icon(M.ic, 'lic')}<span><b>${esc(M.n)}</b>${compact ? '' : `<small>${esc(l.u)} · ${esc(M.d)}</small>`}</span></div>`; }).join('')}</div>`;
 }
 </script>
 </body></html>
