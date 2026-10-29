@@ -931,6 +931,33 @@ input.name.code{width:min(220px,100%);font-family:var(--f-num);letter-spacing:.0
 #peek .tip{max-width:240px;padding:10px 12px;border-radius:10px;font-size:13.5px;line-height:1.35;color:var(--parch);background-image:var(--wood);box-shadow:inset 0 0 0 2px var(--nail),inset 0 0 0 3.5px var(--brass),0 10px 24px rgba(0,0,0,.6)}
 #peek .tip b{display:block;font-family:var(--f-label);font-size:15px;color:var(--gold);margin-bottom:2px}
 #peek .tip-s{margin:6px 0 0;text-align:center;font-family:var(--f-label);font-weight:600;font-size:12.5px;color:var(--parch);text-shadow:0 1px 2px #000}
+/* ===================== GLISSER-DÉPOSER : la carte suit le pointeur ===================== */
+.table [data-drag]{touch-action:none;cursor:grab}
+#dragl{position:fixed;left:0;top:0;z-index:90;pointer-events:none;will-change:transform}
+#dragl .dragc{position:relative;transform-origin:50% 22%;filter:drop-shadow(0 22px 18px rgba(0,0,0,.55)) drop-shadow(0 0 12px rgba(255,220,140,.5));animation:dragup .2s cubic-bezier(.2,1.4,.4,1)}
+@keyframes dragup{from{transform:scale(1) rotate(0)}}
+#dragl .mn,#dragl .cd,#dragl .spt{position:relative;left:auto;bottom:auto;margin:0;transform:none;transition:none;animation:none}
+#dragl .mn .mn-svg{transform:none;animation:dragglow 1s ease-in-out infinite}
+#dragl .cd{animation:dragglowc 1s ease-in-out infinite}
+@keyframes dragglow{50%{filter:drop-shadow(0 0 10px rgba(255,230,160,.9)) drop-shadow(0 4px 4px rgba(0,0,0,.45))}}
+@keyframes dragglowc{50%{box-shadow:inset 0 0 0 1.5px #1d1008,inset 0 0 0 3px #b98633,0 0 0 2px rgba(255,230,160,.8),0 0 22px rgba(255,220,140,.8)}}
+.dragtag{position:absolute;left:50%;top:-16px;z-index:3;transform:translateX(-50%);padding:3px 10px;border-radius:99px;font-family:var(--f-label);font-weight:700;font-size:13px;white-space:nowrap;color:#2e1c08;background:linear-gradient(#ffe6a0,#e2b04e);box-shadow:0 0 0 1.5px #5a3a10,0 3px 8px rgba(0,0,0,.5);animation:tagin .18s ease-out}
+.dragtag.sell{background:linear-gradient(#ffd0a0,#e8803a)}
+@keyframes tagin{from{transform:translateX(-50%) scale(.6);opacity:0}}
+.drag-src{opacity:.28;filter:grayscale(.7)}
+.table .fan .cd.drag-src{transform:translate(calc(var(--o) * var(--gx)),calc(var(--o2) * var(--gy))) rotate(calc(var(--o) * var(--sp) * 1deg))}
+body.dragging,body.dragging *{cursor:grabbing!important;-webkit-user-select:none;user-select:none}
+.drop-can{outline:2px dashed rgba(242,193,78,.5);outline-offset:-6px;transition:outline-color .15s,box-shadow .2s}
+.drop-ok{outline:3px solid var(--gold);outline-offset:-6px}
+.board-zone.drop-ok{box-shadow:inset 0 0 0 2px rgba(0,0,0,.4),inset 0 0 40px rgba(242,193,78,.35),0 0 0 6px #4a2d18,0 0 0 8px var(--nail),0 0 26px rgba(242,193,78,.55)}
+.keeper-zone.drop-ok{box-shadow:inset 0 -3px 0 #ffb06a,inset 0 0 50px rgba(255,140,60,.35)}
+.mn.mk-l{transform:translateX(calc(var(--tw) * -.3))}
+.mn.mk-r{transform:translateX(calc(var(--tw) * .3))}
+.board-zone .mn{transition:transform .16s ease-out}
+.mn.tg-hover{transform:translateY(-6px) scale(1.06)}
+.mn.tg-hover .mn-svg{filter:drop-shadow(0 0 12px #b48cff) drop-shadow(0 0 4px #e9d5ff)}
+.cd .hx{display:none}
+.table .fan .cd .hx{display:block;position:absolute;left:0;right:0;top:100%;height:calc(var(--hw) * 1.1)}
 </style>
 </head><body>
 
@@ -3527,7 +3554,7 @@ function buildSpellDefs() {
 /* ---------- rendu ---------- */
 function spellTokenH(id, z, i, o = {}) {
   const S = SPELLS[id], sel = V.sel && V.sel.z === z && V.sel.i === i;
-  return `<div class="spt${sel ? ' sel' : ''}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.drag ? ' draggable="true"' : ''} tabindex="0" role="button" aria-label="Sort ${esc(S.n)}, coût ${S.c} or">
+  return `<div class="spt${sel ? ' sel' : ''}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="Sort ${esc(S.n)}, coût ${S.c} or">
     <svg class="spt-svg" viewBox="-4 -6 108 124" aria-hidden="true"><path d="M8 6 Q50 -4 92 6 L92 96 Q50 106 8 96 Z" fill="#f1e2bd" ${so(2.6)}/>
     <clipPath id="spc-${z}-${i}"><path d="M14 12 Q50 4 86 12 L86 90 Q50 98 14 90 Z"/></clipPath><g clip-path="url(#spc-${z}-${i})"><use href="#sp-${id}" x="14" y="4" width="72" height="94"/></g>
     <path d="M14 12 Q50 4 86 12 L86 90 Q50 98 14 90 Z" fill="none" ${so(2)}/>
@@ -3539,12 +3566,12 @@ function spellTokenH(id, z, i, o = {}) {
 function spellCardH(id, z, i, o = {}) {
   const S = SPELLS[id], sel = V.sel && V.sel.z === z && V.sel.i === i, ty = SP_TYPES[S.ty];
   const n = S.tx.length;
-  return `<div class="cd spc${sel ? ' sel' : ''}${V.aim != null && V.aim === i && z === 'hd' ? ' aiming' : ''}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.drag ? ' draggable="true"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="Sort ${esc(S.n)}">`
+  return `<div class="cd spc${sel ? ' sel' : ''}${V.aim != null && V.aim === i && z === 'hd' ? ' aiming' : ''}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="Sort ${esc(S.n)}">`
     + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#sp-${id}" y="-4" width="100" height="100"/></svg></div>`
     + `<div class="cd-tier" aria-hidden="true">${'<i></i>'.repeat(S.t)}</div>`
     + `<div class="cd-nm"><span>${esc(S.n)}</span></div><div class="cd-tx${n > 95 ? ' xlong' : n > 62 ? ' long' : ''}">${esc(S.tx)}</div>`
     + `<div class="cd-tb" style="background:${ty.col}">${esc(ty.n)}</div>`
-    + `<svg class="cd-gem cost" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="16" fill="url(#gr-atk)" ${so(2.4)}/><text class="gt" x="20" y="20" dy=".36em">${S.c}</text></svg></div>`;
+    + `<svg class="cd-gem cost" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="16" fill="url(#gr-atk)" ${so(2.4)}/><text class="gt" x="20" y="20" dy=".36em">${S.c}</text></svg>${z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : ''}</div>`;
 }
 
 /* =====================================================================
@@ -4045,20 +4072,20 @@ function tokenH(m, z, i, o = {}) {
     + ics.map(([ic, col], k) => `<g transform="translate(${f1(x0 + k * 17)} 109)"><circle r="8" fill="#1b120b" stroke="#c8963e" stroke-width="1.6"/><use href="#ic-${ic}" x="-5.6" y="-5.6" width="11.2" height="11.2" style="color:${col}"/></g>`).join('')
     + `<use href="#gem-a" x="-1" y="90" width="34" height="34"/><text class="gt${up(m.a, b.a)}" x="16" y="107" dy=".36em">${m.a}</text>`
     + `<use href="#gem-h" x="67" y="88" width="34" height="34"/><text class="gt${up(m.h, b.h)}" x="84" y="108.6" dy=".36em">${m.h}</text></svg>`;
-  return `<div class="${cls}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.dmg ? ` data-dmg="${o.dmg}"` : ''}${o.drag ? ' draggable="true"' : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">${svg}${o.name === false ? '' : `<span class="mn-nm">${esc(b.n)}</span>`}${m.tr ? '<span class="tri">Triple !</span>' : o.trip ? '<span class="tri pulse">Triple !</span>' : ''}${o.extra || ''}</div>`;
+  return `<div class="${cls}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.dmg ? ` data-dmg="${o.dmg}"` : ''}${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">${svg}${o.name === false ? '' : `<span class="mn-nm">${esc(b.n)}</span>`}${m.tr ? '<span class="tri">Triple !</span>' : o.trip ? '<span class="tri pulse">Triple !</span>' : ''}${o.extra || ''}</div>`;
 }
 function cardH(m, z, i, o = {}) {
   const b = CD(m.c), g = !!m.g;
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
   const up = (v, base) => v > base * (g ? 2 : 1) ? ' up' : '';
-  return `<div class="cd${g ? ' g' : ''}${sel ? ' sel' : ''}${m.tr ? ' newgold' : ''}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.drag ? ' draggable="true"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">`
+  return `<div class="cd${g ? ' g' : ''}${sel ? ' sel' : ''}${m.tr ? ' newgold' : ''}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">`
     + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-${m.c}" y="-4" width="100" height="100"/></svg></div>`
     + (b.t ? `<div class="cd-tier" aria-hidden="true">${'<i></i>'.repeat(b.t)}</div>` : '')
     + `<div class="cd-nm"><span>${esc(b.n)}</span></div>${(() => { const t = cardTextH(m.c, g), n = t.replace(/<[^>]+>/g, '').length; return `<div class="cd-tx${n > 95 ? ' xlong' : n > 62 ? ' long' : ''}">${t}</div>`; })()}`
     + (b.tr !== 'neu' && trName(b.tr) ? `<div class="cd-tb">${esc(trName(b.tr))}</div>` : b.tok ? '<div class="cd-tb">Jeton</div>' : '')
     + `<svg class="cd-gem a" viewBox="0 0 40 40" aria-hidden="true"><use href="#gem-a" width="40" height="40"/><text class="gt${up(m.a, b.a)}" x="20" y="20" dy=".36em">${m.a}</text></svg>`
     + `<svg class="cd-gem h" viewBox="0 0 40 40" aria-hidden="true"><use href="#gem-h" width="40" height="40"/><text class="gt${up(m.h, b.h)}" x="20" y="25" dy=".36em">${m.h}</text></svg>`
-    + (m.tr ? '<span class="tri">Triple !</span>' : '') + '</div>';
+    + (m.tr ? '<span class="tri">Triple !</span>' : '') + (z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : '') + '</div>';
 }
 const med = (act, ic, label, cost, dis, on) => `<button class="med${on ? ' on' : ''}" data-act="${act}" ${dis ? 'disabled' : ''}><span class="disc">${icon(ic)}</span>${cost != null ? `<span class="cost">${cost}</span>` : ''}<span class="ml">${label}</span></button>`;
 
@@ -4421,37 +4448,103 @@ function doAct(act, btn) {
     default: if (act.startsWith('atl-') || act.startsWith('ed-')) atlAct(act, btn); else sendAct({ t:act });
   }
 }
-// glisser-déposer (ordinateur)
-let DRAG = null;
+// glisser-déposer : la carte décolle et suit le pointeur (souris comme doigt)
+let DRAG = null, DC = null;
 const dropAllowed = (from, to) => ((from === 'sh' || from === 'ss') && to === 'hd') || (from === 'hd' && to === 'bd') || (from === 'bd' && (to === 'bd' || to === 'sh'));
-document.addEventListener('dragstart', e => {
-  const c = e.target.closest && e.target.closest('.mn,.cd,.spt'); if (!c || !PLAY_ZONES.includes(c.dataset.z)) return;
-  hidePeek(); DRAG = { z:c.dataset.z, i:+c.dataset.i, sp:c.dataset.sp || null };
-  try { e.dataTransfer.setData('text/plain', DRAG.z); e.dataTransfer.effectAllowed = 'move'; } catch (er) {}
+const dragLayer = (() => { const l = document.createElement('div'); l.id = 'dragl'; l.setAttribute('aria-hidden', 'true'); l.hidden = true; document.body.appendChild(l); return l; })();
+document.addEventListener('dragstart', e => { if (V.screen === 'game') e.preventDefault(); });
+document.addEventListener('pointerdown', e => {
+  if ((e.pointerType === 'mouse' && e.button !== 0) || V.screen !== 'game' || DRAG) return;
+  const c = e.target.closest && e.target.closest('[data-drag]');
+  DC = c && PLAY_ZONES.includes(c.dataset.z) ? { el:c, x:e.clientX, y:e.clientY, id:e.pointerId, type:e.pointerType } : null;
+  if (DC && e.pointerType === 'mouse') e.preventDefault();
 });
-document.addEventListener('dragend', () => { DRAG = null; document.querySelectorAll('.drop-ok').forEach(x => x.classList.remove('drop-ok')); if (V.pendingRender) render(); });
-document.addEventListener('dragover', e => { const z = e.target.closest && e.target.closest('[data-drop]'); if (!z || !DRAG) return; if (dropAllowed(DRAG.z, z.dataset.drop)) { e.preventDefault(); z.classList.add('drop-ok'); } });
-document.addEventListener('dragleave', e => { const z = e.target.closest && e.target.closest('[data-drop]'); if (z && !z.contains(e.relatedTarget)) z.classList.remove('drop-ok'); });
-document.addEventListener('drop', e => {
-  const z = e.target.closest && e.target.closest('[data-drop]'); if (!z || !DRAG) return; e.preventDefault();
-  const to = z.dataset.drop, from = DRAG.z, i = DRAG.i, dsp = DRAG.sp; DRAG = null; V.sel = null;
-  if (!dropAllowed(from, to)) { render(); return; }
-  if (from === 'ss') sendAct({ t:'buysp' });
-  else if (from === 'hd' && dsp) {
-    const tgEl = e.target.closest('.mn');
-    if (!SPELLS[dsp].tg) sendAct({ t:'cast', i });
-    else if (tgEl && tgEl.dataset.z === 'bd') sendAct({ t:'cast', i, tg:+tgEl.dataset.i });
-    else toast('Dépose ce sort sur un de tes serviteurs.');
-  }
-  else if (from === 'sh') sendAct({ t:'buy', i });
-  else if (from === 'bd' && to === 'sh') sendAct({ t:'sell', i });
-  else {
-    const cards = [...z.querySelectorAll('.mn')]; let pos = 0;
-    cards.forEach((c, k) => { if (from === 'bd' && k === i) return; const r = c.getBoundingClientRect(); if (e.clientX > r.left + r.width / 2) pos++; });
-    if (from === 'hd') sendAct({ t:'play', i, pos }); else sendAct({ t:'move', i, to:pos });
-  }
-  render();
+document.addEventListener('pointermove', e => {
+  if (DRAG) { if (e.pointerId === DRAG.id) dragMove(e.clientX, e.clientY); return; }
+  if (!DC || e.pointerId !== DC.id) return;
+  if (LP && LP.on) { DC = null; return; }
+  if (Math.hypot(e.clientX - DC.x, e.clientY - DC.y) < (DC.type === 'mouse' ? 5 : 9)) return;
+  const d = DC; DC = null; dragStart(d, e.clientX, e.clientY);
 });
+document.addEventListener('pointerup', e => { DC = null; if (DRAG && e.pointerId === DRAG.id) dragEnd(e.clientX, e.clientY, false); });
+document.addEventListener('pointercancel', e => { DC = null; if (DRAG && e.pointerId === DRAG.id) dragEnd(0, 0, true); });
+window.addEventListener('blur', () => { if (DRAG) dragEnd(0, 0, true); });
+function dragStart(d, x, y) {
+  const c = d.el; if (!document.contains(c)) return;
+  const r = c.getBoundingClientRect();
+  hidePeek(); if (LP) { clearTimeout(LP.tm); LP = null; }
+  if (tiltEl) { tiltEl.classList.remove('tilt'); tiltEl = null; }
+  DRAG = { src:c, z:c.dataset.z, i:+c.dataset.i, sp:c.dataset.sp || null, u:c.dataset.u, id:d.id, w:r.width, h:r.height, x, y, vx:0, rot:0, r0:r, zone:null };
+  const g = c.cloneNode(true);
+  g.classList.remove('sel', 'tilt', 'tripok', 'aimable', 'lp', 'born', 'buffed');
+  g.removeAttribute('style'); g.style.cssText = `width:${f1(r.width)}px;--hw:${f1(r.width)}px;--tw:${f1(r.width)}px`;
+  dragLayer.innerHTML = `<div class="dragc">${g.outerHTML}<span class="dragtag" hidden></span></div>`;
+  dragLayer.hidden = false;
+  c.classList.add('drag-src'); document.body.classList.add('dragging');
+  document.querySelectorAll('[data-drop]').forEach(z => { if (dropAllowed(DRAG.z, z.dataset.drop)) z.classList.add('drop-can'); });
+  dragMove(x, y);
+  const tick = () => { if (!DRAG) return; DRAG.vx *= 0.82; const rot = Math.max(-20, Math.min(20, DRAG.vx * 1.4)); DRAG.rot += (rot - DRAG.rot) * 0.35; const cc = dragLayer.firstChild; if (cc) cc.style.transform = `rotate(${f1(DRAG.rot)}deg) scale(1.14)`; requestAnimationFrame(tick); };
+  requestAnimationFrame(tick);
+}
+function boardPos(line, x, from, i) {
+  const cards = [...line.querySelectorAll('.mn:not(.drag-src)')]; let pos = 0;
+  cards.forEach(c => { const r = c.getBoundingClientRect(); if (x > r.left + r.width / 2) pos++; });
+  return { cards, pos };
+}
+function dragMove(x, y) {
+  const D = DRAG; D.vx += (x - D.x) * 0.5; D.x = x; D.y = y;
+  dragLayer.style.transform = `translate(${f1(x - D.w / 2)}px,${f1(y - D.h * .42)}px)`;
+  const t = document.elementFromPoint(x, y);
+  const z = t && t.closest ? t.closest('[data-drop]') : null;
+  const ok = z && dropAllowed(D.z, z.dataset.drop) ? z : null;
+  if (D.zone !== ok) { if (D.zone) D.zone.classList.remove('drop-ok'); if (ok) ok.classList.add('drop-ok'); D.zone = ok; }
+  document.querySelectorAll('.mk-l,.mk-r,.tg-hover').forEach(el => el.classList.remove('mk-l', 'mk-r', 'tg-hover'));
+  const to = ok ? ok.dataset.drop : null;
+  let tag = '';
+  if (to === 'bd' && D.sp) { const tm = t.closest('.mn'); if (SPELLS[D.sp] && SPELLS[D.sp].tg) { if (tm && tm.dataset.z === 'bd') { tm.classList.add('tg-hover'); tag = 'Lancer'; } else tag = 'Vise un serviteur'; } else tag = 'Lancer'; }
+  else if (to === 'bd') { const { cards, pos } = boardPos(ok, x); if (cards[pos - 1]) cards[pos - 1].classList.add('mk-l'); if (cards[pos]) cards[pos].classList.add('mk-r'); tag = D.z === 'hd' ? 'Jouer' : 'Déplacer'; }
+  else if (to === 'hd') tag = D.z === 'ss' ? 'Acheter le sort' : 'Acheter · 3 or';
+  else if (to === 'sh') tag = 'Vendre · +1 or';
+  const tg = dragLayer.querySelector('.dragtag'); if (tg) { tg.hidden = !tag; tg.textContent = tag; tg.classList.toggle('sell', to === 'sh'); }
+}
+function dragEnd(x, y, cancel) {
+  const D = DRAG; DRAG = null;
+  document.body.classList.remove('dragging');
+  document.querySelectorAll('.drop-can,.drop-ok').forEach(z => z.classList.remove('drop-can', 'drop-ok'));
+  document.querySelectorAll('.mk-l,.mk-r,.tg-hover').forEach(el => el.classList.remove('mk-l', 'mk-r', 'tg-hover'));
+  V.lpBlock = Date.now();
+  const t = cancel ? null : document.elementFromPoint(x, y);
+  const z = t && t.closest ? t.closest('[data-drop]') : null;
+  const cr = dragLayer.firstChild ? dragLayer.firstChild.getBoundingClientRect() : null;
+  let sent = false;
+  if (z && dropAllowed(D.z, z.dataset.drop)) {
+    V.dropFrom = cr ? { u:D.u, r:cr, z:D.z, at:Date.now() } : null;
+    sent = doDrop(z.dataset.drop, D, t, x, z);
+  }
+  const src = D.src && document.contains(D.src) ? D.src : null;
+  document.querySelectorAll('.drag-src').forEach(el => { if (el !== src) el.classList.remove('drag-src'); });
+  if (sent) { dragLayer.hidden = true; dragLayer.innerHTML = ''; if (src) src.classList.remove('drag-src'); if (V.pendingRender) render(); return; }
+  // retour à la case départ
+  const back = src && document.contains(src) ? src.getBoundingClientRect() : D.r0;
+  const anim = dragLayer.animate([{ transform:dragLayer.style.transform }, { transform:`translate(${f1(back.left)}px,${f1(back.top)}px)` }], { duration:220, easing:'cubic-bezier(.3,.7,.4,1)' });
+  const done = () => { dragLayer.hidden = true; dragLayer.innerHTML = ''; dragLayer.style.transform = ''; if (src) src.classList.remove('drag-src'); if (V.pendingRender) render(); };
+  anim.onfinish = done; setTimeout(done, 400);
+}
+function doDrop(to, D, t, x, z) {
+  const from = D.z, i = D.i, dsp = D.sp; V.sel = null;
+  if (from === 'ss') { sendAct({ t:'buysp' }); return true; }
+  if (from === 'hd' && dsp) {
+    const tgEl = t && t.closest('.mn');
+    if (!SPELLS[dsp].tg) { sendAct({ t:'cast', i }); return true; }
+    if (tgEl && tgEl.dataset.z === 'bd') { sendAct({ t:'cast', i, tg:+tgEl.dataset.i }); return true; }
+    toast('Dépose ce sort sur un de tes serviteurs.'); return false;
+  }
+  if (from === 'sh') { sendAct({ t:'buy', i }); return true; }
+  if (from === 'bd' && to === 'sh') { sendAct({ t:'sell', i }); return true; }
+  const { pos } = boardPos(z, x);
+  if (from === 'hd') sendAct({ t:'play', i, pos }); else { if (pos === i) return false; sendAct({ t:'move', i, to:pos }); }
+  return true;
+}
 // aperçu de la carte au survol (souris)
 const peekEl = document.createElement('div'); peekEl.id = 'peek'; peekEl.hidden = true; peekEl.setAttribute('aria-hidden', 'true'); document.body.appendChild(peekEl);
 let peekFor = null;
@@ -4601,7 +4694,8 @@ function fxAfter(rects) {
   const el = u => document.querySelector(`.table [data-u="${u}"]`);
   if (rects) for (const u in rects) {
     const e = el(u); if (!e || !e.animate) continue;
-    const o = rects[u], n = e.getBoundingClientRect(); if (!n.width) continue;
+    let o = rects[u]; const n = e.getBoundingClientRect(); if (!n.width) continue;
+    const df = V.dropFrom; if (df && df.u === u && Date.now() - df.at < 2500 && (e.dataset.z !== df.z || df.z === 'bd')) { o = { r:df.r, z:df.z }; V.dropFrom = null; }
     const dx = o.r.left + o.r.width / 2 - (n.left + n.width / 2), dy = o.r.top + o.r.height / 2 - (n.top + n.height / 2);
     if (Math.abs(dx) + Math.abs(dy) < 3) continue;
     const sc = o.r.width / n.width;
