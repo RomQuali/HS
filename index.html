@@ -1108,6 +1108,79 @@ body:has(.title){padding:0}
 }
 .title.lobbyw .t-main{align-content:start;padding-top:18px}
 .title.lobbyw .menu{max-width:980px}
+/* ===================== CARTES : coût en haut à gauche, niveau en haut à droite ===================== */
+.cd .cd-tier{left:auto;right:4%;top:3.4%;transform:none;flex-wrap:wrap;flex-direction:row-reverse;justify-content:flex-start;width:28cqi;gap:.8cqi;row-gap:.4cqi}
+.cd .cd-tier i{width:8.4cqi;height:8.4cqi}
+.cd-gem.cost{left:-7%;top:-5%;bottom:auto;z-index:3}
+.cd-gem.cost.disc .gt{fill:#b8ff8a}
+.cd-gem.cost.disc circle:first-child{filter:drop-shadow(0 0 4px #7ae04a)}
+.cost-was{position:absolute;z-index:3;left:21cqi;top:-2%;font-family:var(--f-num);font-size:12cqi;line-height:1;color:#ffd8c0;text-decoration:line-through;text-decoration-thickness:2px;text-shadow:0 1px 0 #000,0 0 3px #000}
+/* ===================== CARTES DE HÉROS / POUVOIR / COMPAGNON ===================== */
+.hov{display:inline-grid}
+.hov button:disabled{pointer-events:none}
+.hcard,.hcomp{position:relative;isolation:isolate;overflow:hidden;border-radius:18px;color:var(--parch);text-align:center;animation:hcin .22s cubic-bezier(.2,1.3,.4,1)}
+@keyframes hcin{from{transform:scale(.9) translateY(6px);opacity:0}}
+.hcard{width:220px;display:grid;justify-items:center;gap:3px;padding:16px 16px 14px}
+.hcard::before,.hcomp::before{content:"";position:absolute;inset:-60%;z-index:-2;background:conic-gradient(from 0deg,transparent 0 62%,var(--hc) 76%,#fff8 80%,var(--hc) 84%,transparent 96%);animation:hcspin 3.6s linear infinite}
+.hcard::after,.hcomp::after{content:"";position:absolute;inset:3px;z-index:-1;border-radius:15px;
+  background:radial-gradient(120% 60% at 50% 0%,color-mix(in srgb,var(--hc) 38%,transparent),transparent 62%),radial-gradient(90% 50% at 50% 110%,color-mix(in srgb,var(--hc) 22%,transparent),transparent 70%),linear-gradient(180deg,#3a2414,#1a0f08);
+  box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.6),inset 0 0 26px rgba(0,0,0,.5)}
+@keyframes hcspin{to{transform:rotate(360deg)}}
+#peek:has(.hcard),#peek:has(.hcomp){filter:drop-shadow(0 18px 26px rgba(0,0,0,.6)) drop-shadow(0 0 22px color-mix(in srgb,var(--hc,#f2c14e) 40%,transparent))}
+.hc-fx{position:absolute;inset:3px;z-index:0;border-radius:15px;overflow:hidden;pointer-events:none}
+.hcard > :not(.hc-fx),.hcomp > :not(.hc-fx){position:relative;z-index:1}
+.hc-port{position:relative;margin-bottom:4px}
+.hc-port .face{width:96px;height:96px;box-shadow:0 0 0 3px var(--hc),0 0 0 6px #1d1008,0 0 24px var(--hc);animation:hcpulse 2.2s ease-in-out infinite}
+@keyframes hcpulse{50%{box-shadow:0 0 0 3px var(--hc),0 0 0 6px #1d1008,0 0 38px var(--hc)}}
+.hc-cost{position:absolute;left:-10px;top:-6px;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-num);font-size:19px;color:#3a2408;background:radial-gradient(circle at 35% 30%,#fff1b8,#f2c14e 55%,#a87418);box-shadow:0 0 0 2px #5a3a10,0 3px 6px rgba(0,0,0,.5)}
+.hc-nm{font-family:var(--f-disp);font-weight:800;font-size:23px;line-height:1.05;color:var(--gold);text-shadow:0 2px 0 #2a1204,0 0 14px color-mix(in srgb,var(--hc) 60%,transparent)}
+.hc-who{font-size:12px;color:var(--chalk-dim);margin-top:-2px}
+.hc-kind{font-family:var(--f-label);font-weight:600;font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:color-mix(in srgb,var(--hc) 75%,#fff)}
+.hc-pt{margin-top:4px;padding:2px 12px;border-radius:99px;font-family:var(--f-label);font-weight:700;font-size:15px;color:#1a0f08;background:linear-gradient(180deg,color-mix(in srgb,var(--hc) 60%,#fff),var(--hc))}
+.hc-tx{margin:6px 0 0;font-size:13.5px;line-height:1.4;color:var(--parch)}
+.hc-foot{margin-top:8px;padding:3px 10px;border-radius:99px;font-family:var(--f-label);font-weight:600;font-size:12px;color:var(--parch);background:rgba(0,0,0,.4);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--hc) 55%,transparent)}
+.hcomp{display:grid;justify-items:center;gap:8px;padding:14px 16px 14px;--hw:176px}
+.hcomp .cd{cursor:default}
+.hc-tag{display:flex;align-items:center;gap:8px;font-family:var(--f-label);font-size:13px;color:var(--chalk-dim)}
+.hc-tag b{color:var(--gold)}
+.hc-tag .face{width:30px;height:30px;box-shadow:0 0 0 2px var(--hc)}
+
+/* particules propres à chaque héros */
+.hc-fx i{position:absolute;left:var(--x);bottom:-12px;width:var(--s);height:var(--s);border-radius:50%;background:var(--hc);opacity:0;animation:hrise var(--d) linear var(--dl) infinite;font-style:normal}
+@keyframes hrise{0%{transform:translate(0,0) scale(1);opacity:0}12%{opacity:.95}70%{opacity:.7}100%{transform:translate(var(--w),-330px) scale(.3);opacity:0}}
+@keyframes hfall{0%{transform:translate(0,0) rotate(0);opacity:0}10%{opacity:1}100%{transform:translate(var(--w),360px) rotate(540deg);opacity:0}}
+@keyframes hsway{0%{transform:translate(0,0) rotate(0);opacity:0}10%{opacity:1}25%{transform:translate(18px,90px) rotate(60deg)}50%{transform:translate(-14px,180px) rotate(-20deg)}75%{transform:translate(16px,270px) rotate(70deg)}100%{transform:translate(0,360px) rotate(0);opacity:0}}
+@keyframes htwinkle{0%,100%{transform:scale(.3);opacity:0}50%{transform:scale(1.1);opacity:1}}
+@keyframes hwind{0%{transform:translateX(-120px);opacity:0}20%{opacity:.9}100%{transform:translateX(300px);opacity:0}}
+@keyframes hflick{0%,100%{filter:brightness(1)}50%{filter:brightness(1.5)}}
+.th-fire i,.th-ember i{background:radial-gradient(circle,#fff6c8,#ffb03a 45%,#ff5a1a 70%,transparent 72%);width:calc(var(--s) * 1.8);height:calc(var(--s) * 1.8);filter:blur(.4px)}
+.th-fire .hc-fx{background:radial-gradient(80% 40% at 50% 105%,rgba(255,110,30,.45),transparent 70%);animation:hflick 1.3s ease-in-out infinite}
+.th-ember i{width:calc(var(--s) * .7);height:calc(var(--s) * .7);background:#ffd27a;box-shadow:0 0 6px #ff8a2a}
+.th-spark i{width:calc(var(--s) * .5);height:calc(var(--s) * 2.4);border-radius:2px;background:linear-gradient(#fff,#ffc24a);box-shadow:0 0 6px #ffb03a;animation-duration:calc(var(--d) * .6)}
+.th-potion i,.th-bubble i{background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.85) 0 18%,transparent 22%);border:1.5px solid var(--hc);width:calc(var(--s) * 1.7);height:calc(var(--s) * 1.7)}
+.th-steam i{width:calc(var(--s) * 4);height:calc(var(--s) * 4);background:radial-gradient(circle,rgba(255,240,225,.55),transparent 65%);animation-duration:calc(var(--d) * 1.4)}
+.th-soul i{width:calc(var(--s) * 1.4);height:calc(var(--s) * 2.4);border-radius:50% 50% 45% 45%;background:radial-gradient(circle at 50% 35%,#eafff0,#7dffb0 45%,transparent 70%);box-shadow:0 0 12px #7dffb0}
+.th-blood i{background:radial-gradient(circle,#ff9aa8,#e0405a 55%,transparent 70%);width:calc(var(--s) * 1.6);height:calc(var(--s) * 1.6)}
+.th-blood .hc-fx{background:radial-gradient(100% 50% at 50% 105%,rgba(140,10,30,.5),transparent 70%)}
+.th-coin i{top:-14px;bottom:auto;width:calc(var(--s) * 2);height:calc(var(--s) * 2);background:radial-gradient(circle at 35% 30%,#fff1b8,#f2c14e 55%,#a87418);box-shadow:0 0 0 1px #5a3a10;animation-name:hfall}
+.th-leaf i{top:-14px;bottom:auto;width:calc(var(--s) * 2);height:calc(var(--s) * 1.2);border-radius:0 100% 0 100%;background:linear-gradient(135deg,#c8f08a,#5aa02a);animation-name:hsway;animation-duration:calc(var(--d) * 1.6)}
+.th-rock i{top:-14px;bottom:auto;border-radius:30% 40% 35% 45%;background:linear-gradient(135deg,#d8c2a0,#7a6448);animation-name:hfall;animation-duration:calc(var(--d) * .8)}
+.th-rune i,.th-arcane i,.th-holy i{top:var(--y);bottom:auto;width:auto;height:auto;background:none;font-size:calc(var(--s) * 2.6);line-height:1;color:var(--hc);text-shadow:0 0 8px var(--hc);animation-name:htwinkle}
+.th-holy .hc-fx{background:repeating-conic-gradient(from 0deg at 50% 22%,rgba(255,236,170,.16) 0 6deg,transparent 6deg 18deg);animation:hcspin 14s linear infinite}
+.th-holy i:not(:empty){font-size:calc(var(--s) * 3)}
+.th-holy i:empty{width:var(--s);height:var(--s);background:#fff6d0;box-shadow:0 0 8px #ffe08a;border-radius:50%}
+.th-arcane .hc-fx{background:radial-gradient(70% 45% at 50% 30%,rgba(140,90,255,.25),transparent 70%)}
+.th-wind i{top:var(--y);bottom:auto;left:0;width:calc(var(--s) * 8);height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,#fff,transparent);animation-name:hwind;animation-duration:calc(var(--d) * .7)}
+.cd .cd-gem.cost.disc .gt{fill:#a6ff7a}
+.cd .cost-was{left:24cqi;top:4%;font-size:11cqi}
+.cd .cost-was{left:27cqi;top:1.5%;padding:0 1.6cqi;border-radius:2cqi;font-size:11.5cqi;color:#ffd8c0;background:rgba(40,10,4,.75);box-shadow:0 0 0 1px rgba(255,180,140,.4)}
+/* bouclier divin bien visible */
+.bubg{transform-origin:50px 56px;animation:bubpulse 2.4s ease-in-out infinite}
+.bub{animation:none}
+.bub-run{fill:none;stroke:#fff;stroke-width:3.4;stroke-linecap:round;stroke-dasharray:12 88;filter:drop-shadow(0 0 3px #fff6c8);animation:bubrun 2.2s linear infinite}
+@keyframes bubpulse{0%,100%{transform:scale(1);opacity:.95}50%{transform:scale(1.025);opacity:1}}
+@keyframes bubrun{to{stroke-dashoffset:-100}}
+.mn:has(.bubg) .mn-svg{filter:drop-shadow(0 0 7px rgba(255,214,90,.75)) drop-shadow(0 4px 4px rgba(0,0,0,.45))}
 </style>
 </head><body>
 
@@ -2980,7 +3053,7 @@ function buildDefs() {
   s += rad('gr-atk', [[0, '#ffe7a0'], [0.55, '#f0a62a'], [1, '#93520a']]) + rad('gr-hp', [[0, '#ff9a86'], [0.55, '#d23a2c'], [1, '#78150e']]);
   s += lin('gr-frame', [[0, '#bf9058'], [0.5, '#7a5230'], [1, '#4a2d16']]) + lin('gr-frame-g', [[0, '#fff4c2'], [0.45, '#efc04e'], [1, '#9a6a14']]);
   s += lin('gr-stone', [[0, '#aaa69e'], [1, '#5c5852']]) + rad('gr-badge', [[0, '#7a5230'], [1, '#2e1b0d']]);
-  s += `<radialGradient id="gr-bub" cx="50%" cy="50%" r="50%"><stop offset="0.6" stop-color="#ffe896" stop-opacity="0"/><stop offset="1" stop-color="#ffe282" stop-opacity="0.62"/></radialGradient>`;
+  s += `<radialGradient id="gr-bub" cx="50%" cy="46%" r="52%"><stop offset="0.45" stop-color="#fff6c8" stop-opacity="0.06"/><stop offset="0.78" stop-color="#ffe282" stop-opacity="0.32"/><stop offset="1" stop-color="#ffc83a" stop-opacity="0.92"/></radialGradient>`;
   s += '<filter id="fx-glow" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
   s += '<filter id="fx-blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3"/></filter>';
   s += `<g id="bgx-hero">${BGS.hero}</g>`;
@@ -2993,7 +3066,7 @@ function buildDefs() {
   s += `<g id="tk-frame-g"><path d="${OUTER}" fill="url(#gr-frame-g)" ${so(2.6)}/>${sparks}</g>`;
   s += `<g id="tk-rim"><path d="${INNER}" fill="none" stroke="rgba(0,0,0,.35)" stroke-width="5"/><path d="${INNER}" fill="none" ${so(2)}/></g>`;
   s += `<g id="tk-taunt"><path d="M50 -3 L99 11 L97 66 C 93 95, 72 113, 50 123 C 28 113, 7 95, 3 66 L1 11 Z" fill="url(#gr-stone)" ${so(2.6)}/><path d="M50 3 L93 15 L91.5 65 C 88 89, 70 105, 50 114 C 30 105, 12 89, 8.5 65 L7 15 Z" fill="none" stroke="rgba(255,255,255,.25)" stroke-width="1.6"/></g>`;
-  s += `<g id="tk-shield"><path d="M50 -4 C 85 -4, 102 28, 102 60 C 102 93, 79 115, 50 115 C 21 115, -2 93, -2 60 C -2 28, 15 -4, 50 -4 Z" fill="url(#gr-bub)" stroke="#ffe9a8" stroke-width="2.2"/></g>`;
+  s += `<g id="tk-shield"><path d="M50 -4 C 85 -4, 102 28, 102 60 C 102 93, 79 115, 50 115 C 21 115, -2 93, -2 60 C -2 28, 15 -4, 50 -4 Z" fill="none" stroke="#ffc83a" stroke-width="10" opacity=".28"/><path d="M50 -4 C 85 -4, 102 28, 102 60 C 102 93, 79 115, 50 115 C 21 115, -2 93, -2 60 C -2 28, 15 -4, 50 -4 Z" fill="url(#gr-bub)" stroke="#fff1b8" stroke-width="3.2"/><path d="M50 -4 C 85 -4, 102 28, 102 60 C 102 93, 79 115, 50 115 C 21 115, -2 93, -2 60 C -2 28, 15 -4, 50 -4 Z" fill="none" stroke="#ffd34d" stroke-width="1.2" transform="translate(50 56) scale(.93) translate(-50 -56)" opacity=".8"/><path d="M14 26 C 22 10, 36 2, 52 1" fill="none" stroke="#fff" stroke-width="4.5" stroke-linecap="round" opacity=".9"/><path d="M8 40 C 9 36, 10 33, 12 30" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/><path d="M92 86 C 86 100, 74 108, 62 111" fill="none" stroke="#fff6d0" stroke-width="2.6" stroke-linecap="round" opacity=".55"/></g>`;
   s += `<symbol id="gem-a" viewBox="0 0 40 40"><circle cx="20" cy="20" r="16.5" fill="url(#gr-atk)" ${so(2.4)}/><path d="M9.5 15 A11.5 11.5 0 0 1 20 8.5" fill="none" stroke="#fff6d0" stroke-width="2" stroke-linecap="round" opacity=".7"/></symbol>`;
   s += `<symbol id="gem-h" viewBox="0 0 40 40"><path d="M20 2.5 C 26 10.5, 36 16.5, 36 25 C 36 33, 29 38, 20 38 C 11 38, 4 33, 4 25 C 4 16.5, 14 10.5, 20 2.5 Z" fill="url(#gr-hp)" ${so(2.4)}/><path d="M10.5 23 C 11 19, 13.5 15.6, 16.6 13" fill="none" stroke="#ffd8cf" stroke-width="2" stroke-linecap="round" opacity=".7"/></symbol>`;
   for (const k in ICONS) s += `<symbol id="ic-${k}" viewBox="0 0 24 24">${ICONS[k]}</symbol>`;
@@ -3716,10 +3789,12 @@ function spellTokenH(id, z, i, o = {}) {
     <clipPath id="spc-${z}-${i}"><path d="M14 12 Q50 4 86 12 L86 90 Q50 98 14 90 Z"/></clipPath><g clip-path="url(#spc-${z}-${i})"><use href="#sp-${id}" x="14" y="4" width="72" height="94"/></g>
     <path d="M14 12 Q50 4 86 12 L86 90 Q50 98 14 90 Z" fill="none" ${so(2)}/>
     <rect x="0" y="-2" width="100" height="10" rx="5" fill="#7a4a28" ${so(2)}/><rect x="0" y="94" width="100" height="10" rx="5" fill="#7a4a28" ${so(2)}/>
-    <circle cx="14" cy="104" r="12" fill="url(#gr-badge)" stroke="#e2b452" stroke-width="2.2"/><text class="gt" x="14" y="104" dy=".36em" style="fill:#ffe39a">${S.c}</text>
+    <circle cx="14" cy="104" r="12" fill="url(#gr-badge)" stroke="#e2b452" stroke-width="2.2"/><text class="gt" x="14" y="104" dy=".36em" style="fill:${spellCostFor(id, z) < S.c ? '#b8ff8a' : '#ffe39a'}">${spellCostFor(id, z)}</text>
     <circle cx="50" cy="0" r="8.4" fill="url(#gr-badge)" stroke="#e2b452" stroke-width="2"/><text class="gt tb" x="50" y="0" dy=".36em">${S.t}</text></svg>
     <span class="mn-nm">${esc(S.n)}</span></div>`;
 }
+// coût réel pour le joueur (réductions actives), et coût de base
+function spellCostFor(id, z) { const S = SPELLS[id]; if (V.me && V.me.sp === id && V.me.spc != null && (z === 'ss' || z === 'p')) return V.me.spc; return S.c; }
 function spellCardH(id, z, i, o = {}) {
   const S = SPELLS[id], sel = V.sel && V.sel.z === z && V.sel.i === i, ty = SP_TYPES[S.ty];
   const n = S.tx.length;
@@ -3728,7 +3803,7 @@ function spellCardH(id, z, i, o = {}) {
     + `<div class="cd-tier" aria-hidden="true">${'<i></i>'.repeat(S.t)}</div>`
     + `<div class="cd-nm"><span>${esc(S.n)}</span></div><div class="cd-tx${n > 95 ? ' xlong' : n > 62 ? ' long' : ''}">${esc(S.tx)}</div>`
     + `<div class="cd-tb" style="background:${ty.col}">${esc(ty.n)}</div>`
-    + `<svg class="cd-gem cost" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="16" fill="url(#gr-atk)" ${so(2.4)}/><text class="gt" x="20" y="20" dy=".36em">${S.c}</text></svg>${z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : ''}</div>`;
+    + costGemH(spellCostFor(id, z), S.c) + `${z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : ''}</div>`;
 }
 
 /* =====================================================================
@@ -4225,6 +4300,7 @@ function kwIcons(m) {
   if (has(m, 'w')) out.push(['wind', '#cdeeff']);
   return out.slice(0, 3);
 }
+const SHIELD_D = 'M50 -4 C 85 -4, 102 28, 102 60 C 102 93, 79 115, 50 115 C 21 115, -2 93, -2 60 C -2 28, 15 -4, 50 -4 Z';
 function tokenH(m, z, i, o = {}) {
   const b = CD(m.c), f = m.f || '', g = !!m.g;
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
@@ -4234,20 +4310,27 @@ function tokenH(m, z, i, o = {}) {
   const svg = `<svg class="mn-svg" viewBox="-4 -6 108 132" aria-hidden="true">`
     + (f.includes('t') ? '<use href="#tk-taunt"/>' : '')
     + `<use href="#tk-frame${g ? '-g' : ''}"/><g clip-path="url(#tk-clip)"><use href="#art-${m.c}" x="12" y="9.5" width="76" height="91.5"/></g><use href="#tk-rim"/>`
-    + (f.includes('s') ? '<use class="bub" href="#tk-shield"/>' : '')
+    + (f.includes('s') ? `<g class="bubg"><use class="bub" href="#tk-shield"/><path class="bub-run" pathLength="100" d="${SHIELD_D}"/></g>` : '')
     + (b.t ? `<circle cx="50" cy="3.5" r="9" fill="url(#gr-badge)" stroke="#e2b452" stroke-width="2"/><text class="gt tb" x="50" y="3.5" dy=".36em">${b.t}</text>` : '')
     + ics.map(([ic, col], k) => `<g transform="translate(${f1(x0 + k * 17)} 109)"><circle r="8" fill="#1b120b" stroke="#c8963e" stroke-width="1.6"/><use href="#ic-${ic}" x="-5.6" y="-5.6" width="11.2" height="11.2" style="color:${col}"/></g>`).join('')
     + `<use href="#gem-a" x="-1" y="90" width="34" height="34"/><text class="gt${up(m.a, b.a)}" x="16" y="107" dy=".36em">${m.a}</text>`
     + `<use href="#gem-h" x="67" y="88" width="34" height="34"/><text class="gt${up(m.h, b.h)}" x="84" y="108.6" dy=".36em">${m.h}</text></svg>`;
   return `<div class="${cls}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.dmg ? ` data-dmg="${o.dmg}"` : ''}${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">${svg}${o.name === false ? '' : `<span class="mn-nm">${esc(b.n)}</span>`}${m.tr ? '<span class="tri">Triple !</span>' : o.trip ? '<span class="tri pulse">Triple !</span>' : ''}${o.extra || ''}</div>`;
 }
+// pièce de coût en haut à gauche ; en vert avec l'ancien prix barré quand une réduction est active
+function costGemH(c, base) {
+  const d = c < base;
+  return `<svg class="cd-gem cost${d ? ' disc' : ''}" viewBox="0 0 40 40" aria-label="Coût ${c} or"><circle cx="20" cy="20" r="16" fill="url(#gr-atk)" ${so(2.4)}/><circle cx="20" cy="20" r="11.6" fill="none" stroke="#8a5a12" stroke-width="1.3" opacity=".75"/><text class="gt" x="20" y="20" dy=".36em">${c}</text></svg>${d ? `<span class="cost-was" aria-hidden="true">${base}</span>` : ''}`;
+}
+const MINION_COST = 3;
 function cardH(m, z, i, o = {}) {
   const b = CD(m.c), g = !!m.g;
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
   const up = (v, base) => v > base * (g ? 2 : 1) ? ' up' : '';
   return `<div class="cd${g ? ' g' : ''}${sel ? ' sel' : ''}${m.tr ? ' newgold' : ''}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">`
     + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-${m.c}" y="-4" width="100" height="100"/></svg></div>`
-    + (b.t ? `<div class="cd-tier" aria-hidden="true">${'<i></i>'.repeat(b.t)}</div>` : '')
+    + (b.t ? `<div class="cd-tier" aria-label="Niveau ${b.t}">${'<i></i>'.repeat(b.t)}</div>` : '')
+    + (b.t && !b.tok ? costGemH(MINION_COST, MINION_COST) : '')
     + `<div class="cd-nm"><span>${esc(b.n)}</span></div>${(() => { const t = cardTextH(m.c, g), n = t.replace(/<[^>]+>/g, '').length; return `<div class="cd-tx${n > 95 ? ' xlong' : n > 62 ? ' long' : ''}">${t}</div>`; })()}`
     + (b.tr !== 'neu' && trName(b.tr) ? `<div class="cd-tb">${esc(trName(b.tr))}</div>` : b.tok ? '<div class="cd-tb">Jeton</div>' : '')
     + `<svg class="cd-gem a" viewBox="0 0 40 40" aria-hidden="true"><use href="#gem-a" width="40" height="40"/><text class="gt${up(m.a, b.a)}" x="20" y="20" dy=".36em">${m.a}</text></svg>`
@@ -4380,7 +4463,7 @@ function gameH() {
   const myPid = me ? me.pid : -1;
   const players = d.pl.slice().sort((a, b) => (b.al - a.al) || (b.hp - a.hp) || (a.pl - b.pl));
   const fightOpp = V.fight ? V.fight.on : null;
-  const opps = players.map(p => `<li class="op${p.pid === myPid ? ' me' : ''}${p.al ? '' : ' dead'}${fightOpp && p.n === fightOpp ? ' vs' : ''}" title="${esc(p.n)}">
+  const opps = players.map(p => `<li class="op${p.pid === myPid ? ' me' : ''}${p.al ? '' : ' dead'}${fightOpp && p.n === fightOpp ? ' vs' : ''}" data-hov="op" data-n="${esc(p.n)}">
       <span class="op-face">${faceH(playerSym(p))}<b class="op-hp">${p.al ? Math.max(0, p.hp) : p.pl + 'e'}</b><span class="op-t">${p.t}</span>${d.ph === 'recruit' && p.r && p.al ? '<span class="op-r">✓</span>' : ''}</span>
       <span class="op-n">${esc(p.n)}</span></li>`).join('');
   const myInfo = d.pl.find(p => p.pid === myPid), alive = !!(myInfo && myInfo.al);
@@ -4421,13 +4504,13 @@ function gameH() {
       <div class="line" id="bdrow">${boardRow}</div></section>`;
     const nono = me.hero === 'nono', locked = nono && (me.rd || 0) < 3;
     const powSub = nono ? `${me.fb} dégât${me.fb > 1 ? 's' : ''}` : me.pu ? 'Utilisé' : '';
-    const power = hero && hero.cost ? `<button class="powm${me.pu ? ' used' : ''}" data-act="pow" ${!canAct || me.pu || locked || me.g < hero.cost ? 'disabled' : ''} title="${esc(hero.tx)}">${icon('bolt')}<span class="pcost">${hero.cost}</span><small>${locked ? 'Manche 3' : powSub || 'Pouvoir'}</small></button>`
-      : `<span class="powm passive" title="${esc(hero ? hero.tx : '')}">${icon('crown')}<small>Passif</small></span>`;
+    const power = hero && hero.cost ? `<button class="powm${me.pu ? ' used' : ''}" data-act="pow" ${!canAct || me.pu || locked || me.g < hero.cost ? 'disabled' : ''} aria-label="${esc(hero.n + ' : ' + hero.tx)}">${icon('bolt')}<span class="pcost">${hero.cost}</span><small>${locked ? 'Manche 3' : powSub || 'Pouvoir'}</small></button>`
+      : `<span class="powm passive" aria-label="${esc(hero ? hero.tx : '')}">${icon('crown')}<small>Passif</small></span>`;
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
-      <div class="hz-left">${compMedal(canAct, own)}</div>
-      <div class="hz-hero" title="${esc(hero ? hero.n + ' : ' + hero.tx : '')}">${faceH(me.hero ? 'art-h-' + me.hero : avatarSym(V.name), 'face hf')}${hpGem(Math.max(0, me.hp))}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span></div>
-      <div class="hz-right">${power}${coins}</div>
+      <div class="hz-left"><span class="hov" data-hov="comp">${compMedal(canAct, own)}</span></div>
+      <div class="hz-hero" data-hov="hero">${faceH(me.hero ? 'art-h-' + me.hero : avatarSym(V.name), 'face hf')}${hpGem(Math.max(0, me.hp))}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span></div>
+      <div class="hz-right"><span class="hov" data-hov="pow">${power}</span>${coins}</div>
       <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}">${icon('bell')}<span>${me.rdy ? 'Prêt !' : 'Prêt'}</span></button></div></section>`;
     const n = me.hd.length;
     const hand = fighting ? '' : `<section class="hand" data-drop="hd" aria-label="Ta main · ${n}/10"><div class="fan${n > 7 ? ' many' : n > 4 ? ' some' : ''}" style="--n:${n}">${n ? me.hd.map((m, i) => { const o = i - (n - 1) / 2, op = { drag:canAct, style:`--o:${f1(o)};--o2:${f1(o * o)}` }; return m.sp ? spellCardH(m.sp, 'hd', i, op) : cardH(m, 'hd', i, op); }).join('') : ''}</div></section>`;
@@ -4447,7 +4530,7 @@ function compMedal(canAct, own) {
   const label = cb >= 3 ? 'Complet' : cb >= lim ? (cb === 0 ? 'Manche 3' : cb === 1 ? 'Manche 5' : 'Manche 6') : 'Recruter';
   const trip = (own[id] || 0) >= 2 && cb < 3 && cb < lim;
   const ok = canAct && cb < lim && cb < 3 && me.g >= 3 && me.hd.length < 10;
-  return `<button class="compm${trip ? ' tripok' : ''}" data-act="comp" ${ok ? '' : 'disabled'} title="${esc(c.n + ' : ' + fxText((c.fx || [])[0] || {}))}">${faceH('art-' + id, 'face cf')}<span class="pcost">3</span><small>${label} · ${cb}/3</small></button>`;
+  return `<button class="compm${trip ? ' tripok' : ''}" data-act="comp" ${ok ? '' : 'disabled'} aria-label="${esc(c.n + ' : ' + fxText((c.fx || [])[0] || {}))}">${faceH('art-' + id, 'face cf')}<span class="pcost">3</span><small>${label} · ${cb}/3</small></button>`;
 }
 function famH(d) {
   if (!d.trs) return '';
@@ -4677,7 +4760,8 @@ function dragStart(d, x, y) {
   dragLayer.hidden = false;
   if (DRAG.z === 'hd' && DRAG.sp && SPELLS[DRAG.sp] && SPELLS[DRAG.sp].tg) {
     // carte à cible : elle se pose au-dessus de la main, une flèche la relie au viseur
-    DRAG.aim = true; DRAG.ax = Math.max(8, Math.min(innerWidth - r.width - 8, r.left)); DRAG.ay = Math.max(8, r.top - r.height * .55);
+    const tb = (document.querySelector('.table') || document.body).getBoundingClientRect();
+    DRAG.aim = true; DRAG.ax = Math.max(8, tb.left + 14); DRAG.ay = Math.max(8, innerHeight - r.height * .78);
     dragLayer.classList.add('aimcard');
     dragLayer.animate([{ transform:`translate(${f1(r.left)}px,${f1(r.top)}px)` }, { transform:`translate(${f1(DRAG.ax)}px,${f1(DRAG.ay)}px)` }], { duration:220, easing:'cubic-bezier(.2,1.2,.4,1)' });
     dragLayer.style.transform = `translate(${f1(DRAG.ax)}px,${f1(DRAG.ay)}px)`;
@@ -4792,6 +4876,14 @@ function showPeek(t, touch) {
     peekFor = t; peekEl.innerHTML = cardH(demo(compOf(V.me.hero), 0), 'p', 0) + `<p class="tip-s">${esc(t.querySelector('small') ? t.querySelector('small').textContent : '')}</p>`; peekEl.hidden = false;
     const [pw, ph] = peekSize(); placePeek(r, pw, ph + 30, touch); return true;
   }
+  const hv = t.dataset.hov;
+  if (hv && (V.me || hv === 'op')) {
+    let html = '';
+    if (hv === 'op' && V.pub) { const p = V.pub.pl.find(x => x.n === t.dataset.n); if (p && HEROES[p.h]) html = heroCardH(p.h, { who:p.n, foot:`${p.al ? Math.max(0, p.hp) + ' PV · taverne ' + p.t : 'Éliminé · ' + p.pl + 'e'}` }); }
+    else if ((hv === 'pow' || hv === 'hero') && HEROES[V.me.hero]) { const h = HEROES[V.me.hero]; html = heroCardH(V.me.hero, { foot:h.cost ? (V.me.pu ? 'Déjà utilisé ce tour' : h.minRound && (V.me.rd || 0) < h.minRound ? `Disponible dès la manche ${h.minRound}` : 'Disponible') : 'Toujours actif' }); }
+    else if (hv === 'comp' && compOf(V.me.hero) && C[compOf(V.me.hero)]) html = compCardH(V.me.hero, compOf(V.me.hero), V.me);
+    if (html) { peekFor = t; peekEl.innerHTML = html; peekEl.hidden = false; const q = peekEl.firstElementChild.getBoundingClientRect(); placePeek(r, q.width, q.height, touch); return true; }
+  }
   // héros, pouvoir, adversaires, boutons : une bulle d'explication
   let tt = t.dataset.tip || t.getAttribute('title') || t.getAttribute('aria-label') || '';
   if (t.matches('.op') && V.pub) { const p = V.pub.pl.find(x => x.n === t.getAttribute('title')); if (p) { const h = HEROES[p.h]; tt = `${p.n}${h ? ' · ' + h.n : ''} : ${Math.max(0, p.hp)} PV, taverne ${p.t}${h ? '. ' + h.tx : ''}`; } }
@@ -4802,13 +4894,13 @@ function showPeek(t, touch) {
 }
 document.addEventListener('pointerover', e => {
   if (e.pointerType && e.pointerType !== 'mouse') return;
-  const t = e.target.closest ? e.target.closest('.mn,.cd,.spt') : null;
+  const t = e.target.closest ? e.target.closest('.mn,.cd,.spt,[data-hov]') : null;
   if (!t || DRAG || t.closest('#peek') || t.closest('.det') || t.closest('.parade') || t.closest('.atl') || t.closest('.ed')) { if (!t) hidePeek(); return; }
   if (t === peekFor) return;
   if (!showPeek(t, false)) hidePeek();
 });
 /* téléphone : appui long = aperçu (carte, créature, pouvoir, compagnon, héros, adversaire…) */
-const LP_SEL = '.mn,.cd,.spt,.powm,.compm,.hz-hero,.op,.medal,.bell,.kc,.purse';
+const LP_SEL = '.mn,.cd,.spt,[data-hov],.medal,.bell,.kc,.purse';
 let LP = null;
 document.addEventListener('pointerdown', e => {
   if (e.pointerType === 'mouse') return;
@@ -4823,7 +4915,7 @@ const lpEnd = () => { if (!LP) return; clearTimeout(LP.tm); if (LP.on) { V.lpBlo
 document.addEventListener('pointerup', lpEnd); document.addEventListener('pointercancel', lpEnd);
 document.addEventListener('contextmenu', e => { if (e.target.closest && e.target.closest(LP_SEL)) e.preventDefault(); });
 document.addEventListener('click', e => { if (V.lpBlock && Date.now() - V.lpBlock < 450) { e.preventDefault(); e.stopPropagation(); V.lpBlock = 0; } }, true);
-document.addEventListener('pointerout', e => { const t = e.target.closest ? e.target.closest('.mn,.cd,.spt') : null; if (t && t === peekFor && !t.contains(e.relatedTarget)) hidePeek(); });
+document.addEventListener('pointerout', e => { const t = e.target.closest ? e.target.closest('.mn,.cd,.spt,[data-hov]') : null; if (t && t === peekFor && !t.contains(e.relatedTarget)) hidePeek(); });
 setInterval(() => {
   if (!V.pub || V.screen !== 'game') return;
   const left = V.pub.rem - (Date.now() - V.pubAt);
@@ -4976,5 +5068,52 @@ document.addEventListener('pointermove', e => {
   let ex = e.clientX, ey = e.clientY; if (tgt) { tgt.classList.add('tg-hover'); const q = tgt.getBoundingClientRect(); ex = q.left + q.width / 2; ey = q.top + q.height * .45; }
   aimDraw(r.left + r.width / 2, r.top + r.height * .12, ex, ey, !!tgt);
 }, { passive:true });
+
+/* ---------- cartes de héros, de pouvoir et de compagnon (aperçu au survol) ---------- */
+const HTHEME = { rivet:'spark', egide:'holy', ondine:'potion', barnabe:'coin', maelle:'leaf', oren:'rune', gor:'rock', ilka:'spark', selene:'blood', brok:'ember', sylvara:'arcane', grumbo:'steam', vaskor:'soul', pyra:'fire', paul:'fire', leon:'leaf', zoe:'bubble', jeanne:'wind', nono:'fire' };
+const THC = { fire:'#ff7a2a', ember:'#ff9a3a', spark:'#ffc24a', holy:'#ffe08a', potion:'#6fe0a0', coin:'#f2c14e', leaf:'#8fd05a', rune:'#7ac4ff', rock:'#c8a878', blood:'#e0405a', arcane:'#b48cff', steam:'#f0e2d0', soul:'#7dffb0', bubble:'#6fc8ff', wind:'#bff0e6' };
+const THN = { fire:'Feu', ember:'Forge', spark:'Mécanique', holy:'Lumière', potion:'Alchimie', coin:'Commerce', leaf:'Nature', rune:'Savoir', rock:'Force', blood:'Sang', arcane:'Arcanes', steam:'Festin', soul:'Nécromancie', bubble:'Eau', wind:'Vent' };
+const RUNES = 'ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ';
+function hfxH(th, n = 18) {
+  let h = '';
+  for (let k = 0; k < n; k++) {
+    const x = (k * 53 + 11) % 100, y = (k * 37 + 7) % 100, d = 2.4 + (k * 7) % 5 * .55, dl = -((k * 1.7) % 6), sz = 4 + (k * 5) % 7;
+    const g = th === 'rune' ? RUNES[(k * 7) % RUNES.length] : th === 'arcane' ? '✦' : th === 'holy' && k % 3 === 0 ? '✧' : '';
+    h += `<i style="--x:${x}%;--y:${y}%;--d:${d.toFixed(2)}s;--dl:${dl.toFixed(2)}s;--s:${sz}px;--w:${(k % 5 - 2) * 9}px">${g}</i>`;
+  }
+  return h;
+}
+function powerTitle(h) {
+  const tx = h.tx || ''; const dot = tx.indexOf(' · '); const body = dot > 0 ? tx.slice(dot + 3) : tx;
+  const c = body.indexOf(' : ');
+  if (c > 0 && c < 26 && !/^(Passif|Dès|Prochain|Après|Quand|Au début|À la fin)/.test(body)) return [body.slice(0, c), body.slice(c + 3), dot > 0 ? tx.slice(0, dot) : ''];
+  return [null, body.replace(/^Passif : /, ''), dot > 0 ? tx.slice(0, dot) : ''];
+}
+function heroCardH(hid, o = {}) {
+  const h = HEROES[hid]; if (!h) return '';
+  const th = HTHEME[hid] || 'spark', col = THC[th];
+  const [ptitle, body, aff] = powerTitle(h);
+  return `<div class="hcard th-${th}" style="--hc:${col}">
+    <div class="hc-fx" aria-hidden="true">${hfxH(th)}</div>
+    <div class="hc-port">${faceH('art-h-' + hid, 'face')}${h.cost ? `<span class="hc-cost">${h.cost}</span>` : ''}</div>
+    <div class="hc-nm">${esc(h.n)}</div>
+    ${o.who && o.who !== h.n ? `<div class="hc-who">joué par ${esc(o.who)}</div>` : ''}
+    <div class="hc-kind">${h.cost ? 'Pouvoir héroïque' : 'Pouvoir passif'} · ${aff ? esc(aff) : THN[th]}</div>
+    ${ptitle ? `<div class="hc-pt">${esc(ptitle)}</div>` : ''}
+    <p class="hc-tx">${esc(body)}</p>
+    ${o.foot ? `<div class="hc-foot">${esc(o.foot)}</div>` : ''}
+  </div>`;
+}
+function compCardH(hid, id, me) {
+  const th = HTHEME[hid] || 'spark', col = THC[th], h = HEROES[hid] || { n:'?' };
+  const lim = compLimit(me.rd || 0), cb = me.cb || 0;
+  const st = cb >= 3 ? 'Les trois sont recrutés' : cb >= lim ? (cb === 0 ? 'Recrutable dès la manche 3' : cb === 1 ? '2e exemplaire dès la manche 5' : '3e exemplaire dès la manche 6') : `Recruter pour 3 or · ${cb}/3`;
+  return `<div class="hcomp th-${th}" style="--hc:${col}">
+    <div class="hc-fx" aria-hidden="true">${hfxH(th, 16)}</div>
+    <div class="hc-tag">${faceH('art-h-' + hid, 'face')}<span>Compagnon de <b>${esc(h.n)}</b></span></div>
+    ${cardH(demo(id, 0), 'p', 0)}
+    <div class="hc-foot">${esc(st)}</div>
+  </div>`;
+}
 </script>
 </body></html>
