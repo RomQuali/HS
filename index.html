@@ -958,6 +958,23 @@ body.dragging,body.dragging *{cursor:grabbing!important;-webkit-user-select:none
 .mn.tg-hover .mn-svg{filter:drop-shadow(0 0 12px #b48cff) drop-shadow(0 0 4px #e9d5ff)}
 .cd .hx{display:none}
 .table .fan .cd .hx{display:block;position:absolute;left:0;right:0;top:100%;height:calc(var(--hw) * 1.1)}
+/* ===================== VISÉE : flèche entre la carte et sa cible ===================== */
+#aiml{position:fixed;inset:0;z-index:89;pointer-events:none}
+#aiml svg{display:block;overflow:visible}
+#aiml .aim-g{fill:none;stroke:rgba(180,140,255,.35);stroke-width:16;stroke-linecap:round;filter:blur(3px)}
+#aiml .aim-p{fill:none;stroke:#e9d5ff;stroke-width:7;stroke-linecap:round;stroke-dasharray:1 15;animation:aimflow .5s linear infinite}
+#aiml .ar1{fill:rgba(40,20,70,.35);stroke:#e9d5ff;stroke-width:3;stroke-dasharray:10 6;transform-origin:0 0;animation:aimspin 2.4s linear infinite}
+#aiml .ar2{fill:#e9d5ff}
+#aiml .ar3{stroke:#e9d5ff;stroke-width:3;stroke-linecap:round}
+#aiml.locked .aim-p{stroke:#fff36a}
+#aiml.locked .aim-g{stroke:rgba(255,220,90,.45)}
+#aiml.locked .ar1{stroke:#fff36a;fill:rgba(255,220,90,.18);animation-duration:.9s;transform:scale(1.15)}
+#aiml.locked .ar2{fill:#fff36a}
+#aiml.locked .ar3{stroke:#fff36a}
+@keyframes aimflow{to{stroke-dashoffset:-16}}
+@keyframes aimspin{to{transform:rotate(360deg)}}
+#dragl.aimcard .dragc{filter:drop-shadow(0 18px 16px rgba(0,0,0,.55)) drop-shadow(0 0 16px rgba(180,140,255,.7))}
+.dragtag.ok{background:linear-gradient(#fff6b0,#f2c14e)}
 </style>
 </head><body>
 
@@ -4100,6 +4117,7 @@ function render() {
   $('#app').innerHTML = V.screen === 'menu' ? menuH() : V.screen === 'lobby' ? lobbyH() : V.screen === 'atelier' ? atelierH() : gameH();
   if (V.screen === 'atelier' && typeof atlAfterRender === 'function') atlAfterRender();
   fxAfter(flip);
+  if (V.aim == null && !DRAG && typeof aimHide === 'function') aimHide();
   for (const id in ks) { const el = document.getElementById(id); if (el) el.scrollTop = ks[id]; }
   if (fid) { const n = document.getElementById(fid); if (n) { try { n.focus({ preventScroll:true }); if (keep) n.setSelectionRange(keep[0], keep[1]); } catch (e) {} } }
 }
@@ -4480,10 +4498,17 @@ function dragStart(d, x, y) {
   g.removeAttribute('style'); g.style.cssText = `width:${f1(r.width)}px;--hw:${f1(r.width)}px;--tw:${f1(r.width)}px`;
   dragLayer.innerHTML = `<div class="dragc">${g.outerHTML}<span class="dragtag" hidden></span></div>`;
   dragLayer.hidden = false;
+  if (DRAG.sp && SPELLS[DRAG.sp] && SPELLS[DRAG.sp].tg) {
+    // carte à cible : elle se pose au-dessus de la main, une flèche la relie au viseur
+    DRAG.aim = true; DRAG.ax = Math.max(8, Math.min(innerWidth - r.width - 8, r.left)); DRAG.ay = Math.max(8, r.top - r.height * .55);
+    dragLayer.classList.add('aimcard');
+    dragLayer.animate([{ transform:`translate(${f1(r.left)}px,${f1(r.top)}px)` }, { transform:`translate(${f1(DRAG.ax)}px,${f1(DRAG.ay)}px)` }], { duration:220, easing:'cubic-bezier(.2,1.2,.4,1)' });
+    dragLayer.style.transform = `translate(${f1(DRAG.ax)}px,${f1(DRAG.ay)}px)`;
+  }
   c.classList.add('drag-src'); document.body.classList.add('dragging');
   document.querySelectorAll('[data-drop]').forEach(z => { if (dropAllowed(DRAG.z, z.dataset.drop)) z.classList.add('drop-can'); });
   dragMove(x, y);
-  const tick = () => { if (!DRAG) return; DRAG.vx *= 0.82; const rot = Math.max(-20, Math.min(20, DRAG.vx * 1.4)); DRAG.rot += (rot - DRAG.rot) * 0.35; const cc = dragLayer.firstChild; if (cc) cc.style.transform = `rotate(${f1(DRAG.rot)}deg) scale(1.14)`; requestAnimationFrame(tick); };
+  const tick = () => { if (!DRAG) return; if (DRAG.aim) { const cc = dragLayer.firstChild; if (cc) cc.style.transform = 'scale(1.12)'; return; } DRAG.vx *= 0.82; const rot = Math.max(-20, Math.min(20, DRAG.vx * 1.4)); DRAG.rot += (rot - DRAG.rot) * 0.35; const cc = dragLayer.firstChild; if (cc) cc.style.transform = `rotate(${f1(DRAG.rot)}deg) scale(1.14)`; requestAnimationFrame(tick); };
   requestAnimationFrame(tick);
 }
 function boardPos(line, x, from, i) {
@@ -4491,8 +4516,24 @@ function boardPos(line, x, from, i) {
   cards.forEach(c => { const r = c.getBoundingClientRect(); if (x > r.left + r.width / 2) pos++; });
   return { cards, pos };
 }
+function aimTarget(x, y) {
+  let best = null;
+  document.querySelectorAll('.board-zone .mn').forEach(el => { const r = el.getBoundingClientRect(); if (x > r.left - 12 && x < r.right + 12 && y > r.top - 16 && y < r.bottom + 16) best = el; });
+  return best;
+}
 function dragMove(x, y) {
-  const D = DRAG; D.vx += (x - D.x) * 0.5; D.x = x; D.y = y;
+  const D = DRAG;
+  if (D.aim) {
+    D.x = x; D.y = y;
+    document.querySelectorAll('.tg-hover').forEach(el => el.classList.remove('tg-hover'));
+    const tgt = aimTarget(x, y); D.lock = tgt;
+    let ex = x, ey = y;
+    if (tgt) { tgt.classList.add('tg-hover'); const r = tgt.getBoundingClientRect(); ex = r.left + r.width / 2; ey = r.top + r.height * .45; }
+    aimDraw(D.ax + D.w / 2, D.ay + D.h * .12, ex, ey, !!tgt);
+    const tg = dragLayer.querySelector('.dragtag'); if (tg) { tg.hidden = false; tg.textContent = tgt ? `Lancer sur ${CD(tgt.dataset.c).n}` : 'Choisis une cible'; tg.classList.toggle('ok', !!tgt); }
+    return;
+  }
+  D.vx += (x - D.x) * 0.5; D.x = x; D.y = y;
   dragLayer.style.transform = `translate(${f1(x - D.w / 2)}px,${f1(y - D.h * .42)}px)`;
   const t = document.elementFromPoint(x, y);
   const z = t && t.closest ? t.closest('[data-drop]') : null;
@@ -4517,7 +4558,11 @@ function dragEnd(x, y, cancel) {
   const z = t && t.closest ? t.closest('[data-drop]') : null;
   const cr = dragLayer.firstChild ? dragLayer.firstChild.getBoundingClientRect() : null;
   let sent = false;
-  if (z && dropAllowed(D.z, z.dataset.drop)) {
+  aimHide(); dragLayer.classList.remove('aimcard');
+  if (D.aim) {
+    const tgt = cancel ? null : aimTarget(x, y);
+    if (tgt) { const r = tgt.getBoundingClientRect(); V.sel = null; sendAct({ t:'cast', i:D.i, tg:+tgt.dataset.i }); fxRing(r.left + r.width / 2, r.top + r.height * .45, '#d8b8ff', 1.6); fxBurst(r.left + r.width / 2, r.top + r.height * .45, 'magic', 22, 1.2); sent = true; }
+  } else if (z && dropAllowed(D.z, z.dataset.drop)) {
     V.dropFrom = cr ? { u:D.u, r:cr, z:D.z, at:Date.now() } : null;
     sent = doDrop(z.dataset.drop, D, t, x, z);
   }
@@ -4727,6 +4772,32 @@ document.addEventListener('pointermove', e => {
   t.style.setProperty('--rx', f1((0.5 - py) * 18) + 'deg'); t.style.setProperty('--ry', f1((px - 0.5) * 22) + 'deg');
   t.style.setProperty('--mx', f1(px * 100) + '%'); t.style.setProperty('--my', f1(py * 100) + '%');
   t.classList.add('tilt'); tiltEl = t;
+}, { passive:true });
+
+/* flèche de visée : relie la carte à sa cible */
+function aimEl() {
+  let w = document.getElementById('aiml'); if (w) return w;
+  w = document.createElement('div'); w.id = 'aiml'; w.hidden = true; w.setAttribute('aria-hidden', 'true');
+  w.innerHTML = '<svg width="100%" height="100%"><path class="aim-g"/><path class="aim-p"/><g class="aim-r"><circle class="ar1" r="20"/><circle class="ar2" r="7"/><path class="ar3" d="M-30 0H-14M14 0H30M0 -30V-14M0 14V30"/></g></svg>';
+  document.body.appendChild(w); return w;
+}
+function aimDraw(x0, y0, x1, y1, locked) {
+  const aimSvg = aimEl(); const d = Math.hypot(x1 - x0, y1 - y0); if (d < 4) { aimSvg.hidden = true; return; }
+  const cx = (x0 + x1) / 2 + (x1 - x0) * .05, cy = Math.min(y0, y1) - 40 - d * .22;
+  const P = `M${f1(x0)} ${f1(y0)} Q${f1(cx)} ${f1(cy)} ${f1(x1)} ${f1(y1)}`;
+  aimSvg.querySelector('.aim-p').setAttribute('d', P); aimSvg.querySelector('.aim-g').setAttribute('d', P);
+  aimSvg.querySelector('.aim-r').setAttribute('transform', `translate(${f1(x1)} ${f1(y1)})`);
+  aimSvg.classList.toggle('locked', locked); aimSvg.hidden = false;
+}
+function aimHide() { const w = document.getElementById('aiml'); if (w) w.hidden = true; document.querySelectorAll('.tg-hover').forEach(el => el.classList.remove('tg-hover')); }
+// visée au clic (bouton « Lancer » puis clic sur la cible) : la flèche suit aussi la souris
+document.addEventListener('pointermove', e => {
+  if (DRAG || V.aim == null || V.screen !== 'game') return;
+  const c = document.querySelector('.cd.aiming'); if (!c) { aimHide(); return; }
+  const r = c.getBoundingClientRect(), tgt = aimTarget(e.clientX, e.clientY);
+  document.querySelectorAll('.tg-hover').forEach(el => { if (el !== tgt) el.classList.remove('tg-hover'); });
+  let ex = e.clientX, ey = e.clientY; if (tgt) { tgt.classList.add('tg-hover'); const q = tgt.getBoundingClientRect(); ex = q.left + q.width / 2; ey = q.top + q.height * .45; }
+  aimDraw(r.left + r.width / 2, r.top + r.height * .12, ex, ey, !!tgt);
 }, { passive:true });
 </script>
 </body></html>
