@@ -1364,6 +1364,27 @@ body.sc-game #scene *,body.sc-atl #scene *{animation-play-state:paused!important
 @keyframes flyplume{0%{transform:translate(-80px,300px) rotate(-8deg);opacity:1}25%{transform:translate(400px,240px) rotate(8deg)}50%{transform:translate(800px,300px) rotate(-8deg)}75%{transform:translate(1200px,250px) rotate(8deg);opacity:1}100%{transform:translate(1700px,300px) rotate(-8deg);opacity:1}}
 .sc-h3d{animation:h3in .6s ease-out both}
 @keyframes h3in{from{opacity:0}}
+
+/* ===================== MODE LÉGER (téléphones) ===================== */
+html.lite *,html.lite *::before,html.lite *::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+html.lite #scene{transition:none}
+html.lite body.sc-game #scene,html.lite body.sc-atl #scene,html.lite body.sc-lobby #scene{display:none}
+html.lite body:has(#scene){background:radial-gradient(120% 80% at 50% 40%,#1e2a36,#0a0f16 70%) fixed #0a0f16}
+html.lite .table::before{content:none}
+html.lite .table{background-image:radial-gradient(70% 45% at 50% 52%,rgba(60,190,255,.14),transparent 70%),linear-gradient(180deg,#0b1a28,#060e18);box-shadow:inset 0 0 0 1.5px rgba(143,244,255,.6),inset 0 0 0 5px #0a1e2c,0 0 18px rgba(60,190,255,.2)}
+html.lite .mn-svg,html.lite .mn.g .mn-svg,html.lite .mn.rb .mn-svg,html.lite .mn.tmp .mn-svg,html.lite .mn:has(.bubg) .mn-svg{filter:none}
+html.lite .mn.sel .mn-svg{filter:drop-shadow(0 0 4px var(--gold))}
+html.lite .mn.tripok .mn-svg,html.lite .compm.tripok .face,html.lite .table .fan,html.lite .cd.g,html.lite .bubg,html.lite .bub-run,html.lite .mn.aimable,html.lite .t-btn.pri::after,html.lite .embers i,html.lite .tri.pulse,html.lite .sc-holo,html.lite .sc-core,html.lite .sc-lglow,html.lite .sc-hglow,html.lite .sc-fire{animation:none!important}
+html.lite .bub-run{display:none}
+html.lite .table .fan{transform:none}
+html.lite .embers{display:none}
+html.lite .board-zone{box-shadow:inset 0 0 0 2px rgba(143,244,255,.65),0 0 0 4px #0a1e2c}
+html.lite .opps ol{background:#08121c}
+html.lite .hud,html.lite .keeper-zone,html.lite .hero-zone{filter:none}
+/* la taverne du menu reste animée, mais seulement l'essentiel */
+html.lite #scene .sc-lan > g,html.lite #scene .sc-duelist,html.lite #scene .sc-hp,html.lite #scene .sc-tok,html.lite #scene .sc-spark,html.lite #scene .sc-ring,html.lite #scene .sc-twk,html.lite #scene .sc-limb,html.lite #scene .sc-psn,html.lite #scene .sc-candle,html.lite #scene .sc-suck,html.lite #scene .sc-lava,html.lite #scene .sc-jelly,html.lite #scene .sc-zapb,html.lite #scene .sc-tornado,html.lite #scene .sc-kick,html.lite #scene .sc-peek,html.lite #scene .sc-stars,html.lite #scene .sc-flames path,html.lite #scene .sc-fly.bat,html.lite #scene .sc-fly.plume,html.lite #scene .sc-ghost{animation:none!important}
+html.lite #scene .sc-brawl{animation-duration:.6s}
+html.lite .title .t-scene::after{background:radial-gradient(60% 50% at 50% 42%,rgba(10,5,2,.45),transparent 75%)}
 </style>
 </head><body>
 
@@ -3964,6 +3985,7 @@ function renderHeroImages(ids, w = 270, h = 326) {
 
 /* rendu progressif : un héros à la fois, pour ne pas figer la page */
 function heroRenderer(w = 270, h = 326) {
+  if (typeof LITE !== 'undefined' && LITE) { w = 180; h = 217; }
   if (typeof THREE === 'undefined') return null;
   const T = THREE; let r;
   try { r = new T.WebGLRenderer({ canvas:document.createElement('canvas'), antialias:true, alpha:true, preserveDrawingBuffer:true }); } catch (e) { return null; }
@@ -4557,6 +4579,9 @@ document.addEventListener('pointerdown', () => { PDOWN = true; }, true);
 document.addEventListener('pointerup', () => { PDOWN = false; if (V.deferRender) { V.deferRender = false; setTimeout(render, 0); } }, true);
 document.addEventListener('pointercancel', () => { PDOWN = false; }, true);
 
+/* mode léger : téléphones et petites machines (forçable avec ?lite ou ?full) */
+const LITE = (() => { try { const q = new URLSearchParams(location.search); if (q.has('full')) return false; if (q.has('lite')) return true; } catch (e) {} try { return matchMedia('(pointer:coarse)').matches || (navigator.hardwareConcurrency || 8) <= 4; } catch (e) { return false; } })();
+if (LITE) document.documentElement.classList.add('lite');
 /* =====================================================================
    INTERFACE
    ===================================================================== */
@@ -4710,6 +4735,32 @@ function cardH(m, z, i, o = {}) {
 const med = (act, ic, label, cost, dis, on) => `<button class="med${on ? ' on' : ''}" data-act="${act}" ${dis ? 'disabled' : ''}><span class="disc">${icon(ic)}</span>${cost != null ? `<span class="cost">${cost}</span>` : ''}<span class="ml">${label}</span></button>`;
 
 /* ---------- rendu ---------- */
+/* mise à jour ciblée : on ne touche que ce qui a changé (pas de clignotement, les animations continuent) */
+const keyOf = n => n.nodeType === 1 && n.hasAttribute('data-u') ? n.nodeName + ':' + n.getAttribute('data-u') + (n.classList.contains('dying') ? ':d' : '') : null;
+function morph(o, n) {
+  if (o.nodeType !== n.nodeType || o.nodeName !== n.nodeName) { o.replaceWith(n); return n; }
+  if (o.nodeType !== 1) { if (o.nodeValue !== n.nodeValue) o.nodeValue = n.nodeValue; return o; }
+  if (o.isEqualNode(n)) return o;
+  for (const a of [...o.attributes]) if (!n.hasAttribute(a.name)) o.removeAttribute(a.name);
+  for (const a of [...n.attributes]) if (o.getAttribute(a.name) !== a.value) o.setAttribute(a.name, a.value);
+  if ((o.tagName === 'INPUT' || o.tagName === 'TEXTAREA') && o !== document.activeElement && o.value !== n.value) o.value = n.value;
+  if (o.tagName === 'SELECT' && o !== document.activeElement) { morphChildren(o, n); if (o.value !== n.value) o.value = n.value; return o; }
+  morphChildren(o, n); return o;
+}
+function morphChildren(oldP, newP) {
+  const old = new Map(); for (const c of oldP.childNodes) { const k = keyOf(c); if (k && !old.has(k)) old.set(k, c); }
+  const kids = [...newP.childNodes]; let i = 0;
+  for (const nn of kids) {
+    const ref = oldP.childNodes[i] || null, k = keyOf(nn);
+    let m = null;
+    if (k) { m = old.get(k) || null; if (m) old.delete(k); }
+    else if (ref && !keyOf(ref) && ref.nodeName === nn.nodeName) m = ref;
+    if (m) { if (m !== ref) oldP.insertBefore(m, ref); morph(m, nn); }
+    else oldP.insertBefore(nn, ref);
+    i++;
+  }
+  while (oldP.childNodes.length > i) oldP.removeChild(oldP.lastChild);
+}
 function render() {
   if (DRAG) { V.pendingRender = true; return; }
   V.pendingRender = false; hidePeek();
@@ -4717,7 +4768,13 @@ function render() {
   let keep = null; try { if (fid && typeof act.selectionStart === 'number') keep = [act.selectionStart, act.selectionEnd]; } catch (e) {}
   const ks = {}; document.querySelectorAll('[data-ks]').forEach(el => { if (el.id) ks[el.id] = el.scrollTop; });
   const flip = fxBefore();
-  $('#app').innerHTML = V.screen === 'menu' ? menuH() : V.screen === 'lobby' ? lobbyH() : V.screen === 'atelier' ? atelierH() : gameH();
+  const html = V.screen === 'menu' ? menuH() : V.screen === 'lobby' ? lobbyH() : V.screen === 'atelier' ? atelierH() : gameH();
+  const app = $('#app');
+  if (html !== V.lastHtml || !app.firstChild) {
+    V.lastHtml = html;
+    if (V.screen !== V.lastScreen || !app.firstChild) { app.innerHTML = html; V.lastScreen = V.screen; }
+    else { const t = document.createElement('template'); t.innerHTML = html; morphChildren(app, t.content); }
+  }
   if (V.screen === 'atelier' && typeof atlAfterRender === 'function') atlAfterRender();
   fxAfter(flip);
   if (typeof sceneMode === 'function') sceneMode();
@@ -5334,7 +5391,7 @@ const FXK = {
 };
 const rnd = (a, b) => a + Math.random() * (b - a);
 function fxBurst(x, y, kind, n, k = 1) {
-  if (FX_OFF()) return; const K = FXK[kind] || FXK.hit; let h = '';
+  if (FX_OFF()) return; const K = FXK[kind] || FXK.hit; let h = ''; if (LITE) n = Math.ceil(n * .5);
   for (let i = 0; i < n; i++) {
     const ang = K.flat ? rnd(Math.PI * 1.05, Math.PI * 1.95) + (Math.random() < .5 ? 0 : Math.PI * -0.0) : K.rise ? rnd(Math.PI * 1.15, Math.PI * 1.85) : rnd(0, Math.PI * 2);
     const d = rnd(K.d[0], K.d[1]) * k, dx = Math.cos(ang) * d, dy = Math.sin(ang) * d * (K.flat ? .35 : 1);
