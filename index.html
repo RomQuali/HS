@@ -1181,6 +1181,24 @@ body:has(.title){padding:0}
 @keyframes bubpulse{0%,100%{transform:scale(1);opacity:.95}50%{transform:scale(1.025);opacity:1}}
 @keyframes bubrun{to{stroke-dashoffset:-100}}
 .mn:has(.bubg) .mn-svg{filter:drop-shadow(0 0 7px rgba(255,214,90,.75)) drop-shadow(0 4px 4px rgba(0,0,0,.45))}
+/* bulle des améliorations */
+.btip{position:absolute;left:calc(100% + 12px);top:0;width:250px;padding:10px 12px 8px;border-radius:12px;color:var(--parch);background-image:var(--wood);
+  box-shadow:inset 0 0 0 1.5px var(--nail),inset 0 0 0 3px var(--brass),0 14px 28px rgba(0,0,0,.6);animation:btin .2s cubic-bezier(.2,1.3,.4,1)}
+.btip.left{left:auto;right:calc(100% + 12px)}
+@keyframes btin{from{opacity:0;transform:translateX(-8px) scale(.96)}}
+.btip.left{animation-name:btinl}
+@keyframes btinl{from{opacity:0;transform:translateX(8px) scale(.96)}}
+.bt-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:6px;font-family:var(--f-label);font-weight:700;font-size:15px;color:var(--gold)}
+.bt-h small{font-weight:600;font-size:12px;color:var(--chalk-dim)}
+.bt-h small b{color:#c6f7a4}
+.btip ul{list-style:none;margin:0;padding:0;display:grid;gap:5px}
+.btip li{display:grid;gap:1px;padding:5px 8px;border-radius:8px;background:rgba(0,0,0,.28);font-size:12.5px;line-height:1.3}
+.btip li b{font-family:var(--f-num);font-weight:normal;font-size:14px;color:#c6f7a4;letter-spacing:.02em}
+.btip li span{color:var(--parch)}
+.btip li i{font-style:normal;color:var(--gold-hi);opacity:.85}
+.btip li.ench b{font-family:var(--f-label);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#a6e07a}
+.btip li.tmp{background:rgba(120,40,10,.35)}
+.btip li.tmp b{color:#ffb08a;font-size:13px}
 </style>
 </head><body>
 
@@ -1572,7 +1590,7 @@ const rint = n => Math.floor(Math.random() * n);
 const pickR = a => a[rint(a.length)];
 const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = rint(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const has = (m, k) => (m.f || '').includes(k);
-const addF = (m, k) => { if (!has(m, k)) m.f = (m.f || '') + k; };
+const addF = (m, k) => { if (!has(m, k)) { m.f = (m.f || '') + k; if (BSRC) { const L = m.bn || (m.bn = []); let e = L.find(x => x.s === BSRC); if (!e) { e = { s:BSRC, a:0, h:0, n:1 }; L.push(e); } if (!(e.k || '').includes(k)) e.k = (e.k || '') + k; } } };
 const remF = (m, k) => { m.f = (m.f || '').split(k).join(''); };
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 const clone = o => JSON.parse(JSON.stringify(o));
@@ -1617,7 +1635,15 @@ function rebuildCatalog() {
   if (typeof rebuildArt === 'function') rebuildArt();
 }
 function mk(id, g) { const b = CD(id); return { c:id, a:b.a * (g ? 2 : 1), h:b.h * (g ? 2 : 1), g:g ? 1 : 0, f:b.f, u:UID++ }; }
-const buff = (m, a, h) => { m.a += a; m.h += h; };
+// suivi des améliorations : chaque bonus est noté avec sa source (serviteur, sort, pouvoir…)
+let BSRC = null;
+function withSrc(src, fn) { const o = BSRC; BSRC = src; try { return fn(); } finally { BSRC = o; } }
+function logB(m, src, a, h, kw) {
+  const L = m.bn || (m.bn = []); let e = L.find(x => x.s === src);
+  if (!e) { if (L.length >= 24) return; e = { s:src, a:0, h:0, n:0 }; L.push(e); }
+  e.a += a || 0; e.h += h || 0; e.n++; if (kw && !(e.k || '').includes(kw)) e.k = (e.k || '') + kw;
+}
+const buff = (m, a, h) => { m.a += a; m.h += h; if (BSRC && (a || h)) logB(m, BSRC, a, h); };
 
 /* =====================================================================
    EFFETS — la liste d'effets proposée dans l'atelier.
@@ -1729,7 +1755,8 @@ function recruitSummon(p, id, g, after) {
   const i = p.bd.indexOf(after);
   p.bd.splice(i < 0 ? p.bd.length : i + 1, 0, mk(id, g));
 }
-function runRecruit(G, p, m, e, ctx) {
+function runRecruit(G, p, m, e, ctx) { return withSrc(e && e.src ? e.src : m && m.c && C[m.c] ? CD(m.c).n : BSRC, () => runRecruit0(G, p, m, e, ctx)); }
+function runRecruit0(G, p, m, e, ctx) {
   const k = mult(m), A = (e.a || 0) * k, Hh = (e.h || 0) * k;
   const others = () => p.bd.filter(x => x !== m && tribeOk(x, e.tb));
   switch (e.k) {
@@ -1842,6 +1869,10 @@ function simDeaths(S) {
 }
 const snap = S => S.sides.map(arr => arr.map(m => ({ c:m.c, a:m.a, h:m.h, g:m.g, f:m.f, u:m.u })));
 function simulate(bA, bB, seed, tA, tB, fire) {
+  const BS0 = BSRC; BSRC = null;
+  try { return simulate0(bA, bB, seed, tA, tB, fire); } finally { BSRC = BS0; }
+}
+function simulate0(bA, bB, seed, tA, tB, fire) {
   const S = { sides:[clone(bA), clone(bB)], rng:mulberry(seed), uid:1000000, frames:[] };
   S.frames.push({ s:snap(S) });
   if (fire) for (const s of [0, 1]) {
@@ -1970,7 +2001,7 @@ function checkTriple(G, p) {
     for (const zone of [p.hd, p.bd]) for (let i = zone.length - 1; i >= 0 && copies.length < 3; i--) if (zone[i].c === id && !zone[i].g && !zone[i].sp) copies.push(zone.splice(i, 1)[0]);
     const b = CD(id);
     const gm = { c:id, a:b.a * 2 + copies.reduce((t, m) => t + m.a - b.a, 0), h:b.h * 2 + copies.reduce((t, m) => t + m.h - b.h, 0), g:1, f:b.f, u:UID++, tr:1 };
-    copies.forEach(m => { for (const k of m.f || '') addF(gm, k); if (m.x) gm.x = (gm.x || []).concat(m.x); });
+    copies.forEach(m => { for (const k of m.f || '') addF(gm, k); if (m.x) gm.x = (gm.x || []).concat(m.x); (m.bn || []).forEach(e => { const L = gm.bn || (gm.bn = []); const f = L.find(x => x.s === e.s); if (f) { f.a += e.a; f.h += e.h; f.n += e.n; for (const k of e.k || '') if (!(f.k || '').includes(k)) f.k = (f.k || '') + k; } else L.push({ ...e }); }); });
     p.hd.push(gm);
     return checkTriple(G, p);
   }
@@ -1990,7 +2021,7 @@ const OPS = {
     p.hd.splice(a.i, 1);
     const pos = Math.max(0, Math.min(a.pos == null ? p.bd.length : a.pos, p.bd.length));
     p.bd.splice(pos, 0, m);
-    if (p.hero === 'leon' && tribe(m) === 'sq_terre') { addF(m, 't'); buff(m, 1, 2); }
+    if (p.hero === 'leon' && tribe(m) === 'sq_terre') withSrc('Passif de Léon', () => { addF(m, 't'); buff(m, 1, 2); });
     const nbc = auraTimes(p.bd, 'aura_bc');
     for (let r = 0; r < nbc; r++) fxOf(m, 'bc').forEach(e => runRecruit(G, p, m, e));
     p.bd.slice().forEach(x => { if (x !== m) fxOf(x, 'play').forEach(e => runRecruit(G, p, x, e, m)); });
@@ -2002,15 +2033,16 @@ const OPS = {
   frz(G, p) { p.fz = !p.fz; return true; },
   up(G, p) { const c = upCost(p); if (p.t >= 6 || p.g < c) return false; p.g -= c; p.t++; p.uc = +RU().up[p.t] || 0; trigBoard(G, p, 'up'); return true; },
   comp(G, p) { const id = compOf(p.hero); if (!id || !C[id] || (p.cb || 0) >= compLimit(G.rd) || p.g < 3 || p.hd.length >= 10) return false; p.g -= 3; p.cb = (p.cb || 0) + 1; p.hd.push(mk(id, 0)); checkTriple(G, p); return true; },
-  pow(G, p) {
+  pow(G, p) { return withSrc(HEROES[p.hero] ? 'Pouvoir de ' + HEROES[p.hero].n.split(' ')[0] : null, () => OPS.pow0(G, p)); },
+  pow0(G, p) {
     const h = HEROES[p.hero]; if (!h || !h.cost || p.pu || p.g < h.cost) return false;
     if (p.hero === 'egide') { const c = p.bd.filter(m => !has(m, 's')); if (!c.length) return false; addF(pickR(c), 's'); }
     if (p.hero === 'ondine') { if (!p.bd.length) return false; buff(pickR(p.bd), 1, 2); }
     if (p.hero === 'paul') { const f = p.bd.filter(m => tribe(m) === 'sq_feu'); if (!f.length) return false; const t = pickR(f); buff(t, 2, 1); f.forEach(m => { if (m !== t) buff(m, 1, 0); }); }
     if (p.hero === 'zoe') { if (p.hd.length >= 10) return false; const tr = 'sq_eau'; const c = drawOne(G, p.t, null, tr) || (() => { const ids = POOL_IDS.filter(id => C[id].tr === tr && C[id].t <= p.t && C[id].t > 0); return ids.length ? mk(pickR(ids), 0) : null; })(); if (!c) return false; p.hd.push(c); checkTriple(G, p); }
-    if (p.hero === 'jeanne') { const z = p.bd.filter(m => tribe(m) === 'sq_vent'); if (!z.length) return false; const n = z.length; z.forEach(m => { m.tmp = { a:((m.tmp && m.tmp.a) || 0) + n, h:((m.tmp && m.tmp.h) || 0) + n, f:(m.tmp && m.tmp.f) || '' }; }); }
+    if (p.hero === 'jeanne') { const z = p.bd.filter(m => tribe(m) === 'sq_vent'); if (!z.length) return false; const n = z.length; z.forEach(m => { m.tmp = { a:((m.tmp && m.tmp.a) || 0) + n, h:((m.tmp && m.tmp.h) || 0) + n, f:(m.tmp && m.tmp.f) || '', s:'Pouvoir de Jeanne' }; }); }
     if (p.hero === 'nono') { if (G.rd < 3) return false; p.fbq = true; }
-    if (p.hero === 'selene') { if (!p.bd.length) return false; const t = pickR(p.bd); buff(t, 1, 1); (t.x = t.x || []).push({ k:'atk_self', a:1, h:1 }); }
+    if (p.hero === 'selene') { if (!p.bd.length) return false; const t = pickR(p.bd); buff(t, 1, 1); (t.x = t.x || []).push({ k:'atk_self', a:1, h:1, src:'Pouvoir de Sélène' }); }
     if (p.hero === 'brok') { const c = p.bd.filter(m => !has(m, 't')); if (!c.length) return false; const t = pickR(c); addF(t, 't'); }
     if (p.hero === 'grumbo') { if (!p.bd.length) return false; const t = p.bd.slice().sort((a, b) => b.a - a.a)[0]; buff(t, 3, 3); }
     if (p.hero === 'vaskor') { if (p.bd.length >= 7 || !C.m_squelette) return false; const t = mk('m_squelette', 0); addF(t, 'r'); p.bd.push(t); }
@@ -2100,7 +2132,7 @@ function endRecruit() {
   for (const p of G.ps) if (p.al) {
     const neot = auraTimes(p.bd, 'aura_eot');
     for (const m of p.bd.slice()) for (let r = 0; r < neot; r++) fxOf(m, 'eot').forEach(e => runRecruit(G, p, m, e));
-    if (p.hero === 'maelle' && p.bd[0]) buff(p.bd[0], 1, 1);
+    if (p.hero === 'maelle' && p.bd[0]) withSrc('Passif de Maëlle', () => buff(p.bd[0], 1, 1));
     if (p.hero === 'nono' && G.rd >= 3 && !p.pu) p.fb = (p.fb || 3) + 1;
     if (p.disc) OPS.pick(G, p, { i:aiBestIndex(p, p.disc) });
   }
@@ -2163,7 +2195,7 @@ function hostTick() {
 }
 
 /* ---------- diffusion ---------- */
-const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u }; const o = { c:m.c, a:m.a, h:m.h }; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; return o; };
+const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u }; const o = { c:m.c, a:m.a, h:m.h }; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; if (m.bn) o.bn = m.bn; return o; };
 const fullM = m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g || 0, f:m.f || '', u:m.u }; if (m.x) o.x = m.x; return o; };
 function pubData() {
   const G = H.G;
@@ -3664,7 +3696,8 @@ function spellBlock(p, id, tgt) {
   if ((id === 'sp_tempete' || id === 'sp_ascension') && !p.bd.length) return 'Tu n\'as aucun serviteur.';
   return null;
 }
-function castSpell(G, p, hi, tg) {
+function castSpell(G, p, hi, tg) { const it = p.hd[hi], S0 = it && SPELLS[it.sp]; return withSrc(S0 ? 'Sort : ' + S0.n : BSRC, () => castSpell0(G, p, hi, tg)); }
+function castSpell0(G, p, hi, tg) {
   const id = p.hd[hi].sp, S = SPELLS[id]; if (!S) return false;
   const tgt = S.tg ? p.bd[tg] : null;
   if (spellBlock(p, id, tgt)) return false;
@@ -3675,10 +3708,10 @@ function castSpell(G, p, hi, tg) {
     case 'sp_placement': p.inc = p.inc || []; p.inc[0] = (p.inc[0] || 0) + 2; break;
     case 'sp_aube': addF(tgt, 's'); break;
     case 'sp_chopes': { const a = tgt.a; tgt.a = tgt.h; tgt.h = a; break; }
-    case 'sp_graine': (tgt.x = tgt.x || []).push({ k:'eot_self', a:1, h:1 }); break;
+    case 'sp_graine': (tgt.x = tgt.x || []).push({ k:'eot_self', a:1, h:1, src:'Graine de vigueur' }); break;
     case 'sp_rabot': p.uc = Math.max(0, p.uc - 3); break;
     case 'sp_souffle': addF(tgt, 'r'); break;
-    case 'sp_berserk': tgt.tmp = { a:((tgt.tmp && tgt.tmp.a) || 0) + 4, h:(tgt.tmp && tgt.tmp.h) || 0, f:'w' }; break;
+    case 'sp_berserk': tgt.tmp = { a:((tgt.tmp && tgt.tmp.a) || 0) + 4, h:(tgt.tmp && tgt.tmp.h) || 0, f:'w', s:'Rage du berserker' }; break;
     case 'sp_meta': {
       const nm = drawOne(G, 6, Math.min(6, tierOf(tgt) + 1)) || drawAny(Math.min(6, tierOf(tgt) + 1));
       if (!nm) { p.hd.splice(hi, 0, { sp:id, u:UID++ }); return false; }
@@ -4854,7 +4887,8 @@ function doDrop(to, D, t, x, z) {
 // aperçu de la carte au survol (souris)
 const peekEl = document.createElement('div'); peekEl.id = 'peek'; peekEl.hidden = true; peekEl.setAttribute('aria-hidden', 'true'); document.body.appendChild(peekEl);
 let peekFor = null;
-function hidePeek() { peekFor = null; peekEl.hidden = true; }
+let TIPT = null;
+function hidePeek() { peekFor = null; peekEl.hidden = true; clearTimeout(TIPT); }
 function placePeek(r, pw, ph, touch) {
   let x, y;
   if (touch) { x = Math.max(8, Math.min(innerWidth - pw - 8, r.left + r.width / 2 - pw / 2)); y = r.top - ph - 12; if (y < 8) { x = r.right + 12; if (x + pw > innerWidth - 8) x = r.left - pw - 12; x = Math.max(8, Math.min(innerWidth - pw - 8, x)); y = Math.max(8, Math.min(innerHeight - ph - 8, r.top + r.height / 2 - ph / 2)); } }
@@ -4870,7 +4904,16 @@ function showPeek(t, touch) {
     const c = t.dataset.c; if (!c || (!C[c] && c !== '__edit')) return false;
     if (!touch && t.classList.contains('cd') && r.width >= 150) return false;
     peekFor = t; peekEl.innerHTML = cardH({ c, a:+t.dataset.a, h:+t.dataset.h, g:+t.dataset.g, f:t.dataset.f || '' }, 'p', 0); peekEl.hidden = false;
-    const [pw, ph] = peekSize(); placePeek(r, pw, ph, touch); return true;
+    const [pw, ph] = peekSize(); placePeek(r, pw, ph, touch);
+    // après un instant de survol : la bulle des améliorations
+    clearTimeout(TIPT); const mm = findMine(t.dataset.u);
+    if (mm) TIPT = setTimeout(() => {
+      if (peekFor !== t || peekEl.hidden) return; const h = bonusTipH(mm); if (!h) return;
+      peekEl.insertAdjacentHTML('beforeend', h); const tip = peekEl.querySelector('.btip'), pr = peekEl.getBoundingClientRect();
+      if (pr.right + tip.offsetWidth + 14 > innerWidth) tip.classList.add('left');
+      const tr = tip.getBoundingClientRect(); if (tr.bottom > innerHeight - 8) tip.style.top = f1(innerHeight - 8 - tr.height - pr.top) + 'px';
+    }, touch ? 650 : 900);
+    return true;
   }
   if (t.matches('.compm') && V.me && compOf(V.me.hero) && C[compOf(V.me.hero)]) {
     peekFor = t; peekEl.innerHTML = cardH(demo(compOf(V.me.hero), 0), 'p', 0) + `<p class="tip-s">${esc(t.querySelector('small') ? t.querySelector('small').textContent : '')}</p>`; peekEl.hidden = false;
@@ -5114,6 +5157,32 @@ function compCardH(hid, id, me) {
     ${cardH(demo(id, 0), 'p', 0)}
     <div class="hc-foot">${esc(st)}</div>
   </div>`;
+}
+
+/* ---------- bulle des améliorations d'un serviteur ---------- */
+function findMine(u) {
+  if (u == null || !V.me) return null;
+  for (const L of [V.me.bd, V.me.hd, V.me.sh, V.me.disc || []]) { const m = (L || []).find(x => x && x.u != null && String(x.u) === String(u)); if (m) return m; }
+  return null;
+}
+const sgn = v => (v >= 0 ? '+' : '') + v;
+const kwNames = k => (k || '').split('').map(x => (SET.kw[x] || {}).n).filter(Boolean).join(', ');
+function bonusTipH(m) {
+  if (!m || m.sp) return '';
+  const b = CD(m.c), g = m.g ? 2 : 1, ba = b.a * g, bh = b.h * g;
+  const rows = []; let la = 0, lh = 0;
+  (m.bn || []).forEach(e => {
+    la += e.a; lh += e.h;
+    const st = e.a || e.h ? `${sgn(e.a)}/${sgn(e.h)}` : '', kw = kwNames(e.k);
+    rows.push(`<li><b>${[st, kw].filter(Boolean).join(' · ')}</b><span>${esc(e.s)}${e.n > 1 ? ` <i>×${e.n}</i>` : ''}</span></li>`);
+  });
+  const ra = m.a - ba - la, rh = m.h - bh - lh;
+  if (ra || rh) rows.push(`<li><b>${sgn(ra)}/${sgn(rh)}</b><span>Autres effets</span></li>`);
+  (m.x || []).forEach(e => rows.push(`<li class="ench"><b>Enchantement</b><span>${esc(fxText(e))}${e.src ? ` <i>${esc(e.src)}</i>` : ''}</span></li>`));
+  if (m.tmp) { const kw = kwNames(m.tmp.f); rows.push(`<li class="tmp"><b>Prochain combat · ${sgn(m.tmp.a || 0)}/${sgn(m.tmp.h || 0)}${kw ? ' · ' + kw : ''}</b><span>${m.tmp.s ? esc(m.tmp.s) : 'Effet temporaire'}</span></li>`); }
+  if (V.me && V.me.tma && V.me.bd.includes(m)) rows.push(`<li class="tmp"><b>Prochain combat · ${sgn(V.me.tma.a)}/${sgn(V.me.tma.h)}</b><span>Bonus pour tous tes serviteurs</span></li>`);
+  if (!rows.length) return '';
+  return `<div class="btip"><div class="bt-h">Améliorations<small>base ${ba}/${bh} → <b>${m.a}/${m.h}</b></small></div><ul>${rows.join('')}</ul></div>`;
 }
 </script>
 </body></html>
