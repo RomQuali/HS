@@ -4675,7 +4675,7 @@ function dragStart(d, x, y) {
   g.removeAttribute('style'); g.style.cssText = `width:${f1(r.width)}px;--hw:${f1(r.width)}px;--tw:${f1(r.width)}px`;
   dragLayer.innerHTML = `<div class="dragc">${g.outerHTML}<span class="dragtag" hidden></span></div>`;
   dragLayer.hidden = false;
-  if (DRAG.sp && SPELLS[DRAG.sp] && SPELLS[DRAG.sp].tg) {
+  if (DRAG.z === 'hd' && DRAG.sp && SPELLS[DRAG.sp] && SPELLS[DRAG.sp].tg) {
     // carte à cible : elle se pose au-dessus de la main, une flèche la relie au viseur
     DRAG.aim = true; DRAG.ax = Math.max(8, Math.min(innerWidth - r.width - 8, r.left)); DRAG.ay = Math.max(8, r.top - r.height * .55);
     dragLayer.classList.add('aimcard');
