@@ -2345,11 +2345,11 @@ const DEFAULT_CARD_LIST = [
   ['n_o8', 'Tempête intérieure', 5, 'n_foudre', 5, 5, '', [{ k:'soc_ck', a:1, h:1 }]],
   ['n_t7', 'Pilleur souterrain', 4, 'n_terre', 4, 5, 't', [{ k:'soc_steal', n:2 }]],
   ['n_t8', 'Ermite des cimes', 6, 'n_terre', 5, 8, '', [{ k:'eot_ck_spend', n:3, a:3, h:3 }, { k:'cast_ck', n:1 }]],
-  ['c_nj_feu', 'Disciple de la flamme', 3, 'n_feu', 6, 5, '', [{ k:'soc_dmg', d:3, n:2 }]],
-  ['c_nj_vent', 'Disciple du vent', 3, 'n_vent', 6, 4, 'w', [{ k:'atk_self', a:2, h:1 }]],
-  ['c_nj_eau', 'Disciple de la brume', 3, 'n_eau', 4, 8, 's', [{ k:'surv_self', a:2, h:2 }]],
-  ['c_nj_foudre', 'Disciple de l\'orage', 3, 'n_foudre', 5, 5, '', [{ k:'atk_zap', d:3, n:2 }]],
-  ['c_nj_terre', 'Disciple du roc', 3, 'n_terre', 4, 10, 't', [{ k:'eot_self', a:1, h:2 }]],
+  ['c_nj_feu', 'Disciple de la flamme', 3, 'n_feu', 6, 5, '', [{ k:'soc_dmg', d:3, n:2 }, { k:'eot_braise_self', n:3 }]],
+  ['c_nj_vent', 'Disciple du vent', 3, 'n_vent', 6, 4, 'w', [{ k:'atk_self', a:2, h:1 }, { k:'combo_gold', n:1 }]],
+  ['c_nj_eau', 'Disciple de la brume', 3, 'n_eau', 4, 8, 's', [{ k:'surv_self', a:2, h:2 }, { k:'eot_maree_self', n:3 }]],
+  ['c_nj_foudre', 'Disciple de l\'orage', 3, 'n_foudre', 5, 5, '', [{ k:'atk_zap', d:3, n:2 }, { k:'combo_ck', n:2 }]],
+  ['c_nj_terre', 'Disciple du roc', 3, 'n_terre', 4, 10, 't', [{ k:'eot_self', a:1, h:2 }, { k:'combo_self', a:1, h:3 }]],
   ['n_t6', 'Seigneur des roches', 6, 'n_terre', 6, 10, 't', [{ k:'awk_quake' }, { k:'eot_buff_taunt', a:2, h:2 }]],
 ];
 const DEFAULT_CARDS = {};
@@ -2569,6 +2569,8 @@ const ET = {
   eot_buff_big:{ tr:'eot', l:'Bonus au serviteur le plus fort', ps:['a', 'h'], w:1.5, mag:e => e.a + e.h, txt:(e, k) => `Fin de tour : donne ${sign(e.a * k, e.h * k)} à votre serviteur qui a le plus d'attaque.` },
   roll_buff_tribe:{ tr:'roll', l:'Bonus à vos serviteurs', ps:['a', 'h', 'tb'], w:0.8, mag:e => (e.a + e.h) * AL(), txt:(e, k) => `Quand vous actualisez la taverne, donne ${sign(e.a * k, e.h * k)} à vos autres ${one(e.tb)}.` },
   bc_spell:{ tr:'bc', l:'Ajouter un sort à la main', ps:['n'], w:1, mag:e => e.n * 3, txt:(e, k) => `Cri de guerre : ajoute ${e.n * k > 1 ? e.n * k + ' sorts aléatoires' : 'un sort aléatoire'} à votre main.` },
+  eot_braise_self:{ tr:'eot', l:'Attiser sa lame', ps:['n'], w:1, mag:e => e.n * 2, txt:(e, k) => `Fin de tour : gagne +1 attaque par paire de braises (+${e.n * k} au plus).` },
+  eot_maree_self:{ tr:'eot', l:'Boire la marée', ps:['n'], w:1, mag:e => e.n * 2, txt:(e, k) => `Fin de tour : gagne +1/+1 par tranche de 3 marée (+${e.n * k}/+${e.n * k} au plus).` },
   combo_self:{ tr:'combo', l:'Se renforcer à chaque combo', ps:['a', 'h'], w:1.5, mag:e => e.a + e.h, txt:(e, k) => `Quand vous déclenchez un combo, gagne ${sign(e.a * k, e.h * k)}.` },
   combo_gold:{ tr:'combo', l:'Or à chaque combo', ps:['n'], w:1.5, mag:e => e.n * 3, txt:(e, k) => `Quand vous déclenchez un combo, gagnez ${e.n * k} or.` },
   combo_ck:{ tr:'combo', l:'Chakra à chaque combo', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Quand vous déclenchez un combo, récupérez ${e.n * k} chakra.` },
@@ -2667,6 +2669,8 @@ function runRecruit0(G, p, m, e, ctx) {
     case 'sell_gold': p.g += e.n * k; break;
     case 'roll_self': case 'cast_self': case 'combo_self': buff(m, A, Hh); break;
     case 'combo_gold': p.g += e.n * k; break;
+    case 'eot_braise_self': { const x = Math.min(e.n * k, Math.floor((p.braise || 0) / 2)); if (x) buff(m, x, 0); break; }
+    case 'eot_maree_self': { const x = Math.min(e.n * k, Math.floor((p.maree || 0) / 3)); if (x) buff(m, x, x); break; }
     case 'combo_ck': p.ck = Math.min(ckMax(p), (p.ck || 0) + e.n * k); break;
     case 'rsv_bc': { const el = CLAN_EL[CD(m.c).tr]; if (el) withSrc('Réservoir', () => rsvFill(G, p, el)); break; }
     case 'roll_buff_tribe': case 'cast_buff_tribe': case 'combo_tribe': others().forEach(x => buff(x, A, Hh)); break;
@@ -3376,7 +3380,7 @@ function applyLive() {
   const delU = SET.delUniv || [];
   for (const u of DEFAULT_SETTINGS.univ) { if (delU.includes(u.n)) continue; const mine = SET.univ.find(x => x.n === u.n); if (!mine) SET.univ.push(clone(u)); else { if (!mine.mech) mine.mech = u.mech; if (!mine.fixed) mine.tribes = u.tribes.filter(t => !delT.includes(t)); } }
   CARDS = clone(DEFAULT_CARDS);
-  for (const id in (DATA.liveCards || {})) CARDS[id] = clone(DATA.liveCards[id]);
+  for (const id in (DATA.liveCards || {})) if (!/^c_nj_/.test(id)) CARDS[id] = clone(DATA.liveCards[id]);   // compagnons Ninja : toujours la version du jeu
   for (const id of (SET.deleted || [])) delete CARDS[id];
   rebuildCatalog();
   if (typeof atlOnData === 'function') atlOnData();
@@ -5723,7 +5727,7 @@ const SPELLS = {
   eq_gants:{ n:'Gantelets du vent', t:1, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : +2/+2 et Furie des vents.' },
   eq_bandeau:{ n:'Bandeau du maître', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : « Fin de tour : gagnez 2 chakra ».' },
   eq_cape:{ n:'Cape d\'ombre', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : Bouclier divin et Renaissance.' },
-  eq_parchemin:{ n:'Parchemin jumeau', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : il rend une copie de plus de la technique retenue.' },
+  eq_parchemin:{ n:'Parchemin jumeau', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : chaque combo lui donne aussi +2/+2.' },
   eq_talisman:{ n:'Talisman des cycles', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : ses bonus d\'élément sont doublés.' },
   cf_bois:{ n:'Coffre de bois', t:1, c:0, ck:2, item:1, ty:'cof', tx:'Coffre mineur, reçu après une égalité ou une défaite (taverne de niveau 1 à 4). Ouvre-le avec 2 chakra : un équipement commun.' },
   cf_argent:{ n:'Coffre d\'argent', t:1, c:0, ck:4, item:1, ty:'cof', tx:'Reçu après une victoire (taverne 1 à 3), ou après une défaite avec une taverne de niveau 5 ou plus. Ouvre-le avec 4 chakra : un équipement aléatoire, rare compris.' },
@@ -5762,7 +5766,7 @@ function applyEquip(tgt, id) {
     case 'eq_gants': buff(tgt, 2, 2); addF(tgt, 'w'); break;
     case 'eq_bandeau': (tgt.x = tgt.x || []).push({ k:'eot_chakra', n:2, src:'Bandeau du maître' }); break;
     case 'eq_cape': addF(tgt, 's'); addF(tgt, 'r'); break;
-    case 'eq_parchemin': tgt.memo2 = 1; break;
+    case 'eq_parchemin': (tgt.x = tgt.x || []).push({ k:'combo_self', a:2, h:2, src:'Parchemin jumeau' }); break;
   }
   (tgt.eq = tgt.eq || []).push(id);
 }
@@ -5772,7 +5776,7 @@ const EQ_MAXLV = 5;
 function eqUpgrade(tgt, id) { const u = EQ_UP[id] || {}; if (u.a || u.h) buff(tgt, u.a || 0, u.h || 0); if (u.ck) (tgt.x = tgt.x || []).push({ k:'eot_chakra', n:u.ck, src:'Amélioration · ' + SPELLS[id].n }); }
 // bonus total d'un équipement à un niveau donné (affiché au survol du compagnon)
 function eqBonusTx(id, lv) {
-  const u = EQ_UP[id] || {}, n = Math.max(0, (lv || 1) - 1), base = { eq_lame:'+4 attaque', eq_armure:'+6 vie et Provocation', eq_gants:'+2/+2 et Furie des vents', eq_bandeau:'Fin de tour : +2 chakra', eq_cape:'Bouclier divin et Renaissance', eq_parchemin:'Une copie de plus de la technique retenue', eq_talisman:'Bonus d\'élément doublés' }[id] || '';
+  const u = EQ_UP[id] || {}, n = Math.max(0, (lv || 1) - 1), base = { eq_lame:'+4 attaque', eq_armure:'+6 vie et Provocation', eq_gants:'+2/+2 et Furie des vents', eq_bandeau:'Fin de tour : +2 chakra', eq_cape:'Bouclier divin et Renaissance', eq_parchemin:'Chaque combo : +2/+2', eq_talisman:'Bonus d\'élément doublés' }[id] || '';
   const extra = []; if (n && (u.a || u.h)) extra.push(`+${u.a * n}/+${u.h * n}`); if (n && u.ck) extra.push(`+${u.ck * n} chakra par tour`);
   return base + (extra.length ? ' · amélioration ' + extra.join(', ') : '');
 }
@@ -5833,7 +5837,7 @@ function castSpell0(G, p, hi, tg) {
     case 'eq_gants': buff(tgt, 2, 2); addF(tgt, 'w'); break;
     case 'eq_bandeau': (tgt.x = tgt.x || []).push({ k:'eot_chakra', n:2, src:'Bandeau du maître' }); break;
     case 'eq_cape': addF(tgt, 's'); addF(tgt, 'r'); break;
-    case 'eq_parchemin': tgt.memo2 = 1; break;
+    case 'eq_parchemin': (tgt.x = tgt.x || []).push({ k:'combo_self', a:2, h:2, src:'Parchemin jumeau' }); break;
     case 'eq_talisman': break;
     case 'cf_bois': case 'cf_argent': case 'cf_or': {
       const common = ['eq_lame', 'eq_armure', 'eq_gants'], all = Object.keys(SPELLS).filter(k => SPELLS[k].eq), rare = all.filter(k => !common.includes(k));
@@ -6628,7 +6632,7 @@ function tokenH(m, z, i, o = {}) {
     + (f.includes('s') ? `<g class="bubg"><use class="bub" href="#tk-shield"/><path class="bub-run" pathLength="100" d="${SHIELD_D}"/></g>` : '')
     + (b.t && z === 'sh' ? `<g class="tflag"><path d="M37 -6 H63 V17 L50 12 L37 17 Z" fill="#4a4044" stroke="#0c0808" stroke-width="2"/><path d="M39.5 -4 H60.5 V14 L50 10 L39.5 14 Z" fill="none" stroke="#ffb050" stroke-width="1.2"/>${Array.from({ length:b.t }, (_, k) => { const row = k < 3 ? 0 : 1, n = row ? b.t - 3 : Math.min(3, b.t), j = row ? k - 3 : k; return `<text x="${f1(50 + (j - (n - 1) / 2) * 6.4)}" y="${row ? 9 : 2.6}" font-size="7" text-anchor="middle" fill="#ffd27a">★</text>`; }).join('')}</g>` : '')
     + ics.map(([ic, col, nm], k) => { const a = KW_ANG[k] * Math.PI / 180; return `<g class="kwi" transform="translate(${f1(50 + 51 * Math.sin(a))} ${f1(55 - 58 * Math.cos(a))})"><title>${nm}</title><circle r="8.4" fill="#1b120b" stroke="${col}" stroke-width="1.8"/><use href="#ic-${ic}" x="-5.6" y="-5.6" width="11.2" height="11.2" style="color:${col}"/></g>`; }).join('')
-    + (isComp(m) && compEl(m) ? `<g class="elb"><title>Élément retenu : ${ELS[compEl(m)].n}${m.memo && SPELLS[m.memo] ? ' · technique : ' + SPELLS[m.memo].n : ''}${m.fu ? ' · fusion : ' + m.fu : ''}</title><circle cx="14" cy="12" r="10" fill="${ELS[compEl(m)].col}" stroke="#120a06" stroke-width="2.2"/><text x="14" y="12" dy=".36em" text-anchor="middle" font-size="10" font-weight="700" fill="#120a06">${ELS[compEl(m)].n[0]}</text></g>` : '')
+    + (isComp(m) && compEl(m) ? `<g class="elb"><title>Élément : ${ELS[compEl(m)].n}${m.fu ? ' · fusion : ' + m.fu : ''}</title><circle cx="14" cy="12" r="10" fill="${ELS[compEl(m)].col}" stroke="#120a06" stroke-width="2.2"/><text x="14" y="12" dy=".36em" text-anchor="middle" font-size="10" font-weight="700" fill="#120a06">${ELS[compEl(m)].n[0]}</text></g>` : '')
     + (isComp(m) ? `<g><title>Niveau d'entraînement ${compLv(m)} · ${m.xp || 0} expérience${compLv(m) < 5 ? ' (prochain niveau à ' + XP_LV[compLv(m)] + ')' : ''}</title><rect x="38" y="113" width="24" height="12" rx="6" fill="#2a6ad8" stroke="#120a06" stroke-width="1.8"/><text x="50" y="119" dy=".36em" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff">Nv ${compLv(m)}</text></g>` : '')
     + (m.eq && m.eq.length ? `<g><title>Équipements : ${m.eq.map(e => SPELLS[e] ? SPELLS[e].n : e).join(', ')}</title><rect x="72" y="4" width="22" height="14" rx="7" fill="#8a6a3a" stroke="#120a06" stroke-width="2"/><text x="83" y="11" dy=".36em" text-anchor="middle" font-size="9" font-weight="700" fill="#fff3c0">⚒${m.eq.length}</text></g>` : '')
     + `<use href="#gem-a" x="-1" y="90" width="34" height="34"/><text class="gt${up(m.a, b.a)}" x="16" y="107" dy=".36em">${m.a}</text>`

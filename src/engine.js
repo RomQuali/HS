@@ -284,11 +284,11 @@ const DEFAULT_CARD_LIST = [
   ['n_o8', 'Tempête intérieure', 5, 'n_foudre', 5, 5, '', [{ k:'soc_ck', a:1, h:1 }]],
   ['n_t7', 'Pilleur souterrain', 4, 'n_terre', 4, 5, 't', [{ k:'soc_steal', n:2 }]],
   ['n_t8', 'Ermite des cimes', 6, 'n_terre', 5, 8, '', [{ k:'eot_ck_spend', n:3, a:3, h:3 }, { k:'cast_ck', n:1 }]],
-  ['c_nj_feu', 'Disciple de la flamme', 3, 'n_feu', 6, 5, '', [{ k:'soc_dmg', d:3, n:2 }]],
-  ['c_nj_vent', 'Disciple du vent', 3, 'n_vent', 6, 4, 'w', [{ k:'atk_self', a:2, h:1 }]],
-  ['c_nj_eau', 'Disciple de la brume', 3, 'n_eau', 4, 8, 's', [{ k:'surv_self', a:2, h:2 }]],
-  ['c_nj_foudre', 'Disciple de l\'orage', 3, 'n_foudre', 5, 5, '', [{ k:'atk_zap', d:3, n:2 }]],
-  ['c_nj_terre', 'Disciple du roc', 3, 'n_terre', 4, 10, 't', [{ k:'eot_self', a:1, h:2 }]],
+  ['c_nj_feu', 'Disciple de la flamme', 3, 'n_feu', 6, 5, '', [{ k:'soc_dmg', d:3, n:2 }, { k:'eot_braise_self', n:3 }]],
+  ['c_nj_vent', 'Disciple du vent', 3, 'n_vent', 6, 4, 'w', [{ k:'atk_self', a:2, h:1 }, { k:'combo_gold', n:1 }]],
+  ['c_nj_eau', 'Disciple de la brume', 3, 'n_eau', 4, 8, 's', [{ k:'surv_self', a:2, h:2 }, { k:'eot_maree_self', n:3 }]],
+  ['c_nj_foudre', 'Disciple de l\'orage', 3, 'n_foudre', 5, 5, '', [{ k:'atk_zap', d:3, n:2 }, { k:'combo_ck', n:2 }]],
+  ['c_nj_terre', 'Disciple du roc', 3, 'n_terre', 4, 10, 't', [{ k:'eot_self', a:1, h:2 }, { k:'combo_self', a:1, h:3 }]],
   ['n_t6', 'Seigneur des roches', 6, 'n_terre', 6, 10, 't', [{ k:'awk_quake' }, { k:'eot_buff_taunt', a:2, h:2 }]],
 ];
 const DEFAULT_CARDS = {};
@@ -508,6 +508,8 @@ const ET = {
   eot_buff_big:{ tr:'eot', l:'Bonus au serviteur le plus fort', ps:['a', 'h'], w:1.5, mag:e => e.a + e.h, txt:(e, k) => `Fin de tour : donne ${sign(e.a * k, e.h * k)} à votre serviteur qui a le plus d'attaque.` },
   roll_buff_tribe:{ tr:'roll', l:'Bonus à vos serviteurs', ps:['a', 'h', 'tb'], w:0.8, mag:e => (e.a + e.h) * AL(), txt:(e, k) => `Quand vous actualisez la taverne, donne ${sign(e.a * k, e.h * k)} à vos autres ${one(e.tb)}.` },
   bc_spell:{ tr:'bc', l:'Ajouter un sort à la main', ps:['n'], w:1, mag:e => e.n * 3, txt:(e, k) => `Cri de guerre : ajoute ${e.n * k > 1 ? e.n * k + ' sorts aléatoires' : 'un sort aléatoire'} à votre main.` },
+  eot_braise_self:{ tr:'eot', l:'Attiser sa lame', ps:['n'], w:1, mag:e => e.n * 2, txt:(e, k) => `Fin de tour : gagne +1 attaque par paire de braises (+${e.n * k} au plus).` },
+  eot_maree_self:{ tr:'eot', l:'Boire la marée', ps:['n'], w:1, mag:e => e.n * 2, txt:(e, k) => `Fin de tour : gagne +1/+1 par tranche de 3 marée (+${e.n * k}/+${e.n * k} au plus).` },
   combo_self:{ tr:'combo', l:'Se renforcer à chaque combo', ps:['a', 'h'], w:1.5, mag:e => e.a + e.h, txt:(e, k) => `Quand vous déclenchez un combo, gagne ${sign(e.a * k, e.h * k)}.` },
   combo_gold:{ tr:'combo', l:'Or à chaque combo', ps:['n'], w:1.5, mag:e => e.n * 3, txt:(e, k) => `Quand vous déclenchez un combo, gagnez ${e.n * k} or.` },
   combo_ck:{ tr:'combo', l:'Chakra à chaque combo', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Quand vous déclenchez un combo, récupérez ${e.n * k} chakra.` },
@@ -606,6 +608,8 @@ function runRecruit0(G, p, m, e, ctx) {
     case 'sell_gold': p.g += e.n * k; break;
     case 'roll_self': case 'cast_self': case 'combo_self': buff(m, A, Hh); break;
     case 'combo_gold': p.g += e.n * k; break;
+    case 'eot_braise_self': { const x = Math.min(e.n * k, Math.floor((p.braise || 0) / 2)); if (x) buff(m, x, 0); break; }
+    case 'eot_maree_self': { const x = Math.min(e.n * k, Math.floor((p.maree || 0) / 3)); if (x) buff(m, x, x); break; }
     case 'combo_ck': p.ck = Math.min(ckMax(p), (p.ck || 0) + e.n * k); break;
     case 'rsv_bc': { const el = CLAN_EL[CD(m.c).tr]; if (el) withSrc('Réservoir', () => rsvFill(G, p, el)); break; }
     case 'roll_buff_tribe': case 'cast_buff_tribe': case 'combo_tribe': others().forEach(x => buff(x, A, Hh)); break;

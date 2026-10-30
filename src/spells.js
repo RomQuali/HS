@@ -58,7 +58,7 @@ const SPELLS = {
   eq_gants:{ n:'Gantelets du vent', t:1, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : +2/+2 et Furie des vents.' },
   eq_bandeau:{ n:'Bandeau du maître', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : « Fin de tour : gagnez 2 chakra ».' },
   eq_cape:{ n:'Cape d\'ombre', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : Bouclier divin et Renaissance.' },
-  eq_parchemin:{ n:'Parchemin jumeau', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : il rend une copie de plus de la technique retenue.' },
+  eq_parchemin:{ n:'Parchemin jumeau', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : chaque combo lui donne aussi +2/+2.' },
   eq_talisman:{ n:'Talisman des cycles', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : ses bonus d\'élément sont doublés.' },
   cf_bois:{ n:'Coffre de bois', t:1, c:0, ck:2, item:1, ty:'cof', tx:'Coffre mineur, reçu après une égalité ou une défaite (taverne de niveau 1 à 4). Ouvre-le avec 2 chakra : un équipement commun.' },
   cf_argent:{ n:'Coffre d\'argent', t:1, c:0, ck:4, item:1, ty:'cof', tx:'Reçu après une victoire (taverne 1 à 3), ou après une défaite avec une taverne de niveau 5 ou plus. Ouvre-le avec 4 chakra : un équipement aléatoire, rare compris.' },
@@ -97,7 +97,7 @@ function applyEquip(tgt, id) {
     case 'eq_gants': buff(tgt, 2, 2); addF(tgt, 'w'); break;
     case 'eq_bandeau': (tgt.x = tgt.x || []).push({ k:'eot_chakra', n:2, src:'Bandeau du maître' }); break;
     case 'eq_cape': addF(tgt, 's'); addF(tgt, 'r'); break;
-    case 'eq_parchemin': tgt.memo2 = 1; break;
+    case 'eq_parchemin': (tgt.x = tgt.x || []).push({ k:'combo_self', a:2, h:2, src:'Parchemin jumeau' }); break;
   }
   (tgt.eq = tgt.eq || []).push(id);
 }
@@ -107,7 +107,7 @@ const EQ_MAXLV = 5;
 function eqUpgrade(tgt, id) { const u = EQ_UP[id] || {}; if (u.a || u.h) buff(tgt, u.a || 0, u.h || 0); if (u.ck) (tgt.x = tgt.x || []).push({ k:'eot_chakra', n:u.ck, src:'Amélioration · ' + SPELLS[id].n }); }
 // bonus total d'un équipement à un niveau donné (affiché au survol du compagnon)
 function eqBonusTx(id, lv) {
-  const u = EQ_UP[id] || {}, n = Math.max(0, (lv || 1) - 1), base = { eq_lame:'+4 attaque', eq_armure:'+6 vie et Provocation', eq_gants:'+2/+2 et Furie des vents', eq_bandeau:'Fin de tour : +2 chakra', eq_cape:'Bouclier divin et Renaissance', eq_parchemin:'Une copie de plus de la technique retenue', eq_talisman:'Bonus d\'élément doublés' }[id] || '';
+  const u = EQ_UP[id] || {}, n = Math.max(0, (lv || 1) - 1), base = { eq_lame:'+4 attaque', eq_armure:'+6 vie et Provocation', eq_gants:'+2/+2 et Furie des vents', eq_bandeau:'Fin de tour : +2 chakra', eq_cape:'Bouclier divin et Renaissance', eq_parchemin:'Chaque combo : +2/+2', eq_talisman:'Bonus d\'élément doublés' }[id] || '';
   const extra = []; if (n && (u.a || u.h)) extra.push(`+${u.a * n}/+${u.h * n}`); if (n && u.ck) extra.push(`+${u.ck * n} chakra par tour`);
   return base + (extra.length ? ' · amélioration ' + extra.join(', ') : '');
 }
@@ -168,7 +168,7 @@ function castSpell0(G, p, hi, tg) {
     case 'eq_gants': buff(tgt, 2, 2); addF(tgt, 'w'); break;
     case 'eq_bandeau': (tgt.x = tgt.x || []).push({ k:'eot_chakra', n:2, src:'Bandeau du maître' }); break;
     case 'eq_cape': addF(tgt, 's'); addF(tgt, 'r'); break;
-    case 'eq_parchemin': tgt.memo2 = 1; break;
+    case 'eq_parchemin': (tgt.x = tgt.x || []).push({ k:'combo_self', a:2, h:2, src:'Parchemin jumeau' }); break;
     case 'eq_talisman': break;
     case 'cf_bois': case 'cf_argent': case 'cf_or': {
       const common = ['eq_lame', 'eq_armure', 'eq_gants'], all = Object.keys(SPELLS).filter(k => SPELLS[k].eq), rare = all.filter(k => !common.includes(k));
