@@ -178,7 +178,7 @@ function spellTokenH(id, z, i, o = {}) {
 function spellCostFor(id, z) { const S = SPELLS[id]; if (V.me && V.me.sp === id && V.me.spc != null && (z === 'ss' || z === 'p')) return V.me.spc; return S.c; }
 function spellCardH(id, z, i, o = {}) {
   const S = SPELLS[id], sel = V.sel && V.sel.z === z && V.sel.i === i, ty = SP_TYPES[S.ty];
-  const n = S.tx.length;
+  const n = S.tx.length + (S.n.length > 16 ? 30 : 0);   // un nom sur deux lignes laisse moins de place au texte
   return `<div class="cd spc${sel ? ' sel' : ''}${V.aim != null && V.aim === i && z === 'hd' ? ' aiming' : ''}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="Sort ${esc(S.n)}">`
     + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#sp-${id}" y="-4" width="100" height="100"/></svg></div>`
     + `<div class="cd-tier" aria-hidden="true">${'<i></i>'.repeat(S.t)}</div>`

@@ -1744,6 +1744,19 @@ body.cs-entering #scene *{animation-play-state:running!important}
 .rt-last{display:flex;flex-direction:column;gap:6px;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(242,193,78,.35)}
 .rt-seat.playing .face{box-shadow:0 0 0 3px #ffb050,0 0 14px rgba(255,170,80,.6)}
 .rt-code[aria-live]{cursor:default}
+.cd.spc .cd-art{aspect-ratio:1/.8}
+/* écran du choix du héros : la loi de l'univers en grand */
+.lawbig{display:flex;gap:18px;align-items:center;max-width:820px;margin:10px auto 6px;padding:16px 22px;border-radius:16px;text-align:left;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--uc) 55%,#1a1008),rgba(10,5,2,.88));box-shadow:inset 0 0 0 2px color-mix(in srgb,var(--uc) 70%,#fff3),0 10px 24px rgba(0,0,0,.45)}
+.lb-em{flex:none;width:76px;height:76px;display:grid;place-items:center;border-radius:50%;color:#fff1b8;background:radial-gradient(circle at 40% 35%,color-mix(in srgb,var(--uc) 80%,#fff),var(--uc));box-shadow:0 0 0 4px #120a06,0 0 0 7px #f2c14e,0 0 22px color-mix(in srgb,var(--uc) 70%,transparent)}
+.lb-em .ic{width:40px;height:40px}
+.lb-t{display:grid;gap:4px;min-width:0}
+.lb-t small{font-family:var(--f-label);font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#e8d8b8}
+.lb-t b{font-family:var(--f-disp);font-size:clamp(22px,2.6vw,30px);line-height:1.1;color:#ffd86a;text-shadow:0 2px 0 #120a06}
+.lb-t p{margin:0;font-size:clamp(15px,1.5vw,18px);line-height:1.4;color:#fff6dc}
+.lb-fam{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.lb-fam i{font-style:normal;font-family:var(--f-label);font-weight:700;font-size:12.5px;padding:2px 10px;border-radius:99px;color:#fff;background:var(--c);box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.35)}
+@media (max-height:540px),(max-width:620px){ .lawbig{padding:8px 12px;gap:10px;margin:4px auto} .lb-em{width:46px;height:46px} .lb-em .ic{width:24px;height:24px} .lb-t b{font-size:18px} .lb-t p{font-size:13px} .lb-fam{display:none} }
 </style>
 </head><body>
 
@@ -5240,7 +5253,7 @@ function spellTokenH(id, z, i, o = {}) {
 function spellCostFor(id, z) { const S = SPELLS[id]; if (V.me && V.me.sp === id && V.me.spc != null && (z === 'ss' || z === 'p')) return V.me.spc; return S.c; }
 function spellCardH(id, z, i, o = {}) {
   const S = SPELLS[id], sel = V.sel && V.sel.z === z && V.sel.i === i, ty = SP_TYPES[S.ty];
-  const n = S.tx.length;
+  const n = S.tx.length + (S.n.length > 16 ? 30 : 0);   // un nom sur deux lignes laisse moins de place au texte
   return `<div class="cd spc${sel ? ' sel' : ''}${V.aim != null && V.aim === i && z === 'hd' ? ' aiming' : ''}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="Sort ${esc(S.n)}">`
     + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#sp-${id}" y="-4" width="100" height="100"/></svg></div>`
     + `<div class="cd-tier" aria-hidden="true">${'<i></i>'.repeat(S.t)}</div>`
@@ -6175,7 +6188,7 @@ function overlayH() {
   if (me && me.disc && d.ph === 'recruit') return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Découverte</h2><p class="ov-s">Choisis un serviteur. Les deux autres retournent dans la réserve.</p>
     <div class="disc">${me.disc.map((m, i) => `<button class="disc-b" data-act="pick" data-i="${i}" aria-label="Choisir ${esc(CD(m.c).n)}">${cardH(m, 'disc', i)}</button>`).join('')}</div></div></div>`;
   if (d.ph === 'hero' && me) {
-    if (!me.hero) return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Choisis ton héros</h2><p class="ov-s">Son pouvoir et son compagnon t'accompagnent toute la partie.</p>${lawsH(d.laws, true)}
+    if (!me.hero) return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Choisis ton héros</h2><p class="ov-s">Son pouvoir et son compagnon t'accompagnent toute la partie.</p>${lawBigH(d)}
       ${heroMedalsH(me)}</div></div>`;
     return `<div class="ov"><div class="ov-box wait">${faceH('art-h-' + me.hero, 'face big')}<h2 class="ov-t">${esc(HEROES[me.hero].n)}</h2><p class="ov-s">En attente des autres joueurs…</p></div></div>`;
   }
@@ -7022,6 +7035,13 @@ function sceneHeroes3D() {
 
 /* ---------- affichage des lois des univers ---------- */
 const famChips = trs => `<span class="famc">${trs.map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span>`;
+// grand encart de la loi de l'univers (écran du choix du héros)
+function lawBigH(d) {
+  const laws = d.laws || []; if (!laws.length) return '';
+  return laws.map(l => { const M = MECHS[l.k] || MECHS.none, u = (SET.univ || []).find(x => x.n === l.u), L = u ? univLook(u) : { col:'#9a7228', ic:M.ic };
+    return `<section class="lawbig" style="--uc:${esc(L.col)}"><span class="lb-em">${icon(M.ic)}</span><div class="lb-t"><small>Univers · ${esc(l.u || '')}</small><b>Loi : ${esc(M.n)}</b><p>${esc(M.d)}</p>
+      <span class="lb-fam">${(l.trs || []).map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span></div></section>`; }).join('');
+}
 function lawsH(laws, compact) {
   if (!laws || !laws.length) return '';
   return `<div class="laws${compact ? ' compact' : ''}">${laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<div class="law" data-tip="${esc(M.n + ' : ' + M.d + ' Familles : ' + l.trs.map(trName).join(', ') + '.')}">${icon(M.ic, 'lic')}<span><b>${esc(M.n)}</b>${compact ? '' : `<small>${esc(l.u)} · ${esc(M.d)}</small>`}</span></div>`; }).join('')}</div>`;

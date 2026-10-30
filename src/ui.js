@@ -503,7 +503,7 @@ function overlayH() {
   if (me && me.disc && d.ph === 'recruit') return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Découverte</h2><p class="ov-s">Choisis un serviteur. Les deux autres retournent dans la réserve.</p>
     <div class="disc">${me.disc.map((m, i) => `<button class="disc-b" data-act="pick" data-i="${i}" aria-label="Choisir ${esc(CD(m.c).n)}">${cardH(m, 'disc', i)}</button>`).join('')}</div></div></div>`;
   if (d.ph === 'hero' && me) {
-    if (!me.hero) return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Choisis ton héros</h2><p class="ov-s">Son pouvoir et son compagnon t'accompagnent toute la partie.</p>${lawsH(d.laws, true)}
+    if (!me.hero) return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Choisis ton héros</h2><p class="ov-s">Son pouvoir et son compagnon t'accompagnent toute la partie.</p>${lawBigH(d)}
       ${heroMedalsH(me)}</div></div>`;
     return `<div class="ov"><div class="ov-box wait">${faceH('art-h-' + me.hero, 'face big')}<h2 class="ov-t">${esc(HEROES[me.hero].n)}</h2><p class="ov-s">En attente des autres joueurs…</p></div></div>`;
   }
@@ -1350,6 +1350,13 @@ function sceneHeroes3D() {
 
 /* ---------- affichage des lois des univers ---------- */
 const famChips = trs => `<span class="famc">${trs.map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span>`;
+// grand encart de la loi de l'univers (écran du choix du héros)
+function lawBigH(d) {
+  const laws = d.laws || []; if (!laws.length) return '';
+  return laws.map(l => { const M = MECHS[l.k] || MECHS.none, u = (SET.univ || []).find(x => x.n === l.u), L = u ? univLook(u) : { col:'#9a7228', ic:M.ic };
+    return `<section class="lawbig" style="--uc:${esc(L.col)}"><span class="lb-em">${icon(M.ic)}</span><div class="lb-t"><small>Univers · ${esc(l.u || '')}</small><b>Loi : ${esc(M.n)}</b><p>${esc(M.d)}</p>
+      <span class="lb-fam">${(l.trs || []).map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span></div></section>`; }).join('');
+}
 function lawsH(laws, compact) {
   if (!laws || !laws.length) return '';
   return `<div class="laws${compact ? ' compact' : ''}">${laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<div class="law" data-tip="${esc(M.n + ' : ' + M.d + ' Familles : ' + l.trs.map(trName).join(', ') + '.')}">${icon(M.ic, 'lic')}<span><b>${esc(M.n)}</b>${compact ? '' : `<small>${esc(l.u)} · ${esc(M.d)}</small>`}</span></div>`; }).join('')}</div>`;
