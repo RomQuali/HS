@@ -866,7 +866,7 @@ const pureX = (p, tr) => p && p.pure === tr ? 2 : 1;
 const awake = G => !!(G && G.eveil && G.rd >= G.eveil);
 const hasFx = (m, k) => (CD(m.c).fxAll || []).some(e => e.k === k);
 // dans l'univers du chakra, les pouvoirs héroïques se paient en chakra
-const powPaid = G => !!(G && inMechAny(G, 'chakra'));
+const powPaid = G => false;   // le pouvoir du héros se paie toujours en or (Ninja compris)
 const powPurse = (G, p) => powPaid(G) ? (p.ck || 0) : p.g;
 // coffres : un par combat, rangés hors de la main ; mineur (égalité ou défaite) ou majeur (victoire), du niveau de la taverne
 const CHEST_COMMON = ['eq_lame', 'eq_armure', 'eq_gants'];

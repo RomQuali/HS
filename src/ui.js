@@ -296,7 +296,7 @@ function elCycleSvg(order, col, title) {
 function chakraLawH(big) {
   const fus = Object.entries(FUSIONS).map(([k, F]) => `<i style="--c:${F.col}">${k.split('+').map(e => ELS[e].n).join(' + ')} = <b>${F.n}</b></i>`).join('');
   return `<span class="ban-law ck-law${big ? ' big' : ''}"><b>Loi · Chakra et éléments</b>
-    <small><b>Chakra :</b> chaque serviteur de l'univers en donne 1 par tour. Il lance les techniques (achetées en or) et le pouvoir de ton héros.</small>
+    <small><b>Chakra :</b> chaque serviteur de l'univers en donne 1 par tour. Il lance les techniques (achetées en or). Le pouvoir du héros, lui, se paie en or.</small>
     <small><b>Compagnon :</b> il prend l'élément de ta dernière technique (utile pour la domination) et gagne le pouvoir hybride de chaque combo.</small>
     <small><b>Entraînement :</b> ton compagnon commence en jeu, déjà triplé, à côté de ton héros (il ne prend pas de place sur le plateau). En combat, il affronte uniquement le compagnon adverse et ne blesse jamais le héros : ce duel décide du coffre du niveau de ta taverne (majeur s'il gagne, mineur sinon). Il porte 5 pièces (lame, armure, bandeau, gantelets, talisman) : chaque coffre propose 3 améliorations au choix, de rareté Normal, Héroïque, Épique ou Légendaire. Un coffre majeur et une taverne haute donnent de meilleures raretés ; une amélioration Épique ou Légendaire ajoute aussi une technique à ta main.</small>
     <span class="elx">
@@ -601,7 +601,7 @@ function comboWatch() {
 function ckGauge(d, me) {
   const law = (d.laws || []).find(l => l.k === 'chakra'); if (!law) return '';
   const ck = me.ck || 0, inc = (me.bd || []).filter(m => (law.trs || []).includes(CD(m.c).tr)).length;
-  return `<div class="purse ckp" aria-label="${ck} chakra sur 10" data-tip="Chakra : il lance tes techniques ninja et le pouvoir de ton héros. Chaque serviteur des Cinq Nations en génère 1 au début de ton tour (10 au plus).${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ck}<small>/10</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:10 }, (_, k) => `<i class="ckc${k < ck ? '' : ' off'}"></i>`).join('')}</span>${clanCtrH(me)}</div>`;
+  return `<div class="purse ckp" aria-label="${ck} chakra sur 10" data-tip="Chakra : il lance tes techniques ninja (le pouvoir du héros se paie en or). Chaque serviteur des Cinq Nations en génère 1 au début de ton tour (10 au plus).${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ck}<small>/10</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:10 }, (_, k) => `<i class="ckc${k < ck ? '' : ' off'}"></i>`).join('')}</span>${clanCtrH(me)}</div>`;
 }
 // compteurs de clan (braises, marée, charge) sous le chakra
 const clanCtrH = me => { const c = [['braise', 'Braises', '#ff9a5a', 'Braises (Clan du Feu) : chaque technique les attise. Après l\'Éveil, Phénix : tes serviteurs du Feu gagnent +1/+1 par paire de braises et Renaissance.'], ['maree', 'Marée', '#6fc8ff', 'Marée (Clan de l\'Eau) : elle monte à chaque fin de tour. Après l\'Éveil, raz-de-marée : tous tes serviteurs gagnent +1/+1 par tranche de 4.'], ['charge', 'Charge', '#ffe14a', 'Charge (Clan de la Foudre) : elle s\'accumule à chaque fin de tour. Après l\'Éveil, orage total : la moitié frappe l\'ennemi au début de chaque combat.']].filter(([k]) => me[k]);
