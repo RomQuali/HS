@@ -1870,6 +1870,16 @@ body.cs-entering #scene *{animation-play-state:running!important}
   .eqm,.eqm svg{width:40px;height:40px}
   .train .chest{width:62px;padding:3px 3px 2px} .train .chest svg{width:32px;height:26px}
 }
+/* chakra affiché comme l'or : nombre + rangée de pièces bleues */
+.purses{display:flex;flex-direction:column;gap:6px}
+.purse.ckp b{color:#8fdcff;text-shadow:0 2px 0 #0c1a3a,0 0 10px rgba(110,200,255,.6)}
+.purse.ckp b small{color:#5a8ab8}
+.ckc{display:block;width:15px;height:15px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e8fcff,#6fd0ff 55%,#2a6ad8);box-shadow:0 0 0 1.5px #0c2a6a,0 0 6px rgba(110,200,255,.6)}
+.ckc.off{background:#14243a;box-shadow:inset 0 0 0 1.5px #2a4a6a}
+.purse.ckp .inc{color:#8fdcff}
+@media (min-width:821px){ .hero-zone .purses .purse b{font-size:22px} .hero-zone .purses .coin,.hero-zone .purses .ckc{width:13px;height:13px} }
+.purse.ckp .coinrow{flex-wrap:nowrap}
+@media (min-width:821px){ .hero-zone .purses .ckc{width:11px;height:11px} .purses{gap:3px} .hero-zone .purses .purse{gap:1px} }
 </style>
 </head><body>
 
@@ -6627,9 +6637,9 @@ function gameH() {
       : `<span class="powm passive" aria-label="${esc(hero ? hero.tx : '')}">${hero ? powArtH(me.hero) : icon('crown')}<small>Passif</small>${hero ? `<span class="pc-tx">${esc(hero.tx)}</span>` : ''}</span>`;
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
-      <div class="hz-left">${ckGauge(d, me)}${trainH(d, me, canAct)}<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span></div>
+      <div class="hz-left">${trainH(d, me, canAct)}<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span></div>
       <div class="hz-hero" data-hov="hero"><span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? 'art-h-' + me.hero : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span></div>
-      <div class="hz-right"><span class="hov" data-hov="pow">${power}</span>${coins}</div>
+      <div class="hz-right"><span class="hov" data-hov="pow">${power}</span><span class="purses">${coins}${canAct ? ckGauge(d, me) : ''}</span></div>
       <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}">${icon('bell')}<span>${me.rdy ? 'Prêt !' : 'Prêt'}</span></button></div></section>`;
     const n = me.hd.length;
     const hand = fighting ? '' : `<section class="hand" data-drop="hd" aria-label="Ta main · ${n}/10"><div class="fan${n > 7 ? ' many' : n > 4 ? ' some' : ''}" style="--n:${n}">${n ? me.hd.map((m, i) => { const o = i - (n - 1) / 2, op = { drag:canAct, style:`--o:${f1(o)};--o2:${f1(o * o)}` }; return m.sp ? spellCardH(m.sp, 'hd', i, op) : cardH(m, 'hd', i, op); }).join('') : ''}</div></section>`;
@@ -6672,11 +6682,9 @@ function trainH(d, me, canAct) {
 }
 // la jauge de chakra (univers des Cinq Nations) : un grand orbe bleu et dix perles
 function ckGauge(d, me) {
-  if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
-  const ck = me.ck || 0, inc = (me.bd || []).filter(m => (V.pub.laws.find(l => l.k === 'chakra').trs || []).includes(CD(m.c).tr)).length;
-  return `<div class="ckg" data-tip="Chakra : il sert à lancer tes techniques ninja. Chaque serviteur des Cinq Nations en génère 1 au début de ton tour (10 au plus).">
-    <span class="ckg-orb${ck ? '' : ' empty'}">${icon('k_spark')}<b>${ck}</b></span>
-    <span class="ckg-r"><small>Chakra${inc ? ` · +${inc} au prochain tour` : ''}</small><span class="ckg-p">${Array.from({ length:10 }, (_, k) => `<i class="${k < ck ? 'on' : ''}"></i>`).join('')}</span></span></div>`;
+  const law = (d.laws || []).find(l => l.k === 'chakra'); if (!law) return '';
+  const ck = me.ck || 0, inc = (me.bd || []).filter(m => (law.trs || []).includes(CD(m.c).tr)).length;
+  return `<div class="purse ckp" aria-label="${ck} chakra sur 10" data-tip="Chakra : il lance tes techniques ninja et équipe ton compagnon. Chaque serviteur des Cinq Nations en génère 1 au début de ton tour (10 au plus).${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ck}<small>/10</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:10 }, (_, k) => `<i class="ckc${k < ck ? '' : ' off'}"></i>`).join('')}</span></div>`;
 }
 const medal = (act, ic, label, cost, dis, on) => `<button class="medal${on ? ' on' : ''}" data-act="${act}" ${dis ? 'disabled' : ''} title="${label}">${icon(ic)}${cost != null ? `<span class="cost">${cost}</span>` : ''}<small>${label}</small></button>`;
 function compMedal(canAct, own) {
