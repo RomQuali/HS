@@ -1896,6 +1896,7 @@ body.cs-entering #scene *{animation-play-state:running!important}
 @keyframes chrevIn{from{opacity:0}}
 @keyframes chrevCard{from{opacity:0;transform:scale(.3) rotate(-10deg)}}
 @media (max-height:540px){ .chrev-c{--hw:min(150px,30vw)} .chrev-t{font-size:24px} }
+.pcost.ck{color:#fff;background:radial-gradient(circle at 38% 32%,#bfe8ff,#2a6ad8 60%,#0c2a6a);box-shadow:0 0 0 2px #0c1a3a,0 0 0 3.5px #bfe8ff}
 </style>
 </head><body>
 
@@ -2846,6 +2847,9 @@ function checkTriple(G, p) {
   }
 }
 const CK_MAX = 10;
+// dans l'univers du chakra, les pouvoirs héroïques se paient en chakra
+const powPaid = G => !!(G && inMechAny(G, 'chakra'));
+const powPurse = (G, p) => powPaid(G) ? (p.ck || 0) : p.g;
 // coffres : un par combat, rangés hors de la main ; mineur (égalité ou défaite) ou majeur (victoire), du niveau de la taverne
 const CHEST_COMMON = ['eq_lame', 'eq_armure', 'eq_gants'];
 const EQS_MAX = 8;
@@ -2907,7 +2911,7 @@ const OPS = {
   comp(G, p) { const id = compOf(p.hero); if (!id || !C[id] || (p.cb || 0) >= compLimit(G.rd) || p.g < 3 || p.hd.length >= 10) return false; p.g -= 3; p.cb = (p.cb || 0) + 1; p.hd.push(mk(id, 0)); checkTriple(G, p); return true; },
   pow(G, p) { return withSrc(HEROES[p.hero] ? 'Pouvoir de ' + HEROES[p.hero].n.split(' ')[0] : null, () => OPS.pow0(G, p)); },
   pow0(G, p) {
-    const h = HEROES[p.hero]; if (!h || !h.cost || p.pu || p.g < h.cost) return false;
+    const h = HEROES[p.hero]; if (!h || !h.cost || p.pu || powPurse(G, p) < h.cost) return false;
     if (h.pw && !powRun(G, p, h.pw)) return false;
     if (p.hero === 'egide') { const c = p.bd.filter(m => !has(m, 's')); if (!c.length) return false; addF(pickR(c), 's'); }
     if (p.hero === 'ondine') { if (!p.bd.length) return false; buff(pickR(p.bd), 1, 2); }
@@ -2920,7 +2924,7 @@ const OPS = {
     if (p.hero === 'grumbo') { if (!p.bd.length) return false; const t = p.bd.slice().sort((a, b) => b.a - a.a)[0]; buff(t, 3, 3); }
     if (p.hero === 'vaskor') { if (p.bd.length >= 7 || !C.m_squelette) return false; const t = mk('m_squelette', 0); addF(t, 'r'); p.bd.push(t); }
     if (p.hero === 'oren') { if (p.hd.length >= 10) return false; const m = drawOne(G, 6, p.t); if (!m) return false; p.hd.push(m); checkTriple(G, p); }
-    p.g -= h.cost; p.pu = true; trigBoard(G, p, 'pow'); return true;
+    if (powPaid(G)) p.ck -= h.cost; else p.g -= h.cost; p.pu = true; trigBoard(G, p, 'pow'); return true;
   },
   rdy(G, p) { p.rdy = !p.rdy; return true; },
   // entraînement : les coffres s'ouvrent gratuitement, les équipements se rangent comme des médailles
@@ -2974,7 +2978,7 @@ function powRun(G, p, w) {
 }
 // le pouvoir a-t-il un effet possible maintenant ? (même règles que pow0, sans rien modifier)
 function powCan(p, rd) {
-  const h = HEROES[p.hero]; if (!h || !h.cost || p.pu || p.g < h.cost) return false;
+  const h = HEROES[p.hero]; if (!h || !h.cost || p.pu || (p.ckPay ? (p.ck || 0) : p.g) < h.cost) return false;
   if (h.pw) return powCanW(p, h.pw);
   const bd = p.bd || [], hd = p.hd || [], tr = t => bd.some(m => tribe(m) === t);
   switch (p.hero) {
@@ -3017,7 +3021,7 @@ function aiTurn(G, p) {
     if (p.t < 6 && p.g >= c && (G.rd >= targetRound[p.t] || p.g - c >= 3)) { OPS.up(G, p); acted = true; continue; }
     const hc = HEROES[p.hero] && HEROES[p.hero].cost;
     const nonoWait = p.hero === 'nono' && (G.rd < 3 || ((p.fb || 1) < 4 && G.rd < 9));
-    if (hc && !nonoWait && !p.pu && p.g >= hc && p.g - hc >= 3 && (p.bd.length || p.hero === 'oren' || p.hero === 'nono')) { if (OPS.pow(G, p)) { acted = true; continue; } }
+    if (hc && !nonoWait && !p.pu && (powPaid(G) ? (p.ck || 0) >= hc : p.g >= hc && p.g - hc >= 3) && (p.bd.length || p.hero === 'oren' || p.hero === 'nono')) { if (OPS.pow(G, p)) { acted = true; continue; } }
     aiPlayAll(G, p);
     if (p.g >= 3 && p.sh.length) {
       let bi = 0; p.sh.forEach((m, i) => { if (aiScore(p, m) > aiScore(p, p.sh[bi])) bi = i; });
@@ -3172,7 +3176,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, ck:p.ck || 0, chests:p.chests || null, eqs:p.eqs || [], mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, ck:p.ck || 0, ckPay:powPaid(H.G) ? 1 : 0, chests:p.chests || null, eqs:p.eqs || [], mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;
@@ -6654,7 +6658,7 @@ function gameH() {
       <div class="line" id="bdrow">${boardRow}</div></section>`;
     const nono = me.hero === 'nono', locked = nono && (me.rd || 0) < 3;
     const powSub = nono ? `${me.fb} dégât${me.fb > 1 ? 's' : ''}` : me.pu ? 'Utilisé' : '';
-    const power = hero && hero.cost ? `<button class="powm${me.pu ? ' used' : ''}${canAct && !locked && powCan(me, me.rd || (V.pub && V.pub.rd)) ? ' can' : ''}" data-act="pow" ${!canAct || me.pu || locked || me.g < hero.cost ? 'disabled' : ''} aria-label="${esc(hero.n + ' : ' + hero.tx)}"><span class="pcost">${hero.cost}</span>${powArtH(me.hero)}<small>${locked ? 'Manche 3' : powSub || powerTitle(hero)[0] || 'Pouvoir'}</small><span class="pc-tx">${esc(powerTitle(hero)[1])}</span></button>`
+    const power = hero && hero.cost ? `<button class="powm${me.pu ? ' used' : ''}${canAct && !locked && powCan(me, me.rd || (V.pub && V.pub.rd)) ? ' can' : ''}" data-act="pow" ${!canAct || me.pu || locked || (me.ckPay ? (me.ck || 0) : me.g) < hero.cost ? 'disabled' : ''} aria-label="${esc(hero.n + ' : ' + hero.tx + ' Coût : ' + hero.cost + (me.ckPay ? ' chakra.' : ' or.'))}"><span class="pcost${me.ckPay ? ' ck' : ''}">${hero.cost}</span>${powArtH(me.hero)}<small>${locked ? 'Manche 3' : powSub || powerTitle(hero)[0] || 'Pouvoir'}</small><span class="pc-tx">${esc(powerTitle(hero)[1])}</span></button>`
       : `<span class="powm passive" aria-label="${esc(hero ? hero.tx : '')}">${hero ? powArtH(me.hero) : icon('crown')}<small>Passif</small>${hero ? `<span class="pc-tx">${esc(hero.tx)}</span>` : ''}</span>`;
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
@@ -6772,7 +6776,7 @@ function heroMedalsH(me) {
       <span class="md-coin"><span class="md-in"></span>${faceH('art-h-' + h)}<span class="md-gem" title="${x.cost ? 'Coût du pouvoir' : 'Pouvoir passif'}">${x.cost || '∞'}</span><span class="md-shine"></span></span>
       <span class="md-rib">${esc(x.n)}</span>${famChips(heroFam(h))}
       ${c ? `<span class="md-chain"></span><span class="md-comp">${faceH('art-' + cid)}<small><b>${esc(c.n)} ${c.a}/${c.h}</b><br>${esc(fxText((c.fx || [])[0] || {}))}</small></span>` : ''}
-      <span class="md-tx"><b>${x.cost ? `Pouvoir · ${x.cost} or` : 'Passif'} ·</b> ${esc(x.tx.replace(/^Passif : /, ''))}</span>
+      <span class="md-tx"><b>${x.cost ? `Pouvoir · ${x.cost} ${V.pub && (V.pub.laws || []).some(l => l.k === 'chakra') ? 'chakra' : 'or'}` : 'Passif'} ·</b> ${esc(x.tx.replace(/^Passif : /, ''))}</span>
     </button>`;
   }).join('');
   return `<div class="mds">${md}</div><button class="t-go md-go" data-act="hero" data-h="${sel}">Porter le médaillon de ${esc(HEROES[sel].n.split(' ')[0])}</button>`;

@@ -444,7 +444,7 @@ function gameH() {
       <div class="line" id="bdrow">${boardRow}</div></section>`;
     const nono = me.hero === 'nono', locked = nono && (me.rd || 0) < 3;
     const powSub = nono ? `${me.fb} dégât${me.fb > 1 ? 's' : ''}` : me.pu ? 'Utilisé' : '';
-    const power = hero && hero.cost ? `<button class="powm${me.pu ? ' used' : ''}${canAct && !locked && powCan(me, me.rd || (V.pub && V.pub.rd)) ? ' can' : ''}" data-act="pow" ${!canAct || me.pu || locked || me.g < hero.cost ? 'disabled' : ''} aria-label="${esc(hero.n + ' : ' + hero.tx)}"><span class="pcost">${hero.cost}</span>${powArtH(me.hero)}<small>${locked ? 'Manche 3' : powSub || powerTitle(hero)[0] || 'Pouvoir'}</small><span class="pc-tx">${esc(powerTitle(hero)[1])}</span></button>`
+    const power = hero && hero.cost ? `<button class="powm${me.pu ? ' used' : ''}${canAct && !locked && powCan(me, me.rd || (V.pub && V.pub.rd)) ? ' can' : ''}" data-act="pow" ${!canAct || me.pu || locked || (me.ckPay ? (me.ck || 0) : me.g) < hero.cost ? 'disabled' : ''} aria-label="${esc(hero.n + ' : ' + hero.tx + ' Coût : ' + hero.cost + (me.ckPay ? ' chakra.' : ' or.'))}"><span class="pcost${me.ckPay ? ' ck' : ''}">${hero.cost}</span>${powArtH(me.hero)}<small>${locked ? 'Manche 3' : powSub || powerTitle(hero)[0] || 'Pouvoir'}</small><span class="pc-tx">${esc(powerTitle(hero)[1])}</span></button>`
       : `<span class="powm passive" aria-label="${esc(hero ? hero.tx : '')}">${hero ? powArtH(me.hero) : icon('crown')}<small>Passif</small>${hero ? `<span class="pc-tx">${esc(hero.tx)}</span>` : ''}</span>`;
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
@@ -562,7 +562,7 @@ function heroMedalsH(me) {
       <span class="md-coin"><span class="md-in"></span>${faceH('art-h-' + h)}<span class="md-gem" title="${x.cost ? 'Coût du pouvoir' : 'Pouvoir passif'}">${x.cost || '∞'}</span><span class="md-shine"></span></span>
       <span class="md-rib">${esc(x.n)}</span>${famChips(heroFam(h))}
       ${c ? `<span class="md-chain"></span><span class="md-comp">${faceH('art-' + cid)}<small><b>${esc(c.n)} ${c.a}/${c.h}</b><br>${esc(fxText((c.fx || [])[0] || {}))}</small></span>` : ''}
-      <span class="md-tx"><b>${x.cost ? `Pouvoir · ${x.cost} or` : 'Passif'} ·</b> ${esc(x.tx.replace(/^Passif : /, ''))}</span>
+      <span class="md-tx"><b>${x.cost ? `Pouvoir · ${x.cost} ${V.pub && (V.pub.laws || []).some(l => l.k === 'chakra') ? 'chakra' : 'or'}` : 'Passif'} ·</b> ${esc(x.tx.replace(/^Passif : /, ''))}</span>
     </button>`;
   }).join('');
   return `<div class="mds">${md}</div><button class="t-go md-go" data-act="hero" data-h="${sel}">Porter le médaillon de ${esc(HEROES[sel].n.split(' ')[0])}</button>`;

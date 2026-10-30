@@ -1888,3 +1888,4 @@ body.cs-entering #scene *{animation-play-state:running!important}
 @keyframes chrevIn{from{opacity:0}}
 @keyframes chrevCard{from{opacity:0;transform:scale(.3) rotate(-10deg)}}
 @media (max-height:540px){ .chrev-c{--hw:min(150px,30vw)} .chrev-t{font-size:24px} }
+.pcost.ck{color:#fff;background:radial-gradient(circle at 38% 32%,#bfe8ff,#2a6ad8 60%,#0c2a6a);box-shadow:0 0 0 2px #0c1a3a,0 0 0 3.5px #bfe8ff}
