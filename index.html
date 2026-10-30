@@ -6190,7 +6190,8 @@ function doAct(act, btn) {
 }
 // glisser-déposer : la carte décolle et suit le pointeur (souris comme doigt)
 let DRAG = null, DC = null;
-const dropAllowed = (from, to) => ((from === 'sh' || from === 'ss') && to === 'hd') || (from === 'hd' && to === 'bd') || (from === 'bd' && (to === 'bd' || to === 'sh'));
+// achat : la main ou le plateau ; jouer depuis la main : le plateau ou la taverne
+const dropAllowed = (from, to, sp) => ((from === 'sh' || from === 'ss') && (to === 'hd' || to === 'bd')) || (from === 'hd' && (to === 'bd' || (to === 'sh' && !(sp && SPELLS[sp] && SPELLS[sp].tg)))) || (from === 'bd' && (to === 'bd' || to === 'sh'));
 const dragLayer = (() => { const l = document.createElement('div'); l.id = 'dragl'; l.setAttribute('aria-hidden', 'true'); l.hidden = true; document.body.appendChild(l); return l; })();
 document.addEventListener('dragstart', e => { if (V.screen === 'game') e.preventDefault(); });
 document.addEventListener('pointerdown', e => {
@@ -6229,7 +6230,7 @@ function dragStart(d, x, y) {
     dragLayer.style.transform = `translate(${f1(DRAG.ax)}px,${f1(DRAG.ay)}px)`;
   }
   c.classList.add('drag-src'); document.body.classList.add('dragging');
-  document.querySelectorAll('[data-drop]').forEach(z => { if (dropAllowed(DRAG.z, z.dataset.drop)) z.classList.add('drop-can'); });
+  document.querySelectorAll('[data-drop]').forEach(z => { if (dropAllowed(DRAG.z, z.dataset.drop, DRAG.sp)) z.classList.add('drop-can'); });
   dragMove(x, y);
   const tick = () => { if (!DRAG) return; if (DRAG.aim) { const cc = dragLayer.firstChild; if (cc) cc.style.transform = 'scale(1.12)'; return; } DRAG.vx *= 0.82; const rot = Math.max(-20, Math.min(20, DRAG.vx * 1.4)); DRAG.rot += (rot - DRAG.rot) * 0.35; const cc = dragLayer.firstChild; if (cc) cc.style.transform = `rotate(${f1(DRAG.rot)}deg) scale(1.14)`; requestAnimationFrame(tick); };
   requestAnimationFrame(tick);
@@ -6260,16 +6261,18 @@ function dragMove(x, y) {
   dragLayer.style.transform = `translate(${f1(x - D.w / 2)}px,${f1(y - D.h * .42)}px)`;
   const t = document.elementFromPoint(x, y);
   const z = t && t.closest ? t.closest('[data-drop]') : null;
-  const ok = z && dropAllowed(D.z, z.dataset.drop) ? z : null;
+  const ok = z && dropAllowed(D.z, z.dataset.drop, D.sp) ? z : null;
   if (D.zone !== ok) { if (D.zone) D.zone.classList.remove('drop-ok'); if (ok) ok.classList.add('drop-ok'); D.zone = ok; }
   document.querySelectorAll('.mk-l,.mk-r,.tg-hover').forEach(el => el.classList.remove('mk-l', 'mk-r', 'tg-hover'));
   const to = ok ? ok.dataset.drop : null;
   let tag = '';
   if (to === 'bd' && D.sp) { const tm = t.closest('.mn'); if (SPELLS[D.sp] && SPELLS[D.sp].tg) { if (tm && tm.dataset.z === 'bd') { tm.classList.add('tg-hover'); tag = 'Lancer'; } else tag = 'Vise un serviteur'; } else tag = 'Lancer'; }
+  else if (to === 'bd' && (D.z === 'sh' || D.z === 'ss')) tag = D.z === 'ss' ? 'Acheter le sort' : 'Acheter · 3 or';
+  else if (to === 'sh' && D.z === 'hd') tag = D.sp ? 'Lancer' : 'Jouer';
   else if (to === 'bd') { const { cards, pos } = boardPos(ok, x); if (cards[pos - 1]) cards[pos - 1].classList.add('mk-l'); if (cards[pos]) cards[pos].classList.add('mk-r'); tag = D.z === 'hd' ? 'Jouer' : 'Déplacer'; }
   else if (to === 'hd') tag = D.z === 'ss' ? 'Acheter le sort' : 'Acheter · 3 or';
   else if (to === 'sh') tag = 'Vendre · +1 or';
-  const tg = dragLayer.querySelector('.dragtag'); if (tg) { tg.hidden = !tag; tg.textContent = tag; tg.classList.toggle('sell', to === 'sh'); }
+  const tg = dragLayer.querySelector('.dragtag'); if (tg) { tg.hidden = !tag; tg.textContent = tag; tg.classList.toggle('sell', to === 'sh' && D.z === 'bd'); }
 }
 function dragEnd(x, y, cancel) {
   const D = DRAG; DRAG = null;
@@ -6285,7 +6288,7 @@ function dragEnd(x, y, cancel) {
   if (D.aim) {
     const tgt = cancel ? null : aimTarget(x, y);
     if (tgt) { const r = tgt.getBoundingClientRect(); V.sel = null; sendAct({ t:'cast', i:D.i, tg:+tgt.dataset.i }); fxRing(r.left + r.width / 2, r.top + r.height * .45, '#d8b8ff', 1.6); fxBurst(r.left + r.width / 2, r.top + r.height * .45, 'magic', 22, 1.2); sent = true; }
-  } else if (z && dropAllowed(D.z, z.dataset.drop)) {
+  } else if (z && dropAllowed(D.z, z.dataset.drop, D.sp)) {
     V.dropFrom = cr ? { u:D.u, r:cr, z:D.z, at:Date.now() } : null;
     sent = doDrop(z.dataset.drop, D, t, x, z);
   }
@@ -6309,6 +6312,7 @@ function doDrop(to, D, t, x, z) {
   }
   if (from === 'sh') { sendAct({ t:'buy', i }); return true; }
   if (from === 'bd' && to === 'sh') { sendAct({ t:'sell', i }); return true; }
+  if (from === 'hd' && to === 'sh') { sendAct({ t:'play', i, pos:(V.me && V.me.bd ? V.me.bd.length : 0) }); return true; }
   const { pos } = boardPos(z, x);
   if (from === 'hd') sendAct({ t:'play', i, pos }); else { if (pos === i) return false; sendAct({ t:'move', i, to:pos }); }
   return true;
