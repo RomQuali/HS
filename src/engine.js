@@ -891,6 +891,8 @@ const UPS = {
   gants:[['+1/+2', c => buff(c, 1, 2)], ['+2/+3', c => buff(c, 2, 3)], ['+2/+2 et Furie des vents', c => { buff(c, 2, 2); addF(c, 'w'); }], ['Après avoir attaqué : gagne +3/+3', c => xAdd(c, { k:'atk_self', a:3, h:3 }, 'Gantelets du vent')]],
   talisman:[['+1/+1', c => buff(c, 1, 1)], ['Domination : +2/+2 de plus', c => { c.domb = (c.domb || 0) + 2; }], ['Domination : +4/+4 de plus', c => { c.domb = (c.domb || 0) + 4; }], ['+3/+3 et domination : +6/+6 de plus', c => { buff(c, 3, 3); c.domb = (c.domb || 0) + 6; }]],
 };
+const UPS_MAX = 8;
+const upgCost = o => 1 + o.r;   // Normal 1 · Héroïque 2 · Épique 3 · Légendaire 4 chakra
 const upTx = o => (UPS[o.pc] && UPS[o.pc][o.r] || [''])[0];
 // rareté : meilleure avec un coffre majeur (duel gagné) et une taverne haute
 function rollRar(q, t) {
@@ -1017,7 +1019,12 @@ const OPS = {
     return true;
   },
   // choisir une des 3 améliorations du coffre
-  upick(G, p, a) { const o = p.choice && p.choice[a.i]; if (!o || !p.cp) return false; applyUp(p.cp, o); p.choice = null; p.lastUp = o; return true; },
+  upick(G, p, a) { const o = p.choice && p.choice[a.i]; if (!o || !p.cp) return false; applyUp(p.cp, o);
+    // les 2 améliorations non choisies restent dans l'entraînement (8 au plus : on garde les plus rares)
+    p.ups = (p.ups || []).concat(p.choice.filter((x, i) => i !== a.i)).sort((x, y) => y.r - x.r).slice(0, UPS_MAX);
+    p.choice = null; p.lastUp = o; return true; },
+  // poser une amélioration rangée : coûte du chakra selon sa rareté
+  uapply(G, p, a) { const o = (p.ups || [])[a.i]; if (!o || !p.cp) return false; const c = upgCost(o); if ((p.ck || 0) < c) return false; p.ck -= c; applyUp(p.cp, o); p.ups.splice(a.i, 1); return true; },
   // équiper le compagnon coûte du chakra
   equip(G, p, a) {
     const id = (p.eqs || [])[a.i]; if (!id || !SPELLS[id]) return false;
@@ -1302,7 +1309,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, choice:p.choice || null, pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, choice:p.choice || null, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;

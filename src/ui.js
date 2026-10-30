@@ -521,6 +521,14 @@ function piecesH(c) {
     const tip = `${PIECES[pc].n}${L.length ? ' : ' + L.map(r => RARS[r].n + ' (' + upTx({ pc, r }) + ')').join(' · ') : ' : aucune amélioration'}`;
     return `<span class="pcs" style="--rc:${col}" data-tip="${esc(tip)}" aria-label="${esc(tip)}">${pieceIco(pc)}${L.length ? `<b class="pcs-n">${L.length}</b>` : ''}</span>`; }).join('');
 }
+// survol d'une amélioration rangée : la carte de la pièce, sa rareté, son effet, son coût et ce que la pièce a déjà
+function upPeekH(me, i) {
+  const o = (me.ups || [])[i]; if (!o) return '';
+  const R = RARS[o.r], L = pieceList(me.cp, o.pc), c = upgCost(o), ok = (me.ck || 0) >= c;
+  return `<div class="uppk" style="--rc:${R.col}"><span class="upc-r">${R.n}</span>${pieceIco(o.pc, 'big')}<b>${esc(PIECES[o.pc].n)}</b><span class="upc-tx">${esc(upTx(o))}</span>
+    <span class="uppk-c">${ckMarkH(c)}<small>${ok ? 'Clique pour la poser sur ton compagnon' : `Il te faut ${c} chakra`}</small></span>
+    <small class="uppk-h">${L.length ? 'Déjà sur cette pièce : ' + L.map(r => `<em style="color:${RARS[r].col}">${RARS[r].n}</em>`).join(', ') : 'Aucune amélioration sur cette pièce'}</small></div>`;
+}
 // coffre ouvert : 3 améliorations au choix (et la technique bonus éventuelle)
 function choiceH(d, me) {
   if (!me || !me.choice || !me.cp || Date.now() < (V.choiceAt || 0) || d.ph !== 'recruit') return '';
@@ -534,7 +542,10 @@ function choiceH(d, me) {
 }
 function trainH(d, me, canAct) {
   if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
-  if (me.cp) return `<section class="train" aria-label="Entraînement"><b class="tr-h">Entraînement · pièces du compagnon</b><div class="tr-row med pcs-row">${piecesH(me.cp)}</div></section>`;
+  if (me.cp) { const ups = me.ups || [];
+    const md = ups.map((o, i) => { const c = upgCost(o), ok = canAct && (me.ck || 0) >= c;
+      return `<button class="upm" style="--rc:${RARS[o.r].col}" data-act="uapply" data-i="${i}" data-hov="upm" ${ok ? '' : 'aria-disabled="true"'} aria-label="${esc(PIECES[o.pc].n + ' ' + RARS[o.r].n + ' : ' + upTx(o) + '. Poser coûte ' + c + ' chakra.')}">${pieceIco(o.pc)}<span class="upm-c">${ckMarkH(c)}</span></button>`; }).join('');
+    return `<section class="train" aria-label="Entraînement"><b class="tr-h">Entraînement · améliorations en réserve</b><div class="tr-row med pcs-row">${md || '<small class="tr-e">Les améliorations que tu ne choisis pas dans les coffres se rangent ici.</small>'}</div></section>`; }
   const ks = Object.keys(me.chests || {}).filter(k => me.chests[k] > 0).sort((a, b) => a.slice(3) - b.slice(3) || (a < b ? 1 : -1));
   const comps = me.cp ? [me.cp] : (me.bd || []).filter(isComp), full = (me.eqs || []).length >= EQS_MAX;
   const chests = ks.map(k => { const q = k.slice(0, 3), t = +k.slice(3);
@@ -878,6 +889,7 @@ function doAct(act, btn) {
     case 'skip': if (V.fight) { clearTimeout(V.fightT); clearTimeout(V.duelT); if (V.fight.dr) { V.di = V.fight.dr.frames.length - 1; V.fight.ddone = true; } if (V.fight.lunge) { try { V.fight.lunge.cancel(); } catch (e) {} V.fight.lunge = null; } V.fi = V.fight.r.frames.length - 1; V.fight.done = true; render(); fxEnd(); } break;
     case 'buy': if (s) { sendAct({ t:'buy', i:s.i }); V.sel = null; } break;
     case 'buysp': sendAct({ t:'buysp' }); V.sel = null; break;
+    case 'uapply': { const o = V.me && (V.me.ups || [])[+btn.dataset.i]; if (o && (V.me.ck || 0) < upgCost(o)) { toast(`Il te faut ${upgCost(o)} chakra pour poser cette amélioration.`); break; } sendAct({ t:'uapply', i:+btn.dataset.i }); hidePeek(); break; }
     case 'upick': sendAct({ t:'upick', i:+btn.dataset.i }); hidePeek(); break;
     case 'chest': V.chestRev = { eq:(V.me && V.me.eqs || []).slice(), hd:(V.me && V.me.hd || []).map(x => x.u), at:Date.now() }; fxChest(btn); { const o = btn.closest('.bigchest'); if (o) o.remove(); } sendAct({ t:'chest' }); break;
     case 'equip': if (btn.getAttribute('aria-disabled') === 'true') { toast(btn.dataset.why || ''); break; } sendAct({ t:'equip', i:+btn.dataset.i }); hidePeek(); break;
@@ -1092,6 +1104,7 @@ function showPeek(t, touch) {
     else if ((hv === 'pow' || hv === 'hero') && HEROES[V.me.hero]) { const h = HEROES[V.me.hero]; html = heroCardH(V.me.hero, { foot:h.cost ? (V.me.pu ? 'Déjà utilisé ce tour' : h.minRound && (V.me.rd || 0) < h.minRound ? `Disponible dès la manche ${h.minRound}` : 'Disponible') : 'Toujours actif' }); }
     else if (hv === 'comp' && compOf(V.me.hero) && C[compOf(V.me.hero)]) html = compCardH(V.me.hero, compOf(V.me.hero), V.me);
     else if (hv === 'rsv') html = rsvPeekH(V.me);
+    else if (hv === 'upm') html = upPeekH(V.me, +t.dataset.i);
     if (html) { peekFor = t; peekEl.innerHTML = html; peekEl.hidden = false; const q = peekEl.firstElementChild.getBoundingClientRect(); placePeek(r, q.width, q.height, touch); return true; }
   }
   // héros, pouvoir, adversaires, boutons : une bulle d'explication
@@ -1772,4 +1785,18 @@ svg.ck-gem.aff{box-shadow:none;filter:drop-shadow(0 0 5px rgba(155,227,106,.95))
 @keyframes usableR{0%,100%{box-shadow:0 0 0 2px #120a06,0 0 0 9px #d8a84a,0 0 0 11px #120a06,0 0 0 13px #6fd0ff,0 0 22px 8px rgba(80,180,255,.7)}50%{box-shadow:0 0 0 2px #120a06,0 0 0 9px #f2c14e,0 0 0 11px #120a06,0 0 0 14px #9fe4ff,0 0 34px 12px rgba(80,180,255,.9)}}
 :root body .hero-zone .powm.used,:root body .hero-zone .powm:disabled{filter:saturate(.6) brightness(.85)}
 @media (max-width:820px),(max-height:540px){ :root body .hero-zone .powm:not(.passive),:root body .hero-zone .powm.passive{width:60px;height:60px;margin:10px 4px;box-shadow:0 0 0 2px #120a06,0 0 0 6px #d8a84a,0 0 0 8px #120a06} :root body .hero-zone .powm small{display:none} }
+`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `
+.upm{position:relative;flex:none;width:44px;height:44px;padding:0;border:0;border-radius:50%;cursor:pointer;background:none;box-shadow:0 0 0 3px var(--rc),0 0 10px var(--rc)}
+.upm .pc-ico{width:100%;height:100%;display:block}
+.upm[aria-disabled="true"]{filter:saturate(.55) brightness(.8)}
+.upm-c{position:absolute;right:-8px;top:-10px;width:22px;height:24px}
+.upm-c .ckm{width:100%;height:100%}
+.uppk{width:210px;display:grid;justify-items:center;gap:6px;padding:12px 12px 12px;border-radius:16px;text-align:center;color:#f1e4c6;background:linear-gradient(180deg,rgba(40,28,20,.98),rgba(18,12,8,.98));box-shadow:0 0 0 3px var(--rc),0 0 20px color-mix(in srgb,var(--rc) 55%,transparent),0 12px 24px rgba(0,0,0,.6)}
+.uppk .pc-ico.big{width:84px;height:84px;border-radius:50%;box-shadow:0 0 0 3px var(--rc),0 0 16px var(--rc)}
+.uppk b{font-family:var(--f-label);font-size:15px;color:#fff3c0}
+.uppk .upc-tx{font-size:13.5px;font-weight:700;color:var(--rc)}
+.uppk-c{display:flex;align-items:center;gap:6px}.uppk-c .ckm{width:24px;height:26px}.uppk-c small{font-size:11px;color:#e8d6b0}
+.uppk-h{font-size:10.5px;color:#bfae8a}.uppk-h em{font-style:normal;font-weight:700}
 `; document.head.appendChild(st); })();
