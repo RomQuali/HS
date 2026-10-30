@@ -3281,7 +3281,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;
@@ -5649,16 +5649,26 @@ const SPELLS = {
   sp_reflet:{ n:'Double reflet', t:6, c:4, ty:'arc', tg:1, tx:'Ajoute à ta main une copie exacte d\'un de tes serviteurs, bonus compris.' },
   sp_ascension:{ n:'Ascension', t:6, c:6, ty:'renf', tx:'Donne +2/+2 et Bouclier divin à tous tes serviteurs.' },
   // ----- techniques ninja (univers des Cinq Nations) : achetées en or, lancées avec du chakra -----
-  nj_permut:{ el:'vent', n:'Permutation', t:1, c:1, ck:1, nin:1, ty:'nin', tg:1, tx:'Prochain combat seulement : un de tes serviteurs gagne Bouclier divin.' },
-  nj_souffle:{ el:'feu', n:'Souffle ardent', t:1, c:1, ck:2, nin:1, ty:'nin', tx:'Prochain combat : 3 dégâts frappent l\'ennemi au début du combat.' },
+  // Feu : braises (préparer, puis tout consumer)
+  nj_souffle:{ el:'feu', n:'Souffle ardent', t:1, c:1, ck:2, nin:1, ty:'nin', tx:'Prochain combat : 3 dégâts frappent l\'ennemi au début du combat. Gagne 1 braise.' },
+  nj_boule:{ el:'feu', n:'Grande boule de feu', t:3, c:2, ck:3, nin:1, ty:'nin', tx:'Consume toutes tes braises : prochain combat, 2 dégâts par braise frappent l\'ennemi au début du combat (au moins 2).' },
+  nj_deluge:{ el:'feu', n:'Pluie de flammes', t:6, c:5, ck:7, nin:1, ty:'nin', tx:'Prochain combat : tous tes serviteurs gagnent +4/+4 et 4 dégâts frappent l\'ennemi au début du combat. Gagne 3 braises.' },
+  // Vent : économie et circulation
+  nj_permut:{ el:'vent', n:'Permutation', t:1, c:1, ck:1, nin:1, ty:'nin', tg:1, tx:'Prochain combat seulement : un de tes serviteurs gagne Bouclier divin. Récupère 1 or.' },
+  nj_porteur:{ el:'vent', n:'Vent porteur', t:2, c:1, ck:2, nin:1, ty:'nin', tx:'Gagne 2 or et rafraîchis gratuitement la taverne.' },
+  nj_rafale:{ el:'vent', n:'Rafale tranchante', t:3, c:3, ck:3, nin:1, ty:'nin', tx:'Donne +2/+1 à trois de tes serviteurs aléatoires. Récupère 1 or.' },
+  // Eau : la marée monte, on accumule
+  nj_brume:{ el:'eau', n:'Rideau de brume', t:2, c:2, ck:2, nin:1, ty:'nin', tx:'Prochain combat seulement : tous tes serviteurs gagnent +0/+3. La marée monte de 1.' },
+  nj_doubles:{ el:'eau', n:'Technique des doubles', t:3, c:2, ck:3, nin:1, ty:'nin', tg:1, tx:'Invoque une copie 1/1 du serviteur ciblé, sans ses bonus. La marée monte de 1.' },
+  nj_vague:{ el:'eau', n:'Vague montante', t:4, c:3, ck:4, nin:1, ty:'nin', tx:'La marée monte de 2, puis tes serviteurs du Clan de l\'Eau gagnent +1/+1 par tranche de 2 marée.' },
+  // Foudre : surcharge et chakra
+  nj_decharge:{ el:'foudre', n:'Décharge', t:1, c:1, ck:1, nin:1, ty:'nin', tx:'Gagne 1 charge et récupère 2 chakra.' },
+  nj_foudre:{ el:'foudre', n:'Lame de foudre', t:3, c:3, ck:3, nin:1, ty:'nin', tg:1, tx:'Prochain combat seulement : un de tes serviteurs gagne +3 attaque et Toxique. Gagne 1 charge.' },
+  nj_sceau:{ el:'foudre', n:'Sceau de puissance', t:5, c:4, ck:5, nin:1, ty:'nin', tg:1, tx:'Donne +4/+4 et Renaissance à un de tes serviteurs. Gagne 2 charges.' },
+  // Terre : rempart, puis la vie devient de la force
   nj_pierre:{ el:'terre', n:'Armure de pierre', t:2, c:2, ck:2, nin:1, ty:'nin', tg:1, tx:'Donne +0/+4 et Provocation à un de tes serviteurs.' },
-  nj_brume:{ el:'eau', n:'Rideau de brume', t:2, c:2, ck:2, nin:1, ty:'nin', tx:'Prochain combat seulement : tous tes serviteurs gagnent +0/+3.' },
-  nj_doubles:{ el:'eau', n:'Technique des doubles', t:3, c:2, ck:3, nin:1, ty:'nin', tg:1, tx:'Invoque une copie 1/1 du serviteur ciblé, sans ses bonus.' },
-  nj_foudre:{ el:'foudre', n:'Lame de foudre', t:3, c:3, ck:3, nin:1, ty:'nin', tg:1, tx:'Prochain combat seulement : un de tes serviteurs gagne +3 attaque et Toxique.' },
-  nj_rafale:{ el:'vent', n:'Rafale tranchante', t:3, c:3, ck:3, nin:1, ty:'nin', tx:'Donne +2/+1 à trois de tes serviteurs aléatoires.' },
-  nj_invoc:{ el:'terre', n:'Invocation', t:4, c:3, ck:4, nin:1, ty:'nin', tx:'Invoque sur ton plateau un serviteur aléatoire de ton niveau de taverne.' },
-  nj_sceau:{ el:'foudre', n:'Sceau de puissance', t:5, c:4, ck:5, nin:1, ty:'nin', tg:1, tx:'Donne +4/+4 et Renaissance à un de tes serviteurs.' },
-  nj_deluge:{ el:'feu', n:'Déluge élémentaire', t:6, c:5, ck:7, nin:1, ty:'nin', tx:'Prochain combat : tous tes serviteurs gagnent +4/+4 et 4 dégâts frappent l\'ennemi au début du combat.' },
+  nj_poing:{ el:'terre', n:'Poing de roc', t:3, c:3, ck:3, nin:1, ty:'nin', tg:1, tx:'Le serviteur ciblé gagne +1 attaque par tranche de 3 points de vie (+6 au plus).' },
+  nj_invoc:{ el:'terre', n:'Golem de terre', t:4, c:3, ck:4, nin:1, ty:'nin', tx:'Invoque sur ton plateau un serviteur aléatoire de ton niveau de taverne ; il gagne +0/+3.' },
   // ----- techniques interdites : seulement après l'Éveil des clans -----
   nj_x_cinq:{ el:'feu', n:'Tempête des cinq éléments', t:5, c:5, ck:9, nin:1, forb:1, ty:'nin', tx:'Technique interdite. Prochain combat : tous tes serviteurs gagnent +6/+6 et 6 dégâts frappent l\'ennemi au début du combat.' },
   nj_x_sceau:{ el:'terre', n:'Sceau inversé', t:5, c:4, ck:8, nin:1, forb:1, ty:'nin', tg:1, tx:'Technique interdite. Le serviteur ciblé gagne +10/+10 ; un autre de tes serviteurs aléatoire est détruit.' },
@@ -5690,6 +5700,7 @@ function spellBlock(p, id, tgt) {
   if (S.eq && (tgt.eq || []).includes(id)) return 'Ton compagnon porte déjà cet équipement.';
   if (id.startsWith('cf_') && p.hd.length > 10) return 'Ta main est pleine.';
   if (id === 'nj_rafale' && !p.bd.length) return 'Tu n\'as aucun serviteur.';
+  if (id === 'nj_invoc' && p.bd.length >= 7) return 'Ton plateau est plein.';
   if (id === 'sp_chopes' && tgt.a < 1) return 'Ce serviteur n\'a pas d\'attaque à échanger.';
   if (id === 'sp_rabot' && p.t >= 6) return 'Ta taverne est déjà au niveau maximum.';
   if (id === 'sp_meta' && tierOf(tgt) >= 6) return 'Ce serviteur est déjà au niveau maximum.';
@@ -5758,16 +5769,21 @@ function castSpell0(G, p, hi, tg) {
     case 'sp_alchimie': { const b = CD(tgt.c); tgt.g = 1; tgt.a += b.a; tgt.h += b.h; break; }
     case 'sp_tempete': p.tma = { a:((p.tma && p.tma.a) || 0) + 3, h:((p.tma && p.tma.h) || 0) + 3 }; break;
     case 'sp_reflet': { const c = clone(tgt); c.u = UID++; delete c.tmp; p.hd.push(c); break; }
-    case 'nj_permut': tgt.tmp = { a:(tgt.tmp && tgt.tmp.a) || 0, h:(tgt.tmp && tgt.tmp.h) || 0, f:((tgt.tmp && tgt.tmp.f) || '') + 's', s:'Permutation' }; break;
-    case 'nj_souffle': p.njf = (p.njf || 0) + 3; break;
+    case 'nj_permut': p.g += 1; tgt.tmp = { a:(tgt.tmp && tgt.tmp.a) || 0, h:(tgt.tmp && tgt.tmp.h) || 0, f:((tgt.tmp && tgt.tmp.f) || '') + 's', s:'Permutation' }; break;
+    case 'nj_souffle': p.njf = (p.njf || 0) + 3; p.braise = (p.braise || 0) + 1; break;
+    case 'nj_boule': { const b = p.braise || 0; p.braise = 0; p.njf = (p.njf || 0) + Math.max(2, b * 2); break; }
+    case 'nj_porteur': p.g += 2; p.fz = false; fillShop(G, p); break;
+    case 'nj_vague': { p.maree = (p.maree || 0) + 2; const x = Math.floor(p.maree / 2); if (x) p.bd.filter(m => CD(m.c).tr === 'n_eau').forEach(m => buff(m, x, x)); break; }
+    case 'nj_decharge': p.charge = (p.charge || 0) + 1; p.ck = Math.min(ckMax(p), (p.ck || 0) + 2); break;
+    case 'nj_poing': buff(tgt, Math.min(6, Math.floor(tgt.h / 3)), 0); break;
     case 'nj_pierre': buff(tgt, 0, 4); addF(tgt, 't'); break;
-    case 'nj_brume': p.tma = { a:(p.tma && p.tma.a) || 0, h:((p.tma && p.tma.h) || 0) + 3 }; break;
-    case 'nj_doubles': { const c = mk(tgt.c, 0); c.a = 1; c.h = 1; p.bd.splice(tg + 1, 0, c); break; }
-    case 'nj_foudre': tgt.tmp = { a:((tgt.tmp && tgt.tmp.a) || 0) + 3, h:(tgt.tmp && tgt.tmp.h) || 0, f:((tgt.tmp && tgt.tmp.f) || '') + 'v', s:'Lame de foudre' }; break;
-    case 'nj_rafale': shuffle(p.bd.slice()).slice(0, 3).forEach(m => buff(m, 2, 1)); break;
-    case 'nj_invoc': { const m = drawOne(G, p.t) || drawAny(Math.max(1, p.t)); if (m) p.bd.push(m); break; }
-    case 'nj_sceau': buff(tgt, 4, 4); addF(tgt, 'r'); break;
-    case 'nj_deluge': p.tma = { a:((p.tma && p.tma.a) || 0) + 4, h:((p.tma && p.tma.h) || 0) + 4 }; p.njf = (p.njf || 0) + 4; break;
+    case 'nj_brume': p.tma = { a:(p.tma && p.tma.a) || 0, h:((p.tma && p.tma.h) || 0) + 3 }; p.maree = (p.maree || 0) + 1; break;
+    case 'nj_doubles': { const c = mk(tgt.c, 0); c.a = 1; c.h = 1; p.bd.splice(tg + 1, 0, c); p.maree = (p.maree || 0) + 1; break; }
+    case 'nj_foudre': tgt.tmp = { a:((tgt.tmp && tgt.tmp.a) || 0) + 3, h:(tgt.tmp && tgt.tmp.h) || 0, f:((tgt.tmp && tgt.tmp.f) || '') + 'v', s:'Lame de foudre' }; p.charge = (p.charge || 0) + 1; break;
+    case 'nj_rafale': shuffle(p.bd.slice()).slice(0, 3).forEach(m => buff(m, 2, 1)); p.g += 1; break;
+    case 'nj_invoc': { const m = drawOne(G, p.t) || drawAny(Math.max(1, p.t)); if (m) { buff(m, 0, 3); p.bd.push(m); } break; }
+    case 'nj_sceau': buff(tgt, 4, 4); addF(tgt, 'r'); p.charge = (p.charge || 0) + 2; break;
+    case 'nj_deluge': p.tma = { a:((p.tma && p.tma.a) || 0) + 4, h:((p.tma && p.tma.h) || 0) + 4 }; p.njf = (p.njf || 0) + 4; p.braise = (p.braise || 0) + 3; break;
     case 'eq_lame': buff(tgt, 4, 0); break;
     case 'eq_armure': buff(tgt, 0, 6); addF(tgt, 't'); break;
     case 'eq_gants': buff(tgt, 2, 2); addF(tgt, 'w'); break;
@@ -5788,12 +5804,8 @@ function castSpell0(G, p, hi, tg) {
     case 'sp_ascension': p.bd.forEach(x => { buff(x, 2, 2); addF(x, 's'); }); break;
   }
   if (S.eq) (tgt.eq = tgt.eq || []).push(id);
-  // enchaînement : la technique lancée est l'élément que nourrit celui retenu par le compagnon
-  if (S.el) comps(p).forEach(c => {
-    const F3 = compLv(c) >= 4 ? fusion3Of(c.el2, compEl(c), S.el) : null, F = F3 || fusionOf(compEl(c), S.el);
-    if (F) { c.x = (c.x || []).filter(e => !e.fusion); c.x.push(Object.assign({ src:'Fusion · ' + F.n, fusion:1 }, F.fx)); c.fu = F.n; }
-    c.el2 = compEl(c);
-  });
+  // réservoir : chaque technique remplit une moitié ; la seconde moitié déclenche le combo et le vide
+  if (S.el && S.nin) withSrc('Réservoir', () => rsvFill(G, p, S.el));
   if (S.nin) comps(p).forEach(c => giveXp(c, 1));
   if (S.el) comps(p).forEach(c => { const e = compEl(c); if (e && EL_GEN[e] === S.el) { const x = (c.eq || []).includes('eq_talisman') ? 2 : 1; p.ck = Math.min(CK_MAX, (p.ck || 0) + 2 * x); buff(c, 2 * x, 2 * x); } });
   if (!S.item) trigBoard(G, p, 'cast');
@@ -5887,6 +5899,11 @@ const SPART = {
   nj_rafale: NJA('#e8ffd0', [-14, 0, 14].map(y => `<path d="M-26 ${y + 6} Q0 ${y - 12} 26 ${y}" fill="none" stroke="#f4ffe8" stroke-width="4" stroke-linecap="round"/>`).join('') + `<path d="M18 -4 L30 -2 L20 6 Z" fill="#c8ccd4" ${so(1.4)}/>`),
   nj_invoc: NJA('#ffd27a', `<circle r="22" fill="none" stroke="#fff3c0" stroke-width="2.4"/><circle r="15" fill="none" stroke="#fff3c0" stroke-width="1.4" stroke-dasharray="3 3"/>` + [0, 72, 144, 216, 288].map(a => `<circle cx="${(Math.cos(a * Math.PI / 180) * 22).toFixed(1)}" cy="${(Math.sin(a * Math.PI / 180) * 22).toFixed(1)}" r="3" fill="#fff3c0"/>`).join('') + `<path d="M-10 14 Q0 -18 10 14" fill="#5a3a1a" ${so(1.6)}/>`),
   nj_sceau: NJA('#d8b8ff', `<rect x="-18" y="-24" width="36" height="46" rx="3" fill="#f4ecd8" ${so(2)}/><circle cy="-2" r="11" fill="none" stroke="#a8322a" stroke-width="3"/><path d="M-6 -2 H6 M0 -8 V4" stroke="#a8322a" stroke-width="3"/><path d="M-18 -24 H18 M-18 22 H18" stroke="#8a6a3a" stroke-width="4"/>`),
+  nj_boule: NJA('#ffb04a', HANDS + `<circle cx="0" cy="-12" r="15" fill="#ff7a2a" ${so(2)}/><circle cx="-4" cy="-16" r="8" fill="#ffd23a"/><circle cx="-6" cy="-18" r="3" fill="#fff3c0"/>`),
+  nj_porteur: NJA('#e8ffd0', [-12, 2].map(y => `<path d="M-28 ${y} Q-6 ${y - 14} 18 ${y - 2} Q26 ${y + 2} 20 ${y + 8}" fill="none" stroke="#f4ffe8" stroke-width="4" stroke-linecap="round"/>`).join('') + `<circle cx="10" cy="14" r="7" fill="#f2c14e" ${so(1.6)}/><circle cx="20" cy="10" r="6" fill="#f2c14e" ${so(1.6)}/>`),
+  nj_vague: NJA('#bfe8ff', `<path d="M-28 18 C-20 -6 -2 -22 16 -16 C6 -12 4 -4 12 2 C18 6 26 4 28 0 L28 18 Z" fill="#4ab0e8" ${so(2)}/><path d="M-14 6 C-8 -6 2 -12 10 -12" fill="none" stroke="#dff4ff" stroke-width="3" stroke-linecap="round"/>`),
+  nj_decharge: NJA('#ffe14a', `<circle r="14" fill="#6fc8ff" ${so(2)}/><path d="M2 -26 L-8 0 L2 0 L-6 24 L12 -6 L2 -6 Z" fill="#ffe14a" ${so(1.6)}/>`),
+  nj_poing: NJA('#c8a878', `<path d="M-18 -14 L14 -16 L20 -4 L18 14 L-14 16 L-20 2 Z" fill="#8a7a6a" ${so(2)}/><path d="M-10 -14 V-4 M0 -15 V-4 M10 -15 V-4" stroke="#5a4e44" stroke-width="2.4"/><path d="M-26 -6 L-34 -10 M-26 4 L-36 4 M-26 12 L-34 16" stroke="#ffd27a" stroke-width="2.6" stroke-linecap="round"/>`),
   nj_deluge: NJA('#ffffff', `<path d="M-6 -22 C 2 -16 2 -10 -4 -6 C -10 -10 -12 -16 -6 -22 Z" fill="#ff7a2a" ${so(1.4)}/><path d="M14 -10 C 18 -4 18 0 14 4 C 10 0 10 -4 14 -10 Z" fill="#6fc8ff" ${so(1.4)}/><path d="M-16 0 L-20 10 L-14 10 L-18 20 L-8 6 L-14 6 Z" fill="#ffe14a" ${so(1.2)}/><path d="M4 12 L10 4 L16 12 Z" fill="#8a7a6a" ${so(1.4)}/><path d="M-4 18 Q4 10 12 18" fill="none" stroke="#e8ffd0" stroke-width="3"/>`),
   sp_pinte: () => softGlow(50, 54, 30, '#ffe39a', .25) + '<g transform="translate(30 30) scale(1.45)">' + P('M0 7 L18 7 L17 29 Q9 32 1 29 Z', '#d99a3e', so()) + Ln('M2.5 13 L15.5 13 M2.5 21 L15.5 21', '#8a5a22', 1.4) + Ln('M18 12 C 27 12, 27 24, 17.4 24', OUT, 5) + Ln('M18 12 C 27 12, 27 24, 17.4 24', '#d99a3e', 2.4) + P('M-2 8 C -3 0, 5 -2, 7 1 C 9 -3, 17 -2, 18 2 C 22 2, 22 8, 19 9 L18 12 C 16 9, 12 10, 9 9 C 6 11, 1 10, -2 8 Z', '#fff8e6', so(1.6)) + E(4, 4, 2, 1.4, '#fff', 'opacity=".9"') + '</g>' + [[24, 30, 2.2], [76, 26, 1.6], [72, 40, 1.2], [28, 44, 1.4]].map(([x, y, r]) => Ci(x, y, r, '#fff8e6', so(0.8))).join('') + P(starD(76, 72, 6, 2.4, 4), '#fff1b8', GLOW),
   sp_tournee: () => P('M14 70 Q50 82 86 70 L84 76 Q50 89 16 76 Z', '#8a5a2b', so()) + [[28, 46], [44, 40], [60, 46]].map(([x, y], k) => `<g transform="translate(${x} ${y}) scale(.95) rotate(${(k - 1) * 8})">` + P('M0 7 L14 7 L13 26 Q7 28 1 26 Z', '#d99a3e', so(1.8)) + Ln('M14 11 C 20 11, 20 21, 13.6 21', OUT, 4) + Ln('M14 11 C 20 11, 20 21, 13.6 21', '#d99a3e', 2) + P('M-1.4 8 C -2 2, 4 1, 6 3 C 8 0, 14 1, 15 4 C 17 5, 16 8, 14.6 8.4 Z', '#fff8e6', so(1.4)) + '</g>').join('') + P(starD(50, 22, 7, 2.4, 4), '#fff1b8', GLOW) + P(starD(24, 26, 3.4, 1.2, 4), '#fff1b8', GLOW) + P(starD(78, 30, 4, 1.4, 4), '#fff1b8', GLOW),
@@ -5941,6 +5958,50 @@ function spellCardH(id, z, i, o = {}) {
     + `<div class="cd-nm"><span>${esc(S.n)}</span></div><div class="cd-tx${n > 95 ? ' xlong' : n > 62 ? ' long' : ''}">${esc(S.tx)}</div>`
     + `<div class="cd-tb" style="background:${ty.col}">${esc(ty.n)}</div>`
     + (S.item ? '' : costGemH(spellCostFor(id, z), S.c)) + (S.ck ? `<span class="ck-gem${V.me && ckCost(V.me, S) < S.ck ? ' aff' : ''}" title="Coût en chakra${V.me && ckCost(V.me, S) < S.ck ? ' (affinité de ton héros : 1 de moins)' : ''}">${V.me ? ckCost(V.me, S) : S.ck}</span>` : '') + (S.el ? `<span class="el-tag" style="--ec:${ELS[S.el].col}">${ELS[S.el].n}</span>` : '') + `${z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : ''}</div>`;
+}
+
+/* ---------- Réservoir des techniques (univers Ninja) ----------
+   1re technique : une moitié se remplit de son élément. 2e technique : l'autre moitié se remplit,
+   le mélange déclenche un combo (effet immédiat sur le plateau + pouvoir hybride au compagnon) et le réservoir se vide.
+   Deux fois le même élément : combo pur, plus fort. Le réservoir garde sa moitié d'un tour à l'autre. */
+const PURES = {
+  feu:{ n:'Brasier', col:'#ff5a1a', fx:{ k:'soc_dmg', d:4, n:2 } },
+  vent:{ n:'Typhon', col:'#6fd8a0', fx:{ k:'atk_self', a:2, h:2 } },
+  eau:{ n:'Marée haute', col:'#4ab0e8', fx:{ k:'surv_self', a:3, h:3 } },
+  foudre:{ n:'Surcharge', col:'#ffd23a', fx:{ k:'atk_zap', d:3, n:2 } },
+  terre:{ n:'Rempart', col:'#c8a878', fx:{ k:'eot_self', a:1, h:3 } },
+};
+const tmaAdd = (p, a, h) => { p.tma = { a:((p.tma && p.tma.a) || 0) + a, h:((p.tma && p.tma.h) || 0) + h }; };
+const ctrAdd = (p, k, n) => { p[k] = (p[k] || 0) + n; };
+// effet immédiat de chaque combo (texte + action)
+const COMBO_BD = {
+  'Glace':        ['Tes serviteurs gagnent +0/+2 ; l\'un d\'eux gagne Bouclier divin.', (G, p) => { p.bd.forEach(m => buff(m, 0, 2)); const c = p.bd.filter(m => !has(m, 's')); if (c.length) addF(pickR(c), 's'); }],
+  'Bois':         ['Tes serviteurs gagnent +1/+2.', (G, p) => p.bd.forEach(m => buff(m, 1, 2))],
+  'Lave':         ['Prochain combat : 6 dégâts frappent l\'ennemi. +2 braises.', (G, p) => { p.njf = (p.njf || 0) + 6; ctrAdd(p, 'braise', 2); }],
+  'Vapeur':       ['Prochain combat : tes serviteurs gagnent +2/+2.', (G, p) => tmaAdd(p, 2, 2)],
+  'Explosion':    ['Prochain combat : 8 dégâts frappent l\'ennemi.', (G, p) => { p.njf = (p.njf || 0) + 8; }],
+  'Fournaise':    ['+3 braises et gagne 2 or.', (G, p) => { ctrAdd(p, 'braise', 3); p.g += 2; }],
+  'Tempête':      ['Tes serviteurs gagnent +2/+0 ; gagne 1 or.', (G, p) => { p.bd.forEach(m => buff(m, 2, 0)); p.g += 1; }],
+  'Pluie d\'orage':['Récupère 3 chakra ; la marée monte de 2.', (G, p) => { p.ck = Math.min(ckMax(p), (p.ck || 0) + 3); ctrAdd(p, 'maree', 2); }],
+  'Plasma':       ['Ton serviteur le plus fort gagne +4 attaque et Toxique.', (G, p) => { const t = p.bd.slice().sort((a, b) => b.a - a.a)[0]; if (t) { buff(t, 4, 0); addF(t, 'v'); } }],
+  'Sable':        ['Un serviteur gagne Provocation et Bouclier divin ; gagne 1 or.', (G, p) => { if (p.bd.length) { const t = pickR(p.bd); addF(t, 't'); addF(t, 's'); } p.g += 1; }],
+  'Brasier':      ['+4 braises ; prochain combat, 5 dégâts frappent l\'ennemi.', (G, p) => { ctrAdd(p, 'braise', 4); p.njf = (p.njf || 0) + 5; }],
+  'Typhon':       ['Gagne 3 or et rafraîchis gratuitement la taverne.', (G, p) => { p.g += 3; p.fz = false; fillShop(G, p); }],
+  'Marée haute':  ['La marée monte de 4 ; tes serviteurs gagnent +1/+1.', (G, p) => { ctrAdd(p, 'maree', 4); p.bd.forEach(m => buff(m, 1, 1)); }],
+  'Surcharge':    ['+4 charges et récupère 4 chakra.', (G, p) => { ctrAdd(p, 'charge', 4); p.ck = Math.min(ckMax(p), (p.ck || 0) + 4); }],
+  'Rempart':      ['Tes serviteurs gagnent +0/+4, puis +1 attaque par tranche de 5 points de vie.', (G, p) => p.bd.forEach(m => { buff(m, 0, 4); const x = Math.floor(m.h / 5); if (x) buff(m, x, 0); })],
+};
+const comboOf = (a, b) => !a || !b ? null : a === b ? PURES[a] || null : FUSIONS[[a, b].sort().join('+')] || null;
+const comboTx = F => F ? (COMBO_BD[F.n] || [''])[0] : '';
+function rsvFill(G, p, el) {
+  p.rsv = p.rsv || [];
+  p.rsv.push(el);
+  if (p.rsv.length < 2) return;
+  const [a, b] = p.rsv, F = comboOf(a, b); p.rsv = [];
+  if (!F) return;
+  const bd = COMBO_BD[F.n]; if (bd) withSrc('Combo · ' + F.n, () => bd[1](G, p));
+  comps(p).forEach(c => { c.x = (c.x || []).filter(e => !e.fusion); c.x.push(Object.assign({ src:'Combo · ' + F.n, fusion:1 }, F.fx)); c.fu = F.n; });
+  p.combo = { n:F.n, col:F.col, a, b, pure:a === b ? 1 : 0, id:UID++ };
 }
 
 /* =====================================================================
@@ -6562,6 +6623,7 @@ function render() {
   let keep = null; try { if (fid && typeof act.selectionStart === 'number') keep = [act.selectionStart, act.selectionEnd]; } catch (e) {}
   const ks = {}; document.querySelectorAll('[data-ks]').forEach(el => { if (el.id) ks[el.id] = el.scrollTop; });
   const flip = fxBefore();
+  comboWatch();
   V.waitTable = V.screen === 'game' && waitingAtTable();
   const html = V.screen === 'menu' ? menuH() : V.screen === 'lobby' ? lobbyH() : V.screen === 'atelier' ? atelierH() : V.waitTable ? menuH(waitTableH()) : gameH();
   const app = $('#app');
@@ -6664,7 +6726,7 @@ function chakraLawH(big) {
       <span class="elx-c">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b style="color:#ff8a6a">Domination</b> · ton compagnon l'emporte sur l'élément d'en face : +4/+4 au combat.</small></span>
       <span class="elx-c">${elCycleSvg(['vent', 'feu', 'foudre', 'terre', 'eau'], '#6fd0ff', 'Génération')}<small><b style="color:#8fdcff">Génération</b> · lance l'élément que nourrit celui retenu : +2 chakra et +2/+2.</small></span>
     </span>
-    <small><b>Fusion :</b> enchaîne deux éléments pour donner un pouvoir hybride au compagnon.</small>
+    <small><b>Réservoir :</b> ta 1re technique remplit une moitié de son élément, la 2e remplit l'autre : le mélange déclenche un combo (effet immédiat sur ton plateau + pouvoir hybride au compagnon) puis le réservoir se vide. Deux fois le même élément : combo pur, plus fort. Il garde sa moitié d'un tour à l'autre.</small>
     <span class="elx-f">${fus}</span>
     <small><b>Affinité :</b> les techniques de l'élément de ton héros coûtent 1 chakra de moins.</small>
     <small><b>Éveil des clans</b> (4 joueurs ou moins) : <b style="color:#ff9a6a">Feu</b> Phénix (braises → stats et Renaissance) · <b style="color:#8fe0b0">Vent</b> Ouragan (dégâts à chaque attaque) · <b style="color:#8fd0ff">Eau</b> Raz-de-marée (la marée renforce l'équipe) · <b style="color:#ffe27a">Foudre</b> Orage total (la charge frappe) · <b style="color:#d8c0a0">Terre</b> Avalanche (sa vie devient des dégâts).</small>
@@ -6674,11 +6736,11 @@ function chakraLawH(big) {
 function ninjaCardH() {
   const row = (ic, col, t, x) => `<span class="nj-r"><i class="nj-i" style="--c:${col}">${ic}</i><span><b>${t}</b><small>${x}</small></span></span>`;
   return `<span class="ban-law nj-law"><b>Loi · Chakra</b>
-    ${row('<svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="#6fc8ff" stroke="#120a06" stroke-width="2"/><circle cx="8" cy="8" r="2.2" fill="#dff4ff"/></svg>', '#2a5a86', 'Chakra', 'Chaque ninja en jeu en donne 1 par tour. Il lance tes techniques (achetées en or) et ton pouvoir.')}
+    ${row('<svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="#6fc8ff" stroke="#120a06" stroke-width="2"/><circle cx="8" cy="8" r="2.2" fill="#dff4ff"/></svg>', '#2a5a86', 'Techniques', 'Achetées en or, lancées avec le chakra (1 par ninja en jeu et par tour). Chacune suit le jeu de son clan.')}
     ${row('<svg viewBox="0 0 20 20"><path d="M3 15 L5 6 L8 10 L10 4 L12 10 L15 6 L17 15 Z" fill="#f2c14e" stroke="#120a06" stroke-width="1.6" stroke-linejoin="round"/></svg>', '#7a5a1a', 'Compagnon', 'Déjà triplé, hors plateau. Il retient ta dernière technique et ne combat que le compagnon adverse.')}
     ${row('<svg viewBox="0 0 20 20"><rect x="3" y="8" width="14" height="9" rx="1.5" fill="#e2b04e" stroke="#120a06" stroke-width="1.6"/><path d="M3 8 Q10 1 17 8 Z" fill="#c88a26" stroke="#120a06" stroke-width="1.6"/><rect x="8.6" y="9.5" width="2.8" height="3.4" fill="#120a06"/></svg>', '#6a3a12', 'Duel = coffre', 'Compagnon vainqueur : coffre majeur. Sinon : coffre mineur. Ses équipements se posent contre du chakra.')}
     ${row('<svg viewBox="0 0 20 20"><path d="M10 2 C14 7 15 10 15 12 A5 5 0 0 1 5 12 C5 9 7 8 8 5 C9 8 10 8 10 2 Z" fill="#ff7a3a" stroke="#120a06" stroke-width="1.6"/></svg>', '#7a2a12', 'Éveil', 'À 4 joueurs ou moins, chaque clan libère son pouvoir ultime et les techniques interdites.')}
-    <span class="nj-el">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b>Éléments</b>Chaque élément domine le suivant : +4/+4 au compagnon. Enchaîne deux éléments pour l'une des 10 fusions.</small></span>
+    <span class="nj-el">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b>Réservoir et combos</b>Deux techniques remplissent le réservoir : leur mélange déclenche l'un des 15 combos. Chaque élément domine aussi le suivant : +4/+4 au compagnon.</small></span>
   </span>`;
 }
 function univPickH(sel, edit, actions) {
@@ -6830,7 +6892,7 @@ function gameH() {
     const heroZone = `<section class="hero-zone">
       <div class="hz-left">${trainH(d, me, canAct)}${me.cp ? cpSlotH(me, fighting ? V.fight : null) : `<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span>`}</div>
       <div class="hz-hero" data-hov="hero"><span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? 'art-h-' + me.hero : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span></div>
-      <div class="hz-right"><span class="hov" data-hov="pow">${power}</span><span class="purses">${coins}${canAct ? ckGauge(d, me) : ''}</span></div>
+      <div class="hz-right"><span class="hov" data-hov="pow">${power}</span><span class="purses">${coins}${canAct ? ckGauge(d, me) : ''}</span>${rsvH(d, me)}</div>
       <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}">${icon('bell')}<span>${me.rdy ? 'Prêt !' : 'Prêt'}</span></button></div></section>`;
     const n = me.hd.length;
     const hand = fighting ? '' : `<section class="hand" data-drop="hd" aria-label="Ta main · ${n}/10"><div class="fan${n > 7 ? ' many' : n > 4 ? ' some' : ''}" style="--n:${n}">${n ? me.hd.map((m, i) => { const o = i - (n - 1) / 2, op = { drag:canAct, style:`--o:${f1(o)};--o2:${f1(o * o)}` }; return m.sp ? spellCardH(m.sp, 'hd', i, op) : cardH(m, 'hd', i, op); }).join('') : ''}</div></section>`;
@@ -6888,6 +6950,32 @@ function trainH(d, me, canAct) {
     <div class="tr-row med">${medals || '<small class="tr-e">Les équipements des coffres de fin de combat se rangent ici.</small>'}</div></section>`;
 }
 // la jauge de chakra (univers des Cinq Nations) : un grand orbe bleu et dix perles
+// le réservoir des techniques : deux moitiés (bas = 1re technique, haut = 2e)
+function rsvH(d, me) {
+  if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
+  const r = me.rsv || [], a = r[0], col = e => ELS[e] ? ELS[e].col : 'transparent';
+  const next = a ? Object.keys(ELS).map(e => { const F = comboOf(a, e); return F ? `${ELS[e].n} → ${F.n}` : ''; }).filter(Boolean).join(' · ') : '';
+  const tip = a ? `Réservoir : moitié ${ELS[a].n}. Ta prochaine technique déclenche un combo : ${next}.` : 'Réservoir vide : ta prochaine technique en remplit la moitié avec son élément.';
+  return `<span class="rsv${a ? ' half' : ''}" data-tip="${esc(tip)}" aria-label="${esc(tip)}"><svg viewBox="0 0 60 70" aria-hidden="true">
+    <defs><clipPath id="rsvc"><path d="M22 6 H38 V18 Q54 26 54 44 Q54 64 30 64 Q6 64 6 44 Q6 26 22 18 Z"/></clipPath></defs>
+    <g clip-path="url(#rsvc)"><rect x="0" y="0" width="60" height="70" fill="rgba(10,6,3,.6)"/>
+      ${a ? `<rect class="rsv-lo" x="0" y="41" width="60" height="30" fill="${col(a)}"/><path d="M0 41 Q15 37 30 41 T60 41 V44 H0 Z" fill="rgba(255,255,255,.35)"/>` : ''}
+    </g>
+    <path d="M6 41 H54" stroke="rgba(242,193,78,.55)" stroke-width="1.4" stroke-dasharray="3 3"/>
+    <path d="M22 6 H38 V18 Q54 26 54 44 Q54 64 30 64 Q6 64 6 44 Q6 26 22 18 Z" fill="none" stroke="#120a06" stroke-width="3"/>
+    <path d="M22 6 H38 V18 Q54 26 54 44 Q54 64 30 64 Q6 64 6 44 Q6 26 22 18 Z" fill="none" stroke="#f2c14e" stroke-width="1.4"/>
+    <rect x="19" y="2" width="22" height="6" rx="2" fill="#a8744a" stroke="#120a06" stroke-width="1.6"/>
+    <path d="M14 30 Q12 40 14 50" stroke="rgba(255,255,255,.35)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  </svg><small>${a ? ELS[a].n : 'Réservoir'}</small></span>`;
+}
+// combo déclenché : grande annonce au centre de l'écran
+function comboWatch() {
+  if (!V.me) return; const c = V.me.combo; if (!c) { if (V.comboSeen === undefined) V.comboSeen = null; return; } if (V.comboSeen === c.id) return;
+  const first = V.comboSeen === undefined; V.comboSeen = c.id; if (first) return;
+  const el = document.createElement('div'); el.className = 'combo-fx';
+  el.innerHTML = `<div class="cbx" style="--c1:${ELS[c.a] ? ELS[c.a].col : c.col};--c2:${ELS[c.b] ? ELS[c.b].col : c.col};--cc:${c.col}"><span class="cbx-orb"></span><small>${c.pure ? 'Combo pur' : 'Combo'} · ${esc((ELS[c.a] || {}).n || '')} + ${esc((ELS[c.b] || {}).n || '')}</small><b>${esc(c.n)}</b><p>${esc(comboTx({ n:c.n }))}</p></div>`;
+  document.body.appendChild(el); setTimeout(() => el.remove(), 2600);
+}
 function ckGauge(d, me) {
   const law = (d.laws || []).find(l => l.k === 'chakra'); if (!law) return '';
   const ck = me.ck || 0, inc = (me.bd || []).filter(m => (law.trs || []).includes(CD(m.c).tr)).length;
@@ -7877,6 +7965,24 @@ function arenaCleanup() {
 .nj-r small,.nj-el small{font-size:11.5px;line-height:1.3}
 .nj-el{display:grid;grid-template-columns:74px 1fr;gap:7px;align-items:center;margin-top:2px;padding-top:7px;border-top:1px solid rgba(242,193,78,.25)}
 .nj-el .elc{width:74px;height:74px}
+`; document.head.appendChild(st); })();
+
+/* réservoir des techniques et annonce de combo */
+(function(){ const st = document.createElement('style'); st.textContent = `
+.rsv{display:flex;flex-direction:column;align-items:center;gap:1px;flex:none;cursor:help}
+.rsv svg{width:52px;height:60px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))}
+.rsv small{font:700 10px/1 var(--f-label),serif;color:#f2c14e;letter-spacing:.06em;text-transform:uppercase}
+.rsv.half svg{filter:drop-shadow(0 0 6px rgba(111,200,255,.55)) drop-shadow(0 2px 3px rgba(0,0,0,.6))}
+.rsv-lo{animation:rsvw 2.4s ease-in-out infinite alternate}
+@keyframes rsvw{from{transform:translateY(1px)}to{transform:translateY(-1px)}}
+.combo-fx{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none;z-index:90;animation:cbf 2.6s ease forwards}
+.cbx{display:grid;justify-items:center;gap:4px;padding:22px 34px 18px;border-radius:18px;background:rgba(14,8,4,.88);box-shadow:0 0 0 2px var(--cc),0 0 40px var(--cc);text-align:center;max-width:360px}
+.cbx-orb{width:84px;height:84px;border-radius:50%;background:linear-gradient(180deg,var(--c2) 0 50%,var(--c1) 50% 100%);box-shadow:inset 0 0 0 3px #120a06,0 0 30px var(--cc);animation:cbo 1.1s ease-in-out forwards}
+.cbx small{font-size:12px;color:#e8d6b0;letter-spacing:.08em;text-transform:uppercase}
+.cbx b{font:700 34px/1 Grenze,serif;color:var(--cc);text-shadow:0 2px 0 #000}
+.cbx p{margin:0;font-size:13px;color:#f1e4c6}
+@keyframes cbo{0%{transform:scale(.6) rotate(0)}60%{transform:scale(1.1) rotate(200deg);background:var(--cc)}100%{transform:scale(1) rotate(360deg);background:var(--cc)}}
+@keyframes cbf{0%{opacity:0;transform:scale(.85)}12%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0}}
 `; document.head.appendChild(st); })();
 </script>
 </body></html>

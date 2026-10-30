@@ -196,6 +196,7 @@ function render() {
   let keep = null; try { if (fid && typeof act.selectionStart === 'number') keep = [act.selectionStart, act.selectionEnd]; } catch (e) {}
   const ks = {}; document.querySelectorAll('[data-ks]').forEach(el => { if (el.id) ks[el.id] = el.scrollTop; });
   const flip = fxBefore();
+  comboWatch();
   V.waitTable = V.screen === 'game' && waitingAtTable();
   const html = V.screen === 'menu' ? menuH() : V.screen === 'lobby' ? lobbyH() : V.screen === 'atelier' ? atelierH() : V.waitTable ? menuH(waitTableH()) : gameH();
   const app = $('#app');
@@ -298,7 +299,7 @@ function chakraLawH(big) {
       <span class="elx-c">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b style="color:#ff8a6a">Domination</b> · ton compagnon l'emporte sur l'élément d'en face : +4/+4 au combat.</small></span>
       <span class="elx-c">${elCycleSvg(['vent', 'feu', 'foudre', 'terre', 'eau'], '#6fd0ff', 'Génération')}<small><b style="color:#8fdcff">Génération</b> · lance l'élément que nourrit celui retenu : +2 chakra et +2/+2.</small></span>
     </span>
-    <small><b>Fusion :</b> enchaîne deux éléments pour donner un pouvoir hybride au compagnon.</small>
+    <small><b>Réservoir :</b> ta 1re technique remplit une moitié de son élément, la 2e remplit l'autre : le mélange déclenche un combo (effet immédiat sur ton plateau + pouvoir hybride au compagnon) puis le réservoir se vide. Deux fois le même élément : combo pur, plus fort. Il garde sa moitié d'un tour à l'autre.</small>
     <span class="elx-f">${fus}</span>
     <small><b>Affinité :</b> les techniques de l'élément de ton héros coûtent 1 chakra de moins.</small>
     <small><b>Éveil des clans</b> (4 joueurs ou moins) : <b style="color:#ff9a6a">Feu</b> Phénix (braises → stats et Renaissance) · <b style="color:#8fe0b0">Vent</b> Ouragan (dégâts à chaque attaque) · <b style="color:#8fd0ff">Eau</b> Raz-de-marée (la marée renforce l'équipe) · <b style="color:#ffe27a">Foudre</b> Orage total (la charge frappe) · <b style="color:#d8c0a0">Terre</b> Avalanche (sa vie devient des dégâts).</small>
@@ -308,11 +309,11 @@ function chakraLawH(big) {
 function ninjaCardH() {
   const row = (ic, col, t, x) => `<span class="nj-r"><i class="nj-i" style="--c:${col}">${ic}</i><span><b>${t}</b><small>${x}</small></span></span>`;
   return `<span class="ban-law nj-law"><b>Loi · Chakra</b>
-    ${row('<svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="#6fc8ff" stroke="#120a06" stroke-width="2"/><circle cx="8" cy="8" r="2.2" fill="#dff4ff"/></svg>', '#2a5a86', 'Chakra', 'Chaque ninja en jeu en donne 1 par tour. Il lance tes techniques (achetées en or) et ton pouvoir.')}
+    ${row('<svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="#6fc8ff" stroke="#120a06" stroke-width="2"/><circle cx="8" cy="8" r="2.2" fill="#dff4ff"/></svg>', '#2a5a86', 'Techniques', 'Achetées en or, lancées avec le chakra (1 par ninja en jeu et par tour). Chacune suit le jeu de son clan.')}
     ${row('<svg viewBox="0 0 20 20"><path d="M3 15 L5 6 L8 10 L10 4 L12 10 L15 6 L17 15 Z" fill="#f2c14e" stroke="#120a06" stroke-width="1.6" stroke-linejoin="round"/></svg>', '#7a5a1a', 'Compagnon', 'Déjà triplé, hors plateau. Il retient ta dernière technique et ne combat que le compagnon adverse.')}
     ${row('<svg viewBox="0 0 20 20"><rect x="3" y="8" width="14" height="9" rx="1.5" fill="#e2b04e" stroke="#120a06" stroke-width="1.6"/><path d="M3 8 Q10 1 17 8 Z" fill="#c88a26" stroke="#120a06" stroke-width="1.6"/><rect x="8.6" y="9.5" width="2.8" height="3.4" fill="#120a06"/></svg>', '#6a3a12', 'Duel = coffre', 'Compagnon vainqueur : coffre majeur. Sinon : coffre mineur. Ses équipements se posent contre du chakra.')}
     ${row('<svg viewBox="0 0 20 20"><path d="M10 2 C14 7 15 10 15 12 A5 5 0 0 1 5 12 C5 9 7 8 8 5 C9 8 10 8 10 2 Z" fill="#ff7a3a" stroke="#120a06" stroke-width="1.6"/></svg>', '#7a2a12', 'Éveil', 'À 4 joueurs ou moins, chaque clan libère son pouvoir ultime et les techniques interdites.')}
-    <span class="nj-el">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b>Éléments</b>Chaque élément domine le suivant : +4/+4 au compagnon. Enchaîne deux éléments pour l'une des 10 fusions.</small></span>
+    <span class="nj-el">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b>Réservoir et combos</b>Deux techniques remplissent le réservoir : leur mélange déclenche l'un des 15 combos. Chaque élément domine aussi le suivant : +4/+4 au compagnon.</small></span>
   </span>`;
 }
 function univPickH(sel, edit, actions) {
@@ -464,7 +465,7 @@ function gameH() {
     const heroZone = `<section class="hero-zone">
       <div class="hz-left">${trainH(d, me, canAct)}${me.cp ? cpSlotH(me, fighting ? V.fight : null) : `<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span>`}</div>
       <div class="hz-hero" data-hov="hero"><span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? 'art-h-' + me.hero : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span></div>
-      <div class="hz-right"><span class="hov" data-hov="pow">${power}</span><span class="purses">${coins}${canAct ? ckGauge(d, me) : ''}</span></div>
+      <div class="hz-right"><span class="hov" data-hov="pow">${power}</span><span class="purses">${coins}${canAct ? ckGauge(d, me) : ''}</span>${rsvH(d, me)}</div>
       <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}">${icon('bell')}<span>${me.rdy ? 'Prêt !' : 'Prêt'}</span></button></div></section>`;
     const n = me.hd.length;
     const hand = fighting ? '' : `<section class="hand" data-drop="hd" aria-label="Ta main · ${n}/10"><div class="fan${n > 7 ? ' many' : n > 4 ? ' some' : ''}" style="--n:${n}">${n ? me.hd.map((m, i) => { const o = i - (n - 1) / 2, op = { drag:canAct, style:`--o:${f1(o)};--o2:${f1(o * o)}` }; return m.sp ? spellCardH(m.sp, 'hd', i, op) : cardH(m, 'hd', i, op); }).join('') : ''}</div></section>`;
@@ -522,6 +523,32 @@ function trainH(d, me, canAct) {
     <div class="tr-row med">${medals || '<small class="tr-e">Les équipements des coffres de fin de combat se rangent ici.</small>'}</div></section>`;
 }
 // la jauge de chakra (univers des Cinq Nations) : un grand orbe bleu et dix perles
+// le réservoir des techniques : deux moitiés (bas = 1re technique, haut = 2e)
+function rsvH(d, me) {
+  if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
+  const r = me.rsv || [], a = r[0], col = e => ELS[e] ? ELS[e].col : 'transparent';
+  const next = a ? Object.keys(ELS).map(e => { const F = comboOf(a, e); return F ? `${ELS[e].n} → ${F.n}` : ''; }).filter(Boolean).join(' · ') : '';
+  const tip = a ? `Réservoir : moitié ${ELS[a].n}. Ta prochaine technique déclenche un combo : ${next}.` : 'Réservoir vide : ta prochaine technique en remplit la moitié avec son élément.';
+  return `<span class="rsv${a ? ' half' : ''}" data-tip="${esc(tip)}" aria-label="${esc(tip)}"><svg viewBox="0 0 60 70" aria-hidden="true">
+    <defs><clipPath id="rsvc"><path d="M22 6 H38 V18 Q54 26 54 44 Q54 64 30 64 Q6 64 6 44 Q6 26 22 18 Z"/></clipPath></defs>
+    <g clip-path="url(#rsvc)"><rect x="0" y="0" width="60" height="70" fill="rgba(10,6,3,.6)"/>
+      ${a ? `<rect class="rsv-lo" x="0" y="41" width="60" height="30" fill="${col(a)}"/><path d="M0 41 Q15 37 30 41 T60 41 V44 H0 Z" fill="rgba(255,255,255,.35)"/>` : ''}
+    </g>
+    <path d="M6 41 H54" stroke="rgba(242,193,78,.55)" stroke-width="1.4" stroke-dasharray="3 3"/>
+    <path d="M22 6 H38 V18 Q54 26 54 44 Q54 64 30 64 Q6 64 6 44 Q6 26 22 18 Z" fill="none" stroke="#120a06" stroke-width="3"/>
+    <path d="M22 6 H38 V18 Q54 26 54 44 Q54 64 30 64 Q6 64 6 44 Q6 26 22 18 Z" fill="none" stroke="#f2c14e" stroke-width="1.4"/>
+    <rect x="19" y="2" width="22" height="6" rx="2" fill="#a8744a" stroke="#120a06" stroke-width="1.6"/>
+    <path d="M14 30 Q12 40 14 50" stroke="rgba(255,255,255,.35)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  </svg><small>${a ? ELS[a].n : 'Réservoir'}</small></span>`;
+}
+// combo déclenché : grande annonce au centre de l'écran
+function comboWatch() {
+  if (!V.me) return; const c = V.me.combo; if (!c) { if (V.comboSeen === undefined) V.comboSeen = null; return; } if (V.comboSeen === c.id) return;
+  const first = V.comboSeen === undefined; V.comboSeen = c.id; if (first) return;
+  const el = document.createElement('div'); el.className = 'combo-fx';
+  el.innerHTML = `<div class="cbx" style="--c1:${ELS[c.a] ? ELS[c.a].col : c.col};--c2:${ELS[c.b] ? ELS[c.b].col : c.col};--cc:${c.col}"><span class="cbx-orb"></span><small>${c.pure ? 'Combo pur' : 'Combo'} · ${esc((ELS[c.a] || {}).n || '')} + ${esc((ELS[c.b] || {}).n || '')}</small><b>${esc(c.n)}</b><p>${esc(comboTx({ n:c.n }))}</p></div>`;
+  document.body.appendChild(el); setTimeout(() => el.remove(), 2600);
+}
 function ckGauge(d, me) {
   const law = (d.laws || []).find(l => l.k === 'chakra'); if (!law) return '';
   const ck = me.ck || 0, inc = (me.bd || []).filter(m => (law.trs || []).includes(CD(m.c).tr)).length;
@@ -1511,4 +1538,22 @@ function arenaCleanup() {
 .nj-r small,.nj-el small{font-size:11.5px;line-height:1.3}
 .nj-el{display:grid;grid-template-columns:74px 1fr;gap:7px;align-items:center;margin-top:2px;padding-top:7px;border-top:1px solid rgba(242,193,78,.25)}
 .nj-el .elc{width:74px;height:74px}
+`; document.head.appendChild(st); })();
+
+/* réservoir des techniques et annonce de combo */
+(function(){ const st = document.createElement('style'); st.textContent = `
+.rsv{display:flex;flex-direction:column;align-items:center;gap:1px;flex:none;cursor:help}
+.rsv svg{width:52px;height:60px;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))}
+.rsv small{font:700 10px/1 var(--f-label),serif;color:#f2c14e;letter-spacing:.06em;text-transform:uppercase}
+.rsv.half svg{filter:drop-shadow(0 0 6px rgba(111,200,255,.55)) drop-shadow(0 2px 3px rgba(0,0,0,.6))}
+.rsv-lo{animation:rsvw 2.4s ease-in-out infinite alternate}
+@keyframes rsvw{from{transform:translateY(1px)}to{transform:translateY(-1px)}}
+.combo-fx{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none;z-index:90;animation:cbf 2.6s ease forwards}
+.cbx{display:grid;justify-items:center;gap:4px;padding:22px 34px 18px;border-radius:18px;background:rgba(14,8,4,.88);box-shadow:0 0 0 2px var(--cc),0 0 40px var(--cc);text-align:center;max-width:360px}
+.cbx-orb{width:84px;height:84px;border-radius:50%;background:linear-gradient(180deg,var(--c2) 0 50%,var(--c1) 50% 100%);box-shadow:inset 0 0 0 3px #120a06,0 0 30px var(--cc);animation:cbo 1.1s ease-in-out forwards}
+.cbx small{font-size:12px;color:#e8d6b0;letter-spacing:.08em;text-transform:uppercase}
+.cbx b{font:700 34px/1 Grenze,serif;color:var(--cc);text-shadow:0 2px 0 #000}
+.cbx p{margin:0;font-size:13px;color:#f1e4c6}
+@keyframes cbo{0%{transform:scale(.6) rotate(0)}60%{transform:scale(1.1) rotate(200deg);background:var(--cc)}100%{transform:scale(1) rotate(360deg);background:var(--cc)}}
+@keyframes cbf{0%{opacity:0;transform:scale(.85)}12%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0}}
 `; document.head.appendChild(st); })();

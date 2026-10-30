@@ -28,16 +28,26 @@ const SPELLS = {
   sp_reflet:{ n:'Double reflet', t:6, c:4, ty:'arc', tg:1, tx:'Ajoute à ta main une copie exacte d\'un de tes serviteurs, bonus compris.' },
   sp_ascension:{ n:'Ascension', t:6, c:6, ty:'renf', tx:'Donne +2/+2 et Bouclier divin à tous tes serviteurs.' },
   // ----- techniques ninja (univers des Cinq Nations) : achetées en or, lancées avec du chakra -----
-  nj_permut:{ el:'vent', n:'Permutation', t:1, c:1, ck:1, nin:1, ty:'nin', tg:1, tx:'Prochain combat seulement : un de tes serviteurs gagne Bouclier divin.' },
-  nj_souffle:{ el:'feu', n:'Souffle ardent', t:1, c:1, ck:2, nin:1, ty:'nin', tx:'Prochain combat : 3 dégâts frappent l\'ennemi au début du combat.' },
+  // Feu : braises (préparer, puis tout consumer)
+  nj_souffle:{ el:'feu', n:'Souffle ardent', t:1, c:1, ck:2, nin:1, ty:'nin', tx:'Prochain combat : 3 dégâts frappent l\'ennemi au début du combat. Gagne 1 braise.' },
+  nj_boule:{ el:'feu', n:'Grande boule de feu', t:3, c:2, ck:3, nin:1, ty:'nin', tx:'Consume toutes tes braises : prochain combat, 2 dégâts par braise frappent l\'ennemi au début du combat (au moins 2).' },
+  nj_deluge:{ el:'feu', n:'Pluie de flammes', t:6, c:5, ck:7, nin:1, ty:'nin', tx:'Prochain combat : tous tes serviteurs gagnent +4/+4 et 4 dégâts frappent l\'ennemi au début du combat. Gagne 3 braises.' },
+  // Vent : économie et circulation
+  nj_permut:{ el:'vent', n:'Permutation', t:1, c:1, ck:1, nin:1, ty:'nin', tg:1, tx:'Prochain combat seulement : un de tes serviteurs gagne Bouclier divin. Récupère 1 or.' },
+  nj_porteur:{ el:'vent', n:'Vent porteur', t:2, c:1, ck:2, nin:1, ty:'nin', tx:'Gagne 2 or et rafraîchis gratuitement la taverne.' },
+  nj_rafale:{ el:'vent', n:'Rafale tranchante', t:3, c:3, ck:3, nin:1, ty:'nin', tx:'Donne +2/+1 à trois de tes serviteurs aléatoires. Récupère 1 or.' },
+  // Eau : la marée monte, on accumule
+  nj_brume:{ el:'eau', n:'Rideau de brume', t:2, c:2, ck:2, nin:1, ty:'nin', tx:'Prochain combat seulement : tous tes serviteurs gagnent +0/+3. La marée monte de 1.' },
+  nj_doubles:{ el:'eau', n:'Technique des doubles', t:3, c:2, ck:3, nin:1, ty:'nin', tg:1, tx:'Invoque une copie 1/1 du serviteur ciblé, sans ses bonus. La marée monte de 1.' },
+  nj_vague:{ el:'eau', n:'Vague montante', t:4, c:3, ck:4, nin:1, ty:'nin', tx:'La marée monte de 2, puis tes serviteurs du Clan de l\'Eau gagnent +1/+1 par tranche de 2 marée.' },
+  // Foudre : surcharge et chakra
+  nj_decharge:{ el:'foudre', n:'Décharge', t:1, c:1, ck:1, nin:1, ty:'nin', tx:'Gagne 1 charge et récupère 2 chakra.' },
+  nj_foudre:{ el:'foudre', n:'Lame de foudre', t:3, c:3, ck:3, nin:1, ty:'nin', tg:1, tx:'Prochain combat seulement : un de tes serviteurs gagne +3 attaque et Toxique. Gagne 1 charge.' },
+  nj_sceau:{ el:'foudre', n:'Sceau de puissance', t:5, c:4, ck:5, nin:1, ty:'nin', tg:1, tx:'Donne +4/+4 et Renaissance à un de tes serviteurs. Gagne 2 charges.' },
+  // Terre : rempart, puis la vie devient de la force
   nj_pierre:{ el:'terre', n:'Armure de pierre', t:2, c:2, ck:2, nin:1, ty:'nin', tg:1, tx:'Donne +0/+4 et Provocation à un de tes serviteurs.' },
-  nj_brume:{ el:'eau', n:'Rideau de brume', t:2, c:2, ck:2, nin:1, ty:'nin', tx:'Prochain combat seulement : tous tes serviteurs gagnent +0/+3.' },
-  nj_doubles:{ el:'eau', n:'Technique des doubles', t:3, c:2, ck:3, nin:1, ty:'nin', tg:1, tx:'Invoque une copie 1/1 du serviteur ciblé, sans ses bonus.' },
-  nj_foudre:{ el:'foudre', n:'Lame de foudre', t:3, c:3, ck:3, nin:1, ty:'nin', tg:1, tx:'Prochain combat seulement : un de tes serviteurs gagne +3 attaque et Toxique.' },
-  nj_rafale:{ el:'vent', n:'Rafale tranchante', t:3, c:3, ck:3, nin:1, ty:'nin', tx:'Donne +2/+1 à trois de tes serviteurs aléatoires.' },
-  nj_invoc:{ el:'terre', n:'Invocation', t:4, c:3, ck:4, nin:1, ty:'nin', tx:'Invoque sur ton plateau un serviteur aléatoire de ton niveau de taverne.' },
-  nj_sceau:{ el:'foudre', n:'Sceau de puissance', t:5, c:4, ck:5, nin:1, ty:'nin', tg:1, tx:'Donne +4/+4 et Renaissance à un de tes serviteurs.' },
-  nj_deluge:{ el:'feu', n:'Déluge élémentaire', t:6, c:5, ck:7, nin:1, ty:'nin', tx:'Prochain combat : tous tes serviteurs gagnent +4/+4 et 4 dégâts frappent l\'ennemi au début du combat.' },
+  nj_poing:{ el:'terre', n:'Poing de roc', t:3, c:3, ck:3, nin:1, ty:'nin', tg:1, tx:'Le serviteur ciblé gagne +1 attaque par tranche de 3 points de vie (+6 au plus).' },
+  nj_invoc:{ el:'terre', n:'Golem de terre', t:4, c:3, ck:4, nin:1, ty:'nin', tx:'Invoque sur ton plateau un serviteur aléatoire de ton niveau de taverne ; il gagne +0/+3.' },
   // ----- techniques interdites : seulement après l'Éveil des clans -----
   nj_x_cinq:{ el:'feu', n:'Tempête des cinq éléments', t:5, c:5, ck:9, nin:1, forb:1, ty:'nin', tx:'Technique interdite. Prochain combat : tous tes serviteurs gagnent +6/+6 et 6 dégâts frappent l\'ennemi au début du combat.' },
   nj_x_sceau:{ el:'terre', n:'Sceau inversé', t:5, c:4, ck:8, nin:1, forb:1, ty:'nin', tg:1, tx:'Technique interdite. Le serviteur ciblé gagne +10/+10 ; un autre de tes serviteurs aléatoire est détruit.' },
@@ -69,6 +79,7 @@ function spellBlock(p, id, tgt) {
   if (S.eq && (tgt.eq || []).includes(id)) return 'Ton compagnon porte déjà cet équipement.';
   if (id.startsWith('cf_') && p.hd.length > 10) return 'Ta main est pleine.';
   if (id === 'nj_rafale' && !p.bd.length) return 'Tu n\'as aucun serviteur.';
+  if (id === 'nj_invoc' && p.bd.length >= 7) return 'Ton plateau est plein.';
   if (id === 'sp_chopes' && tgt.a < 1) return 'Ce serviteur n\'a pas d\'attaque à échanger.';
   if (id === 'sp_rabot' && p.t >= 6) return 'Ta taverne est déjà au niveau maximum.';
   if (id === 'sp_meta' && tierOf(tgt) >= 6) return 'Ce serviteur est déjà au niveau maximum.';
@@ -137,16 +148,21 @@ function castSpell0(G, p, hi, tg) {
     case 'sp_alchimie': { const b = CD(tgt.c); tgt.g = 1; tgt.a += b.a; tgt.h += b.h; break; }
     case 'sp_tempete': p.tma = { a:((p.tma && p.tma.a) || 0) + 3, h:((p.tma && p.tma.h) || 0) + 3 }; break;
     case 'sp_reflet': { const c = clone(tgt); c.u = UID++; delete c.tmp; p.hd.push(c); break; }
-    case 'nj_permut': tgt.tmp = { a:(tgt.tmp && tgt.tmp.a) || 0, h:(tgt.tmp && tgt.tmp.h) || 0, f:((tgt.tmp && tgt.tmp.f) || '') + 's', s:'Permutation' }; break;
-    case 'nj_souffle': p.njf = (p.njf || 0) + 3; break;
+    case 'nj_permut': p.g += 1; tgt.tmp = { a:(tgt.tmp && tgt.tmp.a) || 0, h:(tgt.tmp && tgt.tmp.h) || 0, f:((tgt.tmp && tgt.tmp.f) || '') + 's', s:'Permutation' }; break;
+    case 'nj_souffle': p.njf = (p.njf || 0) + 3; p.braise = (p.braise || 0) + 1; break;
+    case 'nj_boule': { const b = p.braise || 0; p.braise = 0; p.njf = (p.njf || 0) + Math.max(2, b * 2); break; }
+    case 'nj_porteur': p.g += 2; p.fz = false; fillShop(G, p); break;
+    case 'nj_vague': { p.maree = (p.maree || 0) + 2; const x = Math.floor(p.maree / 2); if (x) p.bd.filter(m => CD(m.c).tr === 'n_eau').forEach(m => buff(m, x, x)); break; }
+    case 'nj_decharge': p.charge = (p.charge || 0) + 1; p.ck = Math.min(ckMax(p), (p.ck || 0) + 2); break;
+    case 'nj_poing': buff(tgt, Math.min(6, Math.floor(tgt.h / 3)), 0); break;
     case 'nj_pierre': buff(tgt, 0, 4); addF(tgt, 't'); break;
-    case 'nj_brume': p.tma = { a:(p.tma && p.tma.a) || 0, h:((p.tma && p.tma.h) || 0) + 3 }; break;
-    case 'nj_doubles': { const c = mk(tgt.c, 0); c.a = 1; c.h = 1; p.bd.splice(tg + 1, 0, c); break; }
-    case 'nj_foudre': tgt.tmp = { a:((tgt.tmp && tgt.tmp.a) || 0) + 3, h:(tgt.tmp && tgt.tmp.h) || 0, f:((tgt.tmp && tgt.tmp.f) || '') + 'v', s:'Lame de foudre' }; break;
-    case 'nj_rafale': shuffle(p.bd.slice()).slice(0, 3).forEach(m => buff(m, 2, 1)); break;
-    case 'nj_invoc': { const m = drawOne(G, p.t) || drawAny(Math.max(1, p.t)); if (m) p.bd.push(m); break; }
-    case 'nj_sceau': buff(tgt, 4, 4); addF(tgt, 'r'); break;
-    case 'nj_deluge': p.tma = { a:((p.tma && p.tma.a) || 0) + 4, h:((p.tma && p.tma.h) || 0) + 4 }; p.njf = (p.njf || 0) + 4; break;
+    case 'nj_brume': p.tma = { a:(p.tma && p.tma.a) || 0, h:((p.tma && p.tma.h) || 0) + 3 }; p.maree = (p.maree || 0) + 1; break;
+    case 'nj_doubles': { const c = mk(tgt.c, 0); c.a = 1; c.h = 1; p.bd.splice(tg + 1, 0, c); p.maree = (p.maree || 0) + 1; break; }
+    case 'nj_foudre': tgt.tmp = { a:((tgt.tmp && tgt.tmp.a) || 0) + 3, h:(tgt.tmp && tgt.tmp.h) || 0, f:((tgt.tmp && tgt.tmp.f) || '') + 'v', s:'Lame de foudre' }; p.charge = (p.charge || 0) + 1; break;
+    case 'nj_rafale': shuffle(p.bd.slice()).slice(0, 3).forEach(m => buff(m, 2, 1)); p.g += 1; break;
+    case 'nj_invoc': { const m = drawOne(G, p.t) || drawAny(Math.max(1, p.t)); if (m) { buff(m, 0, 3); p.bd.push(m); } break; }
+    case 'nj_sceau': buff(tgt, 4, 4); addF(tgt, 'r'); p.charge = (p.charge || 0) + 2; break;
+    case 'nj_deluge': p.tma = { a:((p.tma && p.tma.a) || 0) + 4, h:((p.tma && p.tma.h) || 0) + 4 }; p.njf = (p.njf || 0) + 4; p.braise = (p.braise || 0) + 3; break;
     case 'eq_lame': buff(tgt, 4, 0); break;
     case 'eq_armure': buff(tgt, 0, 6); addF(tgt, 't'); break;
     case 'eq_gants': buff(tgt, 2, 2); addF(tgt, 'w'); break;
@@ -167,12 +183,8 @@ function castSpell0(G, p, hi, tg) {
     case 'sp_ascension': p.bd.forEach(x => { buff(x, 2, 2); addF(x, 's'); }); break;
   }
   if (S.eq) (tgt.eq = tgt.eq || []).push(id);
-  // enchaînement : la technique lancée est l'élément que nourrit celui retenu par le compagnon
-  if (S.el) comps(p).forEach(c => {
-    const F3 = compLv(c) >= 4 ? fusion3Of(c.el2, compEl(c), S.el) : null, F = F3 || fusionOf(compEl(c), S.el);
-    if (F) { c.x = (c.x || []).filter(e => !e.fusion); c.x.push(Object.assign({ src:'Fusion · ' + F.n, fusion:1 }, F.fx)); c.fu = F.n; }
-    c.el2 = compEl(c);
-  });
+  // réservoir : chaque technique remplit une moitié ; la seconde moitié déclenche le combo et le vide
+  if (S.el && S.nin) withSrc('Réservoir', () => rsvFill(G, p, S.el));
   if (S.nin) comps(p).forEach(c => giveXp(c, 1));
   if (S.el) comps(p).forEach(c => { const e = compEl(c); if (e && EL_GEN[e] === S.el) { const x = (c.eq || []).includes('eq_talisman') ? 2 : 1; p.ck = Math.min(CK_MAX, (p.ck || 0) + 2 * x); buff(c, 2 * x, 2 * x); } });
   if (!S.item) trigBoard(G, p, 'cast');
@@ -266,6 +278,11 @@ const SPART = {
   nj_rafale: NJA('#e8ffd0', [-14, 0, 14].map(y => `<path d="M-26 ${y + 6} Q0 ${y - 12} 26 ${y}" fill="none" stroke="#f4ffe8" stroke-width="4" stroke-linecap="round"/>`).join('') + `<path d="M18 -4 L30 -2 L20 6 Z" fill="#c8ccd4" ${so(1.4)}/>`),
   nj_invoc: NJA('#ffd27a', `<circle r="22" fill="none" stroke="#fff3c0" stroke-width="2.4"/><circle r="15" fill="none" stroke="#fff3c0" stroke-width="1.4" stroke-dasharray="3 3"/>` + [0, 72, 144, 216, 288].map(a => `<circle cx="${(Math.cos(a * Math.PI / 180) * 22).toFixed(1)}" cy="${(Math.sin(a * Math.PI / 180) * 22).toFixed(1)}" r="3" fill="#fff3c0"/>`).join('') + `<path d="M-10 14 Q0 -18 10 14" fill="#5a3a1a" ${so(1.6)}/>`),
   nj_sceau: NJA('#d8b8ff', `<rect x="-18" y="-24" width="36" height="46" rx="3" fill="#f4ecd8" ${so(2)}/><circle cy="-2" r="11" fill="none" stroke="#a8322a" stroke-width="3"/><path d="M-6 -2 H6 M0 -8 V4" stroke="#a8322a" stroke-width="3"/><path d="M-18 -24 H18 M-18 22 H18" stroke="#8a6a3a" stroke-width="4"/>`),
+  nj_boule: NJA('#ffb04a', HANDS + `<circle cx="0" cy="-12" r="15" fill="#ff7a2a" ${so(2)}/><circle cx="-4" cy="-16" r="8" fill="#ffd23a"/><circle cx="-6" cy="-18" r="3" fill="#fff3c0"/>`),
+  nj_porteur: NJA('#e8ffd0', [-12, 2].map(y => `<path d="M-28 ${y} Q-6 ${y - 14} 18 ${y - 2} Q26 ${y + 2} 20 ${y + 8}" fill="none" stroke="#f4ffe8" stroke-width="4" stroke-linecap="round"/>`).join('') + `<circle cx="10" cy="14" r="7" fill="#f2c14e" ${so(1.6)}/><circle cx="20" cy="10" r="6" fill="#f2c14e" ${so(1.6)}/>`),
+  nj_vague: NJA('#bfe8ff', `<path d="M-28 18 C-20 -6 -2 -22 16 -16 C6 -12 4 -4 12 2 C18 6 26 4 28 0 L28 18 Z" fill="#4ab0e8" ${so(2)}/><path d="M-14 6 C-8 -6 2 -12 10 -12" fill="none" stroke="#dff4ff" stroke-width="3" stroke-linecap="round"/>`),
+  nj_decharge: NJA('#ffe14a', `<circle r="14" fill="#6fc8ff" ${so(2)}/><path d="M2 -26 L-8 0 L2 0 L-6 24 L12 -6 L2 -6 Z" fill="#ffe14a" ${so(1.6)}/>`),
+  nj_poing: NJA('#c8a878', `<path d="M-18 -14 L14 -16 L20 -4 L18 14 L-14 16 L-20 2 Z" fill="#8a7a6a" ${so(2)}/><path d="M-10 -14 V-4 M0 -15 V-4 M10 -15 V-4" stroke="#5a4e44" stroke-width="2.4"/><path d="M-26 -6 L-34 -10 M-26 4 L-36 4 M-26 12 L-34 16" stroke="#ffd27a" stroke-width="2.6" stroke-linecap="round"/>`),
   nj_deluge: NJA('#ffffff', `<path d="M-6 -22 C 2 -16 2 -10 -4 -6 C -10 -10 -12 -16 -6 -22 Z" fill="#ff7a2a" ${so(1.4)}/><path d="M14 -10 C 18 -4 18 0 14 4 C 10 0 10 -4 14 -10 Z" fill="#6fc8ff" ${so(1.4)}/><path d="M-16 0 L-20 10 L-14 10 L-18 20 L-8 6 L-14 6 Z" fill="#ffe14a" ${so(1.2)}/><path d="M4 12 L10 4 L16 12 Z" fill="#8a7a6a" ${so(1.4)}/><path d="M-4 18 Q4 10 12 18" fill="none" stroke="#e8ffd0" stroke-width="3"/>`),
   sp_pinte: () => softGlow(50, 54, 30, '#ffe39a', .25) + '<g transform="translate(30 30) scale(1.45)">' + P('M0 7 L18 7 L17 29 Q9 32 1 29 Z', '#d99a3e', so()) + Ln('M2.5 13 L15.5 13 M2.5 21 L15.5 21', '#8a5a22', 1.4) + Ln('M18 12 C 27 12, 27 24, 17.4 24', OUT, 5) + Ln('M18 12 C 27 12, 27 24, 17.4 24', '#d99a3e', 2.4) + P('M-2 8 C -3 0, 5 -2, 7 1 C 9 -3, 17 -2, 18 2 C 22 2, 22 8, 19 9 L18 12 C 16 9, 12 10, 9 9 C 6 11, 1 10, -2 8 Z', '#fff8e6', so(1.6)) + E(4, 4, 2, 1.4, '#fff', 'opacity=".9"') + '</g>' + [[24, 30, 2.2], [76, 26, 1.6], [72, 40, 1.2], [28, 44, 1.4]].map(([x, y, r]) => Ci(x, y, r, '#fff8e6', so(0.8))).join('') + P(starD(76, 72, 6, 2.4, 4), '#fff1b8', GLOW),
   sp_tournee: () => P('M14 70 Q50 82 86 70 L84 76 Q50 89 16 76 Z', '#8a5a2b', so()) + [[28, 46], [44, 40], [60, 46]].map(([x, y], k) => `<g transform="translate(${x} ${y}) scale(.95) rotate(${(k - 1) * 8})">` + P('M0 7 L14 7 L13 26 Q7 28 1 26 Z', '#d99a3e', so(1.8)) + Ln('M14 11 C 20 11, 20 21, 13.6 21', OUT, 4) + Ln('M14 11 C 20 11, 20 21, 13.6 21', '#d99a3e', 2) + P('M-1.4 8 C -2 2, 4 1, 6 3 C 8 0, 14 1, 15 4 C 17 5, 16 8, 14.6 8.4 Z', '#fff8e6', so(1.4)) + '</g>').join('') + P(starD(50, 22, 7, 2.4, 4), '#fff1b8', GLOW) + P(starD(24, 26, 3.4, 1.2, 4), '#fff1b8', GLOW) + P(starD(78, 30, 4, 1.4, 4), '#fff1b8', GLOW),
@@ -320,4 +337,48 @@ function spellCardH(id, z, i, o = {}) {
     + `<div class="cd-nm"><span>${esc(S.n)}</span></div><div class="cd-tx${n > 95 ? ' xlong' : n > 62 ? ' long' : ''}">${esc(S.tx)}</div>`
     + `<div class="cd-tb" style="background:${ty.col}">${esc(ty.n)}</div>`
     + (S.item ? '' : costGemH(spellCostFor(id, z), S.c)) + (S.ck ? `<span class="ck-gem${V.me && ckCost(V.me, S) < S.ck ? ' aff' : ''}" title="Coût en chakra${V.me && ckCost(V.me, S) < S.ck ? ' (affinité de ton héros : 1 de moins)' : ''}">${V.me ? ckCost(V.me, S) : S.ck}</span>` : '') + (S.el ? `<span class="el-tag" style="--ec:${ELS[S.el].col}">${ELS[S.el].n}</span>` : '') + `${z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : ''}</div>`;
+}
+
+/* ---------- Réservoir des techniques (univers Ninja) ----------
+   1re technique : une moitié se remplit de son élément. 2e technique : l'autre moitié se remplit,
+   le mélange déclenche un combo (effet immédiat sur le plateau + pouvoir hybride au compagnon) et le réservoir se vide.
+   Deux fois le même élément : combo pur, plus fort. Le réservoir garde sa moitié d'un tour à l'autre. */
+const PURES = {
+  feu:{ n:'Brasier', col:'#ff5a1a', fx:{ k:'soc_dmg', d:4, n:2 } },
+  vent:{ n:'Typhon', col:'#6fd8a0', fx:{ k:'atk_self', a:2, h:2 } },
+  eau:{ n:'Marée haute', col:'#4ab0e8', fx:{ k:'surv_self', a:3, h:3 } },
+  foudre:{ n:'Surcharge', col:'#ffd23a', fx:{ k:'atk_zap', d:3, n:2 } },
+  terre:{ n:'Rempart', col:'#c8a878', fx:{ k:'eot_self', a:1, h:3 } },
+};
+const tmaAdd = (p, a, h) => { p.tma = { a:((p.tma && p.tma.a) || 0) + a, h:((p.tma && p.tma.h) || 0) + h }; };
+const ctrAdd = (p, k, n) => { p[k] = (p[k] || 0) + n; };
+// effet immédiat de chaque combo (texte + action)
+const COMBO_BD = {
+  'Glace':        ['Tes serviteurs gagnent +0/+2 ; l\'un d\'eux gagne Bouclier divin.', (G, p) => { p.bd.forEach(m => buff(m, 0, 2)); const c = p.bd.filter(m => !has(m, 's')); if (c.length) addF(pickR(c), 's'); }],
+  'Bois':         ['Tes serviteurs gagnent +1/+2.', (G, p) => p.bd.forEach(m => buff(m, 1, 2))],
+  'Lave':         ['Prochain combat : 6 dégâts frappent l\'ennemi. +2 braises.', (G, p) => { p.njf = (p.njf || 0) + 6; ctrAdd(p, 'braise', 2); }],
+  'Vapeur':       ['Prochain combat : tes serviteurs gagnent +2/+2.', (G, p) => tmaAdd(p, 2, 2)],
+  'Explosion':    ['Prochain combat : 8 dégâts frappent l\'ennemi.', (G, p) => { p.njf = (p.njf || 0) + 8; }],
+  'Fournaise':    ['+3 braises et gagne 2 or.', (G, p) => { ctrAdd(p, 'braise', 3); p.g += 2; }],
+  'Tempête':      ['Tes serviteurs gagnent +2/+0 ; gagne 1 or.', (G, p) => { p.bd.forEach(m => buff(m, 2, 0)); p.g += 1; }],
+  'Pluie d\'orage':['Récupère 3 chakra ; la marée monte de 2.', (G, p) => { p.ck = Math.min(ckMax(p), (p.ck || 0) + 3); ctrAdd(p, 'maree', 2); }],
+  'Plasma':       ['Ton serviteur le plus fort gagne +4 attaque et Toxique.', (G, p) => { const t = p.bd.slice().sort((a, b) => b.a - a.a)[0]; if (t) { buff(t, 4, 0); addF(t, 'v'); } }],
+  'Sable':        ['Un serviteur gagne Provocation et Bouclier divin ; gagne 1 or.', (G, p) => { if (p.bd.length) { const t = pickR(p.bd); addF(t, 't'); addF(t, 's'); } p.g += 1; }],
+  'Brasier':      ['+4 braises ; prochain combat, 5 dégâts frappent l\'ennemi.', (G, p) => { ctrAdd(p, 'braise', 4); p.njf = (p.njf || 0) + 5; }],
+  'Typhon':       ['Gagne 3 or et rafraîchis gratuitement la taverne.', (G, p) => { p.g += 3; p.fz = false; fillShop(G, p); }],
+  'Marée haute':  ['La marée monte de 4 ; tes serviteurs gagnent +1/+1.', (G, p) => { ctrAdd(p, 'maree', 4); p.bd.forEach(m => buff(m, 1, 1)); }],
+  'Surcharge':    ['+4 charges et récupère 4 chakra.', (G, p) => { ctrAdd(p, 'charge', 4); p.ck = Math.min(ckMax(p), (p.ck || 0) + 4); }],
+  'Rempart':      ['Tes serviteurs gagnent +0/+4, puis +1 attaque par tranche de 5 points de vie.', (G, p) => p.bd.forEach(m => { buff(m, 0, 4); const x = Math.floor(m.h / 5); if (x) buff(m, x, 0); })],
+};
+const comboOf = (a, b) => !a || !b ? null : a === b ? PURES[a] || null : FUSIONS[[a, b].sort().join('+')] || null;
+const comboTx = F => F ? (COMBO_BD[F.n] || [''])[0] : '';
+function rsvFill(G, p, el) {
+  p.rsv = p.rsv || [];
+  p.rsv.push(el);
+  if (p.rsv.length < 2) return;
+  const [a, b] = p.rsv, F = comboOf(a, b); p.rsv = [];
+  if (!F) return;
+  const bd = COMBO_BD[F.n]; if (bd) withSrc('Combo · ' + F.n, () => bd[1](G, p));
+  comps(p).forEach(c => { c.x = (c.x || []).filter(e => !e.fusion); c.x.push(Object.assign({ src:'Combo · ' + F.n, fusion:1 }, F.fx)); c.fu = F.n; });
+  p.combo = { n:F.n, col:F.col, a, b, pure:a === b ? 1 : 0, id:UID++ };
 }
