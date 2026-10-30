@@ -1225,7 +1225,9 @@ function startRecruit() {
   }
   G.ph = 'recruit';
   const live = humansLive(G).length;
-  const secs = Math.min(+RU().maxTime || 75, (+RU().time || 35) + G.rd * (+RU().perRound || 0));
+  // univers Ninja (techniques, réservoir, récompenses) : tours plus longs, +20 s et plafond relevé de 35 s
+  const nj = inMechAny(G, 'chakra') ? 1 : 0;
+  const secs = Math.min((+RU().maxTime || 75) + nj * 35, (+RU().time || 35) + nj * 20 + G.rd * (+RU().perRound || 0));
   G.end = Date.now() + (live ? secs * 1000 : 1500);
   for (const p of G.ps) if (p.al && p.bot) aiTurn(G, p);
   broadcast();
