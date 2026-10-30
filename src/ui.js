@@ -216,6 +216,7 @@ function render() {
   const inArena = !!document.querySelector('.arena');
   if (V.hadArena && !inArena) arenaCleanup();
   V.hadArena = inArena;
+  placeDuelCol();
   for (const id in ks) { const el = document.getElementById(id); if (el) el.scrollTop = ks[id]; }
   if (fid) { const n = document.getElementById(fid); if (n) { try { n.focus({ preventScroll:true }); if (keep) n.setSelectionRange(keep[0], keep[1]); } catch (e) {} } }
 }
@@ -440,7 +441,7 @@ function gameH() {
       const mine = F.me;
       const enHero = mine ? F.ha : F.hb;
       topZone = `<section class="keeper-zone enemy${F.duel ? ' has-cp' : ''}"><div class="keeper">${faceH(enHero && HART[enHero] ? 'art-h-' + enHero : avatarSym(F.on), 'face kf')}<div class="kname"><b>${esc(F.on)}</b><span>Taverne niveau ${mine ? F.ta : F.tb}</span></div></div>
-        ${F.duel ? cpSideH(me, F, 1) : ''}<div class="line counter-line">${fightRow(F, 1 - mine)}</div></section>`;
+        <div class="line counter-line">${fightRow(F, 1 - mine)}</div></section>`;
       boardRow = fightRow(F, mine);
       if (F.done) {
         const won = F.r.w === mine, lost = F.r.w === 1 - mine, dmg = Math.min(F.cap || 99, F.r.dmg);
@@ -457,8 +458,8 @@ function gameH() {
     }
     const aimS = !fighting && V.aim != null && me.hd[V.aim] && me.hd[V.aim].sp ? SPELLS[me.hd[V.aim].sp] : null;
     const sockets = Array.from({ length:7 }, () => '<i></i>').join('');
-    const cpSide = me.cp ? cpSideH(me, fighting ? V.fight : null, 0) : '';
-    const board = `<section class="board-zone${aimS ? ' aim' : ''}${cpSide ? ' has-cp' : ''}" ${fighting ? '' : 'data-drop="bd"'} aria-label="Ton plateau">${cpSide}
+    const cpSide = me.cp && !fighting ? cpSideH(me, null, 0) : '';
+    const board = `<section class="board-zone${aimS ? ' aim' : ''}${me.cp ? ' has-cp' : ''}" ${fighting ? '' : 'data-drop="bd"'} aria-label="Ton plateau">${cpSide}
       ${aimS ? `<div class="aimbar"><span>${icon('bolt')}<b>${esc(aimS.n)}</b> : touche le serviteur à cibler.</span><button class="btn sm" data-act="aimcancel">Annuler</button></div>` : ''}
       ${!fighting && me.tma ? `<span class="tma-b">Prochain combat : +${me.tma.a}/+${me.tma.h} pour tous</span>` : ''}
       <div class="line" id="bdrow">${boardRow}</div></section>`;
@@ -475,7 +476,8 @@ function gameH() {
     const n = me.hd.length;
     const hand = fighting ? '' : `<section class="hand" data-drop="hd" aria-label="Ta main · ${n}/10"><div class="fan${n > 7 ? ' many' : n > 4 ? ' some' : ''}" style="--n:${n}">${n ? me.hd.map((m, i) => { const o = i - (n - 1) / 2, op = { drag:canAct, style:`--o:${f1(o)};--o2:${f1(o * o)}` }; return m.sp ? spellCardH(m.sp, 'hd', i, op) : cardH(m, 'hd', i, op); }).join('') : ''}</div></section>`;
     const det = !fighting && V.sel ? `<div class="detail-pop">${detailH(canAct)}<button class="dp-x" data-act="unsel" aria-label="Fermer">×</button></div>` : '';
-    table = `<div class="table${fighting ? ' fighting arena' : ''}">${hud}${topZone}${board}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}${choiceH(d, me)}`;
+    const duelCol = fighting && V.fight.duel && me.cp ? `<div class="duel-col" aria-label="Duel des compagnons">${cpSideH(me, V.fight, 1)}<span class="duel-vs">VS</span>${cpSideH(me, V.fight, 0)}</div>` : '';
+    table = `<div class="table${fighting ? ' fighting arena' : ''}">${duelCol}${hud}${topZone}${board}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}${choiceH(d, me)}`;
   } else if (myInfo) {
     table = `<div class="table">${hud}<section class="plaque solo-msg"><h2>Éliminé · ${myInfo.pl}e place</h2><p class="note">Tu peux suivre la fin de la partie à gauche ou retourner au menu.</p><div class="btns"><button class="btn" data-act="leave">Retour au menu</button></div></section></div>`;
   } else {
@@ -629,7 +631,7 @@ function duelLine(F) {
 // compagnon Ninja posé sur le bord gauche de la zone de jeu, séparé par un fil léger
 // side 0 : le mien (plateau du bas) · side 1 : celui de l'adversaire (pendant le duel)
 // animation du duel des compagnons : il avance en parallèle du combat des plateaux
-function duelPaint() { const F = V.fight; if (!F || !V.me || !V.me.cp) return; [0, 1].forEach(s => { const el = document.getElementById('cps' + s); if (el) el.outerHTML = cpSideH(V.me, F, s); }); }
+function duelPaint() { const F = V.fight; if (!F || !V.me || !V.me.cp) return; [0, 1].forEach(s => { const el = document.getElementById('cps' + s); if (el) el.outerHTML = cpSideH(V.me, F, s); }); placeDuelCol(); }
 function stepDuel() {
   const F = V.fight; if (!F || !F.dr) return;
   clearTimeout(V.duelT);
@@ -657,6 +659,16 @@ function duelLunge(fr) {
   return 640;
 }
 function duelFx() { document.querySelectorAll('.cp-side .mn.dead').forEach(el => { const r = el.getBoundingClientRect(); if (!FX_OFF() && !el.dataset.fxd) { el.dataset.fxd = 1; fxBurst(r.left + r.width / 2, r.top + r.height * .45, 'shard', 14); } }); }
+// en combat : les deux compagnons face à face, dans la même colonne, chacun à la hauteur de sa rangée
+function placeDuelCol() {
+  const col = document.querySelector('.duel-col'), tb = document.querySelector('.table'); if (!col || !tb) return;
+  const T = tb.getBoundingClientRect(), bz = document.querySelector('.board-zone'), top = document.querySelector('.counter-line'), mine = document.getElementById('bdrow');
+  if (!bz || !top || !mine) return;
+  const x = bz.getBoundingClientRect().left - T.left + 14, cy = el => { const r = el.getBoundingClientRect(); return r.top - T.top + r.height / 2; };
+  const a = document.getElementById('cps1'), b = document.getElementById('cps0'), vs = col.querySelector('.duel-vs');
+  [[a, cy(top)], [b, cy(mine)]].forEach(([el, y]) => { if (el) { el.style.left = x + 'px'; el.style.top = y + 'px'; } });
+  if (vs && a && b) { const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(); vs.style.left = (ra.left - T.left + ra.width / 2 - 7) + 'px'; vs.style.top = ((ra.bottom + rb.top) / 2 - T.top) + 'px'; }
+}
 function cpSideH(me, F, side) {
   let m = me.cp, lab = `Compagnon · niv. ${compLv(me.cp)}`, cls = '';
   let ex = '', tc = '';
@@ -1821,4 +1833,13 @@ svg.ck-gem.aff{box-shadow:none;filter:drop-shadow(0 0 5px rgba(155,227,106,.95))
 .rpeek .rp-t em{color:#8a5a12}.rpeek .rp-t em.rp-n{color:#6a5236}
 .rpeek .rp-t small{color:#3a2410}
 .rpeek .rp-d{box-shadow:0 0 0 1.5px #3a2410}
+`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `
+.duel-col{position:absolute;inset:0;pointer-events:none;z-index:6}
+.duel-col .cp-side{position:absolute;transform:translateY(-50%);padding-right:0;pointer-events:auto}
+.duel-col .cp-side::after{display:none}
+.duel-col #cps1 small{display:none}
+.duel-vs{position:absolute;transform:translate(-50%,-50%);font:700 22px Grenze,serif;color:#ff9a5a;text-shadow:0 2px 0 #000,0 0 10px rgba(255,120,40,.6);padding:2px 10px;border-radius:99px;background:rgba(20,12,6,.7);box-shadow:0 0 0 2px #d8a84a}
+.keeper-zone .line.counter-line{padding-left:calc(var(--tw) + 40px)}
 `; document.head.appendChild(st); })();
