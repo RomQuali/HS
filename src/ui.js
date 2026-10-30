@@ -477,7 +477,7 @@ function gameH() {
     const hand = fighting ? '' : `<section class="hand" data-drop="hd" aria-label="Ta main · ${n}/10"><div class="fan${n > 7 ? ' many' : n > 4 ? ' some' : ''}" style="--n:${n}">${n ? me.hd.map((m, i) => { const o = i - (n - 1) / 2, op = { drag:canAct, style:`--o:${f1(o)};--o2:${f1(o * o)}` }; return m.sp ? spellCardH(m.sp, 'hd', i, op) : cardH(m, 'hd', i, op); }).join('') : ''}</div></section>`;
     const det = !fighting && V.sel ? `<div class="detail-pop">${detailH(canAct)}<button class="dp-x" data-act="unsel" aria-label="Fermer">×</button></div>` : '';
     const duelCol = fighting && V.fight.duel && me.cp ? `<div class="duel-col" aria-label="Duel des compagnons">${cpSideH(me, V.fight, 1)}<span class="duel-vs">VS</span>${cpSideH(me, V.fight, 0)}</div>` : '';
-    table = `<div class="table${fighting ? ' fighting arena' : ''}${awakeUI() && (d.laws || []).some(l => l.k === 'chakra') ? ' awakened' : ''}">${duelCol}${hud}${topZone}${board}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}${choiceH(d, me)}`;
+    table = `<div class="table${fighting ? ' fighting arena' : ''}${awakeUI() && (d.laws || []).some(l => l.k === 'chakra') ? ' awakened' + awkElCls(me) : ''}">${duelCol}${hud}${topZone}${board}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}${choiceH(d, me)}`;
   } else if (myInfo) {
     table = `<div class="table">${hud}<section class="plaque solo-msg"><h2>Éliminé · ${myInfo.pl}e place</h2><p class="note">Tu peux suivre la fin de la partie à gauche ou retourner au menu.</p><div class="btns"><button class="btn" data-act="leave">Retour au menu</button></div></section></div>`;
   } else {
@@ -661,6 +661,8 @@ function duelLunge(fr) {
 }
 function duelFx() { document.querySelectorAll('.cp-side .mn.dead').forEach(el => { const r = el.getBoundingClientRect(); if (!FX_OFF() && !el.dataset.fxd) { el.dataset.fxd = 1; fxBurst(r.left + r.width / 2, r.top + r.height * .45, 'shard', 14); } }); }
 // en combat : les deux compagnons face à face, dans la même colonne, chacun à la hauteur de sa rangée
+// après l'Éveil : les cartes prennent l'effet de l'élément qui a le plus de marqueurs (braises = Feu, marée = Eau, charge = Foudre)
+function awkElCls(me) { if (!me) return ''; const c = [['feu', me.braise || 0], ['eau', me.maree || 0], ['foudre', me.charge || 0]].sort((x, y) => y[1] - x[1])[0]; return c[1] > 0 ? ' awk-' + c[0] : ''; }
 // l'Éveil : grande annonce plein écran, une seule fois
 function awkWatch() {
   if (V.screen !== 'game' || !V.pub || !awakeUI() || !(V.pub.laws || []).some(l => l.k === 'chakra')) return;
@@ -1874,4 +1876,45 @@ svg.ck-gem.aff{box-shadow:none;filter:drop-shadow(0 0 5px rgba(155,227,106,.95))
 @keyframes awkF{0%{opacity:0}10%{opacity:1}80%{opacity:1}100%{opacity:0}}
 @keyframes awkB{0%{transform:scale(.4);opacity:0}18%{transform:scale(1.15);opacity:1}30%{transform:scale(1)}}
 @keyframes awkR{to{transform:rotate(60deg)}}
+`; document.head.appendChild(st); })();
+
+/* après l'Éveil : cartes enflammées / ruisselantes / électrisées selon le marqueur dominant */
+(function(){ const st = document.createElement('style'); st.textContent = `
+.table[class*="awk-"] .board-zone .mn::after,.table[class*="awk-"] .hand .cd::after{content:'';position:absolute;pointer-events:none;z-index:4;mix-blend-mode:screen}
+.table[class*="awk-"] .board-zone .mn::after{left:-14%;right:-14%;top:-8%;bottom:6%;
+  -webkit-mask:radial-gradient(ellipse 50% 50% at 50% 47%,transparent 56%,#000 68%,#000 82%,transparent 100%);mask:radial-gradient(ellipse 50% 50% at 50% 47%,transparent 56%,#000 68%,#000 82%,transparent 100%)}
+.table[class*="awk-"] .hand .cd::after{inset:-6%;border-radius:12px;-webkit-mask:radial-gradient(closest-side,transparent 78%,#000 96%);mask:linear-gradient(#000,#000) border-box,linear-gradient(#000,#000) padding-box;-webkit-mask-composite:xor;mask-composite:exclude;padding:7px}
+/* Feu : la carte s'embrase */
+.table.awk-feu .board-zone .mn::after,.table.awk-feu .hand .cd::after{
+  background:radial-gradient(22% 40% at 20% 92%,rgba(255,200,60,.95),transparent 70%),radial-gradient(24% 55% at 42% 96%,rgba(255,110,20,.95),transparent 72%),radial-gradient(20% 48% at 64% 94%,rgba(255,170,40,.95),transparent 70%),radial-gradient(22% 52% at 84% 96%,rgba(255,90,20,.9),transparent 72%),
+    radial-gradient(18% 30% at 4% 50%,rgba(255,120,30,.8),transparent 70%),radial-gradient(18% 30% at 96% 50%,rgba(255,120,30,.8),transparent 70%),radial-gradient(30% 22% at 50% 4%,rgba(255,150,40,.7),transparent 70%);
+  filter:blur(1.5px);animation:awkFire .9s ease-in-out infinite alternate}
+.table.awk-feu .board-zone .mn .mn-svg{filter:drop-shadow(0 0 6px rgba(255,120,30,.9)) drop-shadow(0 -4px 10px rgba(255,80,20,.6))}
+@keyframes awkFire{0%{transform:translateY(0) scaleY(1);opacity:.85}50%{transform:translateY(-3%) scaleY(1.06);opacity:1}100%{transform:translateY(-1%) scaleY(.97) scaleX(1.03);opacity:.9}}
+/* Eau : la carte ruisselle */
+.table.awk-eau .board-zone .mn::after,.table.awk-eau .hand .cd::after{
+  background:radial-gradient(circle at 20% 80%,rgba(190,240,255,.95) 0 3%,transparent 4%),radial-gradient(circle at 78% 70%,rgba(190,240,255,.9) 0 2.5%,transparent 3.5%),radial-gradient(circle at 50% 95%,rgba(190,240,255,.9) 0 3%,transparent 4%),radial-gradient(circle at 88% 30%,rgba(190,240,255,.85) 0 2%,transparent 3%),
+    radial-gradient(ellipse 50% 50% at 50% 46%,transparent 60%,rgba(80,190,255,.85) 72%,transparent 86%);
+  background-size:100% 100%;animation:awkWater 2.2s ease-in-out infinite}
+.table.awk-eau .board-zone .mn .mn-svg{filter:drop-shadow(0 0 7px rgba(80,190,255,.9))}
+@keyframes awkWater{0%{transform:scale(.96);opacity:.7;background-position:0 0}50%{transform:scale(1.04);opacity:1;background-position:0 -6px}100%{transform:scale(.96);opacity:.7;background-position:0 -12px}}
+/* Foudre : la carte crépite */
+.table.awk-foudre .board-zone .mn::after,.table.awk-foudre .hand .cd::after{
+  background:conic-gradient(from 0deg,transparent 0 8%,rgba(255,240,120,.95) 8% 9%,transparent 9% 30%,rgba(190,230,255,.95) 30% 31%,transparent 31% 55%,rgba(255,240,120,.95) 55% 56.5%,transparent 56.5% 78%,rgba(255,255,200,.95) 78% 79%,transparent 79%),
+    radial-gradient(ellipse 50% 50% at 50% 46%,transparent 62%,rgba(255,220,60,.7) 74%,transparent 88%);
+  animation:awkBolt .35s steps(2) infinite}
+.table.awk-foudre .board-zone .mn .mn-svg{filter:drop-shadow(0 0 5px rgba(255,230,80,.95)) drop-shadow(0 0 12px rgba(140,200,255,.6))}
+@keyframes awkBolt{0%{transform:rotate(0deg);opacity:1}50%{transform:rotate(47deg);opacity:.55}100%{transform:rotate(113deg);opacity:1}}
+@media (prefers-reduced-motion:reduce){.table[class*="awk-"] .board-zone .mn::after,.table[class*="awk-"] .hand .cd::after{animation:none}}
+`; document.head.appendChild(st); })();
+(function(){ const st = document.createElement('style'); st.textContent = `
+.table.awk-feu .board-zone .mn::before{content:'';position:absolute;left:-10%;right:-10%;top:-26%;bottom:20%;z-index:3;pointer-events:none;mix-blend-mode:screen;filter:blur(2px);
+  background:radial-gradient(9% 34% at 22% 62%,rgba(255,210,80,.95),transparent 72%),radial-gradient(10% 42% at 36% 52%,rgba(255,120,30,.95),transparent 72%),radial-gradient(11% 48% at 50% 46%,rgba(255,170,50,.95),transparent 72%),radial-gradient(10% 42% at 64% 52%,rgba(255,100,20,.95),transparent 72%),radial-gradient(9% 34% at 78% 62%,rgba(255,200,70,.95),transparent 72%),
+    radial-gradient(7% 26% at 12% 78%,rgba(255,140,40,.9),transparent 72%),radial-gradient(7% 26% at 88% 78%,rgba(255,140,40,.9),transparent 72%);
+  -webkit-mask:radial-gradient(ellipse 46% 40% at 50% 74%,transparent 70%,#000 84%);mask:radial-gradient(ellipse 46% 40% at 50% 74%,transparent 70%,#000 84%);
+  animation:awkTongue .7s ease-in-out infinite alternate;transform-origin:50% 100%}
+@keyframes awkTongue{0%{transform:scaleY(.92) translateY(2%);opacity:.8}50%{transform:scaleY(1.08) translateY(-3%) skewX(-2deg);opacity:1}100%{transform:scaleY(1) translateY(-1%) skewX(2deg);opacity:.9}}
+.table.awk-eau .board-zone .mn::before{content:'';position:absolute;left:-6%;right:-6%;top:-6%;bottom:14%;z-index:3;pointer-events:none;border-radius:50%;box-shadow:0 0 0 3px rgba(120,210,255,.6),0 0 14px 4px rgba(80,180,255,.55);animation:awkRipple 1.8s ease-out infinite}
+@keyframes awkRipple{0%{transform:scale(.92);opacity:.95}100%{transform:scale(1.18);opacity:0}}
+@media (prefers-reduced-motion:reduce){.table[class*="awk-"] .board-zone .mn::before{animation:none}}
 `; document.head.appendChild(st); })();
