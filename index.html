@@ -2850,10 +2850,14 @@ const CK_MAX = 10;
 const CHEST_COMMON = ['eq_lame', 'eq_armure', 'eq_gants'];
 const EQS_MAX = 8;
 const chestCost = (q, t) => q === 'maj' ? 3 + Math.floor(t / 2) : 2 + Math.floor(t / 3);
-function chestLoot(q, t) {
-  const all = Object.keys(SPELLS).filter(k => SPELLS[k].eq), rare = all.filter(k => !CHEST_COMMON.includes(k));
-  if (q === 'min') return [pickR(t <= 3 ? CHEST_COMMON : all)];
-  const out = [pickR(rare)]; if (t >= 4) out.push(pickR(rare)); if (t >= 6) { const sp = drawSpell(6); if (sp) out.push(sp.sp); }
+// jamais deux fois le même équipement : ni dans un même coffre, ni s'il est déjà rangé ou porté
+function chestLoot(q, t, p) {
+  const owned = new Set((p && p.eqs) || []); ((p && p.bd) || []).forEach(m => (m.eq || []).forEach(e => owned.add(e)));
+  const all = Object.keys(SPELLS).filter(k => SPELLS[k].eq && !owned.has(k)), rare = all.filter(k => !CHEST_COMMON.includes(k)), common = all.filter(k => CHEST_COMMON.includes(k));
+  const out = [], take = pool => { const c = pool.filter(k => !out.includes(k)); const k = c.length ? pickR(c) : null; if (k) out.push(k); return k; };
+  const tech = () => { const sp = drawSpell(Math.max(1, t)); if (sp) out.push(sp.sp); };
+  if (q === 'min') { if (!take(t <= 3 && common.length ? common : all)) tech(); }
+  else { if (!take(rare.length ? rare : all)) tech(); if (t >= 4 && !take(rare.length > 1 ? rare : all)) tech(); if (t >= 6) tech(); }
   return out;
 }
 // le cycle des cinq éléments (Vent ← Bois, Foudre ← case jaune, Terre ← Métal)
@@ -2925,7 +2929,7 @@ const OPS = {
     if ((p.eqs || []).length >= EQS_MAX) return false;
     const q = m[1], t = +m[2]; p.chests[k]--; if (!p.chests[k]) delete p.chests[k];
     p.eqs = p.eqs || [];
-    chestLoot(q, t).forEach(id => { if (SPELLS[id] && SPELLS[id].eq) { if (p.eqs.length < EQS_MAX) p.eqs.push(id); } else if (p.hd.length < 10) p.hd.push({ sp:id, u:UID++ }); });
+    chestLoot(q, t, p).forEach(id => { if (SPELLS[id] && SPELLS[id].eq) { if (p.eqs.length < EQS_MAX) p.eqs.push(id); } else if (p.hd.length < 10) p.hd.push({ sp:id, u:UID++ }); });
     return true;
   },
   // équiper le compagnon coûte du chakra
