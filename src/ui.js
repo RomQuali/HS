@@ -524,6 +524,19 @@ function trainH(d, me, canAct) {
 }
 // la jauge de chakra (univers des Cinq Nations) : un grand orbe bleu et dix perles
 // le réservoir des techniques : deux moitiés (bas = 1re technique, haut = 2e)
+// fiche du compagnon au survol : niveau, élément, pouvoir du combo, équipements
+function compSheetH(mc, lv, eq) {
+  const L = compLv(mc), nx = L < 5 ? XP_LV[L] : null, el = compEl(mc), E = el && ELS[el];
+  const fu = (mc.x || []).find(e => e.fusion), fuCol = fu ? (Object.values(FUSIONS).concat(Object.values(PURES)).find(F => F.n === mc.fu) || {}).col : null;
+  const eqH = eq.length ? eq.map(id => `<div class="peq-i"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="pq-${id}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#pq-${id})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span><b>${esc(SPELLS[id].n)}${(lv[id] || 1) > 1 ? ` · niv. ${lv[id]}` : ''}</b><small>${esc(eqBonusTx(id, lv[id] || 1))}</small></span></div>`).join('') : '<small class="peq-e">Aucun équipement : pose-lui des médailles depuis l\'entraînement.</small>';
+  return `<div class="peq">
+    <div class="pq-row"><span class="pq-lv"><b>Niveau ${L}</b><small>${nx ? `${mc.xp || 0} / ${nx} expérience` : 'Niveau maximum'}</small></span>
+      ${E ? `<span class="pq-el" style="--c:${E.col}"><i></i><span><b>${E.n}</b><small>domine ${ELS[EL_DOM[el]].n} · +4/+4</small></span></span>` : ''}</div>
+    <div class="pq-combo${fu ? '' : ' none'}" style="--c:${fuCol || '#8a7a5a'}"><b>${fu ? 'Combo · ' + esc(mc.fu) : 'Aucun combo'}</b><small>${fu ? esc(fxText(fu)) : 'Remplis le réservoir avec deux techniques : le combo lui donne un pouvoir hybride.'}</small></div>
+    <b class="peq-t">Équipement · ${eq.length}/${eqSlots(mc)}</b>${eqH}
+    <small class="pq-duel">En combat, il affronte seulement le compagnon adverse : s'il gagne, coffre majeur.</small>
+  </div>`;
+}
 function rsvH(d, me) {
   if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
   const r = me.rsv || [], a = r[0], col = e => ELS[e] ? ELS[e].col : 'transparent';
@@ -982,7 +995,7 @@ function showPeek(t, touch) {
     if (!touch && t.classList.contains('cd') && r.width >= 150) return false;
     peekFor = t; peekEl.innerHTML = cardH({ c, a:+t.dataset.a, h:+t.dataset.h, g:+t.dataset.g, f:t.dataset.f || '' }, 'p', 0); peekEl.hidden = false;
     { const mc = findMine(t.dataset.u); if (mc && isComp(mc)) { const lv = (V.me && V.me.eqlv) || {}; const eq = mc.eq || [];
-      peekEl.insertAdjacentHTML('beforeend', `<div class="peq"><b class="peq-t">Équipement · ${eq.length}/${eqSlots(mc)} · niveau d'entraînement ${compLv(mc)}</b>${eq.length ? eq.map(id => `<div class="peq-i"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="pq-${id}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#pq-${id})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span><b>${esc(SPELLS[id].n)}${(lv[id] || 1) > 1 ? ` · niv. ${lv[id]}` : ''}</b><small>${esc(eqBonusTx(id, lv[id] || 1))}</small></span></div>`).join('') : '<small class="peq-e">Aucun équipement : pose-lui des médailles depuis l\'entraînement.</small>'}${mc.fu ? `<small class="peq-f">Fusion active : ${esc(mc.fu)}</small>` : ''}</div>`); } }
+      peekEl.insertAdjacentHTML('beforeend', compSheetH(mc, lv, eq)); } }
     const [pw, ph] = peekSize(); placePeek(r, pw, ph + (peekEl.querySelector('.peq') ? peekEl.querySelector('.peq').offsetHeight + 8 : 0), touch);
     // après un instant de survol : la bulle des améliorations
     clearTimeout(TIPT); const mm = findMine(t.dataset.u);
@@ -1586,4 +1599,17 @@ function arenaCleanup() {
 .rp-t em{margin-left:6px;font-style:normal;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#f2c14e}
 .rp-t em.rp-n{color:#bfae8a;text-transform:none;letter-spacing:0;font-size:10.5px}
 .rp-t small{display:block;font-size:11px;line-height:1.3}
+`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `
+.pq-row{display:flex;gap:8px;align-items:stretch;margin-bottom:6px}
+.pq-lv,.pq-el{flex:1;display:flex;flex-direction:column;justify-content:center;padding:5px 8px;border-radius:9px;background:rgba(255,255,255,.05)}
+.pq-el{flex-direction:row;align-items:center;gap:7px}
+.pq-el i{width:18px;height:18px;border-radius:50%;background:var(--c);box-shadow:0 0 0 2px #120a06,0 0 8px var(--c);flex:none}
+.pq-lv b,.pq-el b{font-size:12.5px;color:#f2c14e}.pq-el b{color:var(--c)}
+.pq-lv small,.pq-el small{display:block;font-size:10.5px;color:#e8d6b0}
+.pq-combo{margin-bottom:7px;padding:6px 8px;border-radius:9px;background:rgba(255,255,255,.05);box-shadow:inset 3px 0 0 var(--c)}
+.pq-combo b{display:block;font-size:12.5px;color:var(--c)}.pq-combo small{display:block;font-size:11px;line-height:1.3}
+.pq-combo.none b{color:#bfae8a}
+.pq-duel{display:block;margin-top:6px;font-size:10.5px;color:#bfae8a}
 `; document.head.appendChild(st); })();

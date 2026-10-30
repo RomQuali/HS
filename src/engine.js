@@ -884,16 +884,16 @@ const EL_GEN = { vent:'feu', feu:'foudre', foudre:'terre', terre:'eau', eau:'ven
 const EL_DOM = { feu:'vent', vent:'foudre', foudre:'terre', terre:'eau', eau:'feu' };   // domination : A l'emporte sur B
 // fusions : deux éléments enchaînés par le compagnon lui donnent un pouvoir hybride (remplace le précédent)
 const FUSIONS = {
-  'eau+vent':{ n:'Glace', col:'#bfe8ff', fx:{ k:'soc_chill', a:1, n:7 } },
-  'eau+terre':{ n:'Bois', col:'#6aa84a', fx:{ k:'eot_buff_all', a:0, h:2 } },
-  'feu+terre':{ n:'Lave', col:'#ff5a1a', fx:{ k:'soc_aoe', d:2 } },
-  'eau+feu':{ n:'Vapeur', col:'#e8e2da', fx:{ k:'soc_kw', kw:'s' } },
-  'foudre+terre':{ n:'Explosion', col:'#ffb04a', fx:{ k:'dr_dmg', d:5, n:2 } },
-  'feu+vent':{ n:'Fournaise', col:'#ff9a4a', fx:{ k:'soc_dmg', d:3, n:3 } },
+  'eau+vent':{ n:'Glace', col:'#bfe8ff', fx:{ k:'soc_chill', a:2, n:7 } },
+  'eau+terre':{ n:'Bois', col:'#6aa84a', fx:{ k:'eot_self', a:1, h:2 } },
+  'feu+terre':{ n:'Lave', col:'#ff5a1a', fx:{ k:'soc_aoe', d:3 } },
+  'eau+feu':{ n:'Vapeur', col:'#e8e2da', fx:{ k:'surv_self', a:2, h:2 } },
+  'foudre+terre':{ n:'Explosion', col:'#ffb04a', fx:{ k:'dr_dmg', d:6, n:1 } },
+  'feu+vent':{ n:'Fournaise', col:'#ff9a4a', fx:{ k:'soc_dmg', d:4, n:1 } },
   'foudre+vent':{ n:'Tempête', col:'#c8f0ff', fx:{ k:'atk_zap', d:2, n:2 } },
-  'eau+foudre':{ n:'Pluie d\'orage', col:'#6a9ad8', fx:{ k:'soc_buff', a:2, h:2 } },
+  'eau+foudre':{ n:'Pluie d\'orage', col:'#6a9ad8', fx:{ k:'soc_self', a:2, h:4 } },
   'feu+foudre':{ n:'Plasma', col:'#ff6ad8', fx:{ k:'atk_self', a:3, h:0 } },
-  'terre+vent':{ n:'Sable', col:'#d8b878', fx:{ k:'eot_buff_all', a:1, h:1 } },
+  'terre+vent':{ n:'Sable', col:'#d8b878', fx:{ k:'eot_self', a:0, h:3 } },
 };
 // fusions à trois éléments : compagnon de niveau 4 ou plus
 const FUSIONS3 = {
