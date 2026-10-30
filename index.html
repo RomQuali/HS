@@ -7078,7 +7078,7 @@ function gameH() {
       <div class="hz-left">${trainH(d, me, canAct)}${me.cp ? '' : `<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span>`}</div>
       <div class="hz-hero" data-hov="hero"><span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? 'art-h-' + me.hero : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span></div>
       <div class="hz-right"><span class="hov" data-hov="pow">${power}</span><span class="purses">${coins}${canAct ? ckGauge(d, me) : ''}</span>${rsvH(d, me)}</div>
-      <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}">${icon('bell')}<span>${me.rdy ? 'Prêt !' : 'Prêt'}</span></button></div></section>`;
+      <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}"><span class="bell-shine" aria-hidden="true"></span>${icon('bell')}<span class="bell-t">${me.rdy ? 'Prêt !' : 'Prêt'}</span><small class="bell-s">${me.rdy ? 'en attente' : 'fin du tour'}</small></button></div></section>`;
     const n = me.hd.length;
     const hand = fighting ? '' : `<section class="hand" data-drop="hd" aria-label="Ta main · ${n}/10"><div class="fan${n > 7 ? ' many' : n > 4 ? ' some' : ''}" style="--n:${n}">${n ? me.hd.map((m, i) => { const o = i - (n - 1) / 2, op = { drag:canAct, style:`--o:${f1(o)};--o2:${f1(o * o)}` }; return m.sp ? spellCardH(m.sp, 'hd', i, op) : cardH(m, 'hd', i, op); }).join('') : ''}</div></section>`;
     const det = !fighting && V.sel ? `<div class="detail-pop">${detailH(canAct)}<button class="dp-x" data-act="unsel" aria-label="Fermer">×</button></div>` : '';
@@ -7283,7 +7283,7 @@ function placeDuelCol() {
   const col = document.querySelector('.duel-col'), tb = document.querySelector('.table'); if (!col || !tb) return;
   const T = tb.getBoundingClientRect(), bz = document.querySelector('.board-zone'), top = document.querySelector('.counter-line'), mine = document.getElementById('bdrow');
   if (!bz || !top || !mine) return;
-  const x = bz.getBoundingClientRect().left - T.left + 14, cy = el => { const r = el.getBoundingClientRect(); return r.top - T.top + r.height / 2; };
+  const x = bz.getBoundingClientRect().left - T.left + 14, cy = el => { const r = el.getBoundingClientRect(), tk = el.querySelector('.mn:not(.dying)'); if (!tk) return r.top - T.top + r.height / 2; let o = 0, n = tk; while (n && n !== el) { o += n.offsetTop; n = n.offsetParent; } if (n !== el) o = tk.offsetTop; return r.top - T.top + Math.min(r.height / 2, o + tk.offsetHeight * .45); };   // position de mise en page (sans l'élan des attaques)
   const a = document.getElementById('cps1'), b = document.getElementById('cps0'), vs = col.querySelector('.duel-vs');
   [[a, cy(top)], [b, cy(mine)]].forEach(([el, y]) => { if (el) { el.style.left = x + 'px'; el.style.top = y + 'px'; } });
   if (vs && a && b) { const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(); vs.style.left = (ra.left - T.left + ra.width / 2 - 7) + 'px'; vs.style.top = ((ra.bottom + rb.top) / 2 - T.top) + 'px'; }
@@ -7535,6 +7535,7 @@ function doAct(act, btn) {
     case 'sell': if (s) { sendAct({ t:'sell', i:s.i }); V.sel = null; } break;
     case 'mvl': if (s) { sendAct({ t:'move', i:s.i, to:s.i - 1 }); V.sel = { z:'bd', i:s.i - 1 }; } break;
     case 'mvr': if (s) { sendAct({ t:'move', i:s.i, to:s.i + 1 }); V.sel = { z:'bd', i:s.i + 1 }; } break;
+    case 'rdy': { const r = btn.getBoundingClientRect(), on = !btn.classList.contains('rung'); if (!FX_OFF()) { fxRing(r.left + r.width / 2, r.top + r.height / 2, on ? '#b8ff8a' : '#ffd86a', 1.8); if (on) fxBurst(r.left + r.width / 2, r.top + r.height / 2, 'buff', 18, 1.3); } btn.closest('.bellwrap') && btn.closest('.bellwrap').classList.add('bump'); sendAct({ t:'rdy' }); break; }
     default: if (act.startsWith('atl-') || act.startsWith('ed-')) atlAct(act, btn); else sendAct({ t:act });
   }
 }
@@ -8563,6 +8564,44 @@ svg.ck-gem.aff{box-shadow:none;filter:drop-shadow(0 0 5px rgba(155,227,106,.95))
 .lawdr-c > *{overflow:hidden;min-height:0}
 .lawdr.open .lawdr-c{grid-template-rows:1fr}
 .lawdr:not(.open) .lawdr-c .ban-law{padding-top:0;padding-bottom:0}
+`; document.head.appendChild(st); })();
+/* grands écrans (plein écran) : la place en plus est répartie entre les zones, le héros et sa barre restent en bas */
+(function(){ const st = document.createElement('style'); st.textContent = `
+@media (min-height:950px) and (min-width:821px){ :root body .table:not(.fighting){align-content:stretch;grid-template-rows:auto auto 1fr auto auto} :root body .table:not(.fighting) .board-zone{align-self:center} :root body .table.fighting{align-content:stretch;grid-template-rows:auto auto 1fr auto;padding-bottom:5vh} }
+`; document.head.appendChild(st); })();
+
+/* bouton Prêt : grand médaillon doré, minuteur en anneau, effets */
+(function(){ const st = document.createElement('style'); st.textContent = `
+:root body .hero-zone .bellwrap{width:128px;height:128px;padding:9px;position:relative;
+  background:conic-gradient(from -90deg,var(--ring) calc(var(--p) * 360deg),rgba(20,12,6,.75) 0);
+  box-shadow:0 0 0 3px #120a06,0 0 0 6px #8a5a22,0 0 0 8px #120a06,0 10px 22px rgba(0,0,0,.65),0 0 calc(10px + var(--p) * 18px) color-mix(in srgb,var(--ring) 55%,transparent)}
+:root body .hero-zone .bellwrap::before{content:'';position:absolute;inset:-14px;border-radius:50%;pointer-events:none;
+  background:repeating-conic-gradient(from 0deg,rgba(255,215,120,.0) 0 10deg,rgba(255,215,120,.22) 10deg 12deg);-webkit-mask:radial-gradient(circle,transparent 62%,#000 64%,#000 72%,transparent 74%);mask:radial-gradient(circle,transparent 62%,#000 64%,#000 72%,transparent 74%);animation:bellSpin 18s linear infinite}
+:root body .hero-zone .bellwrap.low{--ring:#ff4a3a;animation:bellLow .8s ease-in-out infinite}
+:root body .hero-zone .bellwrap.bump{animation:bellBump .45s cubic-bezier(.2,1.6,.4,1)}
+:root body .hero-zone .bell{position:relative;overflow:hidden;gap:1px;font-size:24px;text-shadow:0 1px 0 rgba(255,240,190,.7);
+  background:radial-gradient(circle at 36% 26%,#fff6cf 0,#ffd86a 22%,#e3a63a 50%,#a8701c 78%,#6a420e 100%);
+  box-shadow:inset 0 0 0 3px rgba(255,236,170,.55),inset 0 -8px 14px rgba(80,40,0,.45),inset 0 6px 10px rgba(255,255,230,.5),0 3px 0 #5a3608,0 6px 14px rgba(0,0,0,.55);transition:transform .15s,filter .15s}
+:root body .hero-zone .bell .ic{width:38px;height:38px;filter:drop-shadow(0 1px 0 rgba(255,240,190,.6))}
+:root body .hero-zone .bell .bell-t{font-family:var(--f-disp);font-size:24px;line-height:1}
+:root body .hero-zone .bell .bell-s{font:700 9px var(--f-label),serif;letter-spacing:.16em;text-transform:uppercase;opacity:.75}
+:root body .hero-zone .bell .bell-shine{position:absolute;inset:-40%;background:linear-gradient(115deg,transparent 40%,rgba(255,255,255,.65) 50%,transparent 60%);transform:translateX(-70%);animation:bellShine 3.2s ease-in-out infinite;pointer-events:none}
+:root body .hero-zone .bell:not(:disabled):not(.rung) .ic{animation:bellSwing 2.6s ease-in-out infinite;transform-origin:50% 10%}
+:root body .hero-zone .bell:hover:not(:disabled){transform:translateY(-3px) scale(1.04);filter:brightness(1.1)}
+:root body .hero-zone .bell:active:not(:disabled){transform:scale(.94)}
+:root body .hero-zone .bell.rung{background:radial-gradient(circle at 36% 26%,#f2ffe0 0,#b8f080 24%,#6fc040 52%,#3e7a1c 80%,#22480c 100%);color:#123004;text-shadow:0 1px 0 rgba(230,255,200,.7);
+  box-shadow:inset 0 0 0 3px rgba(220,255,180,.55),inset 0 -8px 14px rgba(10,40,0,.45),0 3px 0 #1e3a08,0 0 22px rgba(140,230,90,.75)}
+:root body .hero-zone .bell.rung .bell-shine{animation:none;opacity:0}
+:root body .hero-zone .bell:disabled{filter:grayscale(.65) brightness(.65)}
+:root body .hero-zone .bell:disabled .bell-shine{display:none}
+@keyframes bellShine{0%,55%{transform:translateX(-70%)}85%,100%{transform:translateX(70%)}}
+@keyframes bellSwing{0%,70%,100%{transform:rotate(0)}76%{transform:rotate(14deg)}82%{transform:rotate(-12deg)}88%{transform:rotate(7deg)}94%{transform:rotate(-4deg)}}
+@keyframes bellSpin{to{transform:rotate(360deg)}}
+@keyframes bellLow{50%{box-shadow:0 0 0 3px #120a06,0 0 0 6px #a82a1a,0 0 0 8px #120a06,0 10px 22px rgba(0,0,0,.65),0 0 30px rgba(255,60,40,.9)}}
+@keyframes bellBump{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+@media (max-height:1000px) and (min-width:821px){ :root body .hero-zone .bellwrap{width:112px;height:112px;padding:8px;margin-top:-6px} :root body .hero-zone .bell .ic{width:32px;height:32px} :root body .hero-zone .bell .bell-t{font-size:21px} }
+@media (max-width:820px),(max-height:540px){ :root body .hero-zone .bellwrap{width:72px;height:72px;padding:5px} :root body .hero-zone .bell .ic{width:22px;height:22px} :root body .hero-zone .bell .bell-t{font-size:15px} :root body .hero-zone .bell .bell-s{display:none} :root body .hero-zone .bellwrap::before{display:none} }
+@media (prefers-reduced-motion:reduce){ :root body .hero-zone .bell .bell-shine,:root body .hero-zone .bellwrap::before,:root body .hero-zone .bell .ic{animation:none} }
 `; document.head.appendChild(st); })();
 </script>
 </body></html>
