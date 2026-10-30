@@ -1576,6 +1576,32 @@ body.sc-lobby #scene{transform:none;filter:none}
   .rt-sum{flex-basis:100%;font-size:12.5px}.rt-ft .btn,.rt-ft .t-go{height:40px}.rt-ft .t-go{padding:0 16px;font-size:16px}
   .rt-seat small{font-size:10px}
 }
+/* ===================== CHOIX DU HÉROS : LES MÉDAILLONS ===================== */
+.mds{display:flex;justify-content:center;align-items:flex-start;gap:clamp(14px,4cqi,56px);width:100%;perspective:1200px}
+.md{flex:0 1 300px;min-width:0;display:flex;flex-direction:column;align-items:center;padding:0;border:0;background:none;cursor:pointer;color:var(--chalk);font:inherit;text-align:center;transform:scale(.94);filter:brightness(.62);transition:transform .35s,filter .35s}
+.md:first-child{transform:rotateY(16deg) scale(.94)}
+.md:last-child{transform:rotateY(-16deg) scale(.94)}
+.md:hover{filter:brightness(.85)}
+.md.on{transform:scale(1.04);filter:drop-shadow(0 0 26px rgba(242,193,78,.55))}
+.md-coin{position:relative;display:block;width:min(210px,74%);aspect-ratio:1;border-radius:50%;background:repeating-conic-gradient(#e8b84a 0 6deg,#a8741e 6deg 12deg);box-shadow:0 0 0 5px #120a06,0 16px 30px rgba(0,0,0,.6)}
+.md-in{position:absolute;inset:6.5%;border-radius:50%;background:linear-gradient(135deg,#ffe9a8,#c88a26);box-shadow:inset 0 0 0 4px #120a06}
+.md-coin .face{position:absolute;inset:12%;width:auto;height:auto;border-radius:50%;box-shadow:0 0 0 4px #120a06}
+.md-gem{position:absolute;right:1%;top:1%;width:21%;aspect-ratio:1;display:grid;place-items:center;border-radius:50%;font-family:var(--f-label);font-weight:700;font-size:clamp(14px,2.4cqi,22px);color:#fff6dc;background:radial-gradient(circle at 40% 35%,#6ab0ff,#1f4a8a);box-shadow:0 0 0 4px #120a06}
+.md-shine{position:absolute;inset:0;border-radius:50%;pointer-events:none;background:linear-gradient(120deg,transparent 35%,rgba(255,255,255,.8) 50%,transparent 65%);opacity:0}
+.md.on .md-shine{animation:mdShine 2.4s ease-in-out infinite}
+@keyframes mdShine{0%,100%{opacity:0}50%{opacity:.5}}
+.md-rib{position:relative;z-index:1;margin-top:-22px;padding:6px 26px;font-family:var(--f-label);font-weight:700;font-size:clamp(14px,2cqi,18px);line-height:1.1;color:#fff6dc;background:#8a1e1a;clip-path:polygon(0 0,100% 0,94% 50%,100% 100%,0 100%,6% 50%)}
+.md .famc{margin-top:8px;justify-content:center}
+.md-chain{width:3px;height:16px;margin-top:4px;background:repeating-linear-gradient(180deg,#c8c8d0 0 5px,#4a4a54 5px 8px)}
+.md-comp{display:flex;align-items:center;gap:10px;width:100%;padding:8px 12px;box-sizing:border-box;border-radius:40px;text-align:left;background:rgba(26,14,6,.92);box-shadow:0 0 0 3px #120a06,0 0 0 5px #c8963e}
+.md-comp .face{width:50px;height:50px;flex:none;box-shadow:0 0 0 3px var(--gold)}
+.md-comp small{font-size:12.5px;line-height:1.3;color:#e8d8b8}
+.md-comp b{font-family:var(--f-label);font-size:14px;color:#fff6dc}
+.md-tx{margin-top:10px;font-size:14px;line-height:1.4;color:var(--chalk)}
+.md-tx b{color:#ffe27a}
+.md-go{margin-top:4px}
+@container (max-width:560px){.mds{gap:8px}.md-comp small,.md-tx{display:none}.md-rib{font-size:12px;padding:4px 14px}}
+@media (orientation:landscape) and (max-height:540px){.md-coin{width:min(120px,70%)}.md-rib{margin-top:-14px;font-size:12.5px;padding:4px 16px}.md-comp{padding:4px 8px}.md-comp .face{width:34px;height:34px}.md-comp small{font-size:11px}.md-tx{font-size:11.5px;margin-top:4px}.md .famc{display:none}}
 </style>
 </head><body>
 
@@ -5914,13 +5940,27 @@ function detailH(canAct) {
   return `<div class="det">${cardH(m, 'd', 0)}<div class="det-s"><b>${esc(b.n)}${m.g ? ' doré' : ''}</b><span class="meta">${where}${m.tr ? ' · joue-le pour recevoir un serviteur de niveau supérieur' : ''}</span><div class="acts">${acts}</div></div></div>`;
 }
 
+// choix du héros : trois médaillons, on en met un en avant puis on le porte
+function heroMedalsH(me) {
+  const sel = me.ho.includes(V.heroSel) ? V.heroSel : me.ho[Math.floor((me.ho.length - 1) / 2)];
+  const md = me.ho.map(h => {
+    const x = HEROES[h], on = h === sel, cid = COMPANIONS[h] && C[COMPANIONS[h]] ? COMPANIONS[h] : null, c = cid ? C[cid] : null;
+    return `<button class="md${on ? ' on' : ''}" data-act="hsel" data-h="${h}" aria-pressed="${on}">
+      <span class="md-coin"><span class="md-in"></span>${faceH('art-h-' + h)}<span class="md-gem" title="${x.cost ? 'Coût du pouvoir' : 'Pouvoir passif'}">${x.cost || '∞'}</span><span class="md-shine"></span></span>
+      <span class="md-rib">${esc(x.n)}</span>${famChips(heroFam(h))}
+      ${c ? `<span class="md-chain"></span><span class="md-comp">${faceH('art-' + cid)}<small><b>${esc(c.n)} ${c.a}/${c.h}</b><br>${esc(fxText((c.fx || [])[0] || {}))}</small></span>` : ''}
+      <span class="md-tx"><b>${x.cost ? `Pouvoir · ${x.cost} or` : 'Passif'} ·</b> ${esc(x.tx.replace(/^Passif : /, ''))}</span>
+    </button>`;
+  }).join('');
+  return `<div class="mds">${md}</div><button class="t-go md-go" data-act="hero" data-h="${sel}">Porter le médaillon de ${esc(HEROES[sel].n.split(' ')[0])}</button>`;
+}
 function overlayH() {
   const d = V.pub, me = V.me;
   if (me && me.disc && d.ph === 'recruit') return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Découverte</h2><p class="ov-s">Choisis un serviteur. Les deux autres retournent dans la réserve.</p>
     <div class="disc">${me.disc.map((m, i) => `<button class="disc-b" data-act="pick" data-i="${i}" aria-label="Choisir ${esc(CD(m.c).n)}">${cardH(m, 'disc', i)}</button>`).join('')}</div></div></div>`;
   if (d.ph === 'hero' && me) {
-    if (!me.hero) return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Choisis ton héros</h2><p class="ov-s">Son pouvoir t'accompagne toute la partie.</p>${famH(d)}${lawsH(d.laws)}
-      <div class="heroes">${me.ho.map(h => { const x = HEROES[h]; return `<button class="hc" data-act="hero" data-h="${h}">${faceH('art-h-' + h)}<b>${esc(x.n)}</b>${famChips(heroFam(h))}<span class="kind">${x.cost ? `Pouvoir · ${x.cost} or` : 'Passif'}</span><small>${esc(x.tx)}</small>${COMPANIONS[h] && C[COMPANIONS[h]] ? `<span class="hc-comp">${faceH('art-' + COMPANIONS[h])}<span>Compagnon : <b>${esc(C[COMPANIONS[h]].n)}</b><br><small>${esc(fxText((C[COMPANIONS[h]].fx || [])[0] || {}))}</small></span></span>` : ''}</button>`; }).join('')}</div></div></div>`;
+    if (!me.hero) return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Choisis ton héros</h2><p class="ov-s">Son pouvoir et son compagnon t'accompagnent toute la partie.</p>${lawsH(d.laws, true)}
+      ${heroMedalsH(me)}</div></div>`;
     return `<div class="ov"><div class="ov-box wait">${faceH('art-h-' + me.hero, 'face big')}<h2 class="ov-t">${esc(HEROES[me.hero].n)}</h2><p class="ov-s">En attente des autres joueurs…</p></div></div>`;
   }
   if (d.ph === 'end') {
@@ -6054,7 +6094,8 @@ function doAct(act, btn) {
     case 'copycode': { const c = H.code || ''; try { navigator.clipboard.writeText(c).then(() => toast('Code copié : ' + c), () => toast('Code : ' + c)); } catch (e) { toast('Code : ' + c); } break; }
     case 'launch': hostLaunch(); break;
     case 'leave': leaveGame(); break;
-    case 'hero': sendAct({ t:'hero', h:btn.dataset.h }); break;
+    case 'hero': sendAct({ t:'hero', h:btn.dataset.h }); V.heroSel = null; break;
+    case 'hsel': V.heroSel = btn.dataset.h; render(); break;
     case 'skip': if (V.fight) { clearTimeout(V.fightT); if (V.fight.lunge) { try { V.fight.lunge.cancel(); } catch (e) {} V.fight.lunge = null; } V.fi = V.fight.r.frames.length - 1; V.fight.done = true; render(); fxEnd(); } break;
     case 'buy': if (s) { sendAct({ t:'buy', i:s.i }); V.sel = null; } break;
     case 'buysp': sendAct({ t:'buysp' }); V.sel = null; break;
