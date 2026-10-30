@@ -459,7 +459,7 @@ function gameH() {
       <div class="line" id="bdrow">${boardRow}</div></section>`;
     const nono = me.hero === 'nono', locked = nono && (me.rd || 0) < 3;
     const powSub = nono ? `${me.fb} dégât${me.fb > 1 ? 's' : ''}` : me.pu ? 'Utilisé' : '';
-    const power = hero && hero.cost ? `<button class="powm${me.pu ? ' used' : ''}${canAct && !locked && powCan(me, me.rd || (V.pub && V.pub.rd)) ? ' can' : ''}" data-act="pow" ${!canAct || me.pu || locked || (me.ckPay ? (me.ck || 0) : me.g) < hero.cost ? 'disabled' : ''} aria-label="${esc(hero.n + ' : ' + hero.tx + ' Coût : ' + hero.cost + (me.ckPay ? ' chakra.' : ' or.'))}"><span class="pcost${me.ckPay ? ' ck' : ''}">${hero.cost}</span>${powArtH(me.hero)}<small>${locked ? 'Manche 3' : powSub || powerTitle(hero)[0] || 'Pouvoir'}</small><span class="pc-tx">${esc(powerTitle(hero)[1])}</span></button>`
+    const power = hero && hero.cost ? `<button class="powm${me.pu ? ' used' : ''}${canAct && !locked && powCan(me, me.rd || (V.pub && V.pub.rd)) ? ' can' : ''}" data-act="pow" ${!canAct || me.pu || locked || (me.ckPay ? (me.ck || 0) : me.g) < hero.cost ? 'disabled' : ''} aria-label="${esc(hero.n + ' : ' + hero.tx + ' Coût : ' + hero.cost + (me.ckPay ? ' chakra.' : ' or.'))}"><span class="pcost${me.ckPay ? ' ck' : ''}">${me.ckPay ? ckMarkH(hero.cost, 'pc-ck', 'Coût : ' + hero.cost + ' chakra') : hero.cost}</span>${powArtH(me.hero)}<small>${locked ? 'Manche 3' : powSub || powerTitle(hero)[0] || 'Pouvoir'}</small><span class="pc-tx">${esc(powerTitle(hero)[1])}</span></button>`
       : `<span class="powm passive" aria-label="${esc(hero ? hero.tx : '')}">${hero ? powArtH(me.hero) : icon('crown')}<small>Passif</small>${hero ? `<span class="pc-tx">${esc(hero.tx)}</span>` : ''}</span>`;
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
@@ -518,7 +518,7 @@ function trainH(d, me, canAct) {
       <b class="ch-n">×${me.chests[k]}</b><small>${q === 'maj' ? 'Majeur' : 'Mineur'} · ${t}</small></button>`; }).join('');
   const medals = (me.eqs || []).map((id, i) => { const S = SPELLS[id], c = EQ_COST(id);
     const why = !comps.length ? 'Recrute ton compagnon pour l\'équiper.' : !comps.some(m => (m.eq || []).length < eqSlots(m) && !(m.eq || []).includes(id)) ? 'Ton compagnon porte déjà cet équipement, ou n\'a plus d\'emplacement libre.' : (me.ck || 0) < c ? `Il te faut ${c} chakra.` : '';
-    return `<button class="eqm" data-act="equip" data-i="${i}" data-sp="${id}" data-why="${esc('Équiper coûte ' + c + ' chakra.' + (why ? ' ' + why : ''))}" ${canAct && !why ? '' : 'aria-disabled="true"'} aria-label="Équiper ${esc(S.n)} pour ${c} chakra"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="eqc${i}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#eqc${i})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span class="ch-c">${c}</span>${(me.eqlv || {})[id] > 1 ? `<b class="eq-lv">${me.eqlv[id]}</b>` : ''}</button>`; }).join('');
+    return `<button class="eqm" data-act="equip" data-i="${i}" data-sp="${id}" data-why="${esc('Équiper coûte ' + c + ' chakra.' + (why ? ' ' + why : ''))}" ${canAct && !why ? '' : 'aria-disabled="true"'} aria-label="Équiper ${esc(S.n)} pour ${c} chakra"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="eqc${i}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#eqc${i})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span class="ch-c ckx">${ckMarkH(c)}</span>${(me.eqlv || {})[id] > 1 ? `<b class="eq-lv">${me.eqlv[id]}</b>` : ''}</button>`; }).join('');
   return `<section class="train" aria-label="Entraînement"><b class="tr-h">Entraînement</b>
     <div class="tr-row med">${medals || '<small class="tr-e">Les équipements des coffres de fin de combat se rangent ici.</small>'}</div></section>`;
 }
@@ -1612,4 +1612,21 @@ function arenaCleanup() {
 .pq-combo b{display:block;font-size:12.5px;color:var(--c)}.pq-combo small{display:block;font-size:11px;line-height:1.3}
 .pq-combo.none b{color:#bfae8a}
 .pq-duel{display:block;margin-top:6px;font-size:10.5px;color:#bfae8a}
+`; document.head.appendChild(st); })();
+
+/* univers Ninja : marqueur de chakra (flamme bleue), pastilles de nature, zone d'entraînement agrandie */
+(function(){ const st = document.createElement('style'); st.textContent = `
+.ckm{display:block;overflow:visible;filter:drop-shadow(0 0 4px rgba(80,170,255,.7))}
+.ckm-t{font-family:var(--f-num);font-size:17px;font-weight:700;paint-order:stroke;stroke:#0c2a6a;stroke-width:3px}
+svg.ck-gem{position:absolute;right:-6%;top:-7%;z-index:3;width:30cqi;height:32cqi;background:none;box-shadow:none;border-radius:0}
+svg.ck-gem.aff{box-shadow:none;filter:drop-shadow(0 0 5px rgba(155,227,106,.95))}
+.pcost.ck{background:none!important;box-shadow:none!important;padding:0}
+.pcost.ck .pc-ck{width:100%;height:118%;margin-top:-12%}
+.eqm .ch-c.ckx{background:none;box-shadow:none;width:22px;height:24px;right:-7px;top:-9px}
+.eqm .ch-c.ckx .ckm{width:100%;height:100%}
+.el-tag{display:inline-flex;align-items:center;gap:1.5cqi}
+.el-tag .elbadge{width:9cqi;height:9cqi;margin-left:-2cqi}
+.train{flex:1 1 auto;min-width:360px}
+.train .tr-row.med{padding:10px 8px 7px 7px;gap:10px;min-height:56px;overflow-x:auto;overflow-y:visible}
+@media (min-width:821px){ .train{min-width:380px;padding:4px 12px 6px} .eqm,.eqm svg{width:44px;height:44px} }
 `; document.head.appendChild(st); })();

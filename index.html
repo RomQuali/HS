@@ -5979,6 +5979,25 @@ function buildSpellDefs() {
   document.body.insertAdjacentHTML('afterbegin', `<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>${s}${Object.values(SOFT).join('')}</defs></svg>`);
 }
 
+
+/* ---------- univers Ninja : icône de nature et marqueur de chakra ---------- */
+// pictogramme d'élément dessiné autour de (0,0), rayon ~8
+const EL_ICON = {
+  feu:`<path d="M0 -8 C4 -3 6 0 6 3 A6 6 0 0 1 -6 3 C-6 0 -3 -2 -2 -6 C-1 -3 0 -3 0 -8 Z" fill="#ff7a2a" stroke="#120a06" stroke-width="1.4"/><path d="M0 -1 C2 1 3 2 3 3.5 A3 3 0 0 1 -3 3.5 C-3 2 -1 1 0 -1 Z" fill="#ffe14a"/>`,
+  vent:`<path d="M-7 -2 C-4 -6 4 -7 6 -3 C7 0 3 2 1 0" fill="none" stroke="#6fd8a0" stroke-width="2.4" stroke-linecap="round"/><path d="M-7 3 H4 Q8 3 7 6.5" fill="none" stroke="#bff0d4" stroke-width="2" stroke-linecap="round"/>`,
+  eau:`<path d="M0 -8 C4 -2 6 1 6 3 A6 6 0 0 1 -6 3 C-6 1 -4 -2 0 -8 Z" fill="#4ab0e8" stroke="#120a06" stroke-width="1.4"/><path d="M-3 2 A3 3 0 0 0 0 5" fill="none" stroke="#dff4ff" stroke-width="1.4" stroke-linecap="round"/>`,
+  foudre:`<path d="M2.5 -8.5 L-5 1 L-0.5 1 L-3 8.5 L5 -2 L0.5 -2 Z" fill="#ffd23a" stroke="#120a06" stroke-width="1.3" stroke-linejoin="round"/>`,
+  terre:`<path d="M-7.5 6 L-4 -3 L0 -7 L4 -3.5 L7.5 6 Z" fill="#c8a878" stroke="#120a06" stroke-width="1.4" stroke-linejoin="round"/><path d="M-1 6 L0 0 L3 -2" fill="none" stroke="#6a5a44" stroke-width="1.2"/>`,
+};
+// pastille d'élément pour un SVG (cx, cy, rayon)
+const elBadgeG = (el, cx, cy, r) => ELS[el] ? `<g transform="translate(${cx} ${cy})"><title>Nature : ${ELS[el].n}</title><circle r="${r}" fill="#1b120b" stroke="${ELS[el].col}" stroke-width="2.4"/><g transform="scale(${(r / 11).toFixed(2)})">${EL_ICON[el]}</g></g>` : '';
+const elBadgeH = (el, cls = '') => ELS[el] ? `<svg class="elbadge ${cls}" viewBox="-12 -12 24 24" aria-label="Nature : ${ELS[el].n}">${elBadgeG(el, 0, 0, 11)}</svg>` : '';
+// marqueur de chakra : une flamme bleue à spirale, le chiffre au cœur
+const CK_DROP = 'M0 -17 C9 -9 15 -3 15 5 A15 15 0 0 1 -15 5 C-15 -3 -9 -9 0 -17 Z';
+const ckMarkG = (n, cx, cy, r, col) => `<g transform="translate(${cx} ${cy}) scale(${(r / 15).toFixed(3)})"><path d="${CK_DROP}" fill="url(#ckm-g)" stroke="#0c1a3a" stroke-width="2.6"/><path d="M-8 -1 A8.5 8.5 0 0 1 7 -4" fill="none" stroke="rgba(232,252,255,.6)" stroke-width="2" stroke-linecap="round"/><text x="0" y="5" dy=".36em" text-anchor="middle" class="ckm-t" style="fill:${col || '#fff'}">${n}</text></g>`;
+const ckMarkH = (n, cls = '', title = '', col) => `<svg class="ckm ${cls}" viewBox="-18 -19 36 38" ${title ? `aria-label="${esc(title)}"` : 'aria-hidden="true"'}>${title ? `<title>${esc(title)}</title>` : ''}${ckMarkG(n, 0, 0, 15, col)}</svg>`;
+(function () { const add = () => document.body.insertAdjacentHTML('afterbegin', '<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="ckm-g" cx=".4" cy=".55" r=".7"><stop offset="0" stop-color="#e8fcff"/><stop offset=".3" stop-color="#6fd0ff"/><stop offset=".72" stop-color="#2a6ad8"/><stop offset="1" stop-color="#0c2a6a"/></radialGradient></defs></svg>'); if (document.body) add(); else document.addEventListener('DOMContentLoaded', add); })();
+
 /* ---------- rendu ---------- */
 function spellTokenH(id, z, i, o = {}) {
   const S = SPELLS[id], sel = V.sel && V.sel.z === z && V.sel.i === i;
@@ -5988,7 +6007,7 @@ function spellTokenH(id, z, i, o = {}) {
     <path d="M14 12 Q50 4 86 12 L86 90 Q50 98 14 90 Z" fill="none" ${so(2)}/>
     <rect x="0" y="-2" width="100" height="10" rx="5" fill="#7a4a28" ${so(2)}/><rect x="0" y="94" width="100" height="10" rx="5" fill="#7a4a28" ${so(2)}/>
     <circle cx="14" cy="104" r="12" fill="url(#gr-badge)" stroke="#e2b452" stroke-width="2.2"/><text class="gt" x="14" y="104" dy=".36em" style="fill:${spellCostFor(id, z) < S.c ? '#b8ff8a' : '#ffe39a'}">${spellCostFor(id, z)}</text>
-    <circle cx="50" cy="0" r="8.4" fill="url(#gr-badge)" stroke="#e2b452" stroke-width="2"/><text class="gt tb" x="50" y="0" dy=".36em">${S.t}</text>${S.ck ? `<circle cx="86" cy="104" r="12" fill="#2a6ad8" stroke="#bfe8ff" stroke-width="2.2"/><text class="gt" x="86" y="104" dy=".36em" style="fill:#e8fcff">${S.ck}</text>` : ''}</svg>
+    <g><title>Niveau ${S.t}</title>${Array.from({ length:S.t }, (_, k) => `<path d="${starD(50 + (k - (S.t - 1) / 2) * 14, 3, 7.4, 3.2, 5)}" fill="#ffd86a" stroke="#120a06" stroke-width="1.4" stroke-linejoin="round"/>`).join('')}</g>${S.el ? elBadgeG(S.el, 50, 102, 13) : ''}${S.ck ? ckMarkG(V.me ? ckCost(V.me, S) : S.ck, 86, 101, 13, V.me && ckCost(V.me, S) < S.ck ? '#b8ff8a' : '#fff') : ''}</svg>
     <span class="mn-nm">${esc(S.n)}</span></div>`;
 }
 // coût réel pour le joueur (réductions actives), et coût de base
@@ -6001,7 +6020,7 @@ function spellCardH(id, z, i, o = {}) {
     + `<div class="cd-tier" aria-hidden="true">${'<i></i>'.repeat(S.t)}</div>`
     + `<div class="cd-nm"><span>${esc(S.n)}</span></div><div class="cd-tx${n > 95 ? ' xlong' : n > 62 ? ' long' : ''}">${esc(S.tx)}</div>`
     + `<div class="cd-tb" style="background:${ty.col}">${esc(ty.n)}</div>`
-    + (S.item ? '' : costGemH(spellCostFor(id, z), S.c)) + (S.ck ? `<span class="ck-gem${V.me && ckCost(V.me, S) < S.ck ? ' aff' : ''}" title="Coût en chakra${V.me && ckCost(V.me, S) < S.ck ? ' (affinité de ton héros : 1 de moins)' : ''}">${V.me ? ckCost(V.me, S) : S.ck}</span>` : '') + (S.el ? `<span class="el-tag" style="--ec:${ELS[S.el].col}">${ELS[S.el].n}</span>` : '') + `${z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : ''}</div>`;
+    + (S.item ? '' : costGemH(spellCostFor(id, z), S.c)) + (S.ck ? ckMarkH(V.me ? ckCost(V.me, S) : S.ck, 'ck-gem' + (V.me && ckCost(V.me, S) < S.ck ? ' aff' : ''), 'Coût en chakra' + (V.me && ckCost(V.me, S) < S.ck ? ' (affinité de ton héros : 1 de moins)' : '')) : '') + (S.el ? `<span class="el-tag" style="--ec:${ELS[S.el].col}">${elBadgeH(S.el)}${ELS[S.el].n}</span>` : '') + `${z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : ''}</div>`;
 }
 
 /* ---------- Réservoir des techniques (univers Ninja) ----------
@@ -6934,7 +6953,7 @@ function gameH() {
       <div class="line" id="bdrow">${boardRow}</div></section>`;
     const nono = me.hero === 'nono', locked = nono && (me.rd || 0) < 3;
     const powSub = nono ? `${me.fb} dégât${me.fb > 1 ? 's' : ''}` : me.pu ? 'Utilisé' : '';
-    const power = hero && hero.cost ? `<button class="powm${me.pu ? ' used' : ''}${canAct && !locked && powCan(me, me.rd || (V.pub && V.pub.rd)) ? ' can' : ''}" data-act="pow" ${!canAct || me.pu || locked || (me.ckPay ? (me.ck || 0) : me.g) < hero.cost ? 'disabled' : ''} aria-label="${esc(hero.n + ' : ' + hero.tx + ' Coût : ' + hero.cost + (me.ckPay ? ' chakra.' : ' or.'))}"><span class="pcost${me.ckPay ? ' ck' : ''}">${hero.cost}</span>${powArtH(me.hero)}<small>${locked ? 'Manche 3' : powSub || powerTitle(hero)[0] || 'Pouvoir'}</small><span class="pc-tx">${esc(powerTitle(hero)[1])}</span></button>`
+    const power = hero && hero.cost ? `<button class="powm${me.pu ? ' used' : ''}${canAct && !locked && powCan(me, me.rd || (V.pub && V.pub.rd)) ? ' can' : ''}" data-act="pow" ${!canAct || me.pu || locked || (me.ckPay ? (me.ck || 0) : me.g) < hero.cost ? 'disabled' : ''} aria-label="${esc(hero.n + ' : ' + hero.tx + ' Coût : ' + hero.cost + (me.ckPay ? ' chakra.' : ' or.'))}"><span class="pcost${me.ckPay ? ' ck' : ''}">${me.ckPay ? ckMarkH(hero.cost, 'pc-ck', 'Coût : ' + hero.cost + ' chakra') : hero.cost}</span>${powArtH(me.hero)}<small>${locked ? 'Manche 3' : powSub || powerTitle(hero)[0] || 'Pouvoir'}</small><span class="pc-tx">${esc(powerTitle(hero)[1])}</span></button>`
       : `<span class="powm passive" aria-label="${esc(hero ? hero.tx : '')}">${hero ? powArtH(me.hero) : icon('crown')}<small>Passif</small>${hero ? `<span class="pc-tx">${esc(hero.tx)}</span>` : ''}</span>`;
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
@@ -6993,7 +7012,7 @@ function trainH(d, me, canAct) {
       <b class="ch-n">×${me.chests[k]}</b><small>${q === 'maj' ? 'Majeur' : 'Mineur'} · ${t}</small></button>`; }).join('');
   const medals = (me.eqs || []).map((id, i) => { const S = SPELLS[id], c = EQ_COST(id);
     const why = !comps.length ? 'Recrute ton compagnon pour l\'équiper.' : !comps.some(m => (m.eq || []).length < eqSlots(m) && !(m.eq || []).includes(id)) ? 'Ton compagnon porte déjà cet équipement, ou n\'a plus d\'emplacement libre.' : (me.ck || 0) < c ? `Il te faut ${c} chakra.` : '';
-    return `<button class="eqm" data-act="equip" data-i="${i}" data-sp="${id}" data-why="${esc('Équiper coûte ' + c + ' chakra.' + (why ? ' ' + why : ''))}" ${canAct && !why ? '' : 'aria-disabled="true"'} aria-label="Équiper ${esc(S.n)} pour ${c} chakra"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="eqc${i}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#eqc${i})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span class="ch-c">${c}</span>${(me.eqlv || {})[id] > 1 ? `<b class="eq-lv">${me.eqlv[id]}</b>` : ''}</button>`; }).join('');
+    return `<button class="eqm" data-act="equip" data-i="${i}" data-sp="${id}" data-why="${esc('Équiper coûte ' + c + ' chakra.' + (why ? ' ' + why : ''))}" ${canAct && !why ? '' : 'aria-disabled="true"'} aria-label="Équiper ${esc(S.n)} pour ${c} chakra"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="eqc${i}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#eqc${i})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span class="ch-c ckx">${ckMarkH(c)}</span>${(me.eqlv || {})[id] > 1 ? `<b class="eq-lv">${me.eqlv[id]}</b>` : ''}</button>`; }).join('');
   return `<section class="train" aria-label="Entraînement"><b class="tr-h">Entraînement</b>
     <div class="tr-row med">${medals || '<small class="tr-e">Les équipements des coffres de fin de combat se rangent ici.</small>'}</div></section>`;
 }
@@ -8087,6 +8106,23 @@ function arenaCleanup() {
 .pq-combo b{display:block;font-size:12.5px;color:var(--c)}.pq-combo small{display:block;font-size:11px;line-height:1.3}
 .pq-combo.none b{color:#bfae8a}
 .pq-duel{display:block;margin-top:6px;font-size:10.5px;color:#bfae8a}
+`; document.head.appendChild(st); })();
+
+/* univers Ninja : marqueur de chakra (flamme bleue), pastilles de nature, zone d'entraînement agrandie */
+(function(){ const st = document.createElement('style'); st.textContent = `
+.ckm{display:block;overflow:visible;filter:drop-shadow(0 0 4px rgba(80,170,255,.7))}
+.ckm-t{font-family:var(--f-num);font-size:17px;font-weight:700;paint-order:stroke;stroke:#0c2a6a;stroke-width:3px}
+svg.ck-gem{position:absolute;right:-6%;top:-7%;z-index:3;width:30cqi;height:32cqi;background:none;box-shadow:none;border-radius:0}
+svg.ck-gem.aff{box-shadow:none;filter:drop-shadow(0 0 5px rgba(155,227,106,.95))}
+.pcost.ck{background:none!important;box-shadow:none!important;padding:0}
+.pcost.ck .pc-ck{width:100%;height:118%;margin-top:-12%}
+.eqm .ch-c.ckx{background:none;box-shadow:none;width:22px;height:24px;right:-7px;top:-9px}
+.eqm .ch-c.ckx .ckm{width:100%;height:100%}
+.el-tag{display:inline-flex;align-items:center;gap:1.5cqi}
+.el-tag .elbadge{width:9cqi;height:9cqi;margin-left:-2cqi}
+.train{flex:1 1 auto;min-width:360px}
+.train .tr-row.med{padding:10px 8px 7px 7px;gap:10px;min-height:56px;overflow-x:auto;overflow-y:visible}
+@media (min-width:821px){ .train{min-width:380px;padding:4px 12px 6px} .eqm,.eqm svg{width:44px;height:44px} }
 `; document.head.appendChild(st); })();
 </script>
 </body></html>
