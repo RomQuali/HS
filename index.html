@@ -1666,6 +1666,14 @@ body.cs-entering #scene *{animation-play-state:running!important}
 @keyframes usableC{0%,100%{box-shadow:0 0 0 3px #6fd0ff,0 0 0 5px var(--nail),0 0 16px 5px rgba(80,180,255,.7)}50%{box-shadow:0 0 0 4px #9fe4ff,0 0 0 6px var(--nail),0 0 28px 9px rgba(80,180,255,.9)}}
 .compm:not(:disabled) .face.cf{animation:usableC 1.6s ease-in-out infinite}
 @media (prefers-reduced-motion:reduce){.hero-zone .powm:not(.passive):not(:disabled):not(.used),.compm:not(:disabled) .face.cf{animation-duration:0s}}
+/* zones de dépôt : trois rectangles jointifs */
+#dzl{position:fixed;inset:0;z-index:60;pointer-events:none}
+#dzl .dz{position:fixed;box-sizing:border-box;border-radius:14px;border:2px dashed rgba(143,244,255,.35);background:rgba(60,190,255,.04);transition:background .12s,border-color .12s}
+#dzl .dz span{position:absolute;left:14px;top:8px;font-family:var(--f-label);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:rgba(200,240,255,.55)}
+#dzl .dz.on{border:3px solid #8ff4ff;background:rgba(60,190,255,.13);box-shadow:inset 0 0 40px rgba(143,244,255,.25)}
+#dzl .dz.on span{color:#e8fcff}
+#dzl .dz.sell.on{border-color:#ffb06a;background:rgba(255,140,60,.14);box-shadow:inset 0 0 40px rgba(255,140,60,.25)}
+#dzl .dz.sell.on span{color:#ffd8b8}
 </style>
 </head><body>
 
@@ -6230,11 +6238,31 @@ function dragStart(d, x, y) {
     dragLayer.style.transform = `translate(${f1(DRAG.ax)}px,${f1(DRAG.ay)}px)`;
   }
   c.classList.add('drag-src'); document.body.classList.add('dragging');
-  document.querySelectorAll('[data-drop]').forEach(z => { if (dropAllowed(DRAG.z, z.dataset.drop, DRAG.sp)) z.classList.add('drop-can'); });
+  dzShow();
   dragMove(x, y);
   const tick = () => { if (!DRAG) return; if (DRAG.aim) { const cc = dragLayer.firstChild; if (cc) cc.style.transform = 'scale(1.12)'; return; } DRAG.vx *= 0.82; const rot = Math.max(-20, Math.min(20, DRAG.vx * 1.4)); DRAG.rot += (rot - DRAG.rot) * 0.35; const cc = dragLayer.firstChild; if (cc) cc.style.transform = `rotate(${f1(DRAG.rot)}deg) scale(1.14)`; requestAnimationFrame(tick); };
   requestAnimationFrame(tick);
 }
+// trois grands rectangles jointifs (taverne, plateau, main) qui couvrent toute la table ; la rangée du héros est partagée
+function dzRects() {
+  const tb = document.querySelector('.table'), sh = document.querySelector('.keeper-zone[data-drop]'), bd = document.querySelector('.board-zone[data-drop]'), hd = document.querySelector('.hand[data-drop]'), hz = document.querySelector('.hero-zone');
+  if (!tb || !sh || !bd || !hd) return [];
+  const T = tb.getBoundingClientRect(), S = sh.getBoundingClientRect(), B = bd.getBoundingClientRect(), Hd = hd.getBoundingClientRect(), Z = hz ? hz.getBoundingClientRect() : null;
+  const b1 = (S.bottom + B.top) / 2, side = Z && Z.left >= B.right - 10;
+  const b2 = Z && !side ? (Z.top + Z.bottom) / 2 : (B.bottom + Math.max(B.bottom, Hd.top)) / 2;
+  const l = T.left, r = side ? Z.left : T.right;
+  return [{ drop:'sh', el:sh, l, r, t:T.top, b:b1 }, { drop:'bd', el:bd, l, r, t:b1, b:b2 }, { drop:'hd', el:hd, l, r, t:b2, b:Math.max(T.bottom, innerHeight) }];
+}
+function dzAt(x, y) { const R = dzRects(); return R.find(z => x >= z.l && x <= z.r && y >= z.t && y < z.b) || (R.length && x >= R[0].l && x <= R[0].r ? (y < R[0].t ? R[0] : y >= R[2].b ? R[2] : null) : null); }
+const dzLayer = (() => { const l = document.createElement('div'); l.id = 'dzl'; l.setAttribute('aria-hidden', 'true'); l.hidden = true; document.body.appendChild(l); return l; })();
+function dzShow(on) {
+  if (!DRAG) return dzHide();
+  const R = dzRects().filter(z => dropAllowed(DRAG.z, z.drop, DRAG.sp)); if (!R.length) return dzHide();
+  const lbl = { sh:'Taverne', bd:'Plateau', hd:'Main' };
+  dzLayer.innerHTML = R.map(z => `<div class="dz${z.drop === on ? ' on' : ''}${z.drop === 'sh' && DRAG.z === 'bd' ? ' sell' : ''}" style="left:${f1(z.l)}px;top:${f1(z.t)}px;width:${f1(z.r - z.l)}px;height:${f1(Math.min(z.b, innerHeight) - z.t)}px"><span>${lbl[z.drop]}</span></div>`).join('');
+  dzLayer.hidden = false;
+}
+function dzHide() { dzLayer.hidden = true; dzLayer.innerHTML = ''; }
 function boardPos(line, x, from, i) {
   const cards = [...line.querySelectorAll('.mn:not(.drag-src)')]; let pos = 0;
   cards.forEach(c => { const r = c.getBoundingClientRect(); if (x > r.left + r.width / 2) pos++; });
@@ -6260,11 +6288,10 @@ function dragMove(x, y) {
   D.vx += (x - D.x) * 0.5; D.x = x; D.y = y;
   dragLayer.style.transform = `translate(${f1(x - D.w / 2)}px,${f1(y - D.h * .42)}px)`;
   const t = document.elementFromPoint(x, y);
-  const z = t && t.closest ? t.closest('[data-drop]') : null;
-  const ok = z && dropAllowed(D.z, z.dataset.drop, D.sp) ? z : null;
-  if (D.zone !== ok) { if (D.zone) D.zone.classList.remove('drop-ok'); if (ok) ok.classList.add('drop-ok'); D.zone = ok; }
+  const zi = dzAt(x, y), okz = zi && dropAllowed(D.z, zi.drop, D.sp) ? zi : null, ok = okz ? okz.el : null;
+  dzShow(okz ? okz.drop : null);
   document.querySelectorAll('.mk-l,.mk-r,.tg-hover').forEach(el => el.classList.remove('mk-l', 'mk-r', 'tg-hover'));
-  const to = ok ? ok.dataset.drop : null;
+  const to = okz ? okz.drop : null;
   let tag = '';
   if (to === 'bd' && D.sp) { const tm = t.closest('.mn'); if (SPELLS[D.sp] && SPELLS[D.sp].tg) { if (tm && tm.dataset.z === 'bd') { tm.classList.add('tg-hover'); tag = 'Lancer'; } else tag = 'Vise un serviteur'; } else tag = 'Lancer'; }
   else if (to === 'bd' && (D.z === 'sh' || D.z === 'ss')) tag = D.z === 'ss' ? 'Acheter le sort' : 'Acheter · 3 or';
@@ -6281,16 +6308,16 @@ function dragEnd(x, y, cancel) {
   document.querySelectorAll('.mk-l,.mk-r,.tg-hover').forEach(el => el.classList.remove('mk-l', 'mk-r', 'tg-hover'));
   V.lpBlock = Date.now();
   const t = cancel ? null : document.elementFromPoint(x, y);
-  const z = t && t.closest ? t.closest('[data-drop]') : null;
+  const zi = cancel ? null : dzAt(x, y), z = zi ? zi.el : null; dzHide();
   const cr = dragLayer.firstChild ? dragLayer.firstChild.getBoundingClientRect() : null;
   let sent = false;
   aimHide(); dragLayer.classList.remove('aimcard');
   if (D.aim) {
     const tgt = cancel ? null : aimTarget(x, y);
     if (tgt) { const r = tgt.getBoundingClientRect(); V.sel = null; sendAct({ t:'cast', i:D.i, tg:+tgt.dataset.i }); fxRing(r.left + r.width / 2, r.top + r.height * .45, '#d8b8ff', 1.6); fxBurst(r.left + r.width / 2, r.top + r.height * .45, 'magic', 22, 1.2); sent = true; }
-  } else if (z && dropAllowed(D.z, z.dataset.drop, D.sp)) {
+  } else if (zi && dropAllowed(D.z, zi.drop, D.sp)) {
     V.dropFrom = cr ? { u:D.u, r:cr, z:D.z, at:Date.now() } : null;
-    sent = doDrop(z.dataset.drop, D, t, x, z);
+    sent = doDrop(zi.drop, D, t, x, z);
   }
   const src = D.src && document.contains(D.src) ? D.src : null;
   document.querySelectorAll('.drag-src').forEach(el => { if (el !== src) el.classList.remove('drag-src'); });
