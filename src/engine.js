@@ -857,8 +857,8 @@ const EQS_MAX = 8;
 const chestCost = (q, t) => q === 'maj' ? 3 + Math.floor(t / 2) : 2 + Math.floor(t / 3);
 // jamais deux fois le même équipement : ni dans un même coffre, ni s'il est déjà rangé ou porté
 function chestLoot(q, t, p) {
-  const owned = new Set((p && p.eqs) || []); ((p && p.bd) || []).forEach(m => (m.eq || []).forEach(e => owned.add(e)));
-  const all = Object.keys(SPELLS).filter(k => SPELLS[k].eq && !owned.has(k)), rare = all.filter(k => !CHEST_COMMON.includes(k)), common = all.filter(k => CHEST_COMMON.includes(k));
+  const maxed = new Set(Object.keys((p && p.eqlv) || {}).filter(k => p.eqlv[k] >= EQ_MAXLV));
+  const all = Object.keys(SPELLS).filter(k => SPELLS[k].eq && !maxed.has(k)), rare = all.filter(k => !CHEST_COMMON.includes(k)), common = all.filter(k => CHEST_COMMON.includes(k));
   const out = [], take = pool => { const c = pool.filter(k => !out.includes(k)); const k = c.length ? pickR(c) : null; if (k) out.push(k); return k; };
   const tech = () => { const sp = drawSpell(Math.max(1, t)); if (sp) out.push(sp.sp); };
   if (q === 'min') { if (!take(t <= 3 && common.length ? common : all)) tech(); }
@@ -950,8 +950,16 @@ const OPS = {
   chest(G, p) {
     const k = p.pendChest || '', m = /^(min|maj)([1-6])$/.exec(k); if (!m) return false;
     const q = m[1], t = +m[2]; p.pendChest = null;
-    p.eqs = p.eqs || [];
-    chestLoot(q, t, p).forEach(id => { if (SPELLS[id] && SPELLS[id].eq) { if (p.eqs.length < EQS_MAX) p.eqs.push(id); } else if (p.hd.length < 10) p.hd.push({ sp:id, u:UID++ }); });
+    p.eqs = p.eqs || []; p.eqlv = p.eqlv || {}; p.loot = [];
+    chestLoot(q, t, p).forEach(id => {
+      if (!(SPELLS[id] && SPELLS[id].eq)) { if (p.hd.length < 10) { p.hd.push({ sp:id, u:UID++ }); p.loot.push({ id }); } return; }
+      const worn = p.bd.find(m => isComp(m) && (m.eq || []).includes(id));
+      if (worn || p.eqs.includes(id)) {            // déjà obtenu : on l'améliore
+        p.eqlv[id] = Math.min(EQ_MAXLV, (p.eqlv[id] || 1) + 1);
+        if (worn) withSrc('Amélioration · ' + SPELLS[id].n, () => eqUpgrade(worn, id));
+        p.loot.push({ id, lv:p.eqlv[id], up:1, worn:!!worn });
+      } else if (p.eqs.length < EQS_MAX) { p.eqs.push(id); p.eqlv[id] = p.eqlv[id] || 1; p.loot.push({ id, lv:p.eqlv[id] }); }
+    });
     return true;
   },
   // équiper le compagnon coûte du chakra
@@ -960,7 +968,7 @@ const OPS = {
     const c = EQ_COST(id); if ((p.ck || 0) < c) return false;
     const comp = p.bd.filter(isComp).find(m => (m.eq || []).length < eqSlots(m) && !(m.eq || []).includes(id)); if (!comp) return false;
     p.ck -= c; p.eqs.splice(a.i, 1);
-    withSrc('Entraînement · ' + SPELLS[id].n, () => applyEquip(comp, id));
+    withSrc('Entraînement · ' + SPELLS[id].n, () => { applyEquip(comp, id); for (let l = 1; l < ((p.eqlv || {})[id] || 1); l++) eqUpgrade(comp, id); });
     return true;
   },
   buysp(G, p) { const S = p.sp && SPELLS[p.sp.sp]; const c = S ? spCost(p, S) : 0; if (!S || p.g < c || p.hd.length >= 10) return false; p.g -= c; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(p.sp); p.sp = null; return true; },
@@ -1199,7 +1207,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, pure:p.pure || null, eqs:p.eqs || [], mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;

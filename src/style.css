@@ -1911,3 +1911,16 @@ body.cs-entering #scene *{animation-play-state:running!important}
 .ctrs{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
 .ctr{padding:1px 8px;border-radius:99px;font-family:var(--f-label);font-weight:700;font-size:11.5px;color:var(--cc);background:rgba(10,6,4,.7);box-shadow:inset 0 0 0 1.5px var(--cc)}
 .ctr b{color:#fff}
+/* équipement du compagnon (survol) et améliorations */
+.peq{margin-top:8px;width:max(var(--hw),260px);display:grid;gap:6px;padding:8px 10px;border-radius:12px;background:rgba(22,14,10,.95);box-shadow:inset 0 0 0 2px #a8744a,0 8px 18px rgba(0,0,0,.5)}
+.peq-t{font-family:var(--f-label);font-size:12px;letter-spacing:.06em;color:#ffd8a0}
+.peq-i{display:flex;align-items:center;gap:8px}
+.peq-i svg{width:38px;height:38px;flex:none}
+.peq-i span{display:grid;gap:1px}
+.peq-i b{font-family:var(--f-label);font-size:13px;color:#fff3c0}
+.peq-i small{font-size:11.5px;line-height:1.25;color:#bfe8ff}
+.peq-e,.peq-f{font-size:11.5px;color:#c8b8a0}
+.peq-f{color:#ffb070}
+.eq-lv{position:absolute;left:-5px;bottom:-5px;width:18px;height:18px;display:grid;place-items:center;border-radius:50%;font-family:var(--f-num);font-size:11px;color:#2e1c08;background:#f2c14e;box-shadow:0 0 0 2px #1a1008}
+.chrev-c.up .cd{filter:drop-shadow(0 0 26px rgba(120,220,255,.85)) drop-shadow(0 14px 20px rgba(0,0,0,.6))}
+.chrev-b{max-width:var(--hw);text-align:center;font-style:normal;font-size:13px;color:#bfe8ff}

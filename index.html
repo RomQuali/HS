@@ -1919,6 +1919,19 @@ body.cs-entering #scene *{animation-play-state:running!important}
 .ctrs{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
 .ctr{padding:1px 8px;border-radius:99px;font-family:var(--f-label);font-weight:700;font-size:11.5px;color:var(--cc);background:rgba(10,6,4,.7);box-shadow:inset 0 0 0 1.5px var(--cc)}
 .ctr b{color:#fff}
+/* équipement du compagnon (survol) et améliorations */
+.peq{margin-top:8px;width:max(var(--hw),260px);display:grid;gap:6px;padding:8px 10px;border-radius:12px;background:rgba(22,14,10,.95);box-shadow:inset 0 0 0 2px #a8744a,0 8px 18px rgba(0,0,0,.5)}
+.peq-t{font-family:var(--f-label);font-size:12px;letter-spacing:.06em;color:#ffd8a0}
+.peq-i{display:flex;align-items:center;gap:8px}
+.peq-i svg{width:38px;height:38px;flex:none}
+.peq-i span{display:grid;gap:1px}
+.peq-i b{font-family:var(--f-label);font-size:13px;color:#fff3c0}
+.peq-i small{font-size:11.5px;line-height:1.25;color:#bfe8ff}
+.peq-e,.peq-f{font-size:11.5px;color:#c8b8a0}
+.peq-f{color:#ffb070}
+.eq-lv{position:absolute;left:-5px;bottom:-5px;width:18px;height:18px;display:grid;place-items:center;border-radius:50%;font-family:var(--f-num);font-size:11px;color:#2e1c08;background:#f2c14e;box-shadow:0 0 0 2px #1a1008}
+.chrev-c.up .cd{filter:drop-shadow(0 0 26px rgba(120,220,255,.85)) drop-shadow(0 14px 20px rgba(0,0,0,.6))}
+.chrev-b{max-width:var(--hw);text-align:center;font-style:normal;font-size:13px;color:#bfe8ff}
 </style>
 </head><body>
 
@@ -2905,8 +2918,8 @@ const EQS_MAX = 8;
 const chestCost = (q, t) => q === 'maj' ? 3 + Math.floor(t / 2) : 2 + Math.floor(t / 3);
 // jamais deux fois le même équipement : ni dans un même coffre, ni s'il est déjà rangé ou porté
 function chestLoot(q, t, p) {
-  const owned = new Set((p && p.eqs) || []); ((p && p.bd) || []).forEach(m => (m.eq || []).forEach(e => owned.add(e)));
-  const all = Object.keys(SPELLS).filter(k => SPELLS[k].eq && !owned.has(k)), rare = all.filter(k => !CHEST_COMMON.includes(k)), common = all.filter(k => CHEST_COMMON.includes(k));
+  const maxed = new Set(Object.keys((p && p.eqlv) || {}).filter(k => p.eqlv[k] >= EQ_MAXLV));
+  const all = Object.keys(SPELLS).filter(k => SPELLS[k].eq && !maxed.has(k)), rare = all.filter(k => !CHEST_COMMON.includes(k)), common = all.filter(k => CHEST_COMMON.includes(k));
   const out = [], take = pool => { const c = pool.filter(k => !out.includes(k)); const k = c.length ? pickR(c) : null; if (k) out.push(k); return k; };
   const tech = () => { const sp = drawSpell(Math.max(1, t)); if (sp) out.push(sp.sp); };
   if (q === 'min') { if (!take(t <= 3 && common.length ? common : all)) tech(); }
@@ -2998,8 +3011,16 @@ const OPS = {
   chest(G, p) {
     const k = p.pendChest || '', m = /^(min|maj)([1-6])$/.exec(k); if (!m) return false;
     const q = m[1], t = +m[2]; p.pendChest = null;
-    p.eqs = p.eqs || [];
-    chestLoot(q, t, p).forEach(id => { if (SPELLS[id] && SPELLS[id].eq) { if (p.eqs.length < EQS_MAX) p.eqs.push(id); } else if (p.hd.length < 10) p.hd.push({ sp:id, u:UID++ }); });
+    p.eqs = p.eqs || []; p.eqlv = p.eqlv || {}; p.loot = [];
+    chestLoot(q, t, p).forEach(id => {
+      if (!(SPELLS[id] && SPELLS[id].eq)) { if (p.hd.length < 10) { p.hd.push({ sp:id, u:UID++ }); p.loot.push({ id }); } return; }
+      const worn = p.bd.find(m => isComp(m) && (m.eq || []).includes(id));
+      if (worn || p.eqs.includes(id)) {            // déjà obtenu : on l'améliore
+        p.eqlv[id] = Math.min(EQ_MAXLV, (p.eqlv[id] || 1) + 1);
+        if (worn) withSrc('Amélioration · ' + SPELLS[id].n, () => eqUpgrade(worn, id));
+        p.loot.push({ id, lv:p.eqlv[id], up:1, worn:!!worn });
+      } else if (p.eqs.length < EQS_MAX) { p.eqs.push(id); p.eqlv[id] = p.eqlv[id] || 1; p.loot.push({ id, lv:p.eqlv[id] }); }
+    });
     return true;
   },
   // équiper le compagnon coûte du chakra
@@ -3008,7 +3029,7 @@ const OPS = {
     const c = EQ_COST(id); if ((p.ck || 0) < c) return false;
     const comp = p.bd.filter(isComp).find(m => (m.eq || []).length < eqSlots(m) && !(m.eq || []).includes(id)); if (!comp) return false;
     p.ck -= c; p.eqs.splice(a.i, 1);
-    withSrc('Entraînement · ' + SPELLS[id].n, () => applyEquip(comp, id));
+    withSrc('Entraînement · ' + SPELLS[id].n, () => { applyEquip(comp, id); for (let l = 1; l < ((p.eqlv || {})[id] || 1); l++) eqUpgrade(comp, id); });
     return true;
   },
   buysp(G, p) { const S = p.sp && SPELLS[p.sp.sp]; const c = S ? spCost(p, S) : 0; if (!S || p.g < c || p.hd.length >= 10) return false; p.g -= c; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(p.sp); p.sp = null; return true; },
@@ -3247,7 +3268,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, pure:p.pure || null, eqs:p.eqs || [], mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;
@@ -5675,6 +5696,16 @@ function applyEquip(tgt, id) {
   }
   (tgt.eq = tgt.eq || []).push(id);
 }
+// amélioration d'un équipement déjà obtenu (niveau 2 à 5) : bonus ajouté à chaque niveau
+const EQ_UP = { eq_lame:{ a:2, h:0 }, eq_armure:{ a:0, h:3 }, eq_gants:{ a:1, h:1 }, eq_bandeau:{ ck:1 }, eq_cape:{ a:1, h:2 }, eq_parchemin:{ a:1, h:1 }, eq_talisman:{ a:2, h:2 } };
+const EQ_MAXLV = 5;
+function eqUpgrade(tgt, id) { const u = EQ_UP[id] || {}; if (u.a || u.h) buff(tgt, u.a || 0, u.h || 0); if (u.ck) (tgt.x = tgt.x || []).push({ k:'eot_chakra', n:u.ck, src:'Amélioration · ' + SPELLS[id].n }); }
+// bonus total d'un équipement à un niveau donné (affiché au survol du compagnon)
+function eqBonusTx(id, lv) {
+  const u = EQ_UP[id] || {}, n = Math.max(0, (lv || 1) - 1), base = { eq_lame:'+4 attaque', eq_armure:'+6 vie et Provocation', eq_gants:'+2/+2 et Furie des vents', eq_bandeau:'Fin de tour : +2 chakra', eq_cape:'Bouclier divin et Renaissance', eq_parchemin:'Une copie de plus de la technique retenue', eq_talisman:'Bonus d\'élément doublés' }[id] || '';
+  const extra = []; if (n && (u.a || u.h)) extra.push(`+${u.a * n}/+${u.h * n}`); if (n && u.ck) extra.push(`+${u.ck * n} chakra par tour`);
+  return base + (extra.length ? ' · amélioration ' + extra.join(', ') : '');
+}
 const EQ_COST = id => ['eq_lame', 'eq_armure', 'eq_gants'].includes(id) ? 2 : 3;
 function castSpell(G, p, hi, tg) { const it = p.hd[hi], S0 = it && SPELLS[it.sp]; const ok = withSrc(S0 ? 'Sort : ' + S0.n : BSRC, () => castSpell0(G, p, hi, tg)); if (ok && inMechAny(G, 'resonance')) withSrc('Résonance', () => { const c = p.bd.filter(m => inMech(G, 'resonance', m)); for (let k = 0; k < 2 && c.length; k++) buff(c.splice(Math.floor(Math.random() * c.length), 1)[0], 1, 1); }); return ok; }
 function castSpell0(G, p, hi, tg) {
@@ -6348,7 +6379,7 @@ function onPriv(d) {
   const key = JSON.stringify(d);
   if (key === V.privKey) return;
   V.privKey = key; V.me = d;
-  if (V.chestRev) { const R = V.chestRev; V.chestRev = null; const got = (d.eqs || []).slice(R.eq.length).concat((d.hd || []).filter(x => x.sp && !R.hd.includes(x.u)).map(x => x.sp)); if (got.length) setTimeout(() => chestReveal(got), Math.max(0, 950 - (Date.now() - R.at))); }
+  if (V.chestRev && d.loot) { const R = V.chestRev; V.chestRev = null; const got = d.loot.slice(); if (got.length) setTimeout(() => chestReveal(got), Math.max(0, 950 - (Date.now() - R.at))); }
   if (V.sel) { const z = V.sel.z === 'ss' ? (d.sp ? [d.sp] : []) : V.sel.z === 'sh' ? d.sh : V.sel.z === 'bd' ? d.bd : d.hd; if (!z || !z[V.sel.i]) V.sel = null; }
   if (V.aim != null && !(d.hd[V.aim] && d.hd[V.aim].sp)) V.aim = null;
   render();
@@ -6798,7 +6829,8 @@ function bigChestH(d, me) {
 // après l'ouverture : les cartes obtenues en grand au centre de l'écran
 function chestReveal(ids) {
   const el = document.createElement('div'); el.className = 'chrev'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Contenu du coffre');
-  el.innerHTML = `<div class="chrev-in"><b class="chrev-t">Tu obtiens</b><div class="chrev-cards">${ids.map((id, k) => `<div class="chrev-c" style="--k:${k}">${spellCardH(id, 'p', 0)}<small>${SPELLS[id] && SPELLS[id].eq ? 'Rangé dans l\'entraînement' : 'Ajouté à ta main'}</small></div>`).join('')}</div><small class="chrev-x">Clique pour fermer</small></div>`;
+  el.innerHTML = `<div class="chrev-in"><b class="chrev-t">Tu obtiens</b><div class="chrev-cards">${ids.map((o, k) => { const it = typeof o === 'string' ? { id:o } : o, id = it.id;
+    return `<div class="chrev-c${it.up ? ' up' : ''}" style="--k:${k}">${spellCardH(id, 'p', 0)}<small>${it.up ? `Amélioré · niveau ${it.lv}${it.worn ? ' (sur ton compagnon)' : ''}` : SPELLS[id] && SPELLS[id].eq ? 'Rangé dans l\'entraînement' : 'Ajouté à ta main'}</small>${it.up ? `<em class="chrev-b">${esc(eqBonusTx(id, it.lv))}</em>` : ''}</div>`; }).join('')}</div><small class="chrev-x">Clique pour fermer</small></div>`;
   const close = () => { el.classList.add('out'); setTimeout(() => el.remove(), 250); };
   el.addEventListener('click', close); document.body.appendChild(el); setTimeout(close, 3200 + ids.length * 400);
 }
@@ -6825,7 +6857,7 @@ function trainH(d, me, canAct) {
       <b class="ch-n">×${me.chests[k]}</b><small>${q === 'maj' ? 'Majeur' : 'Mineur'} · ${t}</small></button>`; }).join('');
   const medals = (me.eqs || []).map((id, i) => { const S = SPELLS[id], c = EQ_COST(id);
     const why = !comps.length ? 'Recrute ton compagnon pour l\'équiper.' : !comps.some(m => (m.eq || []).length < eqSlots(m) && !(m.eq || []).includes(id)) ? 'Ton compagnon porte déjà cet équipement, ou n\'a plus d\'emplacement libre.' : (me.ck || 0) < c ? `Il te faut ${c} chakra.` : '';
-    return `<button class="eqm" data-act="equip" data-i="${i}" data-sp="${id}" data-why="${esc('Équiper coûte ' + c + ' chakra.' + (why ? ' ' + why : ''))}" ${canAct && !why ? '' : 'aria-disabled="true"'} aria-label="Équiper ${esc(S.n)} pour ${c} chakra"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="eqc${i}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#eqc${i})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span class="ch-c">${c}</span></button>`; }).join('');
+    return `<button class="eqm" data-act="equip" data-i="${i}" data-sp="${id}" data-why="${esc('Équiper coûte ' + c + ' chakra.' + (why ? ' ' + why : ''))}" ${canAct && !why ? '' : 'aria-disabled="true"'} aria-label="Équiper ${esc(S.n)} pour ${c} chakra"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="eqc${i}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#eqc${i})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span class="ch-c">${c}</span>${(me.eqlv || {})[id] > 1 ? `<b class="eq-lv">${me.eqlv[id]}</b>` : ''}</button>`; }).join('');
   return `<section class="train" aria-label="Entraînement"><b class="tr-h">Entraînement</b>
     <div class="tr-row med">${medals || '<small class="tr-e">Les équipements des coffres de fin de combat se rangent ici.</small>'}</div></section>`;
 }
@@ -7235,7 +7267,9 @@ function showPeek(t, touch) {
     const c = t.dataset.c; if (!c || (!C[c] && c !== '__edit')) return false;
     if (!touch && t.classList.contains('cd') && r.width >= 150) return false;
     peekFor = t; peekEl.innerHTML = cardH({ c, a:+t.dataset.a, h:+t.dataset.h, g:+t.dataset.g, f:t.dataset.f || '' }, 'p', 0); peekEl.hidden = false;
-    const [pw, ph] = peekSize(); placePeek(r, pw, ph, touch);
+    { const mc = findMine(t.dataset.u); if (mc && isComp(mc)) { const lv = (V.me && V.me.eqlv) || {}; const eq = mc.eq || [];
+      peekEl.insertAdjacentHTML('beforeend', `<div class="peq"><b class="peq-t">Équipement · ${eq.length}/${eqSlots(mc)} · niveau d'entraînement ${compLv(mc)}</b>${eq.length ? eq.map(id => `<div class="peq-i"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="pq-${id}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#pq-${id})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span><b>${esc(SPELLS[id].n)}${(lv[id] || 1) > 1 ? ` · niv. ${lv[id]}` : ''}</b><small>${esc(eqBonusTx(id, lv[id] || 1))}</small></span></div>`).join('') : '<small class="peq-e">Aucun équipement : pose-lui des médailles depuis l\'entraînement.</small>'}${mc.fu ? `<small class="peq-f">Fusion active : ${esc(mc.fu)}</small>` : ''}</div>`); } }
+    const [pw, ph] = peekSize(); placePeek(r, pw, ph + (peekEl.querySelector('.peq') ? peekEl.querySelector('.peq').offsetHeight + 8 : 0), touch);
     // après un instant de survol : la bulle des améliorations
     clearTimeout(TIPT); const mm = findMine(t.dataset.u);
     if (mm) TIPT = setTimeout(() => {

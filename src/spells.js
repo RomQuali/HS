@@ -90,6 +90,16 @@ function applyEquip(tgt, id) {
   }
   (tgt.eq = tgt.eq || []).push(id);
 }
+// amélioration d'un équipement déjà obtenu (niveau 2 à 5) : bonus ajouté à chaque niveau
+const EQ_UP = { eq_lame:{ a:2, h:0 }, eq_armure:{ a:0, h:3 }, eq_gants:{ a:1, h:1 }, eq_bandeau:{ ck:1 }, eq_cape:{ a:1, h:2 }, eq_parchemin:{ a:1, h:1 }, eq_talisman:{ a:2, h:2 } };
+const EQ_MAXLV = 5;
+function eqUpgrade(tgt, id) { const u = EQ_UP[id] || {}; if (u.a || u.h) buff(tgt, u.a || 0, u.h || 0); if (u.ck) (tgt.x = tgt.x || []).push({ k:'eot_chakra', n:u.ck, src:'Amélioration · ' + SPELLS[id].n }); }
+// bonus total d'un équipement à un niveau donné (affiché au survol du compagnon)
+function eqBonusTx(id, lv) {
+  const u = EQ_UP[id] || {}, n = Math.max(0, (lv || 1) - 1), base = { eq_lame:'+4 attaque', eq_armure:'+6 vie et Provocation', eq_gants:'+2/+2 et Furie des vents', eq_bandeau:'Fin de tour : +2 chakra', eq_cape:'Bouclier divin et Renaissance', eq_parchemin:'Une copie de plus de la technique retenue', eq_talisman:'Bonus d\'élément doublés' }[id] || '';
+  const extra = []; if (n && (u.a || u.h)) extra.push(`+${u.a * n}/+${u.h * n}`); if (n && u.ck) extra.push(`+${u.ck * n} chakra par tour`);
+  return base + (extra.length ? ' · amélioration ' + extra.join(', ') : '');
+}
 const EQ_COST = id => ['eq_lame', 'eq_armure', 'eq_gants'].includes(id) ? 2 : 3;
 function castSpell(G, p, hi, tg) { const it = p.hd[hi], S0 = it && SPELLS[it.sp]; const ok = withSrc(S0 ? 'Sort : ' + S0.n : BSRC, () => castSpell0(G, p, hi, tg)); if (ok && inMechAny(G, 'resonance')) withSrc('Résonance', () => { const c = p.bd.filter(m => inMech(G, 'resonance', m)); for (let k = 0; k < 2 && c.length; k++) buff(c.splice(Math.floor(Math.random() * c.length), 1)[0], 1, 1); }); return ok; }
 function castSpell0(G, p, hi, tg) {

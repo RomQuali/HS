@@ -28,7 +28,7 @@ function onPriv(d) {
   const key = JSON.stringify(d);
   if (key === V.privKey) return;
   V.privKey = key; V.me = d;
-  if (V.chestRev) { const R = V.chestRev; V.chestRev = null; const got = (d.eqs || []).slice(R.eq.length).concat((d.hd || []).filter(x => x.sp && !R.hd.includes(x.u)).map(x => x.sp)); if (got.length) setTimeout(() => chestReveal(got), Math.max(0, 950 - (Date.now() - R.at))); }
+  if (V.chestRev && d.loot) { const R = V.chestRev; V.chestRev = null; const got = d.loot.slice(); if (got.length) setTimeout(() => chestReveal(got), Math.max(0, 950 - (Date.now() - R.at))); }
   if (V.sel) { const z = V.sel.z === 'ss' ? (d.sp ? [d.sp] : []) : V.sel.z === 'sh' ? d.sh : V.sel.z === 'bd' ? d.bd : d.hd; if (!z || !z[V.sel.i]) V.sel = null; }
   if (V.aim != null && !(d.hd[V.aim] && d.hd[V.aim].sp)) V.aim = null;
   render();
@@ -478,7 +478,8 @@ function bigChestH(d, me) {
 // après l'ouverture : les cartes obtenues en grand au centre de l'écran
 function chestReveal(ids) {
   const el = document.createElement('div'); el.className = 'chrev'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Contenu du coffre');
-  el.innerHTML = `<div class="chrev-in"><b class="chrev-t">Tu obtiens</b><div class="chrev-cards">${ids.map((id, k) => `<div class="chrev-c" style="--k:${k}">${spellCardH(id, 'p', 0)}<small>${SPELLS[id] && SPELLS[id].eq ? 'Rangé dans l\'entraînement' : 'Ajouté à ta main'}</small></div>`).join('')}</div><small class="chrev-x">Clique pour fermer</small></div>`;
+  el.innerHTML = `<div class="chrev-in"><b class="chrev-t">Tu obtiens</b><div class="chrev-cards">${ids.map((o, k) => { const it = typeof o === 'string' ? { id:o } : o, id = it.id;
+    return `<div class="chrev-c${it.up ? ' up' : ''}" style="--k:${k}">${spellCardH(id, 'p', 0)}<small>${it.up ? `Amélioré · niveau ${it.lv}${it.worn ? ' (sur ton compagnon)' : ''}` : SPELLS[id] && SPELLS[id].eq ? 'Rangé dans l\'entraînement' : 'Ajouté à ta main'}</small>${it.up ? `<em class="chrev-b">${esc(eqBonusTx(id, it.lv))}</em>` : ''}</div>`; }).join('')}</div><small class="chrev-x">Clique pour fermer</small></div>`;
   const close = () => { el.classList.add('out'); setTimeout(() => el.remove(), 250); };
   el.addEventListener('click', close); document.body.appendChild(el); setTimeout(close, 3200 + ids.length * 400);
 }
@@ -505,7 +506,7 @@ function trainH(d, me, canAct) {
       <b class="ch-n">×${me.chests[k]}</b><small>${q === 'maj' ? 'Majeur' : 'Mineur'} · ${t}</small></button>`; }).join('');
   const medals = (me.eqs || []).map((id, i) => { const S = SPELLS[id], c = EQ_COST(id);
     const why = !comps.length ? 'Recrute ton compagnon pour l\'équiper.' : !comps.some(m => (m.eq || []).length < eqSlots(m) && !(m.eq || []).includes(id)) ? 'Ton compagnon porte déjà cet équipement, ou n\'a plus d\'emplacement libre.' : (me.ck || 0) < c ? `Il te faut ${c} chakra.` : '';
-    return `<button class="eqm" data-act="equip" data-i="${i}" data-sp="${id}" data-why="${esc('Équiper coûte ' + c + ' chakra.' + (why ? ' ' + why : ''))}" ${canAct && !why ? '' : 'aria-disabled="true"'} aria-label="Équiper ${esc(S.n)} pour ${c} chakra"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="eqc${i}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#eqc${i})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span class="ch-c">${c}</span></button>`; }).join('');
+    return `<button class="eqm" data-act="equip" data-i="${i}" data-sp="${id}" data-why="${esc('Équiper coûte ' + c + ' chakra.' + (why ? ' ' + why : ''))}" ${canAct && !why ? '' : 'aria-disabled="true"'} aria-label="Équiper ${esc(S.n)} pour ${c} chakra"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="eqc${i}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#eqc${i})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span class="ch-c">${c}</span>${(me.eqlv || {})[id] > 1 ? `<b class="eq-lv">${me.eqlv[id]}</b>` : ''}</button>`; }).join('');
   return `<section class="train" aria-label="Entraînement"><b class="tr-h">Entraînement</b>
     <div class="tr-row med">${medals || '<small class="tr-e">Les équipements des coffres de fin de combat se rangent ici.</small>'}</div></section>`;
 }
@@ -915,7 +916,9 @@ function showPeek(t, touch) {
     const c = t.dataset.c; if (!c || (!C[c] && c !== '__edit')) return false;
     if (!touch && t.classList.contains('cd') && r.width >= 150) return false;
     peekFor = t; peekEl.innerHTML = cardH({ c, a:+t.dataset.a, h:+t.dataset.h, g:+t.dataset.g, f:t.dataset.f || '' }, 'p', 0); peekEl.hidden = false;
-    const [pw, ph] = peekSize(); placePeek(r, pw, ph, touch);
+    { const mc = findMine(t.dataset.u); if (mc && isComp(mc)) { const lv = (V.me && V.me.eqlv) || {}; const eq = mc.eq || [];
+      peekEl.insertAdjacentHTML('beforeend', `<div class="peq"><b class="peq-t">Équipement · ${eq.length}/${eqSlots(mc)} · niveau d'entraînement ${compLv(mc)}</b>${eq.length ? eq.map(id => `<div class="peq-i"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="pq-${id}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#pq-${id})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span><b>${esc(SPELLS[id].n)}${(lv[id] || 1) > 1 ? ` · niv. ${lv[id]}` : ''}</b><small>${esc(eqBonusTx(id, lv[id] || 1))}</small></span></div>`).join('') : '<small class="peq-e">Aucun équipement : pose-lui des médailles depuis l\'entraînement.</small>'}${mc.fu ? `<small class="peq-f">Fusion active : ${esc(mc.fu)}</small>` : ''}</div>`); } }
+    const [pw, ph] = peekSize(); placePeek(r, pw, ph + (peekEl.querySelector('.peq') ? peekEl.querySelector('.peq').offsetHeight + 8 : 0), touch);
     // après un instant de survol : la bulle des améliorations
     clearTimeout(TIPT); const mm = findMine(t.dataset.u);
     if (mm) TIPT = setTimeout(() => {
