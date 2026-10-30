@@ -85,10 +85,24 @@ function hostLaunch() {
   const humans = H.roster.map(r => ({ n:r.n, peer:r.peer }));
   hostStart(humans, { univ:V.univSel }); setLobbyPresence();
 }
+// fin de partie en ligne : la table se reforme avec les joueurs encore là, prête pour une revanche
+function hostBackToTable() {
+  const G = H.G; if (!G || G.ph !== 'end' || Net.role !== 'host' || !Net.nr) return;
+  H.last = G.ps.slice().sort((a, b) => a.place - b.place).map(p => ({ n:p.n, pl:p.place, ai:!p.human, h:p.hero }));
+  const roster = [{ n:V.name, peer:LOCAL }];
+  for (const p of Net.nr.peers()) {
+    if (p.sameTab || p.isMe || !p.presence || roster.length >= 8) continue;
+    const nm = typeof p.presence.nm === 'string' ? p.presence.nm.slice(0, 20) : null;
+    if (nm && !roster.some(r => r.peer === p.peer)) roster.push({ n:nm, peer:p.peer });
+  }
+  H.roster = roster; clearInterval(H.tick); H.G = null;
+  V.me = null; V.fight = null; V.sel = null; V.privKey = null;
+  setLobbyPresence(); sendPub();
+}
 async function leaveGame() {
   clearInterval(H.tick); H.G = null;
   if (Net.nr) { try { await Net.nr.leave(); } catch (e) {} }
-  Net.nr = H.nr = null; Net.role = null; H.roster = []; H.code = null;
+  Net.nr = H.nr = null; Net.role = null; H.roster = []; H.code = null; H.last = null;
   setLobbyPresence();
   V.screen = 'menu'; V.pub = null; V.me = null; V.fight = null; V.sel = null; V.hostGone = false; V.pubKey = V.privKey = null; V.cvWarn = false;
   if (DATA.pending) applyLive(); else render();

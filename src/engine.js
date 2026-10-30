@@ -923,7 +923,9 @@ function endCombat() {
   if (alive <= 1) {
     const w = G.ps.find(p => p.al); if (w) w.place = 1;
     if (!w && dead[0]) dead[0].place = 1;
-    G.ph = 'end'; G.end = Date.now(); broadcast(); clearInterval(H.tick); setLobbyPresence(); return;
+    G.ph = 'end'; G.end = Date.now(); broadcast(); clearInterval(H.tick); setLobbyPresence();
+    if (Net.role === 'host') setTimeout(hostBackToTable, 1200);   // en ligne : tout le monde revient à la table
+    return;
   }
   startRecruit();
 }
@@ -946,7 +948,7 @@ const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u }; const o = { c:m.c, a:
 const fullM = m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g || 0, f:m.f || '', u:m.u }; if (m.x) o.x = m.x; return o; };
 function pubData() {
   const G = H.G;
-  if (!G) return { ph:'lobby', code:H.code, cv:CAT_REV, us:(V.univSel || []).slice(), pl:H.roster.map(r => ({ n:r.n, pe:r.peer })) };
+  if (!G) return { ph:'lobby', code:H.code, cv:CAT_REV, us:(V.univSel || []).slice(), pl:H.roster.map(r => ({ n:r.n, pe:r.peer })), last:H.last || null };
   return { ph:G.ph, rd:G.rd, rem:Math.max(0, G.end - Date.now()), code:H.code, cv:CAT_REV, trs:G.trs, ban:G.ban, univ:G.univ, laws:G.laws || [], mhp:(+RU().hp || 40) + 10,
     pl:G.ps.map(p => ({ pid:p.pid, n:p.n, hp:p.hp, t:p.t, ai:!p.human, bot:p.bot, al:p.al, pl:p.place, r:p.rdy, h:p.hero, pe:p.peer, nb:p.bd.length })) };
 }

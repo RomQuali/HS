@@ -1731,3 +1731,8 @@ body.cs-entering #scene *{animation-play-state:running!important}
   .face.kf.arch{width:50px}
 }
 :root body .table.fighting .hero-zone .powm{margin-bottom:0}
+/* table d'attente et dernière partie */
+.rt-side .rt-ch:not([style]){border-color:rgba(242,193,78,.45)}
+.rt-last{display:flex;flex-direction:column;gap:6px;margin-top:8px;padding-top:8px;border-top:1px dashed rgba(242,193,78,.35)}
+.rt-seat.playing .face{box-shadow:0 0 0 3px #ffb050,0 0 14px rgba(255,170,80,.6)}
+.rt-code[aria-live]{cursor:default}

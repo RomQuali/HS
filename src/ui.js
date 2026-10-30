@@ -17,6 +17,7 @@ function onPub(d) {
   if (pk !== V.phKey) { V.phKey = pk; V.phTotal = Math.max(1, d.rem || 1); }
   // multijoueur : au lancement, tout le monde franchit la porte (la partie s'affiche derrière l'éblouissement)
   if (V.screen === 'lobby' && screen === 'game' && typeof csEnter === 'function') csEnter(() => render());
+  if (V.screen === 'game' && screen === 'lobby') { V.me = null; V.fight = null; V.sel = null; V.aim = null; V.privKey = null; }
   V.pub = d; V.pubAt = Date.now(); V.pubKey = key; V.screen = screen;
   if (d.cv && d.cv !== CAT_REV && Net.role === 'client' && !V.cvWarn) { V.cvWarn = true; toast('Les cartes de l\'hôte diffèrent des tiennes : recharge la page avant la prochaine partie.'); }
   if (d.ph === 'recruit' && V.fight && V.fight.rd !== d.rd) V.fight = null;
@@ -191,7 +192,8 @@ function render() {
   let keep = null; try { if (fid && typeof act.selectionStart === 'number') keep = [act.selectionStart, act.selectionEnd]; } catch (e) {}
   const ks = {}; document.querySelectorAll('[data-ks]').forEach(el => { if (el.id) ks[el.id] = el.scrollTop; });
   const flip = fxBefore();
-  const html = V.screen === 'menu' ? menuH() : V.screen === 'lobby' ? lobbyH() : V.screen === 'atelier' ? atelierH() : gameH();
+  V.waitTable = V.screen === 'game' && waitingAtTable();
+  const html = V.screen === 'menu' ? menuH() : V.screen === 'lobby' ? lobbyH() : V.screen === 'atelier' ? atelierH() : V.waitTable ? menuH(waitTableH()) : gameH();
   const app = $('#app');
   if (html !== V.lastHtml || !app.firstChild) {
     V.lastHtml = html;
@@ -306,6 +308,28 @@ function lobbyH() {
   if (V.hostGone) return `<div class="menu"><section class="plaque solo-msg"><h2>L'hôte a quitté la table</h2><p class="note">La partie s'est arrêtée avec lui.</p><div class="btns"><button class="btn pri" data-act="leave">Retour au menu</button></div></section></div>`;
   return menuH(roundTableH());
 }
+// en ligne, un joueur éliminé attend à la table la fin de la partie
+function waitingAtTable() {
+  const d = V.pub; if (!d || !d.pl || (Net.role !== 'host' && Net.role !== 'client') || d.ph === 'lobby' || d.ph === 'end') return false;
+  const me = V.me, mine = me ? d.pl.find(p => p.pid === me.pid) : null;
+  if (!mine || mine.al) return false;
+  return !(V.fight && !V.fight.done);   // on finit de regarder son dernier combat
+}
+function waitTableH() {
+  const d = V.pub, pos = (deg, r) => { const a = deg * Math.PI / 180; return `left:${(50 + r * Math.cos(a)).toFixed(2)}%;top:${(50 + r * Math.sin(a)).toFixed(2)}%`; };
+  const hum = d.pl.filter(p => !p.ai), live = d.pl.filter(p => p.al).length, out = d.pl.filter(p => !p.al).sort((a, b) => a.pl - b.pl);
+  const seats = Array.from({ length:8 }, (_, i) => { const p = hum[i];
+    return `<div class="rt-seat${p ? (p.al ? ' in playing' : ' in') : ''}" style="${pos(90 + i * 45, 44)}">${p ? faceH(playerSym(p)) : '<span class="rt-free">·</span>'}<small>${p ? esc(p.n) + ' · ' + (p.al ? 'en jeu' : p.pl + 'e') : ''}</small></div>`; }).join('');
+  return `<aside class="rt" aria-label="La table">
+    <div class="rt-hd"><div><h2>À table</h2><p>Tu es éliminé. Attends ici la fin de la partie : la table se reformera pour la suivante.</p></div></div>
+    <div class="rt-body">
+      <div class="rt-tw"><div class="rt-top"></div><div class="rt-code" aria-live="polite"><small>Manche ${d.rd || 0}</small><b>${live} en lice</b></div>${seats}</div>
+      <div class="rt-side"><b class="rt-st">Classement</b>${out.map(p => `<div class="rt-ch"><b>${p.pl}e · ${esc(p.n)}</b><small>${p.ai ? 'IA' : 'Joueur'}</small></div>`).join('')}</div>
+    </div>
+    <div class="rt-ft"><span class="rt-sum">La partie continue sans toi…</span><button class="btn" data-act="leave">Quitter la table</button></div>
+  </aside>`;
+}
+const lastGameH = last => last && last.length ? `<div class="rt-last"><b class="rt-st">Dernière partie</b>${last.slice(0, 3).map(p => `<div class="rt-ch"><b>${p.pl === 1 ? '♛ ' : ''}${p.pl}e · ${esc(p.n)}</b><small>${p.ai ? 'IA' : 'Joueur'}</small></div>`).join('')}</div>` : '';
 // la table ronde : 8 places autour, les jetons des univers posés dessus
 function roundTableH() {
   const isHost = Net.role === 'host', d = V.pub, pl = d && d.pl ? d.pl : [];
@@ -322,7 +346,7 @@ function roundTableH() {
   }).join('');
   const chosen = univ.filter(u => sel.includes(u.n));
   const list = chosen.length ? chosen.map(u => { const M = u.mech && u.mech !== 'none' ? MECHS[u.mech] : null; return `<div class="rt-ch" style="--uc:${esc(univLook(u).col)}"><b>${esc(u.n)}</b>${M ? `<small>Loi · ${esc(M.n)}</small>` : ''}</div>`; }).join('')
-    : `<p class="rt-note">Aucun jeton posé : cinq familles seront tirées au sort.</p>`;
+    : `<p class="rt-note">Aucun jeton posé : un univers sera tiré au sort.</p>`;
   const foot = !d ? '<span class="rt-sum">Connexion à l\'hôte…</span>'
     : `<span class="rt-sum"><b>${pl.length} / 8</b> à table · ${pl.length < 8 ? 'les places libres iront aux IA' : 'table complète'}</span>`
       + (isHost ? `<button class="btn" data-act="univ" data-u="-1">${icon('dice')}Au hasard</button><button class="t-go" data-act="launch">Lancer la partie</button>` : '<span class="rt-wait">En attente de l\'hôte…</span>');
@@ -330,7 +354,7 @@ function roundTableH() {
     <div class="rt-hd"><div><h2>${isHost ? 'Ta table' : 'À table'}</h2><p>${isHost ? 'Pose sur la table les jetons des univers, donne le code à tes amis, puis lance la partie.' : 'L\'hôte choisit les univers. La partie démarre à son signal.'}</p></div><button class="rt-x" data-act="leave" aria-label="Quitter la table">×</button></div>
     <div class="rt-body">
       <div class="rt-tw"><div class="rt-top"></div>${toks}<button class="rt-code" data-act="copycode" ${isHost ? 'data-tip="Copier le code"' : 'disabled'}><small>Code</small><b>${esc(code.toUpperCase())}</b></button>${seats}</div>
-      <div class="rt-side"><b class="rt-st">Sur la table</b>${list}</div>
+      <div class="rt-side"><b class="rt-st">Sur la table</b>${list}${lastGameH(d && d.last)}</div>
     </div>
     <div class="rt-ft">${foot}</div>
   </aside>`;
@@ -1190,10 +1214,10 @@ function sceneMode() {
   let el = document.getElementById('scene');
   if (!el) { el = document.createElement('div'); el.id = 'scene'; document.body.prepend(el); }
   if (!el.dataset.cs) { try { castleScene(el); } catch (e) { console.warn(e); } }
-  const m = V.screen === 'menu' ? 'sc-menu' : V.screen === 'lobby' ? 'sc-lobby' : V.screen === 'atelier' ? 'sc-atl' : 'sc-game';
+  const m = V.screen === 'menu' ? 'sc-menu' : V.screen === 'lobby' || V.waitTable ? 'sc-lobby' : V.screen === 'atelier' ? 'sc-atl' : 'sc-game';
   if (!document.body.classList.contains(m)) { document.body.classList.remove('sc-menu', 'sc-lobby', 'sc-atl', 'sc-game'); document.body.classList.add(m); }
   if (V.screen === 'menu' && !V.mp && typeof csLeave === 'function') csLeave();
-  document.body.classList.toggle('cs-still', (V.screen === 'menu' && !!V.mp) || V.screen === 'lobby');
+  document.body.classList.toggle('cs-still', (V.screen === 'menu' && !!V.mp) || V.screen === 'lobby' || !!V.waitTable);
 }
 
 try { sceneMode(); } catch (e) {}
