@@ -351,7 +351,7 @@ const MECHS = {
   marche:{ n:'Marché noir', ic:'gear', d:'Vendre un serviteur de l\'univers rapporte 1 or de plus (deux fois par tour).' },
   ruee:{ n:'Ruée sauvage', ic:'leaf', d:'Au début du combat, si vous avez au moins 3 serviteurs de l\'univers, ils gagnent +2/+0 pour ce combat.' },
   pillage:{ n:'Pillage', ic:'drop', d:'Quand vous gagnez un combat avec un serviteur de l\'univers encore debout, vous recevez un sort aléatoire de votre niveau.' },
-  chakra:{ n:'Chakra et cycle des éléments', ic:'k_spark', d:'Chaque serviteur de l\'univers génère 1 chakra au début de votre tour (10 au plus). Les techniques s\'achètent en or et se lancent au chakra (1 de moins dans l\'élément de votre héros) ; après chaque combat, un coffre du niveau de votre taverne s\'ajoute à votre réserve (majeur après une victoire, mineur sinon) et s\'ouvre au chakra. Votre compagnon retient l\'élément de la dernière technique. Enchaîner deux éléments crée une fusion (Glace, Bois, Lave, Vapeur, Explosion) ; lancer l\'élément nourri (Vent → Feu → Foudre → Terre → Eau → Vent) rend 2 chakra ; dominer l\'élément d\'en face (Feu > Vent > Foudre > Terre > Eau > Feu) donne +4/+4 au combat.' },
+  chakra:{ n:'Chakra et cycle des éléments', ic:'k_spark', d:'Chaque serviteur de l\'univers génère 1 chakra au début de votre tour (10 au plus). Les techniques s\'achètent en or et se lancent au chakra (1 de moins dans l\'élément de votre héros) ; après chaque combat, un coffre du niveau de votre taverne arrive dans la zone d\'entraînement (majeur après une victoire, mineur sinon) ; il s\'ouvre gratuitement et ses équipements se paient en chakra pour équiper le compagnon. Votre compagnon retient l\'élément de la dernière technique. Enchaîner deux éléments crée une fusion (Glace, Bois, Lave, Vapeur, Explosion) ; lancer l\'élément nourri (Vent → Feu → Foudre → Terre → Eau → Vent) rend 2 chakra ; dominer l\'élément d\'en face (Feu > Vent > Foudre > Terre > Eau > Feu) donne +4/+4 au combat.' },
   resonance:{ n:'Résonance', ic:'twin', d:'Chaque sort que vous lancez donne +1/+1 à deux de vos serviteurs de l\'univers.' },
   eboulement:{ n:'Éboulement', ic:'up', d:'Quand un de vos serviteurs de l\'univers avec Provocation meurt, il inflige 3 dégâts à un ennemi aléatoire.' },
   fusion:{ n:'Fusion élémentaire', ic:'wind', d:'À la fin du tour, si vous avez au moins 4 éléments Squishy différents, vos serviteurs de l\'univers gagnent +1/+1.' },
@@ -823,6 +823,7 @@ function checkTriple(G, p) {
 const CK_MAX = 10;
 // coffres : un par combat, rangés hors de la main ; mineur (égalité ou défaite) ou majeur (victoire), du niveau de la taverne
 const CHEST_COMMON = ['eq_lame', 'eq_armure', 'eq_gants'];
+const EQS_MAX = 8;
 const chestCost = (q, t) => q === 'maj' ? 3 + Math.floor(t / 2) : 2 + Math.floor(t / 3);
 function chestLoot(q, t) {
   const all = Object.keys(SPELLS).filter(k => SPELLS[k].eq), rare = all.filter(k => !CHEST_COMMON.includes(k));
@@ -893,11 +894,22 @@ const OPS = {
     p.g -= h.cost; p.pu = true; trigBoard(G, p, 'pow'); return true;
   },
   rdy(G, p) { p.rdy = !p.rdy; return true; },
+  // entraînement : les coffres s'ouvrent gratuitement, les équipements se rangent comme des médailles
   chest(G, p, a) {
     const k = String(a.k || ''), m = /^(min|maj)([1-6])$/.exec(k); if (!m || !p.chests || !(p.chests[k] > 0)) return false;
-    const q = m[1], t = +m[2], c = chestCost(q, t); if ((p.ck || 0) < c || p.hd.length >= 10) return false;
-    p.ck -= c; p.chests[k]--; if (!p.chests[k]) delete p.chests[k];
-    withSrc('Coffre ' + (q === 'maj' ? 'majeur' : 'mineur') + ' niv. ' + t, () => chestLoot(q, t).forEach(sp => { if (p.hd.length < 10) p.hd.push({ sp, u:UID++ }); }));
+    if ((p.eqs || []).length >= EQS_MAX) return false;
+    const q = m[1], t = +m[2]; p.chests[k]--; if (!p.chests[k]) delete p.chests[k];
+    p.eqs = p.eqs || [];
+    chestLoot(q, t).forEach(id => { if (SPELLS[id] && SPELLS[id].eq) { if (p.eqs.length < EQS_MAX) p.eqs.push(id); } else if (p.hd.length < 10) p.hd.push({ sp:id, u:UID++ }); });
+    return true;
+  },
+  // équiper le compagnon coûte du chakra
+  equip(G, p, a) {
+    const id = (p.eqs || [])[a.i]; if (!id || !SPELLS[id]) return false;
+    const c = EQ_COST(id); if ((p.ck || 0) < c) return false;
+    const comp = p.bd.filter(isComp).find(m => (m.eq || []).length < 3 && !(m.eq || []).includes(id)); if (!comp) return false;
+    p.ck -= c; p.eqs.splice(a.i, 1);
+    withSrc('Entraînement · ' + SPELLS[id].n, () => applyEquip(comp, id));
     return true;
   },
   buysp(G, p) { const S = p.sp && SPELLS[p.sp.sp]; const c = S ? spCost(p, S) : 0; if (!S || p.g < c || p.hd.length >= 10) return false; p.g -= c; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(p.sp); p.sp = null; return true; },
@@ -1131,7 +1143,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, ck:p.ck || 0, chests:p.chests || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, ck:p.ck || 0, chests:p.chests || null, eqs:p.eqs || [], mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;

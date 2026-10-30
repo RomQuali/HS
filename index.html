@@ -1833,6 +1833,27 @@ body.cs-entering #scene *{animation-play-state:running!important}
 @keyframes chsp{0%,50%{opacity:0;transform:rotate(var(--a)) translateY(0)}60%{opacity:1}100%{opacity:0;transform:rotate(var(--a)) translateY(-150px)}}
 .chfx.maj .chfx-sp{width:12px;height:12px}
 @media (prefers-reduced-motion:reduce){ .chfx *{animation-duration:.01s!important} }
+/* zone d'entraînement */
+.train{display:grid;gap:5px;padding:6px 10px 8px;border-radius:14px;background:linear-gradient(180deg,rgba(40,28,20,.92),rgba(22,14,10,.95));box-shadow:inset 0 0 0 2px #a8744a,0 4px 10px rgba(0,0,0,.4)}
+.tr-h{font-family:var(--f-label);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:#ffd8a0}
+.tr-row{display:flex;flex-wrap:wrap;gap:6px;max-width:300px;min-height:30px;align-items:center}
+.tr-e{font-size:11px;color:#a8988a;max-width:240px}
+.train .chest{width:58px;padding:4px 3px 3px}
+.train .chest svg{width:32px;height:27px}
+.train .chest small{font-size:10px}
+.eqm{position:relative;width:42px;height:42px;padding:0;border:0;border-radius:50%;cursor:pointer;background:none}
+.eqm svg{width:42px;height:42px;display:block}
+.eqm .ch-c{position:absolute;right:-6px;top:-6px;width:20px;height:20px;display:grid;place-items:center;border-radius:50%;font-size:11.5px;font-family:var(--f-num);color:#fff;background:radial-gradient(circle at 38% 32%,#bfe8ff,#2a6ad8 60%,#0c2a6a);box-shadow:0 0 0 2px #0c1a3a,0 0 0 3px #bfe8ff}
+.eqm:not(:disabled){filter:drop-shadow(0 0 6px rgba(110,200,255,.8))}
+.eqm:not(:disabled):hover{transform:translateY(-2px) scale(1.06)}
+.eqm:disabled{opacity:.5;cursor:not-allowed}
+.train .chest .ch-c{display:none}
+@media (max-width:820px),(max-height:540px){ .train{padding:3px 6px} .tr-h,.tr-e{display:none} .tr-row{max-width:none} .eqm,.eqm svg{width:30px;height:30px} }
+.train{min-width:250px;gap:3px;padding:4px 10px 6px}
+.tr-row{flex-wrap:nowrap;max-width:none;overflow-x:auto;scrollbar-width:none;min-height:0}
+.train .chest{flex:none}
+.eqm{flex:none}
+@media (min-width:821px){ .hz-left{gap:12px} .ckg{padding:4px 10px 4px 4px} .ckg-orb{width:50px;height:50px} .ckg-r small{font-size:11px} }
 </style>
 </head><body>
 
@@ -2313,7 +2334,7 @@ const MECHS = {
   marche:{ n:'Marché noir', ic:'gear', d:'Vendre un serviteur de l\'univers rapporte 1 or de plus (deux fois par tour).' },
   ruee:{ n:'Ruée sauvage', ic:'leaf', d:'Au début du combat, si vous avez au moins 3 serviteurs de l\'univers, ils gagnent +2/+0 pour ce combat.' },
   pillage:{ n:'Pillage', ic:'drop', d:'Quand vous gagnez un combat avec un serviteur de l\'univers encore debout, vous recevez un sort aléatoire de votre niveau.' },
-  chakra:{ n:'Chakra et cycle des éléments', ic:'k_spark', d:'Chaque serviteur de l\'univers génère 1 chakra au début de votre tour (10 au plus). Les techniques s\'achètent en or et se lancent au chakra (1 de moins dans l\'élément de votre héros) ; après chaque combat, un coffre du niveau de votre taverne s\'ajoute à votre réserve (majeur après une victoire, mineur sinon) et s\'ouvre au chakra. Votre compagnon retient l\'élément de la dernière technique. Enchaîner deux éléments crée une fusion (Glace, Bois, Lave, Vapeur, Explosion) ; lancer l\'élément nourri (Vent → Feu → Foudre → Terre → Eau → Vent) rend 2 chakra ; dominer l\'élément d\'en face (Feu > Vent > Foudre > Terre > Eau > Feu) donne +4/+4 au combat.' },
+  chakra:{ n:'Chakra et cycle des éléments', ic:'k_spark', d:'Chaque serviteur de l\'univers génère 1 chakra au début de votre tour (10 au plus). Les techniques s\'achètent en or et se lancent au chakra (1 de moins dans l\'élément de votre héros) ; après chaque combat, un coffre du niveau de votre taverne arrive dans la zone d\'entraînement (majeur après une victoire, mineur sinon) ; il s\'ouvre gratuitement et ses équipements se paient en chakra pour équiper le compagnon. Votre compagnon retient l\'élément de la dernière technique. Enchaîner deux éléments crée une fusion (Glace, Bois, Lave, Vapeur, Explosion) ; lancer l\'élément nourri (Vent → Feu → Foudre → Terre → Eau → Vent) rend 2 chakra ; dominer l\'élément d\'en face (Feu > Vent > Foudre > Terre > Eau > Feu) donne +4/+4 au combat.' },
   resonance:{ n:'Résonance', ic:'twin', d:'Chaque sort que vous lancez donne +1/+1 à deux de vos serviteurs de l\'univers.' },
   eboulement:{ n:'Éboulement', ic:'up', d:'Quand un de vos serviteurs de l\'univers avec Provocation meurt, il inflige 3 dégâts à un ennemi aléatoire.' },
   fusion:{ n:'Fusion élémentaire', ic:'wind', d:'À la fin du tour, si vous avez au moins 4 éléments Squishy différents, vos serviteurs de l\'univers gagnent +1/+1.' },
@@ -2785,6 +2806,7 @@ function checkTriple(G, p) {
 const CK_MAX = 10;
 // coffres : un par combat, rangés hors de la main ; mineur (égalité ou défaite) ou majeur (victoire), du niveau de la taverne
 const CHEST_COMMON = ['eq_lame', 'eq_armure', 'eq_gants'];
+const EQS_MAX = 8;
 const chestCost = (q, t) => q === 'maj' ? 3 + Math.floor(t / 2) : 2 + Math.floor(t / 3);
 function chestLoot(q, t) {
   const all = Object.keys(SPELLS).filter(k => SPELLS[k].eq), rare = all.filter(k => !CHEST_COMMON.includes(k));
@@ -2855,11 +2877,22 @@ const OPS = {
     p.g -= h.cost; p.pu = true; trigBoard(G, p, 'pow'); return true;
   },
   rdy(G, p) { p.rdy = !p.rdy; return true; },
+  // entraînement : les coffres s'ouvrent gratuitement, les équipements se rangent comme des médailles
   chest(G, p, a) {
     const k = String(a.k || ''), m = /^(min|maj)([1-6])$/.exec(k); if (!m || !p.chests || !(p.chests[k] > 0)) return false;
-    const q = m[1], t = +m[2], c = chestCost(q, t); if ((p.ck || 0) < c || p.hd.length >= 10) return false;
-    p.ck -= c; p.chests[k]--; if (!p.chests[k]) delete p.chests[k];
-    withSrc('Coffre ' + (q === 'maj' ? 'majeur' : 'mineur') + ' niv. ' + t, () => chestLoot(q, t).forEach(sp => { if (p.hd.length < 10) p.hd.push({ sp, u:UID++ }); }));
+    if ((p.eqs || []).length >= EQS_MAX) return false;
+    const q = m[1], t = +m[2]; p.chests[k]--; if (!p.chests[k]) delete p.chests[k];
+    p.eqs = p.eqs || [];
+    chestLoot(q, t).forEach(id => { if (SPELLS[id] && SPELLS[id].eq) { if (p.eqs.length < EQS_MAX) p.eqs.push(id); } else if (p.hd.length < 10) p.hd.push({ sp:id, u:UID++ }); });
+    return true;
+  },
+  // équiper le compagnon coûte du chakra
+  equip(G, p, a) {
+    const id = (p.eqs || [])[a.i]; if (!id || !SPELLS[id]) return false;
+    const c = EQ_COST(id); if ((p.ck || 0) < c) return false;
+    const comp = p.bd.filter(isComp).find(m => (m.eq || []).length < 3 && !(m.eq || []).includes(id)); if (!comp) return false;
+    p.ck -= c; p.eqs.splice(a.i, 1);
+    withSrc('Entraînement · ' + SPELLS[id].n, () => applyEquip(comp, id));
     return true;
   },
   buysp(G, p) { const S = p.sp && SPELLS[p.sp.sp]; const c = S ? spCost(p, S) : 0; if (!S || p.g < c || p.hd.length >= 10) return false; p.g -= c; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(p.sp); p.sp = null; return true; },
@@ -3093,7 +3126,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, ck:p.ck || 0, chests:p.chests || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, ck:p.ck || 0, chests:p.chests || null, eqs:p.eqs || [], mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;
@@ -5500,6 +5533,19 @@ function spellBlock(p, id, tgt) {
   if ((id === 'sp_tempete' || id === 'sp_ascension') && !p.bd.length) return 'Tu n\'as aucun serviteur.';
   return null;
 }
+// pose un équipement sur un compagnon (zone d'entraînement)
+function applyEquip(tgt, id) {
+  switch (id) {
+    case 'eq_lame': buff(tgt, 4, 0); break;
+    case 'eq_armure': buff(tgt, 0, 6); addF(tgt, 't'); break;
+    case 'eq_gants': buff(tgt, 2, 2); addF(tgt, 'w'); break;
+    case 'eq_bandeau': (tgt.x = tgt.x || []).push({ k:'eot_chakra', n:2, src:'Bandeau du maître' }); break;
+    case 'eq_cape': addF(tgt, 's'); addF(tgt, 'r'); break;
+    case 'eq_parchemin': tgt.memo2 = 1; break;
+  }
+  (tgt.eq = tgt.eq || []).push(id);
+}
+const EQ_COST = id => ['eq_lame', 'eq_armure', 'eq_gants'].includes(id) ? 2 : 3;
 function castSpell(G, p, hi, tg) { const it = p.hd[hi], S0 = it && SPELLS[it.sp]; const ok = withSrc(S0 ? 'Sort : ' + S0.n : BSRC, () => castSpell0(G, p, hi, tg)); if (ok && inMechAny(G, 'resonance')) withSrc('Résonance', () => { const c = p.bd.filter(m => inMech(G, 'resonance', m)); for (let k = 0; k < 2 && c.length; k++) buff(c.splice(Math.floor(Math.random() * c.length), 1)[0], 1, 1); }); return ok; }
 function castSpell0(G, p, hi, tg) {
   const id = p.hd[hi].sp, S = SPELLS[id]; if (!S) return false;
@@ -6407,8 +6453,9 @@ function elCycleSvg(order, col, title) {
 function chakraLawH(big) {
   const fus = Object.entries(FUSIONS).map(([k, F]) => `<i style="--c:${F.col}">${k.split('+').map(e => ELS[e].n).join(' + ')} = <b>${F.n}</b></i>`).join('');
   return `<span class="ban-law ck-law${big ? ' big' : ''}"><b>Loi · Chakra et éléments</b>
-    <small><b>Chakra :</b> chaque serviteur de l'univers en donne 1 par tour. Il lance les techniques (achetées en or) et ouvre les coffres reçus après chaque combat, du niveau de ta taverne : majeur après une victoire, mineur sinon.</small>
+    <small><b>Chakra :</b> chaque serviteur de l'univers en donne 1 par tour. Il lance les techniques (achetées en or) et paie les équipements de ton compagnon.</small>
     <small><b>Compagnon :</b> il retient la dernière technique lancée et son élément, puis la remet en main à chaque tour.</small>
+    <small><b>Entraînement :</b> après chaque combat, un coffre du niveau de ta taverne arrive (majeur après une victoire, mineur sinon). Il s'ouvre gratuitement ; ses équipements se rangent en médailles et se posent sur ton compagnon contre du chakra.</small>
     <span class="elx">
       <span class="elx-c">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b style="color:#ff8a6a">Domination</b> · ton compagnon l'emporte sur l'élément d'en face : +4/+4 au combat.</small></span>
       <span class="elx-c">${elCycleSvg(['vent', 'feu', 'foudre', 'terre', 'eau'], '#6fd0ff', 'Génération')}<small><b style="color:#8fdcff">Génération</b> · lance l'élément que nourrit celui retenu : +2 chakra et +2/+2.</small></span>
@@ -6564,7 +6611,7 @@ function gameH() {
       : `<span class="powm passive" aria-label="${esc(hero ? hero.tx : '')}">${hero ? powArtH(me.hero) : icon('crown')}<small>Passif</small>${hero ? `<span class="pc-tx">${esc(hero.tx)}</span>` : ''}</span>`;
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
-      <div class="hz-left">${ckGauge(d, me)}${chestRackH(d, me, canAct)}<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span></div>
+      <div class="hz-left">${ckGauge(d, me)}${trainH(d, me, canAct)}<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span></div>
       <div class="hz-hero" data-hov="hero"><span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? 'art-h-' + me.hero : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span></div>
       <div class="hz-right"><span class="hov" data-hov="pow">${power}</span>${coins}</div>
       <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}">${icon('bell')}<span>${me.rdy ? 'Prêt !' : 'Prêt'}</span></button></div></section>`;
@@ -6591,15 +6638,21 @@ function fxChest(btn) {
     ${Array.from({ length:12 }, (_, k) => `<i class="chfx-sp" style="--a:${k * 30}deg;--d:${(k % 3) * .06}s"></i>`).join('')}`;
   document.body.appendChild(el); setTimeout(() => el.remove(), 1700);
 }
-// la réserve de coffres : un bouton par sorte (qualité + niveau), avec le nombre et le coût en chakra ; un clic l'ouvre
-function chestRackH(d, me, canAct) {
+// la zone d'entraînement : coffres (ouverture gratuite) et médailles d'équipement (posées sur le compagnon contre du chakra)
+function trainH(d, me, canAct) {
   if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
   const ks = Object.keys(me.chests || {}).filter(k => me.chests[k] > 0).sort((a, b) => a.slice(3) - b.slice(3) || (a < b ? 1 : -1));
-  if (!ks.length) return `<div class="crack empty" data-tip="Après chaque combat, un coffre du niveau de ta taverne arrive ici : majeur après une victoire, mineur sinon.">${icon('k_spark')}<small>Aucun coffre</small></div>`;
-  return `<div class="crack">${ks.map(k => { const q = k.slice(0, 3), t = +k.slice(3), c = chestCost(q, t), ok = canAct && (me.ck || 0) >= c && me.hd.length < 10;
-    return `<button class="chest ${q}" data-act="chest" data-k="${k}" ${ok ? '' : 'disabled'} data-tip="Coffre ${q === 'maj' ? 'majeur' : 'mineur'} de niveau ${t} : ${q === 'maj' ? (t >= 6 ? 'deux équipements rares et une technique' : t >= 4 ? 'deux équipements rares' : 'un équipement rare') : t <= 3 ? 'un équipement commun' : 'un équipement'}. S'ouvre avec ${c} chakra." aria-label="Ouvrir un coffre ${q === 'maj' ? 'majeur' : 'mineur'} de niveau ${t} pour ${c} chakra (${me.chests[k]} en réserve)">
+  const comps = (me.bd || []).filter(isComp), full = (me.eqs || []).length >= EQS_MAX;
+  const chests = ks.map(k => { const q = k.slice(0, 3), t = +k.slice(3);
+    return `<button class="chest ${q}" data-act="chest" data-k="${k}" ${canAct && !full ? '' : 'disabled'} data-tip="Coffre ${q === 'maj' ? 'majeur' : 'mineur'} de niveau ${t} : ${q === 'maj' ? (t >= 6 ? 'deux équipements rares et une technique' : t >= 4 ? 'deux équipements rares' : 'un équipement rare') : t <= 3 ? 'un équipement commun' : 'un équipement'}. Clique pour l'ouvrir (gratuit).${full ? ' Ta zone d\'entraînement est pleine.' : ''}" aria-label="Ouvrir un coffre ${q === 'maj' ? 'majeur' : 'mineur'} de niveau ${t} (${me.chests[k]} en réserve)">
       <svg viewBox="0 0 40 34" aria-hidden="true"><rect x="3" y="13" width="34" height="18" rx="2" fill="${q === 'maj' ? '#e2b04e' : '#a8744a'}" stroke="#120a06" stroke-width="2"/><path d="M3 13 Q20 -1 37 13 Z" fill="${q === 'maj' ? '#c88a26' : '#8a5a32'}" stroke="#120a06" stroke-width="2"/><rect x="16" y="15" width="8" height="8" rx="1.5" fill="#6fd0ff" stroke="#120a06" stroke-width="1.4"/></svg>
-      <b class="ch-n">×${me.chests[k]}</b><small>${q === 'maj' ? 'Majeur' : 'Mineur'} · niv. ${t}</small><span class="ch-c">${c}</span></button>`; }).join('')}</div>`;
+      <b class="ch-n">×${me.chests[k]}</b><small>${q === 'maj' ? 'Majeur' : 'Mineur'} · ${t}</small></button>`; }).join('');
+  const medals = (me.eqs || []).map((id, i) => { const S = SPELLS[id], c = EQ_COST(id);
+    const why = !comps.length ? 'Recrute ton compagnon pour l\'équiper.' : !comps.some(m => (m.eq || []).length < 3 && !(m.eq || []).includes(id)) ? 'Ton compagnon porte déjà cet équipement ou trois équipements.' : (me.ck || 0) < c ? `Il te faut ${c} chakra.` : '';
+    return `<button class="eqm" data-act="equip" data-i="${i}" ${canAct && !why ? '' : 'disabled'} data-tip="${esc(S.n + ' : ' + S.tx.replace('Équipe ton compagnon : ', '') + ' Équiper coûte ' + c + ' chakra.' + (why ? ' ' + why : ''))}" aria-label="Équiper ${esc(S.n)} pour ${c} chakra"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="eqc${i}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#eqc${i})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span class="ch-c">${c}</span></button>`; }).join('');
+  return `<section class="train" aria-label="Entraînement"><b class="tr-h">Entraînement</b>
+    <div class="tr-row">${chests || '<small class="tr-e">Les coffres gagnés après chaque combat arrivent ici.</small>'}</div>
+    <div class="tr-row med">${medals || '<small class="tr-e">Ouvre un coffre : ses équipements se rangent ici.</small>'}</div></section>`;
 }
 // la jauge de chakra (univers des Cinq Nations) : un grand orbe bleu et dix perles
 function ckGauge(d, me) {
@@ -6818,6 +6871,7 @@ function doAct(act, btn) {
     case 'buy': if (s) { sendAct({ t:'buy', i:s.i }); V.sel = null; } break;
     case 'buysp': sendAct({ t:'buysp' }); V.sel = null; break;
     case 'chest': fxChest(btn); sendAct({ t:'chest', k:btn.dataset.k }); break;
+    case 'equip': sendAct({ t:'equip', i:+btn.dataset.i }); break;
     case 'cast': if (s) { sendAct({ t:'cast', i:s.i }); V.sel = null; } break;
     case 'aim': if (s) { V.aim = s.i; V.sel = null; render(); } break;
     case 'aimcancel': V.aim = null; render(); break;

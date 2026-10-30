@@ -289,8 +289,9 @@ function elCycleSvg(order, col, title) {
 function chakraLawH(big) {
   const fus = Object.entries(FUSIONS).map(([k, F]) => `<i style="--c:${F.col}">${k.split('+').map(e => ELS[e].n).join(' + ')} = <b>${F.n}</b></i>`).join('');
   return `<span class="ban-law ck-law${big ? ' big' : ''}"><b>Loi · Chakra et éléments</b>
-    <small><b>Chakra :</b> chaque serviteur de l'univers en donne 1 par tour. Il lance les techniques (achetées en or) et ouvre les coffres reçus après chaque combat, du niveau de ta taverne : majeur après une victoire, mineur sinon.</small>
+    <small><b>Chakra :</b> chaque serviteur de l'univers en donne 1 par tour. Il lance les techniques (achetées en or) et paie les équipements de ton compagnon.</small>
     <small><b>Compagnon :</b> il retient la dernière technique lancée et son élément, puis la remet en main à chaque tour.</small>
+    <small><b>Entraînement :</b> après chaque combat, un coffre du niveau de ta taverne arrive (majeur après une victoire, mineur sinon). Il s'ouvre gratuitement ; ses équipements se rangent en médailles et se posent sur ton compagnon contre du chakra.</small>
     <span class="elx">
       <span class="elx-c">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b style="color:#ff8a6a">Domination</b> · ton compagnon l'emporte sur l'élément d'en face : +4/+4 au combat.</small></span>
       <span class="elx-c">${elCycleSvg(['vent', 'feu', 'foudre', 'terre', 'eau'], '#6fd0ff', 'Génération')}<small><b style="color:#8fdcff">Génération</b> · lance l'élément que nourrit celui retenu : +2 chakra et +2/+2.</small></span>
@@ -446,7 +447,7 @@ function gameH() {
       : `<span class="powm passive" aria-label="${esc(hero ? hero.tx : '')}">${hero ? powArtH(me.hero) : icon('crown')}<small>Passif</small>${hero ? `<span class="pc-tx">${esc(hero.tx)}</span>` : ''}</span>`;
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
-      <div class="hz-left">${ckGauge(d, me)}${chestRackH(d, me, canAct)}<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span></div>
+      <div class="hz-left">${ckGauge(d, me)}${trainH(d, me, canAct)}<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span></div>
       <div class="hz-hero" data-hov="hero"><span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? 'art-h-' + me.hero : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span></div>
       <div class="hz-right"><span class="hov" data-hov="pow">${power}</span>${coins}</div>
       <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}">${icon('bell')}<span>${me.rdy ? 'Prêt !' : 'Prêt'}</span></button></div></section>`;
@@ -473,15 +474,21 @@ function fxChest(btn) {
     ${Array.from({ length:12 }, (_, k) => `<i class="chfx-sp" style="--a:${k * 30}deg;--d:${(k % 3) * .06}s"></i>`).join('')}`;
   document.body.appendChild(el); setTimeout(() => el.remove(), 1700);
 }
-// la réserve de coffres : un bouton par sorte (qualité + niveau), avec le nombre et le coût en chakra ; un clic l'ouvre
-function chestRackH(d, me, canAct) {
+// la zone d'entraînement : coffres (ouverture gratuite) et médailles d'équipement (posées sur le compagnon contre du chakra)
+function trainH(d, me, canAct) {
   if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
   const ks = Object.keys(me.chests || {}).filter(k => me.chests[k] > 0).sort((a, b) => a.slice(3) - b.slice(3) || (a < b ? 1 : -1));
-  if (!ks.length) return `<div class="crack empty" data-tip="Après chaque combat, un coffre du niveau de ta taverne arrive ici : majeur après une victoire, mineur sinon.">${icon('k_spark')}<small>Aucun coffre</small></div>`;
-  return `<div class="crack">${ks.map(k => { const q = k.slice(0, 3), t = +k.slice(3), c = chestCost(q, t), ok = canAct && (me.ck || 0) >= c && me.hd.length < 10;
-    return `<button class="chest ${q}" data-act="chest" data-k="${k}" ${ok ? '' : 'disabled'} data-tip="Coffre ${q === 'maj' ? 'majeur' : 'mineur'} de niveau ${t} : ${q === 'maj' ? (t >= 6 ? 'deux équipements rares et une technique' : t >= 4 ? 'deux équipements rares' : 'un équipement rare') : t <= 3 ? 'un équipement commun' : 'un équipement'}. S'ouvre avec ${c} chakra." aria-label="Ouvrir un coffre ${q === 'maj' ? 'majeur' : 'mineur'} de niveau ${t} pour ${c} chakra (${me.chests[k]} en réserve)">
+  const comps = (me.bd || []).filter(isComp), full = (me.eqs || []).length >= EQS_MAX;
+  const chests = ks.map(k => { const q = k.slice(0, 3), t = +k.slice(3);
+    return `<button class="chest ${q}" data-act="chest" data-k="${k}" ${canAct && !full ? '' : 'disabled'} data-tip="Coffre ${q === 'maj' ? 'majeur' : 'mineur'} de niveau ${t} : ${q === 'maj' ? (t >= 6 ? 'deux équipements rares et une technique' : t >= 4 ? 'deux équipements rares' : 'un équipement rare') : t <= 3 ? 'un équipement commun' : 'un équipement'}. Clique pour l'ouvrir (gratuit).${full ? ' Ta zone d\'entraînement est pleine.' : ''}" aria-label="Ouvrir un coffre ${q === 'maj' ? 'majeur' : 'mineur'} de niveau ${t} (${me.chests[k]} en réserve)">
       <svg viewBox="0 0 40 34" aria-hidden="true"><rect x="3" y="13" width="34" height="18" rx="2" fill="${q === 'maj' ? '#e2b04e' : '#a8744a'}" stroke="#120a06" stroke-width="2"/><path d="M3 13 Q20 -1 37 13 Z" fill="${q === 'maj' ? '#c88a26' : '#8a5a32'}" stroke="#120a06" stroke-width="2"/><rect x="16" y="15" width="8" height="8" rx="1.5" fill="#6fd0ff" stroke="#120a06" stroke-width="1.4"/></svg>
-      <b class="ch-n">×${me.chests[k]}</b><small>${q === 'maj' ? 'Majeur' : 'Mineur'} · niv. ${t}</small><span class="ch-c">${c}</span></button>`; }).join('')}</div>`;
+      <b class="ch-n">×${me.chests[k]}</b><small>${q === 'maj' ? 'Majeur' : 'Mineur'} · ${t}</small></button>`; }).join('');
+  const medals = (me.eqs || []).map((id, i) => { const S = SPELLS[id], c = EQ_COST(id);
+    const why = !comps.length ? 'Recrute ton compagnon pour l\'équiper.' : !comps.some(m => (m.eq || []).length < 3 && !(m.eq || []).includes(id)) ? 'Ton compagnon porte déjà cet équipement ou trois équipements.' : (me.ck || 0) < c ? `Il te faut ${c} chakra.` : '';
+    return `<button class="eqm" data-act="equip" data-i="${i}" ${canAct && !why ? '' : 'disabled'} data-tip="${esc(S.n + ' : ' + S.tx.replace('Équipe ton compagnon : ', '') + ' Équiper coûte ' + c + ' chakra.' + (why ? ' ' + why : ''))}" aria-label="Équiper ${esc(S.n)} pour ${c} chakra"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="eqc${i}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#eqc${i})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span class="ch-c">${c}</span></button>`; }).join('');
+  return `<section class="train" aria-label="Entraînement"><b class="tr-h">Entraînement</b>
+    <div class="tr-row">${chests || '<small class="tr-e">Les coffres gagnés après chaque combat arrivent ici.</small>'}</div>
+    <div class="tr-row med">${medals || '<small class="tr-e">Ouvre un coffre : ses équipements se rangent ici.</small>'}</div></section>`;
 }
 // la jauge de chakra (univers des Cinq Nations) : un grand orbe bleu et dix perles
 function ckGauge(d, me) {
@@ -700,6 +707,7 @@ function doAct(act, btn) {
     case 'buy': if (s) { sendAct({ t:'buy', i:s.i }); V.sel = null; } break;
     case 'buysp': sendAct({ t:'buysp' }); V.sel = null; break;
     case 'chest': fxChest(btn); sendAct({ t:'chest', k:btn.dataset.k }); break;
+    case 'equip': sendAct({ t:'equip', i:+btn.dataset.i }); break;
     case 'cast': if (s) { sendAct({ t:'cast', i:s.i }); V.sel = null; } break;
     case 'aim': if (s) { V.aim = s.i; V.sel = null; render(); } break;
     case 'aimcancel': V.aim = null; render(); break;

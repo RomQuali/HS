@@ -73,6 +73,19 @@ function spellBlock(p, id, tgt) {
   if ((id === 'sp_tempete' || id === 'sp_ascension') && !p.bd.length) return 'Tu n\'as aucun serviteur.';
   return null;
 }
+// pose un équipement sur un compagnon (zone d'entraînement)
+function applyEquip(tgt, id) {
+  switch (id) {
+    case 'eq_lame': buff(tgt, 4, 0); break;
+    case 'eq_armure': buff(tgt, 0, 6); addF(tgt, 't'); break;
+    case 'eq_gants': buff(tgt, 2, 2); addF(tgt, 'w'); break;
+    case 'eq_bandeau': (tgt.x = tgt.x || []).push({ k:'eot_chakra', n:2, src:'Bandeau du maître' }); break;
+    case 'eq_cape': addF(tgt, 's'); addF(tgt, 'r'); break;
+    case 'eq_parchemin': tgt.memo2 = 1; break;
+  }
+  (tgt.eq = tgt.eq || []).push(id);
+}
+const EQ_COST = id => ['eq_lame', 'eq_armure', 'eq_gants'].includes(id) ? 2 : 3;
 function castSpell(G, p, hi, tg) { const it = p.hd[hi], S0 = it && SPELLS[it.sp]; const ok = withSrc(S0 ? 'Sort : ' + S0.n : BSRC, () => castSpell0(G, p, hi, tg)); if (ok && inMechAny(G, 'resonance')) withSrc('Résonance', () => { const c = p.bd.filter(m => inMech(G, 'resonance', m)); for (let k = 0; k < 2 && c.length; k++) buff(c.splice(Math.floor(Math.random() * c.length), 1)[0], 1, 1); }); return ok; }
 function castSpell0(G, p, hi, tg) {
   const id = p.hd[hi].sp, S = SPELLS[id]; if (!S) return false;
