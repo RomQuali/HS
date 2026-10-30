@@ -5944,7 +5944,7 @@ function gameH() {
     }
     const aimS = !fighting && V.aim != null && me.hd[V.aim] && me.hd[V.aim].sp ? SPELLS[me.hd[V.aim].sp] : null;
     const sockets = Array.from({ length:7 }, () => '<i></i>').join('');
-    const board = `<section class="board-zone${aimS ? ' aim' : ''}" ${fighting ? '' : 'data-drop="bd"'} aria-label="Ton plateau"><div class="sockets" aria-hidden="true">${sockets}</div>
+    const board = `<section class="board-zone${aimS ? ' aim' : ''}" ${fighting ? '' : 'data-drop="bd"'} aria-label="Ton plateau">
       ${aimS ? `<div class="aimbar"><span>${icon('bolt')}<b>${esc(aimS.n)}</b> : touche le serviteur à cibler.</span><button class="btn sm" data-act="aimcancel">Annuler</button></div>` : ''}
       ${!fighting && me.tma ? `<span class="tma-b">Prochain combat : +${me.tma.a}/+${me.tma.h} pour tous</span>` : ''}
       <div class="line" id="bdrow">${boardRow}</div></section>`;
