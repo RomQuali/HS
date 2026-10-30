@@ -351,7 +351,7 @@ const MECHS = {
   marche:{ n:'Marché noir', ic:'gear', d:'Vendre un serviteur de l\'univers rapporte 1 or de plus (deux fois par tour).' },
   ruee:{ n:'Ruée sauvage', ic:'leaf', d:'Au début du combat, si vous avez au moins 3 serviteurs de l\'univers, ils gagnent +2/+0 pour ce combat.' },
   pillage:{ n:'Pillage', ic:'drop', d:'Quand vous gagnez un combat avec un serviteur de l\'univers encore debout, vous recevez un sort aléatoire de votre niveau.' },
-  chakra:{ n:'Chakra et cycle des éléments', ic:'k_spark', d:'Chaque serviteur de l\'univers génère 1 chakra au début de votre tour (10 au plus). Les techniques s\'achètent en or et se lancent au chakra (1 de moins dans l\'élément de votre héros) ; après chaque combat, un coffre arrive (meilleur après une victoire et avec une taverne de haut niveau). Votre compagnon retient l\'élément de la dernière technique. Enchaîner deux éléments crée une fusion (Glace, Bois, Lave, Vapeur, Explosion) ; lancer l\'élément nourri (Vent → Feu → Foudre → Terre → Eau → Vent) rend 2 chakra ; dominer l\'élément d\'en face (Feu > Vent > Foudre > Terre > Eau > Feu) donne +4/+4 au combat.' },
+  chakra:{ n:'Chakra et cycle des éléments', ic:'k_spark', d:'Chaque serviteur de l\'univers génère 1 chakra au début de votre tour (10 au plus). Les techniques s\'achètent en or et se lancent au chakra (1 de moins dans l\'élément de votre héros) ; après chaque combat, un coffre du niveau de votre taverne s\'ajoute à votre réserve (majeur après une victoire, mineur sinon) et s\'ouvre au chakra. Votre compagnon retient l\'élément de la dernière technique. Enchaîner deux éléments crée une fusion (Glace, Bois, Lave, Vapeur, Explosion) ; lancer l\'élément nourri (Vent → Feu → Foudre → Terre → Eau → Vent) rend 2 chakra ; dominer l\'élément d\'en face (Feu > Vent > Foudre > Terre > Eau > Feu) donne +4/+4 au combat.' },
   resonance:{ n:'Résonance', ic:'twin', d:'Chaque sort que vous lancez donne +1/+1 à deux de vos serviteurs de l\'univers.' },
   eboulement:{ n:'Éboulement', ic:'up', d:'Quand un de vos serviteurs de l\'univers avec Provocation meurt, il inflige 3 dégâts à un ennemi aléatoire.' },
   fusion:{ n:'Fusion élémentaire', ic:'wind', d:'À la fin du tour, si vous avez au moins 4 éléments Squishy différents, vos serviteurs de l\'univers gagnent +1/+1.' },
@@ -821,8 +821,15 @@ function checkTriple(G, p) {
   }
 }
 const CK_MAX = 10;
-// qualité du coffre : résultat du combat d'avant + niveau de taverne
-const chestFor = p => { const t = p.t || 1; if (p.lastRes === 'win') return t >= 4 ? 'cf_or' : 'cf_argent'; return t >= 5 ? 'cf_argent' : 'cf_bois'; };
+// coffres : un par combat, rangés hors de la main ; mineur (égalité ou défaite) ou majeur (victoire), du niveau de la taverne
+const CHEST_COMMON = ['eq_lame', 'eq_armure', 'eq_gants'];
+const chestCost = (q, t) => q === 'maj' ? 3 + Math.floor(t / 2) : 2 + Math.floor(t / 3);
+function chestLoot(q, t) {
+  const all = Object.keys(SPELLS).filter(k => SPELLS[k].eq), rare = all.filter(k => !CHEST_COMMON.includes(k));
+  if (q === 'min') return [pickR(t <= 3 ? CHEST_COMMON : all)];
+  const out = [pickR(rare)]; if (t >= 4) out.push(pickR(rare)); if (t >= 6) { const sp = drawSpell(6); if (sp) out.push(sp.sp); }
+  return out;
+}
 // le cycle des cinq éléments (Vent ← Bois, Foudre ← case jaune, Terre ← Métal)
 const ELS = { feu:{ n:'Feu', col:'#ff7a2a' }, vent:{ n:'Vent', col:'#6fd8a0' }, eau:{ n:'Eau', col:'#4ab0e8' }, foudre:{ n:'Foudre', col:'#ffd23a' }, terre:{ n:'Terre', col:'#c8a878' } };
 const EL_GEN = { vent:'feu', feu:'foudre', foudre:'terre', terre:'eau', eau:'vent' };   // génération : A nourrit B
@@ -886,6 +893,13 @@ const OPS = {
     p.g -= h.cost; p.pu = true; trigBoard(G, p, 'pow'); return true;
   },
   rdy(G, p) { p.rdy = !p.rdy; return true; },
+  chest(G, p, a) {
+    const k = String(a.k || ''), m = /^(min|maj)([1-6])$/.exec(k); if (!m || !p.chests || !(p.chests[k] > 0)) return false;
+    const q = m[1], t = +m[2], c = chestCost(q, t); if ((p.ck || 0) < c || p.hd.length >= 10) return false;
+    p.ck -= c; p.chests[k]--; if (!p.chests[k]) delete p.chests[k];
+    withSrc('Coffre ' + (q === 'maj' ? 'majeur' : 'mineur') + ' niv. ' + t, () => chestLoot(q, t).forEach(sp => { if (p.hd.length < 10) p.hd.push({ sp, u:UID++ }); }));
+    return true;
+  },
   buysp(G, p) { const S = p.sp && SPELLS[p.sp.sp]; const c = S ? spCost(p, S) : 0; if (!S || p.g < c || p.hd.length >= 10) return false; p.g -= c; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(p.sp); p.sp = null; return true; },
   cast(G, p, a) { const it = p.hd[a.i]; if (!it || !it.sp || p.disc) return false; return castSpell(G, p, a.i, a.tg); },
   pick(G, p, a) { if (!p.disc || !p.disc[a.i]) return false; const m = p.disc.splice(a.i, 1)[0]; p.disc.forEach(x => toPool(G, x)); p.disc = null; if (p.hd.length < 10) p.hd.push(m); else toPool(G, m); checkTriple(G, p); return true; },
@@ -1001,7 +1015,7 @@ function startRecruit() {
     if (inMechAny(G, 'ames') && (p.souls || 0) >= 3) { const k = Math.floor(p.souls / 3); p.souls -= k * 3; withSrc('Moisson d\'âmes', () => p.bd.forEach(m => { if (inMech(G, 'ames', m)) buff(m, k, k); })); }
     if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; if (n) p.ck = Math.min(CK_MAX, (p.ck || 0) + n); }
     // un coffre après chaque combat : meilleur après une victoire, mineur après une égalité ou une défaite
-    if (inMechAny(G, 'chakra') && p.lastRes && p.hd.length < 10) p.hd.push({ sp:chestFor(p), u:UID++ });
+    if (inMechAny(G, 'chakra') && p.lastRes) { const k = (p.lastRes === 'win' ? 'maj' : 'min') + (p.t || 1); p.chests = p.chests || {}; p.chests[k] = (p.chests[k] || 0) + 1; }
     { const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'pck') p.ck = Math.min(CK_MAX, (p.ck || 0) + w.n); if (w && w.k === 'ptech' && G.rd % 2 === 0 && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); } }
     p.bd.forEach(m => { delete m.tmp; }); p.tma = null;
   }
@@ -1117,7 +1131,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, ck:p.ck || 0, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, ck:p.ck || 0, chests:p.chests || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;

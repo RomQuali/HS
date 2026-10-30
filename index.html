@@ -1802,6 +1802,37 @@ body.cs-entering #scene *{animation-play-state:running!important}
 .lawbig .elx-f i b{color:#120a06}
 .lawbig .elx-c small b[style]{font-size:inherit}
 .lawbig .lb-em{align-self:flex-start}
+/* réserve de coffres */
+.crack{display:flex;flex-wrap:wrap;gap:8px;max-width:300px}
+.crack.empty{align-items:center;gap:6px;padding:6px 10px;border-radius:12px;color:#8fa8c8;background:rgba(0,0,0,.3);font-size:12px}
+.crack.empty .ic{width:16px;height:16px;opacity:.6}
+.chest{position:relative;display:grid;justify-items:center;gap:1px;width:74px;padding:6px 4px 4px;border:0;border-radius:12px;cursor:pointer;color:#fff3c0;background:linear-gradient(180deg,#3a2a22,#22160f);box-shadow:inset 0 0 0 2px #a8744a;font-family:var(--f-label)}
+.chest.maj{box-shadow:inset 0 0 0 2px #f2c14e,0 0 12px rgba(242,193,78,.45)}
+.chest svg{width:40px;height:34px}
+.chest small{font-size:10.5px;color:#e8d8c0;white-space:nowrap}
+.chest .ch-n{position:absolute;left:4px;top:3px;font-size:13px;color:#fff;text-shadow:0 1px 0 #000}
+.chest .ch-c{position:absolute;right:-6px;top:-6px;width:24px;height:24px;display:grid;place-items:center;border-radius:50%;font-size:13px;color:#fff;background:radial-gradient(circle at 38% 32%,#bfe8ff,#2a6ad8 60%,#0c2a6a);box-shadow:0 0 0 2px #0c1a3a,0 0 0 3.5px #bfe8ff}
+.chest:not(:disabled):hover{transform:translateY(-2px)}
+.chest:not(:disabled){animation:chestglow 2s ease-in-out infinite}
+@keyframes chestglow{50%{box-shadow:inset 0 0 0 2px #6fd0ff,0 0 16px rgba(110,200,255,.7)}}
+.chest:disabled{opacity:.55;cursor:not-allowed;animation:none}
+@media (max-width:820px),(max-height:540px){ .crack{max-width:none} .chest{width:52px;padding:3px} .chest small{display:none} .chest svg{width:28px;height:24px} }
+.crack{display:grid;grid-template-columns:repeat(3,74px);gap:8px;max-width:none}
+/* animation d'ouverture des coffres */
+.chfx{position:fixed;left:50%;top:50%;z-index:80;width:0;height:0;pointer-events:none}
+.chfx > *{position:absolute;left:0;top:0}
+.chfx-box{width:120px;height:105px;margin:-52px 0 0 -60px;animation:chmove 1.6s cubic-bezier(.2,.9,.3,1) forwards;filter:drop-shadow(0 0 10px var(--c))}
+.chfx-lid{transform-origin:6px 30px;animation:chlid 1.6s ease-out forwards}
+.chfx-halo{width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:radial-gradient(circle,var(--c),transparent 70%);opacity:0;animation:chhalo 1.6s ease-out forwards}
+.chfx-rays{width:320px;height:320px;margin:-160px 0 0 -160px;border-radius:50%;opacity:0;background:repeating-conic-gradient(from 0deg,color-mix(in srgb,var(--c) 70%,transparent) 0 8deg,transparent 8deg 30deg);-webkit-mask:radial-gradient(circle,#000 25%,transparent 70%);mask:radial-gradient(circle,#000 25%,transparent 70%);animation:chrays 1.6s ease-out forwards}
+.chfx-sp{width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:var(--c);box-shadow:0 0 10px var(--c);opacity:0;animation:chsp 1.6s ease-out var(--d) forwards}
+@keyframes chmove{0%{transform:translate(var(--x),var(--y)) scale(.4)}25%{transform:translate(0,0) scale(1)}32%{transform:rotate(-6deg)}38%{transform:rotate(6deg)}44%{transform:rotate(-4deg)}50%{transform:rotate(0) scale(1.05)}85%{opacity:1;transform:scale(1.1)}100%{opacity:0;transform:scale(1.25)}}
+@keyframes chlid{0%,48%{transform:rotate(0)}62%,100%{transform:rotate(-38deg) translate(-4px,-10px)}}
+@keyframes chhalo{0%,46%{opacity:0;transform:scale(.5)}60%{opacity:1;transform:scale(6)}100%{opacity:0;transform:scale(9)}}
+@keyframes chrays{0%,50%{opacity:0;transform:scale(.3) rotate(0)}64%{opacity:.9}100%{opacity:0;transform:scale(1.2) rotate(60deg)}}
+@keyframes chsp{0%,50%{opacity:0;transform:rotate(var(--a)) translateY(0)}60%{opacity:1}100%{opacity:0;transform:rotate(var(--a)) translateY(-150px)}}
+.chfx.maj .chfx-sp{width:12px;height:12px}
+@media (prefers-reduced-motion:reduce){ .chfx *{animation-duration:.01s!important} }
 </style>
 </head><body>
 
@@ -2282,7 +2313,7 @@ const MECHS = {
   marche:{ n:'Marché noir', ic:'gear', d:'Vendre un serviteur de l\'univers rapporte 1 or de plus (deux fois par tour).' },
   ruee:{ n:'Ruée sauvage', ic:'leaf', d:'Au début du combat, si vous avez au moins 3 serviteurs de l\'univers, ils gagnent +2/+0 pour ce combat.' },
   pillage:{ n:'Pillage', ic:'drop', d:'Quand vous gagnez un combat avec un serviteur de l\'univers encore debout, vous recevez un sort aléatoire de votre niveau.' },
-  chakra:{ n:'Chakra et cycle des éléments', ic:'k_spark', d:'Chaque serviteur de l\'univers génère 1 chakra au début de votre tour (10 au plus). Les techniques s\'achètent en or et se lancent au chakra (1 de moins dans l\'élément de votre héros) ; après chaque combat, un coffre arrive (meilleur après une victoire et avec une taverne de haut niveau). Votre compagnon retient l\'élément de la dernière technique. Enchaîner deux éléments crée une fusion (Glace, Bois, Lave, Vapeur, Explosion) ; lancer l\'élément nourri (Vent → Feu → Foudre → Terre → Eau → Vent) rend 2 chakra ; dominer l\'élément d\'en face (Feu > Vent > Foudre > Terre > Eau > Feu) donne +4/+4 au combat.' },
+  chakra:{ n:'Chakra et cycle des éléments', ic:'k_spark', d:'Chaque serviteur de l\'univers génère 1 chakra au début de votre tour (10 au plus). Les techniques s\'achètent en or et se lancent au chakra (1 de moins dans l\'élément de votre héros) ; après chaque combat, un coffre du niveau de votre taverne s\'ajoute à votre réserve (majeur après une victoire, mineur sinon) et s\'ouvre au chakra. Votre compagnon retient l\'élément de la dernière technique. Enchaîner deux éléments crée une fusion (Glace, Bois, Lave, Vapeur, Explosion) ; lancer l\'élément nourri (Vent → Feu → Foudre → Terre → Eau → Vent) rend 2 chakra ; dominer l\'élément d\'en face (Feu > Vent > Foudre > Terre > Eau > Feu) donne +4/+4 au combat.' },
   resonance:{ n:'Résonance', ic:'twin', d:'Chaque sort que vous lancez donne +1/+1 à deux de vos serviteurs de l\'univers.' },
   eboulement:{ n:'Éboulement', ic:'up', d:'Quand un de vos serviteurs de l\'univers avec Provocation meurt, il inflige 3 dégâts à un ennemi aléatoire.' },
   fusion:{ n:'Fusion élémentaire', ic:'wind', d:'À la fin du tour, si vous avez au moins 4 éléments Squishy différents, vos serviteurs de l\'univers gagnent +1/+1.' },
@@ -2752,8 +2783,15 @@ function checkTriple(G, p) {
   }
 }
 const CK_MAX = 10;
-// qualité du coffre : résultat du combat d'avant + niveau de taverne
-const chestFor = p => { const t = p.t || 1; if (p.lastRes === 'win') return t >= 4 ? 'cf_or' : 'cf_argent'; return t >= 5 ? 'cf_argent' : 'cf_bois'; };
+// coffres : un par combat, rangés hors de la main ; mineur (égalité ou défaite) ou majeur (victoire), du niveau de la taverne
+const CHEST_COMMON = ['eq_lame', 'eq_armure', 'eq_gants'];
+const chestCost = (q, t) => q === 'maj' ? 3 + Math.floor(t / 2) : 2 + Math.floor(t / 3);
+function chestLoot(q, t) {
+  const all = Object.keys(SPELLS).filter(k => SPELLS[k].eq), rare = all.filter(k => !CHEST_COMMON.includes(k));
+  if (q === 'min') return [pickR(t <= 3 ? CHEST_COMMON : all)];
+  const out = [pickR(rare)]; if (t >= 4) out.push(pickR(rare)); if (t >= 6) { const sp = drawSpell(6); if (sp) out.push(sp.sp); }
+  return out;
+}
 // le cycle des cinq éléments (Vent ← Bois, Foudre ← case jaune, Terre ← Métal)
 const ELS = { feu:{ n:'Feu', col:'#ff7a2a' }, vent:{ n:'Vent', col:'#6fd8a0' }, eau:{ n:'Eau', col:'#4ab0e8' }, foudre:{ n:'Foudre', col:'#ffd23a' }, terre:{ n:'Terre', col:'#c8a878' } };
 const EL_GEN = { vent:'feu', feu:'foudre', foudre:'terre', terre:'eau', eau:'vent' };   // génération : A nourrit B
@@ -2817,6 +2855,13 @@ const OPS = {
     p.g -= h.cost; p.pu = true; trigBoard(G, p, 'pow'); return true;
   },
   rdy(G, p) { p.rdy = !p.rdy; return true; },
+  chest(G, p, a) {
+    const k = String(a.k || ''), m = /^(min|maj)([1-6])$/.exec(k); if (!m || !p.chests || !(p.chests[k] > 0)) return false;
+    const q = m[1], t = +m[2], c = chestCost(q, t); if ((p.ck || 0) < c || p.hd.length >= 10) return false;
+    p.ck -= c; p.chests[k]--; if (!p.chests[k]) delete p.chests[k];
+    withSrc('Coffre ' + (q === 'maj' ? 'majeur' : 'mineur') + ' niv. ' + t, () => chestLoot(q, t).forEach(sp => { if (p.hd.length < 10) p.hd.push({ sp, u:UID++ }); }));
+    return true;
+  },
   buysp(G, p) { const S = p.sp && SPELLS[p.sp.sp]; const c = S ? spCost(p, S) : 0; if (!S || p.g < c || p.hd.length >= 10) return false; p.g -= c; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(p.sp); p.sp = null; return true; },
   cast(G, p, a) { const it = p.hd[a.i]; if (!it || !it.sp || p.disc) return false; return castSpell(G, p, a.i, a.tg); },
   pick(G, p, a) { if (!p.disc || !p.disc[a.i]) return false; const m = p.disc.splice(a.i, 1)[0]; p.disc.forEach(x => toPool(G, x)); p.disc = null; if (p.hd.length < 10) p.hd.push(m); else toPool(G, m); checkTriple(G, p); return true; },
@@ -2932,7 +2977,7 @@ function startRecruit() {
     if (inMechAny(G, 'ames') && (p.souls || 0) >= 3) { const k = Math.floor(p.souls / 3); p.souls -= k * 3; withSrc('Moisson d\'âmes', () => p.bd.forEach(m => { if (inMech(G, 'ames', m)) buff(m, k, k); })); }
     if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; if (n) p.ck = Math.min(CK_MAX, (p.ck || 0) + n); }
     // un coffre après chaque combat : meilleur après une victoire, mineur après une égalité ou une défaite
-    if (inMechAny(G, 'chakra') && p.lastRes && p.hd.length < 10) p.hd.push({ sp:chestFor(p), u:UID++ });
+    if (inMechAny(G, 'chakra') && p.lastRes) { const k = (p.lastRes === 'win' ? 'maj' : 'min') + (p.t || 1); p.chests = p.chests || {}; p.chests[k] = (p.chests[k] || 0) + 1; }
     { const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'pck') p.ck = Math.min(CK_MAX, (p.ck || 0) + w.n); if (w && w.k === 'ptech' && G.rd % 2 === 0 && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); } }
     p.bd.forEach(m => { delete m.tmp; }); p.tma = null;
   }
@@ -3048,7 +3093,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, ck:p.ck || 0, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, ck:p.ck || 0, chests:p.chests || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;
@@ -6362,7 +6407,7 @@ function elCycleSvg(order, col, title) {
 function chakraLawH(big) {
   const fus = Object.entries(FUSIONS).map(([k, F]) => `<i style="--c:${F.col}">${k.split('+').map(e => ELS[e].n).join(' + ')} = <b>${F.n}</b></i>`).join('');
   return `<span class="ban-law ck-law${big ? ' big' : ''}"><b>Loi · Chakra et éléments</b>
-    <small><b>Chakra :</b> chaque serviteur de l'univers en donne 1 par tour. Il lance les techniques (achetées en or) et ouvre les coffres reçus après chaque combat : meilleurs après une victoire et quand ta taverne monte de niveau.</small>
+    <small><b>Chakra :</b> chaque serviteur de l'univers en donne 1 par tour. Il lance les techniques (achetées en or) et ouvre les coffres reçus après chaque combat, du niveau de ta taverne : majeur après une victoire, mineur sinon.</small>
     <small><b>Compagnon :</b> il retient la dernière technique lancée et son élément, puis la remet en main à chaque tour.</small>
     <span class="elx">
       <span class="elx-c">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b style="color:#ff8a6a">Domination</b> · ton compagnon l'emporte sur l'élément d'en face : +4/+4 au combat.</small></span>
@@ -6519,7 +6564,7 @@ function gameH() {
       : `<span class="powm passive" aria-label="${esc(hero ? hero.tx : '')}">${hero ? powArtH(me.hero) : icon('crown')}<small>Passif</small>${hero ? `<span class="pc-tx">${esc(hero.tx)}</span>` : ''}</span>`;
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
-      <div class="hz-left">${ckGauge(d, me)}<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span></div>
+      <div class="hz-left">${ckGauge(d, me)}${chestRackH(d, me, canAct)}<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span></div>
       <div class="hz-hero" data-hov="hero"><span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? 'art-h-' + me.hero : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span></div>
       <div class="hz-right"><span class="hov" data-hov="pow">${power}</span>${coins}</div>
       <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}">${icon('bell')}<span>${me.rdy ? 'Prêt !' : 'Prêt'}</span></button></div></section>`;
@@ -6533,6 +6578,28 @@ function gameH() {
     table = `<div class="table">${hud}<section class="plaque solo-msg"><h2>Spectateur</h2><p class="note">Tu observes cette partie.</p></section></div>`;
   }
   return `<div class="stage"><aside class="opps" aria-label="Joueurs"><ol>${opps}</ol></aside>${table}</div>${overlayH()}`;
+}
+// animation d'ouverture : le coffre vient au centre, tremble, s'ouvre dans un halo (bleu = mineur, doré = majeur)
+function fxChest(btn) {
+  const maj = btn.classList.contains('maj'), r = btn.getBoundingClientRect(), col = maj ? '#ffd24a' : '#6fd0ff';
+  const el = document.createElement('div'); el.className = 'chfx ' + (maj ? 'maj' : 'min');
+  el.style.setProperty('--x', (r.left + r.width / 2 - innerWidth / 2) + 'px'); el.style.setProperty('--y', (r.top + r.height / 2 - innerHeight / 2) + 'px'); el.style.setProperty('--c', col);
+  el.innerHTML = `<span class="chfx-halo"></span><span class="chfx-rays"></span><svg class="chfx-box" viewBox="0 0 80 70" aria-hidden="true">
+    <rect x="6" y="30" width="68" height="36" rx="4" fill="${maj ? '#e2b04e' : '#a8744a'}" stroke="#120a06" stroke-width="3"/><path d="M6 44 H74" stroke="#120a06" stroke-width="2" opacity=".4"/>
+    <g class="chfx-lid"><path d="M6 30 Q40 2 74 30 Z" fill="${maj ? '#c88a26' : '#8a5a32'}" stroke="#120a06" stroke-width="3"/></g>
+    <rect x="34" y="32" width="12" height="12" rx="2" fill="${col}" stroke="#120a06" stroke-width="2"/></svg>
+    ${Array.from({ length:12 }, (_, k) => `<i class="chfx-sp" style="--a:${k * 30}deg;--d:${(k % 3) * .06}s"></i>`).join('')}`;
+  document.body.appendChild(el); setTimeout(() => el.remove(), 1700);
+}
+// la réserve de coffres : un bouton par sorte (qualité + niveau), avec le nombre et le coût en chakra ; un clic l'ouvre
+function chestRackH(d, me, canAct) {
+  if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
+  const ks = Object.keys(me.chests || {}).filter(k => me.chests[k] > 0).sort((a, b) => a.slice(3) - b.slice(3) || (a < b ? 1 : -1));
+  if (!ks.length) return `<div class="crack empty" data-tip="Après chaque combat, un coffre du niveau de ta taverne arrive ici : majeur après une victoire, mineur sinon.">${icon('k_spark')}<small>Aucun coffre</small></div>`;
+  return `<div class="crack">${ks.map(k => { const q = k.slice(0, 3), t = +k.slice(3), c = chestCost(q, t), ok = canAct && (me.ck || 0) >= c && me.hd.length < 10;
+    return `<button class="chest ${q}" data-act="chest" data-k="${k}" ${ok ? '' : 'disabled'} data-tip="Coffre ${q === 'maj' ? 'majeur' : 'mineur'} de niveau ${t} : ${q === 'maj' ? (t >= 6 ? 'deux équipements rares et une technique' : t >= 4 ? 'deux équipements rares' : 'un équipement rare') : t <= 3 ? 'un équipement commun' : 'un équipement'}. S'ouvre avec ${c} chakra." aria-label="Ouvrir un coffre ${q === 'maj' ? 'majeur' : 'mineur'} de niveau ${t} pour ${c} chakra (${me.chests[k]} en réserve)">
+      <svg viewBox="0 0 40 34" aria-hidden="true"><rect x="3" y="13" width="34" height="18" rx="2" fill="${q === 'maj' ? '#e2b04e' : '#a8744a'}" stroke="#120a06" stroke-width="2"/><path d="M3 13 Q20 -1 37 13 Z" fill="${q === 'maj' ? '#c88a26' : '#8a5a32'}" stroke="#120a06" stroke-width="2"/><rect x="16" y="15" width="8" height="8" rx="1.5" fill="#6fd0ff" stroke="#120a06" stroke-width="1.4"/></svg>
+      <b class="ch-n">×${me.chests[k]}</b><small>${q === 'maj' ? 'Majeur' : 'Mineur'} · niv. ${t}</small><span class="ch-c">${c}</span></button>`; }).join('')}</div>`;
 }
 // la jauge de chakra (univers des Cinq Nations) : un grand orbe bleu et dix perles
 function ckGauge(d, me) {
@@ -6750,6 +6817,7 @@ function doAct(act, btn) {
     case 'skip': if (V.fight) { clearTimeout(V.fightT); if (V.fight.lunge) { try { V.fight.lunge.cancel(); } catch (e) {} V.fight.lunge = null; } V.fi = V.fight.r.frames.length - 1; V.fight.done = true; render(); fxEnd(); } break;
     case 'buy': if (s) { sendAct({ t:'buy', i:s.i }); V.sel = null; } break;
     case 'buysp': sendAct({ t:'buysp' }); V.sel = null; break;
+    case 'chest': fxChest(btn); sendAct({ t:'chest', k:btn.dataset.k }); break;
     case 'cast': if (s) { sendAct({ t:'cast', i:s.i }); V.sel = null; } break;
     case 'aim': if (s) { V.aim = s.i; V.sel = null; render(); } break;
     case 'aimcancel': V.aim = null; render(); break;

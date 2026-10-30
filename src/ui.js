@@ -289,7 +289,7 @@ function elCycleSvg(order, col, title) {
 function chakraLawH(big) {
   const fus = Object.entries(FUSIONS).map(([k, F]) => `<i style="--c:${F.col}">${k.split('+').map(e => ELS[e].n).join(' + ')} = <b>${F.n}</b></i>`).join('');
   return `<span class="ban-law ck-law${big ? ' big' : ''}"><b>Loi · Chakra et éléments</b>
-    <small><b>Chakra :</b> chaque serviteur de l'univers en donne 1 par tour. Il lance les techniques (achetées en or) et ouvre les coffres reçus après chaque combat : meilleurs après une victoire et quand ta taverne monte de niveau.</small>
+    <small><b>Chakra :</b> chaque serviteur de l'univers en donne 1 par tour. Il lance les techniques (achetées en or) et ouvre les coffres reçus après chaque combat, du niveau de ta taverne : majeur après une victoire, mineur sinon.</small>
     <small><b>Compagnon :</b> il retient la dernière technique lancée et son élément, puis la remet en main à chaque tour.</small>
     <span class="elx">
       <span class="elx-c">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b style="color:#ff8a6a">Domination</b> · ton compagnon l'emporte sur l'élément d'en face : +4/+4 au combat.</small></span>
@@ -446,7 +446,7 @@ function gameH() {
       : `<span class="powm passive" aria-label="${esc(hero ? hero.tx : '')}">${hero ? powArtH(me.hero) : icon('crown')}<small>Passif</small>${hero ? `<span class="pc-tx">${esc(hero.tx)}</span>` : ''}</span>`;
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
-      <div class="hz-left">${ckGauge(d, me)}<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span></div>
+      <div class="hz-left">${ckGauge(d, me)}${chestRackH(d, me, canAct)}<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span></div>
       <div class="hz-hero" data-hov="hero"><span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? 'art-h-' + me.hero : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span></div>
       <div class="hz-right"><span class="hov" data-hov="pow">${power}</span>${coins}</div>
       <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}">${icon('bell')}<span>${me.rdy ? 'Prêt !' : 'Prêt'}</span></button></div></section>`;
@@ -460,6 +460,28 @@ function gameH() {
     table = `<div class="table">${hud}<section class="plaque solo-msg"><h2>Spectateur</h2><p class="note">Tu observes cette partie.</p></section></div>`;
   }
   return `<div class="stage"><aside class="opps" aria-label="Joueurs"><ol>${opps}</ol></aside>${table}</div>${overlayH()}`;
+}
+// animation d'ouverture : le coffre vient au centre, tremble, s'ouvre dans un halo (bleu = mineur, doré = majeur)
+function fxChest(btn) {
+  const maj = btn.classList.contains('maj'), r = btn.getBoundingClientRect(), col = maj ? '#ffd24a' : '#6fd0ff';
+  const el = document.createElement('div'); el.className = 'chfx ' + (maj ? 'maj' : 'min');
+  el.style.setProperty('--x', (r.left + r.width / 2 - innerWidth / 2) + 'px'); el.style.setProperty('--y', (r.top + r.height / 2 - innerHeight / 2) + 'px'); el.style.setProperty('--c', col);
+  el.innerHTML = `<span class="chfx-halo"></span><span class="chfx-rays"></span><svg class="chfx-box" viewBox="0 0 80 70" aria-hidden="true">
+    <rect x="6" y="30" width="68" height="36" rx="4" fill="${maj ? '#e2b04e' : '#a8744a'}" stroke="#120a06" stroke-width="3"/><path d="M6 44 H74" stroke="#120a06" stroke-width="2" opacity=".4"/>
+    <g class="chfx-lid"><path d="M6 30 Q40 2 74 30 Z" fill="${maj ? '#c88a26' : '#8a5a32'}" stroke="#120a06" stroke-width="3"/></g>
+    <rect x="34" y="32" width="12" height="12" rx="2" fill="${col}" stroke="#120a06" stroke-width="2"/></svg>
+    ${Array.from({ length:12 }, (_, k) => `<i class="chfx-sp" style="--a:${k * 30}deg;--d:${(k % 3) * .06}s"></i>`).join('')}`;
+  document.body.appendChild(el); setTimeout(() => el.remove(), 1700);
+}
+// la réserve de coffres : un bouton par sorte (qualité + niveau), avec le nombre et le coût en chakra ; un clic l'ouvre
+function chestRackH(d, me, canAct) {
+  if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
+  const ks = Object.keys(me.chests || {}).filter(k => me.chests[k] > 0).sort((a, b) => a.slice(3) - b.slice(3) || (a < b ? 1 : -1));
+  if (!ks.length) return `<div class="crack empty" data-tip="Après chaque combat, un coffre du niveau de ta taverne arrive ici : majeur après une victoire, mineur sinon.">${icon('k_spark')}<small>Aucun coffre</small></div>`;
+  return `<div class="crack">${ks.map(k => { const q = k.slice(0, 3), t = +k.slice(3), c = chestCost(q, t), ok = canAct && (me.ck || 0) >= c && me.hd.length < 10;
+    return `<button class="chest ${q}" data-act="chest" data-k="${k}" ${ok ? '' : 'disabled'} data-tip="Coffre ${q === 'maj' ? 'majeur' : 'mineur'} de niveau ${t} : ${q === 'maj' ? (t >= 6 ? 'deux équipements rares et une technique' : t >= 4 ? 'deux équipements rares' : 'un équipement rare') : t <= 3 ? 'un équipement commun' : 'un équipement'}. S'ouvre avec ${c} chakra." aria-label="Ouvrir un coffre ${q === 'maj' ? 'majeur' : 'mineur'} de niveau ${t} pour ${c} chakra (${me.chests[k]} en réserve)">
+      <svg viewBox="0 0 40 34" aria-hidden="true"><rect x="3" y="13" width="34" height="18" rx="2" fill="${q === 'maj' ? '#e2b04e' : '#a8744a'}" stroke="#120a06" stroke-width="2"/><path d="M3 13 Q20 -1 37 13 Z" fill="${q === 'maj' ? '#c88a26' : '#8a5a32'}" stroke="#120a06" stroke-width="2"/><rect x="16" y="15" width="8" height="8" rx="1.5" fill="#6fd0ff" stroke="#120a06" stroke-width="1.4"/></svg>
+      <b class="ch-n">×${me.chests[k]}</b><small>${q === 'maj' ? 'Majeur' : 'Mineur'} · niv. ${t}</small><span class="ch-c">${c}</span></button>`; }).join('')}</div>`;
 }
 // la jauge de chakra (univers des Cinq Nations) : un grand orbe bleu et dix perles
 function ckGauge(d, me) {
@@ -677,6 +699,7 @@ function doAct(act, btn) {
     case 'skip': if (V.fight) { clearTimeout(V.fightT); if (V.fight.lunge) { try { V.fight.lunge.cancel(); } catch (e) {} V.fight.lunge = null; } V.fi = V.fight.r.frames.length - 1; V.fight.done = true; render(); fxEnd(); } break;
     case 'buy': if (s) { sendAct({ t:'buy', i:s.i }); V.sel = null; } break;
     case 'buysp': sendAct({ t:'buysp' }); V.sel = null; break;
+    case 'chest': fxChest(btn); sendAct({ t:'chest', k:btn.dataset.k }); break;
     case 'cast': if (s) { sendAct({ t:'cast', i:s.i }); V.sel = null; } break;
     case 'aim': if (s) { V.aim = s.i; V.sel = null; render(); } break;
     case 'aimcancel': V.aim = null; render(); break;
