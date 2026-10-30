@@ -1514,6 +1514,9 @@ html.lite #scene .cs-glow{mix-blend-mode:normal}
 body.cs-entering #app{opacity:0;transition:opacity .45s ease;pointer-events:none}
 body.cs-still #scene *,body.cs-still #scene *::after{animation-play-state:paused!important}
 body.cs-still #scene .cs-p{transition:none}
+#scene .cs-plain{position:absolute;inset:0;z-index:5;opacity:0;pointer-events:none;transition:opacity .5s ease;background:#3a2210}
+#scene .cs-plain svg{position:absolute;inset:0;width:100%;height:100%}
+body.sc-menu #scene.cs-inside .cs-plain{opacity:1}
 </style>
 </head><body>
 
@@ -4591,6 +4594,27 @@ function csFireworks() {
   });
 }
 
+/* ---------- fond sobre : intérieur de taverne cartoon (fixe) ---------- */
+function csTavernBg() {
+  const O = 'stroke="#120a06" stroke-width="5" stroke-linejoin="round"', r = csRnd(77);
+  let s = '';
+  for (let x = 0; x < 1600; x += 80) { const t = r(); s += `<rect x="${x}" y="0" width="80" height="640" fill="${t < .33 ? '#7a4a26' : t < .66 ? '#84522b' : '#6e4222'}" ${O}/><path d="M${x + 22} ${40 + r() * 60} q8 120 0 240 M${x + 54} ${320 + r() * 60} q-6 110 0 220" stroke="#4e2c14" stroke-width="3" fill="none" stroke-linecap="round"/><circle cx="${x + 40}" cy="${150 + r() * 380}" r="5" fill="#4e2c14"/>`; }
+  for (let y = 640; y < 770; y += 40) s += `<rect x="-10" y="${y}" width="1620" height="40" fill="${y % 80 ? '#5a3418' : '#643a1c'}" ${O}/>`;
+  s += `<path d="M0 770 H1600 V900 H0 Z" fill="#6a3e1e" ${O}/>` + Array.from({ length: 17 }, (_, k) => `<path d="M${800 + (k * 100 - 800) * .8} 770 L${800 + (k * 100 - 800) * 1.6} 900" stroke="#120a06" stroke-width="4"/>`).join('') + `<path d="M0 830 H1600" stroke="#120a06" stroke-width="4"/>`;
+  s += `<rect x="-10" y="70" width="1620" height="56" fill="#4a2a14" ${O}/><path d="M0 84 H1600" stroke="#7a4a26" stroke-width="4"/>`;
+  [110, 1490].forEach(x => s += `<rect x="${x - 26}" y="0" width="52" height="780" fill="#55301a" ${O}/><path d="M${x - 12} 140 V760" stroke="#7a4a26" stroke-width="4"/>`);
+  const mug = (x, y) => `<g transform="translate(${x} ${y})"><path d="M-16 0 V-38 H16 V0 Z" fill="#d89a3a" ${O}/><path d="M16 -30 q16 0 16 12 q0 12 -16 12" fill="none" ${O}/><path d="M-20 -38 q6 -12 14 -6 q6 -10 14 -2 q8 -6 12 6 Z" fill="#fff6e0" ${O}/><path d="M-8 -30 V-8" stroke="#fff3c0" stroke-width="4" stroke-linecap="round"/></g>`;
+  const bottle = (x, y, c) => `<g transform="translate(${x} ${y})"><path d="M-12 0 V-40 Q-12 -52 -5 -56 V-72 H5 V-56 Q12 -52 12 -40 V0 Z" fill="${c}" ${O}/><rect x="-6" y="-80" width="12" height="9" fill="#8a5a30" ${O}/><path d="M-5 -40 V-12" stroke="#fff" stroke-width="3" opacity=".5" stroke-linecap="round"/></g>`;
+  const shelf = (x0, x1, y) => `<rect x="${x0}" y="${y}" width="${x1 - x0}" height="18" fill="#4a2a14" ${O}/><path d="M${x0 + 20} ${y + 18} l18 30 M${x1 - 20} ${y + 18} l-18 30" ${O}/>`;
+  s += shelf(160, 470, 360) + mug(200, 360) + mug(260, 360) + bottle(330, 360, '#3a7a4a') + bottle(375, 360, '#8a2a2a') + mug(430, 360);
+  s += shelf(1130, 1440, 360) + bottle(1170, 360, '#3a5a9a') + mug(1225, 360) + bottle(1285, 360, '#9a6a1a') + mug(1340, 360) + bottle(1395, 360, '#5a2a6a');
+  const barrel = (x, y, w, h) => `<g transform="translate(${x} ${y})"><rect x="${-w / 2}" y="${-h}" width="${w}" height="${h}" rx="${w * .3}" fill="#8a5428" ${O}/><path d="M${-w / 2 + 4} ${-h * .25} Q0 ${-h * .2} ${w / 2 - 4} ${-h * .25} M${-w / 2 + 4} ${-h * .75} Q0 ${-h * .7} ${w / 2 - 4} ${-h * .75}" fill="none" stroke="#2a2a30" stroke-width="9"/><path d="M${-w / 4} ${-h + 8} V-8" stroke="#a8703a" stroke-width="5" stroke-linecap="round"/></g>`;
+  s += barrel(230, 790, 120, 150) + barrel(1370, 790, 120, 150) + barrel(1470, 800, 100, 130);
+  const lantern = x => `<g transform="translate(${x} 126)"><path d="M0 0 V70" stroke="#120a06" stroke-width="5"/><circle cx="0" cy="104" r="90" fill="#ffc870" opacity=".14"/><path d="M-18 70 H18 L14 124 H-14 Z" fill="#ffd27a" ${O}/><path d="M-22 66 H22 M-18 128 H18" stroke="#120a06" stroke-width="8" stroke-linecap="round"/><path d="M0 80 V114" stroke="#fff6d0" stroke-width="5" stroke-linecap="round"/></g>`;
+  s += lantern(560) + lantern(1040);
+  return `<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><radialGradient id="tbg" cx="50%" cy="40%" r="75%"><stop offset="0" stop-color="#ffb060" stop-opacity=".22"/><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".55"/></radialGradient></defs>${s}<rect width="1600" height="900" fill="url(#tbg)"/></svg>`;
+}
+
 /* ---------- assemblage ---------- */
 function csLayers() {
   return [csSky(), csMountains(), csRocks(), csField(),
@@ -4706,10 +4730,13 @@ function castleScene(el) {
   const wait = ms => new Promise(r => setTimeout(r, ms));
   const inMenu = () => document.body.classList.contains('sc-menu') && !document.hidden;
   // la porte reste fermée ; « Jouer » l'ouvre, on la franchit et la lumière éblouit
-  let state = 'closed', ready = false;
+  let state = 'closed', ready = false, doorReady = false, pending = null;
   const flash = document.createElement('div'); flash.className = 'cs-flash'; document.body.appendChild(flash);
-  window.csEnter = cb => {
-    if (!ready || reduce || window.CS_NOANIM || state !== 'closed') return false;
+  // fond sobre du choix des univers, une fois la porte franchie
+  const plain = document.createElement('div'); plain.className = 'cs-plain';
+  plain.innerHTML = csTavernBg();
+  el.appendChild(plain);
+  const startEnter = cb => {
     state = 'entering'; document.body.classList.add('cs-entering');
     (async () => {
       await tween(0, .12, 520, 1);                 // ça grince…
@@ -4718,16 +4745,24 @@ function castleScene(el) {
       setTimeout(() => flash.classList.add('on'), 1250);
       await tween(.09, 1.02, 1500, 1);             // …les battants s'ouvrent en grand
       await wait(380);
+      el.classList.add('cs-inside');
       document.body.classList.remove('cs-entering'); state = 'in';
       try { cb(); } catch (e) {}
-      setTimeout(() => flash.classList.remove('on'), 120);
+      setTimeout(() => flash.classList.remove('on'), 160);
     })();
-    return true;
   };
+  window.csEnter = cb => {
+    if (reduce || window.CS_NOANIM) return false;
+    if (state === 'in') return false;
+    if (state === 'entering' || pending) return true;   // clic répété : on laisse l'animation finir
+    if (state === 'leaving' || !doorReady) { pending = cb; document.body.classList.add('cs-entering'); return true; }
+    startEnter(cb); return true;
+  };
+  const flush = () => { if (pending && state === 'closed' && doorReady) { const cb = pending; pending = null; startEnter(cb); } };
   window.csLeave = () => {
     if (state !== 'in') return;
-    state = 'leaving'; stage.classList.remove('cs-in'); zoom = 1; fit();
-    (async () => { await wait(500); await tween(phi, 0, 1700, -1); lean = 0; put(); stage.classList.remove('cs-thud'); void stage.offsetWidth; stage.classList.add('cs-thud'); state = 'closed'; })();
+    state = 'leaving'; el.classList.remove('cs-inside'); stage.classList.remove('cs-in'); zoom = 1; fit();
+    (async () => { await wait(500); await tween(phi, 0, 1700, -1); lean = 0; put(); stage.classList.remove('cs-thud'); void stage.offsetWidth; stage.classList.add('cs-thud'); state = 'closed'; flush(); })();
   };
   (async () => {
     const shared = csSharedDefs();
@@ -4736,9 +4771,10 @@ function castleScene(el) {
       const Rl = L.big ? Math.min(R, 1.25) : Math.min(2, R * 1.25);
       mk(L, L.img ? L.img : await csRaster(L, Rl, L.shared ? shared : ''));
       if (L.bridge || L.leaf || id === 'ogre' || id === 'undead') put();
+      if (id === 'undead') { doorReady = true; flush(); }
       await new Promise(r => setTimeout(r, 0));
     }
-    el.classList.add('cs-ready'); ready = true;
+    el.classList.add('cs-ready'); ready = true; doorReady = true; flush();
   })();
   put();
   if (!lite) {
