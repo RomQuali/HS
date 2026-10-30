@@ -295,30 +295,29 @@ function elCycleSvg(order, col, title) {
 }
 // explication de la loi du chakra (étendard de l'univers, choix du héros)
 function chakraLawH(big) {
-  const fus = Object.entries(FUSIONS).map(([k, F]) => `<i style="--c:${F.col}">${k.split('+').map(e => ELS[e].n).join(' + ')} = <b>${F.n}</b></i>`).join('');
-  return `<span class="ban-law ck-law${big ? ' big' : ''}"><b>Loi · Chakra et éléments</b>
-    <small><b>Chakra :</b> chaque serviteur de l'univers en donne 1 par tour. Il lance les techniques (achetées en or). Le pouvoir du héros, lui, se paie en or.</small>
-    <small><b>Compagnon :</b> il prend l'élément de ta dernière technique (utile pour la domination) et gagne le pouvoir hybride de chaque combo.</small>
-    <small><b>Entraînement :</b> ton compagnon commence en jeu, déjà triplé, à côté de ton héros (il ne prend pas de place sur le plateau). En combat, il affronte uniquement le compagnon adverse et ne blesse jamais le héros : ce duel décide du coffre du niveau de ta taverne (majeur s'il gagne, mineur sinon). Il porte 5 pièces (lame, armure, bandeau, gantelets, talisman) : chaque coffre t'oblige à choisir 1 récompense sur 3, de rareté Normal, Héroïque, Épique ou Légendaire ; elle se range dans l'entraînement et se pose sur ton compagnon avec du chakra (1 à 4 selon la rareté). Un coffre majeur et une taverne haute donnent de meilleures raretés ; une amélioration Épique ou Légendaire ajoute aussi une technique à ta main.</small>
-    <span class="elx">
-      <span class="elx-c">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b style="color:#ff8a6a">Domination</b> · ton compagnon l'emporte sur l'élément d'en face : +4/+4 au combat.</small></span>
-      <span class="elx-c">${elCycleSvg(['vent', 'feu', 'foudre', 'terre', 'eau'], '#6fd0ff', 'Génération')}<small><b style="color:#8fdcff">Génération</b> · lance l'élément que nourrit celui de ton compagnon : +2 chakra et +2/+2.</small></span>
-    </span>
-    <small><b>Réservoir :</b> ta 1re technique remplit une moitié de son élément, la 2e remplit l'autre : le mélange déclenche un combo (effet immédiat sur ton plateau + pouvoir hybride au compagnon) puis le réservoir se vide. Deux fois le même élément : combo pur, plus fort. Il garde sa moitié d'un tour à l'autre.</small>
-    <span class="elx-f">${fus}</span>
-    <small><b>Affinité :</b> les techniques de l'élément de ton héros coûtent 1 chakra de moins.</small>
-    <small><b>Éveil</b> (4 joueurs ou moins) : ton compagnon prend sa forme éveillée (stats doublées et pouvoir de duel ultime), le pouvoir de ton héros est renforcé, chaque technique gagne son effet d'Éveil et des techniques interdites apparaissent. Les clans libèrent leur pouvoir : <b style="color:#ff9a6a">Feu</b> Phénix (braises → stats et Renaissance) · <b style="color:#8fe0b0">Vent</b> Ouragan (dégâts à chaque attaque) · <b style="color:#8fd0ff">Eau</b> Raz-de-marée (la marée renforce l'équipe) · <b style="color:#ffe27a">Foudre</b> Orage total (la charge frappe) · <b style="color:#d8c0a0">Terre</b> Avalanche (sa vie devient des dégâts).</small>
-    <small><b>Pureté :</b> 5 serviteurs d'un même clan donnent +1 chakra par tour et doublent les effets de clan.</small></span>`;
+  const combo = (a, b, F) => `<i style="--c:${F.col}"><em style="background:${ELS[a].col}"></em><em style="background:${ELS[b].col}"></em><b>${esc(F.n)}</b></i>`;
+  const pairs = Object.entries(FUSIONS).map(([k, F]) => { const [a, b] = k.split('+'); return combo(a, b, F); }).join('') + Object.entries(PURES).map(([e, F]) => combo(e, e, F)).join('');
+  const sec = (ic, t, body) => `<div class="njl-s"><b class="njl-h"><span>${ic}</span>${t}</b>${body}</div>`;
+  const ctr = (n, col, tx) => `<span class="njl-ctr" style="--c:${col}"><b>${n}</b> ${tx}</span>`;
+  return `<span class="ban-law ck-law njl${big ? ' big' : ''}">
+    ${sec('🪙', 'Ressources', `<small><b>Or</b> : serviteurs, techniques et pouvoir du héros.</small><small><b>Chakra</b> : chaque ninja en jeu en donne 1 par tour (10 au plus). Il lance les techniques et pose les récompenses.</small>`)}
+    ${sec('📜', 'Techniques et réservoir', `<small>Les techniques ont une <b>nature</b> (Feu, Vent, Eau, Foudre, Terre) et suivent le jeu de leur clan ; celles de l'élément de ton héros coûtent 1 chakra de moins.</small><small>Chaque technique remplit une moitié du <b>réservoir</b> ; la 2e déclenche un <b>combo</b> (effet sur ton plateau + pouvoir hybride au compagnon). Deux fois le même élément : combo pur.</small><span class="njl-combos">${pairs}</span>`)}
+    ${sec('⚔️', 'Compagnon et duel', `<span class="njl-row">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<span><small>Ton compagnon est déjà en jeu, <b>triplé</b> et hors plateau. En combat, il affronte <b>seulement le compagnon adverse</b> et ne blesse jamais le héros.</small><small>Il prend l'élément de ta dernière technique : s'il domine celui d'en face, <b>+4/+4</b>.</small><small>Il gagne de l'expérience (technique +1, duel gagné +2) et monte de niveau.</small></span></span>`)}
+    ${sec('🎁', 'Coffres et entraînement', `<small>Le <b>duel</b> décide du coffre : majeur s'il gagne, mineur sinon. Tu choisis <b>1 récompense sur 3</b> pour une des 5 pièces du compagnon (lame, armure, bandeau, gantelets, talisman).</small><span class="njl-rar">${RARS.map((R, i) => `<i style="--c:${R.col}">${R.n} · ${i + 1} chakra</i>`).join('')}</span><small>Elle se range dans l'entraînement et se pose avec du chakra.</small>`)}
+    ${sec('🔥', 'Marqueurs de clan', `<span class="njl-ctrs">${ctr('Braises', '#ff8a4a', 'Feu : la Grande boule de feu les consume, le Phénix s\'en nourrit.')}${ctr('Marée', '#6fc8ff', 'Eau : renforce le Clan de l\'Eau, déferle au Raz-de-marée.')}${ctr('Charge', '#ffd23a', 'Foudre : frappe au début du combat avec l\'Orage total.')}</span><small><b>Pureté</b> : 5 serviteurs d'un même clan donnent +1 chakra par tour et doublent les marqueurs gagnés.</small>`)}
+    ${sec('🌅', 'Éveil (4 joueurs ou moins)', `<small>Les <b>clans</b> libèrent leur pouvoir (Phénix, Ouragan, Raz-de-marée, Orage total, Avalanche), ton <b>compagnon</b> prend sa forme ultime, le pouvoir de ton <b>héros</b> est renforcé, chaque <b>technique</b> gagne son effet d'Éveil et des techniques interdites apparaissent. Tes cartes prennent l'aura de ton marqueur dominant.</small>`)}
+  </span>`;
 }
 // fiche de l'univers Ninja : quatre règles courtes et le cycle des éléments (le détail complet est sur l'écran du héros)
 function ninjaCardH() {
   const row = (ic, col, t, x) => `<span class="nj-r"><i class="nj-i" style="--c:${col}">${ic}</i><span><b>${t}</b><small>${x}</small></span></span>`;
-  return `<span class="ban-law nj-law"><b>Loi · Chakra</b>
-    ${row('<svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="#6fc8ff" stroke="#120a06" stroke-width="2"/><circle cx="8" cy="8" r="2.2" fill="#dff4ff"/></svg>', '#2a5a86', 'Techniques', 'Achetées en or, lancées avec le chakra (1 par ninja en jeu et par tour). Chacune suit le jeu de son clan.')}
-    ${row('<svg viewBox="0 0 20 20"><path d="M3 15 L5 6 L8 10 L10 4 L12 10 L15 6 L17 15 Z" fill="#f2c14e" stroke="#120a06" stroke-width="1.6" stroke-linejoin="round"/></svg>', '#7a5a1a', 'Compagnon', 'Déjà triplé, hors plateau. Il prend l\'élément de ta dernière technique et ne combat que le compagnon adverse.')}
-    ${row('<svg viewBox="0 0 20 20"><rect x="3" y="8" width="14" height="9" rx="1.5" fill="#e2b04e" stroke="#120a06" stroke-width="1.6"/><path d="M3 8 Q10 1 17 8 Z" fill="#c88a26" stroke="#120a06" stroke-width="1.6"/><rect x="8.6" y="9.5" width="2.8" height="3.4" fill="#120a06"/></svg>', '#6a3a12', 'Duel = coffre', 'Compagnon vainqueur : coffre majeur, sinon mineur. Choisis 1 récompense sur 3 (Normal à Légendaire), puis pose-la avec du chakra.')}
-    ${row('<svg viewBox="0 0 20 20"><path d="M10 2 C14 7 15 10 15 12 A5 5 0 0 1 5 12 C5 9 7 8 8 5 C9 8 10 8 10 2 Z" fill="#ff7a3a" stroke="#120a06" stroke-width="1.6"/></svg>', '#7a2a12', 'Éveil', 'À 4 joueurs ou moins : clans, compagnon et héros s\'éveillent, et chaque technique gagne un effet en plus.')}
-    <span class="nj-el">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b>Réservoir et combos</b>Deux techniques remplissent le réservoir : leur mélange déclenche l'un des 15 combos. Chaque élément domine aussi le suivant : +4/+4 au compagnon.</small></span>
+  const svg = (inner) => `<svg viewBox="-10 -10 20 20">${inner}</svg>`;
+  return `<span class="ban-law nj-law"><b>Loi · Chakra et réservoir</b>
+    ${row(svg(EL_ICON.feu), '#5a1e0c', 'Techniques ninja', 'Achetées en or, lancées au chakra (1 par ninja en jeu et par tour). Chacune a une nature et suit le jeu de son clan.')}
+    ${row(svg('<rect x="-7" y="-6" width="14" height="12" rx="1.5" fill="#f1e2bd" stroke="#120a06" stroke-width="1.4"/><rect x="-7" y="-6" width="7" height="12" fill="#4ab0e8" opacity=".8"/><rect x="-9.5" y="-7.5" width="3" height="15" rx="1.5" fill="#a8744a" stroke="#120a06" stroke-width="1.2"/><rect x="6.5" y="-7.5" width="3" height="15" rx="1.5" fill="#a8744a" stroke="#120a06" stroke-width="1.2"/>'), '#2a3a5a', 'Réservoir et combos', 'Deux techniques remplissent le réservoir : leur mélange déclenche l\'un des 15 combos, sur ton plateau et ton compagnon.')}
+    ${row(svg('<path d="M-6 6 L6 -6 M-6 -6 L6 6" stroke="#e8e2da" stroke-width="2.6" stroke-linecap="round"/><circle r="2.4" fill="#f2c14e" stroke="#120a06"/>'), '#5a3a12', 'Duel des compagnons', 'Ton compagnon, déjà triplé et hors plateau, affronte seulement celui d\'en face. S\'il gagne : coffre majeur.')}
+    ${row(svg('<rect x="-7" y="-2" width="14" height="8" rx="1.5" fill="#e2b04e" stroke="#120a06" stroke-width="1.3"/><path d="M-7 -2 Q0 -9 7 -2 Z" fill="#c88a26" stroke="#120a06" stroke-width="1.3"/>'), '#4a2a5a', 'Récompenses', 'Choisis 1 amélioration sur 3, de Normal à Légendaire, et pose-la sur ton compagnon avec du chakra.')}
+    ${row(svg('<path d="M0 -8 L2 -2 L8 -2 L3 2 L5 8 L0 4 L-5 8 L-3 2 L-8 -2 L-2 -2 Z" fill="#ffb050" stroke="#120a06" stroke-width="1.2"/>'), '#6a2a0c', 'Éveil', 'À 4 joueurs ou moins : clans, compagnon, héros et techniques s\'éveillent.')}
   </span>`;
 }
 function univPickH(sel, edit, actions) {
@@ -332,7 +331,7 @@ function univPickH(sel, edit, actions) {
     return `<button type="button" class="ban${a ? ' on' : ''}" style="--uc:${esc(L.col)}" ${edit ? `data-act="univ" data-u="${k}"` : 'disabled'} aria-pressed="${a}">
       ${a ? '<span class="ban-rib">Levé</span>' : ''}
       <span class="ban-hd"><span class="ban-em">${icon(L.ic)}</span><span class="ban-t"><b>${esc(u.n)}</b>${L.lore ? `<i>${esc(L.lore)}</i>` : ''}</span></span>
-      ${u.mech === 'chakra' ? ninjaCardH() : M ? `<span class="ban-law"><b>Loi · ${esc(M.n)}</b><small>${esc(M.d)}</small></span>` : ''}
+      ${u.mech === 'chakra' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${ninjaCardH()}</span></span>` : M ? `<span class="ban-law"><b>Loi · ${esc(M.n)}</b><small>${esc(M.d)}</small></span>` : ''}
       <span class="ban-fam">${fams.map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span>
       <span class="ban-her">${heroes.slice(0, 6).map(h => `<span class="ban-h" title="${esc(HEROES[h].n)}">${faceH('art-h-' + h)}</span>`).join('')}<small>${heroes.length} héros</small></span>
     </button>`;
@@ -914,6 +913,7 @@ function doAct(act, btn) {
     case 'buy': if (s) { sendAct({ t:'buy', i:s.i }); V.sel = null; } break;
     case 'buysp': sendAct({ t:'buysp' }); V.sel = null; break;
     case 'uapply': { const o = V.me && (V.me.ups || [])[+btn.dataset.i]; if (o && (V.me.ck || 0) < upgCost(o)) { toast(`Il te faut ${upgCost(o)} chakra pour poser cette amélioration.`); break; } sendAct({ t:'uapply', i:+btn.dataset.i }); hidePeek(); break; }
+    case 'lawtog': { const n = btn.dataset.u; V.lawOpen = V.lawOpen || {}; V.lawOpen[n] = !V.lawOpen[n]; render(); break; }
     case 'upick': sendAct({ t:'upick', i:+btn.dataset.i }); hidePeek(); break;
     case 'chest': V.chestRev = { eq:(V.me && V.me.eqs || []).slice(), hd:(V.me && V.me.hd || []).map(x => x.u), at:Date.now() }; fxChest(btn); { const o = btn.closest('.bigchest'); if (o) o.remove(); } sendAct({ t:'chest' }); break;
     case 'equip': if (btn.getAttribute('aria-disabled') === 'true') { toast(btn.dataset.why || ''); break; } sendAct({ t:'equip', i:+btn.dataset.i }); hidePeek(); break;
@@ -1917,4 +1917,41 @@ svg.ck-gem.aff{box-shadow:none;filter:drop-shadow(0 0 5px rgba(155,227,106,.95))
 .table.awk-eau .board-zone .mn::before{content:'';position:absolute;left:-6%;right:-6%;top:-6%;bottom:14%;z-index:3;pointer-events:none;border-radius:50%;box-shadow:0 0 0 3px rgba(120,210,255,.6),0 0 14px 4px rgba(80,180,255,.55);animation:awkRipple 1.8s ease-out infinite}
 @keyframes awkRipple{0%{transform:scale(.92);opacity:.95}100%{transform:scale(1.18);opacity:0}}
 @media (prefers-reduced-motion:reduce){.table[class*="awk-"] .board-zone .mn::before{animation:none}}
+`; document.head.appendChild(st); })();
+
+/* description de l'univers Ninja (choix du héros) */
+(function(){ const st = document.createElement('style'); st.textContent = `
+.njl.big{display:grid;grid-template-columns:1fr 1fr;gap:10px 16px;text-align:left}
+.njl-s{display:grid;gap:4px;align-content:start;padding:8px 10px;border-radius:10px;background:rgba(10,5,2,.32);box-shadow:inset 0 0 0 1px rgba(242,193,78,.18)}
+.njl-h{display:flex;align-items:center;gap:6px;font:700 14px var(--f-label),serif;color:#ffd86a;letter-spacing:.02em}
+.njl-h span{font-size:15px}
+.njl small{display:block;font-size:12px;line-height:1.35;color:#f1e4c6}.njl small b{color:#ffd86a}
+.njl-combos{display:flex;flex-wrap:wrap;gap:3px 4px;margin-top:2px}
+.njl-combos i{display:inline-flex;align-items:center;gap:2px;padding:1px 6px 1px 3px;border-radius:99px;font-style:normal;font-size:10.5px;background:rgba(0,0,0,.35);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 60%,transparent)}
+.njl-combos em{width:9px;height:9px;border-radius:50%;box-shadow:0 0 0 1px #120a06}.njl-combos em+em{margin-left:-3px}
+.njl-combos b{margin-left:3px;color:var(--c);font-weight:700}
+.njl-row{display:grid;grid-template-columns:78px 1fr;gap:8px;align-items:center}.njl-row .elc{width:78px;height:78px}
+.njl-rar{display:flex;flex-wrap:wrap;gap:4px}.njl-rar i{padding:1px 7px;border-radius:99px;font-style:normal;font-size:10.5px;font-weight:700;color:#120a06;background:var(--c)}
+.njl-ctrs{display:grid;gap:3px}.njl-ctr{font-size:11.5px;line-height:1.3;color:#f1e4c6}.njl-ctr b{color:var(--c)}
+@media (max-width:820px){ .njl.big{grid-template-columns:1fr} }
+`; document.head.appendChild(st); })();
+(function(){ const st = document.createElement('style'); st.textContent = `
+:root body .lb-t .njl b{font-family:inherit;font-size:inherit;line-height:inherit;text-shadow:none;color:#ffd86a}
+:root body .lb-t .njl b.njl-h{display:flex;font:700 14px/1.2 var(--f-label),serif;color:#ffd86a}
+:root body .lb-t .njl-combos b{color:var(--c);font-size:10.5px}
+:root body .lb-t .njl-ctr b{color:var(--c)}
+@media (min-width:1100px){ .njl.big{grid-template-columns:1fr 1fr 1fr} }
+.njl.big .njl-s{padding:6px 9px}
+.njl.big small{font-size:11.5px;line-height:1.3}
+`; document.head.appendChild(st); })();
+
+/* tiroir des règles dans le choix de l'univers */
+(function(){ const st = document.createElement('style'); st.textContent = `
+.lawdr{display:grid;gap:6px}
+.lawdr-b{justify-self:start;padding:4px 12px;border-radius:99px;font:700 12px var(--f-label),serif;color:#ffd86a;background:rgba(10,5,2,.45);box-shadow:inset 0 0 0 1.5px rgba(242,193,78,.5);cursor:pointer}
+.lawdr-b:hover,.lawdr-b:focus-visible{background:rgba(242,193,78,.18)}
+.lawdr-c{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s ease}
+.lawdr-c > *{overflow:hidden;min-height:0}
+.lawdr.open .lawdr-c{grid-template-rows:1fr}
+.lawdr:not(.open) .lawdr-c .ban-law{padding-top:0;padding-bottom:0}
 `; document.head.appendChild(st); })();
