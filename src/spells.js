@@ -6,7 +6,7 @@
    ===================================================================== */
 const SP_TYPES = {
   renf:{ n:'Renfort', col:'#c8963e' }, eco:{ n:'Économie', col:'#4f8a3a' }, arc:{ n:'Arcane', col:'#3f6fb0' },
-  ombre:{ n:'Ombre', col:'#5a3d7a' }, comb:{ n:'Combat', col:'#a8322a' }, nat:{ n:'Nature', col:'#3f8a6a' },
+  ombre:{ n:'Ombre', col:'#5a3d7a' }, comb:{ n:'Combat', col:'#a8322a' }, nat:{ n:'Nature', col:'#3f8a6a' }, nin:{ n:'Technique', col:'#2a5a9a' },
 };
 const SPELLS = {
   sp_pinte:{ n:'Pinte offerte', t:1, c:1, ty:'renf', tg:1, tx:'Donne +2/+1 à un de tes serviteurs.' },
@@ -27,14 +27,28 @@ const SPELLS = {
   sp_tempete:{ n:'Tempête de mana', t:5, c:3, ty:'comb', tx:'Prochain combat seulement : tous tes serviteurs gagnent +3/+3.' },
   sp_reflet:{ n:'Double reflet', t:6, c:4, ty:'arc', tg:1, tx:'Ajoute à ta main une copie exacte d\'un de tes serviteurs, bonus compris.' },
   sp_ascension:{ n:'Ascension', t:6, c:6, ty:'renf', tx:'Donne +2/+2 et Bouclier divin à tous tes serviteurs.' },
+  // ----- techniques ninja (univers des Cinq Nations) : achetées en or, lancées avec du chakra -----
+  nj_permut:{ n:'Permutation', t:1, c:1, ck:1, nin:1, ty:'nin', tg:1, tx:'Prochain combat seulement : un de tes serviteurs gagne Bouclier divin.' },
+  nj_souffle:{ n:'Souffle ardent', t:1, c:1, ck:2, nin:1, ty:'nin', tx:'Prochain combat : 3 dégâts frappent l\'ennemi au début du combat.' },
+  nj_pierre:{ n:'Armure de pierre', t:2, c:2, ck:2, nin:1, ty:'nin', tg:1, tx:'Donne +0/+4 et Provocation à un de tes serviteurs.' },
+  nj_brume:{ n:'Rideau de brume', t:2, c:2, ck:2, nin:1, ty:'nin', tx:'Prochain combat seulement : tous tes serviteurs gagnent +0/+3.' },
+  nj_doubles:{ n:'Technique des doubles', t:3, c:2, ck:3, nin:1, ty:'nin', tg:1, tx:'Invoque une copie 1/1 du serviteur ciblé, sans ses bonus.' },
+  nj_foudre:{ n:'Lame de foudre', t:3, c:3, ck:3, nin:1, ty:'nin', tg:1, tx:'Prochain combat seulement : un de tes serviteurs gagne +3 attaque et Toxique.' },
+  nj_rafale:{ n:'Rafale tranchante', t:3, c:3, ck:3, nin:1, ty:'nin', tx:'Donne +2/+1 à trois de tes serviteurs aléatoires.' },
+  nj_invoc:{ n:'Invocation', t:4, c:3, ck:4, nin:1, ty:'nin', tx:'Invoque sur ton plateau un serviteur aléatoire de ton niveau de taverne.' },
+  nj_sceau:{ n:'Sceau de puissance', t:5, c:4, ck:5, nin:1, ty:'nin', tg:1, tx:'Donne +4/+4 et Renaissance à un de tes serviteurs.' },
+  nj_deluge:{ n:'Déluge élémentaire', t:6, c:5, ck:7, nin:1, ty:'nin', tx:'Prochain combat : tous tes serviteurs gagnent +4/+4 et 4 dégâts frappent l\'ennemi au début du combat.' },
 };
 const SPELL_IDS = Object.keys(SPELLS);
-function drawSpell(t) { const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
+function drawSpell(t) { const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra'); const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !!SPELLS[id].nin === !!nin); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
 
 // pourquoi un sort ne peut pas être lancé (null = il peut)
 function spellBlock(p, id, tgt) {
   const S = SPELLS[id];
+  if (S.ck && (p.ck || 0) < S.ck) return `Il te faut ${S.ck} chakra pour lancer cette technique (tu en as ${p.ck || 0}).`;
   if (S.tg && !tgt) return 'Choisis un de tes serviteurs.';
+  if ((id === 'nj_doubles' || id === 'nj_invoc') && p.bd.length >= 7) return 'Ton plateau est plein.';
+  if (id === 'nj_rafale' && !p.bd.length) return 'Tu n\'as aucun serviteur.';
   if (id === 'sp_chopes' && tgt.a < 1) return 'Ce serviteur n\'a pas d\'attaque à échanger.';
   if (id === 'sp_rabot' && p.t >= 6) return 'Ta taverne est déjà au niveau maximum.';
   if (id === 'sp_meta' && tierOf(tgt) >= 6) return 'Ce serviteur est déjà au niveau maximum.';
@@ -50,6 +64,8 @@ function castSpell0(G, p, hi, tg) {
   const tgt = S.tg ? p.bd[tg] : null;
   if (spellBlock(p, id, tgt)) return false;
   p.hd.splice(hi, 1);
+  if (S.ck) p.ck = (p.ck || 0) - S.ck;
+  p.lastCast = id;
   switch (id) {
     case 'sp_pinte': buff(tgt, 2, 1); break;
     case 'sp_tournee': p.fz = false; fillShop(G, p); trigBoard(G, p, 'roll'); break;
@@ -78,6 +94,16 @@ function castSpell0(G, p, hi, tg) {
     case 'sp_alchimie': { const b = CD(tgt.c); tgt.g = 1; tgt.a += b.a; tgt.h += b.h; break; }
     case 'sp_tempete': p.tma = { a:((p.tma && p.tma.a) || 0) + 3, h:((p.tma && p.tma.h) || 0) + 3 }; break;
     case 'sp_reflet': { const c = clone(tgt); c.u = UID++; delete c.tmp; p.hd.push(c); break; }
+    case 'nj_permut': tgt.tmp = { a:(tgt.tmp && tgt.tmp.a) || 0, h:(tgt.tmp && tgt.tmp.h) || 0, f:((tgt.tmp && tgt.tmp.f) || '') + 's', s:'Permutation' }; break;
+    case 'nj_souffle': p.njf = (p.njf || 0) + 3; break;
+    case 'nj_pierre': buff(tgt, 0, 4); addF(tgt, 't'); break;
+    case 'nj_brume': p.tma = { a:(p.tma && p.tma.a) || 0, h:((p.tma && p.tma.h) || 0) + 3 }; break;
+    case 'nj_doubles': { const c = mk(tgt.c, 0); c.a = 1; c.h = 1; p.bd.splice(tg + 1, 0, c); break; }
+    case 'nj_foudre': tgt.tmp = { a:((tgt.tmp && tgt.tmp.a) || 0) + 3, h:(tgt.tmp && tgt.tmp.h) || 0, f:((tgt.tmp && tgt.tmp.f) || '') + 'v', s:'Lame de foudre' }; break;
+    case 'nj_rafale': shuffle(p.bd.slice()).slice(0, 3).forEach(m => buff(m, 2, 1)); break;
+    case 'nj_invoc': { const m = drawOne(G, p.t) || drawAny(Math.max(1, p.t)); if (m) p.bd.push(m); break; }
+    case 'nj_sceau': buff(tgt, 4, 4); addF(tgt, 'r'); break;
+    case 'nj_deluge': p.tma = { a:((p.tma && p.tma.a) || 0) + 4, h:((p.tma && p.tma.h) || 0) + 4 }; p.njf = (p.njf || 0) + 4; break;
     case 'sp_ascension': p.bd.forEach(x => { buff(x, 2, 2); addF(x, 's'); }); break;
   }
   trigBoard(G, p, 'cast');
@@ -131,7 +157,19 @@ function aiSpells(G, p) {
 }
 
 /* ---------- illustrations des sorts ---------- */
+const NJA = (col, inner) => () => softGlow(50, 52, 34, col, .35) + `<g transform="translate(50 54)">${inner}</g>` + [[-26, -30], [28, -26], [-30, 26], [30, 28]].map(([x, y]) => Ci(50 + x, 54 + y, 1.6, '#fff', 'opacity=".6"')).join('');
+const HANDS = `<path d="M-9 14 L-9 -6 Q-9 -14 -3 -16 L-1 -2 M9 14 L9 -6 Q9 -14 3 -16 L1 -2" fill="#f1c7a0" ${so(1.8)}/><path d="M-3 -16 Q0 -20 3 -16 L1 -2 L-1 -2 Z" fill="#f1c7a0" ${so(1.6)}/>`;
 const SPART = {
+  nj_permut: NJA('#bfe8ff', `<rect x="-20" y="-14" width="16" height="30" rx="3" fill="#a8744a" ${so(1.8)}/><path d="M-18 -8 H-6 M-18 2 H-6" stroke="#6a4a2a" stroke-width="1.6"/>` + Ln('M-2 0 Q6 -16 16 -4', '#fff', 2.6) + `<circle cx="12" cy="4" r="8" fill="#e8e2da" ${so(1.8)}/><path d="M6 2 Q12 -2 18 2" stroke="#2a2a34" stroke-width="2.4"/>`),
+  nj_souffle: NJA('#ffb04a', HANDS + `<path d="M0 -18 C 14 -24 24 -10 34 -14 C 30 -4 22 0 10 -2 C 18 4 10 10 2 6 Z" fill="#ff7a2a" ${so(1.8)}/><path d="M6 -14 C 14 -16 20 -10 26 -12 C 22 -6 16 -6 10 -6 Z" fill="#ffe27a"/>`),
+  nj_pierre: NJA('#c8a878', `<path d="M-22 18 L-16 -10 L-4 -20 L10 -16 L22 -2 L18 18 Z" fill="#8a7a6a" ${so(2)}/><path d="M-12 -4 L-2 6 L12 -6 M-4 18 L-2 6" stroke="#5a4e44" stroke-width="2" fill="none"/>`),
+  nj_brume: NJA('#bfe8ff', [-14, -2, 10].map((y, k) => `<path d="M-28 ${y} C -14 ${y - 8}, -4 ${y + 6}, 8 ${y - 2} S 24 ${y - 6}, 30 ${y}" fill="none" stroke="#e8f8ff" stroke-width="${5 - k}" stroke-linecap="round" opacity="${.9 - k * .2}"/>`).join('')),
+  nj_doubles: NJA('#e8e2da', [-16, 0, 16].map((x, k) => `<g transform="translate(${x} ${k === 1 ? -4 : 2})" opacity="${k === 1 ? 1 : .6}"><circle cy="-8" r="7" fill="#f1c7a0" ${so(1.6)}/><rect x="-8" y="-12" width="16" height="4" fill="#2a5a9a"/><path d="M-9 16 L-7 0 L7 0 L9 16 Z" fill="#2c2e3a" ${so(1.6)}/></g>`).join('')),
+  nj_foudre: NJA('#ffe14a', `<path d="M-22 18 L14 -18" stroke="#c8ccd4" stroke-width="5" stroke-linecap="round"/><path d="M-26 22 L-18 14" stroke="#5a3a1a" stroke-width="6" stroke-linecap="round"/><path d="M2 -26 L-6 -4 L4 -4 L-4 16 L12 -10 L2 -10 Z" fill="#ffe14a" ${so(1.6)}/>`),
+  nj_rafale: NJA('#e8ffd0', [-14, 0, 14].map(y => `<path d="M-26 ${y + 6} Q0 ${y - 12} 26 ${y}" fill="none" stroke="#f4ffe8" stroke-width="4" stroke-linecap="round"/>`).join('') + `<path d="M18 -4 L30 -2 L20 6 Z" fill="#c8ccd4" ${so(1.4)}/>`),
+  nj_invoc: NJA('#ffd27a', `<circle r="22" fill="none" stroke="#fff3c0" stroke-width="2.4"/><circle r="15" fill="none" stroke="#fff3c0" stroke-width="1.4" stroke-dasharray="3 3"/>` + [0, 72, 144, 216, 288].map(a => `<circle cx="${(Math.cos(a * Math.PI / 180) * 22).toFixed(1)}" cy="${(Math.sin(a * Math.PI / 180) * 22).toFixed(1)}" r="3" fill="#fff3c0"/>`).join('') + `<path d="M-10 14 Q0 -18 10 14" fill="#5a3a1a" ${so(1.6)}/>`),
+  nj_sceau: NJA('#d8b8ff', `<rect x="-18" y="-24" width="36" height="46" rx="3" fill="#f4ecd8" ${so(2)}/><circle cy="-2" r="11" fill="none" stroke="#a8322a" stroke-width="3"/><path d="M-6 -2 H6 M0 -8 V4" stroke="#a8322a" stroke-width="3"/><path d="M-18 -24 H18 M-18 22 H18" stroke="#8a6a3a" stroke-width="4"/>`),
+  nj_deluge: NJA('#ffffff', `<path d="M-6 -22 C 2 -16 2 -10 -4 -6 C -10 -10 -12 -16 -6 -22 Z" fill="#ff7a2a" ${so(1.4)}/><path d="M14 -10 C 18 -4 18 0 14 4 C 10 0 10 -4 14 -10 Z" fill="#6fc8ff" ${so(1.4)}/><path d="M-16 0 L-20 10 L-14 10 L-18 20 L-8 6 L-14 6 Z" fill="#ffe14a" ${so(1.2)}/><path d="M4 12 L10 4 L16 12 Z" fill="#8a7a6a" ${so(1.4)}/><path d="M-4 18 Q4 10 12 18" fill="none" stroke="#e8ffd0" stroke-width="3"/>`),
   sp_pinte: () => softGlow(50, 54, 30, '#ffe39a', .25) + '<g transform="translate(30 30) scale(1.45)">' + P('M0 7 L18 7 L17 29 Q9 32 1 29 Z', '#d99a3e', so()) + Ln('M2.5 13 L15.5 13 M2.5 21 L15.5 21', '#8a5a22', 1.4) + Ln('M18 12 C 27 12, 27 24, 17.4 24', OUT, 5) + Ln('M18 12 C 27 12, 27 24, 17.4 24', '#d99a3e', 2.4) + P('M-2 8 C -3 0, 5 -2, 7 1 C 9 -3, 17 -2, 18 2 C 22 2, 22 8, 19 9 L18 12 C 16 9, 12 10, 9 9 C 6 11, 1 10, -2 8 Z', '#fff8e6', so(1.6)) + E(4, 4, 2, 1.4, '#fff', 'opacity=".9"') + '</g>' + [[24, 30, 2.2], [76, 26, 1.6], [72, 40, 1.2], [28, 44, 1.4]].map(([x, y, r]) => Ci(x, y, r, '#fff8e6', so(0.8))).join('') + P(starD(76, 72, 6, 2.4, 4), '#fff1b8', GLOW),
   sp_tournee: () => P('M14 70 Q50 82 86 70 L84 76 Q50 89 16 76 Z', '#8a5a2b', so()) + [[28, 46], [44, 40], [60, 46]].map(([x, y], k) => `<g transform="translate(${x} ${y}) scale(.95) rotate(${(k - 1) * 8})">` + P('M0 7 L14 7 L13 26 Q7 28 1 26 Z', '#d99a3e', so(1.8)) + Ln('M14 11 C 20 11, 20 21, 13.6 21', OUT, 4) + Ln('M14 11 C 20 11, 20 21, 13.6 21', '#d99a3e', 2) + P('M-1.4 8 C -2 2, 4 1, 6 3 C 8 0, 14 1, 15 4 C 17 5, 16 8, 14.6 8.4 Z', '#fff8e6', so(1.4)) + '</g>').join('') + P(starD(50, 22, 7, 2.4, 4), '#fff1b8', GLOW) + P(starD(24, 26, 3.4, 1.2, 4), '#fff1b8', GLOW) + P(starD(78, 30, 4, 1.4, 4), '#fff1b8', GLOW),
   sp_placement: () => P('M30 52 C 22 62, 22 86, 50 88 C 78 86, 78 62, 70 52 C 66 46, 34 46, 30 52 Z', '#7a4a28', so()) + P('M36 50 C 40 42, 60 42, 64 50 Z', '#5a321c', so(1.8)) + Ln('M38 48 Q50 54 62 48', '#e2b452', 2.6) + P(starD(50, 70, 7, 3, 4), '#e2b452', so(1)) + [[50, 30, 0], [42, 22, -12], [58, 18, 14]].map(([x, y, r]) => `<g transform="translate(${x} ${y}) rotate(${r})">${E(0, 0, 8, 8, '#f2c14e', so(1.8))}${E(0, 0, 5, 5, 'none', 'stroke="#b37c26" stroke-width="1.4"')}</g>`).join('') + Ln('M50 40 L50 46', '#fff1b8', 1.6) + Ln('M76 76 L82 70 L86 74', '#a6e07a', 2.6),
@@ -171,7 +209,7 @@ function spellTokenH(id, z, i, o = {}) {
     <path d="M14 12 Q50 4 86 12 L86 90 Q50 98 14 90 Z" fill="none" ${so(2)}/>
     <rect x="0" y="-2" width="100" height="10" rx="5" fill="#7a4a28" ${so(2)}/><rect x="0" y="94" width="100" height="10" rx="5" fill="#7a4a28" ${so(2)}/>
     <circle cx="14" cy="104" r="12" fill="url(#gr-badge)" stroke="#e2b452" stroke-width="2.2"/><text class="gt" x="14" y="104" dy=".36em" style="fill:${spellCostFor(id, z) < S.c ? '#b8ff8a' : '#ffe39a'}">${spellCostFor(id, z)}</text>
-    <circle cx="50" cy="0" r="8.4" fill="url(#gr-badge)" stroke="#e2b452" stroke-width="2"/><text class="gt tb" x="50" y="0" dy=".36em">${S.t}</text></svg>
+    <circle cx="50" cy="0" r="8.4" fill="url(#gr-badge)" stroke="#e2b452" stroke-width="2"/><text class="gt tb" x="50" y="0" dy=".36em">${S.t}</text>${S.ck ? `<circle cx="86" cy="104" r="12" fill="#2a6ad8" stroke="#bfe8ff" stroke-width="2.2"/><text class="gt" x="86" y="104" dy=".36em" style="fill:#e8fcff">${S.ck}</text>` : ''}</svg>
     <span class="mn-nm">${esc(S.n)}</span></div>`;
 }
 // coût réel pour le joueur (réductions actives), et coût de base
@@ -184,5 +222,5 @@ function spellCardH(id, z, i, o = {}) {
     + `<div class="cd-tier" aria-hidden="true">${'<i></i>'.repeat(S.t)}</div>`
     + `<div class="cd-nm"><span>${esc(S.n)}</span></div><div class="cd-tx${n > 95 ? ' xlong' : n > 62 ? ' long' : ''}">${esc(S.tx)}</div>`
     + `<div class="cd-tb" style="background:${ty.col}">${esc(ty.n)}</div>`
-    + costGemH(spellCostFor(id, z), S.c) + `${z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : ''}</div>`;
+    + costGemH(spellCostFor(id, z), S.c) + (S.ck ? `<span class="ck-gem" title="Coût en chakra">${S.ck}</span>` : '') + `${z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : ''}</div>`;
 }

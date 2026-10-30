@@ -1758,6 +1758,25 @@ body.cs-entering #scene *{animation-play-state:running!important}
 .lb-fam i{font-style:normal;font-family:var(--f-label);font-weight:700;font-size:12.5px;padding:2px 10px;border-radius:99px;color:#fff;background:var(--c);box-shadow:inset 0 0 0 1.5px rgba(0,0,0,.35)}
 @media (max-height:540px),(max-width:620px){ .lawbig{padding:8px 12px;gap:10px;margin:4px auto} .lb-em{width:46px;height:46px} .lb-em .ic{width:24px;height:24px} .lb-t b{font-size:18px} .lb-t p{font-size:13px} .lb-fam{display:none} }
 .souls.chakra{color:#9fe8ff}.souls.chakra .ic{color:#6fd0ff}
+/* chakra : jauge bien visible + coût des techniques */
+.ckg{display:flex;align-items:center;gap:10px;padding:6px 14px 6px 6px;border-radius:40px;background:linear-gradient(180deg,rgba(20,50,110,.85),rgba(8,20,50,.92));box-shadow:inset 0 0 0 2px #6fd0ff,0 0 18px rgba(80,170,255,.45)}
+.ckg-orb{position:relative;width:58px;height:58px;flex:none;display:grid;place-items:center;border-radius:50%;color:#e8fcff;
+  background:radial-gradient(circle at 38% 32%,#e8fcff,#6fd0ff 30%,#2a6ad8 65%,#0c2a6a);box-shadow:0 0 0 3px #0c1a3a,0 0 0 5px #bfe8ff,0 0 24px 6px rgba(80,170,255,.7);animation:ckpulse 2.4s ease-in-out infinite}
+.ckg-orb .ic{position:absolute;width:44px;height:44px;opacity:.35}
+.ckg-orb b{position:relative;font-family:var(--f-num);font-size:28px;color:#fff;text-shadow:0 2px 0 #0c2a6a,0 0 8px #0c2a6a}
+.ckg-orb.empty{filter:grayscale(.7) brightness(.7);animation:none}
+@keyframes ckpulse{0%,100%{box-shadow:0 0 0 3px #0c1a3a,0 0 0 5px #bfe8ff,0 0 20px 5px rgba(80,170,255,.6)}50%{box-shadow:0 0 0 3px #0c1a3a,0 0 0 5px #e8fcff,0 0 32px 10px rgba(110,200,255,.85)}}
+.ckg-r{display:grid;gap:4px}
+.ckg-r small{font-family:var(--f-label);font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#bfe8ff;white-space:nowrap}
+.ckg-p{display:grid;grid-template-columns:repeat(10,12px);gap:3px}
+.ckg-p i{width:12px;height:12px;border-radius:50%;background:rgba(0,0,0,.45);box-shadow:inset 0 0 0 1.5px #3a6aa8}
+.ckg-p i.on{background:radial-gradient(circle at 35% 30%,#e8fcff,#6fd0ff 55%,#2a6ad8);box-shadow:0 0 6px #6fd0ff}
+.ck-gem{position:absolute;right:-7%;top:-5%;z-index:3;width:30cqi;height:30cqi;display:grid;place-items:center;border-radius:50%;font-family:var(--f-num);font-size:17cqi;color:#fff;
+  background:radial-gradient(circle at 38% 32%,#bfe8ff,#2a6ad8 60%,#0c2a6a);box-shadow:0 0 0 2.5px #0c1a3a,0 0 0 4px #bfe8ff,0 0 10px rgba(80,170,255,.7);text-shadow:0 1px 0 #0c2a6a}
+.cd.spc .cd-tier{right:auto;left:30%}
+.souls.chakra{font-size:16px}
+@media (max-width:820px),(max-height:540px){ .ckg{padding:3px 8px 3px 3px;gap:6px} .ckg-orb{width:36px;height:36px} .ckg-orb b{font-size:18px} .ckg-r small{display:none} .ckg-p{grid-template-columns:repeat(5,8px);gap:2px} .ckg-p i{width:8px;height:8px} }
+.hz-left{display:flex;align-items:center;gap:18px}
 </style>
 </head><body>
 
@@ -2156,17 +2175,57 @@ const DEFAULT_CARD_LIST = [
   ['n_t3', 'Garde des roches', 3, 'n_terre', 2, 6, 't', [{ k:'eot_buff_taunt', a:1, h:1 }]],
   ['n_t4', 'Lanceur de rochers', 4, 'n_terre', 5, 4, '', [{ k:'soc_dmg', d:4, n:1 }]],
   ['n_t5', 'Colosse de granit', 5, 'n_terre', 4, 9, 't', [{ k:'surv_self', a:2, h:0 }]],
+  ['n_f7', 'Voleur d\'étincelles', 2, 'n_feu', 2, 3, '', [{ k:'soc_steal', n:1 }]],
+  ['n_f8', 'Pyromancien avide', 4, 'n_feu', 3, 4, '', [{ k:'soc_ck', a:1, h:0 }]],
+  ['n_v7', 'Pickpocket des sables', 1, 'n_vent', 2, 1, '', [{ k:'dr_steal', n:1 }]],
+  ['n_v8', 'Danseur d\'éventail', 3, 'n_vent', 3, 3, '', [{ k:'cast_ck', n:1 }]],
+  ['n_e7', 'Siphon de brume', 3, 'n_eau', 2, 5, '', [{ k:'soc_steal', n:2 }]],
+  ['n_e8', 'Méditant des cascades', 5, 'n_eau', 4, 7, '', [{ k:'eot_ck_spend', n:2, a:2, h:2 }]],
+  ['n_o7', 'Parasite de foudre', 2, 'n_foudre', 3, 2, '', [{ k:'dr_steal', n:2 }]],
+  ['n_o8', 'Tempête intérieure', 5, 'n_foudre', 5, 5, '', [{ k:'soc_ck', a:1, h:1 }]],
+  ['n_t7', 'Pilleur souterrain', 4, 'n_terre', 4, 5, 't', [{ k:'soc_steal', n:2 }]],
+  ['n_t8', 'Ermite des cimes', 6, 'n_terre', 5, 8, '', [{ k:'eot_ck_spend', n:3, a:3, h:3 }, { k:'cast_ck', n:1 }]],
+  ['c_nj_feu', 'Disciple de la flamme', 3, 'n_feu', 2, 3, '', [{ k:'cast_memo' }, { k:'sot_memo' }]],
+  ['c_nj_vent', 'Disciple du vent', 3, 'n_vent', 3, 2, '', [{ k:'cast_memo' }, { k:'sot_memo' }]],
+  ['c_nj_eau', 'Disciple de la brume', 3, 'n_eau', 2, 4, '', [{ k:'cast_memo' }, { k:'sot_memo' }]],
+  ['c_nj_foudre', 'Disciple de l\'orage', 3, 'n_foudre', 3, 3, '', [{ k:'cast_memo' }, { k:'sot_memo' }]],
+  ['c_nj_terre', 'Disciple du roc', 3, 'n_terre', 1, 5, 't', [{ k:'cast_memo' }, { k:'sot_memo' }]],
   ['n_t6', 'Seigneur des roches', 6, 'n_terre', 6, 10, 't', [{ k:'eot_buff_taunt', a:2, h:2 }, { k:'eot_chakra', n:1 }]],
 ];
 const DEFAULT_CARDS = {};
 DEFAULT_CARD_LIST.forEach(([id, n, t, tr, a, h, kw, fx]) => { DEFAULT_CARDS[id] = { id, n, t, tr, a, h, kw:kw.split(''), fx, art:{ f:'base', id } }; });
-const COMPANIONS = { paul:'c_pouf', leon:'c_caillou', zoe:'c_gloup', jeanne:'c_frisouille', selene:'c_nyx', brok:'c_enclume', sylvara:'c_lys', grumbo:'c_miette', vaskor:'c_osbrise', pyra:'c_etincelle', rivet:'c_bricole', egide:'c_lumen', ondine:'c_fiole', barnabe:'c_sou', maelle:'c_croc', oren:'c_plume', gor:'c_bastion', ilka:'c_truelle', nono:'c_braise' };
+const COMPANIONS = { nh_akari:'c_nj_feu', nh_hoshi:'c_nj_feu', nh_ren:'c_nj_feu', nh_tsubaki:'c_nj_feu', nh_daigo:'c_nj_feu', nh_mira:'c_nj_vent', nh_taro:'c_nj_vent', nh_haru:'c_nj_vent', nh_gen:'c_nj_vent', nh_saki:'c_nj_vent', nh_mizu:'c_nj_eau', nh_ryota:'c_nj_eau', nh_umi:'c_nj_eau', nh_kenji:'c_nj_eau', nh_aya:'c_nj_eau', nh_raiko:'c_nj_foudre', nh_kenta:'c_nj_foudre', nh_hikari:'c_nj_foudre', nh_akio:'c_nj_foudre', nh_rika:'c_nj_foudre', nh_goro:'c_nj_terre', nh_kaito:'c_nj_terre', nh_masa:'c_nj_terre', nh_toshi:'c_nj_terre', nh_emi:'c_nj_terre', paul:'c_pouf', leon:'c_caillou', zoe:'c_gloup', jeanne:'c_frisouille', selene:'c_nyx', brok:'c_enclume', sylvara:'c_lys', grumbo:'c_miette', vaskor:'c_osbrise', pyra:'c_etincelle', rivet:'c_bricole', egide:'c_lumen', ondine:'c_fiole', barnabe:'c_sou', maelle:'c_croc', oren:'c_plume', gor:'c_bastion', ilka:'c_truelle', nono:'c_braise' };
 for (const h in COMPANIONS) DEFAULT_CARDS[COMPANIONS[h]].comp = h;
 const compOf = hero => { const id = COMPANIONS[hero]; if (id && CARDS[id]) return id; return Object.keys(CARDS).find(k => CARDS[k].comp === hero) || null; };
 const compLimit = rd => rd >= 6 ? 3 : rd >= 5 ? 2 : rd >= 3 ? 1 : 0;
 
 const SLOTS = { 1:3, 2:4, 3:4, 4:5, 5:5, 6:6 };
 const HEROES = {
+  nh_akari: {fam:['n_feu'], n:'Akari l\'ardente', cost:1, clan:'feu', pw:{'k': 'ck', 'n': 2}, tx:'Gagnez 2 chakra.' },
+  nh_hoshi: {fam:['n_feu'], n:'Hoshi le vieux sage', clan:'feu', pw:{'k': 'pck', 'n': 1}, tx:'Passif : gagnez 1 chakra de plus au début de chaque tour.' },
+  nh_ren: {fam:['n_feu'], n:'Ren aux mille braises', cost:2, clan:'feu', pw:{'k': 'fire', 'd': 3}, tx:'Prochain combat : 3 dégâts frappent l\'ennemi au début du combat.' },
+  nh_tsubaki: {fam:['n_feu'], n:'Tsubaki la gardienne', cost:2, clan:'feu', pw:{'k': 'buffall', 'a': 1, 'h': 0, 'tb': 'n_feu'}, tx:'Vos serviteurs du Clan du Feu gagnent +1 attaque.' },
+  nh_daigo: {fam:['n_feu'], n:'Daigo le souffleur', cost:2, clan:'feu', pw:{'k': 'tech'}, tx:'Ajoute une technique ninja aléatoire à votre main.' },
+  nh_mira: {fam:['n_vent'], n:'Mira des dunes', cost:2, clan:'vent', pw:{'k': 'kw', 'kw': 'w'}, tx:'Donne Furie des vents à un de vos serviteurs aléatoire qui ne l\'a pas.' },
+  nh_taro: {fam:['n_vent'], n:'Taro le cerf-volant', cost:1, clan:'vent', pw:{'k': 'buffr', 'a': 2, 'h': 0, 'tb': 'n_vent'}, tx:'Donne +2 attaque à un serviteur du Clan du Vent aléatoire.' },
+  nh_haru: {fam:['n_vent'], n:'Haru le nomade', clan:'vent', pw:{'k': 'ptech'}, tx:'Passif : au début de chaque tour pair, ajoute une technique ninja aléatoire à votre main.' },
+  nh_gen: {fam:['n_vent'], n:'Gen aux éventails', cost:3, clan:'vent', pw:{'k': 'tma', 'a': 2, 'h': 1}, tx:'Prochain combat seulement : vos serviteurs gagnent +2/+1.' },
+  nh_saki: {fam:['n_vent'], n:'Saki la bourrasque', cost:1, clan:'vent', pw:{'k': 'buffr', 'a': 1, 'h': 1}, tx:'Donne +1/+1 à un de vos serviteurs aléatoire.' },
+  nh_mizu: {fam:['n_eau'], n:'Mizu la brume', cost:2, clan:'eau', pw:{'k': 'kw', 'kw': 's'}, tx:'Donne Bouclier divin à un de vos serviteurs aléatoire qui ne l\'a pas.' },
+  nh_ryota: {fam:['n_eau'], n:'Ryota le silencieux', cost:1, clan:'eau', pw:{'k': 'buffr', 'a': 0, 'h': 3, 'tb': 'n_eau'}, tx:'Donne +3 vie à un serviteur du Clan de l\'Eau aléatoire.' },
+  nh_umi: {fam:['n_eau'], n:'Umi la marée', cost:2, clan:'eau', pw:{'k': 'buffall', 'a': 0, 'h': 2, 'tb': 'n_eau'}, tx:'Vos serviteurs du Clan de l\'Eau gagnent +2 vie.' },
+  nh_kenji: {fam:['n_eau'], n:'Kenji l\'épéiste', cost:2, clan:'eau', pw:{'k': 'tma', 'a': 3, 'h': 0}, tx:'Prochain combat seulement : vos serviteurs gagnent +3 attaque.' },
+  nh_aya: {fam:['n_eau'], n:'Aya des abysses', cost:2, clan:'eau', pw:{'k': 'ck', 'n': 3}, tx:'Gagnez 3 chakra.' },
+  nh_raiko: {fam:['n_foudre'], n:'Raiko l\'éclair', cost:1, clan:'foudre', pw:{'k': 'fire', 'd': 2}, tx:'Prochain combat : 2 dégâts frappent l\'ennemi au début du combat.' },
+  nh_kenta: {fam:['n_foudre'], n:'Kenta le tonnerre', cost:2, clan:'foudre', pw:{'k': 'kw', 'kw': 'w'}, tx:'Donne Furie des vents à un de vos serviteurs aléatoire qui ne l\'a pas.' },
+  nh_hikari: {fam:['n_foudre'], n:'Hikari l\'étincelle', clan:'foudre', pw:{'k': 'pfire', 'd': 2}, tx:'Passif : au début de chaque combat, 2 dégâts frappent l\'ennemi.' },
+  nh_akio: {fam:['n_foudre'], n:'Akio l\'orage', cost:2, clan:'foudre', pw:{'k': 'buffall', 'a': 1, 'h': 1, 'tb': 'n_foudre'}, tx:'Vos serviteurs du Clan de la Foudre gagnent +1/+1.' },
+  nh_rika: {fam:['n_foudre'], n:'Rika la foudroyante', cost:1, clan:'foudre', pw:{'k': 'ck', 'n': 2}, tx:'Gagnez 2 chakra.' },
+  nh_goro: {fam:['n_terre'], n:'Goro le roc', cost:2, clan:'terre', pw:{'k': 'kw', 'kw': 't'}, tx:'Donne Provocation à un de vos serviteurs aléatoire qui ne l\'a pas.' },
+  nh_kaito: {fam:['n_terre'], n:'Kaito le bâtisseur', cost:1, clan:'terre', pw:{'k': 'buffr', 'a': 0, 'h': 3, 'tb': 'n_terre'}, tx:'Donne +3 vie à un serviteur du Clan de la Terre aléatoire.' },
+  nh_masa: {fam:['n_terre'], n:'Masa la montagne', clan:'terre', pw:{'k': 'pck', 'n': 1}, tx:'Passif : gagnez 1 chakra de plus au début de chaque tour.' },
+  nh_toshi: {fam:['n_terre'], n:'Toshi le colosse', cost:3, clan:'terre', pw:{'k': 'buffall', 'a': 1, 'h': 2, 'tb': 'n_terre'}, tx:'Vos serviteurs du Clan de la Terre gagnent +1/+2.' },
+  nh_emi: {fam:['n_terre'], n:'Emi la géode', cost:2, clan:'terre', pw:{'k': 'tech'}, tx:'Ajoute une technique ninja aléatoire à votre main.' },
   rivet:   {fam:['meca', 'gob'], n:'Rivet', tx:'Passif : votre première actualisation de chaque tour est gratuite.' },
   egide:   {fam:['nain', 'elfe'], n:'Égide', cost:2, tx:'Donne Bouclier divin à un de vos serviteurs aléatoire.' },
   ondine:  {fam:['elem', 'cors'], n:'Ondine l\'alchimiste', cost:1, tx:'Donne +1/+2 à un de vos serviteurs aléatoire.' },
@@ -2198,7 +2257,7 @@ const MECHS = {
   marche:{ n:'Marché noir', ic:'gear', d:'Vendre un serviteur de l\'univers rapporte 1 or de plus (deux fois par tour).' },
   ruee:{ n:'Ruée sauvage', ic:'leaf', d:'Au début du combat, si vous avez au moins 3 serviteurs de l\'univers, ils gagnent +2/+0 pour ce combat.' },
   pillage:{ n:'Pillage', ic:'drop', d:'Quand vous gagnez un combat avec un serviteur de l\'univers encore debout, vous recevez un sort aléatoire de votre niveau.' },
-  chakra:{ n:'Chakra', ic:'k_spark', d:'Au début de votre tour, chaque serviteur de l\'univers sur votre plateau génère 1 chakra (10 au plus). Le chakra se consomme pour lancer vos techniques : à l\'achat d\'un sort, il est dépensé avant l\'or.' },
+  chakra:{ n:'Chakra', ic:'k_spark', d:'Au début de votre tour, chaque serviteur de l\'univers sur votre plateau génère 1 chakra (10 au plus). Les techniques ninja s\'achètent avec de l\'or et se lancent avec du chakra.' },
   resonance:{ n:'Résonance', ic:'twin', d:'Chaque sort que vous lancez donne +1/+1 à deux de vos serviteurs de l\'univers.' },
   eboulement:{ n:'Éboulement', ic:'up', d:'Quand un de vos serviteurs de l\'univers avec Provocation meurt, il inflige 3 dégâts à un ennemi aléatoire.' },
   fusion:{ n:'Fusion élémentaire', ic:'wind', d:'À la fin du tour, si vous avez au moins 4 éléments Squishy différents, vos serviteurs de l\'univers gagnent +1/+1.' },
@@ -2301,6 +2360,13 @@ const ET = {
   bc_summon:{ tr:'bc', l:'Invoquer un serviteur', ps:['card', 'n'], w:1, mag:(e, d) => cardValueById(e.card, d) * e.n, txt:e => `Cri de guerre : invoque ${e.n > 1 ? e.n + ' × ' : ''}${CD(e.card).n}.` },
   bc_chakra:{ tr:'bc', l:'Gagner du chakra', ps:['n'], w:1.2, mag:e => e.n, txt:(e, k) => `Cri de guerre : gagnez ${e.n * k} chakra.` },
   eot_chakra:{ tr:'eot', l:'Gagner du chakra', ps:['n'], w:1.4, mag:e => e.n * 2, txt:(e, k) => `Fin de tour : gagnez ${e.n * k} chakra.` },
+  soc_steal:{ tr:'soc', l:'Voler du chakra', ps:['n'], w:1.4, mag:e => e.n * 2, txt:(e, k) => `Début du combat : vole ${e.n * k} chakra à l\'adversaire.` },
+  dr_steal:{ tr:'dr', l:'Voler du chakra en mourant', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Râle d\'agonie : vole ${e.n * k} chakra à l\'adversaire.` },
+  soc_ck:{ tr:'soc', l:'Se renforcer selon le chakra', ps:['a', 'h'], w:1.6, mag:e => (e.a + e.h) * 3, txt:(e, k) => `Début du combat : gagne ${sign(e.a * k, e.h * k)} pour chaque chakra que vous avez (5 au plus).` },
+  eot_ck_spend:{ tr:'eot', l:'Dépenser du chakra pour se renforcer', ps:['n', 'a', 'h'], w:1.3, mag:e => e.a + e.h, txt:(e, k) => `Fin de tour : si vous avez ${e.n} chakra, les dépense pour gagner ${sign(e.a * k, e.h * k)}.` },
+  cast_ck:{ tr:'cast', l:'Gagner du chakra en lançant un sort', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Quand vous lancez un sort, gagnez ${e.n * k} chakra.` },
+  cast_memo:{ tr:'cast', l:'Retenir la technique lancée', ps:[], w:1, mag:() => 3, txt:() => 'Mémoire : retient la dernière technique ninja que vous lancez.' },
+  sot_memo:{ tr:'sot', l:'Rejouer la technique retenue', ps:[], w:1, mag:() => 3, txt:(e, k) => `Début de tour : ajoute à votre main ${k > 1 ? k + ' copies' : 'une copie'} de la technique retenue.` },
   bc_gold:{ tr:'bc', l:'Gagner de l\'or', ps:['n'], w:1.5, mag:e => e.n, txt:(e, k) => `Cri de guerre : gagnez ${e.n * k} or.` },
   bc_card:{ tr:'bc', l:'Ajouter un serviteur à la main', ps:['n', 'tb'], w:1, mag:e => e.n * 3, txt:e => `Cri de guerre : ajoute ${e.n > 1 ? e.n + ' ' + one(e.tb) + ' aléatoires' : 'un ' + one(e.tb, 1) + ' aléatoire'} à votre main.` },
   dr_summon:{ tr:'dr', l:'Invoquer un serviteur', ps:['card', 'n'], w:0.8, mag:(e, d) => cardValueById(e.card, d) * e.n, txt:e => `Râle d'agonie : invoque ${e.n > 1 ? e.n + ' × ' : ''}${CD(e.card).n}.` },
@@ -2401,6 +2467,10 @@ function runRecruit0(G, p, m, e, ctx) {
     case 'bc_summon': for (let i = 0; i < e.n; i++) recruitSummon(p, e.card, m.g, m); break;
     case 'bc_gold': p.g += e.n * k; break;
     case 'bc_chakra': case 'eot_chakra': p.ck = Math.min(CK_MAX, (p.ck || 0) + e.n * k); break;
+    case 'cast_ck': p.ck = Math.min(CK_MAX, (p.ck || 0) + e.n * k); break;
+    case 'eot_ck_spend': if ((p.ck || 0) >= e.n) { p.ck -= e.n; buff(m, A, Hh); } break;
+    case 'cast_memo': if (p.lastCast && SPELLS[p.lastCast] && SPELLS[p.lastCast].nin) m.memo = p.lastCast; break;
+    case 'sot_memo': if (m.memo && SPELLS[m.memo]) for (let i = 0; i < k; i++) if (p.hd.length < 10) p.hd.push({ sp:m.memo, u:UID++ }); break;
     case 'bc_card': for (let i = 0; i < e.n; i++) if (p.hd.length < 10) { const c = drawOne(G, p.t, null, e.tb); if (c) p.hd.push(c); } break;
     case 'eot_self': buff(m, A, Hh); break;
     case 'eot_buff_rand': shuffle(others()).slice(0, e.n).forEach(x => buff(x, A, Hh)); break;
@@ -2687,6 +2757,7 @@ const OPS = {
   pow(G, p) { return withSrc(HEROES[p.hero] ? 'Pouvoir de ' + HEROES[p.hero].n.split(' ')[0] : null, () => OPS.pow0(G, p)); },
   pow0(G, p) {
     const h = HEROES[p.hero]; if (!h || !h.cost || p.pu || p.g < h.cost) return false;
+    if (h.pw && !powRun(G, p, h.pw)) return false;
     if (p.hero === 'egide') { const c = p.bd.filter(m => !has(m, 's')); if (!c.length) return false; addF(pickR(c), 's'); }
     if (p.hero === 'ondine') { if (!p.bd.length) return false; buff(pickR(p.bd), 1, 2); }
     if (p.hero === 'paul') { const f = p.bd.filter(m => tribe(m) === 'sq_feu'); if (!f.length) return false; const t = pickR(f); buff(t, 2, 1); f.forEach(m => { if (m !== t) buff(m, 1, 0); }); }
@@ -2701,14 +2772,41 @@ const OPS = {
     p.g -= h.cost; p.pu = true; trigBoard(G, p, 'pow'); return true;
   },
   rdy(G, p) { p.rdy = !p.rdy; return true; },
-  buysp(G, p) { const S = p.sp && SPELLS[p.sp.sp]; const c = S ? spCost(p, S) : 0; const ck = inMechAny(G, 'chakra') ? Math.min(p.ck || 0, c) : 0; if (!S || p.g < c - ck || p.hd.length >= 10) return false; p.ck = (p.ck || 0) - ck; p.g -= c - ck; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(p.sp); p.sp = null; return true; },
+  buysp(G, p) { const S = p.sp && SPELLS[p.sp.sp]; const c = S ? spCost(p, S) : 0; if (!S || p.g < c || p.hd.length >= 10) return false; p.g -= c; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(p.sp); p.sp = null; return true; },
   cast(G, p, a) { const it = p.hd[a.i]; if (!it || !it.sp || p.disc) return false; return castSpell(G, p, a.i, a.tg); },
   pick(G, p, a) { if (!p.disc || !p.disc[a.i]) return false; const m = p.disc.splice(a.i, 1)[0]; p.disc.forEach(x => toPool(G, x)); p.disc = null; if (p.hd.length < 10) p.hd.push(m); else toPool(G, m); checkTriple(G, p); return true; },
 };
 
+// pouvoirs décrits par des données (héros des Cinq Nations)
+const pwPool = (p, w) => (p.bd || []).filter(m => !w.tb || tribe(m) === w.tb);
+function powCanW(p, w) {
+  switch (w.k) {
+    case 'ck': return (p.ck || 0) < CK_MAX;
+    case 'tech': return (p.hd || []).length < 10;
+    case 'buffr': case 'buffall': return pwPool(p, w).length > 0;
+    case 'kw': return (p.bd || []).some(m => !has(m, w.kw));
+    case 'tma': return (p.bd || []).length > 0;
+    case 'fire': return true;
+  }
+  return false;
+}
+function powRun(G, p, w) {
+  if (!powCanW(p, w)) return false;
+  switch (w.k) {
+    case 'ck': p.ck = Math.min(CK_MAX, (p.ck || 0) + w.n); break;
+    case 'tech': { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); break; }
+    case 'buffr': buff(pickR(pwPool(p, w)), w.a, w.h); break;
+    case 'buffall': pwPool(p, w).forEach(m => buff(m, w.a, w.h)); break;
+    case 'kw': addF(pickR(p.bd.filter(m => !has(m, w.kw))), w.kw); break;
+    case 'tma': p.tma = { a:((p.tma && p.tma.a) || 0) + w.a, h:((p.tma && p.tma.h) || 0) + w.h }; break;
+    case 'fire': p.njf = (p.njf || 0) + w.d; break;
+  }
+  return true;
+}
 // le pouvoir a-t-il un effet possible maintenant ? (même règles que pow0, sans rien modifier)
 function powCan(p, rd) {
   const h = HEROES[p.hero]; if (!h || !h.cost || p.pu || p.g < h.cost) return false;
+  if (h.pw) return powCanW(p, h.pw);
   const bd = p.bd || [], hd = p.hd || [], tr = t => bd.some(m => tribe(m) === t);
   switch (p.hero) {
     case 'egide': return bd.some(m => !has(m, 's'));
@@ -2782,12 +2880,13 @@ function startRecruit() {
     if (p.hero === 'barnabe' && G.rd % 2 === 0) p.g += 1;
     p.uc = Math.max(0, p.uc - 1);
     if (p.fz) { p.fz = false; topUpShop(G, p); } else fillShop(G, p);
-    p.pu = false; p.fbq = false; p.sylv = false; p.rr = 0; p.rdy = false; p.res = null;
+    p.pu = false; p.fbq = false; p.njf = 0; p.sylv = false; p.rr = 0; p.rdy = false; p.res = null;
     if (p.inc && p.inc.length) p.g += p.inc.shift() || 0;
     trigBoard(G, p, 'sot');
     p.mkt = 0;
     if (inMechAny(G, 'ames') && (p.souls || 0) >= 3) { const k = Math.floor(p.souls / 3); p.souls -= k * 3; withSrc('Moisson d\'âmes', () => p.bd.forEach(m => { if (inMech(G, 'ames', m)) buff(m, k, k); })); }
     if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; if (n) p.ck = Math.min(CK_MAX, (p.ck || 0) + n); }
+    { const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'pck') p.ck = Math.min(CK_MAX, (p.ck || 0) + w.n); if (w && w.k === 'ptech' && G.rd % 2 === 0 && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); } }
     p.bd.forEach(m => { delete m.tmp; }); p.tma = null;
   }
   G.ph = 'recruit';
@@ -2817,11 +2916,12 @@ function endRecruit() {
   const cap = G.rd <= 3 ? 5 : alive.length >= 4 ? 15 : 99;
   const fight = (p, q, ghost) => {
     const seed = rint(1e9), qb = ghost ? ghost.bd : q.bd, qt = ghost ? ghost.t : q.t, qn = ghost ? 'Fantôme de ' + ghost.n : q.n;
-    const heat = x => (x.fbq ? (x.fb || 3) : 0) + (x.hero === 'pyra' ? 2 : 0);
+    const heat = x => (x.fbq ? (x.fb || 3) : 0) + (x.hero === 'pyra' ? 2 : 0) + (x.njf || 0) + (HEROES[x.hero] && HEROES[x.hero].pw && HEROES[x.hero].pw.k === 'pfire' ? HEROES[x.hero].pw.d : 0);
     const fire = [heat(p), ghost ? 0 : heat(q)];
     const pb = combatBoard(p), qcb = combatBoard(ghost || q);
     const r = simulate(pb, qcb, seed, p.t, qt, fire, G.mx);
     lawsAfterFight(G, p, r, 0); if (!ghost) lawsAfterFight(G, q, r, 1);
+    if (!ghost) chakraSteal(p, q, pb, qcb, r);
     const d = Math.min(cap, r.dmg);
     if (r.w === 1) G.pend.push({ pid:p.pid, d });
     if (r.w === 0 && !ghost) G.pend.push({ pid:q.pid, d });
@@ -2838,6 +2938,13 @@ function endRecruit() {
   const anyWatcher = G.ps.some(p => p.human && !p.bot && p.peer);
   G.end = Date.now() + (anyWatcher ? Math.min(50000, 3500 + maxFrames * 700) : 800);
   broadcast();
+}
+// vol de chakra : « Début du combat » (plateaux de départ) et « Râle d'agonie » (serviteurs morts)
+function chakraSteal(p, q, pb, qb, r) {
+  const n = (b, k) => b.reduce((t, m) => t + (CD(m.c).fxAll || []).filter(e => e.k === k).reduce((u, e) => u + e.n * (m.g ? 2 : 1), 0), 0);
+  const dead = (side, k) => r.dead[side].reduce((t, c) => t + ((C[c] && C[c].fxAll) || []).filter(e => e.k === k).reduce((u, e) => u + e.n, 0), 0);
+  const take = (from, to, x) => { const v = Math.min(from.ck || 0, x); if (v > 0) { from.ck -= v; to.ck = Math.min(CK_MAX, (to.ck || 0) + v); } };
+  take(q, p, n(pb, 'soc_steal') + dead(0, 'dr_steal')); take(p, q, n(qb, 'soc_steal') + dead(1, 'dr_steal'));
 }
 function lawsAfterFight(G, p, r, side) {
   if (inMechAny(G, 'ames')) { const n = r.dead[side].filter(c => C[c] && G.mx.ames.includes(C[c].tr)).length; if (n) p.souls = (p.souls || 0) + n; }
@@ -4412,6 +4519,53 @@ Object.assign(ART, {
   n_t6: NJ('terre', '#c8a878', { skin:'#e8b894', hair:'#e8e2da', hs:'long', mask:false, eyes:'dot', mouth:'flat', beard:'long', beardc:'#e8e2da', hood:1, hoodc:'#5a4a32', shirt:'#3a2e22', aura:'#c8a878' })
 });
 
+Object.assign(ART, {
+  n_f7: NJ('feu', '#c8402a', { skin:'#e8b894', hair:'#2a1d14', hs:'side', eyes:'dot', shirt:'#3a1a14', maskc:'#7a2a1a' }),
+  n_f8: NJ('feu', '#c8402a', { skin:'#d9a27a', hair:'#b8452c', hs:'curly', eyes:'glow', glow:'#6fd0ff', mask:false, mouth:'grin', shirt:'#5a1a12', aura:'#6fd0ff' }),
+  n_v7: NJ('vent', '#b8944a', { skin:'#f0c4a0', hair:'#7a4a2a', hs:'short', eyes:'dot', shirt:'#4a3a22', maskc:'#c8a860' }),
+  n_v8: NJ('vent', '#b8944a', { skin:'#e8b894', hair:'#2a1d14', hs:'bun', mask:false, eyes:'happy', mouth:'smile', shirt:'#7a5a2a', aura:'#6fd0ff' }),
+  n_e7: NJ('eau', '#2f7ab8', { skin:'#bfe3df', hair:'#5a3d7a', hs:'long', eyes:'glow', glow:'#6fd0ff', shirt:'#1e2a44', maskc:'#14243a' }),
+  n_e8: NJ('eau', '#2f7ab8', { skin:'#c98e66', hair:'#e8e2da', hs:'bald', mask:false, eyes:'happy', mouth:'flat', beard:'long', beardc:'#e8e2da', shirt:'#2a5a7a', aura:'#6fd0ff' }),
+  n_o7: NJ('foudre', '#c8a020', { skin:'#a8714f', hair:'#e0b25a', hs:'mohawk', eyes:'glow', glow:'#6fd0ff', shirt:'#2a2a3a', maskc:'#3a3a4a' }),
+  n_o8: NJ('foudre', '#c8a020', { skin:'#8a5a3c', hair:'#2a1d14', hs:'curly', eyes:'glow', glow:'#ffe14a', mask:false, mouth:'grin', shirt:'#3a3a4a', aura:'#6fd0ff' }),
+  n_t7: NJ('terre', '#7a5a3a', { skin:'#9a9088', hair:'#2a1d14', hs:'part', eyes:'dot', shirt:'#3a2e22', maskc:'#5a4a32', tails:1 }),
+  n_t8: NJ('terre', '#c8a878', { skin:'#e8b894', hair:'#e8e2da', hs:'bald', mask:false, eyes:'happy', mouth:'smile', beard:'full', beardc:'#e8e2da', hood:1, hoodc:'#6a5a44', shirt:'#4a3a28', aura:'#6fd0ff' }),
+  c_nj_feu: NJ('feu', '#c8402a', { skin:'#f3d0b0', hair:'#2a1d14', hs:'short', mask:false, eyes:'happy', mouth:'smile', shirt:'#6a2a1a' }),
+  c_nj_vent: NJ('vent', '#b8944a', { skin:'#d9a27a', hair:'#b8452c', hs:'braids', mask:false, eyes:'dot', mouth:'grin', shirt:'#7a5a2a' }),
+  c_nj_eau: NJ('eau', '#2f7ab8', { skin:'#f0c4a0', hair:'#2e8a8a', hs:'bun', mask:false, eyes:'happy', mouth:'smile', shirt:'#2a5a7a' }),
+  c_nj_foudre: NJ('foudre', '#c8a020', { skin:'#8a5a3c', hair:'#e8e2da', hs:'short', mask:false, eyes:'dot', mouth:'o', shirt:'#3a3a4a' }),
+  c_nj_terre: NJ('terre', '#7a5a3a', { skin:'#c98e66', hair:'#4a2f1d', hs:'curly', mask:false, eyes:'dot', mouth:'smile', shirt:'#5a4a32' }),
+});
+// les 25 héros des Cinq Nations : portraits ninja originaux
+const NH = (el, band, x) => () => ninja(Object.assign({ el, band, aura:band }, x));
+Object.assign(HART, {
+  nh_akari: NH('feu', '#c8402a', { skin:'#f3d0b0', hair:'#c8392f', hs:'long', mask:false, eyes:'dot', mouth:'smirk', shirt:'#5a1a12' }),
+  nh_hoshi: NH('feu', '#e8b84a', { skin:'#e8b894', hair:'#e8e2da', hs:'bald', mask:false, eyes:'happy', mouth:'smile', beard:'long', beardc:'#e8e2da', hood:1, hoodc:'#8a2a1a', shirt:'#6a2a1a' }),
+  nh_ren: NH('feu', '#c8402a', { skin:'#d9a27a', hair:'#2a1d14', hs:'mohawk', eyes:'glow', glow:'#ffb04a', shirt:'#3a1a14', tails:1 }),
+  nh_tsubaki: NH('feu', '#c8402a', { skin:'#f0c4a0', hair:'#2a1d14', hs:'bun', mask:false, eyes:'dot', mouth:'smile', shirt:'#8a2a1a', earring:1 }),
+  nh_daigo: NH('feu', '#c8402a', { skin:'#c98e66', hair:'#4a2f1d', hs:'short', eyes:'dot', shirt:'#5a2a22', maskc:'#5a1a12', scar:1 }),
+  nh_mira: NH('vent', '#b8944a', { skin:'#d9a27a', hair:'#e0b25a', hs:'long', mask:false, eyes:'dot', mouth:'smirk', shirt:'#7a5a2a' }),
+  nh_taro: NH('vent', '#b8944a', { skin:'#f3d0b0', hair:'#7a4a2a', hs:'curly', mask:false, eyes:'happy', mouth:'grin', shirt:'#6a5232', freckles:1 }),
+  nh_haru: NH('vent', '#b8944a', { skin:'#a8714f', hair:'#2a1d14', hs:'side', eyes:'dot', hood:1, hoodc:'#c8a860', shirt:'#4a3a22', maskc:'#a8844a' }),
+  nh_gen: NH('vent', '#e8c870', { skin:'#e8b894', hair:'#5a3d7a', hs:'part', mask:false, eyes:'dot', mouth:'flat', beard:'goatee', shirt:'#5a4228' }),
+  nh_saki: NH('vent', '#b8944a', { skin:'#f0c4a0', hair:'#c8392f', hs:'braids', eyes:'glow', glow:'#e8ffd0', shirt:'#6a5232', tails:1 }),
+  nh_mizu: NH('eau', '#2f7ab8', { skin:'#f3d0b0', hair:'#e8e2da', hs:'long', eyes:'dot', shirt:'#1e3a5a', maskc:'#e8e2da' }),
+  nh_ryota: NH('eau', '#2f7ab8', { skin:'#c98e66', hair:'#2a1d14', hs:'short', eyes:'dot', shirt:'#14243a', maskc:'#2a2a34' }),
+  nh_umi: NH('eau', '#2f7ab8', { skin:'#bfe3df', hair:'#2e8a8a', hs:'braids', mask:false, eyes:'happy', mouth:'smile', shirt:'#2a5a7a' }),
+  nh_kenji: NH('eau', '#8fd0ff', { skin:'#e8b894', hair:'#2a1d14', hs:'side', mask:false, eyes:'dot', mouth:'flat', scar:1, shirt:'#1e2a44' }),
+  nh_aya: NH('eau', '#2f7ab8', { skin:'#f0c4a0', hair:'#5a3d7a', hs:'long', eyes:'glow', glow:'#8fd0ff', hood:1, hoodc:'#14243a', shirt:'#14243a' }),
+  nh_raiko: NH('foudre', '#c8a020', { skin:'#8a5a3c', hair:'#e8e2da', hs:'mohawk', mask:false, eyes:'dot', mouth:'grin', shirt:'#2a2a3a' }),
+  nh_kenta: NH('foudre', '#c8a020', { skin:'#a8714f', hair:'#2a1d14', hs:'curly', mask:false, eyes:'dot', mouth:'o', beard:'full', shirt:'#3a3a4a' }),
+  nh_hikari: NH('foudre', '#ffe14a', { skin:'#f3d0b0', hair:'#e0b25a', hs:'bun', eyes:'glow', glow:'#ffe14a', shirt:'#2a2a3a', maskc:'#3a3a4a' }),
+  nh_akio: NH('foudre', '#c8a020', { skin:'#7a5232', hair:'#2a1d14', hs:'bald', mask:false, eyes:'dot', mouth:'smirk', beard:'goatee', shirt:'#3a3a4a', earring:1 }),
+  nh_rika: NH('foudre', '#c8a020', { skin:'#e8b894', hair:'#5a3d7a', hs:'side', eyes:'dot', shirt:'#2a2a3a', maskc:'#c8a020', tails:1 }),
+  nh_goro: NH('terre', '#7a5a3a', { skin:'#9a9088', hair:'#5a5450', hs:'bald', mask:false, eyes:'dot', mouth:'flat', beard:'stubble', shirt:'#4a443e' }),
+  nh_kaito: NH('terre', '#7a5a3a', { skin:'#e8b894', hair:'#7a4a2a', hs:'short', mask:false, eyes:'happy', mouth:'smile', shirt:'#5a4a32' }),
+  nh_masa: NH('terre', '#c8a878', { skin:'#c98e66', hair:'#2a1d14', hs:'long', mask:false, eyes:'dot', mouth:'smile', hood:1, hoodc:'#6a5a44', shirt:'#3a2e22' }),
+  nh_toshi: NH('terre', '#7a5a3a', { skin:'#d9a27a', hair:'#2a1d14', hs:'mohawk', eyes:'glow', glow:'#ffb050', shirt:'#4a3a28', maskc:'#5a4a32' }),
+  nh_emi: NH('terre', '#7a5a3a', { skin:'#f0c4a0', hair:'#b8452c', hs:'curly', mask:false, eyes:'dot', mouth:'grin', shirt:'#5a4a32', freckles:1 }),
+});
+
 /* =====================================================================
    HÉROS EN 3D — figurines façon film d'animation, construites à partir
    de volumes simples et rendues une fois en images (Three.js).
@@ -5177,7 +5331,7 @@ function castleScene(el) {
    ===================================================================== */
 const SP_TYPES = {
   renf:{ n:'Renfort', col:'#c8963e' }, eco:{ n:'Économie', col:'#4f8a3a' }, arc:{ n:'Arcane', col:'#3f6fb0' },
-  ombre:{ n:'Ombre', col:'#5a3d7a' }, comb:{ n:'Combat', col:'#a8322a' }, nat:{ n:'Nature', col:'#3f8a6a' },
+  ombre:{ n:'Ombre', col:'#5a3d7a' }, comb:{ n:'Combat', col:'#a8322a' }, nat:{ n:'Nature', col:'#3f8a6a' }, nin:{ n:'Technique', col:'#2a5a9a' },
 };
 const SPELLS = {
   sp_pinte:{ n:'Pinte offerte', t:1, c:1, ty:'renf', tg:1, tx:'Donne +2/+1 à un de tes serviteurs.' },
@@ -5198,14 +5352,28 @@ const SPELLS = {
   sp_tempete:{ n:'Tempête de mana', t:5, c:3, ty:'comb', tx:'Prochain combat seulement : tous tes serviteurs gagnent +3/+3.' },
   sp_reflet:{ n:'Double reflet', t:6, c:4, ty:'arc', tg:1, tx:'Ajoute à ta main une copie exacte d\'un de tes serviteurs, bonus compris.' },
   sp_ascension:{ n:'Ascension', t:6, c:6, ty:'renf', tx:'Donne +2/+2 et Bouclier divin à tous tes serviteurs.' },
+  // ----- techniques ninja (univers des Cinq Nations) : achetées en or, lancées avec du chakra -----
+  nj_permut:{ n:'Permutation', t:1, c:1, ck:1, nin:1, ty:'nin', tg:1, tx:'Prochain combat seulement : un de tes serviteurs gagne Bouclier divin.' },
+  nj_souffle:{ n:'Souffle ardent', t:1, c:1, ck:2, nin:1, ty:'nin', tx:'Prochain combat : 3 dégâts frappent l\'ennemi au début du combat.' },
+  nj_pierre:{ n:'Armure de pierre', t:2, c:2, ck:2, nin:1, ty:'nin', tg:1, tx:'Donne +0/+4 et Provocation à un de tes serviteurs.' },
+  nj_brume:{ n:'Rideau de brume', t:2, c:2, ck:2, nin:1, ty:'nin', tx:'Prochain combat seulement : tous tes serviteurs gagnent +0/+3.' },
+  nj_doubles:{ n:'Technique des doubles', t:3, c:2, ck:3, nin:1, ty:'nin', tg:1, tx:'Invoque une copie 1/1 du serviteur ciblé, sans ses bonus.' },
+  nj_foudre:{ n:'Lame de foudre', t:3, c:3, ck:3, nin:1, ty:'nin', tg:1, tx:'Prochain combat seulement : un de tes serviteurs gagne +3 attaque et Toxique.' },
+  nj_rafale:{ n:'Rafale tranchante', t:3, c:3, ck:3, nin:1, ty:'nin', tx:'Donne +2/+1 à trois de tes serviteurs aléatoires.' },
+  nj_invoc:{ n:'Invocation', t:4, c:3, ck:4, nin:1, ty:'nin', tx:'Invoque sur ton plateau un serviteur aléatoire de ton niveau de taverne.' },
+  nj_sceau:{ n:'Sceau de puissance', t:5, c:4, ck:5, nin:1, ty:'nin', tg:1, tx:'Donne +4/+4 et Renaissance à un de tes serviteurs.' },
+  nj_deluge:{ n:'Déluge élémentaire', t:6, c:5, ck:7, nin:1, ty:'nin', tx:'Prochain combat : tous tes serviteurs gagnent +4/+4 et 4 dégâts frappent l\'ennemi au début du combat.' },
 };
 const SPELL_IDS = Object.keys(SPELLS);
-function drawSpell(t) { const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
+function drawSpell(t) { const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra'); const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !!SPELLS[id].nin === !!nin); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
 
 // pourquoi un sort ne peut pas être lancé (null = il peut)
 function spellBlock(p, id, tgt) {
   const S = SPELLS[id];
+  if (S.ck && (p.ck || 0) < S.ck) return `Il te faut ${S.ck} chakra pour lancer cette technique (tu en as ${p.ck || 0}).`;
   if (S.tg && !tgt) return 'Choisis un de tes serviteurs.';
+  if ((id === 'nj_doubles' || id === 'nj_invoc') && p.bd.length >= 7) return 'Ton plateau est plein.';
+  if (id === 'nj_rafale' && !p.bd.length) return 'Tu n\'as aucun serviteur.';
   if (id === 'sp_chopes' && tgt.a < 1) return 'Ce serviteur n\'a pas d\'attaque à échanger.';
   if (id === 'sp_rabot' && p.t >= 6) return 'Ta taverne est déjà au niveau maximum.';
   if (id === 'sp_meta' && tierOf(tgt) >= 6) return 'Ce serviteur est déjà au niveau maximum.';
@@ -5221,6 +5389,8 @@ function castSpell0(G, p, hi, tg) {
   const tgt = S.tg ? p.bd[tg] : null;
   if (spellBlock(p, id, tgt)) return false;
   p.hd.splice(hi, 1);
+  if (S.ck) p.ck = (p.ck || 0) - S.ck;
+  p.lastCast = id;
   switch (id) {
     case 'sp_pinte': buff(tgt, 2, 1); break;
     case 'sp_tournee': p.fz = false; fillShop(G, p); trigBoard(G, p, 'roll'); break;
@@ -5249,6 +5419,16 @@ function castSpell0(G, p, hi, tg) {
     case 'sp_alchimie': { const b = CD(tgt.c); tgt.g = 1; tgt.a += b.a; tgt.h += b.h; break; }
     case 'sp_tempete': p.tma = { a:((p.tma && p.tma.a) || 0) + 3, h:((p.tma && p.tma.h) || 0) + 3 }; break;
     case 'sp_reflet': { const c = clone(tgt); c.u = UID++; delete c.tmp; p.hd.push(c); break; }
+    case 'nj_permut': tgt.tmp = { a:(tgt.tmp && tgt.tmp.a) || 0, h:(tgt.tmp && tgt.tmp.h) || 0, f:((tgt.tmp && tgt.tmp.f) || '') + 's', s:'Permutation' }; break;
+    case 'nj_souffle': p.njf = (p.njf || 0) + 3; break;
+    case 'nj_pierre': buff(tgt, 0, 4); addF(tgt, 't'); break;
+    case 'nj_brume': p.tma = { a:(p.tma && p.tma.a) || 0, h:((p.tma && p.tma.h) || 0) + 3 }; break;
+    case 'nj_doubles': { const c = mk(tgt.c, 0); c.a = 1; c.h = 1; p.bd.splice(tg + 1, 0, c); break; }
+    case 'nj_foudre': tgt.tmp = { a:((tgt.tmp && tgt.tmp.a) || 0) + 3, h:(tgt.tmp && tgt.tmp.h) || 0, f:((tgt.tmp && tgt.tmp.f) || '') + 'v', s:'Lame de foudre' }; break;
+    case 'nj_rafale': shuffle(p.bd.slice()).slice(0, 3).forEach(m => buff(m, 2, 1)); break;
+    case 'nj_invoc': { const m = drawOne(G, p.t) || drawAny(Math.max(1, p.t)); if (m) p.bd.push(m); break; }
+    case 'nj_sceau': buff(tgt, 4, 4); addF(tgt, 'r'); break;
+    case 'nj_deluge': p.tma = { a:((p.tma && p.tma.a) || 0) + 4, h:((p.tma && p.tma.h) || 0) + 4 }; p.njf = (p.njf || 0) + 4; break;
     case 'sp_ascension': p.bd.forEach(x => { buff(x, 2, 2); addF(x, 's'); }); break;
   }
   trigBoard(G, p, 'cast');
@@ -5302,7 +5482,19 @@ function aiSpells(G, p) {
 }
 
 /* ---------- illustrations des sorts ---------- */
+const NJA = (col, inner) => () => softGlow(50, 52, 34, col, .35) + `<g transform="translate(50 54)">${inner}</g>` + [[-26, -30], [28, -26], [-30, 26], [30, 28]].map(([x, y]) => Ci(50 + x, 54 + y, 1.6, '#fff', 'opacity=".6"')).join('');
+const HANDS = `<path d="M-9 14 L-9 -6 Q-9 -14 -3 -16 L-1 -2 M9 14 L9 -6 Q9 -14 3 -16 L1 -2" fill="#f1c7a0" ${so(1.8)}/><path d="M-3 -16 Q0 -20 3 -16 L1 -2 L-1 -2 Z" fill="#f1c7a0" ${so(1.6)}/>`;
 const SPART = {
+  nj_permut: NJA('#bfe8ff', `<rect x="-20" y="-14" width="16" height="30" rx="3" fill="#a8744a" ${so(1.8)}/><path d="M-18 -8 H-6 M-18 2 H-6" stroke="#6a4a2a" stroke-width="1.6"/>` + Ln('M-2 0 Q6 -16 16 -4', '#fff', 2.6) + `<circle cx="12" cy="4" r="8" fill="#e8e2da" ${so(1.8)}/><path d="M6 2 Q12 -2 18 2" stroke="#2a2a34" stroke-width="2.4"/>`),
+  nj_souffle: NJA('#ffb04a', HANDS + `<path d="M0 -18 C 14 -24 24 -10 34 -14 C 30 -4 22 0 10 -2 C 18 4 10 10 2 6 Z" fill="#ff7a2a" ${so(1.8)}/><path d="M6 -14 C 14 -16 20 -10 26 -12 C 22 -6 16 -6 10 -6 Z" fill="#ffe27a"/>`),
+  nj_pierre: NJA('#c8a878', `<path d="M-22 18 L-16 -10 L-4 -20 L10 -16 L22 -2 L18 18 Z" fill="#8a7a6a" ${so(2)}/><path d="M-12 -4 L-2 6 L12 -6 M-4 18 L-2 6" stroke="#5a4e44" stroke-width="2" fill="none"/>`),
+  nj_brume: NJA('#bfe8ff', [-14, -2, 10].map((y, k) => `<path d="M-28 ${y} C -14 ${y - 8}, -4 ${y + 6}, 8 ${y - 2} S 24 ${y - 6}, 30 ${y}" fill="none" stroke="#e8f8ff" stroke-width="${5 - k}" stroke-linecap="round" opacity="${.9 - k * .2}"/>`).join('')),
+  nj_doubles: NJA('#e8e2da', [-16, 0, 16].map((x, k) => `<g transform="translate(${x} ${k === 1 ? -4 : 2})" opacity="${k === 1 ? 1 : .6}"><circle cy="-8" r="7" fill="#f1c7a0" ${so(1.6)}/><rect x="-8" y="-12" width="16" height="4" fill="#2a5a9a"/><path d="M-9 16 L-7 0 L7 0 L9 16 Z" fill="#2c2e3a" ${so(1.6)}/></g>`).join('')),
+  nj_foudre: NJA('#ffe14a', `<path d="M-22 18 L14 -18" stroke="#c8ccd4" stroke-width="5" stroke-linecap="round"/><path d="M-26 22 L-18 14" stroke="#5a3a1a" stroke-width="6" stroke-linecap="round"/><path d="M2 -26 L-6 -4 L4 -4 L-4 16 L12 -10 L2 -10 Z" fill="#ffe14a" ${so(1.6)}/>`),
+  nj_rafale: NJA('#e8ffd0', [-14, 0, 14].map(y => `<path d="M-26 ${y + 6} Q0 ${y - 12} 26 ${y}" fill="none" stroke="#f4ffe8" stroke-width="4" stroke-linecap="round"/>`).join('') + `<path d="M18 -4 L30 -2 L20 6 Z" fill="#c8ccd4" ${so(1.4)}/>`),
+  nj_invoc: NJA('#ffd27a', `<circle r="22" fill="none" stroke="#fff3c0" stroke-width="2.4"/><circle r="15" fill="none" stroke="#fff3c0" stroke-width="1.4" stroke-dasharray="3 3"/>` + [0, 72, 144, 216, 288].map(a => `<circle cx="${(Math.cos(a * Math.PI / 180) * 22).toFixed(1)}" cy="${(Math.sin(a * Math.PI / 180) * 22).toFixed(1)}" r="3" fill="#fff3c0"/>`).join('') + `<path d="M-10 14 Q0 -18 10 14" fill="#5a3a1a" ${so(1.6)}/>`),
+  nj_sceau: NJA('#d8b8ff', `<rect x="-18" y="-24" width="36" height="46" rx="3" fill="#f4ecd8" ${so(2)}/><circle cy="-2" r="11" fill="none" stroke="#a8322a" stroke-width="3"/><path d="M-6 -2 H6 M0 -8 V4" stroke="#a8322a" stroke-width="3"/><path d="M-18 -24 H18 M-18 22 H18" stroke="#8a6a3a" stroke-width="4"/>`),
+  nj_deluge: NJA('#ffffff', `<path d="M-6 -22 C 2 -16 2 -10 -4 -6 C -10 -10 -12 -16 -6 -22 Z" fill="#ff7a2a" ${so(1.4)}/><path d="M14 -10 C 18 -4 18 0 14 4 C 10 0 10 -4 14 -10 Z" fill="#6fc8ff" ${so(1.4)}/><path d="M-16 0 L-20 10 L-14 10 L-18 20 L-8 6 L-14 6 Z" fill="#ffe14a" ${so(1.2)}/><path d="M4 12 L10 4 L16 12 Z" fill="#8a7a6a" ${so(1.4)}/><path d="M-4 18 Q4 10 12 18" fill="none" stroke="#e8ffd0" stroke-width="3"/>`),
   sp_pinte: () => softGlow(50, 54, 30, '#ffe39a', .25) + '<g transform="translate(30 30) scale(1.45)">' + P('M0 7 L18 7 L17 29 Q9 32 1 29 Z', '#d99a3e', so()) + Ln('M2.5 13 L15.5 13 M2.5 21 L15.5 21', '#8a5a22', 1.4) + Ln('M18 12 C 27 12, 27 24, 17.4 24', OUT, 5) + Ln('M18 12 C 27 12, 27 24, 17.4 24', '#d99a3e', 2.4) + P('M-2 8 C -3 0, 5 -2, 7 1 C 9 -3, 17 -2, 18 2 C 22 2, 22 8, 19 9 L18 12 C 16 9, 12 10, 9 9 C 6 11, 1 10, -2 8 Z', '#fff8e6', so(1.6)) + E(4, 4, 2, 1.4, '#fff', 'opacity=".9"') + '</g>' + [[24, 30, 2.2], [76, 26, 1.6], [72, 40, 1.2], [28, 44, 1.4]].map(([x, y, r]) => Ci(x, y, r, '#fff8e6', so(0.8))).join('') + P(starD(76, 72, 6, 2.4, 4), '#fff1b8', GLOW),
   sp_tournee: () => P('M14 70 Q50 82 86 70 L84 76 Q50 89 16 76 Z', '#8a5a2b', so()) + [[28, 46], [44, 40], [60, 46]].map(([x, y], k) => `<g transform="translate(${x} ${y}) scale(.95) rotate(${(k - 1) * 8})">` + P('M0 7 L14 7 L13 26 Q7 28 1 26 Z', '#d99a3e', so(1.8)) + Ln('M14 11 C 20 11, 20 21, 13.6 21', OUT, 4) + Ln('M14 11 C 20 11, 20 21, 13.6 21', '#d99a3e', 2) + P('M-1.4 8 C -2 2, 4 1, 6 3 C 8 0, 14 1, 15 4 C 17 5, 16 8, 14.6 8.4 Z', '#fff8e6', so(1.4)) + '</g>').join('') + P(starD(50, 22, 7, 2.4, 4), '#fff1b8', GLOW) + P(starD(24, 26, 3.4, 1.2, 4), '#fff1b8', GLOW) + P(starD(78, 30, 4, 1.4, 4), '#fff1b8', GLOW),
   sp_placement: () => P('M30 52 C 22 62, 22 86, 50 88 C 78 86, 78 62, 70 52 C 66 46, 34 46, 30 52 Z', '#7a4a28', so()) + P('M36 50 C 40 42, 60 42, 64 50 Z', '#5a321c', so(1.8)) + Ln('M38 48 Q50 54 62 48', '#e2b452', 2.6) + P(starD(50, 70, 7, 3, 4), '#e2b452', so(1)) + [[50, 30, 0], [42, 22, -12], [58, 18, 14]].map(([x, y, r]) => `<g transform="translate(${x} ${y}) rotate(${r})">${E(0, 0, 8, 8, '#f2c14e', so(1.8))}${E(0, 0, 5, 5, 'none', 'stroke="#b37c26" stroke-width="1.4"')}</g>`).join('') + Ln('M50 40 L50 46', '#fff1b8', 1.6) + Ln('M76 76 L82 70 L86 74', '#a6e07a', 2.6),
@@ -5342,7 +5534,7 @@ function spellTokenH(id, z, i, o = {}) {
     <path d="M14 12 Q50 4 86 12 L86 90 Q50 98 14 90 Z" fill="none" ${so(2)}/>
     <rect x="0" y="-2" width="100" height="10" rx="5" fill="#7a4a28" ${so(2)}/><rect x="0" y="94" width="100" height="10" rx="5" fill="#7a4a28" ${so(2)}/>
     <circle cx="14" cy="104" r="12" fill="url(#gr-badge)" stroke="#e2b452" stroke-width="2.2"/><text class="gt" x="14" y="104" dy=".36em" style="fill:${spellCostFor(id, z) < S.c ? '#b8ff8a' : '#ffe39a'}">${spellCostFor(id, z)}</text>
-    <circle cx="50" cy="0" r="8.4" fill="url(#gr-badge)" stroke="#e2b452" stroke-width="2"/><text class="gt tb" x="50" y="0" dy=".36em">${S.t}</text></svg>
+    <circle cx="50" cy="0" r="8.4" fill="url(#gr-badge)" stroke="#e2b452" stroke-width="2"/><text class="gt tb" x="50" y="0" dy=".36em">${S.t}</text>${S.ck ? `<circle cx="86" cy="104" r="12" fill="#2a6ad8" stroke="#bfe8ff" stroke-width="2.2"/><text class="gt" x="86" y="104" dy=".36em" style="fill:#e8fcff">${S.ck}</text>` : ''}</svg>
     <span class="mn-nm">${esc(S.n)}</span></div>`;
 }
 // coût réel pour le joueur (réductions actives), et coût de base
@@ -5355,7 +5547,7 @@ function spellCardH(id, z, i, o = {}) {
     + `<div class="cd-tier" aria-hidden="true">${'<i></i>'.repeat(S.t)}</div>`
     + `<div class="cd-nm"><span>${esc(S.n)}</span></div><div class="cd-tx${n > 95 ? ' xlong' : n > 62 ? ' long' : ''}">${esc(S.tx)}</div>`
     + `<div class="cd-tb" style="background:${ty.col}">${esc(ty.n)}</div>`
-    + costGemH(spellCostFor(id, z), S.c) + `${z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : ''}</div>`;
+    + costGemH(spellCostFor(id, z), S.c) + (S.ck ? `<span class="ck-gem" title="Coût en chakra">${S.ck}</span>` : '') + `${z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : ''}</div>`;
 }
 
 /* =====================================================================
@@ -6161,7 +6353,7 @@ function gameH() {
       <span class="op-face">${faceH(playerSym(p))}<b class="op-hp">${p.al ? Math.max(0, p.hp) : p.pl + 'e'}</b><span class="op-t">${p.t}</span>${d.ph === 'recruit' && p.r && p.al ? '<span class="op-r">✓</span>' : ''}</span>
       <span class="op-n">${esc(p.n)}</span></li>`).join('');
   const myInfo = d.pl.find(p => p.pid === myPid), alive = !!(myInfo && myInfo.al);
-  const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span>${d.laws && d.laws.length && d.ph !== 'end' ? `<span class="hud-laws">${d.laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<span class="hl" data-hov="law" data-tip="${esc(M.n + ' : ' + M.d)}">${icon(M.ic)}</span>`; }).join('')}${d.laws.some(l => l.k === 'chakra') && V.me ? `<span class="souls chakra" data-tip="Chakra : il paie tes sorts avant l'or. Chaque serviteur des Cinq Nations en génère 1 au début de ton tour (10 au plus).">${icon('k_spark')}<b>${V.me.ck || 0}</b></span>` : ''}${V.me && V.me.souls ? `<span class="souls" data-tip="Âmes récoltées : toutes les 3 âmes, tes serviteurs des Ténèbres gagnent +1/+1 au début du tour.">${icon('skull')}<b>${V.me.souls}</b></span>` : ''}</span>` : ''}<span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerTxt()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm" data-act="leave">Quitter</button></div>`;
+  const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span>${d.laws && d.laws.length && d.ph !== 'end' ? `<span class="hud-laws">${d.laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<span class="hl" data-hov="law" data-tip="${esc(M.n + ' : ' + M.d)}">${icon(M.ic)}</span>`; }).join('')}${d.laws.some(l => l.k === 'chakra') && V.me ? `<span class="souls chakra" data-tip="Chakra : il sert à lancer tes techniques ninja. Chaque serviteur des Cinq Nations en génère 1 au début de ton tour (10 au plus).">${icon('k_spark')}<b>${V.me.ck || 0}</b></span>` : ''}${V.me && V.me.souls ? `<span class="souls" data-tip="Âmes récoltées : toutes les 3 âmes, tes serviteurs des Ténèbres gagnent +1/+1 au début du tour.">${icon('skull')}<b>${V.me.souls}</b></span>` : ''}</span>` : ''}<span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerTxt()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm" data-act="leave">Quitter</button></div>`;
   let table;
   if (me && alive) {
     const canAct = d.ph === 'recruit';
@@ -6202,7 +6394,7 @@ function gameH() {
       : `<span class="powm passive" aria-label="${esc(hero ? hero.tx : '')}">${hero ? powArtH(me.hero) : icon('crown')}<small>Passif</small>${hero ? `<span class="pc-tx">${esc(hero.tx)}</span>` : ''}</span>`;
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
-      <div class="hz-left"><span class="hov" data-hov="comp">${compMedal(canAct, own)}</span></div>
+      <div class="hz-left">${ckGauge(d, me)}<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span></div>
       <div class="hz-hero" data-hov="hero"><span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? 'art-h-' + me.hero : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span></div>
       <div class="hz-right"><span class="hov" data-hov="pow">${power}</span>${coins}</div>
       <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}">${icon('bell')}<span>${me.rdy ? 'Prêt !' : 'Prêt'}</span></button></div></section>`;
@@ -6216,6 +6408,14 @@ function gameH() {
     table = `<div class="table">${hud}<section class="plaque solo-msg"><h2>Spectateur</h2><p class="note">Tu observes cette partie.</p></section></div>`;
   }
   return `<div class="stage"><aside class="opps" aria-label="Joueurs"><ol>${opps}</ol></aside>${table}</div>${overlayH()}`;
+}
+// la jauge de chakra (univers des Cinq Nations) : un grand orbe bleu et dix perles
+function ckGauge(d, me) {
+  if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
+  const ck = me.ck || 0, inc = (me.bd || []).filter(m => (V.pub.laws.find(l => l.k === 'chakra').trs || []).includes(CD(m.c).tr)).length;
+  return `<div class="ckg" data-tip="Chakra : il sert à lancer tes techniques ninja. Chaque serviteur des Cinq Nations en génère 1 au début de ton tour (10 au plus).">
+    <span class="ckg-orb${ck ? '' : ' empty'}">${icon('k_spark')}<b>${ck}</b></span>
+    <span class="ckg-r"><small>Chakra${inc ? ` · +${inc} au prochain tour` : ''}</small><span class="ckg-p">${Array.from({ length:10 }, (_, k) => `<i class="${k < ck ? 'on' : ''}"></i>`).join('')}</span></span></div>`;
 }
 const medal = (act, ic, label, cost, dis, on) => `<button class="medal${on ? ' on' : ''}" data-act="${act}" ${dis ? 'disabled' : ''} title="${label}">${icon(ic)}${cost != null ? `<span class="cost">${cost}</span>` : ''}<small>${label}</small></button>`;
 function compMedal(canAct, own) {
@@ -6249,8 +6449,8 @@ function detailH(canAct) {
     const id = s.z === 'ss' ? me.sp : me.hd[s.i].sp; if (!id) return '';
     const S = SPELLS[id];
     let acts = '';
-    if (canAct && s.z === 'ss') { const c = me.spc != null ? me.spc : S.c, ck = (V.pub && (V.pub.laws || []).some(l => l.k === 'chakra')) ? Math.min(me.ck || 0, c) : 0;
-      acts = `<button class="btn pri" data-act="buysp" ${me.g < c - ck || me.hd.length >= 10 ? 'disabled' : ''}>Acheter · ${ck ? `${ck} chakra${c - ck ? ' + ' + (c - ck) + ' or' : ''}` : c + ' or'}</button>`; }
+    if (canAct && s.z === 'ss') { const c = me.spc != null ? me.spc : S.c;
+      acts = `<button class="btn pri" data-act="buysp" ${me.g < c || me.hd.length >= 10 ? 'disabled' : ''}>Acheter · ${c} or</button>`; }
     if (canAct && s.z === 'hd') acts = S.tg ? `<button class="btn pri" data-act="aim" ${me.bd.length ? '' : 'disabled'}>Lancer sur un serviteur</button>` : `<button class="btn pri" data-act="cast">Lancer le sort</button>`;
     return `<div class="det">${spellCardH(id, 'd', 0)}<div class="det-s"><b>${esc(S.n)}</b><span class="meta">Sort · ${esc(SP_TYPES[S.ty].n)} · ${s.z === 'ss' ? 'sur l\'étagère de la taverne' : 'dans ta main'}</span><div class="acts">${acts}</div></div></div>`;
   }
@@ -6820,9 +7020,9 @@ document.addEventListener('pointermove', e => {
 }, { passive:true });
 
 /* ---------- cartes de héros, de pouvoir et de compagnon (aperçu au survol) ---------- */
-const HTHEME = { rivet:'spark', egide:'holy', ondine:'potion', barnabe:'coin', maelle:'leaf', oren:'rune', gor:'rock', ilka:'spark', selene:'blood', brok:'ember', sylvara:'arcane', grumbo:'steam', vaskor:'soul', pyra:'fire', paul:'fire', leon:'leaf', zoe:'bubble', jeanne:'wind', nono:'fire' };
-const THC = { fire:'#ff7a2a', ember:'#ff9a3a', spark:'#ffc24a', holy:'#ffe08a', potion:'#6fe0a0', coin:'#f2c14e', leaf:'#8fd05a', rune:'#7ac4ff', rock:'#c8a878', blood:'#e0405a', arcane:'#b48cff', steam:'#f0e2d0', soul:'#7dffb0', bubble:'#6fc8ff', wind:'#bff0e6' };
-const THN = { fire:'Feu', ember:'Forge', spark:'Mécanique', holy:'Lumière', potion:'Alchimie', coin:'Commerce', leaf:'Nature', rune:'Savoir', rock:'Force', blood:'Sang', arcane:'Arcanes', steam:'Festin', soul:'Nécromancie', bubble:'Eau', wind:'Vent' };
+const HTHEME = { nh_akari:'fire', nh_hoshi:'fire', nh_ren:'fire', nh_tsubaki:'fire', nh_daigo:'fire', nh_mira:'wind', nh_taro:'wind', nh_haru:'wind', nh_gen:'wind', nh_saki:'wind', nh_mizu:'bubble', nh_ryota:'bubble', nh_umi:'bubble', nh_kenji:'bubble', nh_aya:'bubble', nh_raiko:'storm', nh_kenta:'storm', nh_hikari:'storm', nh_akio:'storm', nh_rika:'storm', nh_goro:'rock', nh_kaito:'rock', nh_masa:'rock', nh_toshi:'rock', nh_emi:'rock', rivet:'spark', egide:'holy', ondine:'potion', barnabe:'coin', maelle:'leaf', oren:'rune', gor:'rock', ilka:'spark', selene:'blood', brok:'ember', sylvara:'arcane', grumbo:'steam', vaskor:'soul', pyra:'fire', paul:'fire', leon:'leaf', zoe:'bubble', jeanne:'wind', nono:'fire' };
+const THC = { storm:'#ffe14a', fire:'#ff7a2a', ember:'#ff9a3a', spark:'#ffc24a', holy:'#ffe08a', potion:'#6fe0a0', coin:'#f2c14e', leaf:'#8fd05a', rune:'#7ac4ff', rock:'#c8a878', blood:'#e0405a', arcane:'#b48cff', steam:'#f0e2d0', soul:'#7dffb0', bubble:'#6fc8ff', wind:'#bff0e6' };
+const THN = { storm:'Foudre', fire:'Feu', ember:'Forge', spark:'Mécanique', holy:'Lumière', potion:'Alchimie', coin:'Commerce', leaf:'Nature', rune:'Savoir', rock:'Force', blood:'Sang', arcane:'Arcanes', steam:'Festin', soul:'Nécromancie', bubble:'Eau', wind:'Vent' };
 const PWART = {
   fire:'<path d="M20 6c3 6 9 9 9 17a9 9 0 0 1-18 0c0-5 3-7 4-11 1 3 2 4 3 4 0-4 0-7 2-10z" fill="#ff8a2a"/><path d="M20 17c2 3 5 5 5 9a5 5 0 0 1-10 0c0-3 2-4 3-6 1 1 1 2 2 2 0-2-1-3 0-5z" fill="#ffe27a"/>',
   ember:'<path d="M9 18h18l-3 4h-3v4h4v4H15v-4h4v-4h-6z" fill="#b8bcc8"/><path d="M28 10l2-4M31 14l4-2M24 9l-1-4" stroke="#ffb04a" stroke-width="2.4" stroke-linecap="round"/><circle cx="27" cy="16" r="2" fill="#ff8a3a"/>',
@@ -6838,6 +7038,7 @@ const PWART = {
   steam:'<path d="M23 17a7 7 0 1 1-6-6l9 9 4-1 2 2-2 2 1 3-2 2-2-4z" fill="#d89a5a"/><circle cx="17" cy="17" r="5" fill="#f0c890"/><path d="M12 9c-1-2 1-3 0-5M17 8c-1-2 1-3 0-5" stroke="#f0e2d0" stroke-width="1.8" fill="none" stroke-linecap="round"/>',
   soul:'<path d="M11 18a9 9 0 0 1 18 0v6l-3 2v4h-12v-4l-3-2z" fill="#e8ffe8"/><circle cx="16" cy="20" r="2.6" fill="#1a3a2a"/><circle cx="24" cy="20" r="2.6" fill="#1a3a2a"/><path d="M17 27v3M20 27v3M23 27v3" stroke="#1a3a2a" stroke-width="1.4"/>',
   bubble:'<circle cx="16" cy="22" r="8" fill="#6fc8ff" opacity=".85"/><circle cx="27" cy="13" r="5" fill="#6fc8ff" opacity=".85"/><circle cx="28" cy="27" r="3" fill="#6fc8ff" opacity=".85"/><circle cx="13" cy="19" r="2" fill="#fff"/><circle cx="25.5" cy="11.5" r="1.3" fill="#fff"/>',
+  storm:'<path d="M23 4 L12 22 H19 L15 36 L29 16 H21 Z" fill="#ffe14a"/><path d="M8 10 L12 14 M32 26 L28 22" stroke="#fff6c0" stroke-width="2.4" stroke-linecap="round"/>',
   wind:'<path d="M6 15h17a4 4 0 1 0-4-4M6 21h24a4 4 0 1 1-4 4M6 27h11" stroke="#bff0e6" stroke-width="3" fill="none" stroke-linecap="round"/>'
 };
 const powArtH = hid => { const th = HTHEME[hid] || 'spark', col = THC[th]; return `<svg class="ic pwart" viewBox="0 0 40 40" style="--hc:${col}" aria-hidden="true">${PWART[th]}</svg>`; };

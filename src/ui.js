@@ -380,7 +380,7 @@ function gameH() {
       <span class="op-face">${faceH(playerSym(p))}<b class="op-hp">${p.al ? Math.max(0, p.hp) : p.pl + 'e'}</b><span class="op-t">${p.t}</span>${d.ph === 'recruit' && p.r && p.al ? '<span class="op-r">✓</span>' : ''}</span>
       <span class="op-n">${esc(p.n)}</span></li>`).join('');
   const myInfo = d.pl.find(p => p.pid === myPid), alive = !!(myInfo && myInfo.al);
-  const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span>${d.laws && d.laws.length && d.ph !== 'end' ? `<span class="hud-laws">${d.laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<span class="hl" data-hov="law" data-tip="${esc(M.n + ' : ' + M.d)}">${icon(M.ic)}</span>`; }).join('')}${d.laws.some(l => l.k === 'chakra') && V.me ? `<span class="souls chakra" data-tip="Chakra : il paie tes sorts avant l'or. Chaque serviteur des Cinq Nations en génère 1 au début de ton tour (10 au plus).">${icon('k_spark')}<b>${V.me.ck || 0}</b></span>` : ''}${V.me && V.me.souls ? `<span class="souls" data-tip="Âmes récoltées : toutes les 3 âmes, tes serviteurs des Ténèbres gagnent +1/+1 au début du tour.">${icon('skull')}<b>${V.me.souls}</b></span>` : ''}</span>` : ''}<span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerTxt()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm" data-act="leave">Quitter</button></div>`;
+  const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span>${d.laws && d.laws.length && d.ph !== 'end' ? `<span class="hud-laws">${d.laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<span class="hl" data-hov="law" data-tip="${esc(M.n + ' : ' + M.d)}">${icon(M.ic)}</span>`; }).join('')}${d.laws.some(l => l.k === 'chakra') && V.me ? `<span class="souls chakra" data-tip="Chakra : il sert à lancer tes techniques ninja. Chaque serviteur des Cinq Nations en génère 1 au début de ton tour (10 au plus).">${icon('k_spark')}<b>${V.me.ck || 0}</b></span>` : ''}${V.me && V.me.souls ? `<span class="souls" data-tip="Âmes récoltées : toutes les 3 âmes, tes serviteurs des Ténèbres gagnent +1/+1 au début du tour.">${icon('skull')}<b>${V.me.souls}</b></span>` : ''}</span>` : ''}<span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerTxt()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm" data-act="leave">Quitter</button></div>`;
   let table;
   if (me && alive) {
     const canAct = d.ph === 'recruit';
@@ -421,7 +421,7 @@ function gameH() {
       : `<span class="powm passive" aria-label="${esc(hero ? hero.tx : '')}">${hero ? powArtH(me.hero) : icon('crown')}<small>Passif</small>${hero ? `<span class="pc-tx">${esc(hero.tx)}</span>` : ''}</span>`;
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
-      <div class="hz-left"><span class="hov" data-hov="comp">${compMedal(canAct, own)}</span></div>
+      <div class="hz-left">${ckGauge(d, me)}<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span></div>
       <div class="hz-hero" data-hov="hero"><span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? 'art-h-' + me.hero : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span></div>
       <div class="hz-right"><span class="hov" data-hov="pow">${power}</span>${coins}</div>
       <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}">${icon('bell')}<span>${me.rdy ? 'Prêt !' : 'Prêt'}</span></button></div></section>`;
@@ -435,6 +435,14 @@ function gameH() {
     table = `<div class="table">${hud}<section class="plaque solo-msg"><h2>Spectateur</h2><p class="note">Tu observes cette partie.</p></section></div>`;
   }
   return `<div class="stage"><aside class="opps" aria-label="Joueurs"><ol>${opps}</ol></aside>${table}</div>${overlayH()}`;
+}
+// la jauge de chakra (univers des Cinq Nations) : un grand orbe bleu et dix perles
+function ckGauge(d, me) {
+  if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
+  const ck = me.ck || 0, inc = (me.bd || []).filter(m => (V.pub.laws.find(l => l.k === 'chakra').trs || []).includes(CD(m.c).tr)).length;
+  return `<div class="ckg" data-tip="Chakra : il sert à lancer tes techniques ninja. Chaque serviteur des Cinq Nations en génère 1 au début de ton tour (10 au plus).">
+    <span class="ckg-orb${ck ? '' : ' empty'}">${icon('k_spark')}<b>${ck}</b></span>
+    <span class="ckg-r"><small>Chakra${inc ? ` · +${inc} au prochain tour` : ''}</small><span class="ckg-p">${Array.from({ length:10 }, (_, k) => `<i class="${k < ck ? 'on' : ''}"></i>`).join('')}</span></span></div>`;
 }
 const medal = (act, ic, label, cost, dis, on) => `<button class="medal${on ? ' on' : ''}" data-act="${act}" ${dis ? 'disabled' : ''} title="${label}">${icon(ic)}${cost != null ? `<span class="cost">${cost}</span>` : ''}<small>${label}</small></button>`;
 function compMedal(canAct, own) {
@@ -468,8 +476,8 @@ function detailH(canAct) {
     const id = s.z === 'ss' ? me.sp : me.hd[s.i].sp; if (!id) return '';
     const S = SPELLS[id];
     let acts = '';
-    if (canAct && s.z === 'ss') { const c = me.spc != null ? me.spc : S.c, ck = (V.pub && (V.pub.laws || []).some(l => l.k === 'chakra')) ? Math.min(me.ck || 0, c) : 0;
-      acts = `<button class="btn pri" data-act="buysp" ${me.g < c - ck || me.hd.length >= 10 ? 'disabled' : ''}>Acheter · ${ck ? `${ck} chakra${c - ck ? ' + ' + (c - ck) + ' or' : ''}` : c + ' or'}</button>`; }
+    if (canAct && s.z === 'ss') { const c = me.spc != null ? me.spc : S.c;
+      acts = `<button class="btn pri" data-act="buysp" ${me.g < c || me.hd.length >= 10 ? 'disabled' : ''}>Acheter · ${c} or</button>`; }
     if (canAct && s.z === 'hd') acts = S.tg ? `<button class="btn pri" data-act="aim" ${me.bd.length ? '' : 'disabled'}>Lancer sur un serviteur</button>` : `<button class="btn pri" data-act="cast">Lancer le sort</button>`;
     return `<div class="det">${spellCardH(id, 'd', 0)}<div class="det-s"><b>${esc(S.n)}</b><span class="meta">Sort · ${esc(SP_TYPES[S.ty].n)} · ${s.z === 'ss' ? 'sur l\'étagère de la taverne' : 'dans ta main'}</span><div class="acts">${acts}</div></div></div>`;
   }
@@ -1039,9 +1047,9 @@ document.addEventListener('pointermove', e => {
 }, { passive:true });
 
 /* ---------- cartes de héros, de pouvoir et de compagnon (aperçu au survol) ---------- */
-const HTHEME = { rivet:'spark', egide:'holy', ondine:'potion', barnabe:'coin', maelle:'leaf', oren:'rune', gor:'rock', ilka:'spark', selene:'blood', brok:'ember', sylvara:'arcane', grumbo:'steam', vaskor:'soul', pyra:'fire', paul:'fire', leon:'leaf', zoe:'bubble', jeanne:'wind', nono:'fire' };
-const THC = { fire:'#ff7a2a', ember:'#ff9a3a', spark:'#ffc24a', holy:'#ffe08a', potion:'#6fe0a0', coin:'#f2c14e', leaf:'#8fd05a', rune:'#7ac4ff', rock:'#c8a878', blood:'#e0405a', arcane:'#b48cff', steam:'#f0e2d0', soul:'#7dffb0', bubble:'#6fc8ff', wind:'#bff0e6' };
-const THN = { fire:'Feu', ember:'Forge', spark:'Mécanique', holy:'Lumière', potion:'Alchimie', coin:'Commerce', leaf:'Nature', rune:'Savoir', rock:'Force', blood:'Sang', arcane:'Arcanes', steam:'Festin', soul:'Nécromancie', bubble:'Eau', wind:'Vent' };
+const HTHEME = { nh_akari:'fire', nh_hoshi:'fire', nh_ren:'fire', nh_tsubaki:'fire', nh_daigo:'fire', nh_mira:'wind', nh_taro:'wind', nh_haru:'wind', nh_gen:'wind', nh_saki:'wind', nh_mizu:'bubble', nh_ryota:'bubble', nh_umi:'bubble', nh_kenji:'bubble', nh_aya:'bubble', nh_raiko:'storm', nh_kenta:'storm', nh_hikari:'storm', nh_akio:'storm', nh_rika:'storm', nh_goro:'rock', nh_kaito:'rock', nh_masa:'rock', nh_toshi:'rock', nh_emi:'rock', rivet:'spark', egide:'holy', ondine:'potion', barnabe:'coin', maelle:'leaf', oren:'rune', gor:'rock', ilka:'spark', selene:'blood', brok:'ember', sylvara:'arcane', grumbo:'steam', vaskor:'soul', pyra:'fire', paul:'fire', leon:'leaf', zoe:'bubble', jeanne:'wind', nono:'fire' };
+const THC = { storm:'#ffe14a', fire:'#ff7a2a', ember:'#ff9a3a', spark:'#ffc24a', holy:'#ffe08a', potion:'#6fe0a0', coin:'#f2c14e', leaf:'#8fd05a', rune:'#7ac4ff', rock:'#c8a878', blood:'#e0405a', arcane:'#b48cff', steam:'#f0e2d0', soul:'#7dffb0', bubble:'#6fc8ff', wind:'#bff0e6' };
+const THN = { storm:'Foudre', fire:'Feu', ember:'Forge', spark:'Mécanique', holy:'Lumière', potion:'Alchimie', coin:'Commerce', leaf:'Nature', rune:'Savoir', rock:'Force', blood:'Sang', arcane:'Arcanes', steam:'Festin', soul:'Nécromancie', bubble:'Eau', wind:'Vent' };
 const PWART = {
   fire:'<path d="M20 6c3 6 9 9 9 17a9 9 0 0 1-18 0c0-5 3-7 4-11 1 3 2 4 3 4 0-4 0-7 2-10z" fill="#ff8a2a"/><path d="M20 17c2 3 5 5 5 9a5 5 0 0 1-10 0c0-3 2-4 3-6 1 1 1 2 2 2 0-2-1-3 0-5z" fill="#ffe27a"/>',
   ember:'<path d="M9 18h18l-3 4h-3v4h4v4H15v-4h4v-4h-6z" fill="#b8bcc8"/><path d="M28 10l2-4M31 14l4-2M24 9l-1-4" stroke="#ffb04a" stroke-width="2.4" stroke-linecap="round"/><circle cx="27" cy="16" r="2" fill="#ff8a3a"/>',
@@ -1057,6 +1065,7 @@ const PWART = {
   steam:'<path d="M23 17a7 7 0 1 1-6-6l9 9 4-1 2 2-2 2 1 3-2 2-2-4z" fill="#d89a5a"/><circle cx="17" cy="17" r="5" fill="#f0c890"/><path d="M12 9c-1-2 1-3 0-5M17 8c-1-2 1-3 0-5" stroke="#f0e2d0" stroke-width="1.8" fill="none" stroke-linecap="round"/>',
   soul:'<path d="M11 18a9 9 0 0 1 18 0v6l-3 2v4h-12v-4l-3-2z" fill="#e8ffe8"/><circle cx="16" cy="20" r="2.6" fill="#1a3a2a"/><circle cx="24" cy="20" r="2.6" fill="#1a3a2a"/><path d="M17 27v3M20 27v3M23 27v3" stroke="#1a3a2a" stroke-width="1.4"/>',
   bubble:'<circle cx="16" cy="22" r="8" fill="#6fc8ff" opacity=".85"/><circle cx="27" cy="13" r="5" fill="#6fc8ff" opacity=".85"/><circle cx="28" cy="27" r="3" fill="#6fc8ff" opacity=".85"/><circle cx="13" cy="19" r="2" fill="#fff"/><circle cx="25.5" cy="11.5" r="1.3" fill="#fff"/>',
+  storm:'<path d="M23 4 L12 22 H19 L15 36 L29 16 H21 Z" fill="#ffe14a"/><path d="M8 10 L12 14 M32 26 L28 22" stroke="#fff6c0" stroke-width="2.4" stroke-linecap="round"/>',
   wind:'<path d="M6 15h17a4 4 0 1 0-4-4M6 21h24a4 4 0 1 1-4 4M6 27h11" stroke="#bff0e6" stroke-width="3" fill="none" stroke-linecap="round"/>'
 };
 const powArtH = hid => { const th = HTHEME[hid] || 'spark', col = THC[th]; return `<svg class="ic pwart" viewBox="0 0 40 40" style="--hc:${col}" aria-hidden="true">${PWART[th]}</svg>`; };

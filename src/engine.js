@@ -269,17 +269,57 @@ const DEFAULT_CARD_LIST = [
   ['n_t3', 'Garde des roches', 3, 'n_terre', 2, 6, 't', [{ k:'eot_buff_taunt', a:1, h:1 }]],
   ['n_t4', 'Lanceur de rochers', 4, 'n_terre', 5, 4, '', [{ k:'soc_dmg', d:4, n:1 }]],
   ['n_t5', 'Colosse de granit', 5, 'n_terre', 4, 9, 't', [{ k:'surv_self', a:2, h:0 }]],
+  ['n_f7', 'Voleur d\'étincelles', 2, 'n_feu', 2, 3, '', [{ k:'soc_steal', n:1 }]],
+  ['n_f8', 'Pyromancien avide', 4, 'n_feu', 3, 4, '', [{ k:'soc_ck', a:1, h:0 }]],
+  ['n_v7', 'Pickpocket des sables', 1, 'n_vent', 2, 1, '', [{ k:'dr_steal', n:1 }]],
+  ['n_v8', 'Danseur d\'éventail', 3, 'n_vent', 3, 3, '', [{ k:'cast_ck', n:1 }]],
+  ['n_e7', 'Siphon de brume', 3, 'n_eau', 2, 5, '', [{ k:'soc_steal', n:2 }]],
+  ['n_e8', 'Méditant des cascades', 5, 'n_eau', 4, 7, '', [{ k:'eot_ck_spend', n:2, a:2, h:2 }]],
+  ['n_o7', 'Parasite de foudre', 2, 'n_foudre', 3, 2, '', [{ k:'dr_steal', n:2 }]],
+  ['n_o8', 'Tempête intérieure', 5, 'n_foudre', 5, 5, '', [{ k:'soc_ck', a:1, h:1 }]],
+  ['n_t7', 'Pilleur souterrain', 4, 'n_terre', 4, 5, 't', [{ k:'soc_steal', n:2 }]],
+  ['n_t8', 'Ermite des cimes', 6, 'n_terre', 5, 8, '', [{ k:'eot_ck_spend', n:3, a:3, h:3 }, { k:'cast_ck', n:1 }]],
+  ['c_nj_feu', 'Disciple de la flamme', 3, 'n_feu', 2, 3, '', [{ k:'cast_memo' }, { k:'sot_memo' }]],
+  ['c_nj_vent', 'Disciple du vent', 3, 'n_vent', 3, 2, '', [{ k:'cast_memo' }, { k:'sot_memo' }]],
+  ['c_nj_eau', 'Disciple de la brume', 3, 'n_eau', 2, 4, '', [{ k:'cast_memo' }, { k:'sot_memo' }]],
+  ['c_nj_foudre', 'Disciple de l\'orage', 3, 'n_foudre', 3, 3, '', [{ k:'cast_memo' }, { k:'sot_memo' }]],
+  ['c_nj_terre', 'Disciple du roc', 3, 'n_terre', 1, 5, 't', [{ k:'cast_memo' }, { k:'sot_memo' }]],
   ['n_t6', 'Seigneur des roches', 6, 'n_terre', 6, 10, 't', [{ k:'eot_buff_taunt', a:2, h:2 }, { k:'eot_chakra', n:1 }]],
 ];
 const DEFAULT_CARDS = {};
 DEFAULT_CARD_LIST.forEach(([id, n, t, tr, a, h, kw, fx]) => { DEFAULT_CARDS[id] = { id, n, t, tr, a, h, kw:kw.split(''), fx, art:{ f:'base', id } }; });
-const COMPANIONS = { paul:'c_pouf', leon:'c_caillou', zoe:'c_gloup', jeanne:'c_frisouille', selene:'c_nyx', brok:'c_enclume', sylvara:'c_lys', grumbo:'c_miette', vaskor:'c_osbrise', pyra:'c_etincelle', rivet:'c_bricole', egide:'c_lumen', ondine:'c_fiole', barnabe:'c_sou', maelle:'c_croc', oren:'c_plume', gor:'c_bastion', ilka:'c_truelle', nono:'c_braise' };
+const COMPANIONS = { nh_akari:'c_nj_feu', nh_hoshi:'c_nj_feu', nh_ren:'c_nj_feu', nh_tsubaki:'c_nj_feu', nh_daigo:'c_nj_feu', nh_mira:'c_nj_vent', nh_taro:'c_nj_vent', nh_haru:'c_nj_vent', nh_gen:'c_nj_vent', nh_saki:'c_nj_vent', nh_mizu:'c_nj_eau', nh_ryota:'c_nj_eau', nh_umi:'c_nj_eau', nh_kenji:'c_nj_eau', nh_aya:'c_nj_eau', nh_raiko:'c_nj_foudre', nh_kenta:'c_nj_foudre', nh_hikari:'c_nj_foudre', nh_akio:'c_nj_foudre', nh_rika:'c_nj_foudre', nh_goro:'c_nj_terre', nh_kaito:'c_nj_terre', nh_masa:'c_nj_terre', nh_toshi:'c_nj_terre', nh_emi:'c_nj_terre', paul:'c_pouf', leon:'c_caillou', zoe:'c_gloup', jeanne:'c_frisouille', selene:'c_nyx', brok:'c_enclume', sylvara:'c_lys', grumbo:'c_miette', vaskor:'c_osbrise', pyra:'c_etincelle', rivet:'c_bricole', egide:'c_lumen', ondine:'c_fiole', barnabe:'c_sou', maelle:'c_croc', oren:'c_plume', gor:'c_bastion', ilka:'c_truelle', nono:'c_braise' };
 for (const h in COMPANIONS) DEFAULT_CARDS[COMPANIONS[h]].comp = h;
 const compOf = hero => { const id = COMPANIONS[hero]; if (id && CARDS[id]) return id; return Object.keys(CARDS).find(k => CARDS[k].comp === hero) || null; };
 const compLimit = rd => rd >= 6 ? 3 : rd >= 5 ? 2 : rd >= 3 ? 1 : 0;
 
 const SLOTS = { 1:3, 2:4, 3:4, 4:5, 5:5, 6:6 };
 const HEROES = {
+  nh_akari: {fam:['n_feu'], n:'Akari l\'ardente', cost:1, clan:'feu', pw:{'k': 'ck', 'n': 2}, tx:'Gagnez 2 chakra.' },
+  nh_hoshi: {fam:['n_feu'], n:'Hoshi le vieux sage', clan:'feu', pw:{'k': 'pck', 'n': 1}, tx:'Passif : gagnez 1 chakra de plus au début de chaque tour.' },
+  nh_ren: {fam:['n_feu'], n:'Ren aux mille braises', cost:2, clan:'feu', pw:{'k': 'fire', 'd': 3}, tx:'Prochain combat : 3 dégâts frappent l\'ennemi au début du combat.' },
+  nh_tsubaki: {fam:['n_feu'], n:'Tsubaki la gardienne', cost:2, clan:'feu', pw:{'k': 'buffall', 'a': 1, 'h': 0, 'tb': 'n_feu'}, tx:'Vos serviteurs du Clan du Feu gagnent +1 attaque.' },
+  nh_daigo: {fam:['n_feu'], n:'Daigo le souffleur', cost:2, clan:'feu', pw:{'k': 'tech'}, tx:'Ajoute une technique ninja aléatoire à votre main.' },
+  nh_mira: {fam:['n_vent'], n:'Mira des dunes', cost:2, clan:'vent', pw:{'k': 'kw', 'kw': 'w'}, tx:'Donne Furie des vents à un de vos serviteurs aléatoire qui ne l\'a pas.' },
+  nh_taro: {fam:['n_vent'], n:'Taro le cerf-volant', cost:1, clan:'vent', pw:{'k': 'buffr', 'a': 2, 'h': 0, 'tb': 'n_vent'}, tx:'Donne +2 attaque à un serviteur du Clan du Vent aléatoire.' },
+  nh_haru: {fam:['n_vent'], n:'Haru le nomade', clan:'vent', pw:{'k': 'ptech'}, tx:'Passif : au début de chaque tour pair, ajoute une technique ninja aléatoire à votre main.' },
+  nh_gen: {fam:['n_vent'], n:'Gen aux éventails', cost:3, clan:'vent', pw:{'k': 'tma', 'a': 2, 'h': 1}, tx:'Prochain combat seulement : vos serviteurs gagnent +2/+1.' },
+  nh_saki: {fam:['n_vent'], n:'Saki la bourrasque', cost:1, clan:'vent', pw:{'k': 'buffr', 'a': 1, 'h': 1}, tx:'Donne +1/+1 à un de vos serviteurs aléatoire.' },
+  nh_mizu: {fam:['n_eau'], n:'Mizu la brume', cost:2, clan:'eau', pw:{'k': 'kw', 'kw': 's'}, tx:'Donne Bouclier divin à un de vos serviteurs aléatoire qui ne l\'a pas.' },
+  nh_ryota: {fam:['n_eau'], n:'Ryota le silencieux', cost:1, clan:'eau', pw:{'k': 'buffr', 'a': 0, 'h': 3, 'tb': 'n_eau'}, tx:'Donne +3 vie à un serviteur du Clan de l\'Eau aléatoire.' },
+  nh_umi: {fam:['n_eau'], n:'Umi la marée', cost:2, clan:'eau', pw:{'k': 'buffall', 'a': 0, 'h': 2, 'tb': 'n_eau'}, tx:'Vos serviteurs du Clan de l\'Eau gagnent +2 vie.' },
+  nh_kenji: {fam:['n_eau'], n:'Kenji l\'épéiste', cost:2, clan:'eau', pw:{'k': 'tma', 'a': 3, 'h': 0}, tx:'Prochain combat seulement : vos serviteurs gagnent +3 attaque.' },
+  nh_aya: {fam:['n_eau'], n:'Aya des abysses', cost:2, clan:'eau', pw:{'k': 'ck', 'n': 3}, tx:'Gagnez 3 chakra.' },
+  nh_raiko: {fam:['n_foudre'], n:'Raiko l\'éclair', cost:1, clan:'foudre', pw:{'k': 'fire', 'd': 2}, tx:'Prochain combat : 2 dégâts frappent l\'ennemi au début du combat.' },
+  nh_kenta: {fam:['n_foudre'], n:'Kenta le tonnerre', cost:2, clan:'foudre', pw:{'k': 'kw', 'kw': 'w'}, tx:'Donne Furie des vents à un de vos serviteurs aléatoire qui ne l\'a pas.' },
+  nh_hikari: {fam:['n_foudre'], n:'Hikari l\'étincelle', clan:'foudre', pw:{'k': 'pfire', 'd': 2}, tx:'Passif : au début de chaque combat, 2 dégâts frappent l\'ennemi.' },
+  nh_akio: {fam:['n_foudre'], n:'Akio l\'orage', cost:2, clan:'foudre', pw:{'k': 'buffall', 'a': 1, 'h': 1, 'tb': 'n_foudre'}, tx:'Vos serviteurs du Clan de la Foudre gagnent +1/+1.' },
+  nh_rika: {fam:['n_foudre'], n:'Rika la foudroyante', cost:1, clan:'foudre', pw:{'k': 'ck', 'n': 2}, tx:'Gagnez 2 chakra.' },
+  nh_goro: {fam:['n_terre'], n:'Goro le roc', cost:2, clan:'terre', pw:{'k': 'kw', 'kw': 't'}, tx:'Donne Provocation à un de vos serviteurs aléatoire qui ne l\'a pas.' },
+  nh_kaito: {fam:['n_terre'], n:'Kaito le bâtisseur', cost:1, clan:'terre', pw:{'k': 'buffr', 'a': 0, 'h': 3, 'tb': 'n_terre'}, tx:'Donne +3 vie à un serviteur du Clan de la Terre aléatoire.' },
+  nh_masa: {fam:['n_terre'], n:'Masa la montagne', clan:'terre', pw:{'k': 'pck', 'n': 1}, tx:'Passif : gagnez 1 chakra de plus au début de chaque tour.' },
+  nh_toshi: {fam:['n_terre'], n:'Toshi le colosse', cost:3, clan:'terre', pw:{'k': 'buffall', 'a': 1, 'h': 2, 'tb': 'n_terre'}, tx:'Vos serviteurs du Clan de la Terre gagnent +1/+2.' },
+  nh_emi: {fam:['n_terre'], n:'Emi la géode', cost:2, clan:'terre', pw:{'k': 'tech'}, tx:'Ajoute une technique ninja aléatoire à votre main.' },
   rivet:   {fam:['meca', 'gob'], n:'Rivet', tx:'Passif : votre première actualisation de chaque tour est gratuite.' },
   egide:   {fam:['nain', 'elfe'], n:'Égide', cost:2, tx:'Donne Bouclier divin à un de vos serviteurs aléatoire.' },
   ondine:  {fam:['elem', 'cors'], n:'Ondine l\'alchimiste', cost:1, tx:'Donne +1/+2 à un de vos serviteurs aléatoire.' },
@@ -311,7 +351,7 @@ const MECHS = {
   marche:{ n:'Marché noir', ic:'gear', d:'Vendre un serviteur de l\'univers rapporte 1 or de plus (deux fois par tour).' },
   ruee:{ n:'Ruée sauvage', ic:'leaf', d:'Au début du combat, si vous avez au moins 3 serviteurs de l\'univers, ils gagnent +2/+0 pour ce combat.' },
   pillage:{ n:'Pillage', ic:'drop', d:'Quand vous gagnez un combat avec un serviteur de l\'univers encore debout, vous recevez un sort aléatoire de votre niveau.' },
-  chakra:{ n:'Chakra', ic:'k_spark', d:'Au début de votre tour, chaque serviteur de l\'univers sur votre plateau génère 1 chakra (10 au plus). Le chakra se consomme pour lancer vos techniques : à l\'achat d\'un sort, il est dépensé avant l\'or.' },
+  chakra:{ n:'Chakra', ic:'k_spark', d:'Au début de votre tour, chaque serviteur de l\'univers sur votre plateau génère 1 chakra (10 au plus). Les techniques ninja s\'achètent avec de l\'or et se lancent avec du chakra.' },
   resonance:{ n:'Résonance', ic:'twin', d:'Chaque sort que vous lancez donne +1/+1 à deux de vos serviteurs de l\'univers.' },
   eboulement:{ n:'Éboulement', ic:'up', d:'Quand un de vos serviteurs de l\'univers avec Provocation meurt, il inflige 3 dégâts à un ennemi aléatoire.' },
   fusion:{ n:'Fusion élémentaire', ic:'wind', d:'À la fin du tour, si vous avez au moins 4 éléments Squishy différents, vos serviteurs de l\'univers gagnent +1/+1.' },
@@ -414,6 +454,13 @@ const ET = {
   bc_summon:{ tr:'bc', l:'Invoquer un serviteur', ps:['card', 'n'], w:1, mag:(e, d) => cardValueById(e.card, d) * e.n, txt:e => `Cri de guerre : invoque ${e.n > 1 ? e.n + ' × ' : ''}${CD(e.card).n}.` },
   bc_chakra:{ tr:'bc', l:'Gagner du chakra', ps:['n'], w:1.2, mag:e => e.n, txt:(e, k) => `Cri de guerre : gagnez ${e.n * k} chakra.` },
   eot_chakra:{ tr:'eot', l:'Gagner du chakra', ps:['n'], w:1.4, mag:e => e.n * 2, txt:(e, k) => `Fin de tour : gagnez ${e.n * k} chakra.` },
+  soc_steal:{ tr:'soc', l:'Voler du chakra', ps:['n'], w:1.4, mag:e => e.n * 2, txt:(e, k) => `Début du combat : vole ${e.n * k} chakra à l\'adversaire.` },
+  dr_steal:{ tr:'dr', l:'Voler du chakra en mourant', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Râle d\'agonie : vole ${e.n * k} chakra à l\'adversaire.` },
+  soc_ck:{ tr:'soc', l:'Se renforcer selon le chakra', ps:['a', 'h'], w:1.6, mag:e => (e.a + e.h) * 3, txt:(e, k) => `Début du combat : gagne ${sign(e.a * k, e.h * k)} pour chaque chakra que vous avez (5 au plus).` },
+  eot_ck_spend:{ tr:'eot', l:'Dépenser du chakra pour se renforcer', ps:['n', 'a', 'h'], w:1.3, mag:e => e.a + e.h, txt:(e, k) => `Fin de tour : si vous avez ${e.n} chakra, les dépense pour gagner ${sign(e.a * k, e.h * k)}.` },
+  cast_ck:{ tr:'cast', l:'Gagner du chakra en lançant un sort', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Quand vous lancez un sort, gagnez ${e.n * k} chakra.` },
+  cast_memo:{ tr:'cast', l:'Retenir la technique lancée', ps:[], w:1, mag:() => 3, txt:() => 'Mémoire : retient la dernière technique ninja que vous lancez.' },
+  sot_memo:{ tr:'sot', l:'Rejouer la technique retenue', ps:[], w:1, mag:() => 3, txt:(e, k) => `Début de tour : ajoute à votre main ${k > 1 ? k + ' copies' : 'une copie'} de la technique retenue.` },
   bc_gold:{ tr:'bc', l:'Gagner de l\'or', ps:['n'], w:1.5, mag:e => e.n, txt:(e, k) => `Cri de guerre : gagnez ${e.n * k} or.` },
   bc_card:{ tr:'bc', l:'Ajouter un serviteur à la main', ps:['n', 'tb'], w:1, mag:e => e.n * 3, txt:e => `Cri de guerre : ajoute ${e.n > 1 ? e.n + ' ' + one(e.tb) + ' aléatoires' : 'un ' + one(e.tb, 1) + ' aléatoire'} à votre main.` },
   dr_summon:{ tr:'dr', l:'Invoquer un serviteur', ps:['card', 'n'], w:0.8, mag:(e, d) => cardValueById(e.card, d) * e.n, txt:e => `Râle d'agonie : invoque ${e.n > 1 ? e.n + ' × ' : ''}${CD(e.card).n}.` },
@@ -514,6 +561,10 @@ function runRecruit0(G, p, m, e, ctx) {
     case 'bc_summon': for (let i = 0; i < e.n; i++) recruitSummon(p, e.card, m.g, m); break;
     case 'bc_gold': p.g += e.n * k; break;
     case 'bc_chakra': case 'eot_chakra': p.ck = Math.min(CK_MAX, (p.ck || 0) + e.n * k); break;
+    case 'cast_ck': p.ck = Math.min(CK_MAX, (p.ck || 0) + e.n * k); break;
+    case 'eot_ck_spend': if ((p.ck || 0) >= e.n) { p.ck -= e.n; buff(m, A, Hh); } break;
+    case 'cast_memo': if (p.lastCast && SPELLS[p.lastCast] && SPELLS[p.lastCast].nin) m.memo = p.lastCast; break;
+    case 'sot_memo': if (m.memo && SPELLS[m.memo]) for (let i = 0; i < k; i++) if (p.hd.length < 10) p.hd.push({ sp:m.memo, u:UID++ }); break;
     case 'bc_card': for (let i = 0; i < e.n; i++) if (p.hd.length < 10) { const c = drawOne(G, p.t, null, e.tb); if (c) p.hd.push(c); } break;
     case 'eot_self': buff(m, A, Hh); break;
     case 'eot_buff_rand': shuffle(others()).slice(0, e.n).forEach(x => buff(x, A, Hh)); break;
@@ -800,6 +851,7 @@ const OPS = {
   pow(G, p) { return withSrc(HEROES[p.hero] ? 'Pouvoir de ' + HEROES[p.hero].n.split(' ')[0] : null, () => OPS.pow0(G, p)); },
   pow0(G, p) {
     const h = HEROES[p.hero]; if (!h || !h.cost || p.pu || p.g < h.cost) return false;
+    if (h.pw && !powRun(G, p, h.pw)) return false;
     if (p.hero === 'egide') { const c = p.bd.filter(m => !has(m, 's')); if (!c.length) return false; addF(pickR(c), 's'); }
     if (p.hero === 'ondine') { if (!p.bd.length) return false; buff(pickR(p.bd), 1, 2); }
     if (p.hero === 'paul') { const f = p.bd.filter(m => tribe(m) === 'sq_feu'); if (!f.length) return false; const t = pickR(f); buff(t, 2, 1); f.forEach(m => { if (m !== t) buff(m, 1, 0); }); }
@@ -814,14 +866,41 @@ const OPS = {
     p.g -= h.cost; p.pu = true; trigBoard(G, p, 'pow'); return true;
   },
   rdy(G, p) { p.rdy = !p.rdy; return true; },
-  buysp(G, p) { const S = p.sp && SPELLS[p.sp.sp]; const c = S ? spCost(p, S) : 0; const ck = inMechAny(G, 'chakra') ? Math.min(p.ck || 0, c) : 0; if (!S || p.g < c - ck || p.hd.length >= 10) return false; p.ck = (p.ck || 0) - ck; p.g -= c - ck; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(p.sp); p.sp = null; return true; },
+  buysp(G, p) { const S = p.sp && SPELLS[p.sp.sp]; const c = S ? spCost(p, S) : 0; if (!S || p.g < c || p.hd.length >= 10) return false; p.g -= c; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(p.sp); p.sp = null; return true; },
   cast(G, p, a) { const it = p.hd[a.i]; if (!it || !it.sp || p.disc) return false; return castSpell(G, p, a.i, a.tg); },
   pick(G, p, a) { if (!p.disc || !p.disc[a.i]) return false; const m = p.disc.splice(a.i, 1)[0]; p.disc.forEach(x => toPool(G, x)); p.disc = null; if (p.hd.length < 10) p.hd.push(m); else toPool(G, m); checkTriple(G, p); return true; },
 };
 
+// pouvoirs décrits par des données (héros des Cinq Nations)
+const pwPool = (p, w) => (p.bd || []).filter(m => !w.tb || tribe(m) === w.tb);
+function powCanW(p, w) {
+  switch (w.k) {
+    case 'ck': return (p.ck || 0) < CK_MAX;
+    case 'tech': return (p.hd || []).length < 10;
+    case 'buffr': case 'buffall': return pwPool(p, w).length > 0;
+    case 'kw': return (p.bd || []).some(m => !has(m, w.kw));
+    case 'tma': return (p.bd || []).length > 0;
+    case 'fire': return true;
+  }
+  return false;
+}
+function powRun(G, p, w) {
+  if (!powCanW(p, w)) return false;
+  switch (w.k) {
+    case 'ck': p.ck = Math.min(CK_MAX, (p.ck || 0) + w.n); break;
+    case 'tech': { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); break; }
+    case 'buffr': buff(pickR(pwPool(p, w)), w.a, w.h); break;
+    case 'buffall': pwPool(p, w).forEach(m => buff(m, w.a, w.h)); break;
+    case 'kw': addF(pickR(p.bd.filter(m => !has(m, w.kw))), w.kw); break;
+    case 'tma': p.tma = { a:((p.tma && p.tma.a) || 0) + w.a, h:((p.tma && p.tma.h) || 0) + w.h }; break;
+    case 'fire': p.njf = (p.njf || 0) + w.d; break;
+  }
+  return true;
+}
 // le pouvoir a-t-il un effet possible maintenant ? (même règles que pow0, sans rien modifier)
 function powCan(p, rd) {
   const h = HEROES[p.hero]; if (!h || !h.cost || p.pu || p.g < h.cost) return false;
+  if (h.pw) return powCanW(p, h.pw);
   const bd = p.bd || [], hd = p.hd || [], tr = t => bd.some(m => tribe(m) === t);
   switch (p.hero) {
     case 'egide': return bd.some(m => !has(m, 's'));
@@ -895,12 +974,13 @@ function startRecruit() {
     if (p.hero === 'barnabe' && G.rd % 2 === 0) p.g += 1;
     p.uc = Math.max(0, p.uc - 1);
     if (p.fz) { p.fz = false; topUpShop(G, p); } else fillShop(G, p);
-    p.pu = false; p.fbq = false; p.sylv = false; p.rr = 0; p.rdy = false; p.res = null;
+    p.pu = false; p.fbq = false; p.njf = 0; p.sylv = false; p.rr = 0; p.rdy = false; p.res = null;
     if (p.inc && p.inc.length) p.g += p.inc.shift() || 0;
     trigBoard(G, p, 'sot');
     p.mkt = 0;
     if (inMechAny(G, 'ames') && (p.souls || 0) >= 3) { const k = Math.floor(p.souls / 3); p.souls -= k * 3; withSrc('Moisson d\'âmes', () => p.bd.forEach(m => { if (inMech(G, 'ames', m)) buff(m, k, k); })); }
     if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; if (n) p.ck = Math.min(CK_MAX, (p.ck || 0) + n); }
+    { const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'pck') p.ck = Math.min(CK_MAX, (p.ck || 0) + w.n); if (w && w.k === 'ptech' && G.rd % 2 === 0 && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); } }
     p.bd.forEach(m => { delete m.tmp; }); p.tma = null;
   }
   G.ph = 'recruit';
@@ -930,11 +1010,12 @@ function endRecruit() {
   const cap = G.rd <= 3 ? 5 : alive.length >= 4 ? 15 : 99;
   const fight = (p, q, ghost) => {
     const seed = rint(1e9), qb = ghost ? ghost.bd : q.bd, qt = ghost ? ghost.t : q.t, qn = ghost ? 'Fantôme de ' + ghost.n : q.n;
-    const heat = x => (x.fbq ? (x.fb || 3) : 0) + (x.hero === 'pyra' ? 2 : 0);
+    const heat = x => (x.fbq ? (x.fb || 3) : 0) + (x.hero === 'pyra' ? 2 : 0) + (x.njf || 0) + (HEROES[x.hero] && HEROES[x.hero].pw && HEROES[x.hero].pw.k === 'pfire' ? HEROES[x.hero].pw.d : 0);
     const fire = [heat(p), ghost ? 0 : heat(q)];
     const pb = combatBoard(p), qcb = combatBoard(ghost || q);
     const r = simulate(pb, qcb, seed, p.t, qt, fire, G.mx);
     lawsAfterFight(G, p, r, 0); if (!ghost) lawsAfterFight(G, q, r, 1);
+    if (!ghost) chakraSteal(p, q, pb, qcb, r);
     const d = Math.min(cap, r.dmg);
     if (r.w === 1) G.pend.push({ pid:p.pid, d });
     if (r.w === 0 && !ghost) G.pend.push({ pid:q.pid, d });
@@ -951,6 +1032,13 @@ function endRecruit() {
   const anyWatcher = G.ps.some(p => p.human && !p.bot && p.peer);
   G.end = Date.now() + (anyWatcher ? Math.min(50000, 3500 + maxFrames * 700) : 800);
   broadcast();
+}
+// vol de chakra : « Début du combat » (plateaux de départ) et « Râle d'agonie » (serviteurs morts)
+function chakraSteal(p, q, pb, qb, r) {
+  const n = (b, k) => b.reduce((t, m) => t + (CD(m.c).fxAll || []).filter(e => e.k === k).reduce((u, e) => u + e.n * (m.g ? 2 : 1), 0), 0);
+  const dead = (side, k) => r.dead[side].reduce((t, c) => t + ((C[c] && C[c].fxAll) || []).filter(e => e.k === k).reduce((u, e) => u + e.n, 0), 0);
+  const take = (from, to, x) => { const v = Math.min(from.ck || 0, x); if (v > 0) { from.ck -= v; to.ck = Math.min(CK_MAX, (to.ck || 0) + v); } };
+  take(q, p, n(pb, 'soc_steal') + dead(0, 'dr_steal')); take(p, q, n(qb, 'soc_steal') + dead(1, 'dr_steal'));
 }
 function lawsAfterFight(G, p, r, side) {
   if (inMechAny(G, 'ames')) { const n = r.dead[side].filter(c => C[c] && G.mx.ames.includes(C[c].tr)).length; if (n) p.souls = (p.souls || 0) + n; }

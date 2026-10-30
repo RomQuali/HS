@@ -237,3 +237,50 @@ Object.assign(ART, {
   n_t5: NJ('terre', '#7a5a3a', { skin:'#9a9088', hair:'#5a5450', hs:'bald', eyes:'glow', glow:'#ffb050', shirt:'#4a443e', aura:'#c8a878' }),
   n_t6: NJ('terre', '#c8a878', { skin:'#e8b894', hair:'#e8e2da', hs:'long', mask:false, eyes:'dot', mouth:'flat', beard:'long', beardc:'#e8e2da', hood:1, hoodc:'#5a4a32', shirt:'#3a2e22', aura:'#c8a878' })
 });
+
+Object.assign(ART, {
+  n_f7: NJ('feu', '#c8402a', { skin:'#e8b894', hair:'#2a1d14', hs:'side', eyes:'dot', shirt:'#3a1a14', maskc:'#7a2a1a' }),
+  n_f8: NJ('feu', '#c8402a', { skin:'#d9a27a', hair:'#b8452c', hs:'curly', eyes:'glow', glow:'#6fd0ff', mask:false, mouth:'grin', shirt:'#5a1a12', aura:'#6fd0ff' }),
+  n_v7: NJ('vent', '#b8944a', { skin:'#f0c4a0', hair:'#7a4a2a', hs:'short', eyes:'dot', shirt:'#4a3a22', maskc:'#c8a860' }),
+  n_v8: NJ('vent', '#b8944a', { skin:'#e8b894', hair:'#2a1d14', hs:'bun', mask:false, eyes:'happy', mouth:'smile', shirt:'#7a5a2a', aura:'#6fd0ff' }),
+  n_e7: NJ('eau', '#2f7ab8', { skin:'#bfe3df', hair:'#5a3d7a', hs:'long', eyes:'glow', glow:'#6fd0ff', shirt:'#1e2a44', maskc:'#14243a' }),
+  n_e8: NJ('eau', '#2f7ab8', { skin:'#c98e66', hair:'#e8e2da', hs:'bald', mask:false, eyes:'happy', mouth:'flat', beard:'long', beardc:'#e8e2da', shirt:'#2a5a7a', aura:'#6fd0ff' }),
+  n_o7: NJ('foudre', '#c8a020', { skin:'#a8714f', hair:'#e0b25a', hs:'mohawk', eyes:'glow', glow:'#6fd0ff', shirt:'#2a2a3a', maskc:'#3a3a4a' }),
+  n_o8: NJ('foudre', '#c8a020', { skin:'#8a5a3c', hair:'#2a1d14', hs:'curly', eyes:'glow', glow:'#ffe14a', mask:false, mouth:'grin', shirt:'#3a3a4a', aura:'#6fd0ff' }),
+  n_t7: NJ('terre', '#7a5a3a', { skin:'#9a9088', hair:'#2a1d14', hs:'part', eyes:'dot', shirt:'#3a2e22', maskc:'#5a4a32', tails:1 }),
+  n_t8: NJ('terre', '#c8a878', { skin:'#e8b894', hair:'#e8e2da', hs:'bald', mask:false, eyes:'happy', mouth:'smile', beard:'full', beardc:'#e8e2da', hood:1, hoodc:'#6a5a44', shirt:'#4a3a28', aura:'#6fd0ff' }),
+  c_nj_feu: NJ('feu', '#c8402a', { skin:'#f3d0b0', hair:'#2a1d14', hs:'short', mask:false, eyes:'happy', mouth:'smile', shirt:'#6a2a1a' }),
+  c_nj_vent: NJ('vent', '#b8944a', { skin:'#d9a27a', hair:'#b8452c', hs:'braids', mask:false, eyes:'dot', mouth:'grin', shirt:'#7a5a2a' }),
+  c_nj_eau: NJ('eau', '#2f7ab8', { skin:'#f0c4a0', hair:'#2e8a8a', hs:'bun', mask:false, eyes:'happy', mouth:'smile', shirt:'#2a5a7a' }),
+  c_nj_foudre: NJ('foudre', '#c8a020', { skin:'#8a5a3c', hair:'#e8e2da', hs:'short', mask:false, eyes:'dot', mouth:'o', shirt:'#3a3a4a' }),
+  c_nj_terre: NJ('terre', '#7a5a3a', { skin:'#c98e66', hair:'#4a2f1d', hs:'curly', mask:false, eyes:'dot', mouth:'smile', shirt:'#5a4a32' }),
+});
+// les 25 héros des Cinq Nations : portraits ninja originaux
+const NH = (el, band, x) => () => ninja(Object.assign({ el, band, aura:band }, x));
+Object.assign(HART, {
+  nh_akari: NH('feu', '#c8402a', { skin:'#f3d0b0', hair:'#c8392f', hs:'long', mask:false, eyes:'dot', mouth:'smirk', shirt:'#5a1a12' }),
+  nh_hoshi: NH('feu', '#e8b84a', { skin:'#e8b894', hair:'#e8e2da', hs:'bald', mask:false, eyes:'happy', mouth:'smile', beard:'long', beardc:'#e8e2da', hood:1, hoodc:'#8a2a1a', shirt:'#6a2a1a' }),
+  nh_ren: NH('feu', '#c8402a', { skin:'#d9a27a', hair:'#2a1d14', hs:'mohawk', eyes:'glow', glow:'#ffb04a', shirt:'#3a1a14', tails:1 }),
+  nh_tsubaki: NH('feu', '#c8402a', { skin:'#f0c4a0', hair:'#2a1d14', hs:'bun', mask:false, eyes:'dot', mouth:'smile', shirt:'#8a2a1a', earring:1 }),
+  nh_daigo: NH('feu', '#c8402a', { skin:'#c98e66', hair:'#4a2f1d', hs:'short', eyes:'dot', shirt:'#5a2a22', maskc:'#5a1a12', scar:1 }),
+  nh_mira: NH('vent', '#b8944a', { skin:'#d9a27a', hair:'#e0b25a', hs:'long', mask:false, eyes:'dot', mouth:'smirk', shirt:'#7a5a2a' }),
+  nh_taro: NH('vent', '#b8944a', { skin:'#f3d0b0', hair:'#7a4a2a', hs:'curly', mask:false, eyes:'happy', mouth:'grin', shirt:'#6a5232', freckles:1 }),
+  nh_haru: NH('vent', '#b8944a', { skin:'#a8714f', hair:'#2a1d14', hs:'side', eyes:'dot', hood:1, hoodc:'#c8a860', shirt:'#4a3a22', maskc:'#a8844a' }),
+  nh_gen: NH('vent', '#e8c870', { skin:'#e8b894', hair:'#5a3d7a', hs:'part', mask:false, eyes:'dot', mouth:'flat', beard:'goatee', shirt:'#5a4228' }),
+  nh_saki: NH('vent', '#b8944a', { skin:'#f0c4a0', hair:'#c8392f', hs:'braids', eyes:'glow', glow:'#e8ffd0', shirt:'#6a5232', tails:1 }),
+  nh_mizu: NH('eau', '#2f7ab8', { skin:'#f3d0b0', hair:'#e8e2da', hs:'long', eyes:'dot', shirt:'#1e3a5a', maskc:'#e8e2da' }),
+  nh_ryota: NH('eau', '#2f7ab8', { skin:'#c98e66', hair:'#2a1d14', hs:'short', eyes:'dot', shirt:'#14243a', maskc:'#2a2a34' }),
+  nh_umi: NH('eau', '#2f7ab8', { skin:'#bfe3df', hair:'#2e8a8a', hs:'braids', mask:false, eyes:'happy', mouth:'smile', shirt:'#2a5a7a' }),
+  nh_kenji: NH('eau', '#8fd0ff', { skin:'#e8b894', hair:'#2a1d14', hs:'side', mask:false, eyes:'dot', mouth:'flat', scar:1, shirt:'#1e2a44' }),
+  nh_aya: NH('eau', '#2f7ab8', { skin:'#f0c4a0', hair:'#5a3d7a', hs:'long', eyes:'glow', glow:'#8fd0ff', hood:1, hoodc:'#14243a', shirt:'#14243a' }),
+  nh_raiko: NH('foudre', '#c8a020', { skin:'#8a5a3c', hair:'#e8e2da', hs:'mohawk', mask:false, eyes:'dot', mouth:'grin', shirt:'#2a2a3a' }),
+  nh_kenta: NH('foudre', '#c8a020', { skin:'#a8714f', hair:'#2a1d14', hs:'curly', mask:false, eyes:'dot', mouth:'o', beard:'full', shirt:'#3a3a4a' }),
+  nh_hikari: NH('foudre', '#ffe14a', { skin:'#f3d0b0', hair:'#e0b25a', hs:'bun', eyes:'glow', glow:'#ffe14a', shirt:'#2a2a3a', maskc:'#3a3a4a' }),
+  nh_akio: NH('foudre', '#c8a020', { skin:'#7a5232', hair:'#2a1d14', hs:'bald', mask:false, eyes:'dot', mouth:'smirk', beard:'goatee', shirt:'#3a3a4a', earring:1 }),
+  nh_rika: NH('foudre', '#c8a020', { skin:'#e8b894', hair:'#5a3d7a', hs:'side', eyes:'dot', shirt:'#2a2a3a', maskc:'#c8a020', tails:1 }),
+  nh_goro: NH('terre', '#7a5a3a', { skin:'#9a9088', hair:'#5a5450', hs:'bald', mask:false, eyes:'dot', mouth:'flat', beard:'stubble', shirt:'#4a443e' }),
+  nh_kaito: NH('terre', '#7a5a3a', { skin:'#e8b894', hair:'#7a4a2a', hs:'short', mask:false, eyes:'happy', mouth:'smile', shirt:'#5a4a32' }),
+  nh_masa: NH('terre', '#c8a878', { skin:'#c98e66', hair:'#2a1d14', hs:'long', mask:false, eyes:'dot', mouth:'smile', hood:1, hoodc:'#6a5a44', shirt:'#3a2e22' }),
+  nh_toshi: NH('terre', '#7a5a3a', { skin:'#d9a27a', hair:'#2a1d14', hs:'mohawk', eyes:'glow', glow:'#ffb050', shirt:'#4a3a28', maskc:'#5a4a32' }),
+  nh_emi: NH('terre', '#7a5a3a', { skin:'#f0c4a0', hair:'#b8452c', hs:'curly', mask:false, eyes:'dot', mouth:'grin', shirt:'#5a4a32', freckles:1 }),
+});
