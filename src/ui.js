@@ -529,7 +529,7 @@ function rsvH(d, me) {
   const r = me.rsv || [], a = r[0], col = e => ELS[e] ? ELS[e].col : 'transparent';
   const next = a ? Object.keys(ELS).map(e => { const F = comboOf(a, e); return F ? `${ELS[e].n} → ${F.n}` : ''; }).filter(Boolean).join(' · ') : '';
   const tip = a ? `Réservoir : moitié ${ELS[a].n}. Ta prochaine technique déclenche un combo : ${next}.` : 'Réservoir vide : ta prochaine technique en remplit la moitié avec son élément.';
-  return `<span class="rsv${a ? ' half' : ''}" data-tip="${esc(tip)}" aria-label="${esc(tip)}"><svg viewBox="0 0 60 70" aria-hidden="true">
+  return `<span class="rsv${a ? ' half' : ''}" data-hov="rsv" data-tip="${esc(tip)}" aria-label="${esc(tip)}"><svg viewBox="0 0 60 70" aria-hidden="true">
     <defs><clipPath id="rsvc"><path d="M22 6 H38 V18 Q54 26 54 44 Q54 64 30 64 Q6 64 6 44 Q6 26 22 18 Z"/></clipPath></defs>
     <g clip-path="url(#rsvc)"><rect x="0" y="0" width="60" height="70" fill="rgba(10,6,3,.6)"/>
       ${a ? `<rect class="rsv-lo" x="0" y="41" width="60" height="30" fill="${col(a)}"/><path d="M0 41 Q15 37 30 41 T60 41 V44 H0 Z" fill="rgba(255,255,255,.35)"/>` : ''}
@@ -540,6 +540,17 @@ function rsvH(d, me) {
     <rect x="19" y="2" width="22" height="6" rx="2" fill="#a8744a" stroke="#120a06" stroke-width="1.6"/>
     <path d="M14 30 Q12 40 14 50" stroke="rgba(255,255,255,.35)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
   </svg><small>${a ? ELS[a].n : 'Réservoir'}</small></span>`;
+}
+// survol du réservoir : la liste des combos possibles (ceux de la moitié en place, ou les 15)
+function rsvPeekH(me) {
+  const a = (me.rsv || [])[0], E = Object.keys(ELS);
+  const dot = e => `<i class="rp-d" style="background:${ELS[e].col}" title="${ELS[e].n}"></i>`;
+  const row = (x, y) => { const F = comboOf(x, y); if (!F) return ''; const cur = a && (x === a || y === a);
+    return `<li class="rp-r${x === y ? ' pure' : ''}" style="--cc:${F.col}"><span class="rp-e">${dot(x)}${dot(y)}</span><span class="rp-t"><b>${esc(F.n)}</b><em class="rp-n">${ELS[x].n} + ${ELS[y].n}</em>${x === y ? '<em>pur</em>' : ''}<small>${esc(comboTx(F))}</small></span></li>`; };
+  let rows;
+  if (a) rows = E.map(e => row(a, e)).join('');
+  else { const pairs = []; E.forEach((x, i) => E.slice(i).forEach(y => pairs.push([x, y]))); pairs.sort((p, q) => (p[0] === p[1]) - (q[0] === q[1])); rows = pairs.map(([x, y]) => row(x, y)).join(''); }
+  return `<div class="rpeek${a ? '' : ' all'}"><b class="rp-h">${a ? `Réservoir · moitié ${ELS[a].n}` : 'Réservoir vide'}</b><small class="rp-s">${a ? 'Ta prochaine technique déclenche :' : 'Lance deux techniques : leur mélange déclenche un combo. Le compagnon gagne aussi son pouvoir hybride.'}</small><ul>${rows}</ul></div>`;
 }
 // combo déclenché : grande annonce au centre de l'écran
 function comboWatch() {
@@ -993,6 +1004,7 @@ function showPeek(t, touch) {
     if (hv === 'op' && V.pub) { const p = V.pub.pl.find(x => x.n === t.dataset.n); if (p && HEROES[p.h]) html = heroCardH(p.h, { who:p.n, foot:`${p.al ? Math.max(0, p.hp) + ' PV · taverne ' + p.t : 'Éliminé · ' + p.pl + 'e'}` }); }
     else if ((hv === 'pow' || hv === 'hero') && HEROES[V.me.hero]) { const h = HEROES[V.me.hero]; html = heroCardH(V.me.hero, { foot:h.cost ? (V.me.pu ? 'Déjà utilisé ce tour' : h.minRound && (V.me.rd || 0) < h.minRound ? `Disponible dès la manche ${h.minRound}` : 'Disponible') : 'Toujours actif' }); }
     else if (hv === 'comp' && compOf(V.me.hero) && C[compOf(V.me.hero)]) html = compCardH(V.me.hero, compOf(V.me.hero), V.me);
+    else if (hv === 'rsv') html = rsvPeekH(V.me);
     if (html) { peekFor = t; peekEl.innerHTML = html; peekEl.hidden = false; const q = peekEl.firstElementChild.getBoundingClientRect(); placePeek(r, q.width, q.height, touch); return true; }
   }
   // héros, pouvoir, adversaires, boutons : une bulle d'explication
@@ -1556,4 +1568,22 @@ function arenaCleanup() {
 .cbx p{margin:0;font-size:13px;color:#f1e4c6}
 @keyframes cbo{0%{transform:scale(.6) rotate(0)}60%{transform:scale(1.1) rotate(200deg);background:var(--cc)}100%{transform:scale(1) rotate(360deg);background:var(--cc)}}
 @keyframes cbf{0%{opacity:0;transform:scale(.85)}12%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0}}
+`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `
+.rpeek{width:330px;padding:12px 12px 10px;border-radius:14px;background:rgba(16,10,5,.96);box-shadow:0 0 0 2px #f2c14e,0 10px 30px rgba(0,0,0,.6);color:#f1e4c6;text-align:left}
+.rpeek.all{width:560px}
+.rp-h{display:block;font:700 15px Grenze,serif;color:#f2c14e}
+.rp-s{display:block;font-size:11.5px;color:#e8d6b0;margin:2px 0 8px}
+.rpeek ul{list-style:none;margin:0;padding:0;display:grid;gap:5px}
+.rpeek.all ul{grid-template-columns:1fr 1fr}
+.rp-r{display:grid;grid-template-columns:34px 1fr;gap:7px;align-items:center;padding:5px 7px;border-radius:9px;background:rgba(255,255,255,.04);box-shadow:inset 3px 0 0 var(--cc)}
+.rp-r.pure{background:rgba(242,193,78,.08)}
+.rp-e{display:flex}
+.rp-d{width:17px;height:17px;border-radius:50%;box-shadow:0 0 0 1.5px #120a06}
+.rp-d+.rp-d{margin-left:-5px}
+.rp-t b{font-size:13px;color:var(--cc)}
+.rp-t em{margin-left:6px;font-style:normal;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:#f2c14e}
+.rp-t em.rp-n{color:#bfae8a;text-transform:none;letter-spacing:0;font-size:10.5px}
+.rp-t small{display:block;font-size:11px;line-height:1.3}
 `; document.head.appendChild(st); })();
