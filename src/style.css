@@ -1771,3 +1771,26 @@ body.cs-entering #scene *{animation-play-state:running!important}
 .hz-left{display:flex;align-items:center;gap:18px}
 .el-tag{position:absolute;left:50%;top:40%;transform:translateX(-50%);z-index:2;padding:.6cqi 4cqi;border-radius:99px;font-family:var(--f-label);font-weight:700;font-size:7.5cqi;color:#120a06;background:var(--ec);box-shadow:0 0 0 1.5px #120a06}
 .ck-gem.aff{box-shadow:0 0 0 2.5px #0c1a3a,0 0 0 4px #9be36a,0 0 12px rgba(155,227,106,.8)}
+/* explication de la loi du chakra + schémas des cycles d'éléments */
+.ck-law{display:grid;gap:5px}
+.ck-law small{display:block;font-size:12px;line-height:1.35}
+.ck-law small b{color:#ffd86a}
+.elx{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:2px 0}
+.elx-c{display:grid;justify-items:center;gap:2px;text-align:center}
+.elx-c small{font-size:11px}
+.elc{width:100%;max-width:120px;height:auto}
+.elx-f{display:flex;flex-wrap:wrap;gap:4px}
+.elx-f i{font-style:normal;font-size:10.5px;padding:1px 7px;border-radius:99px;color:#120a06;background:var(--c);box-shadow:inset 0 0 0 1px rgba(0,0,0,.3)}
+.elx-f i b{color:#120a06}
+.lawbig .ck-law{background:none;padding:0;box-shadow:none}
+.lawbig .ck-law > b{display:none}
+.ck-law.big small{font-size:14px}
+.ck-law.big .elc{max-width:150px}
+.ck-law.big .elx-c small{font-size:13px}
+.ck-law.big .elx-f i{font-size:12.5px}
+.lawbig .ck-law small{font-family:inherit;font-weight:400;letter-spacing:0;text-transform:none;color:#fff6dc}
+.lawbig .ck-law small b,.lawbig .elx-f i b{font-family:var(--f-label);font-size:inherit;line-height:inherit;text-shadow:none}
+.lawbig .ck-law small b{color:#ffd86a}
+.lawbig .elx-f i b{color:#120a06}
+.lawbig .elx-c small b[style]{font-size:inherit}
+.lawbig .lb-em{align-self:flex-start}

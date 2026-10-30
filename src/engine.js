@@ -25,7 +25,7 @@ const DEFAULT_SETTINGS = {
     { id:'sq_glace', n:'Givrou', col:'#9fd8ff', bg:'sqglace', on:true },
     { id:'sq_foudre', n:'Zapou', col:'#ffd23a', bg:'sqfoudre', on:true },
     { id:'n_feu', n:'Clan du Feu', col:'#d8502a', bg:'volcan', on:true },
-    { id:'n_vent', n:'Clan du Vent', col:'#b8944a', bg:'sqvent', on:true },
+    { id:'n_vent', n:'Clan du Vent', col:'#3aa86a', bg:'sqvent', on:true },
     { id:'n_eau', n:'Clan de l\'Eau', col:'#2f7ab8', bg:'sqeau', on:true },
     { id:'n_foudre', n:'Clan de la Foudre', col:'#c8a020', bg:'sqfoudre', on:true },
     { id:'n_terre', n:'Clan de la Terre', col:'#7a5a3a', bg:'mine', on:true },
@@ -822,7 +822,7 @@ function checkTriple(G, p) {
 }
 const CK_MAX = 10;
 // le cycle des cinq éléments (Vent ← Bois, Foudre ← case jaune, Terre ← Métal)
-const ELS = { feu:{ n:'Feu', col:'#ff7a2a' }, vent:{ n:'Vent', col:'#9be36a' }, eau:{ n:'Eau', col:'#4ab0e8' }, foudre:{ n:'Foudre', col:'#ffd23a' }, terre:{ n:'Terre', col:'#c8a878' } };
+const ELS = { feu:{ n:'Feu', col:'#ff7a2a' }, vent:{ n:'Vent', col:'#6fd8a0' }, eau:{ n:'Eau', col:'#4ab0e8' }, foudre:{ n:'Foudre', col:'#ffd23a' }, terre:{ n:'Terre', col:'#c8a878' } };
 const EL_GEN = { vent:'feu', feu:'foudre', foudre:'terre', terre:'eau', eau:'vent' };   // génération : A nourrit B
 const EL_DOM = { feu:'vent', vent:'foudre', foudre:'terre', terre:'eau', eau:'feu' };   // domination : A l'emporte sur B
 // fusions : deux éléments enchaînés par le compagnon lui donnent un pouvoir hybride (remplace le précédent)

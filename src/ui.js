@@ -276,6 +276,29 @@ function menuPanelH(online, games) {
 // identité d'un univers (valeurs d'origine si l'univers enregistré ne les a pas)
 function univLook(u) { const d = (DEFAULT_SETTINGS.univ || []).find(x => x.n === u.n) || {}; return { col:u.col || d.col || '#5a3a1e', ic:u.ic || d.ic || 'dice', lore:u.lore != null ? u.lore : (d.lore || '') }; }
 /* le choix des univers : des étendards à lever */
+// schéma d'un cycle d'éléments : 5 pastilles en cercle, une flèche de chacune vers la suivante
+function elCycleSvg(order, col, title) {
+  const P = order.map((e, k) => { const a = (-90 + k * 72) * Math.PI / 180; return [50 + Math.cos(a) * 34, 52 + Math.sin(a) * 34]; });
+  const arrows = P.map((a, k) => { const b = P[(k + 1) % 5], dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy), ux = dx / L, uy = dy / L;
+    const x1 = a[0] + ux * 12, y1 = a[1] + uy * 12, x2 = b[0] - ux * 13, y2 = b[1] - uy * 13;
+    return `<path d="M${x1.toFixed(1)} ${y1.toFixed(1)} L${x2.toFixed(1)} ${y2.toFixed(1)}" stroke="${col}" stroke-width="2.6" marker-end="url(#ar-${col.slice(1)})"/>`; }).join('');
+  const dots = order.map((e, k) => `<g><circle cx="${P[k][0].toFixed(1)}" cy="${P[k][1].toFixed(1)}" r="10.5" fill="${ELS[e].col}" stroke="#120a06" stroke-width="2"/><text x="${P[k][0].toFixed(1)}" y="${P[k][1].toFixed(1)}" dy=".36em" text-anchor="middle" font-size="7.4" font-weight="700" fill="#120a06">${ELS[e].n}</text></g>`).join('');
+  return `<svg class="elc" viewBox="0 0 100 100" role="img" aria-label="${esc(title)} : ${order.map(e => ELS[e].n).join(' → ')} → ${ELS[order[0]].n}"><defs><marker id="ar-${col.slice(1)}" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="${col}"/></marker></defs>${arrows}${dots}</svg>`;
+}
+// explication de la loi du chakra (étendard de l'univers, choix du héros)
+function chakraLawH(big) {
+  const fus = Object.entries(FUSIONS).map(([k, F]) => `<i style="--c:${F.col}">${k.split('+').map(e => ELS[e].n).join(' + ')} = <b>${F.n}</b></i>`).join('');
+  return `<span class="ban-law ck-law${big ? ' big' : ''}"><b>Loi · Chakra et éléments</b>
+    <small><b>Chakra :</b> chaque serviteur de l'univers en donne 1 par tour. Il lance les techniques (achetées en or) et ouvre les coffres gagnés après chaque combat.</small>
+    <small><b>Compagnon :</b> il retient la dernière technique lancée et son élément, puis la remet en main à chaque tour.</small>
+    <span class="elx">
+      <span class="elx-c">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b style="color:#ff8a6a">Domination</b> · ton compagnon l'emporte sur l'élément d'en face : +4/+4 au combat.</small></span>
+      <span class="elx-c">${elCycleSvg(['vent', 'feu', 'foudre', 'terre', 'eau'], '#6fd0ff', 'Génération')}<small><b style="color:#8fdcff">Génération</b> · lance l'élément que nourrit celui retenu : +2 chakra et +2/+2.</small></span>
+    </span>
+    <small><b>Fusion :</b> enchaîne deux éléments pour donner un pouvoir hybride au compagnon.</small>
+    <span class="elx-f">${fus}</span>
+    <small><b>Affinité :</b> les techniques de l'élément de ton héros coûtent 1 chakra de moins.</small></span>`;
+}
 function univPickH(sel, edit, actions) {
   const on = SET.tribes.filter(t => t.on !== false).map(t => t.id);
   const us = (SET.univ || []).filter(u => u.tribes.some(t => on.includes(t)));
@@ -287,7 +310,7 @@ function univPickH(sel, edit, actions) {
     return `<button type="button" class="ban${a ? ' on' : ''}" style="--uc:${esc(L.col)}" ${edit ? `data-act="univ" data-u="${k}"` : 'disabled'} aria-pressed="${a}">
       ${a ? '<span class="ban-rib">Levé</span>' : ''}
       <span class="ban-hd"><span class="ban-em">${icon(L.ic)}</span><span class="ban-t"><b>${esc(u.n)}</b>${L.lore ? `<i>${esc(L.lore)}</i>` : ''}</span></span>
-      ${M ? `<span class="ban-law"><b>Loi · ${esc(M.n)}</b><small>${esc(M.d)}</small></span>` : ''}
+      ${u.mech === 'chakra' ? chakraLawH() : M ? `<span class="ban-law"><b>Loi · ${esc(M.n)}</b><small>${esc(M.d)}</small></span>` : ''}
       <span class="ban-fam">${fams.map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span>
       <span class="ban-her">${heroes.slice(0, 6).map(h => `<span class="ban-h" title="${esc(HEROES[h].n)}">${faceH('art-h-' + h)}</span>`).join('')}<small>${heroes.length} héros</small></span>
     </button>`;
@@ -1366,7 +1389,7 @@ const famChips = trs => `<span class="famc">${trs.map(t => `<i style="--c:${esc(
 function lawBigH(d) {
   const laws = d.laws || []; if (!laws.length) return '';
   return laws.map(l => { const M = MECHS[l.k] || MECHS.none, u = (SET.univ || []).find(x => x.n === l.u), L = u ? univLook(u) : { col:'#9a7228', ic:M.ic };
-    return `<section class="lawbig" style="--uc:${esc(L.col)}"><span class="lb-em">${icon(M.ic)}</span><div class="lb-t"><small>Univers · ${esc(l.u || '')}</small><b>Loi : ${esc(M.n)}</b><p>${esc(M.d)}</p>
+    return `<section class="lawbig" style="--uc:${esc(L.col)}"><span class="lb-em">${icon(M.ic)}</span><div class="lb-t"><small>Univers · ${esc(l.u || '')}</small><b>Loi : ${esc(M.n)}</b>${l.k === 'chakra' ? chakraLawH(true) : `<p>${esc(M.d)}</p>`}
       <span class="lb-fam">${(l.trs || []).map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span></div></section>`; }).join('');
 }
 function lawsH(laws, compact) {
