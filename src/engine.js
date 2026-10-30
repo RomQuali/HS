@@ -885,11 +885,30 @@ const PIECE_IDS = Object.keys(PIECES);
 const xAdd = (c, e, src) => (c.x = c.x || []).push(Object.assign({ src }, e));
 // [texte, effet] pour chaque pièce et chaque rareté
 const UPS = {
-  lame:[['+2 attaque', c => buff(c, 2, 0)], ['+4 attaque', c => buff(c, 4, 0)], ['+5 attaque et Toxique', c => { buff(c, 5, 0); addF(c, 'v'); }], ['+8 attaque et Furie des vents', c => { buff(c, 8, 0); addF(c, 'w'); }]],
-  armure:[['+3 vie', c => buff(c, 0, 3)], ['+6 vie', c => buff(c, 0, 6)], ['+2/+8', c => buff(c, 2, 8)], ['+12 vie et Bouclier divin', c => { buff(c, 0, 12); addF(c, 's'); }]],
-  bandeau:[['+1/+1', c => buff(c, 1, 1)], ['Fin de tour : +1 chakra', c => xAdd(c, { k:'eot_chakra', n:1 }, 'Bandeau du maître')], ['+2/+2 et fin de tour : +1 chakra', c => { buff(c, 2, 2); xAdd(c, { k:'eot_chakra', n:1 }, 'Bandeau du maître'); }], ['Renaissance et fin de tour : +2 chakra', c => { addF(c, 'r'); xAdd(c, { k:'eot_chakra', n:2 }, 'Bandeau du maître'); }]],
-  gants:[['+1/+2', c => buff(c, 1, 2)], ['+2/+3', c => buff(c, 2, 3)], ['+2/+2 et Furie des vents', c => { buff(c, 2, 2); addF(c, 'w'); }], ['Après avoir attaqué : gagne +3/+3', c => xAdd(c, { k:'atk_self', a:3, h:3 }, 'Gantelets du vent')]],
-  talisman:[['+1/+1', c => buff(c, 1, 1)], ['Domination : +2/+2 de plus', c => { c.domb = (c.domb || 0) + 2; }], ['Domination : +4/+4 de plus', c => { c.domb = (c.domb || 0) + 4; }], ['+3/+3 et domination : +6/+6 de plus', c => { buff(c, 3, 3); c.domb = (c.domb || 0) + 6; }]],
+  // Lame : frapper le premier
+  lame:[['+2 attaque', c => buff(c, 2, 0)],
+        ['Début du duel : inflige 2 dégâts au compagnon adverse', c => xAdd(c, { k:'soc_dmg', d:2, n:1 }, 'Lame de chakra')],
+        ['+3 attaque et Furie des vents (frappe deux fois)', c => { buff(c, 3, 0); addF(c, 'w'); }],
+        ['Début du duel : inflige 6 dégâts au compagnon adverse', c => xAdd(c, { k:'soc_dmg', d:6, n:1 }, 'Lame de chakra')]],
+  // Armure : encaisser
+  armure:[['+3 vie', c => buff(c, 0, 3)], ['+6 vie', c => buff(c, 0, 6)],
+          ['Bouclier divin : pare le premier coup du duel', c => addF(c, 's')],
+          ['+6 vie et Renaissance : se relève une fois pendant le duel', c => { buff(c, 0, 6); addF(c, 'r'); }]],
+  // Bandeau : concentration du ninja
+  bandeau:[['+1/+1', c => buff(c, 1, 1)],
+           ['Début du duel : gagne +2/+2', c => xAdd(c, { k:'soc_self', a:2, h:2 }, 'Bandeau du maître')],
+           ['Fin de tour : +1 chakra, et début du duel : +2/+2', c => { xAdd(c, { k:'eot_chakra', n:1 }, 'Bandeau du maître'); xAdd(c, { k:'soc_self', a:2, h:2 }, 'Bandeau du maître'); }],
+           ['Fin de tour : +2 chakra, et début du duel : +4/+4', c => { xAdd(c, { k:'eot_chakra', n:2 }, 'Bandeau du maître'); xAdd(c, { k:'soc_self', a:4, h:4 }, 'Bandeau du maître'); }]],
+  // Gantelets : riposte au corps à corps
+  gants:[['+1/+2', c => buff(c, 1, 2)],
+         ['Après avoir attaqué : gagne +1/+1', c => xAdd(c, { k:'atk_self', a:1, h:1 }, 'Gantelets du vent')],
+         ['Quand il survit à un coup : gagne +2/+2', c => xAdd(c, { k:'surv_self', a:2, h:2 }, 'Gantelets du vent')],
+         ['Après avoir attaqué : gagne +3/+3', c => xAdd(c, { k:'atk_self', a:3, h:3 }, 'Gantelets du vent')]],
+  // Talisman : l'avantage élémentaire
+  talisman:[['+1/+1', c => buff(c, 1, 1)],
+            ['Domination : +2/+2 de plus', c => { c.domb = (c.domb || 0) + 2; }],
+            ['Début du duel : le compagnon adverse perd 2 attaque', c => xAdd(c, { k:'soc_chill', a:2, n:1 }, 'Talisman des cycles')],
+            ['+3/+3 et domination : +6/+6 de plus', c => { buff(c, 3, 3); c.domb = (c.domb || 0) + 6; }]],
 };
 const UPS_MAX = 8;
 const upgCost = o => 1 + o.r;   // Normal 1 · Héroïque 2 · Épique 3 · Légendaire 4 chakra
