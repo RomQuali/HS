@@ -6253,8 +6253,9 @@ function dzRects(from) {
   const l = T.left, r = side ? Z.left : T.right;
   const bot = Math.max(T.bottom, innerHeight);
   // une seule zone, taillée selon l'action : acheter → la main (tout sous la taverne) ; jouer → le plateau (tout au-dessus de la main) ; vendre → la taverne
-  if (from === 'sh' || from === 'ss') return [{ drop:'hd', el:hd, l, r, t:b1, b:bot }];
-  if (from === 'hd') return [{ drop:'bd', el:bd, l, r, t:T.top, b:b2 }];
+  // zone de prise large, mais le rectangle affiché (v) est posé sur l'endroit où la carte arrive
+  if (from === 'sh' || from === 'ss') return [{ drop:'hd', el:hd, l, r, t:b1, b:bot, v:[b2, bot] }];
+  if (from === 'hd') return [{ drop:'bd', el:bd, l, r, t:T.top, b:b2, v:[b1, b2] }];
   if (from === 'bd') return [{ drop:'sh', el:sh, l, r, t:T.top, b:b1 }, { drop:'bd', el:bd, l, r, t:b1, b:bot, hide:1 }];
   return [];
 }
@@ -6264,7 +6265,7 @@ function dzShow(on) {
   if (!DRAG) return dzHide();
   const R = dzRects(DRAG.z).filter(z => !z.hide && dropAllowed(DRAG.z, z.drop, DRAG.sp)); if (!R.length) return dzHide();
   const lbl = { sh:'Vendre', bd:'Jouer', hd:'Acheter' };
-  dzLayer.innerHTML = R.map(z => `<div class="dz${z.drop === on ? ' on' : ''}${z.drop === 'sh' && DRAG.z === 'bd' ? ' sell' : ''}" style="left:${f1(z.l)}px;top:${f1(z.t)}px;width:${f1(z.r - z.l)}px;height:${f1(Math.min(z.b, innerHeight) - z.t)}px"><span>${lbl[z.drop]}</span></div>`).join('');
+  dzLayer.innerHTML = R.map(z => `<div class="dz${z.drop === on ? ' on' : ''}${z.drop === 'sh' && DRAG.z === 'bd' ? ' sell' : ''}" style="left:${f1(z.l)}px;top:${f1((z.v || [z.t])[0])}px;width:${f1(z.r - z.l)}px;height:${f1(Math.min((z.v || [0, z.b])[1], innerHeight) - (z.v || [z.t])[0])}px"><span>${lbl[z.drop]}</span></div>`).join('');
   dzLayer.hidden = false;
 }
 function dzHide() { dzLayer.hidden = true; dzLayer.innerHTML = ''; }
