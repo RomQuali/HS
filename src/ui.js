@@ -980,13 +980,13 @@ function dzShow(on) {
 }
 function dzHide() { dzLayer.hidden = true; dzLayer.innerHTML = ''; }
 function boardPos(line, x, from, i) {
-  const cards = [...line.querySelectorAll('.mn:not(.drag-src)')]; let pos = 0;
+  const cards = [...line.querySelectorAll('.mn:not(.drag-src):not(.cp-tok)')]; let pos = 0;   // le compagnon (bord gauche) ne compte pas
   cards.forEach(c => { const r = c.getBoundingClientRect(); if (x > r.left + r.width / 2) pos++; });
   return { cards, pos };
 }
 function aimTarget(x, y) {
   let best = null;
-  document.querySelectorAll('.board-zone .mn').forEach(el => { const r = el.getBoundingClientRect(); if (x > r.left - 12 && x < r.right + 12 && y > r.top - 16 && y < r.bottom + 16) best = el; });
+  document.querySelectorAll('.board-zone .mn:not(.cp-tok)').forEach(el => { const r = el.getBoundingClientRect(); if (x > r.left - 12 && x < r.right + 12 && y > r.top - 16 && y < r.bottom + 16) best = el; });
   return best;
 }
 function dragMove(x, y) {
