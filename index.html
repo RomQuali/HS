@@ -3575,6 +3575,17 @@ const ICONS = (() => {
     for (const sg of [-1, 1]) { const b2 = a + sg * 0.75; flake += `M${f1(bx)} ${f1(by)} L${f1(bx + Math.cos(b2) * 3.2)} ${f1(by + Math.sin(b2) * 3.2)}`; }
   }
   return {
+    k_taunt: '<path d="M12 2.5 L20 5.5 V11.5 C20 16.5 16.5 19.8 12 21.5 C7.5 19.8 4 16.5 4 11.5 V5.5 Z" fill="currentColor"/><path d="M12 6 V18 M7.5 10.5 H16.5" stroke="#1b120b" stroke-width="1.8" stroke-linecap="round"/>',
+    k_div: '<circle cx="12" cy="12" r="8.6" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M8 9.5 A5 5 0 0 1 12 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="3" fill="currentColor" opacity=".55"/>',
+    k_reborn: '<path d="M12 3 C 15.5 3 17 5.5 17 8 C 17 10.5 15 12 12 13 C 9 12 7 10.5 7 8 C 7 5.5 8.5 3 12 3 Z" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M12 13 V21.5 M7 16.5 H17" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>',
+    k_horn: '<path d="M3 10 L13 5 V19 L3 14 Z" fill="currentColor"/><path d="M13 7.5 C 19 5.5 21.5 3 21.5 3 V21 C 21.5 21 19 18.5 13 16.5" fill="currentColor" opacity=".8"/><path d="M5 14.5 L7 20.5 H10 L9 15.5" fill="currentColor"/>',
+    k_cross: '<path d="M4 3 L6.5 3 L15 11.5 L12.5 14 L4 5.5 Z M20 3 L17.5 3 L9 11.5 L11.5 14 L20 5.5 Z" fill="currentColor"/><path d="M5 14.5 L9.5 19 M19 14.5 L14.5 19 M4.5 20.5 L7 18 M19.5 20.5 L17 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>',
+    k_glass: '<path d="M6 3 H18 M6 21 H18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/><path d="M7.5 3.5 C 7.5 9 12 10 12 12 C 12 14 7.5 15 7.5 20.5 H16.5 C 16.5 15 12 14 12 12 C 12 10 16.5 9 16.5 3.5 Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9.5 19.5 C 10 17 12 16 12 16 C 12 16 14 17 14.5 19.5 Z M10 6.5 H14 L12 9.5 Z" fill="currentColor"/>',
+    k_heart: '<path d="M12 20.5 C 6 16 2.5 12.5 2.5 8.6 A4.6 4.6 0 0 1 12 6.4 A4.6 4.6 0 0 1 21.5 8.6 C 21.5 12.5 18 16 12 20.5 Z" fill="currentColor"/>',
+    k_coin: '<circle cx="12" cy="12" r="8.8" fill="currentColor"/><circle cx="12" cy="12" r="6" fill="none" stroke="#1b120b" stroke-width="1.6"/><path d="M12 8.5 V15.5" stroke="#1b120b" stroke-width="2" stroke-linecap="round"/>',
+    k_tomb: '<path d="M5.5 21 V10 A6.5 6.5 0 0 1 18.5 10 V21 Z" fill="currentColor"/><path d="M12 9 V16 M9 11.5 H15" stroke="#1b120b" stroke-width="2" stroke-linecap="round"/><path d="M3 21.5 H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>',
+    k_sun: '<circle cx="12" cy="15" r="5" fill="currentColor"/><path d="M12 3 V6.5 M4 7 L6.5 9.5 M20 7 L17.5 9.5 M2 15 H5 M19 15 H22 M2 21 H22" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
+    k_spark: '<path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z" fill="currentColor"/>',
     up: '<path d="M12 2.5 L21 12 H15.5 V21.5 H8.5 V12 H3 Z" fill="currentColor"/>',
     roll: '<g fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M19.5 9.3 A8 8 0 0 0 6.3 6.3"/><path d="M4.5 14.7 A8 8 0 0 0 17.7 17.7"/></g><path d="M3.9 8.7 L8.4 8.4 L4.3 3.9 Z" fill="currentColor"/><path d="M20.1 15.3 L15.6 15.6 L19.7 20.1 Z" fill="currentColor"/>',
     frz: `<path d="${flake}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>`,
@@ -5654,29 +5665,30 @@ const dataAttrs = m => `data-c="${m.c}" data-a="${m.a}" data-h="${m.h}" data-g="
 const ariaM = m => `${CD(m.c).n}${m.g ? ' doré' : ''}, ${m.a} attaque, ${m.h} vie`;
 const demo = (id, g) => { const b = CD(id); return { c:id, a:b.a * (g ? 2 : 1), h:b.h * (g ? 2 : 1), g:g ? 1 : 0, f:b.f }; };
 const hpGem = hp => `<svg class="hpg" viewBox="0 0 40 40" aria-label="${hp} points de vie"><use href="#gem-h" width="40" height="40"/><text class="gt" x="20" y="25" dy=".36em">${hp}</text></svg>`;
+const KWI = { t:['k_taunt', '#d8c8a8', 'Provocation'], s:['k_div', '#ffe58a', 'Bouclier divin'], v:['drop', '#8fe36a', 'Toxique'], r:['k_reborn', '#9fe8ff', 'Renaissance'], w:['wind', '#cdeeff', 'Furie des vents'],
+  bc:['k_horn', '#ffcf7a', 'Cri de guerre'], play:['k_spark', '#ffd54a', 'Quand vous jouez'], dr:['skull', '#efe2c2', 'Râle d\'agonie'], soc:['k_cross', '#ffb27a', 'Début du combat'], eot:['k_glass', '#ffe39a', 'Fin de tour'], sot:['k_sun', '#ffe39a', 'Début de tour'],
+  atk:['sword', '#ff9a8a', 'Après avoir attaqué'], surv:['k_heart', '#ff7a8a', 'Survit à des dégâts'], sell:['k_coin', '#f2c14e', 'Vente'], die:['k_tomb', '#c8c0d8', 'Quand un allié meurt'], aura:['twin', '#e9d5ff', 'Aura'],
+  cast:['star', '#b48cff', 'Quand vous lancez un sort'], shield:['k_div', '#ffe58a', 'Bouclier perdu'], roll:['roll', '#9ad8ff', 'Actualisation'], up:['up', '#a6e07a', 'Amélioration'], pow:['crown', '#ffd86a', 'Pouvoir héroïque'] };
 function kwIcons(m) {
-  const h = CD(m.c).by || {}, out = [];
-  if (h.dr) out.push(['skull', '#efe2c2']);
-  if (h.eot || h.play || h.die || h.surv || h.soc || h.sell || h.atk) out.push(['bolt', '#ffd54a']);
-  if (h.aura) out.push(['twin', '#e9d5ff']);
-  if (m.x && m.x.length) out.push(['leaf', '#a6e07a']);
-  if (has(m, 'v')) out.push(['drop', '#8fe36a']);
-  if (has(m, 'w')) out.push(['wind', '#cdeeff']);
-  return out.slice(0, 3);
+  const by = CD(m.c).by || {}, out = [], f = m.f || '';
+  for (const k of ['t', 's', 'v', 'r', 'w']) if (f.includes(k)) out.push(KWI[k]);
+  for (const tr of Object.keys(KWI)) if (tr.length > 1 && ((by[tr] && by[tr].length) || (m.x || []).some(e => ET[e.k] && ET[e.k].tr === tr))) out.push(KWI[tr]);
+  return out.slice(0, 8);
 }
+const KW_ANG = [62, -62, 92, -92, 34, -34, 120, -120];
 const SHIELD_D = 'M50 -4 C 85 -4, 102 28, 102 60 C 102 93, 79 115, 50 115 C 21 115, -2 93, -2 60 C -2 28, 15 -4, 50 -4 Z';
 function tokenH(m, z, i, o = {}) {
   const b = CD(m.c), f = m.f || '', g = !!m.g;
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
   const cls = ['mn', o.trip && 'tripok', g && 'g', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
-  const ics = kwIcons(m), x0 = 50 - (ics.length - 1) * 8.5;
+  const ics = kwIcons(m);
   const up = (v, base) => v > base * (g ? 2 : 1) ? ' up' : '';
   const svg = `<svg class="mn-svg" viewBox="-4 -6 108 132" aria-hidden="true">`
     + (f.includes('t') ? '<use href="#tk-taunt"/>' : '')
     + `<use href="#tk-frame${g ? '-g' : ''}"/><g clip-path="url(#tk-clip)"><use href="#art-${m.c}" x="12" y="9.5" width="76" height="91.5"/></g><use href="#tk-rim"/>`
     + (f.includes('s') ? `<g class="bubg"><use class="bub" href="#tk-shield"/><path class="bub-run" pathLength="100" d="${SHIELD_D}"/></g>` : '')
     + (b.t ? `<circle cx="50" cy="3.5" r="9" fill="url(#gr-badge)" stroke="#e2b452" stroke-width="2"/><text class="gt tb" x="50" y="3.5" dy=".36em">${b.t}</text>` : '')
-    + ics.map(([ic, col], k) => `<g transform="translate(${f1(x0 + k * 17)} 109)"><circle r="8" fill="#1b120b" stroke="#c8963e" stroke-width="1.6"/><use href="#ic-${ic}" x="-5.6" y="-5.6" width="11.2" height="11.2" style="color:${col}"/></g>`).join('')
+    + ics.map(([ic, col, nm], k) => { const a = KW_ANG[k] * Math.PI / 180; return `<g class="kwi" transform="translate(${f1(50 + 51 * Math.sin(a))} ${f1(55 - 58 * Math.cos(a))})"><title>${nm}</title><circle r="8.4" fill="#1b120b" stroke="${col}" stroke-width="1.8"/><use href="#ic-${ic}" x="-5.6" y="-5.6" width="11.2" height="11.2" style="color:${col}"/></g>`; }).join('')
     + `<use href="#gem-a" x="-1" y="90" width="34" height="34"/><text class="gt${up(m.a, b.a)}" x="16" y="107" dy=".36em">${m.a}</text>`
     + `<use href="#gem-h" x="67" y="88" width="34" height="34"/><text class="gt${up(m.h, b.h)}" x="84" y="108.6" dy=".36em">${m.h}</text></svg>`;
   return `<div class="${cls}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.dmg ? ` data-dmg="${o.dmg}"` : ''}${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">${svg}${o.name === false ? '' : `<span class="mn-nm">${esc(b.n)}</span>`}${m.tr ? '<span class="tri">Triple !</span>' : o.trip ? '<span class="tri pulse">Triple !</span>' : ''}${o.extra || ''}</div>`;
