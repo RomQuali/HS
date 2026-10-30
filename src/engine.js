@@ -356,7 +356,7 @@ const MECHS = {
   marche:{ n:'Marché noir', ic:'gear', d:'Vendre un serviteur de l\'univers rapporte 1 or de plus (deux fois par tour).' },
   ruee:{ n:'Ruée sauvage', ic:'leaf', d:'Au début du combat, si vous avez au moins 3 serviteurs de l\'univers, ils gagnent +2/+0 pour ce combat.' },
   pillage:{ n:'Pillage', ic:'drop', d:'Quand vous gagnez un combat avec un serviteur de l\'univers encore debout, vous recevez un sort aléatoire de votre niveau.' },
-  chakra:{ n:'Chakra et cycle des éléments', ic:'k_spark', d:'Chaque serviteur de l\'univers génère 1 chakra au début de votre tour (10 au plus). Les techniques s\'achètent en or et se lancent au chakra (1 de moins dans l\'élément de votre héros) ; après chaque combat, un coffre du niveau de votre taverne arrive dans la zone d\'entraînement (majeur après une victoire, mineur sinon) ; il s\'ouvre gratuitement et ses équipements se paient en chakra pour équiper le compagnon. Votre compagnon retient l\'élément de la dernière technique. Enchaîner deux éléments crée une fusion (Glace, Bois, Lave, Vapeur, Explosion) ; lancer l\'élément nourri (Vent → Feu → Foudre → Terre → Eau → Vent) rend 2 chakra ; dominer l\'élément d\'en face (Feu > Vent > Foudre > Terre > Eau > Feu) donne +4/+4 au combat.' },
+  chakra:{ n:'Chakra et cycle des éléments', ic:'k_spark', d:'Chaque serviteur de l\'univers génère 1 chakra au début de votre tour (10 au plus). Les techniques s\'achètent en or et se lancent au chakra (1 de moins dans l\'élément de votre héros) ; le pouvoir du héros se paie en or. Deux techniques remplissent le réservoir : leur mélange déclenche un combo (effet sur le plateau et pouvoir hybride au compagnon). Le compagnon, déjà triplé et hors plateau, affronte seulement le compagnon adverse et ne blesse jamais le héros : ce duel décide du coffre (majeur s\'il gagne). Chaque coffre impose de choisir 1 récompense sur 3 (Normal à Légendaire), rangée dans l\'entraînement et posée au chakra. Dominer l\'élément d\'en face (Feu > Vent > Foudre > Terre > Eau > Feu) donne +4/+4 au compagnon.' },
   resonance:{ n:'Résonance', ic:'twin', d:'Chaque sort que vous lancez donne +1/+1 à deux de vos serviteurs de l\'univers.' },
   eboulement:{ n:'Éboulement', ic:'up', d:'Quand un de vos serviteurs de l\'univers avec Provocation meurt, il inflige 3 dégâts à un ennemi aléatoire.' },
   fusion:{ n:'Fusion élémentaire', ic:'wind', d:'À la fin du tour, si vous avez au moins 4 éléments Squishy différents, vos serviteurs de l\'univers gagnent +1/+1.' },
@@ -465,7 +465,7 @@ const ET = {
   eot_inc:{ tr:'eot', l:'Or au prochain tour', ps:['n'], w:1.5, mag:e => e.n * 3, txt:(e, k) => `Fin de tour : gagnez ${e.n * k} or au début du prochain tour.` },
   eot_maree:{ tr:'eot', l:'Faire monter la marée', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Fin de tour : la marée monte de ${e.n * k}.` },
   eot_wave:{ tr:'eot', l:'Vague : bonus au voisin de droite', ps:['a', 'h'], w:1.1, mag:e => e.a + e.h, txt:(e, k) => `Fin de tour : donne ${sign(e.a * k, e.h * k)} au serviteur à sa droite ; la vague se transmet.` },
-  pas_ckx:{ tr:'pas', l:'Réservoir de chakra', ps:['n'], w:1.2, mag:e => e.n * 2, txt:e => `Réservoir : votre chakra peut monter jusqu\'à ${CK_MAX + e.n} et plus tant qu\'il est sur le plateau.` },
+  pas_ckx:{ tr:'pas', l:'Grande réserve de chakra', ps:['n'], w:1.2, mag:e => e.n * 2, txt:e => `Grande réserve : votre chakra peut monter jusqu\'à ${CK_MAX + e.n} tant qu\'il est sur le plateau.` },
   eot_charge:{ tr:'eot', l:'Accumuler de la charge', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Fin de tour : gagnez ${e.n * k} charge.` },
   awk_surge:{ tr:'awk', l:'Surtension (7 chakra ou plus)', ps:['a', 'h'], w:1.3, mag:e => e.a + e.h, txt:(e, k) => `Surtension : au combat, gagne ${sign(e.a * k, e.h * k)} si vous avez 7 chakra ou plus.` },
   eot_anchor:{ tr:'eot', l:'Ancrage : le chakra restant renforce', ps:[], w:1.2, mag:() => 4, txt:(e, k) => `Ancrage : fin de tour, gagne +0/+1 par chakra non dépensé (${3 * k} au plus).` },
@@ -1057,7 +1057,7 @@ function powCanW(p, w) {
     case 'techel': return (p.hd || []).length < 10;
     case 'tmamaree': return (p.maree || 0) >= 2 && (p.bd || []).length > 0;
     case 'ckmaree': case 'chargebuff': return true;
-    case 'g2ck': return (p.g || 0) >= w.g && (p.ck || 0) < ckMax(p);
+    case 'g2ck': return (p.g || 0) >= w.g + ((HEROES[p.hero] && HEROES[p.hero].cost) || 0) && (p.ck || 0) < ckMax(p);
     case 'kwbuff': case 'buffrsv': return pwPool(p, w).length > 0;
   }
   return false;
@@ -1173,7 +1173,7 @@ function startRecruit() {
     trigBoard(G, p, 'sot');
     p.mkt = 0; p.cdbl = 0;
     if (inMechAny(G, 'ames') && (p.souls || 0) >= 3) { const k = Math.floor(p.souls / 3); p.souls -= k * 3; withSrc('Moisson d\'âmes', () => p.bd.forEach(m => { if (inMech(G, 'ames', m)) buff(m, k, k); })); }
-    if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; if (n) p.ck = Math.min(ckMax(p), (p.ck || 0) + n); }
+    if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; p.ck = Math.min(ckMax(p), (p.ck || 0) + n); }
     // un coffre après chaque combat : majeur si le compagnon gagne son duel, mineur sinon
     if (inMechAny(G, 'chakra') && p.lastRes) p.pendChest = (p.lastRes === 'win' ? 'maj' : 'min') + (p.t || 1);
     // pureté : 5 serviteurs ou plus d'un même clan → +1 chakra
