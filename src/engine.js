@@ -351,7 +351,7 @@ const MECHS = {
   marche:{ n:'Marché noir', ic:'gear', d:'Vendre un serviteur de l\'univers rapporte 1 or de plus (deux fois par tour).' },
   ruee:{ n:'Ruée sauvage', ic:'leaf', d:'Au début du combat, si vous avez au moins 3 serviteurs de l\'univers, ils gagnent +2/+0 pour ce combat.' },
   pillage:{ n:'Pillage', ic:'drop', d:'Quand vous gagnez un combat avec un serviteur de l\'univers encore debout, vous recevez un sort aléatoire de votre niveau.' },
-  chakra:{ n:'Chakra et cycle des éléments', ic:'k_spark', d:'Chaque serviteur de l\'univers génère 1 chakra au début de votre tour (10 au plus). Les techniques s\'achètent en or et se lancent au chakra (1 de moins dans l\'élément de votre héros) ; un coffre arrive tous les deux tours. Votre compagnon retient l\'élément de la dernière technique. Enchaîner deux éléments crée une fusion (Glace, Bois, Lave, Vapeur, Explosion) ; lancer l\'élément nourri (Vent → Feu → Foudre → Terre → Eau → Vent) rend 2 chakra ; dominer l\'élément d\'en face (Feu > Vent > Foudre > Terre > Eau > Feu) donne +4/+4 au combat.' },
+  chakra:{ n:'Chakra et cycle des éléments', ic:'k_spark', d:'Chaque serviteur de l\'univers génère 1 chakra au début de votre tour (10 au plus). Les techniques s\'achètent en or et se lancent au chakra (1 de moins dans l\'élément de votre héros) ; après chaque combat, un coffre arrive (meilleur après une victoire). Votre compagnon retient l\'élément de la dernière technique. Enchaîner deux éléments crée une fusion (Glace, Bois, Lave, Vapeur, Explosion) ; lancer l\'élément nourri (Vent → Feu → Foudre → Terre → Eau → Vent) rend 2 chakra ; dominer l\'élément d\'en face (Feu > Vent > Foudre > Terre > Eau > Feu) donne +4/+4 au combat.' },
   resonance:{ n:'Résonance', ic:'twin', d:'Chaque sort que vous lancez donne +1/+1 à deux de vos serviteurs de l\'univers.' },
   eboulement:{ n:'Éboulement', ic:'up', d:'Quand un de vos serviteurs de l\'univers avec Provocation meurt, il inflige 3 dégâts à un ennemi aléatoire.' },
   fusion:{ n:'Fusion élémentaire', ic:'wind', d:'À la fin du tour, si vous avez au moins 4 éléments Squishy différents, vos serviteurs de l\'univers gagnent +1/+1.' },
@@ -992,13 +992,14 @@ function startRecruit() {
     if (p.hero === 'barnabe' && G.rd % 2 === 0) p.g += 1;
     p.uc = Math.max(0, p.uc - 1);
     if (p.fz) { p.fz = false; topUpShop(G, p); } else fillShop(G, p);
-    p.pu = false; p.fbq = false; p.njf = 0; p.sylv = false; p.rr = 0; p.rdy = false; p.res = null;
+    p.pu = false; p.fbq = false; p.njf = 0; p.sylv = false; p.rr = 0; p.rdy = false; p.lastRes = p.res ? p.res.r : null; p.res = null;
     if (p.inc && p.inc.length) p.g += p.inc.shift() || 0;
     trigBoard(G, p, 'sot');
     p.mkt = 0;
     if (inMechAny(G, 'ames') && (p.souls || 0) >= 3) { const k = Math.floor(p.souls / 3); p.souls -= k * 3; withSrc('Moisson d\'âmes', () => p.bd.forEach(m => { if (inMech(G, 'ames', m)) buff(m, k, k); })); }
     if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; if (n) p.ck = Math.min(CK_MAX, (p.ck || 0) + n); }
-    if (inMechAny(G, 'chakra') && G.rd % 2 === 0 && p.hd.length < 10) p.hd.push({ sp:G.rd < 5 ? 'cf_bois' : G.rd < 9 ? 'cf_argent' : 'cf_or', u:UID++ });
+    // un coffre après chaque combat : meilleur après une victoire, mineur après une égalité ou une défaite
+    if (inMechAny(G, 'chakra') && p.lastRes && p.hd.length < 10) p.hd.push({ sp:p.lastRes === 'win' ? (G.rd < 7 ? 'cf_argent' : 'cf_or') : 'cf_bois', u:UID++ });
     { const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'pck') p.ck = Math.min(CK_MAX, (p.ck || 0) + w.n); if (w && w.k === 'ptech' && G.rd % 2 === 0 && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); } }
     p.bd.forEach(m => { delete m.tmp; }); p.tma = null;
   }
