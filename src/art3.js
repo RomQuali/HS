@@ -185,3 +185,55 @@ Object.assign(HART, {
     };
   }
 })();
+
+/* ---------- Les Cinq Nations : ninjas originaux (bandeau à plaque gravée + masque) ---------- */
+const NJ_SYM = {
+  feu:'M50 34.6 C 53 37, 52.6 39.6, 50 41.6 C 47.4 39.6, 47 37, 50 34.6 Z',
+  vent:'M45.5 38 C 47 35, 53 35, 54 38 C 54.6 40.4, 50.6 41.2, 50 39',
+  eau:'M50 34.4 C 52.4 37.4, 53.4 39, 50 41.8 C 46.6 39, 47.6 37.4, 50 34.4 Z',
+  foudre:'M51.5 34.4 L47.4 38.6 L50.4 38.6 L48.4 41.8 L52.8 37.4 L49.8 37.4 Z',
+  terre:'M45 41.6 L48.6 35.8 L50.6 38.6 L52.4 36.6 L55.2 41.6 Z'
+};
+function ninja(o) {
+  const band = o.band || '#2a3a5a', mask = o.mask === false ? '' : P('M30.5 55.5 Q50 51.5 69.5 55.5 L67.6 66.5 Q50 80 32.4 66.5 Z', o.maskc || '#2a2a34', so(1.8)) + Ln('M36 60 Q50 57.6 64 60', 'rgba(255,255,255,.12)', 1.4);
+  const base = human(Object.assign({ hat:o.hood ? 'hood' : null, hatc:o.hoodc, mouth:'flat', shirt:'#2c2e3a', collar:null, beard:null, prop:null }, o));
+  const plate = P('M27 35.4 L73 35.4 L72.4 42.4 L27.6 42.4 Z', band, so(1.6))
+    + `<rect x="42" y="33.6" width="16" height="10.4" rx="2" fill="#b8c0c8" ${so(1.6)}/>`
+    + `<path d="${NJ_SYM[o.el]}" fill="none" stroke="#3a4048" stroke-width="1.5" stroke-linejoin="round"/>`
+    + (o.tails ? P('M72 37 C 80 40, 84 48, 86 54 L82 52 C 80 47, 76 43, 71.6 41 Z', band, so(1.4)) : '');
+  const aura = o.aura ? `<circle cx="50" cy="55" r="44" fill="none" stroke="${o.aura}" stroke-width="3" opacity=".55"/>` : '';
+  return aura + base + plate + mask;
+}
+const NJ = (el, band, x) => () => ninja(Object.assign({ el, band }, x));
+Object.assign(ART, {
+  n_f1: NJ('feu', '#c8402a', { skin:'#f3d0b0', hair:'#b8452c', hs:'short', mask:false, eyes:'dot', mouth:'smile', shirt:'#5a2a22' }),
+  n_f2: NJ('feu', '#c8402a', { skin:'#e8b894', hair:'#2a1d14', hs:'mohawk', eyes:'dot', shirt:'#6a2a1a', maskc:'#5a1a12' }),
+  n_f3: NJ('feu', '#c8402a', { skin:'#d9a27a', hair:'#2a1d14', hs:'long', mask:false, eyes:'happy', mouth:'smile', shirt:'#7a3a2a' }),
+  n_f4: NJ('feu', '#c8402a', { skin:'#f0c4a0', hair:'#e8e2da', hs:'side', eyes:'glow', glow:'#ffb04a', shirt:'#3a1a14', tails:1 }),
+  n_f5: NJ('feu', '#c8402a', { skin:'#c98e66', hair:'#4a2f1d', hs:'bald', eyes:'dot', hood:1, hoodc:'#8a2a1a', shirt:'#5a1a12', aura:'#ff8a3a' }),
+  n_f6: NJ('feu', '#e8b84a', { skin:'#e8b894', hair:'#e8e2da', hs:'long', eyes:'glow', glow:'#ffd27a', mask:false, mouth:'smirk', beard:'long', beardc:'#e8e2da', shirt:'#8a2a1a', aura:'#ffb04a' }),
+  n_v1: NJ('vent', '#b8944a', { skin:'#d9a27a', hair:'#7a4a2a', hs:'short', eyes:'dot', shirt:'#8a6a3a', maskc:'#a8844a' }),
+  n_v2: NJ('vent', '#b8944a', { skin:'#f3d0b0', hair:'#b8452c', hs:'side', eyes:'dot', shirt:'#6a5232', tails:1 }),
+  n_v3: NJ('vent', '#b8944a', { skin:'#c98e66', hair:'#2a1d14', hs:'bun', mask:false, eyes:'happy', mouth:'grin', shirt:'#7a5a2a' }),
+  n_v4: NJ('vent', '#b8944a', { skin:'#e8b894', hair:'#5a3d7a', hs:'long', eyes:'glow', glow:'#e8ffd0', shirt:'#4a3a22', maskc:'#6a5232' }),
+  n_v5: NJ('vent', '#b8944a', { skin:'#a8714f', hair:'#2a1d14', hs:'bald', eyes:'dot', hood:1, hoodc:'#c8a860', shirt:'#6a5232' }),
+  n_v6: NJ('vent', '#e8c870', { skin:'#f0c4a0', hair:'#c8392f', hs:'curly', eyes:'glow', glow:'#9be36a', shirt:'#5a4228', aura:'#e8c870', tails:1 }),
+  n_e1: NJ('eau', '#2f7ab8', { skin:'#f3d0b0', hair:'#2e8a8a', hs:'short', eyes:'dot', shirt:'#2a3a5a', maskc:'#3a4a6a' }),
+  n_e2: NJ('eau', '#2f7ab8', { skin:'#e8b894', hair:'#e8e2da', hs:'long', mask:false, eyes:'happy', mouth:'smile', shirt:'#2e3f6e' }),
+  n_e3: NJ('eau', '#2f7ab8', { skin:'#d9a27a', hair:'#2a1d14', hs:'braids', mask:false, eyes:'dot', mouth:'smile', shirt:'#2a5a7a' }),
+  n_e4: NJ('eau', '#2f7ab8', { skin:'#c98e66', hair:'#2a1d14', hs:'side', eyes:'dot', shirt:'#1e2a44', maskc:'#e8e2da' }),
+  n_e5: NJ('eau', '#2f7ab8', { skin:'#bfe3df', hair:'#2e8a8a', hs:'mohawk', eyes:'glow', glow:'#8fd0ff', shirt:'#1e3a5a', aura:'#6fc8ff' }),
+  n_e6: NJ('eau', '#8fd0ff', { skin:'#f0c4a0', hair:'#5a3d7a', hs:'long', eyes:'glow', glow:'#bfe8ff', hood:1, hoodc:'#1e3a5a', shirt:'#14243a', aura:'#8fd0ff' }),
+  n_o1: NJ('foudre', '#c8a020', { skin:'#8a5a3c', hair:'#e0b25a', hs:'mohawk', mask:false, eyes:'dot', mouth:'grin', shirt:'#3a3a4a' }),
+  n_o2: NJ('foudre', '#c8a020', { skin:'#f3d0b0', hair:'#e8e2da', hs:'short', eyes:'dot', shirt:'#4a4a5a', maskc:'#4a4a5a' }),
+  n_o3: NJ('foudre', '#c8a020', { skin:'#a8714f', hair:'#2a1d14', hs:'side', eyes:'glow', glow:'#ffe14a', shirt:'#2a2a3a', tails:1 }),
+  n_o4: NJ('foudre', '#c8a020', { skin:'#d9a27a', hair:'#2a1d14', hs:'curly', mask:false, eyes:'dot', mouth:'o', beard:'full', shirt:'#3a3a4a' }),
+  n_o5: NJ('foudre', '#c8a020', { skin:'#7a5232', hair:'#e8e2da', hs:'bald', eyes:'glow', glow:'#ffe14a', shirt:'#2a2a3a', aura:'#ffe14a' }),
+  n_o6: NJ('foudre', '#ffe14a', { skin:'#8a5a3c', hair:'#e0b25a', hs:'long', eyes:'glow', glow:'#ffffff', mask:false, mouth:'smirk', beard:'goatee', beardc:'#e0b25a', shirt:'#2a2a3a', aura:'#ffe14a' }),
+  n_t1: NJ('terre', '#7a5a3a', { skin:'#a8a098', hair:'#5a5450', hs:'bald', mask:false, eyes:'dot', mouth:'flat', shirt:'#6a6058' }),
+  n_t2: NJ('terre', '#7a5a3a', { skin:'#e8b894', hair:'#4a2f1d', hs:'short', mask:false, eyes:'dot', mouth:'smile', beard:'stubble', shirt:'#5a4a32' }),
+  n_t3: NJ('terre', '#7a5a3a', { skin:'#c98e66', hair:'#2a1d14', hs:'part', eyes:'dot', shirt:'#4a3a28', maskc:'#7a5a3a' }),
+  n_t4: NJ('terre', '#7a5a3a', { skin:'#d9a27a', hair:'#7a4a2a', hs:'mohawk', mask:false, eyes:'dot', mouth:'grin', shirt:'#5a4a32', angry:1 }),
+  n_t5: NJ('terre', '#7a5a3a', { skin:'#9a9088', hair:'#5a5450', hs:'bald', eyes:'glow', glow:'#ffb050', shirt:'#4a443e', aura:'#c8a878' }),
+  n_t6: NJ('terre', '#c8a878', { skin:'#e8b894', hair:'#e8e2da', hs:'long', mask:false, eyes:'dot', mouth:'flat', beard:'long', beardc:'#e8e2da', hood:1, hoodc:'#5a4a32', shirt:'#3a2e22', aura:'#c8a878' })
+});
