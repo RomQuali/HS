@@ -7123,16 +7123,17 @@ function rsvH(d, me) {
   const r = me.rsv || [], a = r[0], col = e => ELS[e] ? ELS[e].col : 'transparent';
   const next = a ? Object.keys(ELS).map(e => { const F = comboOf(a, e); return F ? `${ELS[e].n} → ${F.n}` : ''; }).filter(Boolean).join(' · ') : '';
   const tip = a ? `Réservoir : moitié ${ELS[a].n}. Ta prochaine technique déclenche un combo : ${next}.` : 'Réservoir vide : ta prochaine technique en remplit la moitié avec son élément.';
-  return `<span class="rsv${a ? ' half' : ''}" data-hov="rsv" data-tip="${esc(tip)}" aria-label="${esc(tip)}"><svg viewBox="0 0 60 70" aria-hidden="true">
-    <defs><clipPath id="rsvc"><path d="M22 6 H38 V18 Q54 26 54 44 Q54 64 30 64 Q6 64 6 44 Q6 26 22 18 Z"/></clipPath></defs>
-    <g clip-path="url(#rsvc)"><rect x="0" y="0" width="60" height="70" fill="rgba(10,6,3,.6)"/>
-      ${a ? `<rect class="rsv-lo" x="0" y="41" width="60" height="30" fill="${col(a)}"/><path d="M0 41 Q15 37 30 41 T60 41 V44 H0 Z" fill="rgba(255,255,255,.35)"/>` : ''}
-    </g>
-    <path d="M6 41 H54" stroke="rgba(242,193,78,.55)" stroke-width="1.4" stroke-dasharray="3 3"/>
-    <path d="M22 6 H38 V18 Q54 26 54 44 Q54 64 30 64 Q6 64 6 44 Q6 26 22 18 Z" fill="none" stroke="#120a06" stroke-width="3"/>
-    <path d="M22 6 H38 V18 Q54 26 54 44 Q54 64 30 64 Q6 64 6 44 Q6 26 22 18 Z" fill="none" stroke="#f2c14e" stroke-width="1.4"/>
-    <rect x="19" y="2" width="22" height="6" rx="2" fill="#a8744a" stroke="#120a06" stroke-width="1.6"/>
-    <path d="M14 30 Q12 40 14 50" stroke="rgba(255,255,255,.35)" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  // un rouleau de parchemin : moitié gauche = 1re technique, moitié droite = la suivante
+  const half = (x0, e) => e ? `<rect x="${x0}" y="9" width="27" height="32" fill="${col(e)}" opacity=".72"/><g transform="translate(${x0 + 13.5} 25) scale(.95)">${EL_ICON[e]}</g>` : `<text x="${x0 + 13.5}" y="25" dy=".36em" text-anchor="middle" font-size="11" fill="rgba(90,60,30,.45)" font-family="Grenze,serif">${x0 < 40 ? '1' : '2'}</text>`;
+  const roller = x => `<rect x="${x}" y="4" width="9" height="42" rx="4" fill="url(#rsv-wood)" stroke="#120a06" stroke-width="1.8"/><rect x="${x + 1.5}" y="1" width="6" height="5" rx="2" fill="#c8963e" stroke="#120a06" stroke-width="1.3"/><rect x="${x + 1.5}" y="44" width="6" height="5" rx="2" fill="#c8963e" stroke="#120a06" stroke-width="1.3"/>`;
+  return `<span class="rsv scroll${a ? ' half' : ''}" data-hov="rsv" data-tip="${esc(tip)}" aria-label="${esc(tip)}"><svg viewBox="0 0 80 50" aria-hidden="true">
+    <defs><linearGradient id="rsv-wood" x1="0" x2="1"><stop offset="0" stop-color="#5a3418"/><stop offset=".5" stop-color="#a8744a"/><stop offset="1" stop-color="#4a2a12"/></linearGradient>
+      <linearGradient id="rsv-paper" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6ead0"/><stop offset="1" stop-color="#dcc48e"/></linearGradient></defs>
+    <path d="M13 8 Q40 5 67 8 L67 42 Q40 45 13 42 Z" fill="url(#rsv-paper)" stroke="#120a06" stroke-width="2"/>
+    ${half(13, a)}${half(40, null)}
+    <path d="M40 9 V41" stroke="#7a5a32" stroke-width="1.2" stroke-dasharray="2.5 2.5"/>
+    <path d="M16 13 H36 M44 13 H64 M16 37 H36 M44 37 H64" stroke="rgba(120,80,40,.35)" stroke-width=".9"/>
+    ${roller(6)}${roller(65)}
   </svg><small>${a ? ELS[a].n : 'Réservoir'}</small></span>`;
 }
 // survol du réservoir : la liste des combos possibles (ceux de la moitié en place, ou les 15)
@@ -8344,6 +8345,27 @@ svg.ck-gem.aff{box-shadow:none;filter:drop-shadow(0 0 5px rgba(155,227,106,.95))
 .uppk .upc-tx{font-size:13.5px;font-weight:700;color:var(--rc)}
 .uppk-c{display:flex;align-items:center;gap:6px}.uppk-c .ckm{width:24px;height:26px}.uppk-c small{font-size:11px;color:#e8d6b0}
 .uppk-h{font-size:10.5px;color:#bfae8a}.uppk-h em{font-style:normal;font-weight:700}
+`; document.head.appendChild(st); })();
+
+/* réservoir en rouleau de parchemin, infobulle en parchemin déroulé */
+(function(){ const st = document.createElement('style'); st.textContent = `
+.rsv.scroll svg{width:92px;height:58px;filter:drop-shadow(0 3px 3px rgba(0,0,0,.6))}
+.rsv.scroll.half svg{filter:drop-shadow(0 0 7px rgba(255,220,140,.55)) drop-shadow(0 3px 3px rgba(0,0,0,.6))}
+.rpeek{position:relative;margin:14px 0;padding:16px 18px 14px;border-radius:4px;color:#3a2410;
+  background:radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.35),transparent 60%),linear-gradient(180deg,#f4e6c4,#e6d0a0 55%,#d8bd85);
+  box-shadow:inset 0 0 30px rgba(120,80,30,.35),inset 0 0 0 1px rgba(90,60,20,.4),0 14px 30px rgba(0,0,0,.6)}
+.rpeek::before,.rpeek::after{content:'';position:absolute;left:-10px;right:-10px;height:16px;border-radius:8px;
+  background:linear-gradient(180deg,#4a2a12,#a8744a 45%,#5a3418);box-shadow:0 0 0 1.5px #120a06,0 3px 6px rgba(0,0,0,.5)}
+.rpeek::before{top:-10px}.rpeek::after{bottom:-10px}
+.rpeek .rp-h{color:#5a2e0c;font-size:17px;text-shadow:none}
+.rpeek .rp-s{color:#5a4228}
+.rpeek .rp-r{background:rgba(120,80,30,.08);box-shadow:inset 3px 0 0 var(--cc),inset 0 0 0 1px rgba(120,80,30,.18)}
+.rpeek .rp-r.pure{background:rgba(200,140,40,.14)}
+.rpeek .rp-t b{color:color-mix(in srgb,var(--cc) 42%,#1a0c02)}
+.rpeek.all{padding:12px 16px 10px;width:780px}.rpeek.all ul{grid-template-columns:1fr 1fr 1fr}.rpeek.all ul{gap:4px}.rpeek.all .rp-r{padding:3px 7px}.rpeek.all .rp-t small{font-size:10.5px;line-height:1.2}
+.rpeek .rp-t em{color:#8a5a12}.rpeek .rp-t em.rp-n{color:#6a5236}
+.rpeek .rp-t small{color:#3a2410}
+.rpeek .rp-d{box-shadow:0 0 0 1.5px #3a2410}
 `; document.head.appendChild(st); })();
 </script>
 </body></html>
