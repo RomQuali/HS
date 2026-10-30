@@ -28,7 +28,8 @@ function onPriv(d) {
   const key = JSON.stringify(d);
   if (key === V.privKey) return;
   V.privKey = key; V.me = d;
-  if (V.chestRev && d.loot) { const R = V.chestRev; V.chestRev = null; const got = d.loot.slice(); if (got.length) setTimeout(() => chestReveal(got), Math.max(0, 950 - (Date.now() - R.at))); }
+  if (V.chestRev && d.choice) { const R = V.chestRev; V.chestRev = null; V.choiceAt = R.at + 950; setTimeout(render, Math.max(0, V.choiceAt - Date.now()) + 20); }
+  else if (V.chestRev && d.loot) { const R = V.chestRev; V.chestRev = null; const got = d.loot.slice(); if (got.length) setTimeout(() => chestReveal(got), Math.max(0, 950 - (Date.now() - R.at))); }
   if (V.sel) { const z = V.sel.z === 'ss' ? (d.sp ? [d.sp] : []) : V.sel.z === 'sh' ? d.sh : V.sel.z === 'bd' ? d.bd : d.hd; if (!z || !z[V.sel.i]) V.sel = null; }
   if (V.aim != null && !(d.hd[V.aim] && d.hd[V.aim].sp)) V.aim = null;
   render();
@@ -295,9 +296,9 @@ function elCycleSvg(order, col, title) {
 function chakraLawH(big) {
   const fus = Object.entries(FUSIONS).map(([k, F]) => `<i style="--c:${F.col}">${k.split('+').map(e => ELS[e].n).join(' + ')} = <b>${F.n}</b></i>`).join('');
   return `<span class="ban-law ck-law${big ? ' big' : ''}"><b>Loi · Chakra et éléments</b>
-    <small><b>Chakra :</b> chaque serviteur de l'univers en donne 1 par tour. Il lance les techniques (achetées en or) et paie les équipements de ton compagnon.</small>
+    <small><b>Chakra :</b> chaque serviteur de l'univers en donne 1 par tour. Il lance les techniques (achetées en or) et le pouvoir de ton héros.</small>
     <small><b>Compagnon :</b> il prend l'élément de ta dernière technique (utile pour la domination) et gagne le pouvoir hybride de chaque combo.</small>
-    <small><b>Entraînement :</b> ton compagnon commence en jeu, déjà triplé, à côté de ton héros (il ne prend pas de place sur le plateau). En combat, il affronte uniquement le compagnon adverse et ne blesse jamais le héros : ce duel décide du coffre du niveau de ta taverne (majeur s'il gagne, mineur sinon). Il s'ouvre gratuitement ; ses équipements se rangent en médailles et se posent sur ton compagnon contre du chakra.</small>
+    <small><b>Entraînement :</b> ton compagnon commence en jeu, déjà triplé, à côté de ton héros (il ne prend pas de place sur le plateau). En combat, il affronte uniquement le compagnon adverse et ne blesse jamais le héros : ce duel décide du coffre du niveau de ta taverne (majeur s'il gagne, mineur sinon). Il porte 5 pièces (lame, armure, bandeau, gantelets, talisman) : chaque coffre propose 3 améliorations au choix, de rareté Normal, Héroïque, Épique ou Légendaire. Un coffre majeur et une taverne haute donnent de meilleures raretés ; une amélioration Épique ou Légendaire ajoute aussi une technique à ta main.</small>
     <span class="elx">
       <span class="elx-c">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b style="color:#ff8a6a">Domination</b> · ton compagnon l'emporte sur l'élément d'en face : +4/+4 au combat.</small></span>
       <span class="elx-c">${elCycleSvg(['vent', 'feu', 'foudre', 'terre', 'eau'], '#6fd0ff', 'Génération')}<small><b style="color:#8fdcff">Génération</b> · lance l'élément que nourrit celui de ton compagnon : +2 chakra et +2/+2.</small></span>
@@ -314,7 +315,7 @@ function ninjaCardH() {
   return `<span class="ban-law nj-law"><b>Loi · Chakra</b>
     ${row('<svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="#6fc8ff" stroke="#120a06" stroke-width="2"/><circle cx="8" cy="8" r="2.2" fill="#dff4ff"/></svg>', '#2a5a86', 'Techniques', 'Achetées en or, lancées avec le chakra (1 par ninja en jeu et par tour). Chacune suit le jeu de son clan.')}
     ${row('<svg viewBox="0 0 20 20"><path d="M3 15 L5 6 L8 10 L10 4 L12 10 L15 6 L17 15 Z" fill="#f2c14e" stroke="#120a06" stroke-width="1.6" stroke-linejoin="round"/></svg>', '#7a5a1a', 'Compagnon', 'Déjà triplé, hors plateau. Il prend l\'élément de ta dernière technique et ne combat que le compagnon adverse.')}
-    ${row('<svg viewBox="0 0 20 20"><rect x="3" y="8" width="14" height="9" rx="1.5" fill="#e2b04e" stroke="#120a06" stroke-width="1.6"/><path d="M3 8 Q10 1 17 8 Z" fill="#c88a26" stroke="#120a06" stroke-width="1.6"/><rect x="8.6" y="9.5" width="2.8" height="3.4" fill="#120a06"/></svg>', '#6a3a12', 'Duel = coffre', 'Compagnon vainqueur : coffre majeur. Sinon : coffre mineur. Ses équipements se posent contre du chakra.')}
+    ${row('<svg viewBox="0 0 20 20"><rect x="3" y="8" width="14" height="9" rx="1.5" fill="#e2b04e" stroke="#120a06" stroke-width="1.6"/><path d="M3 8 Q10 1 17 8 Z" fill="#c88a26" stroke="#120a06" stroke-width="1.6"/><rect x="8.6" y="9.5" width="2.8" height="3.4" fill="#120a06"/></svg>', '#6a3a12', 'Duel = coffre', 'Compagnon vainqueur : coffre majeur, sinon mineur. Chaque coffre propose 3 améliorations au choix : Normal, Héroïque, Épique ou Légendaire.')}
     ${row('<svg viewBox="0 0 20 20"><path d="M10 2 C14 7 15 10 15 12 A5 5 0 0 1 5 12 C5 9 7 8 8 5 C9 8 10 8 10 2 Z" fill="#ff7a3a" stroke="#120a06" stroke-width="1.6"/></svg>', '#7a2a12', 'Éveil', 'À 4 joueurs ou moins, chaque clan libère son pouvoir ultime et les techniques interdites.')}
     <span class="nj-el">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b>Réservoir et combos</b>Deux techniques remplissent le réservoir : leur mélange déclenche l'un des 15 combos. Chaque élément domine aussi le suivant : +4/+4 au compagnon.</small></span>
   </span>`;
@@ -474,7 +475,7 @@ function gameH() {
     const n = me.hd.length;
     const hand = fighting ? '' : `<section class="hand" data-drop="hd" aria-label="Ta main · ${n}/10"><div class="fan${n > 7 ? ' many' : n > 4 ? ' some' : ''}" style="--n:${n}">${n ? me.hd.map((m, i) => { const o = i - (n - 1) / 2, op = { drag:canAct, style:`--o:${f1(o)};--o2:${f1(o * o)}` }; return m.sp ? spellCardH(m.sp, 'hd', i, op) : cardH(m, 'hd', i, op); }).join('') : ''}</div></section>`;
     const det = !fighting && V.sel ? `<div class="detail-pop">${detailH(canAct)}<button class="dp-x" data-act="unsel" aria-label="Fermer">×</button></div>` : '';
-    table = `<div class="table${fighting ? ' fighting arena' : ''}">${hud}${topZone}${board}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}`;
+    table = `<div class="table${fighting ? ' fighting arena' : ''}">${hud}${topZone}${board}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}${choiceH(d, me)}`;
   } else if (myInfo) {
     table = `<div class="table">${hud}<section class="plaque solo-msg"><h2>Éliminé · ${myInfo.pl}e place</h2><p class="note">Tu peux suivre la fin de la partie à gauche ou retourner au menu.</p><div class="btns"><button class="btn" data-act="leave">Retour au menu</button></div></section></div>`;
   } else {
@@ -512,8 +513,28 @@ function fxChest(btn) {
   document.body.appendChild(el); setTimeout(() => el.remove(), 1700);
 }
 // la zone d'entraînement : coffres (ouverture gratuite) et médailles d'équipement (posées sur le compagnon contre du chakra)
+// les 5 pièces du compagnon : bordure = meilleure rareté obtenue, badge = nombre d'améliorations
+const pieceIco = (pc, cls = '') => `<svg class="pc-ico ${cls}" viewBox="0 0 100 100" aria-hidden="true"><clipPath id="pci-${pc}-${cls}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#pci-${pc}-${cls})"><use href="#sp-${PIECES[pc].art}" width="100" height="100"/></g></svg>`;
+function pieceList(c, pc) { const L = (c && c.pc && c.pc[pc]) || []; return L; }
+function piecesH(c) {
+  return PIECE_IDS.map(pc => { const L = pieceList(c, pc), best = L.length ? Math.max(...L) : -1, col = best >= 0 ? RARS[best].col : '#5a4a3a';
+    const tip = `${PIECES[pc].n}${L.length ? ' : ' + L.map(r => RARS[r].n + ' (' + upTx({ pc, r }) + ')').join(' · ') : ' : aucune amélioration'}`;
+    return `<span class="pcs" style="--rc:${col}" data-tip="${esc(tip)}" aria-label="${esc(tip)}">${pieceIco(pc)}${L.length ? `<b class="pcs-n">${L.length}</b>` : ''}</span>`; }).join('');
+}
+// coffre ouvert : 3 améliorations au choix (et la technique bonus éventuelle)
+function choiceH(d, me) {
+  if (!me || !me.choice || !me.cp || Date.now() < (V.choiceAt || 0) || d.ph !== 'recruit') return '';
+  const tech = (me.loot || []).filter(o => SPELLS[o.id]);
+  return `<div class="upch" role="dialog" aria-label="Choisis une amélioration"><div class="upch-in">
+    <b class="upch-t">Choisis une amélioration</b><small class="upch-s">Pour ${esc(C[me.cp.c] ? C[me.cp.c].n : 'ton compagnon')}</small>
+    <div class="upch-row">${me.choice.map((o, i) => { const R = RARS[o.r], n = pieceList(me.cp, o.pc).length;
+      return `<button class="upc r${o.r}" style="--rc:${R.col};--k:${i}" data-act="upick" data-i="${i}"><span class="upc-r">${R.n}</span>${pieceIco(o.pc, 'big')}<b>${esc(PIECES[o.pc].n)}</b><span class="upc-tx">${esc(upTx(o))}</span><small>${n ? `Déjà ${n} amélioration${n > 1 ? 's' : ''}` : 'Première amélioration'}</small></button>`; }).join('')}</div>
+    ${tech.length ? `<p class="upch-b">Bonus du coffre : <b>${tech.map(o => esc(SPELLS[o.id].n)).join(', ')}</b> ajoutée à ta main</p>` : ''}
+  </div></div>`;
+}
 function trainH(d, me, canAct) {
   if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
+  if (me.cp) return `<section class="train" aria-label="Entraînement"><b class="tr-h">Entraînement · pièces du compagnon</b><div class="tr-row med pcs-row">${piecesH(me.cp)}</div></section>`;
   const ks = Object.keys(me.chests || {}).filter(k => me.chests[k] > 0).sort((a, b) => a.slice(3) - b.slice(3) || (a < b ? 1 : -1));
   const comps = me.cp ? [me.cp] : (me.bd || []).filter(isComp), full = (me.eqs || []).length >= EQS_MAX;
   const chests = ks.map(k => { const q = k.slice(0, 3), t = +k.slice(3);
@@ -537,7 +558,7 @@ function compSheetH(mc, lv, eq) {
     <div class="pq-row"><span class="pq-lv"><b>Niveau ${L}</b><small>${nx ? `${mc.xp || 0} / ${nx} expérience` : 'Niveau maximum'}</small></span>
       ${E ? `<span class="pq-el" style="--c:${E.col}"><i></i><span><b>${E.n}</b><small>domine ${ELS[EL_DOM[el]].n} · +4/+4</small></span></span>` : ''}</div>
     <div class="pq-combo${fu ? '' : ' none'}" style="--c:${fuCol || '#8a7a5a'}"><b>${fu ? 'Combo · ' + esc(mc.fu) : 'Aucun combo'}</b><small>${fu ? esc(fxText(fu)) : 'Remplis le réservoir avec deux techniques : le combo lui donne un pouvoir hybride.'}</small></div>
-    <b class="peq-t">Équipement · ${eq.length}/${eqSlots(mc)}</b>${eqH}
+    <b class="peq-t">Pièces · ${PIECE_IDS.reduce((t, pc) => t + pieceList(mc, pc).length, 0)} amélioration(s)</b>${PIECE_IDS.map(pc => { const L = pieceList(mc, pc); return `<div class="peq-i">${pieceIco(pc)}<span><b>${esc(PIECES[pc].n)}</b><small>${L.length ? L.map(r => `<em style="color:${RARS[r].col}">${RARS[r].n}</em> ${esc(upTx({ pc, r }))}`).join(' · ') : 'Aucune amélioration'}</small></span></div>`; }).join('')}
     <small class="pq-duel">En combat, il affronte seulement le compagnon adverse : s'il gagne, coffre majeur.</small>
   </div>`;
 }
@@ -580,7 +601,7 @@ function comboWatch() {
 function ckGauge(d, me) {
   const law = (d.laws || []).find(l => l.k === 'chakra'); if (!law) return '';
   const ck = me.ck || 0, inc = (me.bd || []).filter(m => (law.trs || []).includes(CD(m.c).tr)).length;
-  return `<div class="purse ckp" aria-label="${ck} chakra sur 10" data-tip="Chakra : il lance tes techniques ninja et équipe ton compagnon. Chaque serviteur des Cinq Nations en génère 1 au début de ton tour (10 au plus).${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ck}<small>/10</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:10 }, (_, k) => `<i class="ckc${k < ck ? '' : ' off'}"></i>`).join('')}</span>${clanCtrH(me)}</div>`;
+  return `<div class="purse ckp" aria-label="${ck} chakra sur 10" data-tip="Chakra : il lance tes techniques ninja et le pouvoir de ton héros. Chaque serviteur des Cinq Nations en génère 1 au début de ton tour (10 au plus).${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ck}<small>/10</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:10 }, (_, k) => `<i class="ckc${k < ck ? '' : ' off'}"></i>`).join('')}</span>${clanCtrH(me)}</div>`;
 }
 // compteurs de clan (braises, marée, charge) sous le chakra
 const clanCtrH = me => { const c = [['braise', 'Braises', '#ff9a5a', 'Braises (Clan du Feu) : chaque technique les attise. Après l\'Éveil, Phénix : tes serviteurs du Feu gagnent +1/+1 par paire de braises et Renaissance.'], ['maree', 'Marée', '#6fc8ff', 'Marée (Clan de l\'Eau) : elle monte à chaque fin de tour. Après l\'Éveil, raz-de-marée : tous tes serviteurs gagnent +1/+1 par tranche de 4.'], ['charge', 'Charge', '#ffe14a', 'Charge (Clan de la Foudre) : elle s\'accumule à chaque fin de tour. Après l\'Éveil, orage total : la moitié frappe l\'ennemi au début de chaque combat.']].filter(([k]) => me[k]);
@@ -857,6 +878,7 @@ function doAct(act, btn) {
     case 'skip': if (V.fight) { clearTimeout(V.fightT); clearTimeout(V.duelT); if (V.fight.dr) { V.di = V.fight.dr.frames.length - 1; V.fight.ddone = true; } if (V.fight.lunge) { try { V.fight.lunge.cancel(); } catch (e) {} V.fight.lunge = null; } V.fi = V.fight.r.frames.length - 1; V.fight.done = true; render(); fxEnd(); } break;
     case 'buy': if (s) { sendAct({ t:'buy', i:s.i }); V.sel = null; } break;
     case 'buysp': sendAct({ t:'buysp' }); V.sel = null; break;
+    case 'upick': sendAct({ t:'upick', i:+btn.dataset.i }); hidePeek(); break;
     case 'chest': V.chestRev = { eq:(V.me && V.me.eqs || []).slice(), hd:(V.me && V.me.hd || []).map(x => x.u), at:Date.now() }; fxChest(btn); { const o = btn.closest('.bigchest'); if (o) o.remove(); } sendAct({ t:'chest' }); break;
     case 'equip': if (btn.getAttribute('aria-disabled') === 'true') { toast(btn.dataset.why || ''); break; } sendAct({ t:'equip', i:+btn.dataset.i }); hidePeek(); break;
     case 'cast': if (s) { sendAct({ t:'cast', i:s.i }); V.sel = null; } break;
@@ -1706,4 +1728,32 @@ svg.ck-gem.aff{box-shadow:none;filter:drop-shadow(0 0 5px rgba(155,227,106,.95))
 .cp-side .mn.hit{animation:cphit .4s ease-out}
 @keyframes cphit{20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-2px)}}
 .cp-side .mn .dmg{position:absolute;left:50%;top:30%;transform:translateX(-50%);z-index:5;pointer-events:none}
+`; document.head.appendChild(st); })();
+
+/* améliorations du compagnon : pièces, rareté, choix parmi 3 */
+(function(){ const st = document.createElement('style'); st.textContent = `
+.pcs-row{gap:12px!important}
+.pcs{position:relative;flex:none;width:44px;height:44px;border-radius:50%;box-shadow:0 0 0 3px var(--rc),0 0 10px var(--rc);cursor:help}
+.pcs .pc-ico{width:100%;height:100%;display:block}
+.pcs-n{position:absolute;right:-6px;bottom:-6px;min-width:18px;height:18px;padding:0 4px;display:grid;place-items:center;border-radius:9px;font:700 11px var(--f-num);color:#120a06;background:var(--rc);box-shadow:0 0 0 2px #120a06}
+.peq-i .pc-ico{width:34px;height:34px;flex:none;border-radius:50%;box-shadow:0 0 0 2px #f2c14e}
+.peq-i em{font-style:normal;font-weight:700}
+.upch{position:fixed;inset:0;z-index:72;display:grid;place-items:center;background:radial-gradient(circle,rgba(10,6,4,.45),rgba(10,6,4,.85));animation:chrevIn .3s ease-out}
+.upch-in{display:grid;justify-items:center;gap:6px;padding:16px}
+.upch-t{font-family:var(--f-disp);font-size:32px;color:#ffd86a;text-shadow:0 3px 0 #120a06}
+.upch-s{color:#e8d6b0;font-size:13px;margin-bottom:6px}
+.upch-row{display:flex;gap:18px;flex-wrap:wrap;justify-content:center}
+.upc{width:190px;display:grid;justify-items:center;gap:6px;padding:12px 12px 14px;border:0;border-radius:16px;cursor:pointer;font:inherit;color:#f1e4c6;text-align:center;
+  background:linear-gradient(180deg,rgba(40,28,20,.97),rgba(18,12,8,.97));box-shadow:0 0 0 3px var(--rc),0 0 24px color-mix(in srgb,var(--rc) 60%,transparent),0 12px 24px rgba(0,0,0,.6);
+  animation:upcIn .45s cubic-bezier(.2,1.3,.4,1) both;animation-delay:calc(var(--k) * .12s);transition:transform .15s}
+.upc:hover,.upc:focus-visible{transform:translateY(-6px) scale(1.04)}
+.upc-r{padding:2px 10px;border-radius:99px;font:700 11px var(--f-label);letter-spacing:.1em;text-transform:uppercase;color:#120a06;background:var(--rc)}
+.upc .pc-ico.big{width:96px;height:96px;border-radius:50%;box-shadow:0 0 0 3px var(--rc),0 0 18px var(--rc)}
+.upc b{font-family:var(--f-label);font-size:16px;color:#fff3c0}
+.upc-tx{font-size:14px;font-weight:700;color:var(--rc);min-height:36px;display:grid;place-items:center}
+.upc small{font-size:11px;color:#bfae8a}
+.upc.r3{background:linear-gradient(180deg,rgba(70,40,14,.97),rgba(24,14,6,.97))}
+.upch-b{margin:8px 0 0;color:#e8d6b0;font-size:13px}.upch-b b{color:#ffd86a}
+@keyframes upcIn{from{opacity:0;transform:translateY(30px) scale(.8)}}
+@media (max-width:700px){ .upc{width:150px} .upc .pc-ico.big{width:70px;height:70px} }
 `; document.head.appendChild(st); })();

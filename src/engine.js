@@ -870,6 +870,36 @@ const powPaid = G => !!(G && inMechAny(G, 'chakra'));
 const powPurse = (G, p) => powPaid(G) ? (p.ck || 0) : p.g;
 // coffres : un par combat, rangés hors de la main ; mineur (égalité ou défaite) ou majeur (victoire), du niveau de la taverne
 const CHEST_COMMON = ['eq_lame', 'eq_armure', 'eq_gants'];
+/* ---------- Améliorations du compagnon (univers Ninja) ----------
+   Le compagnon porte dès le départ 5 pièces. Chaque coffre propose 3 améliorations au choix,
+   de rareté Normal, Héroïque, Épique ou Légendaire (selon le duel et le niveau de taverne). */
+const RARS = [{ n:'Normal', col:'#c9c2b4' }, { n:'Héroïque', col:'#4a9aff' }, { n:'Épique', col:'#b45aff' }, { n:'Légendaire', col:'#ff9a2a' }];
+const PIECES = {
+  lame:{ n:'Lame de chakra', art:'eq_lame' },
+  armure:{ n:'Armure de roc', art:'eq_armure' },
+  bandeau:{ n:'Bandeau du maître', art:'eq_bandeau' },
+  gants:{ n:'Gantelets du vent', art:'eq_gants' },
+  talisman:{ n:'Talisman des cycles', art:'eq_talisman' },
+};
+const PIECE_IDS = Object.keys(PIECES);
+const xAdd = (c, e, src) => (c.x = c.x || []).push(Object.assign({ src }, e));
+// [texte, effet] pour chaque pièce et chaque rareté
+const UPS = {
+  lame:[['+2 attaque', c => buff(c, 2, 0)], ['+4 attaque', c => buff(c, 4, 0)], ['+5 attaque et Toxique', c => { buff(c, 5, 0); addF(c, 'v'); }], ['+8 attaque et Furie des vents', c => { buff(c, 8, 0); addF(c, 'w'); }]],
+  armure:[['+3 vie', c => buff(c, 0, 3)], ['+6 vie', c => buff(c, 0, 6)], ['+2/+8', c => buff(c, 2, 8)], ['+12 vie et Bouclier divin', c => { buff(c, 0, 12); addF(c, 's'); }]],
+  bandeau:[['+1/+1', c => buff(c, 1, 1)], ['Fin de tour : +1 chakra', c => xAdd(c, { k:'eot_chakra', n:1 }, 'Bandeau du maître')], ['+2/+2 et fin de tour : +1 chakra', c => { buff(c, 2, 2); xAdd(c, { k:'eot_chakra', n:1 }, 'Bandeau du maître'); }], ['Renaissance et fin de tour : +2 chakra', c => { addF(c, 'r'); xAdd(c, { k:'eot_chakra', n:2 }, 'Bandeau du maître'); }]],
+  gants:[['+1/+2', c => buff(c, 1, 2)], ['+2/+3', c => buff(c, 2, 3)], ['+2/+2 et Furie des vents', c => { buff(c, 2, 2); addF(c, 'w'); }], ['Après avoir attaqué : gagne +3/+3', c => xAdd(c, { k:'atk_self', a:3, h:3 }, 'Gantelets du vent')]],
+  talisman:[['+1/+1', c => buff(c, 1, 1)], ['Domination : +2/+2 de plus', c => { c.domb = (c.domb || 0) + 2; }], ['Domination : +4/+4 de plus', c => { c.domb = (c.domb || 0) + 4; }], ['+3/+3 et domination : +6/+6 de plus', c => { buff(c, 3, 3); c.domb = (c.domb || 0) + 6; }]],
+};
+const upTx = o => (UPS[o.pc] && UPS[o.pc][o.r] || [''])[0];
+// rareté : meilleure avec un coffre majeur (duel gagné) et une taverne haute
+function rollRar(q, t) {
+  const s = t + (q === 'maj' ? 2 : 0);
+  const W = s <= 2 ? [80, 20, 0, 0] : s <= 4 ? [50, 40, 10, 0] : s <= 6 ? [25, 45, 25, 5] : [10, 35, 40, 15];
+  let x = Math.random() * 100; for (let r = 0; r < 4; r++) { x -= W[r]; if (x < 0) return r; } return 0;
+}
+function chestChoice(q, t) { return shuffle(PIECE_IDS.slice()).slice(0, 3).map(pc => ({ pc, r:rollRar(q, t) })); }
+function applyUp(c, o) { const U = UPS[o.pc] && UPS[o.pc][o.r]; if (!U) return; withSrc(PIECES[o.pc].n + ' · ' + RARS[o.r].n, () => U[1](c)); c.pc = c.pc || {}; (c.pc[o.pc] = c.pc[o.pc] || []).push(o.r); }
 const EQS_MAX = 8;
 const chestCost = (q, t) => q === 'maj' ? 3 + Math.floor(t / 2) : 2 + Math.floor(t / 3);
 // jamais deux fois le même équipement : ni dans un même coffre, ni s'il est déjà rangé ou porté
@@ -969,6 +999,11 @@ const OPS = {
   chest(G, p) {
     const k = p.pendChest || '', m = /^(min|maj)([1-6])$/.exec(k); if (!m) return false;
     const q = m[1], t = +m[2]; p.pendChest = null;
+    if (p.cp) {   // Ninja : 3 améliorations au choix, et une technique en bonus si l'une d'elles est épique ou légendaire
+      p.choice = chestChoice(q, t); p.loot = [];
+      if (Math.max(...p.choice.map(o => o.r)) >= 2 && p.hd.length < 10) { const sp = drawSpell(Math.max(1, t)); if (sp) { p.hd.push(sp); p.loot.push({ id:sp.sp }); } }
+      return true;
+    }
     p.eqs = p.eqs || []; p.eqlv = p.eqlv || {}; p.loot = [];
     chestLoot(q, t, p).forEach(id => {
       if (!(SPELLS[id] && SPELLS[id].eq)) { if (p.hd.length < 10) { p.hd.push({ sp:id, u:UID++ }); p.loot.push({ id }); } return; }
@@ -981,6 +1016,8 @@ const OPS = {
     });
     return true;
   },
+  // choisir une des 3 améliorations du coffre
+  upick(G, p, a) { const o = p.choice && p.choice[a.i]; if (!o || !p.cp) return false; applyUp(p.cp, o); p.choice = null; p.lastUp = o; return true; },
   // équiper le compagnon coûte du chakra
   equip(G, p, a) {
     const id = (p.eqs || [])[a.i]; if (!id || !SPELLS[id]) return false;
@@ -1148,6 +1185,7 @@ function endRecruit() {
   const G = H.G;
   for (const p of G.ps) if (p.al) {
     if (p.pendChest) OPS.chest(G, p);
+    if (p.choice) { const b = p.choice.reduce((bi, o, i) => o.r > p.choice[bi].r ? i : bi, 0); OPS.upick(G, p, { i:b }); }
     { const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'prsv' && (p.rsv || []).length === 1) p.maree = (p.maree || 0) + w.n; }
     const neot = auraTimes(p.bd, 'aura_eot');
     for (const m of p.bd.concat(p.cp ? [p.cp] : [])) for (let r = 0; r < neot; r++) fxOf(m, 'eot').forEach(e => runRecruit(G, p, m, e));
@@ -1208,7 +1246,7 @@ function elementDuel(a, b) {
   const ea = elOf(a), eb = elOf(b);
   for (const [bd, mine, theirs] of [[a, ea, eb], [b, eb, ea]]) {
     if (!mine || !theirs || EL_DOM[mine] !== theirs) continue;
-    bd.filter(isComp).forEach(c => { const x = (c.eq || []).includes('eq_talisman') ? 8 : 4; c.a += x; c.h += x; });
+    bd.filter(isComp).forEach(c => { const x = ((c.eq || []).includes('eq_talisman') ? 8 : 4) + (c.domb || 0); c.a += x; c.h += x; });
   }
 }
 // vol de chakra : « Début du combat » (plateaux de départ) et « Râle d'agonie » (serviteurs morts)
@@ -1255,7 +1293,7 @@ function hostTick() {
 
 /* ---------- diffusion ---------- */
 const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u }; const o = { c:m.c, a:m.a, h:m.h }; if (m.memo) o.memo = m.memo; if (m.el) o.el = m.el; if (m.fu) o.fu = m.fu; if (m.xp) o.xp = m.xp; if (m.eq && m.eq.length) o.eq = m.eq; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; if (m.bn) o.bn = m.bn; return o; };
-const fullM = m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g || 0, f:m.f || '', u:m.u }; if (m.x) o.x = m.x; return o; };
+const fullM = m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g || 0, f:m.f || '', u:m.u }; if (m.x) o.x = m.x; if (m.domb) o.domb = m.domb; return o; };
 function pubData() {
   const G = H.G;
   if (!G) return { ph:'lobby', code:H.code, cv:CAT_REV, us:(V.univSel || []).slice(), pl:H.roster.map(r => ({ n:r.n, pe:r.peer })), last:H.last || null };
@@ -1264,7 +1302,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, choice:p.choice || null, pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;
