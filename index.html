@@ -6275,7 +6275,7 @@ function dzRects(from) {
   const bot = Math.max(T.bottom, innerHeight);
   // une seule zone, taillée selon l'action : acheter → la main (tout sous la taverne) ; jouer → le plateau (tout au-dessus de la main) ; vendre → la taverne
   // zone de prise large, mais le rectangle affiché (v) est posé sur l'endroit où la carte arrive
-  if (from === 'sh' || from === 'ss') return [{ drop:'hd', el:hd, l, r, t:b1, b:bot, v:[(B.top + B.bottom) / 2, bot] }];
+  if (from === 'sh' || from === 'ss') return [{ drop:'hd', el:hd, l, r, t:b1, b:bot }];
   if (from === 'hd') return [{ drop:'bd', el:bd, l, r, t:T.top, b:b2, v:[b1, b2] }];
   if (from === 'bd') return [{ drop:'sh', el:sh, l, r, t:T.top, b:b1 }, { drop:'bd', el:bd, l, r, t:b1, b:bot, hide:1 }];
   return [];
