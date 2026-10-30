@@ -216,7 +216,7 @@ function render() {
   const inArena = !!document.querySelector('.arena');
   if (V.hadArena && !inArena) arenaCleanup();
   V.hadArena = inArena;
-  placeDuelCol();
+  placeDuelCol(); awkWatch();
   for (const id in ks) { const el = document.getElementById(id); if (el) el.scrollTop = ks[id]; }
   if (fid) { const n = document.getElementById(fid); if (n) { try { n.focus({ preventScroll:true }); if (keep) n.setSelectionRange(keep[0], keep[1]); } catch (e) {} } }
 }
@@ -307,7 +307,7 @@ function chakraLawH(big) {
     <small><b>Réservoir :</b> ta 1re technique remplit une moitié de son élément, la 2e remplit l'autre : le mélange déclenche un combo (effet immédiat sur ton plateau + pouvoir hybride au compagnon) puis le réservoir se vide. Deux fois le même élément : combo pur, plus fort. Il garde sa moitié d'un tour à l'autre.</small>
     <span class="elx-f">${fus}</span>
     <small><b>Affinité :</b> les techniques de l'élément de ton héros coûtent 1 chakra de moins.</small>
-    <small><b>Éveil des clans</b> (4 joueurs ou moins) : <b style="color:#ff9a6a">Feu</b> Phénix (braises → stats et Renaissance) · <b style="color:#8fe0b0">Vent</b> Ouragan (dégâts à chaque attaque) · <b style="color:#8fd0ff">Eau</b> Raz-de-marée (la marée renforce l'équipe) · <b style="color:#ffe27a">Foudre</b> Orage total (la charge frappe) · <b style="color:#d8c0a0">Terre</b> Avalanche (sa vie devient des dégâts).</small>
+    <small><b>Éveil</b> (4 joueurs ou moins) : ton compagnon prend sa forme éveillée (stats doublées et pouvoir de duel ultime), le pouvoir de ton héros est renforcé, chaque technique gagne son effet d'Éveil et des techniques interdites apparaissent. Les clans libèrent leur pouvoir : <b style="color:#ff9a6a">Feu</b> Phénix (braises → stats et Renaissance) · <b style="color:#8fe0b0">Vent</b> Ouragan (dégâts à chaque attaque) · <b style="color:#8fd0ff">Eau</b> Raz-de-marée (la marée renforce l'équipe) · <b style="color:#ffe27a">Foudre</b> Orage total (la charge frappe) · <b style="color:#d8c0a0">Terre</b> Avalanche (sa vie devient des dégâts).</small>
     <small><b>Pureté :</b> 5 serviteurs d'un même clan donnent +1 chakra par tour et doublent les effets de clan.</small></span>`;
 }
 // fiche de l'univers Ninja : quatre règles courtes et le cycle des éléments (le détail complet est sur l'écran du héros)
@@ -317,7 +317,7 @@ function ninjaCardH() {
     ${row('<svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="#6fc8ff" stroke="#120a06" stroke-width="2"/><circle cx="8" cy="8" r="2.2" fill="#dff4ff"/></svg>', '#2a5a86', 'Techniques', 'Achetées en or, lancées avec le chakra (1 par ninja en jeu et par tour). Chacune suit le jeu de son clan.')}
     ${row('<svg viewBox="0 0 20 20"><path d="M3 15 L5 6 L8 10 L10 4 L12 10 L15 6 L17 15 Z" fill="#f2c14e" stroke="#120a06" stroke-width="1.6" stroke-linejoin="round"/></svg>', '#7a5a1a', 'Compagnon', 'Déjà triplé, hors plateau. Il prend l\'élément de ta dernière technique et ne combat que le compagnon adverse.')}
     ${row('<svg viewBox="0 0 20 20"><rect x="3" y="8" width="14" height="9" rx="1.5" fill="#e2b04e" stroke="#120a06" stroke-width="1.6"/><path d="M3 8 Q10 1 17 8 Z" fill="#c88a26" stroke="#120a06" stroke-width="1.6"/><rect x="8.6" y="9.5" width="2.8" height="3.4" fill="#120a06"/></svg>', '#6a3a12', 'Duel = coffre', 'Compagnon vainqueur : coffre majeur, sinon mineur. Choisis 1 récompense sur 3 (Normal à Légendaire), puis pose-la avec du chakra.')}
-    ${row('<svg viewBox="0 0 20 20"><path d="M10 2 C14 7 15 10 15 12 A5 5 0 0 1 5 12 C5 9 7 8 8 5 C9 8 10 8 10 2 Z" fill="#ff7a3a" stroke="#120a06" stroke-width="1.6"/></svg>', '#7a2a12', 'Éveil', 'À 4 joueurs ou moins, chaque clan libère son pouvoir ultime et les techniques interdites.')}
+    ${row('<svg viewBox="0 0 20 20"><path d="M10 2 C14 7 15 10 15 12 A5 5 0 0 1 5 12 C5 9 7 8 8 5 C9 8 10 8 10 2 Z" fill="#ff7a3a" stroke="#120a06" stroke-width="1.6"/></svg>', '#7a2a12', 'Éveil', 'À 4 joueurs ou moins : clans, compagnon et héros s\'éveillent, et chaque technique gagne un effet en plus.')}
     <span class="nj-el">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b>Réservoir et combos</b>Deux techniques remplissent le réservoir : leur mélange déclenche l'un des 15 combos. Chaque élément domine aussi le suivant : +4/+4 au compagnon.</small></span>
   </span>`;
 }
@@ -427,7 +427,7 @@ function gameH() {
       <span class="op-face">${faceH(playerSym(p))}<b class="op-hp">${p.al ? Math.max(0, p.hp) : p.pl + 'e'}</b><span class="op-t">${p.t}</span>${d.ph === 'recruit' && p.r && p.al ? '<span class="op-r">✓</span>' : ''}</span>
       <span class="op-n">${esc(p.n)}</span></li>`).join('');
   const myInfo = d.pl.find(p => p.pid === myPid), alive = !!(myInfo && myInfo.al);
-  const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span>${d.ev && d.rd >= d.ev ? '<span class="eveil" data-tip="Éveil des clans : il reste 4 joueurs ou moins. Les techniques coûtent 1 chakra de moins et des techniques interdites apparaissent.">Éveil</span>' : ''}${d.laws && d.laws.length && d.ph !== 'end' ? `<span class="hud-laws">${d.laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<span class="hl" data-hov="law" data-tip="${esc(M.n + ' : ' + M.d)}">${icon(M.ic)}</span>`; }).join('')}${V.me && V.me.souls ? `<span class="souls" data-tip="Âmes récoltées : toutes les 3 âmes, tes serviteurs des Ténèbres gagnent +1/+1 au début du tour.">${icon('skull')}<b>${V.me.souls}</b></span>` : ''}</span>` : ''}<span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerTxt()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm" data-act="leave">Quitter</button></div>`;
+  const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span>${d.ev && d.rd >= d.ev ? '<span class="eveil" data-tip="Éveil : il reste 4 joueurs ou moins. Les clans libèrent leur pouvoir ultime, ton compagnon prend sa forme éveillée, le pouvoir de ton héros est renforcé, chaque technique gagne son effet d\'Éveil et des techniques interdites apparaissent.">Éveil</span>' : ''}${d.laws && d.laws.length && d.ph !== 'end' ? `<span class="hud-laws">${d.laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<span class="hl" data-hov="law" data-tip="${esc(M.n + ' : ' + M.d)}">${icon(M.ic)}</span>`; }).join('')}${V.me && V.me.souls ? `<span class="souls" data-tip="Âmes récoltées : toutes les 3 âmes, tes serviteurs des Ténèbres gagnent +1/+1 au début du tour.">${icon('skull')}<b>${V.me.souls}</b></span>` : ''}</span>` : ''}<span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerTxt()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm" data-act="leave">Quitter</button></div>`;
   let table;
   if (me && alive) {
     const canAct = d.ph === 'recruit';
@@ -477,7 +477,7 @@ function gameH() {
     const hand = fighting ? '' : `<section class="hand" data-drop="hd" aria-label="Ta main · ${n}/10"><div class="fan${n > 7 ? ' many' : n > 4 ? ' some' : ''}" style="--n:${n}">${n ? me.hd.map((m, i) => { const o = i - (n - 1) / 2, op = { drag:canAct, style:`--o:${f1(o)};--o2:${f1(o * o)}` }; return m.sp ? spellCardH(m.sp, 'hd', i, op) : cardH(m, 'hd', i, op); }).join('') : ''}</div></section>`;
     const det = !fighting && V.sel ? `<div class="detail-pop">${detailH(canAct)}<button class="dp-x" data-act="unsel" aria-label="Fermer">×</button></div>` : '';
     const duelCol = fighting && V.fight.duel && me.cp ? `<div class="duel-col" aria-label="Duel des compagnons">${cpSideH(me, V.fight, 1)}<span class="duel-vs">VS</span>${cpSideH(me, V.fight, 0)}</div>` : '';
-    table = `<div class="table${fighting ? ' fighting arena' : ''}">${duelCol}${hud}${topZone}${board}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}${choiceH(d, me)}`;
+    table = `<div class="table${fighting ? ' fighting arena' : ''}${awakeUI() && (d.laws || []).some(l => l.k === 'chakra') ? ' awakened' : ''}">${duelCol}${hud}${topZone}${board}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}${choiceH(d, me)}`;
   } else if (myInfo) {
     table = `<div class="table">${hud}<section class="plaque solo-msg"><h2>Éliminé · ${myInfo.pl}e place</h2><p class="note">Tu peux suivre la fin de la partie à gauche ou retourner au menu.</p><div class="btns"><button class="btn" data-act="leave">Retour au menu</button></div></section></div>`;
   } else {
@@ -570,6 +570,7 @@ function compSheetH(mc, lv, eq) {
   return `<div class="peq">
     <div class="pq-row"><span class="pq-lv"><b>Niveau ${L}</b><small>${nx ? `${mc.xp || 0} / ${nx} expérience` : 'Niveau maximum'}</small></span>
       ${E ? `<span class="pq-el" style="--c:${E.col}"><i></i><span><b>${E.n}</b><small>domine ${ELS[EL_DOM[el]].n} · +4/+4</small></span></span>` : ''}</div>
+    ${(() => { const A = COMP_AWK[CLAN_EL[CD(mc.c).tr]]; return A ? `<div class="pq-awk${mc.awk ? ' on' : ''}"><b>${mc.awk ? 'Forme éveillée' : 'À l\'Éveil'} · ${esc(A.n)}</b><small>${mc.awk ? '' : 'Stats doublées · '}${esc(A.tx)}</small></div>` : ''; })()}
     <div class="pq-combo${fu ? '' : ' none'}" style="--c:${fuCol || '#8a7a5a'}"><b>${fu ? 'Combo · ' + esc(mc.fu) : 'Aucun combo'}</b><small>${fu ? esc(fxText(fu)) : 'Remplis le réservoir avec deux techniques : le combo lui donne un pouvoir hybride.'}</small></div>
     <b class="peq-t">Pièces · ${PIECE_IDS.reduce((t, pc) => t + pieceList(mc, pc).length, 0)} amélioration(s)</b>${PIECE_IDS.map(pc => { const L = pieceList(mc, pc); return `<div class="peq-i">${pieceIco(pc)}<span><b>${esc(PIECES[pc].n)}</b><small>${L.length ? L.map(r => `<em style="color:${RARS[r].col}">${RARS[r].n}</em> ${esc(upTx({ pc, r }))}`).join(' · ') : 'Aucune amélioration'}</small></span></div>`; }).join('')}
     <small class="pq-duel">En combat, il affronte seulement le compagnon adverse : s'il gagne, coffre majeur.</small>
@@ -660,6 +661,14 @@ function duelLunge(fr) {
 }
 function duelFx() { document.querySelectorAll('.cp-side .mn.dead').forEach(el => { const r = el.getBoundingClientRect(); if (!FX_OFF() && !el.dataset.fxd) { el.dataset.fxd = 1; fxBurst(r.left + r.width / 2, r.top + r.height * .45, 'shard', 14); } }); }
 // en combat : les deux compagnons face à face, dans la même colonne, chacun à la hauteur de sa rangée
+// l'Éveil : grande annonce plein écran, une seule fois
+function awkWatch() {
+  if (V.screen !== 'game' || !V.pub || !awakeUI() || !(V.pub.laws || []).some(l => l.k === 'chakra')) return;
+  const key = (V.pub.code || '') + ':' + V.pub.ev; if (V.awkSeen === key) return; V.awkSeen = key;
+  const el = document.createElement('div'); el.className = 'awk-fx';
+  el.innerHTML = `<div class="awk-in"><span class="awk-rays"></span><small>Il reste 4 ninjas ou moins</small><b>Éveil</b><p>Les clans libèrent leur pouvoir · ton compagnon s'éveille · ton héros se renforce · tes techniques gagnent leur effet d'Éveil</p></div>`;
+  document.body.appendChild(el); setTimeout(() => el.remove(), 3400);
+}
 function placeDuelCol() {
   const col = document.querySelector('.duel-col'), tb = document.querySelector('.table'); if (!col || !tb) return;
   const T = tb.getBoundingClientRect(), bz = document.querySelector('.board-zone'), top = document.querySelector('.counter-line'), mine = document.getElementById('bdrow');
@@ -683,7 +692,7 @@ function cpSideH(me, F, side) {
     lab = side ? 'Compagnon adverse' : r ? (r === 'win' ? 'Duel gagné · coffre majeur' : r === 'loss' ? 'Duel perdu · coffre mineur' : 'Égalité · coffre mineur') : 'Duel des compagnons';
     cls = r ? (side ? (r === 'win' ? ' loss' : r === 'loss' ? ' win' : '') : ' ' + r) : '';
   }
-  const tok = tokenH(m, side ? 'duelb' : 'cp', 0, { cls:'cp-tok' + (tc ? ' ' + tc : '') + (V.dHide != null && V.dHide === m.u ? ' dhide' : '') }).replace(/<\/div>$/, ex + '</div>');
+  const tok = tokenH(m, side ? 'duelb' : 'cp', 0, { cls:'cp-tok' + (m.awk ? ' awk' : '') + (tc ? ' ' + tc : '') + (V.dHide != null && V.dHide === m.u ? ' dhide' : '') }).replace(/<\/div>$/, ex + '</div>');
   return `<div class="cp-side${cls}" id="cps${side}" aria-label="${esc(lab)}">${tok}<small>${esc(lab)}</small></div>`;
 }
 function cpSlotH(me, F) {
@@ -1357,6 +1366,7 @@ function heroCardH(hid, o = {}) {
     ${famChips(heroFam(hid))}
     ${ptitle ? `<div class="hc-pt">${esc(ptitle)}</div>` : ''}
     <p class="hc-tx">${esc(body)}</p>
+    ${h.pw && /^nh_/.test(hid) ? `<p class="hc-awk${awakeUI() ? ' on' : ''}"><b>Éveil :</b> ${esc(heroAwkTx(h))}</p>` : ''}
     ${o.foot ? `<div class="hc-foot">${esc(o.foot)}</div>` : ''}
   </div>`;
 }
@@ -1842,4 +1852,26 @@ svg.ck-gem.aff{box-shadow:none;filter:drop-shadow(0 0 5px rgba(155,227,106,.95))
 .duel-col #cps1 small{display:none}
 .duel-vs{position:absolute;transform:translate(-50%,-50%);font:700 22px Grenze,serif;color:#ff9a5a;text-shadow:0 2px 0 #000,0 0 10px rgba(255,120,40,.6);padding:2px 10px;border-radius:99px;background:rgba(20,12,6,.7);box-shadow:0 0 0 2px #d8a84a}
 .keeper-zone .line.counter-line{padding-left:calc(var(--tw) + 40px)}
+`; document.head.appendChild(st); })();
+
+/* Éveil : héros, compagnon, techniques, plateau */
+(function(){ const st = document.createElement('style'); st.textContent = `
+.hc-awk{margin:4px 8px 0;padding:4px 8px;border-radius:8px;font-size:11px;line-height:1.3;color:#bfae8a;background:rgba(255,160,60,.08);box-shadow:inset 0 0 0 1px rgba(255,170,80,.25)}
+.hc-awk b{color:#ffb050}.hc-awk.on{color:#fff3c0;background:rgba(255,140,40,.22);box-shadow:inset 0 0 0 1.5px #ffb050,0 0 12px rgba(255,150,60,.5)}
+.tx-awk{display:block;margin-top:2px;color:#9a8a6a;font-size:.92em}.tx-awk b{color:#b8862a}.tx-awk.on{color:#a85a10;font-weight:700}.tx-awk.on b{color:#d8701a}
+.pq-awk{margin-bottom:7px;padding:6px 8px;border-radius:9px;background:rgba(255,150,50,.08);box-shadow:inset 3px 0 0 #ffb050}
+.pq-awk b{display:block;font-size:12.5px;color:#ffb050}.pq-awk small{display:block;font-size:11px;line-height:1.3}
+.pq-awk.on{background:rgba(255,150,50,.2);box-shadow:inset 3px 0 0 #ffb050,0 0 10px rgba(255,150,60,.4)}
+.mn.cp-tok.awk .mn-svg{filter:drop-shadow(0 0 8px #ffb050) drop-shadow(0 0 16px rgba(255,120,40,.8));animation:awkGlow 2s ease-in-out infinite}
+@keyframes awkGlow{50%{filter:drop-shadow(0 0 12px #ffd27a) drop-shadow(0 0 26px rgba(255,120,40,.95))}}
+.table.awakened{box-shadow:inset 0 0 60px rgba(255,120,40,.35),inset 0 0 0 2px rgba(255,170,80,.4)}
+.awk-fx{position:fixed;inset:0;z-index:95;display:grid;place-items:center;pointer-events:none;background:radial-gradient(circle,rgba(255,120,40,.25),rgba(10,4,2,.85) 70%);animation:awkF 3.4s ease forwards}
+.awk-in{position:relative;display:grid;justify-items:center;gap:6px;text-align:center;max-width:560px;padding:20px}
+.awk-rays{position:absolute;left:50%;top:50%;width:620px;height:620px;margin:-310px 0 0 -310px;border-radius:50%;background:repeating-conic-gradient(rgba(255,190,90,.35) 0 6deg,transparent 6deg 18deg);animation:awkR 3.4s linear;z-index:-1;mask:radial-gradient(circle,#000 20%,transparent 68%)}
+.awk-in small{font:700 13px var(--f-label);letter-spacing:.2em;text-transform:uppercase;color:#ffd27a}
+.awk-in b{font:700 92px/1 Grenze,serif;color:#ffb050;text-shadow:0 4px 0 #3a1404,0 0 30px rgba(255,140,40,.9);animation:awkB 3.4s ease}
+.awk-in p{margin:0;font-size:15px;color:#fff3c0;text-shadow:0 2px 4px #000}
+@keyframes awkF{0%{opacity:0}10%{opacity:1}80%{opacity:1}100%{opacity:0}}
+@keyframes awkB{0%{transform:scale(.4);opacity:0}18%{transform:scale(1.15);opacity:1}30%{transform:scale(1)}}
+@keyframes awkR{to{transform:rotate(60deg)}}
 `; document.head.appendChild(st); })();

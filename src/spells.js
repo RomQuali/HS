@@ -150,7 +150,7 @@ function castSpell0(G, p, hi, tg) {
     case 'sp_reflet': { const c = clone(tgt); c.u = UID++; delete c.tmp; p.hd.push(c); break; }
     case 'nj_permut': p.g += 1; tgt.tmp = { a:(tgt.tmp && tgt.tmp.a) || 0, h:(tgt.tmp && tgt.tmp.h) || 0, f:((tgt.tmp && tgt.tmp.f) || '') + 's', s:'Permutation' }; break;
     case 'nj_souffle': p.njf = (p.njf || 0) + 3; p.braise = (p.braise || 0) + 1; break;
-    case 'nj_boule': { const b = p.braise || 0; p.braise = 0; p.njf = (p.njf || 0) + Math.max(2, b * 2); break; }
+    case 'nj_boule': { const b = p.braise || 0; p.lastBraise = b; p.braise = 0; p.njf = (p.njf || 0) + Math.max(2, b * 2); break; }
     case 'nj_porteur': p.g += 2; p.fz = false; fillShop(G, p); break;
     case 'nj_vague': { p.maree = (p.maree || 0) + 2; const x = Math.floor(p.maree / 2); if (x) p.bd.filter(m => CD(m.c).tr === 'n_eau').forEach(m => buff(m, x, x)); break; }
     case 'nj_decharge': p.charge = (p.charge || 0) + 1; p.ck = Math.min(ckMax(p), (p.ck || 0) + 2); break;
@@ -183,6 +183,7 @@ function castSpell0(G, p, hi, tg) {
     case 'sp_ascension': p.bd.forEach(x => { buff(x, 2, 2); addF(x, 's'); }); break;
   }
   if (S.eq) (tgt.eq = tgt.eq || []).push(id);
+  if (S.nin && AWK_TECH[id] && awake(G)) withSrc('Technique éveillée', () => AWK_TECH[id][1](G, p, tgt, tg));
   // réservoir : chaque technique remplit une moitié ; la seconde moitié déclenche le combo et le vide
   if (S.el && S.nin) withSrc('Réservoir', () => rsvFill(G, p, S.el));
   if (S.nin) comps(p).forEach(c => giveXp(c, 1));
@@ -353,7 +354,7 @@ function spellCardH(id, z, i, o = {}) {
   return `<div class="cd spc${sel ? ' sel' : ''}${V.aim != null && V.aim === i && z === 'hd' ? ' aiming' : ''}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="Sort ${esc(S.n)}">`
     + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#sp-${id}" y="-4" width="100" height="100"/></svg></div>`
     + `<div class="cd-tier" aria-hidden="true">${'<i></i>'.repeat(S.t)}</div>`
-    + `<div class="cd-nm"><span>${esc(S.n)}</span></div><div class="cd-tx${n > 95 ? ' xlong' : n > 62 ? ' long' : ''}">${esc(S.tx)}</div>`
+    + `<div class="cd-nm"><span>${esc(S.n)}</span></div><div class="cd-tx${n + (AWK_TECH[id] ? 30 : 0) > 95 ? ' xlong' : n + (AWK_TECH[id] ? 30 : 0) > 62 ? ' long' : ''}">${esc(S.tx)}${AWK_TECH[id] ? `<span class="tx-awk${awakeUI() ? ' on' : ''}"><b>Éveil :</b> ${esc(AWK_TECH[id][0])}</span>` : ''}</div>`
     + `<div class="cd-tb" style="background:${ty.col}">${esc(ty.n)}</div>`
     + (S.item ? '' : costGemH(spellCostFor(id, z), S.c)) + (S.ck ? ckMarkH(V.me ? ckCost(V.me, S) : S.ck, 'ck-gem' + (V.me && ckCost(V.me, S) < S.ck ? ' aff' : ''), 'Coût en chakra' + (V.me && ckCost(V.me, S) < S.ck ? ' (affinité de ton héros : 1 de moins)' : '')) : '') + (S.el ? `<span class="el-tag" style="--ec:${ELS[S.el].col}">${elBadgeH(S.el)}${ELS[S.el].n}</span>` : '') + `${z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : ''}</div>`;
 }
@@ -362,6 +363,25 @@ function spellCardH(id, z, i, o = {}) {
    1re technique : une moitié se remplit de son élément. 2e technique : l'autre moitié se remplit,
    le mélange déclenche un combo (effet immédiat sur le plateau + pouvoir hybride au compagnon) et le réservoir se vide.
    Deux fois le même élément : combo pur, plus fort. Le réservoir garde sa moitié d'un tour à l'autre. */
+// techniques éveillées : après l'Éveil, chaque technique gagne un effet en plus
+const awakeUI = () => !!((typeof V !== 'undefined' && V.pub && V.pub.ev && V.pub.rd >= V.pub.ev) || awakeNow());
+const AWK_TECH = {
+  nj_souffle:['+3 dégâts de plus', (G, p) => { p.njf = (p.njf || 0) + 3; }],
+  nj_boule:['1 dégât de plus par braise consumée', (G, p) => { p.njf = (p.njf || 0) + (p.lastBraise || 0); }],
+  nj_deluge:['+2/+2 de plus pour tous', (G, p) => tmaAdd(p, 2, 2)],
+  nj_permut:['le Bouclier divin devient permanent', (G, p, t) => { if (t) addF(t, 's'); }],
+  nj_porteur:['+2 or de plus', (G, p) => { p.g += 2; }],
+  nj_rafale:['touche deux serviteurs de plus', (G, p) => shuffle(p.bd.slice()).slice(0, 2).forEach(m => buff(m, 2, 1))],
+  nj_brume:['+0/+3 de plus', (G, p) => tmaAdd(p, 0, 3)],
+  nj_doubles:['la copie gagne +3/+3', (G, p, t, tg) => { const c = p.bd[tg + 1]; if (c) buff(c, 3, 3); }],
+  nj_vague:['la marée monte de 2 de plus', (G, p) => ctrAdd(p, 'maree', 2)],
+  nj_decharge:['+2 chakra et +1 charge de plus', (G, p) => { p.ck = Math.min(ckMax(p), (p.ck || 0) + 2); ctrAdd(p, 'charge', 1); }],
+  nj_foudre:['+2 attaque permanente en plus', (G, p, t) => { if (t) buff(t, 2, 0); }],
+  nj_sceau:['+3/+3 de plus', (G, p, t) => { if (t) buff(t, 3, 3); }],
+  nj_pierre:['+0/+4 de plus', (G, p, t) => { if (t) buff(t, 0, 4); }],
+  nj_poing:['jusqu\'à +4 attaque de plus', (G, p, t) => { if (t) buff(t, Math.min(4, Math.floor(t.h / 3)), 0); }],
+  nj_invoc:['le serviteur invoqué gagne aussi +3/+3', (G, p) => { const m = p.bd[p.bd.length - 1]; if (m) buff(m, 3, 3); }],
+};
 const PURES = {
   feu:{ n:'Brasier', col:'#ff5a1a', fx:{ k:'soc_dmg', d:4, n:2 } },
   vent:{ n:'Typhon', col:'#6fd8a0', fx:{ k:'atk_self', a:2, h:2 } },
@@ -398,8 +418,8 @@ function rsvFill(G, p, el) {
   if (p.rsv.length < 2) return;
   const [a, b] = p.rsv, F = comboOf(a, b); p.rsv = [];
   if (!F) return;
-  const bd = COMBO_BD[F.n], w = HEROES[p.hero] && HEROES[p.hero].pw;
-  if (bd) withSrc('Combo · ' + F.n, () => { bd[1](G, p); if (w && w.k === 'pdouble' && !p.cdbl) { p.cdbl = 1; bd[1](G, p); } });
+  const bd = COMBO_BD[F.n], w = pwOf(p);
+  if (bd) withSrc('Combo · ' + F.n, () => { bd[1](G, p); if (w && w.k === 'pdouble' && (p.cdbl || 0) < (awake(G) ? 2 : 1)) { p.cdbl = (p.cdbl || 0) + 1; bd[1](G, p); } });
   if (w && w.k === 'pcombo') withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => { if (w.d && (a === w.el || b === w.el)) p.njf = (p.njf || 0) + w.d; if (w.h) p.bd.forEach(m => buff(m, 0, w.h)); });
   trigBoard(G, p, 'combo');
   comps(p).forEach(c => { c.x = (c.x || []).filter(e => !e.fusion); c.x.push(Object.assign({ src:'Combo · ' + F.n, fusion:1 }, F.fx)); c.fu = F.n; });

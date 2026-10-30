@@ -864,6 +864,27 @@ const CK_MAX = 10;
 const ckMax = p => CK_MAX + ((p && p.bd) || []).reduce((t, m) => t + ((CD(m.c).fxAll || []).filter(e => e.k === 'pas_ckx').reduce((u, e) => u + e.n, 0)) * (m.g ? 2 : 1), 0);
 const pureX = (p, tr) => p && p.pure === tr ? 2 : 1;
 const awake = G => !!(G && G.eveil && G.rd >= G.eveil);
+const awakeNow = () => typeof H !== 'undefined' && awake(H.G);
+/* ---------- Éveil (4 joueurs ou moins) : héros, compagnon et techniques s'éveillent ---------- */
+// pouvoir éveillé : les valeurs sont doublées (sauf les coûts) et certains pouvoirs gagnent un bonus
+const PW_COSTS = { braisebuff:['n'], g2ck:['g'] };
+function awkPw(w) {
+  if (!w) return w; const o = Object.assign({}, w), keep = PW_COSTS[w.k] || [];
+  ['n', 'd', 'a', 'h', 'g', 'n2', 'a2', 'h2', 'm', 'max'].forEach(k => { if (typeof o[k] === 'number' && !keep.includes(k)) o[k] *= 2; });
+  return o;
+}
+const pwOf = p => { const w = HEROES[p.hero] && HEROES[p.hero].pw; return w && typeof H !== 'undefined' && awake(H.G) ? awkPw(w) : w; };
+const PW_AWK_TX = { rfill:'remplit la moitié et récupère 2 chakra', techel:'ajoute 2 techniques', rpure:'déclenche le combo pur et gagne 2 or', pdouble:'les deux premiers combos du tour s\'appliquent deux fois', ptechc:'tes techniques coûtent 2 or de moins', rcycle:'gagne 2 or', rdump:'gagne 6 or' };
+const heroAwkTx = h => !h || !h.pw ? '' : PW_AWK_TX[h.pw.k] || 'effet doublé';
+// forme éveillée du compagnon : stats doublées une fois et pouvoir de duel ultime de son clan
+const COMP_AWK = {
+  feu:{ n:'Phénix de flammes', tx:'Renaissance et début du duel : 4 dégâts au compagnon adverse', fn:c => { addF(c, 'r'); (c.x = c.x || []).push({ k:'soc_dmg', d:4, n:1, src:'Phénix de flammes' }); } },
+  vent:{ n:'Lame d\'ouragan', tx:'Furie des vents et après avoir attaqué : +2/+0', fn:c => { addF(c, 'w'); (c.x = c.x || []).push({ k:'atk_self', a:2, h:0, src:'Lame d\'ouragan' }); } },
+  eau:{ n:'Corps de l\'eau', tx:'Bouclier divin à chaque duel et quand il survit à un coup : +3/+3', fn:c => { addF(c, 's'); (c.x = c.x || []).push({ k:'surv_self', a:3, h:3, src:'Corps de l\'eau' }); } },
+  foudre:{ n:'Chakra de foudre', tx:'+3 attaque et après avoir attaqué : 4 dégâts à l\'ennemi', fn:c => { buff(c, 3, 0); (c.x = c.x || []).push({ k:'atk_zap', d:4, n:1, src:'Chakra de foudre' }); } },
+  terre:{ n:'Golem de pierre', tx:'+0/+10 et début du duel : gagne +3/+3', fn:c => { buff(c, 0, 10); (c.x = c.x || []).push({ k:'soc_self', a:3, h:3, src:'Golem de pierre' }); } },
+};
+function awakenComp(c) { if (!c || c.awk) return; const el = CLAN_EL[CD(c.c).tr], A = COMP_AWK[el]; c.awk = 1; withSrc('Éveil du compagnon', () => { buff(c, c.a, c.h); if (A) A.fn(c); }); c.awkN = A ? A.n : ''; }
 const hasFx = (m, k) => (CD(m.c).fxAll || []).some(e => e.k === k);
 // dans l'univers du chakra, les pouvoirs héroïques se paient en chakra
 const powPaid = G => false;   // le pouvoir du héros se paie toujours en or (Ninja compris)
@@ -965,13 +986,13 @@ const compLv = m => { let lv = 1; XP_LV.forEach((x, k) => { if ((m.xp || 0) >= x
 const eqSlots = m => 3 + (compLv(m) >= 3 ? 1 : 0) + (compLv(m) >= 5 ? 1 : 0);
 function giveXp(m, n) { const before = compLv(m); m.xp = (m.xp || 0) + n; const after = compLv(m); for (let l = before + 1; l <= after; l++) buff(m, 2, 2); m.lv = after; }
 // affinité : une technique de l'élément du héros coûte 1 chakra de moins
-const ckCost = (p, S) => Math.max(0, (S.ck || 0) - (S.el && HEROES[p.hero] && HEROES[p.hero].clan === S.el ? 1 : 0) - (((typeof H !== 'undefined' && H.G && H.G.eveil) || p.ev) && S.nin && !S.forb ? 1 : 0));
+const ckCost = (p, S) => Math.max(0, (S.ck || 0) - (S.el && HEROES[p.hero] && HEROES[p.hero].clan === S.el ? 1 : 0));   // affinité : 1 de moins dans l'élément du héros
 const CLAN_EL = { n_feu:'feu', n_vent:'vent', n_eau:'eau', n_foudre:'foudre', n_terre:'terre' };
 const isComp = m => !!(m && C[m.c] && C[m.c].comp);
 // Cinq Nations : le compagnon est déjà en jeu (triplé) à côté du héros, hors plateau
 const comps = p => p.cp ? [p.cp] : (p.bd || []).filter(isComp);
 const compEl = m => m.el || CLAN_EL[CD(m.c).tr] || null;
-const spCost = (p, S) => p.hero === 'sylvara' && !p.sylv ? Math.max(0, S.c - 1) : p.hero === 'nh_haru' && S.nin ? Math.max(0, S.c - 1) : S.c;
+const spCost = (p, S) => p.hero === 'sylvara' && !p.sylv ? Math.max(0, S.c - 1) : p.hero === 'nh_haru' && S.nin ? Math.max(0, S.c - (awakeNow() ? 2 : 1)) : S.c;
 const trigBoard = (G, p, tr) => p.bd.concat(p.cp ? [p.cp] : []).forEach(x => fxOf(x, tr).forEach(e => runRecruit(G, p, x, e)));
 const SQ = ['sq_feu', 'sq_eau', 'sq_terre', 'sq_vent', 'sq_glace', 'sq_foudre'];
 const isSq = m => SQ.includes(tribe(m));
@@ -1081,7 +1102,8 @@ function powCanW(p, w) {
   }
   return false;
 }
-function powRun(G, p, w) {
+function powRun(G, p, w0) {
+  const w = awake(G) ? awkPw(w0) : w0;
   if (!powCanW(p, w)) return false;
   switch (w.k) {
     case 'ck': p.ck = Math.min(ckMax(p), (p.ck || 0) + w.n); break;
@@ -1092,13 +1114,13 @@ function powRun(G, p, w) {
     case 'tma': p.tma = { a:((p.tma && p.tma.a) || 0) + w.a, h:((p.tma && p.tma.h) || 0) + w.h }; break;
     case 'fire': p.njf = (p.njf || 0) + w.d; break;
     // ----- pouvoirs des héros Ninja (réservoir et compteurs de clan) -----
-    case 'rfill': rsvFill(G, p, w.el); break;
-    case 'rpure': rsvFill(G, p, p.rsv[0]); break;
+    case 'rfill': rsvFill(G, p, w.el); if (awake(G)) p.ck = Math.min(ckMax(p), (p.ck || 0) + 2); break;
+    case 'rpure': rsvFill(G, p, p.rsv[0]); if (awake(G)) p.g += 2; break;
     case 'rcycle': p.rsv[0] = EL_GEN[p.rsv[0]]; comps(p).forEach(c => { c.el = p.rsv[0]; }); p.g += w.g || 0; break;
     case 'rdump': p.rsv = []; p.g += w.g; break;
     case 'ctr': p[w.c] = (p[w.c] || 0) + (w.el && rsvHas(p, w.el) ? w.n2 : w.n); break;
     case 'braisebuff': p.braise -= w.n; pwPool(p, w).forEach(m => buff(m, w.a, w.h)); break;
-    case 'techel': { const el = w.el === 'rsv' ? ((p.rsv || [])[0] || 'terre') : w.el; const lo = SPELL_IDS.filter(id => SPELLS[id].nin && !SPELLS[id].forb && SPELLS[id].el === el).reduce((m, id) => Math.min(m, SPELLS[id].t), 9); const sp = drawSpell(Math.max(p.t, lo), el); if (sp) p.hd.push(sp); break; }
+    case 'techel': { const el = w.el === 'rsv' ? ((p.rsv || [])[0] || 'terre') : w.el; const lo = SPELL_IDS.filter(id => SPELLS[id].nin && !SPELLS[id].forb && SPELLS[id].el === el).reduce((m, id) => Math.min(m, SPELLS[id].t), 9); for (let i = 0; i < (awake(G) ? 2 : 1); i++) { const sp = drawSpell(Math.max(p.t, lo), el); if (sp && p.hd.length < 10) p.hd.push(sp); } break; }
     case 'rollg': p.fz = false; fillShop(G, p); trigBoard(G, p, 'roll'); if (rsvHas(p, w.el)) p.g += w.g; break;
     case 'tmamaree': { const x = Math.min(w.max, Math.floor((p.maree || 0) / 2)); p.tma = { a:((p.tma && p.tma.a) || 0) + x, h:(p.tma && p.tma.h) || 0 }; break; }
     case 'ckmaree': p.ck = Math.min(ckMax(p), (p.ck || 0) + w.n); p.maree = (p.maree || 0) + w.m; break;
@@ -1183,6 +1205,7 @@ function startRecruit() {
   const G = H.G; G.rd++;
   for (const p of G.ps) if (p.al) {
     if (inMechAny(G, 'chakra') && !p.cp && p.hero && compOf(p.hero)) { p.cp = mk(compOf(p.hero), 1); p.cb = 3; }
+    if (p.cp && awake(G) && !p.cp.awk) awakenComp(p.cp);
     p.mg = Math.min(10, 2 + G.rd); p.g = p.mg;
     if (p.hero === 'barnabe' && G.rd % 2 === 0) p.g += 1;
     p.uc = Math.max(0, p.uc - 1);
@@ -1213,7 +1236,7 @@ function endRecruit() {
     if (p.pendChest) OPS.chest(G, p);
     if (p.choice) { const b = p.choice.reduce((bi, o, i) => o.r > p.choice[bi].r ? i : bi, 0); OPS.upick(G, p, { i:b }); }
     if (p.bot && p.cp) for (let g = 0; g < 8 && (p.ups || []).length && (p.ck || 0) >= upgCost(p.ups[0]); g++) OPS.uapply(G, p, { i:0 });
-    { const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'prsv' && (p.rsv || []).length === 1) p.maree = (p.maree || 0) + w.n; }
+    { const w = pwOf(p); if (w && w.k === 'prsv' && (p.rsv || []).length === 1) p.maree = (p.maree || 0) + w.n; }
     const neot = auraTimes(p.bd, 'aura_eot');
     for (const m of p.bd.concat(p.cp ? [p.cp] : [])) for (let r = 0; r < neot; r++) fxOf(m, 'eot').forEach(e => runRecruit(G, p, m, e));
     if (p.hero === 'maelle' && p.bd[0]) withSrc('Passif de Maëlle', () => buff(p.bd[0], 1, 1));
@@ -1231,7 +1254,7 @@ function endRecruit() {
   const cap = G.rd <= 3 ? 5 : alive.length >= 4 ? 15 : 99;
   const fight = (p, q, ghost) => {
     const seed = rint(1e9), qb = ghost ? ghost.bd : q.bd, qt = ghost ? ghost.t : q.t, qn = ghost ? 'Fantôme de ' + ghost.n : q.n;
-    const heat = x => (x.fbq ? (x.fb || 3) : 0) + (x.hero === 'pyra' ? 2 : 0) + (x.njf || 0) + (HEROES[x.hero] && HEROES[x.hero].pw && HEROES[x.hero].pw.k === 'pfire' ? HEROES[x.hero].pw.d : 0) + (awake(G) && x.bd ? Math.floor((x.charge || 0) / 2) * (x.bd.some(m => hasFx(m, 'awk_storm')) ? 2 : 1) : 0);
+    const heat = x => (x.fbq ? (x.fb || 3) : 0) + (x.hero === 'pyra' ? 2 : 0) + (x.njf || 0) + (HEROES[x.hero] && HEROES[x.hero].pw && HEROES[x.hero].pw.k === 'pfire' ? HEROES[x.hero].pw.d * (awake(G) ? 2 : 1) : 0) + (awake(G) && x.bd ? Math.floor((x.charge || 0) / 2) * (x.bd.some(m => hasFx(m, 'awk_storm')) ? 2 : 1) : 0);
     const fire = [heat(p), ghost ? 0 : heat(q)];
     const pb = combatBoard(p), qcb = combatBoard(ghost || q);
     elementDuel(pb, qcb);
@@ -1320,7 +1343,7 @@ function hostTick() {
 
 /* ---------- diffusion ---------- */
 const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u }; const o = { c:m.c, a:m.a, h:m.h }; if (m.memo) o.memo = m.memo; if (m.el) o.el = m.el; if (m.fu) o.fu = m.fu; if (m.xp) o.xp = m.xp; if (m.eq && m.eq.length) o.eq = m.eq; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; if (m.bn) o.bn = m.bn; return o; };
-const fullM = m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g || 0, f:m.f || '', u:m.u }; if (m.x) o.x = m.x; if (m.domb) o.domb = m.domb; return o; };
+const fullM = m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g || 0, f:m.f || '', u:m.u }; if (m.x) o.x = m.x; if (m.domb) o.domb = m.domb; if (m.awk) o.awk = m.awk; return o; };
 function pubData() {
   const G = H.G;
   if (!G) return { ph:'lobby', code:H.code, cv:CAT_REV, us:(V.univSel || []).slice(), pl:H.roster.map(r => ({ n:r.n, pe:r.peer })), last:H.last || null };
