@@ -1769,3 +1769,5 @@ body.cs-entering #scene *{animation-play-state:running!important}
 .souls.chakra{font-size:16px}
 @media (max-width:820px),(max-height:540px){ .ckg{padding:3px 8px 3px 3px;gap:6px} .ckg-orb{width:36px;height:36px} .ckg-orb b{font-size:18px} .ckg-r small{display:none} .ckg-p{grid-template-columns:repeat(5,8px);gap:2px} .ckg-p i{width:8px;height:8px} }
 .hz-left{display:flex;align-items:center;gap:18px}
+.el-tag{position:absolute;left:50%;top:40%;transform:translateX(-50%);z-index:2;padding:.6cqi 4cqi;border-radius:99px;font-family:var(--f-label);font-weight:700;font-size:7.5cqi;color:#120a06;background:var(--ec);box-shadow:0 0 0 1.5px #120a06}
+.ck-gem.aff{box-shadow:0 0 0 2.5px #0c1a3a,0 0 0 4px #9be36a,0 0 12px rgba(155,227,106,.8)}

@@ -279,11 +279,11 @@ const DEFAULT_CARD_LIST = [
   ['n_o8', 'Tempête intérieure', 5, 'n_foudre', 5, 5, '', [{ k:'soc_ck', a:1, h:1 }]],
   ['n_t7', 'Pilleur souterrain', 4, 'n_terre', 4, 5, 't', [{ k:'soc_steal', n:2 }]],
   ['n_t8', 'Ermite des cimes', 6, 'n_terre', 5, 8, '', [{ k:'eot_ck_spend', n:3, a:3, h:3 }, { k:'cast_ck', n:1 }]],
-  ['c_nj_feu', 'Disciple de la flamme', 3, 'n_feu', 2, 3, '', [{ k:'cast_memo' }, { k:'sot_memo' }]],
-  ['c_nj_vent', 'Disciple du vent', 3, 'n_vent', 3, 2, '', [{ k:'cast_memo' }, { k:'sot_memo' }]],
-  ['c_nj_eau', 'Disciple de la brume', 3, 'n_eau', 2, 4, '', [{ k:'cast_memo' }, { k:'sot_memo' }]],
-  ['c_nj_foudre', 'Disciple de l\'orage', 3, 'n_foudre', 3, 3, '', [{ k:'cast_memo' }, { k:'sot_memo' }]],
-  ['c_nj_terre', 'Disciple du roc', 3, 'n_terre', 1, 5, 't', [{ k:'cast_memo' }, { k:'sot_memo' }]],
+  ['c_nj_feu', 'Disciple de la flamme', 3, 'n_feu', 6, 5, '', [{ k:'cast_memo' }, { k:'sot_memo' }, { k:'soc_dmg', d:3, n:2 }]],
+  ['c_nj_vent', 'Disciple du vent', 3, 'n_vent', 6, 4, 'w', [{ k:'cast_memo' }, { k:'sot_memo' }, { k:'atk_self', a:2, h:1 }]],
+  ['c_nj_eau', 'Disciple de la brume', 3, 'n_eau', 4, 8, 's', [{ k:'cast_memo' }, { k:'sot_memo' }, { k:'surv_self', a:2, h:2 }]],
+  ['c_nj_foudre', 'Disciple de l\'orage', 3, 'n_foudre', 5, 5, '', [{ k:'cast_memo' }, { k:'sot_memo' }, { k:'atk_zap', d:3, n:2 }]],
+  ['c_nj_terre', 'Disciple du roc', 3, 'n_terre', 4, 10, 't', [{ k:'cast_memo' }, { k:'sot_memo' }, { k:'eot_self', a:1, h:2 }]],
   ['n_t6', 'Seigneur des roches', 6, 'n_terre', 6, 10, 't', [{ k:'eot_buff_taunt', a:2, h:2 }, { k:'eot_chakra', n:1 }]],
 ];
 const DEFAULT_CARDS = {};
@@ -351,7 +351,7 @@ const MECHS = {
   marche:{ n:'Marché noir', ic:'gear', d:'Vendre un serviteur de l\'univers rapporte 1 or de plus (deux fois par tour).' },
   ruee:{ n:'Ruée sauvage', ic:'leaf', d:'Au début du combat, si vous avez au moins 3 serviteurs de l\'univers, ils gagnent +2/+0 pour ce combat.' },
   pillage:{ n:'Pillage', ic:'drop', d:'Quand vous gagnez un combat avec un serviteur de l\'univers encore debout, vous recevez un sort aléatoire de votre niveau.' },
-  chakra:{ n:'Chakra', ic:'k_spark', d:'Au début de votre tour, chaque serviteur de l\'univers sur votre plateau génère 1 chakra (10 au plus). Les techniques ninja s\'achètent avec de l\'or et se lancent avec du chakra.' },
+  chakra:{ n:'Chakra et cycle des éléments', ic:'k_spark', d:'Chaque serviteur de l\'univers génère 1 chakra au début de votre tour (10 au plus). Les techniques s\'achètent en or et se lancent au chakra (1 de moins dans l\'élément de votre héros) ; un coffre arrive tous les deux tours. Votre compagnon retient l\'élément de la dernière technique. Enchaîner deux éléments crée une fusion (Glace, Bois, Lave, Vapeur, Explosion) ; lancer l\'élément nourri (Vent → Feu → Foudre → Terre → Eau → Vent) rend 2 chakra ; dominer l\'élément d\'en face (Feu > Vent > Foudre > Terre > Eau > Feu) donne +4/+4 au combat.' },
   resonance:{ n:'Résonance', ic:'twin', d:'Chaque sort que vous lancez donne +1/+1 à deux de vos serviteurs de l\'univers.' },
   eboulement:{ n:'Éboulement', ic:'up', d:'Quand un de vos serviteurs de l\'univers avec Provocation meurt, il inflige 3 dégâts à un ennemi aléatoire.' },
   fusion:{ n:'Fusion élémentaire', ic:'wind', d:'À la fin du tour, si vous avez au moins 4 éléments Squishy différents, vos serviteurs de l\'univers gagnent +1/+1.' },
@@ -563,8 +563,8 @@ function runRecruit0(G, p, m, e, ctx) {
     case 'bc_chakra': case 'eot_chakra': p.ck = Math.min(CK_MAX, (p.ck || 0) + e.n * k); break;
     case 'cast_ck': p.ck = Math.min(CK_MAX, (p.ck || 0) + e.n * k); break;
     case 'eot_ck_spend': if ((p.ck || 0) >= e.n) { p.ck -= e.n; buff(m, A, Hh); } break;
-    case 'cast_memo': if (p.lastCast && SPELLS[p.lastCast] && SPELLS[p.lastCast].nin) m.memo = p.lastCast; break;
-    case 'sot_memo': if (m.memo && SPELLS[m.memo]) for (let i = 0; i < k; i++) if (p.hd.length < 10) p.hd.push({ sp:m.memo, u:UID++ }); break;
+    case 'cast_memo': if (p.lastCast && SPELLS[p.lastCast] && SPELLS[p.lastCast].nin) { m.memo = p.lastCast; if (SPELLS[p.lastCast].el) m.el = SPELLS[p.lastCast].el; } break;
+    case 'sot_memo': if (m.memo && SPELLS[m.memo]) for (let i = 0; i < k + (m.memo2 ? 1 : 0); i++) if (p.hd.length < 10) p.hd.push({ sp:m.memo, u:UID++ }); break;
     case 'bc_card': for (let i = 0; i < e.n; i++) if (p.hd.length < 10) { const c = drawOne(G, p.t, null, e.tb); if (c) p.hd.push(c); } break;
     case 'eot_self': buff(m, A, Hh); break;
     case 'eot_buff_rand': shuffle(others()).slice(0, e.n).forEach(x => buff(x, A, Hh)); break;
@@ -821,6 +821,24 @@ function checkTriple(G, p) {
   }
 }
 const CK_MAX = 10;
+// le cycle des cinq éléments (Vent ← Bois, Foudre ← case jaune, Terre ← Métal)
+const ELS = { feu:{ n:'Feu', col:'#ff7a2a' }, vent:{ n:'Vent', col:'#9be36a' }, eau:{ n:'Eau', col:'#4ab0e8' }, foudre:{ n:'Foudre', col:'#ffd23a' }, terre:{ n:'Terre', col:'#c8a878' } };
+const EL_GEN = { vent:'feu', feu:'foudre', foudre:'terre', terre:'eau', eau:'vent' };   // génération : A nourrit B
+const EL_DOM = { feu:'vent', vent:'foudre', foudre:'terre', terre:'eau', eau:'feu' };   // domination : A l'emporte sur B
+// fusions : deux éléments enchaînés par le compagnon lui donnent un pouvoir hybride (remplace le précédent)
+const FUSIONS = {
+  'eau+vent':{ n:'Glace', col:'#bfe8ff', fx:{ k:'soc_chill', a:1, n:7 } },
+  'eau+terre':{ n:'Bois', col:'#6aa84a', fx:{ k:'eot_buff_all', a:0, h:2 } },
+  'feu+terre':{ n:'Lave', col:'#ff5a1a', fx:{ k:'soc_aoe', d:2 } },
+  'eau+feu':{ n:'Vapeur', col:'#e8e2da', fx:{ k:'soc_kw', kw:'s' } },
+  'foudre+terre':{ n:'Explosion', col:'#ffb04a', fx:{ k:'dr_dmg', d:5, n:2 } },
+};
+const fusionOf = (a, b) => a && b && a !== b ? FUSIONS[[a, b].sort().join('+')] || null : null;
+// affinité : une technique de l'élément du héros coûte 1 chakra de moins
+const ckCost = (p, S) => Math.max(0, (S.ck || 0) - (S.el && HEROES[p.hero] && HEROES[p.hero].clan === S.el ? 1 : 0));
+const CLAN_EL = { n_feu:'feu', n_vent:'vent', n_eau:'eau', n_foudre:'foudre', n_terre:'terre' };
+const isComp = m => !!(m && C[m.c] && C[m.c].comp);
+const compEl = m => m.el || CLAN_EL[CD(m.c).tr] || null;
 const spCost = (p, S) => p.hero === 'sylvara' && !p.sylv ? Math.max(0, S.c - 1) : S.c;
 const trigBoard = (G, p, tr) => p.bd.slice().forEach(x => fxOf(x, tr).forEach(e => runRecruit(G, p, x, e)));
 const SQ = ['sq_feu', 'sq_eau', 'sq_terre', 'sq_vent', 'sq_glace', 'sq_foudre'];
@@ -980,6 +998,7 @@ function startRecruit() {
     p.mkt = 0;
     if (inMechAny(G, 'ames') && (p.souls || 0) >= 3) { const k = Math.floor(p.souls / 3); p.souls -= k * 3; withSrc('Moisson d\'âmes', () => p.bd.forEach(m => { if (inMech(G, 'ames', m)) buff(m, k, k); })); }
     if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; if (n) p.ck = Math.min(CK_MAX, (p.ck || 0) + n); }
+    if (inMechAny(G, 'chakra') && G.rd % 2 === 0 && p.hd.length < 10) p.hd.push({ sp:G.rd < 5 ? 'cf_bois' : G.rd < 9 ? 'cf_argent' : 'cf_or', u:UID++ });
     { const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'pck') p.ck = Math.min(CK_MAX, (p.ck || 0) + w.n); if (w && w.k === 'ptech' && G.rd % 2 === 0 && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); } }
     p.bd.forEach(m => { delete m.tmp; }); p.tma = null;
   }
@@ -1013,6 +1032,7 @@ function endRecruit() {
     const heat = x => (x.fbq ? (x.fb || 3) : 0) + (x.hero === 'pyra' ? 2 : 0) + (x.njf || 0) + (HEROES[x.hero] && HEROES[x.hero].pw && HEROES[x.hero].pw.k === 'pfire' ? HEROES[x.hero].pw.d : 0);
     const fire = [heat(p), ghost ? 0 : heat(q)];
     const pb = combatBoard(p), qcb = combatBoard(ghost || q);
+    elementDuel(pb, qcb);
     const r = simulate(pb, qcb, seed, p.t, qt, fire, G.mx);
     lawsAfterFight(G, p, r, 0); if (!ghost) lawsAfterFight(G, q, r, 1);
     if (!ghost) chakraSteal(p, q, pb, qcb, r);
@@ -1032,6 +1052,15 @@ function endRecruit() {
   const anyWatcher = G.ps.some(p => p.human && !p.bot && p.peer);
   G.end = Date.now() + (anyWatcher ? Math.min(50000, 3500 + maxFrames * 700) : 800);
   broadcast();
+}
+// domination : un compagnon dont l'élément l'emporte sur celui d'en face gagne +4/+4 pour ce combat (×2 avec le Talisman des cycles)
+function elementDuel(a, b) {
+  const elOf = bd => { const c = bd.find(isComp); if (c) return compEl(c); const n = {}; bd.forEach(m => { const e = CLAN_EL[CD(m.c).tr]; if (e) n[e] = (n[e] || 0) + 1; }); return Object.keys(n).sort((x, y) => n[y] - n[x])[0] || null; };
+  const ea = elOf(a), eb = elOf(b);
+  for (const [bd, mine, theirs] of [[a, ea, eb], [b, eb, ea]]) {
+    if (!mine || !theirs || EL_DOM[mine] !== theirs) continue;
+    bd.filter(isComp).forEach(c => { const x = (c.eq || []).includes('eq_talisman') ? 8 : 4; c.a += x; c.h += x; });
+  }
 }
 // vol de chakra : « Début du combat » (plateaux de départ) et « Râle d'agonie » (serviteurs morts)
 function chakraSteal(p, q, pb, qb, r) {
@@ -1075,7 +1104,7 @@ function hostTick() {
 }
 
 /* ---------- diffusion ---------- */
-const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u }; const o = { c:m.c, a:m.a, h:m.h }; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; if (m.bn) o.bn = m.bn; return o; };
+const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u }; const o = { c:m.c, a:m.a, h:m.h }; if (m.memo) o.memo = m.memo; if (m.el) o.el = m.el; if (m.fu) o.fu = m.fu; if (m.eq && m.eq.length) o.eq = m.eq; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; if (m.bn) o.bn = m.bn; return o; };
 const fullM = m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g || 0, f:m.f || '', u:m.u }; if (m.x) o.x = m.x; return o; };
 function pubData() {
   const G = H.G;

@@ -6,7 +6,7 @@
    ===================================================================== */
 const SP_TYPES = {
   renf:{ n:'Renfort', col:'#c8963e' }, eco:{ n:'Économie', col:'#4f8a3a' }, arc:{ n:'Arcane', col:'#3f6fb0' },
-  ombre:{ n:'Ombre', col:'#5a3d7a' }, comb:{ n:'Combat', col:'#a8322a' }, nat:{ n:'Nature', col:'#3f8a6a' }, nin:{ n:'Technique', col:'#2a5a9a' },
+  ombre:{ n:'Ombre', col:'#5a3d7a' }, comb:{ n:'Combat', col:'#a8322a' }, nat:{ n:'Nature', col:'#3f8a6a' }, nin:{ n:'Technique', col:'#2a5a9a' }, eq:{ n:'Équipement', col:'#8a6a3a' }, cof:{ n:'Coffre', col:'#a8742a' },
 };
 const SPELLS = {
   sp_pinte:{ n:'Pinte offerte', t:1, c:1, ty:'renf', tg:1, tx:'Donne +2/+1 à un de tes serviteurs.' },
@@ -28,26 +28,41 @@ const SPELLS = {
   sp_reflet:{ n:'Double reflet', t:6, c:4, ty:'arc', tg:1, tx:'Ajoute à ta main une copie exacte d\'un de tes serviteurs, bonus compris.' },
   sp_ascension:{ n:'Ascension', t:6, c:6, ty:'renf', tx:'Donne +2/+2 et Bouclier divin à tous tes serviteurs.' },
   // ----- techniques ninja (univers des Cinq Nations) : achetées en or, lancées avec du chakra -----
-  nj_permut:{ n:'Permutation', t:1, c:1, ck:1, nin:1, ty:'nin', tg:1, tx:'Prochain combat seulement : un de tes serviteurs gagne Bouclier divin.' },
-  nj_souffle:{ n:'Souffle ardent', t:1, c:1, ck:2, nin:1, ty:'nin', tx:'Prochain combat : 3 dégâts frappent l\'ennemi au début du combat.' },
-  nj_pierre:{ n:'Armure de pierre', t:2, c:2, ck:2, nin:1, ty:'nin', tg:1, tx:'Donne +0/+4 et Provocation à un de tes serviteurs.' },
-  nj_brume:{ n:'Rideau de brume', t:2, c:2, ck:2, nin:1, ty:'nin', tx:'Prochain combat seulement : tous tes serviteurs gagnent +0/+3.' },
-  nj_doubles:{ n:'Technique des doubles', t:3, c:2, ck:3, nin:1, ty:'nin', tg:1, tx:'Invoque une copie 1/1 du serviteur ciblé, sans ses bonus.' },
-  nj_foudre:{ n:'Lame de foudre', t:3, c:3, ck:3, nin:1, ty:'nin', tg:1, tx:'Prochain combat seulement : un de tes serviteurs gagne +3 attaque et Toxique.' },
-  nj_rafale:{ n:'Rafale tranchante', t:3, c:3, ck:3, nin:1, ty:'nin', tx:'Donne +2/+1 à trois de tes serviteurs aléatoires.' },
-  nj_invoc:{ n:'Invocation', t:4, c:3, ck:4, nin:1, ty:'nin', tx:'Invoque sur ton plateau un serviteur aléatoire de ton niveau de taverne.' },
-  nj_sceau:{ n:'Sceau de puissance', t:5, c:4, ck:5, nin:1, ty:'nin', tg:1, tx:'Donne +4/+4 et Renaissance à un de tes serviteurs.' },
-  nj_deluge:{ n:'Déluge élémentaire', t:6, c:5, ck:7, nin:1, ty:'nin', tx:'Prochain combat : tous tes serviteurs gagnent +4/+4 et 4 dégâts frappent l\'ennemi au début du combat.' },
+  nj_permut:{ el:'vent', n:'Permutation', t:1, c:1, ck:1, nin:1, ty:'nin', tg:1, tx:'Prochain combat seulement : un de tes serviteurs gagne Bouclier divin.' },
+  nj_souffle:{ el:'feu', n:'Souffle ardent', t:1, c:1, ck:2, nin:1, ty:'nin', tx:'Prochain combat : 3 dégâts frappent l\'ennemi au début du combat.' },
+  nj_pierre:{ el:'terre', n:'Armure de pierre', t:2, c:2, ck:2, nin:1, ty:'nin', tg:1, tx:'Donne +0/+4 et Provocation à un de tes serviteurs.' },
+  nj_brume:{ el:'eau', n:'Rideau de brume', t:2, c:2, ck:2, nin:1, ty:'nin', tx:'Prochain combat seulement : tous tes serviteurs gagnent +0/+3.' },
+  nj_doubles:{ el:'eau', n:'Technique des doubles', t:3, c:2, ck:3, nin:1, ty:'nin', tg:1, tx:'Invoque une copie 1/1 du serviteur ciblé, sans ses bonus.' },
+  nj_foudre:{ el:'foudre', n:'Lame de foudre', t:3, c:3, ck:3, nin:1, ty:'nin', tg:1, tx:'Prochain combat seulement : un de tes serviteurs gagne +3 attaque et Toxique.' },
+  nj_rafale:{ el:'vent', n:'Rafale tranchante', t:3, c:3, ck:3, nin:1, ty:'nin', tx:'Donne +2/+1 à trois de tes serviteurs aléatoires.' },
+  nj_invoc:{ el:'terre', n:'Invocation', t:4, c:3, ck:4, nin:1, ty:'nin', tx:'Invoque sur ton plateau un serviteur aléatoire de ton niveau de taverne.' },
+  nj_sceau:{ el:'foudre', n:'Sceau de puissance', t:5, c:4, ck:5, nin:1, ty:'nin', tg:1, tx:'Donne +4/+4 et Renaissance à un de tes serviteurs.' },
+  nj_deluge:{ el:'feu', n:'Déluge élémentaire', t:6, c:5, ck:7, nin:1, ty:'nin', tx:'Prochain combat : tous tes serviteurs gagnent +4/+4 et 4 dégâts frappent l\'ennemi au début du combat.' },
+  // ----- équipements (pour le compagnon) et coffres (ouverts au chakra) -----
+  eq_lame:{ n:'Lame de chakra', t:1, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : +4 attaque.' },
+  eq_armure:{ n:'Armure de mailles', t:1, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : +6 vie et Provocation.' },
+  eq_gants:{ n:'Gantelets du vent', t:1, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : +2/+2 et Furie des vents.' },
+  eq_bandeau:{ n:'Bandeau du maître', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : « Fin de tour : gagnez 2 chakra ».' },
+  eq_cape:{ n:'Cape d\'ombre', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : Bouclier divin et Renaissance.' },
+  eq_parchemin:{ n:'Parchemin jumeau', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : il rend une copie de plus de la technique retenue.' },
+  eq_talisman:{ n:'Talisman des cycles', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : ses bonus d\'élément sont doublés.' },
+  cf_bois:{ n:'Coffre de bois', t:1, c:0, ck:2, item:1, ty:'cof', tx:'Ouvre-le avec 2 chakra : un équipement commun.' },
+  cf_argent:{ n:'Coffre d\'argent', t:1, c:0, ck:4, item:1, ty:'cof', tx:'Ouvre-le avec 4 chakra : un équipement aléatoire, rare compris.' },
+  cf_or:{ n:'Coffre d\'or', t:1, c:0, ck:6, item:1, ty:'cof', tx:'Ouvre-le avec 6 chakra : deux équipements rares.' },
 };
 const SPELL_IDS = Object.keys(SPELLS);
-function drawSpell(t) { const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra'); const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !!SPELLS[id].nin === !!nin); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
+function drawSpell(t) { const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra'); const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !!SPELLS[id].nin === !!nin); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
 
 // pourquoi un sort ne peut pas être lancé (null = il peut)
 function spellBlock(p, id, tgt) {
   const S = SPELLS[id];
-  if (S.ck && (p.ck || 0) < S.ck) return `Il te faut ${S.ck} chakra pour lancer cette technique (tu en as ${p.ck || 0}).`;
+  if (S.ck && (p.ck || 0) < ckCost(p, S)) return `Il te faut ${ckCost(p, S)} chakra pour lancer cette technique (tu en as ${p.ck || 0}).`;
   if (S.tg && !tgt) return 'Choisis un de tes serviteurs.';
   if ((id === 'nj_doubles' || id === 'nj_invoc') && p.bd.length >= 7) return 'Ton plateau est plein.';
+  if (S.eq && !(C[tgt.c] && C[tgt.c].comp)) return 'Un équipement se pose sur ton compagnon.';
+  if (S.eq && (tgt.eq || []).length >= 3) return 'Ton compagnon porte déjà trois équipements.';
+  if (S.eq && (tgt.eq || []).includes(id)) return 'Ton compagnon porte déjà cet équipement.';
+  if (id.startsWith('cf_') && p.hd.length > 10) return 'Ta main est pleine.';
   if (id === 'nj_rafale' && !p.bd.length) return 'Tu n\'as aucun serviteur.';
   if (id === 'sp_chopes' && tgt.a < 1) return 'Ce serviteur n\'a pas d\'attaque à échanger.';
   if (id === 'sp_rabot' && p.t >= 6) return 'Ta taverne est déjà au niveau maximum.';
@@ -64,7 +79,7 @@ function castSpell0(G, p, hi, tg) {
   const tgt = S.tg ? p.bd[tg] : null;
   if (spellBlock(p, id, tgt)) return false;
   p.hd.splice(hi, 1);
-  if (S.ck) p.ck = (p.ck || 0) - S.ck;
+  if (S.ck) p.ck = (p.ck || 0) - ckCost(p, S);
   p.lastCast = id;
   switch (id) {
     case 'sp_pinte': buff(tgt, 2, 1); break;
@@ -104,9 +119,27 @@ function castSpell0(G, p, hi, tg) {
     case 'nj_invoc': { const m = drawOne(G, p.t) || drawAny(Math.max(1, p.t)); if (m) p.bd.push(m); break; }
     case 'nj_sceau': buff(tgt, 4, 4); addF(tgt, 'r'); break;
     case 'nj_deluge': p.tma = { a:((p.tma && p.tma.a) || 0) + 4, h:((p.tma && p.tma.h) || 0) + 4 }; p.njf = (p.njf || 0) + 4; break;
+    case 'eq_lame': buff(tgt, 4, 0); break;
+    case 'eq_armure': buff(tgt, 0, 6); addF(tgt, 't'); break;
+    case 'eq_gants': buff(tgt, 2, 2); addF(tgt, 'w'); break;
+    case 'eq_bandeau': (tgt.x = tgt.x || []).push({ k:'eot_chakra', n:2, src:'Bandeau du maître' }); break;
+    case 'eq_cape': addF(tgt, 's'); addF(tgt, 'r'); break;
+    case 'eq_parchemin': tgt.memo2 = 1; break;
+    case 'eq_talisman': break;
+    case 'cf_bois': case 'cf_argent': case 'cf_or': {
+      const common = ['eq_lame', 'eq_armure', 'eq_gants'], all = Object.keys(SPELLS).filter(k => SPELLS[k].eq), rare = all.filter(k => !common.includes(k));
+      if (id === 'cf_bois') p.hd.push({ sp:pickR(common), u:UID++ });
+      else if (id === 'cf_or') { for (let i = 0; i < 2; i++) if (p.hd.length < 10) p.hd.push({ sp:pickR(rare), u:UID++ }); }
+      else p.hd.push({ sp:pickR(all), u:UID++ });
+      break;
+    }
     case 'sp_ascension': p.bd.forEach(x => { buff(x, 2, 2); addF(x, 's'); }); break;
   }
-  trigBoard(G, p, 'cast');
+  if (S.eq) (tgt.eq = tgt.eq || []).push(id);
+  // enchaînement : la technique lancée est l'élément que nourrit celui retenu par le compagnon
+  if (S.el) p.bd.filter(isComp).forEach(c => { const F = fusionOf(compEl(c), S.el); if (F) { c.x = (c.x || []).filter(e => !e.fusion); c.x.push(Object.assign({ src:'Fusion · ' + F.n, fusion:1 }, F.fx)); c.fu = F.n; } });
+  if (S.el) p.bd.filter(isComp).forEach(c => { const e = compEl(c); if (e && EL_GEN[e] === S.el) { const x = (c.eq || []).includes('eq_talisman') ? 2 : 1; p.ck = Math.min(CK_MAX, (p.ck || 0) + 2 * x); buff(c, 2 * x, 2 * x); } });
+  if (!S.item) trigBoard(G, p, 'cast');
   checkTriple(G, p);
   return true;
 }
@@ -160,6 +193,16 @@ function aiSpells(G, p) {
 const NJA = (col, inner) => () => softGlow(50, 52, 34, col, .35) + `<g transform="translate(50 54)">${inner}</g>` + [[-26, -30], [28, -26], [-30, 26], [30, 28]].map(([x, y]) => Ci(50 + x, 54 + y, 1.6, '#fff', 'opacity=".6"')).join('');
 const HANDS = `<path d="M-9 14 L-9 -6 Q-9 -14 -3 -16 L-1 -2 M9 14 L9 -6 Q9 -14 3 -16 L1 -2" fill="#f1c7a0" ${so(1.8)}/><path d="M-3 -16 Q0 -20 3 -16 L1 -2 L-1 -2 Z" fill="#f1c7a0" ${so(1.6)}/>`;
 const SPART = {
+  eq_lame: NJA('#bfe8ff', `<path d="M-20 20 L16 -16 L22 -22 L18 -12 L-16 24 Z" fill="#d8dce4" ${so(1.8)}/><path d="M-24 12 L-12 24" stroke="#5a3a1a" stroke-width="6" stroke-linecap="round"/><path d="M-4 4 L10 -10" stroke="#6fd0ff" stroke-width="2"/>`),
+  eq_armure: NJA('#c8a878', `<path d="M-20 -18 L-8 -22 Q0 -14 8 -22 L20 -18 L18 20 L-18 20 Z" fill="#8a929c" ${so(2)}/>` + [-10, 0, 10].map(y => `<path d="M-16 ${y} H16" stroke="#5a626c" stroke-width="1.6" stroke-dasharray="3 2"/>`).join('')),
+  eq_gants: NJA('#e8ffd0', `<path d="M-14 -10 L-14 16 L8 16 L10 -2 L4 -4 L4 -16 L-2 -16 L-2 -8 L-8 -8 L-8 -14 Z" fill="#a8744a" ${so(1.8)}/>` + Ln('M12 -14 Q22 -6 14 4', '#e8ffd0', 2.4)),
+  eq_bandeau: NJA('#6fd0ff', `<path d="M-28 -4 Q0 -14 28 -4 L28 4 Q0 -6 -28 4 Z" fill="#2a5a9a" ${so(1.8)}/><rect x="-10" y="-12" width="20" height="13" rx="2" fill="#c8ccd4" ${so(1.6)}/><path d="M28 0 Q34 10 30 20 M24 2 Q28 12 22 20" stroke="#2a5a9a" stroke-width="4" fill="none" stroke-linecap="round"/>`),
+  eq_cape: NJA('#b48cff', `<path d="M-10 -20 Q0 -24 10 -20 L22 22 Q0 14 -22 22 Z" fill="#2a2440" ${so(2)}/><path d="M-6 -16 Q0 -12 6 -16" stroke="#b48cff" stroke-width="2" fill="none"/>`),
+  eq_parchemin: NJA('#ffe9a8', [-8, 8].map(x => `<g transform="translate(${x} 0)"><rect x="-8" y="-18" width="16" height="34" rx="2" fill="#f4ecd8" ${so(1.6)}/><path d="M-8 -18 H8 M-8 16 H8" stroke="#8a6a3a" stroke-width="4"/></g>`).join('')),
+  eq_talisman: NJA('#ffffff', `<circle r="20" fill="#2a2440" ${so(2)}/>` + ['#9be36a', '#ff7a2a', '#ffd23a', '#c8a878', '#4ab0e8'].map((c, k) => { const a = (-90 + k * 72) * Math.PI / 180; return `<circle cx="${(Math.cos(a) * 12).toFixed(1)}" cy="${(Math.sin(a) * 12).toFixed(1)}" r="5" fill="${c}" ${so(1.2)}/>`; }).join('')),
+  cf_bois: NJA('#ffd27a', `<rect x="-22" y="-8" width="44" height="26" rx="3" fill="#a8744a" ${so(2)}/><path d="M-22 -8 Q0 -26 22 -8 Z" fill="#8a5a32" ${so(2)}/><rect x="-5" y="-4" width="10" height="10" rx="2" fill="#6fd0ff" ${so(1.4)}/>`),
+  cf_argent: NJA('#e8f0ff', `<rect x="-22" y="-8" width="44" height="26" rx="3" fill="#a8b0bc" ${so(2)}/><path d="M-22 -8 Q0 -26 22 -8 Z" fill="#7a828e" ${so(2)}/><rect x="-5" y="-4" width="10" height="10" rx="2" fill="#6fd0ff" ${so(1.4)}/>`),
+  cf_or: NJA('#ffe27a', `<rect x="-22" y="-8" width="44" height="26" rx="3" fill="#e2b04e" ${so(2)}/><path d="M-22 -8 Q0 -26 22 -8 Z" fill="#c88a26" ${so(2)}/><rect x="-5" y="-4" width="10" height="10" rx="2" fill="#6fd0ff" ${so(1.4)}/>` + P(starD(18, -18, 5, 2, 4), '#fff1b8', GLOW)),
   nj_permut: NJA('#bfe8ff', `<rect x="-20" y="-14" width="16" height="30" rx="3" fill="#a8744a" ${so(1.8)}/><path d="M-18 -8 H-6 M-18 2 H-6" stroke="#6a4a2a" stroke-width="1.6"/>` + Ln('M-2 0 Q6 -16 16 -4', '#fff', 2.6) + `<circle cx="12" cy="4" r="8" fill="#e8e2da" ${so(1.8)}/><path d="M6 2 Q12 -2 18 2" stroke="#2a2a34" stroke-width="2.4"/>`),
   nj_souffle: NJA('#ffb04a', HANDS + `<path d="M0 -18 C 14 -24 24 -10 34 -14 C 30 -4 22 0 10 -2 C 18 4 10 10 2 6 Z" fill="#ff7a2a" ${so(1.8)}/><path d="M6 -14 C 14 -16 20 -10 26 -12 C 22 -6 16 -6 10 -6 Z" fill="#ffe27a"/>`),
   nj_pierre: NJA('#c8a878', `<path d="M-22 18 L-16 -10 L-4 -20 L10 -16 L22 -2 L18 18 Z" fill="#8a7a6a" ${so(2)}/><path d="M-12 -4 L-2 6 L12 -6 M-4 18 L-2 6" stroke="#5a4e44" stroke-width="2" fill="none"/>`),
@@ -222,5 +265,5 @@ function spellCardH(id, z, i, o = {}) {
     + `<div class="cd-tier" aria-hidden="true">${'<i></i>'.repeat(S.t)}</div>`
     + `<div class="cd-nm"><span>${esc(S.n)}</span></div><div class="cd-tx${n > 95 ? ' xlong' : n > 62 ? ' long' : ''}">${esc(S.tx)}</div>`
     + `<div class="cd-tb" style="background:${ty.col}">${esc(ty.n)}</div>`
-    + costGemH(spellCostFor(id, z), S.c) + (S.ck ? `<span class="ck-gem" title="Coût en chakra">${S.ck}</span>` : '') + `${z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : ''}</div>`;
+    + (S.item ? '' : costGemH(spellCostFor(id, z), S.c)) + (S.ck ? `<span class="ck-gem${V.me && ckCost(V.me, S) < S.ck ? ' aff' : ''}" title="Coût en chakra${V.me && ckCost(V.me, S) < S.ck ? ' (affinité de ton héros : 1 de moins)' : ''}">${V.me ? ckCost(V.me, S) : S.ck}</span>` : '') + (S.el ? `<span class="el-tag" style="--ec:${ELS[S.el].col}">${ELS[S.el].n}</span>` : '') + `${z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : ''}</div>`;
 }
