@@ -240,41 +240,41 @@ const DEFAULT_CARD_LIST = [
   ['tk_robot', 'Micro-robot', 0, 'meca', 1, 1, '', []],
   ['tk_louv', 'Louveteau', 0, 'bete', 2, 1, '', []],
   // ----- Les Cinq Nations (univers ninja original) -----
-  ['n_f1', 'Apprentie des braises', 1, 'n_feu', 2, 1, '', [{ k:'cast_self', a:1, h:1 }]],
-  ['n_f2', 'Souffleur de flammes', 2, 'n_feu', 3, 2, '', [{ k:'bc_chakra', n:2 }]],
+  ['n_f1', 'Apprentie des braises', 1, 'n_feu', 2, 1, '', [{ k:'cast_braise', n:1 }]],
+  ['n_f2', 'Souffleur de flammes', 2, 'n_feu', 3, 2, '', [{ k:'eot_ck_braise', n:1 }]],
   ['n_f3', 'Gardienne du foyer', 3, 'n_feu', 3, 4, '', [{ k:'cast_buff_tribe', a:1, h:1, tb:'n_feu' }]],
-  ['n_f4', 'Danseur de cendres', 4, 'n_feu', 4, 4, '', [{ k:'soc_dmg', d:3, n:2 }]],
-  ['n_f5', 'Maître du brasier', 5, 'n_feu', 5, 5, '', [{ k:'bc_spell', n:1 }, { k:'cast_buff_rand', a:2, h:2 }]],
-  ['n_f6', 'Grand Sage du Feu', 6, 'n_feu', 7, 6, '', [{ k:'cast_buff_tribe', a:2, h:2, tb:'n_feu' }]],
-  ['n_v1', 'Éclaireur des dunes', 1, 'n_vent', 1, 2, '', [{ k:'atk_self', a:1, h:0 }]],
-  ['n_v2', 'Lame tourbillon', 2, 'n_vent', 2, 2, 'w', []],
-  ['n_v3', 'Cerf-volant de guerre', 3, 'n_vent', 3, 3, '', [{ k:'atk_buff_rand', a:1, h:1 }]],
-  ['n_v4', 'Faucheuse du vent', 4, 'n_vent', 4, 3, 'w', [{ k:'atk_self', a:1, h:1 }]],
-  ['n_v5', 'Mur de sable', 5, 'n_vent', 5, 4, '', [{ k:'soc_kw', kw:'w', tb:'n_vent' }]],
-  ['n_v6', 'Seigneur des dunes', 6, 'n_vent', 6, 8, 't', [{ k:'eot_buff_all', a:1, h:2, tb:'n_vent' }]],
-  ['n_e1', 'Guetteur des brumes', 1, 'n_eau', 1, 3, '', [{ k:'surv_self', a:1, h:0 }]],
-  ['n_e2', 'Ondine silencieuse', 2, 'n_eau', 2, 3, 's', []],
-  ['n_e3', 'Porteuse de marée', 3, 'n_eau', 3, 3, '', [{ k:'eot_buff_rand', a:1, h:2, n:2, tb:'n_eau' }]],
-  ['n_e4', 'Duelliste des brumes', 4, 'n_eau', 4, 5, '', [{ k:'dr_kw', kw:'s', tb:'n_eau' }]],
-  ['n_e5', 'Serpent de marée', 5, 'n_eau', 5, 6, '', [{ k:'bc_chakra', n:3 }, { k:'surv_self', a:2, h:0 }]],
-  ['n_e6', 'Gardien des abysses', 6, 'n_eau', 6, 9, 's', [{ k:'soc_buff', a:3, h:3, tb:'n_eau' }]],
-  ['n_o1', 'Étincelle rapide', 1, 'n_foudre', 2, 1, '', [{ k:'atk_zap', d:1, n:1 }]],
+  ['n_f4', 'Danseur de cendres', 4, 'n_feu', 4, 4, '', [{ k:'cast_braise', n:2 }, { k:'soc_dmg', d:2, n:2 }]],
+  ['n_f5', 'Maître du brasier', 5, 'n_feu', 5, 5, '', [{ k:'bc_spell', n:1 }, { k:'cast_buff_tribe', a:2, h:1, tb:'n_feu' }]],
+  ['n_f6', 'Grand Sage du Feu', 6, 'n_feu', 7, 6, '', [{ k:'awk_phoenix' }, { k:'cast_braise', n:2 }]],
+  ['n_v1', 'Éclaireur des dunes', 1, 'n_vent', 1, 2, '', [{ k:'bc_gold', n:1 }]],
+  ['n_v2', 'Lame tourbillon', 2, 'n_vent', 2, 2, 'w', [{ k:'bc_upd', n:1 }]],
+  ['n_v3', 'Cerf-volant de guerre', 3, 'n_vent', 3, 3, '', [{ k:'roll_buff_tribe', a:1, h:1, tb:'n_vent' }]],
+  ['n_v4', 'Faucheuse du vent', 4, 'n_vent', 4, 3, 'w', [{ k:'awk_hurricane', d:1 }, { k:'eot_inc', n:1 }]],
+  ['n_v5', 'Mur de sable', 5, 'n_vent', 5, 4, '', [{ k:'eot_inc', n:2 }]],
+  ['n_v6', 'Seigneur des dunes', 6, 'n_vent', 6, 8, 't', [{ k:'awk_hurricane', d:2 }, { k:'eot_buff_all', a:1, h:1, tb:'n_vent' }]],
+  ['n_e1', 'Guetteur des brumes', 1, 'n_eau', 1, 3, '', [{ k:'eot_maree', n:1 }]],
+  ['n_e2', 'Ondine silencieuse', 2, 'n_eau', 2, 3, 's', [{ k:'eot_wave', a:1, h:1 }]],
+  ['n_e3', 'Porteuse de marée', 3, 'n_eau', 3, 3, '', [{ k:'eot_maree', n:1 }, { k:'eot_wave', a:1, h:2 }]],
+  ['n_e4', 'Duelliste des brumes', 4, 'n_eau', 4, 5, '', [{ k:'pas_ckx', n:2 }, { k:'dr_kw', kw:'s', tb:'n_eau' }]],
+  ['n_e5', 'Serpent de marée', 5, 'n_eau', 5, 6, '', [{ k:'bc_chakra', n:3 }, { k:'eot_maree', n:2 }]],
+  ['n_e6', 'Gardien des abysses', 6, 'n_eau', 6, 9, 's', [{ k:'awk_tsunami' }, { k:'pas_ckx', n:3 }]],
+  ['n_o1', 'Étincelle rapide', 1, 'n_foudre', 2, 1, '', [{ k:'eot_charge', n:1 }]],
   ['n_o2', 'Messager de l\'orage', 2, 'n_foudre', 2, 3, '', [{ k:'eot_chakra', n:1 }]],
-  ['n_o3', 'Lame crépitante', 3, 'n_foudre', 4, 2, '', [{ k:'atk_zap', d:2, n:1 }]],
-  ['n_o4', 'Hurleur du tonnerre', 4, 'n_foudre', 3, 5, '', [{ k:'soc_dmg', d:2, n:3 }]],
-  ['n_o5', 'Cuirasse d\'éclairs', 5, 'n_foudre', 6, 5, 'w', [{ k:'atk_zap', d:2, n:2 }]],
-  ['n_o6', 'Seigneur de l\'orage', 6, 'n_foudre', 7, 7, '', [{ k:'soc_aoe', d:2 }, { k:'eot_chakra', n:2 }]],
-  ['n_t1', 'Petit golem de pierre', 1, 'n_terre', 1, 3, 't', []],
+  ['n_o3', 'Lame crépitante', 3, 'n_foudre', 4, 2, '', [{ k:'awk_surge', a:3, h:0 }, { k:'atk_zap', d:2, n:1 }]],
+  ['n_o4', 'Hurleur du tonnerre', 4, 'n_foudre', 3, 5, '', [{ k:'eot_charge', n:2 }, { k:'bc_chakra', n:2 }]],
+  ['n_o5', 'Cuirasse d\'éclairs', 5, 'n_foudre', 6, 5, 'w', [{ k:'awk_surge', a:3, h:3 }, { k:'atk_zap', d:2, n:2 }]],
+  ['n_o6', 'Seigneur de l\'orage', 6, 'n_foudre', 7, 7, '', [{ k:'awk_storm' }, { k:'eot_chakra', n:2 }]],
+  ['n_t1', 'Petit golem de pierre', 1, 'n_terre', 1, 3, 't', [{ k:'eot_anchor' }]],
   ['n_t2', 'Bâtisseur de remparts', 2, 'n_terre', 2, 3, 't', [{ k:'bc_buff_tribe', a:0, h:2, tb:'n_terre' }]],
   ['n_t3', 'Garde des roches', 3, 'n_terre', 2, 6, 't', [{ k:'eot_buff_taunt', a:1, h:1 }]],
-  ['n_t4', 'Lanceur de rochers', 4, 'n_terre', 5, 4, '', [{ k:'soc_dmg', d:4, n:1 }]],
-  ['n_t5', 'Colosse de granit', 5, 'n_terre', 4, 9, 't', [{ k:'surv_self', a:2, h:0 }]],
+  ['n_t4', 'Lanceur de rochers', 4, 'n_terre', 5, 4, '', [{ k:'soc_dmg', d:4, n:1 }, { k:'eot_anchor' }]],
+  ['n_t5', 'Colosse de granit', 5, 'n_terre', 4, 9, 't', [{ k:'eot_anchor' }, { k:'surv_self', a:2, h:0 }]],
   ['n_f7', 'Voleur d\'étincelles', 2, 'n_feu', 2, 3, '', [{ k:'soc_steal', n:1 }]],
-  ['n_f8', 'Pyromancien avide', 4, 'n_feu', 3, 4, '', [{ k:'soc_ck', a:1, h:0 }]],
+  ['n_f8', 'Pyromancien avide', 4, 'n_feu', 3, 4, '', [{ k:'eot_ck_braise', n:2 }, { k:'soc_ck', a:1, h:0 }]],
   ['n_v7', 'Pickpocket des sables', 1, 'n_vent', 2, 1, '', [{ k:'dr_steal', n:1 }]],
   ['n_v8', 'Danseur d\'éventail', 3, 'n_vent', 3, 3, '', [{ k:'cast_ck', n:1 }]],
   ['n_e7', 'Siphon de brume', 3, 'n_eau', 2, 5, '', [{ k:'soc_steal', n:2 }]],
-  ['n_e8', 'Méditant des cascades', 5, 'n_eau', 4, 7, '', [{ k:'eot_ck_spend', n:2, a:2, h:2 }]],
+  ['n_e8', 'Méditant des cascades', 5, 'n_eau', 4, 7, '', [{ k:'eot_ck_spend', n:2, a:2, h:2 }, { k:'pas_ckx', n:2 }]],
   ['n_o7', 'Parasite de foudre', 2, 'n_foudre', 3, 2, '', [{ k:'dr_steal', n:2 }]],
   ['n_o8', 'Tempête intérieure', 5, 'n_foudre', 5, 5, '', [{ k:'soc_ck', a:1, h:1 }]],
   ['n_t7', 'Pilleur souterrain', 4, 'n_terre', 4, 5, 't', [{ k:'soc_steal', n:2 }]],
@@ -284,7 +284,7 @@ const DEFAULT_CARD_LIST = [
   ['c_nj_eau', 'Disciple de la brume', 3, 'n_eau', 4, 8, 's', [{ k:'cast_memo' }, { k:'sot_memo' }, { k:'surv_self', a:2, h:2 }]],
   ['c_nj_foudre', 'Disciple de l\'orage', 3, 'n_foudre', 5, 5, '', [{ k:'cast_memo' }, { k:'sot_memo' }, { k:'atk_zap', d:3, n:2 }]],
   ['c_nj_terre', 'Disciple du roc', 3, 'n_terre', 4, 10, 't', [{ k:'cast_memo' }, { k:'sot_memo' }, { k:'eot_self', a:1, h:2 }]],
-  ['n_t6', 'Seigneur des roches', 6, 'n_terre', 6, 10, 't', [{ k:'eot_buff_taunt', a:2, h:2 }, { k:'eot_chakra', n:1 }]],
+  ['n_t6', 'Seigneur des roches', 6, 'n_terre', 6, 10, 't', [{ k:'awk_quake' }, { k:'eot_buff_taunt', a:2, h:2 }]],
 ];
 const DEFAULT_CARDS = {};
 DEFAULT_CARD_LIST.forEach(([id, n, t, tr, a, h, kw, fx]) => { DEFAULT_CARDS[id] = { id, n, t, tr, a, h, kw:kw.split(''), fx, art:{ f:'base', id } }; });
@@ -454,6 +454,21 @@ const ET = {
   bc_summon:{ tr:'bc', l:'Invoquer un serviteur', ps:['card', 'n'], w:1, mag:(e, d) => cardValueById(e.card, d) * e.n, txt:e => `Cri de guerre : invoque ${e.n > 1 ? e.n + ' × ' : ''}${CD(e.card).n}.` },
   bc_chakra:{ tr:'bc', l:'Gagner du chakra', ps:['n'], w:1.2, mag:e => e.n, txt:(e, k) => `Cri de guerre : gagnez ${e.n * k} chakra.` },
   eot_chakra:{ tr:'eot', l:'Gagner du chakra', ps:['n'], w:1.4, mag:e => e.n * 2, txt:(e, k) => `Fin de tour : gagnez ${e.n * k} chakra.` },
+  cast_braise:{ tr:'cast', l:'Attiser les braises', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Quand vous lancez un sort, gagnez ${e.n * k} braise${e.n * k > 1 ? 's' : ''}.` },
+  eot_ck_braise:{ tr:'eot', l:'Brûler du chakra en braises', ps:['n'], w:1.3, mag:e => e.n * 2, txt:(e, k) => `Fin de tour : si vous avez ${e.n} chakra, le brûle pour gagner ${(e.n + 1) * k} braises.` },
+  bc_upd:{ tr:'bc', l:'Réduire le coût d\'amélioration', ps:['n'], w:1.4, mag:e => e.n * 2, txt:(e, k) => `Cri de guerre : améliorer la taverne coûte ${e.n * k} or de moins.` },
+  eot_inc:{ tr:'eot', l:'Or au prochain tour', ps:['n'], w:1.5, mag:e => e.n * 3, txt:(e, k) => `Fin de tour : gagnez ${e.n * k} or au début du prochain tour.` },
+  eot_maree:{ tr:'eot', l:'Faire monter la marée', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Fin de tour : la marée monte de ${e.n * k}.` },
+  eot_wave:{ tr:'eot', l:'Vague : bonus au voisin de droite', ps:['a', 'h'], w:1.1, mag:e => e.a + e.h, txt:(e, k) => `Fin de tour : donne ${sign(e.a * k, e.h * k)} au serviteur à sa droite ; la vague se transmet.` },
+  pas_ckx:{ tr:'pas', l:'Réservoir de chakra', ps:['n'], w:1.2, mag:e => e.n * 2, txt:e => `Réservoir : votre chakra peut monter jusqu\'à ${CK_MAX + e.n} et plus tant qu\'il est sur le plateau.` },
+  eot_charge:{ tr:'eot', l:'Accumuler de la charge', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Fin de tour : gagnez ${e.n * k} charge.` },
+  awk_surge:{ tr:'awk', l:'Surtension (7 chakra ou plus)', ps:['a', 'h'], w:1.3, mag:e => e.a + e.h, txt:(e, k) => `Surtension : au combat, gagne ${sign(e.a * k, e.h * k)} si vous avez 7 chakra ou plus.` },
+  eot_anchor:{ tr:'eot', l:'Ancrage : le chakra restant renforce', ps:[], w:1.2, mag:() => 4, txt:(e, k) => `Ancrage : fin de tour, gagne +0/+1 par chakra non dépensé (${3 * k} au plus).` },
+  awk_phoenix:{ tr:'awk', l:'Phénix renforcé', ps:[], w:1.5, mag:() => 6, txt:() => 'Après l\'Éveil : le Phénix de vos serviteurs du Feu est doublé.' },
+  awk_hurricane:{ tr:'awk', l:'Ouragan', ps:['d'], w:1.5, mag:e => e.d * 5, txt:e => `Après l\'Éveil : après avoir attaqué, inflige ${e.d} dégât${e.d > 1 ? 's' : ''} à 3 ennemis de plus.` },
+  awk_tsunami:{ tr:'awk', l:'Raz-de-marée renforcé', ps:[], w:1.5, mag:() => 6, txt:() => 'Après l\'Éveil : le raz-de-marée est doublé.' },
+  awk_storm:{ tr:'awk', l:'Orage total renforcé', ps:[], w:1.5, mag:() => 6, txt:() => 'Après l\'Éveil : l\'orage total est doublé.' },
+  awk_quake:{ tr:'awk', l:'Séisme', ps:[], w:1.5, mag:() => 6, txt:() => 'Après l\'Éveil : au début du combat, inflige un sixième de sa vie à tous les ennemis.' },
   soc_steal:{ tr:'soc', l:'Voler du chakra', ps:['n'], w:1.4, mag:e => e.n * 2, txt:(e, k) => `Début du combat : vole ${e.n * k} chakra à l\'adversaire.` },
   dr_steal:{ tr:'dr', l:'Voler du chakra en mourant', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Râle d\'agonie : vole ${e.n * k} chakra à l\'adversaire.` },
   soc_ck:{ tr:'soc', l:'Se renforcer selon le chakra', ps:['a', 'h'], w:1.6, mag:e => (e.a + e.h) * 3, txt:(e, k) => `Début du combat : gagne ${sign(e.a * k, e.h * k)} pour chaque chakra que vous avez (5 au plus).` },
@@ -562,6 +577,14 @@ function runRecruit0(G, p, m, e, ctx) {
     case 'bc_gold': p.g += e.n * k; break;
     case 'bc_chakra': case 'eot_chakra': p.ck = Math.min(ckMax(p), (p.ck || 0) + e.n * k); break;
     case 'cast_ck': p.ck = Math.min(ckMax(p), (p.ck || 0) + e.n * k); break;
+    case 'cast_braise': p.braise = (p.braise || 0) + e.n * k * pureX(p, 'n_feu'); break;
+    case 'eot_ck_braise': if ((p.ck || 0) >= e.n) { p.ck -= e.n; p.braise = (p.braise || 0) + (e.n + 1) * k * pureX(p, 'n_feu'); } break;
+    case 'bc_upd': p.uc = Math.max(0, p.uc - e.n * k); break;
+    case 'eot_inc': p.inc = p.inc || []; p.inc[0] = (p.inc[0] || 0) + e.n * k + (p.pure === 'n_vent' ? 1 : 0); break;
+    case 'eot_maree': p.maree = (p.maree || 0) + e.n * k * pureX(p, 'n_eau'); break;
+    case 'eot_wave': { const r = p.bd[p.bd.indexOf(m) + 1]; if (r) buff(r, A, Hh); break; }
+    case 'eot_charge': p.charge = (p.charge || 0) + e.n * k * pureX(p, 'n_foudre'); break;
+    case 'eot_anchor': { const n = Math.min(3 * k, p.ck || 0) * pureX(p, 'n_terre'); if (n) buff(m, 0, n); break; }
     case 'eot_ck_spend': if ((p.ck || 0) >= e.n) { p.ck -= e.n; buff(m, A, Hh); } break;
     case 'cast_memo': if (p.lastCast && SPELLS[p.lastCast] && SPELLS[p.lastCast].nin) { m.memo = p.lastCast; if (SPELLS[p.lastCast].el) m.el = SPELLS[p.lastCast].el; } break;
     case 'sot_memo': if (m.memo && SPELLS[m.memo]) for (let i = 0; i < k + (m.memo2 ? 1 : 0); i++) if (p.hd.length < 10) p.hd.push({ sp:m.memo, u:UID++ }); break;
@@ -821,7 +844,10 @@ function checkTriple(G, p) {
   }
 }
 const CK_MAX = 10;
-const ckMax = p => CK_MAX + ((p && p.ckx) || 0);
+const ckMax = p => CK_MAX + ((p && p.bd) || []).reduce((t, m) => t + ((CD(m.c).fxAll || []).filter(e => e.k === 'pas_ckx').reduce((u, e) => u + e.n, 0)) * (m.g ? 2 : 1), 0);
+const pureX = (p, tr) => p && p.pure === tr ? 2 : 1;
+const awake = G => !!(G && G.eveil && G.rd >= G.eveil);
+const hasFx = (m, k) => (CD(m.c).fxAll || []).some(e => e.k === k);
 // dans l'univers du chakra, les pouvoirs héroïques se paient en chakra
 const powPaid = G => !!(G && inMechAny(G, 'chakra'));
 const powPurse = (G, p) => powPaid(G) ? (p.ck || 0) : p.g;
@@ -1086,7 +1112,7 @@ function endRecruit() {
   const cap = G.rd <= 3 ? 5 : alive.length >= 4 ? 15 : 99;
   const fight = (p, q, ghost) => {
     const seed = rint(1e9), qb = ghost ? ghost.bd : q.bd, qt = ghost ? ghost.t : q.t, qn = ghost ? 'Fantôme de ' + ghost.n : q.n;
-    const heat = x => (x.fbq ? (x.fb || 3) : 0) + (x.hero === 'pyra' ? 2 : 0) + (x.njf || 0) + (HEROES[x.hero] && HEROES[x.hero].pw && HEROES[x.hero].pw.k === 'pfire' ? HEROES[x.hero].pw.d : 0);
+    const heat = x => (x.fbq ? (x.fb || 3) : 0) + (x.hero === 'pyra' ? 2 : 0) + (x.njf || 0) + (HEROES[x.hero] && HEROES[x.hero].pw && HEROES[x.hero].pw.k === 'pfire' ? HEROES[x.hero].pw.d : 0) + (awake(G) && x.bd ? Math.floor((x.charge || 0) / 2) * (x.bd.some(m => hasFx(m, 'awk_storm')) ? 2 : 1) : 0);
     const fire = [heat(p), ghost ? 0 : heat(q)];
     const pb = combatBoard(p), qcb = combatBoard(ghost || q);
     elementDuel(pb, qcb);
@@ -1173,7 +1199,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, pure:p.pure || null, eqs:p.eqs || [], mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, pure:p.pure || null, eqs:p.eqs || [], mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;

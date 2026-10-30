@@ -173,10 +173,25 @@ function castSpell0(G, p, hi, tg) {
 function drawAny(t) { const ids = POOL_IDS.filter(id => C[id].t === t); return ids.length ? mk(pickR(ids), 0) : null; }
 // plateau de combat : on ajoute les bonus « prochain combat » sans toucher au vrai plateau
 function combatBoard(p) {
-  return p.bd.map(m => {
+  const G = typeof H !== 'undefined' ? H.G : null, aw = awake(G), ninja = G && inMechAny(G, 'chakra');
+  const bd = p.bd || [], anyFx = k => bd.some(m => hasFx(m, k));
+  const phx = Math.floor((p.braise || 0) / 2) * (anyFx('awk_phoenix') ? 2 : 1), tide = Math.floor((p.maree || 0) / 4) * (anyFx('awk_tsunami') ? 2 : 1);
+  return bd.map(m => {
     const c = { ...m }; delete c.tmp;
     if (m.tmp) { c.a += m.tmp.a || 0; c.h += m.tmp.h || 0; if (m.tmp.f) addF(c, m.tmp.f); }
     if (p.tma) { c.a += p.tma.a; c.h += p.tma.h; }
+    if (ninja) {
+      const tr = CD(m.c).tr, k = m.g ? 2 : 1, x = c.x = (c.x || []).slice();
+      (CD(m.c).fxAll || []).filter(e => e.k === 'awk_surge').forEach(e => { if ((p.ck || 0) >= 7) { c.a += e.a * k; c.h += e.h * k; } });
+      if (aw) {
+        if (tr === 'n_feu') { c.a += phx; c.h += phx; addF(c, 'r'); }                       // Phénix
+        if (tr === 'n_vent') x.push({ k:'atk_zap', d:1, n:3, src:'Ouragan' });                 // Ouragan
+        (CD(m.c).fxAll || []).filter(e => e.k === 'awk_hurricane').forEach(e => x.push({ k:'atk_zap', d:e.d * k, n:3, src:'Ouragan' }));
+        if (tide) { c.a += tide; c.h += tide; }                                                 // Raz-de-marée
+        if (tr === 'n_terre') x.push({ k:'soc_dmg', d:Math.max(1, Math.floor(c.h / 4)), n:1, src:'Avalanche' });   // Avalanche
+        if (hasFx(m, 'awk_quake')) x.push({ k:'soc_aoe', d:Math.max(1, Math.floor(c.h / 6)), src:'Séisme' });
+      }
+    }
     return c;
   });
 }

@@ -1902,3 +1902,4 @@ body.cs-entering #scene *{animation-play-state:running!important}
 @keyframes bcbob{50%{transform:translateY(-8px) rotate(-2deg)}}
 .eveil{padding:3px 10px;border-radius:99px;font-family:var(--f-label);font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#120a06;background:linear-gradient(90deg,#ff7a2a,#6fd8a0,#ffd23a,#c8a878,#4ab0e8);box-shadow:0 0 12px rgba(255,220,140,.6)}
 @media (max-height:540px){ .bc-box{width:150px;height:130px} .bc-t{font-size:22px} }
+.souls.ctr{color:var(--cc)} .souls.ctr b{color:#fff}
