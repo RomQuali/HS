@@ -30,6 +30,8 @@ function applyLive() {
   const delT = SET.delTribes || [];
   for (const t of DEFAULT_SETTINGS.tribes) if (!SET.tribes.some(x => x.id === t.id) && !delT.includes(t.id)) SET.tribes.push(clone(t));
   SET.univ = SET.univ || [];
+  SET.univ.forEach(u => { if (u.n === 'Les Cinq Nations') { u.n = 'Ninja'; u.lore = null; } });
+  if (SET.delUniv) SET.delUniv = SET.delUniv.map(n => n === 'Les Cinq Nations' ? 'Ninja' : n);
   const delU = SET.delUniv || [];
   for (const u of DEFAULT_SETTINGS.univ) { if (delU.includes(u.n)) continue; const mine = SET.univ.find(x => x.n === u.n); if (!mine) SET.univ.push(clone(u)); else { if (!mine.mech) mine.mech = u.mech; if (!mine.fixed) mine.tribes = u.tribes.filter(t => !delT.includes(t)); } }
   CARDS = clone(DEFAULT_CARDS);

@@ -4,7 +4,7 @@ if (LITE) document.documentElement.classList.add('lite');
 /* =====================================================================
    INTERFACE
    ===================================================================== */
-let savedUniv = []; try { savedUniv = JSON.parse(localStorage.getItem('tav-univ') || '[]'); savedUniv = Array.isArray(savedUniv) ? savedUniv.slice(0, 1) : []; } catch (e) { savedUniv = []; }
+let savedUniv = []; try { savedUniv = JSON.parse(localStorage.getItem('tav-univ') || '[]'); savedUniv = Array.isArray(savedUniv) ? savedUniv.slice(0, 1).map(n => n === 'Les Cinq Nations' ? 'Ninja' : n) : []; } catch (e) { savedUniv = []; }
 let savedName = ''; try { savedName = localStorage.getItem('tav-name') || ''; } catch (e) {}
 const V = { screen:'menu', name:savedName || 'Aventurier', nameRaw:savedName, pub:null, pubAt:0, me:null, sel:null, fight:null, fi:0, hostGone:false, univSel:savedUniv };
 
@@ -304,6 +304,17 @@ function chakraLawH(big) {
     <small><b>Éveil des clans</b> (4 joueurs ou moins) : <b style="color:#ff9a6a">Feu</b> Phénix (braises → stats et Renaissance) · <b style="color:#8fe0b0">Vent</b> Ouragan (dégâts à chaque attaque) · <b style="color:#8fd0ff">Eau</b> Raz-de-marée (la marée renforce l'équipe) · <b style="color:#ffe27a">Foudre</b> Orage total (la charge frappe) · <b style="color:#d8c0a0">Terre</b> Avalanche (sa vie devient des dégâts).</small>
     <small><b>Pureté :</b> 5 serviteurs d'un même clan donnent +1 chakra par tour et doublent les effets de clan.</small></span>`;
 }
+// fiche de l'univers Ninja : quatre règles courtes et le cycle des éléments (le détail complet est sur l'écran du héros)
+function ninjaCardH() {
+  const row = (ic, col, t, x) => `<span class="nj-r"><i class="nj-i" style="--c:${col}">${ic}</i><span><b>${t}</b><small>${x}</small></span></span>`;
+  return `<span class="ban-law nj-law"><b>Loi · Chakra</b>
+    ${row('<svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="#6fc8ff" stroke="#120a06" stroke-width="2"/><circle cx="8" cy="8" r="2.2" fill="#dff4ff"/></svg>', '#2a5a86', 'Chakra', 'Chaque ninja en jeu en donne 1 par tour. Il lance tes techniques (achetées en or) et ton pouvoir.')}
+    ${row('<svg viewBox="0 0 20 20"><path d="M3 15 L5 6 L8 10 L10 4 L12 10 L15 6 L17 15 Z" fill="#f2c14e" stroke="#120a06" stroke-width="1.6" stroke-linejoin="round"/></svg>', '#7a5a1a', 'Compagnon', 'Déjà triplé, hors plateau. Il retient ta dernière technique et ne combat que le compagnon adverse.')}
+    ${row('<svg viewBox="0 0 20 20"><rect x="3" y="8" width="14" height="9" rx="1.5" fill="#e2b04e" stroke="#120a06" stroke-width="1.6"/><path d="M3 8 Q10 1 17 8 Z" fill="#c88a26" stroke="#120a06" stroke-width="1.6"/><rect x="8.6" y="9.5" width="2.8" height="3.4" fill="#120a06"/></svg>', '#6a3a12', 'Duel = coffre', 'Compagnon vainqueur : coffre majeur. Sinon : coffre mineur. Ses équipements se posent contre du chakra.')}
+    ${row('<svg viewBox="0 0 20 20"><path d="M10 2 C14 7 15 10 15 12 A5 5 0 0 1 5 12 C5 9 7 8 8 5 C9 8 10 8 10 2 Z" fill="#ff7a3a" stroke="#120a06" stroke-width="1.6"/></svg>', '#7a2a12', 'Éveil', 'À 4 joueurs ou moins, chaque clan libère son pouvoir ultime et les techniques interdites.')}
+    <span class="nj-el">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b>Éléments</b>Chaque élément domine le suivant : +4/+4 au compagnon. Enchaîne deux éléments pour l'une des 10 fusions.</small></span>
+  </span>`;
+}
 function univPickH(sel, edit, actions) {
   const on = SET.tribes.filter(t => t.on !== false).map(t => t.id);
   const us = (SET.univ || []).filter(u => u.tribes.some(t => on.includes(t)));
@@ -315,7 +326,7 @@ function univPickH(sel, edit, actions) {
     return `<button type="button" class="ban${a ? ' on' : ''}" style="--uc:${esc(L.col)}" ${edit ? `data-act="univ" data-u="${k}"` : 'disabled'} aria-pressed="${a}">
       ${a ? '<span class="ban-rib">Levé</span>' : ''}
       <span class="ban-hd"><span class="ban-em">${icon(L.ic)}</span><span class="ban-t"><b>${esc(u.n)}</b>${L.lore ? `<i>${esc(L.lore)}</i>` : ''}</span></span>
-      ${u.mech === 'chakra' ? chakraLawH() : M ? `<span class="ban-law"><b>Loi · ${esc(M.n)}</b><small>${esc(M.d)}</small></span>` : ''}
+      ${u.mech === 'chakra' ? ninjaCardH() : M ? `<span class="ban-law"><b>Loi · ${esc(M.n)}</b><small>${esc(M.d)}</small></span>` : ''}
       <span class="ban-fam">${fams.map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span>
       <span class="ban-her">${heroes.slice(0, 6).map(h => `<span class="ban-h" title="${esc(HEROES[h].n)}">${faceH('art-h-' + h)}</span>`).join('')}<small>${heroes.length} héros</small></span>
     </button>`;
@@ -1488,4 +1499,16 @@ function arenaCleanup() {
 .cpz.win{box-shadow:inset 0 0 0 2px #f2c14e,0 0 14px rgba(242,193,78,.6)}
 .cpz.loss{box-shadow:inset 0 0 0 2px #7a8aa0}
 .duel-l{margin:4px 0 0;font-size:13px;color:#e8d6b0}.duel-l.win{color:#f2c14e}
+`; document.head.appendChild(st); })();
+
+/* fiche de l'univers Ninja */
+(function(){ const st = document.createElement('style'); st.textContent = `
+.nj-law{gap:7px}
+.nj-r{display:grid;grid-template-columns:26px 1fr;gap:7px;align-items:start}
+.nj-i{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--c);box-shadow:inset 0 0 0 1.5px rgba(255,220,150,.45)}
+.nj-i svg{width:18px;height:18px}
+.nj-r b,.nj-el b{display:block;font-size:12.5px;color:#ffd86a;font-family:var(--f-label)}
+.nj-r small,.nj-el small{font-size:11.5px;line-height:1.3}
+.nj-el{display:grid;grid-template-columns:74px 1fr;gap:7px;align-items:center;margin-top:2px;padding-top:7px;border-top:1px solid rgba(242,193,78,.25)}
+.nj-el .elc{width:74px;height:74px}
 `; document.head.appendChild(st); })();
