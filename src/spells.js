@@ -46,9 +46,9 @@ const SPELLS = {
   eq_cape:{ n:'Cape d\'ombre', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : Bouclier divin et Renaissance.' },
   eq_parchemin:{ n:'Parchemin jumeau', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : il rend une copie de plus de la technique retenue.' },
   eq_talisman:{ n:'Talisman des cycles', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : ses bonus d\'élément sont doublés.' },
-  cf_bois:{ n:'Coffre de bois', t:1, c:0, ck:2, item:1, ty:'cof', tx:'Coffre mineur, reçu après une égalité ou une défaite. Ouvre-le avec 2 chakra : un équipement commun.' },
-  cf_argent:{ n:'Coffre d\'argent', t:1, c:0, ck:4, item:1, ty:'cof', tx:'Reçu après une victoire. Ouvre-le avec 4 chakra : un équipement aléatoire, rare compris.' },
-  cf_or:{ n:'Coffre d\'or', t:1, c:0, ck:6, item:1, ty:'cof', tx:'Reçu après une victoire, à partir de la manche 7. Ouvre-le avec 6 chakra : deux équipements rares.' },
+  cf_bois:{ n:'Coffre de bois', t:1, c:0, ck:2, item:1, ty:'cof', tx:'Coffre mineur, reçu après une égalité ou une défaite (taverne de niveau 1 à 4). Ouvre-le avec 2 chakra : un équipement commun.' },
+  cf_argent:{ n:'Coffre d\'argent', t:1, c:0, ck:4, item:1, ty:'cof', tx:'Reçu après une victoire (taverne 1 à 3), ou après une défaite avec une taverne de niveau 5 ou plus. Ouvre-le avec 4 chakra : un équipement aléatoire, rare compris.' },
+  cf_or:{ n:'Coffre d\'or', t:1, c:0, ck:6, item:1, ty:'cof', tx:'Reçu après une victoire avec une taverne de niveau 4 ou plus. Ouvre-le avec 6 chakra : deux équipements rares.' },
 };
 const SPELL_IDS = Object.keys(SPELLS);
 function drawSpell(t) { const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra'); const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !!SPELLS[id].nin === !!nin); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }

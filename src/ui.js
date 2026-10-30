@@ -289,7 +289,7 @@ function elCycleSvg(order, col, title) {
 function chakraLawH(big) {
   const fus = Object.entries(FUSIONS).map(([k, F]) => `<i style="--c:${F.col}">${k.split('+').map(e => ELS[e].n).join(' + ')} = <b>${F.n}</b></i>`).join('');
   return `<span class="ban-law ck-law${big ? ' big' : ''}"><b>Loi · Chakra et éléments</b>
-    <small><b>Chakra :</b> chaque serviteur de l'univers en donne 1 par tour. Il lance les techniques (achetées en or) et ouvre les coffres gagnés après chaque combat.</small>
+    <small><b>Chakra :</b> chaque serviteur de l'univers en donne 1 par tour. Il lance les techniques (achetées en or) et ouvre les coffres reçus après chaque combat : meilleurs après une victoire et quand ta taverne monte de niveau.</small>
     <small><b>Compagnon :</b> il retient la dernière technique lancée et son élément, puis la remet en main à chaque tour.</small>
     <span class="elx">
       <span class="elx-c">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b style="color:#ff8a6a">Domination</b> · ton compagnon l'emporte sur l'élément d'en face : +4/+4 au combat.</small></span>
