@@ -1662,10 +1662,10 @@ body.cs-entering #scene *{animation-play-state:running!important}
 .powm .ic.pwart{padding:2px;background:radial-gradient(circle at 40% 32%,color-mix(in srgb,var(--hc) 45%,#2a2050),#140e28 78%)}
 .hero-zone .powm .ic.pwart{padding:2px}
 @keyframes usable{0%,100%{box-shadow:inset 0 0 0 1.5px #10142a,inset 0 0 0 3.5px #c8b07a,inset 0 0 0 5px #10142a,0 0 0 2px #6fd0ff,0 0 16px 4px rgba(80,180,255,.7)}50%{box-shadow:inset 0 0 0 1.5px #10142a,inset 0 0 0 3.5px #c8b07a,inset 0 0 0 5px #10142a,0 0 0 3px #9fe4ff,0 0 26px 8px rgba(80,180,255,.9)}}
-.hero-zone .powm:not(.passive):not(:disabled):not(.used){animation:usable 1.6s ease-in-out infinite}
+.hero-zone .powm.can:not(:disabled){animation:usable 1.6s ease-in-out infinite}
 @keyframes usableC{0%,100%{box-shadow:0 0 0 3px #6fd0ff,0 0 0 5px var(--nail),0 0 16px 5px rgba(80,180,255,.7)}50%{box-shadow:0 0 0 4px #9fe4ff,0 0 0 6px var(--nail),0 0 28px 9px rgba(80,180,255,.9)}}
 .compm:not(:disabled) .face.cf{animation:usableC 1.6s ease-in-out infinite}
-@media (prefers-reduced-motion:reduce){.hero-zone .powm:not(.passive):not(:disabled):not(.used),.compm:not(:disabled) .face.cf{animation-duration:0s}}
+@media (prefers-reduced-motion:reduce){.hero-zone .powm.can,.compm:not(:disabled) .face.cf{animation-duration:0s}}
 /* zones de dépôt : trois rectangles jointifs */
 #dzl{position:fixed;inset:0;z-index:60;pointer-events:none}
 #dzl .dz{position:fixed;box-sizing:border-box;border-radius:14px;border:2px dashed rgba(143,244,255,.35);background:rgba(60,190,255,.04);transition:background .12s,border-color .12s}
@@ -2580,6 +2580,22 @@ const OPS = {
   pick(G, p, a) { if (!p.disc || !p.disc[a.i]) return false; const m = p.disc.splice(a.i, 1)[0]; p.disc.forEach(x => toPool(G, x)); p.disc = null; if (p.hd.length < 10) p.hd.push(m); else toPool(G, m); checkTriple(G, p); return true; },
 };
 
+// le pouvoir a-t-il un effet possible maintenant ? (même règles que pow0, sans rien modifier)
+function powCan(p, rd) {
+  const h = HEROES[p.hero]; if (!h || !h.cost || p.pu || p.g < h.cost) return false;
+  const bd = p.bd || [], hd = p.hd || [], tr = t => bd.some(m => tribe(m) === t);
+  switch (p.hero) {
+    case 'egide': return bd.some(m => !has(m, 's'));
+    case 'ondine': case 'selene': case 'grumbo': return bd.length > 0;
+    case 'paul': return tr('sq_feu');
+    case 'jeanne': return tr('sq_vent');
+    case 'zoe': case 'oren': return hd.length < 10;
+    case 'nono': return (rd || 0) >= 3;
+    case 'brok': return bd.some(m => !has(m, 't'));
+    case 'vaskor': return bd.length < 7 && !!C.m_squelette;
+  }
+  return true;
+}
 function hostApply(pid, a) {
   const G = H.G; if (!G) return;
   const p = G.ps[pid]; if (!p || !p.al) return;
@@ -5963,7 +5979,7 @@ function gameH() {
       <div class="line" id="bdrow">${boardRow}</div></section>`;
     const nono = me.hero === 'nono', locked = nono && (me.rd || 0) < 3;
     const powSub = nono ? `${me.fb} dégât${me.fb > 1 ? 's' : ''}` : me.pu ? 'Utilisé' : '';
-    const power = hero && hero.cost ? `<button class="powm${me.pu ? ' used' : ''}" data-act="pow" ${!canAct || me.pu || locked || me.g < hero.cost ? 'disabled' : ''} aria-label="${esc(hero.n + ' : ' + hero.tx)}"><span class="pcost">${hero.cost}</span>${powArtH(me.hero)}<small>${locked ? 'Manche 3' : powSub || powerTitle(hero)[0] || 'Pouvoir'}</small><span class="pc-tx">${esc(powerTitle(hero)[1])}</span></button>`
+    const power = hero && hero.cost ? `<button class="powm${me.pu ? ' used' : ''}${canAct && !locked && powCan(me, me.rd || (V.pub && V.pub.rd)) ? ' can' : ''}" data-act="pow" ${!canAct || me.pu || locked || me.g < hero.cost ? 'disabled' : ''} aria-label="${esc(hero.n + ' : ' + hero.tx)}"><span class="pcost">${hero.cost}</span>${powArtH(me.hero)}<small>${locked ? 'Manche 3' : powSub || powerTitle(hero)[0] || 'Pouvoir'}</small><span class="pc-tx">${esc(powerTitle(hero)[1])}</span></button>`
       : `<span class="powm passive" aria-label="${esc(hero ? hero.tx : '')}">${hero ? powArtH(me.hero) : icon('crown')}<small>Passif</small>${hero ? `<span class="pc-tx">${esc(hero.tx)}</span>` : ''}</span>`;
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
