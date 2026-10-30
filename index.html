@@ -1669,7 +1669,7 @@ body.cs-entering #scene *{animation-play-state:running!important}
 /* zones de dépôt : trois rectangles jointifs */
 #dzl{position:fixed;inset:0;z-index:60;pointer-events:none}
 #dzl .dz{position:fixed;box-sizing:border-box;border-radius:14px;border:2px dashed rgba(143,244,255,.35);background:rgba(60,190,255,.04);transition:background .12s,border-color .12s}
-#dzl .dz span{position:absolute;left:14px;top:8px;font-family:var(--f-label);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:rgba(200,240,255,.55)}
+#dzl .dz span{position:absolute;left:14px;bottom:8px;font-family:var(--f-label);font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:rgba(200,240,255,.55)}
 #dzl .dz.on{border:3px solid #8ff4ff;background:rgba(60,190,255,.13);box-shadow:inset 0 0 40px rgba(143,244,255,.25)}
 #dzl .dz.on span{color:#e8fcff}
 #dzl .dz.sell.on{border-color:#ffb06a;background:rgba(255,140,60,.14);box-shadow:inset 0 0 40px rgba(255,140,60,.25)}
@@ -6244,21 +6244,26 @@ function dragStart(d, x, y) {
   requestAnimationFrame(tick);
 }
 // trois grands rectangles jointifs (taverne, plateau, main) qui couvrent toute la table ; la rangée du héros est partagée
-function dzRects() {
+function dzRects(from) {
   const tb = document.querySelector('.table'), sh = document.querySelector('.keeper-zone[data-drop]'), bd = document.querySelector('.board-zone[data-drop]'), hd = document.querySelector('.hand[data-drop]'), hz = document.querySelector('.hero-zone');
   if (!tb || !sh || !bd || !hd) return [];
   const T = tb.getBoundingClientRect(), S = sh.getBoundingClientRect(), B = bd.getBoundingClientRect(), Hd = hd.getBoundingClientRect(), Z = hz ? hz.getBoundingClientRect() : null;
   const b1 = (S.bottom + B.top) / 2, side = Z && Z.left >= B.right - 10;
   const b2 = Z && !side ? (Z.top + Z.bottom) / 2 : (B.bottom + Math.max(B.bottom, Hd.top)) / 2;
   const l = T.left, r = side ? Z.left : T.right;
-  return [{ drop:'sh', el:sh, l, r, t:T.top, b:b1 }, { drop:'bd', el:bd, l, r, t:b1, b:b2 }, { drop:'hd', el:hd, l, r, t:b2, b:Math.max(T.bottom, innerHeight) }];
+  const bot = Math.max(T.bottom, innerHeight);
+  // une seule zone, taillée selon l'action : acheter → la main (tout sous la taverne) ; jouer → le plateau (tout au-dessus de la main) ; vendre → la taverne
+  if (from === 'sh' || from === 'ss') return [{ drop:'hd', el:hd, l, r, t:b1, b:bot }];
+  if (from === 'hd') return [{ drop:'bd', el:bd, l, r, t:T.top, b:b2 }];
+  if (from === 'bd') return [{ drop:'sh', el:sh, l, r, t:T.top, b:b1 }, { drop:'bd', el:bd, l, r, t:b1, b:bot, hide:1 }];
+  return [];
 }
-function dzAt(x, y) { const R = dzRects(); return R.find(z => x >= z.l && x <= z.r && y >= z.t && y < z.b) || (R.length && x >= R[0].l && x <= R[0].r ? (y < R[0].t ? R[0] : y >= R[2].b ? R[2] : null) : null); }
+function dzAt(x, y, from) { return dzRects(from).find(z => x >= z.l && x <= z.r && y >= z.t && y < z.b) || null; }
 const dzLayer = (() => { const l = document.createElement('div'); l.id = 'dzl'; l.setAttribute('aria-hidden', 'true'); l.hidden = true; document.body.appendChild(l); return l; })();
 function dzShow(on) {
   if (!DRAG) return dzHide();
-  const R = dzRects().filter(z => dropAllowed(DRAG.z, z.drop, DRAG.sp)); if (!R.length) return dzHide();
-  const lbl = { sh:'Taverne', bd:'Plateau', hd:'Main' };
+  const R = dzRects(DRAG.z).filter(z => !z.hide && dropAllowed(DRAG.z, z.drop, DRAG.sp)); if (!R.length) return dzHide();
+  const lbl = { sh:'Vendre', bd:'Jouer', hd:'Acheter' };
   dzLayer.innerHTML = R.map(z => `<div class="dz${z.drop === on ? ' on' : ''}${z.drop === 'sh' && DRAG.z === 'bd' ? ' sell' : ''}" style="left:${f1(z.l)}px;top:${f1(z.t)}px;width:${f1(z.r - z.l)}px;height:${f1(Math.min(z.b, innerHeight) - z.t)}px"><span>${lbl[z.drop]}</span></div>`).join('');
   dzLayer.hidden = false;
 }
@@ -6288,7 +6293,7 @@ function dragMove(x, y) {
   D.vx += (x - D.x) * 0.5; D.x = x; D.y = y;
   dragLayer.style.transform = `translate(${f1(x - D.w / 2)}px,${f1(y - D.h * .42)}px)`;
   const t = document.elementFromPoint(x, y);
-  const zi = dzAt(x, y), okz = zi && dropAllowed(D.z, zi.drop, D.sp) ? zi : null, ok = okz ? okz.el : null;
+  const zi = dzAt(x, y, D.z), okz = zi && dropAllowed(D.z, zi.drop, D.sp) ? zi : null, ok = okz ? okz.el : null;
   dzShow(okz ? okz.drop : null);
   document.querySelectorAll('.mk-l,.mk-r,.tg-hover').forEach(el => el.classList.remove('mk-l', 'mk-r', 'tg-hover'));
   const to = okz ? okz.drop : null;
@@ -6308,7 +6313,7 @@ function dragEnd(x, y, cancel) {
   document.querySelectorAll('.mk-l,.mk-r,.tg-hover').forEach(el => el.classList.remove('mk-l', 'mk-r', 'tg-hover'));
   V.lpBlock = Date.now();
   const t = cancel ? null : document.elementFromPoint(x, y);
-  const zi = cancel ? null : dzAt(x, y), z = zi ? zi.el : null; dzHide();
+  const zi = cancel ? null : dzAt(x, y, D.z), z = zi ? zi.el : null; dzHide();
   const cr = dragLayer.firstChild ? dragLayer.firstChild.getBoundingClientRect() : null;
   let sent = false;
   aimHide(); dragLayer.classList.remove('aimcard');
