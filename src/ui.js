@@ -2063,3 +2063,58 @@ svg.ck-gem.aff{box-shadow:none;filter:drop-shadow(0 0 5px rgba(155,227,106,.95))
 @media (prefers-reduced-motion:reduce){.mn[class*="kw-"]::after{animation:none}}
 html.lite .mn[class*="kw-"]::after{display:none}
 `; document.head.appendChild(st); })();
+/* ===== téléphone (paysage) : colonne du héros compacte, entraînement et réservoir qui tiennent, duel lisible ===== */
+(function(){ const st = document.createElement('style'); st.textContent = `
+@media (orientation:landscape) and (max-height:540px){
+  :root body .hero-zone{width:108px;padding:2px 2px 4px;gap:4px;justify-content:flex-start;overflow:hidden}
+  :root body .hero-zone .face.hf.arch{width:52px}
+  :root body .hz-left{order:4;width:100%;display:flex;justify-content:center}
+  :root body .train{min-width:0;width:100%;padding:3px 4px;border-radius:10px;gap:2px;flex:none}
+  :root body .train .tr-h,:root body .train .tr-e{display:none}
+  :root body .train:not(:has(.upm)){display:none}
+  :root body .train .tr-row.med{min-height:0;padding:6px 4px 2px;gap:8px!important;flex-wrap:wrap;justify-content:center;overflow:visible}
+  :root body .upm{width:30px;height:30px}
+  :root body .upm-c{width:16px;height:18px;right:-6px;top:-8px}
+  :root body .hz-right{flex-direction:column;gap:3px}
+  :root body .hero-zone .powm:not(.passive),:root body .hero-zone .powm.passive{width:50px;height:50px;margin:8px 0 2px;box-shadow:0 0 0 2px #120a06,0 0 0 5px #d8a84a,0 0 0 7px #120a06}
+  :root body .hero-zone .powm .pcost{top:-12px;transform:translateX(-50%) scale(.8)}
+  :root body .purses{flex-direction:row;gap:6px;align-items:center}
+  :root body .hero-zone .purse b{font-size:15px}
+  :root body .ckp .coinrow,:root body .ctrs{display:none}
+  :root body .rsv.scroll svg{width:58px;height:36px}
+  :root body .rsv small{font-size:8.5px}
+  :root body .hero-zone .bellwrap{width:60px;height:60px;padding:4px;margin-top:auto}
+  :root body .hero-zone .bell .ic{width:18px;height:18px}
+  :root body .hero-zone .bell .bell-t{font-size:13px}
+  :root body .hero-zone .bellwrap::before{display:none}
+  /* compagnon et duel */
+  .cp-side small{display:none}
+  .cp-side{padding-right:6px}
+  :root body .board-zone.has-cp,.keeper-zone.has-cp{padding-left:calc(var(--tw) + 22px)}
+  .duel-col .mn.cp-tok{--tw:46px}
+  .duel-vs{font-size:13px;padding:1px 6px}
+  .rpeek.all{width:min(92vw,640px)} .rpeek.all ul{grid-template-columns:1fr 1fr}
+  .upc{width:min(30vw,170px);padding:8px} .upc .pc-ico.big{width:56px;height:56px} .upch-t{font-size:22px}
+  .awk-in b{font-size:54px}
+}
+/* mode allégé (téléphones, petits processeurs) : on coupe les animations continues et les filtres coûteux */
+html.lite .table[class*="awk-"] .board-zone .mn::after,html.lite .table[class*="awk-"] .board-zone .mn::before,html.lite .table[class*="awk-"] .hand .cd::after{display:none}
+html.lite .table[class*="awk-"] .board-zone .mn .mn-svg{filter:none}
+html.lite .table.awk-feu .board-zone .mn{box-shadow:0 0 0 2px rgba(255,120,30,.8);border-radius:50%}
+html.lite .table.awk-eau .board-zone .mn{box-shadow:0 0 0 2px rgba(80,180,255,.8);border-radius:50%}
+html.lite .table.awk-foudre .board-zone .mn{box-shadow:0 0 0 2px rgba(255,220,60,.8);border-radius:50%}
+html.lite .mn.buffup::before{display:none}
+html.lite .mn.buffup .mn-svg{animation-duration:.6s}
+html.lite .hero-zone .bell .bell-shine,html.lite .hero-zone .bellwrap::before{display:none}
+html.lite .hero-zone .bell:not(:disabled) .ic,html.lite .rsv-lo,html.lite .mn.cp-tok.awk .mn-svg,html.lite .hero-zone .powm.can:not(:disabled){animation:none}
+html.lite .rsv.scroll svg,html.lite .rsv.scroll.half svg,html.lite .ckm{filter:none}
+html.lite .awk-rays{display:none}
+html.lite .table.awakened{box-shadow:inset 0 0 0 2px rgba(255,170,80,.5)}
+html.lite .upc{animation:none}
+`; document.head.appendChild(st); })();
+(function(){ const st = document.createElement('style'); st.textContent = `
+@media (orientation:landscape) and (max-height:540px){
+  :root body .table > .hud .timer{position:static;min-width:0;height:auto;padding:1px 8px;border-radius:8px;font-size:15px;background:rgba(10,5,2,.55);box-shadow:inset 0 0 0 1px rgba(242,193,78,.4);transform:none}
+  .keeper-zone.has-cp .kname span{display:none}
+}
+`; document.head.appendChild(st); })();
