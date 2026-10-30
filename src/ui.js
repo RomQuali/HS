@@ -135,6 +135,7 @@ function tokenH(m, z, i, o = {}) {
     + (b.t && z === 'sh' ? `<g class="tflag"><path d="M37 -6 H63 V17 L50 12 L37 17 Z" fill="#4a4044" stroke="#0c0808" stroke-width="2"/><path d="M39.5 -4 H60.5 V14 L50 10 L39.5 14 Z" fill="none" stroke="#ffb050" stroke-width="1.2"/>${Array.from({ length:b.t }, (_, k) => { const row = k < 3 ? 0 : 1, n = row ? b.t - 3 : Math.min(3, b.t), j = row ? k - 3 : k; return `<text x="${f1(50 + (j - (n - 1) / 2) * 6.4)}" y="${row ? 9 : 2.6}" font-size="7" text-anchor="middle" fill="#ffd27a">★</text>`; }).join('')}</g>` : '')
     + ics.map(([ic, col, nm], k) => { const a = KW_ANG[k] * Math.PI / 180; return `<g class="kwi" transform="translate(${f1(50 + 51 * Math.sin(a))} ${f1(55 - 58 * Math.cos(a))})"><title>${nm}</title><circle r="8.4" fill="#1b120b" stroke="${col}" stroke-width="1.8"/><use href="#ic-${ic}" x="-5.6" y="-5.6" width="11.2" height="11.2" style="color:${col}"/></g>`; }).join('')
     + (isComp(m) && compEl(m) ? `<g class="elb"><title>Élément retenu : ${ELS[compEl(m)].n}${m.memo && SPELLS[m.memo] ? ' · technique : ' + SPELLS[m.memo].n : ''}${m.fu ? ' · fusion : ' + m.fu : ''}</title><circle cx="14" cy="12" r="10" fill="${ELS[compEl(m)].col}" stroke="#120a06" stroke-width="2.2"/><text x="14" y="12" dy=".36em" text-anchor="middle" font-size="10" font-weight="700" fill="#120a06">${ELS[compEl(m)].n[0]}</text></g>` : '')
+    + (isComp(m) ? `<g><title>Niveau d'entraînement ${compLv(m)} · ${m.xp || 0} expérience${compLv(m) < 5 ? ' (prochain niveau à ' + XP_LV[compLv(m)] + ')' : ''}</title><rect x="38" y="113" width="24" height="12" rx="6" fill="#2a6ad8" stroke="#120a06" stroke-width="1.8"/><text x="50" y="119" dy=".36em" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff">Nv ${compLv(m)}</text></g>` : '')
     + (m.eq && m.eq.length ? `<g><title>Équipements : ${m.eq.map(e => SPELLS[e] ? SPELLS[e].n : e).join(', ')}</title><rect x="72" y="4" width="22" height="14" rx="7" fill="#8a6a3a" stroke="#120a06" stroke-width="2"/><text x="83" y="11" dy=".36em" text-anchor="middle" font-size="9" font-weight="700" fill="#fff3c0">⚒${m.eq.length}</text></g>` : '')
     + `<use href="#gem-a" x="-1" y="90" width="34" height="34"/><text class="gt${up(m.a, b.a)}" x="16" y="107" dy=".36em">${m.a}</text>`
     + `<use href="#gem-h" x="67" y="88" width="34" height="34"/><text class="gt${up(m.h, b.h)}" x="84" y="108.6" dy=".36em">${m.h}</text></svg>`;
@@ -407,7 +408,7 @@ function gameH() {
       <span class="op-face">${faceH(playerSym(p))}<b class="op-hp">${p.al ? Math.max(0, p.hp) : p.pl + 'e'}</b><span class="op-t">${p.t}</span>${d.ph === 'recruit' && p.r && p.al ? '<span class="op-r">✓</span>' : ''}</span>
       <span class="op-n">${esc(p.n)}</span></li>`).join('');
   const myInfo = d.pl.find(p => p.pid === myPid), alive = !!(myInfo && myInfo.al);
-  const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span>${d.laws && d.laws.length && d.ph !== 'end' ? `<span class="hud-laws">${d.laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<span class="hl" data-hov="law" data-tip="${esc(M.n + ' : ' + M.d)}">${icon(M.ic)}</span>`; }).join('')}${d.laws.some(l => l.k === 'chakra') && V.me ? `<span class="souls chakra" data-tip="Chakra : il sert à lancer tes techniques ninja. Chaque serviteur des Cinq Nations en génère 1 au début de ton tour (10 au plus).">${icon('k_spark')}<b>${V.me.ck || 0}</b></span>` : ''}${V.me && V.me.souls ? `<span class="souls" data-tip="Âmes récoltées : toutes les 3 âmes, tes serviteurs des Ténèbres gagnent +1/+1 au début du tour.">${icon('skull')}<b>${V.me.souls}</b></span>` : ''}</span>` : ''}<span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerTxt()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm" data-act="leave">Quitter</button></div>`;
+  const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span>${d.ev && d.rd >= d.ev ? '<span class="eveil" data-tip="Éveil des clans : il reste 4 joueurs ou moins. Les techniques coûtent 1 chakra de moins et des techniques interdites apparaissent.">Éveil</span>' : ''}${d.laws && d.laws.length && d.ph !== 'end' ? `<span class="hud-laws">${d.laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<span class="hl" data-hov="law" data-tip="${esc(M.n + ' : ' + M.d)}">${icon(M.ic)}</span>`; }).join('')}${d.laws.some(l => l.k === 'chakra') && V.me ? `<span class="souls chakra" data-tip="Chakra : il sert à lancer tes techniques ninja. Chaque serviteur des Cinq Nations en génère 1 au début de ton tour (10 au plus).">${icon('k_spark')}<b>${V.me.ck || 0}</b></span>` : ''}${V.me && V.me.souls ? `<span class="souls" data-tip="Âmes récoltées : toutes les 3 âmes, tes serviteurs des Ténèbres gagnent +1/+1 au début du tour.">${icon('skull')}<b>${V.me.souls}</b></span>` : ''}</span>` : ''}<span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerTxt()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm" data-act="leave">Quitter</button></div>`;
   let table;
   if (me && alive) {
     const canAct = d.ph === 'recruit';
@@ -455,13 +456,22 @@ function gameH() {
     const n = me.hd.length;
     const hand = fighting ? '' : `<section class="hand" data-drop="hd" aria-label="Ta main · ${n}/10"><div class="fan${n > 7 ? ' many' : n > 4 ? ' some' : ''}" style="--n:${n}">${n ? me.hd.map((m, i) => { const o = i - (n - 1) / 2, op = { drag:canAct, style:`--o:${f1(o)};--o2:${f1(o * o)}` }; return m.sp ? spellCardH(m.sp, 'hd', i, op) : cardH(m, 'hd', i, op); }).join('') : ''}</div></section>`;
     const det = !fighting && V.sel ? `<div class="detail-pop">${detailH(canAct)}<button class="dp-x" data-act="unsel" aria-label="Fermer">×</button></div>` : '';
-    table = `<div class="table${fighting ? ' fighting arena' : ''}">${hud}${topZone}${board}${banner}${heroZone}${hand}${det}</div>`;
+    table = `<div class="table${fighting ? ' fighting arena' : ''}">${hud}${topZone}${board}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}`;
   } else if (myInfo) {
     table = `<div class="table">${hud}<section class="plaque solo-msg"><h2>Éliminé · ${myInfo.pl}e place</h2><p class="note">Tu peux suivre la fin de la partie à gauche ou retourner au menu.</p><div class="btns"><button class="btn" data-act="leave">Retour au menu</button></div></section></div>`;
   } else {
     table = `<div class="table">${hud}<section class="plaque solo-msg"><h2>Spectateur</h2><p class="note">Tu observes cette partie.</p></section></div>`;
   }
   return `<div class="stage"><aside class="opps" aria-label="Joueurs"><ol>${opps}</ol></aside>${table}</div>${overlayH()}`;
+}
+// fin de combat : un grand coffre au centre de l'écran, à ouvrir d'un clic
+function bigChestH(d, me) {
+  if (!me || !me.pend || d.ph !== 'recruit' || (V.fight && !V.fight.done) || V.chestRev) return '';
+  const q = me.pend.slice(0, 3), t = +me.pend.slice(3), maj = q === 'maj';
+  return `<div class="bigchest ${q}" role="dialog" aria-label="Coffre de fin de combat"><div class="bc-in">
+    <b class="bc-t">${maj ? 'Victoire : coffre majeur' : 'Coffre mineur'} · niveau ${t}</b>
+    <button class="bc-box" data-act="chest" aria-label="Ouvrir le coffre"><svg viewBox="0 0 80 70" aria-hidden="true"><rect x="6" y="30" width="68" height="36" rx="4" fill="${maj ? '#e2b04e' : '#a8744a'}" stroke="#120a06" stroke-width="3"/><path d="M6 44 H74" stroke="#120a06" stroke-width="2" opacity=".4"/><path d="M6 30 Q40 2 74 30 Z" fill="${maj ? '#c88a26' : '#8a5a32'}" stroke="#120a06" stroke-width="3"/><rect x="34" y="32" width="12" height="12" rx="2" fill="${maj ? '#ffd24a' : '#6fd0ff'}" stroke="#120a06" stroke-width="2"/></svg></button>
+    <small class="bc-s">Clique sur le coffre pour l'ouvrir</small></div></div>`;
 }
 // après l'ouverture : les cartes obtenues en grand au centre de l'écran
 function chestReveal(ids) {
@@ -472,7 +482,7 @@ function chestReveal(ids) {
 }
 // animation d'ouverture : le coffre vient au centre, tremble, s'ouvre dans un halo (bleu = mineur, doré = majeur)
 function fxChest(btn) {
-  const maj = btn.classList.contains('maj'), r = btn.getBoundingClientRect(), col = maj ? '#ffd24a' : '#6fd0ff';
+  const maj = btn.classList.contains('maj') || !!btn.closest('.bigchest.maj'), r = btn.getBoundingClientRect(), col = maj ? '#ffd24a' : '#6fd0ff';
   const el = document.createElement('div'); el.className = 'chfx ' + (maj ? 'maj' : 'min');
   el.style.setProperty('--x', (r.left + r.width / 2 - innerWidth / 2) + 'px'); el.style.setProperty('--y', (r.top + r.height / 2 - innerHeight / 2) + 'px'); el.style.setProperty('--c', col);
   el.innerHTML = `<span class="chfx-halo"></span><span class="chfx-rays"></span><svg class="chfx-box" viewBox="0 0 80 70" aria-hidden="true">
@@ -492,11 +502,10 @@ function trainH(d, me, canAct) {
       <svg viewBox="0 0 40 34" aria-hidden="true"><rect x="3" y="13" width="34" height="18" rx="2" fill="${q === 'maj' ? '#e2b04e' : '#a8744a'}" stroke="#120a06" stroke-width="2"/><path d="M3 13 Q20 -1 37 13 Z" fill="${q === 'maj' ? '#c88a26' : '#8a5a32'}" stroke="#120a06" stroke-width="2"/><rect x="16" y="15" width="8" height="8" rx="1.5" fill="#6fd0ff" stroke="#120a06" stroke-width="1.4"/></svg>
       <b class="ch-n">×${me.chests[k]}</b><small>${q === 'maj' ? 'Majeur' : 'Mineur'} · ${t}</small></button>`; }).join('');
   const medals = (me.eqs || []).map((id, i) => { const S = SPELLS[id], c = EQ_COST(id);
-    const why = !comps.length ? 'Recrute ton compagnon pour l\'équiper.' : !comps.some(m => (m.eq || []).length < 3 && !(m.eq || []).includes(id)) ? 'Ton compagnon porte déjà cet équipement ou trois équipements.' : (me.ck || 0) < c ? `Il te faut ${c} chakra.` : '';
+    const why = !comps.length ? 'Recrute ton compagnon pour l\'équiper.' : !comps.some(m => (m.eq || []).length < eqSlots(m) && !(m.eq || []).includes(id)) ? 'Ton compagnon porte déjà cet équipement, ou n\'a plus d\'emplacement libre.' : (me.ck || 0) < c ? `Il te faut ${c} chakra.` : '';
     return `<button class="eqm" data-act="equip" data-i="${i}" data-sp="${id}" data-why="${esc('Équiper coûte ' + c + ' chakra.' + (why ? ' ' + why : ''))}" ${canAct && !why ? '' : 'aria-disabled="true"'} aria-label="Équiper ${esc(S.n)} pour ${c} chakra"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="eqc${i}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#eqc${i})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span class="ch-c">${c}</span></button>`; }).join('');
   return `<section class="train" aria-label="Entraînement"><b class="tr-h">Entraînement</b>
-    <div class="tr-row">${chests || '<small class="tr-e">Les coffres gagnés après chaque combat arrivent ici.</small>'}</div>
-    <div class="tr-row med">${medals || '<small class="tr-e">Ouvre un coffre : ses équipements se rangent ici.</small>'}</div></section>`;
+    <div class="tr-row med">${medals || '<small class="tr-e">Les équipements des coffres de fin de combat se rangent ici.</small>'}</div></section>`;
 }
 // la jauge de chakra (univers des Cinq Nations) : un grand orbe bleu et dix perles
 function ckGauge(d, me) {
@@ -712,7 +721,7 @@ function doAct(act, btn) {
     case 'skip': if (V.fight) { clearTimeout(V.fightT); if (V.fight.lunge) { try { V.fight.lunge.cancel(); } catch (e) {} V.fight.lunge = null; } V.fi = V.fight.r.frames.length - 1; V.fight.done = true; render(); fxEnd(); } break;
     case 'buy': if (s) { sendAct({ t:'buy', i:s.i }); V.sel = null; } break;
     case 'buysp': sendAct({ t:'buysp' }); V.sel = null; break;
-    case 'chest': V.chestRev = { eq:(V.me && V.me.eqs || []).slice(), hd:(V.me && V.me.hd || []).map(x => x.u), at:Date.now() }; fxChest(btn); sendAct({ t:'chest', k:btn.dataset.k }); break;
+    case 'chest': V.chestRev = { eq:(V.me && V.me.eqs || []).slice(), hd:(V.me && V.me.hd || []).map(x => x.u), at:Date.now() }; fxChest(btn); { const o = btn.closest('.bigchest'); if (o) o.remove(); } sendAct({ t:'chest' }); break;
     case 'equip': if (btn.getAttribute('aria-disabled') === 'true') { toast(btn.dataset.why || ''); break; } sendAct({ t:'equip', i:+btn.dataset.i }); hidePeek(); break;
     case 'cast': if (s) { sendAct({ t:'cast', i:s.i }); V.sel = null; } break;
     case 'aim': if (s) { V.aim = s.i; V.sel = null; render(); } break;

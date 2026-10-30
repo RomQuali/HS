@@ -560,8 +560,8 @@ function runRecruit0(G, p, m, e, ctx) {
     case 'bc_buff_rand': { const o = others(); if (o.length) buff(pickR(o), A, Hh); break; }
     case 'bc_summon': for (let i = 0; i < e.n; i++) recruitSummon(p, e.card, m.g, m); break;
     case 'bc_gold': p.g += e.n * k; break;
-    case 'bc_chakra': case 'eot_chakra': p.ck = Math.min(CK_MAX, (p.ck || 0) + e.n * k); break;
-    case 'cast_ck': p.ck = Math.min(CK_MAX, (p.ck || 0) + e.n * k); break;
+    case 'bc_chakra': case 'eot_chakra': p.ck = Math.min(ckMax(p), (p.ck || 0) + e.n * k); break;
+    case 'cast_ck': p.ck = Math.min(ckMax(p), (p.ck || 0) + e.n * k); break;
     case 'eot_ck_spend': if ((p.ck || 0) >= e.n) { p.ck -= e.n; buff(m, A, Hh); } break;
     case 'cast_memo': if (p.lastCast && SPELLS[p.lastCast] && SPELLS[p.lastCast].nin) { m.memo = p.lastCast; if (SPELLS[p.lastCast].el) m.el = SPELLS[p.lastCast].el; } break;
     case 'sot_memo': if (m.memo && SPELLS[m.memo]) for (let i = 0; i < k + (m.memo2 ? 1 : 0); i++) if (p.hd.length < 10) p.hd.push({ sp:m.memo, u:UID++ }); break;
@@ -821,6 +821,7 @@ function checkTriple(G, p) {
   }
 }
 const CK_MAX = 10;
+const ckMax = p => CK_MAX + ((p && p.ckx) || 0);
 // dans l'univers du chakra, les pouvoirs héroïques se paient en chakra
 const powPaid = G => !!(G && inMechAny(G, 'chakra'));
 const powPurse = (G, p) => powPaid(G) ? (p.ck || 0) : p.g;
@@ -849,10 +850,28 @@ const FUSIONS = {
   'feu+terre':{ n:'Lave', col:'#ff5a1a', fx:{ k:'soc_aoe', d:2 } },
   'eau+feu':{ n:'Vapeur', col:'#e8e2da', fx:{ k:'soc_kw', kw:'s' } },
   'foudre+terre':{ n:'Explosion', col:'#ffb04a', fx:{ k:'dr_dmg', d:5, n:2 } },
+  'feu+vent':{ n:'Fournaise', col:'#ff9a4a', fx:{ k:'soc_dmg', d:3, n:3 } },
+  'foudre+vent':{ n:'Tempête', col:'#c8f0ff', fx:{ k:'atk_zap', d:2, n:2 } },
+  'eau+foudre':{ n:'Pluie d\'orage', col:'#6a9ad8', fx:{ k:'soc_buff', a:2, h:2 } },
+  'feu+foudre':{ n:'Plasma', col:'#ff6ad8', fx:{ k:'atk_self', a:3, h:0 } },
+  'terre+vent':{ n:'Sable', col:'#d8b878', fx:{ k:'eot_buff_all', a:1, h:1 } },
+};
+// fusions à trois éléments : compagnon de niveau 4 ou plus
+const FUSIONS3 = {
+  'eau+terre+vent':{ n:'Forêt glaciaire', col:'#8fe0c8', fx:{ k:'eot_buff_all', a:2, h:3 } },
+  'feu+foudre+vent':{ n:'Ciel ardent', col:'#ffb0e0', fx:{ k:'soc_dmg', d:5, n:4 } },
+  'eau+feu+terre':{ n:'Volcan', col:'#ff4a2a', fx:{ k:'soc_aoe', d:4 } },
+  'eau+foudre+terre':{ n:'Cataclysme', col:'#8a9ad8', fx:{ k:'dr_dmg', d:8, n:3 } },
 };
 const fusionOf = (a, b) => a && b && a !== b ? FUSIONS[[a, b].sort().join('+')] || null : null;
+const fusion3Of = (a, b, c) => a && b && c && new Set([a, b, c]).size === 3 ? FUSIONS3[[a, b, c].sort().join('+')] || null : null;
+// niveaux d'entraînement du compagnon : expérience gagnée en lançant des techniques (+1) et en gagnant un combat (+2)
+const XP_LV = [0, 3, 7, 12, 18];
+const compLv = m => { let lv = 1; XP_LV.forEach((x, k) => { if ((m.xp || 0) >= x) lv = k + 1; }); return Math.min(5, lv); };
+const eqSlots = m => 3 + (compLv(m) >= 3 ? 1 : 0) + (compLv(m) >= 5 ? 1 : 0);
+function giveXp(m, n) { const before = compLv(m); m.xp = (m.xp || 0) + n; const after = compLv(m); for (let l = before + 1; l <= after; l++) buff(m, 2, 2); m.lv = after; }
 // affinité : une technique de l'élément du héros coûte 1 chakra de moins
-const ckCost = (p, S) => Math.max(0, (S.ck || 0) - (S.el && HEROES[p.hero] && HEROES[p.hero].clan === S.el ? 1 : 0));
+const ckCost = (p, S) => Math.max(0, (S.ck || 0) - (S.el && HEROES[p.hero] && HEROES[p.hero].clan === S.el ? 1 : 0) - (((typeof H !== 'undefined' && H.G && H.G.eveil) || p.ev) && S.nin && !S.forb ? 1 : 0));
 const CLAN_EL = { n_feu:'feu', n_vent:'vent', n_eau:'eau', n_foudre:'foudre', n_terre:'terre' };
 const isComp = m => !!(m && C[m.c] && C[m.c].comp);
 const compEl = m => m.el || CLAN_EL[CD(m.c).tr] || null;
@@ -902,10 +921,9 @@ const OPS = {
   },
   rdy(G, p) { p.rdy = !p.rdy; return true; },
   // entraînement : les coffres s'ouvrent gratuitement, les équipements se rangent comme des médailles
-  chest(G, p, a) {
-    const k = String(a.k || ''), m = /^(min|maj)([1-6])$/.exec(k); if (!m || !p.chests || !(p.chests[k] > 0)) return false;
-    if ((p.eqs || []).length >= EQS_MAX) return false;
-    const q = m[1], t = +m[2]; p.chests[k]--; if (!p.chests[k]) delete p.chests[k];
+  chest(G, p) {
+    const k = p.pendChest || '', m = /^(min|maj)([1-6])$/.exec(k); if (!m) return false;
+    const q = m[1], t = +m[2]; p.pendChest = null;
     p.eqs = p.eqs || [];
     chestLoot(q, t, p).forEach(id => { if (SPELLS[id] && SPELLS[id].eq) { if (p.eqs.length < EQS_MAX) p.eqs.push(id); } else if (p.hd.length < 10) p.hd.push({ sp:id, u:UID++ }); });
     return true;
@@ -914,7 +932,7 @@ const OPS = {
   equip(G, p, a) {
     const id = (p.eqs || [])[a.i]; if (!id || !SPELLS[id]) return false;
     const c = EQ_COST(id); if ((p.ck || 0) < c) return false;
-    const comp = p.bd.filter(isComp).find(m => (m.eq || []).length < 3 && !(m.eq || []).includes(id)); if (!comp) return false;
+    const comp = p.bd.filter(isComp).find(m => (m.eq || []).length < eqSlots(m) && !(m.eq || []).includes(id)); if (!comp) return false;
     p.ck -= c; p.eqs.splice(a.i, 1);
     withSrc('Entraînement · ' + SPELLS[id].n, () => applyEquip(comp, id));
     return true;
@@ -928,7 +946,7 @@ const OPS = {
 const pwPool = (p, w) => (p.bd || []).filter(m => !w.tb || tribe(m) === w.tb);
 function powCanW(p, w) {
   switch (w.k) {
-    case 'ck': return (p.ck || 0) < CK_MAX;
+    case 'ck': return (p.ck || 0) < ckMax(p);
     case 'tech': return (p.hd || []).length < 10;
     case 'buffr': case 'buffall': return pwPool(p, w).length > 0;
     case 'kw': return (p.bd || []).some(m => !has(m, w.kw));
@@ -940,7 +958,7 @@ function powCanW(p, w) {
 function powRun(G, p, w) {
   if (!powCanW(p, w)) return false;
   switch (w.k) {
-    case 'ck': p.ck = Math.min(CK_MAX, (p.ck || 0) + w.n); break;
+    case 'ck': p.ck = Math.min(ckMax(p), (p.ck || 0) + w.n); break;
     case 'tech': { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); break; }
     case 'buffr': buff(pickR(pwPool(p, w)), w.a, w.h); break;
     case 'buffall': pwPool(p, w).forEach(m => buff(m, w.a, w.h)); break;
@@ -1032,10 +1050,12 @@ function startRecruit() {
     trigBoard(G, p, 'sot');
     p.mkt = 0;
     if (inMechAny(G, 'ames') && (p.souls || 0) >= 3) { const k = Math.floor(p.souls / 3); p.souls -= k * 3; withSrc('Moisson d\'âmes', () => p.bd.forEach(m => { if (inMech(G, 'ames', m)) buff(m, k, k); })); }
-    if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; if (n) p.ck = Math.min(CK_MAX, (p.ck || 0) + n); }
+    if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; if (n) p.ck = Math.min(ckMax(p), (p.ck || 0) + n); }
     // un coffre après chaque combat : meilleur après une victoire, mineur après une égalité ou une défaite
-    if (inMechAny(G, 'chakra') && p.lastRes) { const k = (p.lastRes === 'win' ? 'maj' : 'min') + (p.t || 1); p.chests = p.chests || {}; p.chests[k] = (p.chests[k] || 0) + 1; }
-    { const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'pck') p.ck = Math.min(CK_MAX, (p.ck || 0) + w.n); if (w && w.k === 'ptech' && G.rd % 2 === 0 && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); } }
+    if (inMechAny(G, 'chakra') && p.lastRes) p.pendChest = (p.lastRes === 'win' ? 'maj' : 'min') + (p.t || 1);
+    // pureté : 5 serviteurs ou plus d'un même clan → +1 chakra
+    if (inMechAny(G, 'chakra')) { const n = {}; p.bd.forEach(m => { const t = CD(m.c).tr; if (CLAN_EL[t]) n[t] = (n[t] || 0) + 1; }); const pure = Object.keys(n).find(t => n[t] >= 5) || null; p.pure = pure; if (pure) p.ck = Math.min(ckMax(p), (p.ck || 0) + 1); }
+    { const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'pck') p.ck = Math.min(ckMax(p), (p.ck || 0) + w.n); if (w && w.k === 'ptech' && G.rd % 2 === 0 && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); } }
     p.bd.forEach(m => { delete m.tmp; }); p.tma = null;
   }
   G.ph = 'recruit';
@@ -1048,6 +1068,7 @@ function startRecruit() {
 function endRecruit() {
   const G = H.G;
   for (const p of G.ps) if (p.al) {
+    if (p.pendChest) OPS.chest(G, p);
     const neot = auraTimes(p.bd, 'aura_eot');
     for (const m of p.bd.slice()) for (let r = 0; r < neot; r++) fxOf(m, 'eot').forEach(e => runRecruit(G, p, m, e));
     if (p.hero === 'maelle' && p.bd[0]) withSrc('Passif de Maëlle', () => buff(p.bd[0], 1, 1));
@@ -1076,6 +1097,7 @@ function endRecruit() {
     if (r.w === 1) G.pend.push({ pid:p.pid, d });
     if (r.w === 0 && !ghost) G.pend.push({ pid:q.pid, d });
     p.res = { o:qn, r:r.w === 0 ? 'win' : r.w === 1 ? 'loss' : 'draw', d };
+    if (r.w === 0) p.bd.filter(isComp).forEach(m => giveXp(m, 2)); if (!ghost && r.w === 1) q.bd.filter(isComp).forEach(m => giveXp(m, 2));
     if (!ghost) q.res = { o:p.n, r:r.w === 1 ? 'win' : r.w === 0 ? 'loss' : 'draw', d };
     const base = { rd:G.rd, a:pb.map(fullM), b:qcb.map(fullM), seed, ta:p.t, tb:qt, cap, ha:p.hero, hb:ghost ? ghost.hero : q.hero, fire, mx:G.mx || {} };
     if (p.human && !p.bot) { deliverFight(p, Object.assign({ me:0, on:qn }, base)); maxFrames = Math.max(maxFrames, r.frames.length); }
@@ -1102,7 +1124,7 @@ function elementDuel(a, b) {
 function chakraSteal(p, q, pb, qb, r) {
   const n = (b, k) => b.reduce((t, m) => t + (CD(m.c).fxAll || []).filter(e => e.k === k).reduce((u, e) => u + e.n * (m.g ? 2 : 1), 0), 0);
   const dead = (side, k) => r.dead[side].reduce((t, c) => t + ((C[c] && C[c].fxAll) || []).filter(e => e.k === k).reduce((u, e) => u + e.n, 0), 0);
-  const take = (from, to, x) => { const v = Math.min(from.ck || 0, x); if (v > 0) { from.ck -= v; to.ck = Math.min(CK_MAX, (to.ck || 0) + v); } };
+  const take = (from, to, x) => { const v = Math.min(from.ck || 0, x); if (v > 0) { from.ck -= v; to.ck = Math.min(ckMax(to), (to.ck || 0) + v); } };
   take(q, p, n(pb, 'soc_steal') + dead(0, 'dr_steal')); take(p, q, n(qb, 'soc_steal') + dead(1, 'dr_steal'));
 }
 function lawsAfterFight(G, p, r, side) {
@@ -1116,6 +1138,7 @@ function endCombat() {
   const dead = G.ps.filter(p => p.al && p.hp <= 0).sort((a, b) => b.hp - a.hp);
   let alive = G.ps.filter(p => p.al && p.hp > 0).length;
   dead.forEach((p, k) => { p.al = false; p.place = alive + 1 + k; p.sh.forEach(m => toPool(G, m)); p.bd.forEach(m => toPool(G, m)); p.sh = []; });
+  if (inMechAny(G, 'chakra') && !G.eveil && alive <= 4) { G.eveil = G.rd + 1; }
   if (alive <= 1) {
     const w = G.ps.find(p => p.al); if (w) w.place = 1;
     if (!w && dead[0]) dead[0].place = 1;
@@ -1140,17 +1163,17 @@ function hostTick() {
 }
 
 /* ---------- diffusion ---------- */
-const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u }; const o = { c:m.c, a:m.a, h:m.h }; if (m.memo) o.memo = m.memo; if (m.el) o.el = m.el; if (m.fu) o.fu = m.fu; if (m.eq && m.eq.length) o.eq = m.eq; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; if (m.bn) o.bn = m.bn; return o; };
+const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u }; const o = { c:m.c, a:m.a, h:m.h }; if (m.memo) o.memo = m.memo; if (m.el) o.el = m.el; if (m.fu) o.fu = m.fu; if (m.xp) o.xp = m.xp; if (m.eq && m.eq.length) o.eq = m.eq; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; if (m.bn) o.bn = m.bn; return o; };
 const fullM = m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g || 0, f:m.f || '', u:m.u }; if (m.x) o.x = m.x; return o; };
 function pubData() {
   const G = H.G;
   if (!G) return { ph:'lobby', code:H.code, cv:CAT_REV, us:(V.univSel || []).slice(), pl:H.roster.map(r => ({ n:r.n, pe:r.peer })), last:H.last || null };
-  return { ph:G.ph, rd:G.rd, rem:Math.max(0, G.end - Date.now()), code:H.code, cv:CAT_REV, trs:G.trs, ban:G.ban, univ:G.univ, laws:G.laws || [], mhp:(+RU().hp || 40) + 10,
+  return { ph:G.ph, rd:G.rd, rem:Math.max(0, G.end - Date.now()), code:H.code, cv:CAT_REV, trs:G.trs, ban:G.ban, univ:G.univ, laws:G.laws || [], ev:G.eveil || 0, mhp:(+RU().hp || 40) + 10,
     pl:G.ps.map(p => ({ pid:p.pid, n:p.n, hp:p.hp, t:p.t, ai:!p.human, bot:p.bot, al:p.al, pl:p.place, r:p.rdy, h:p.hero, pe:p.peer, nb:p.bd.length })) };
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, ck:p.ck || 0, ckPay:powPaid(H.G) ? 1 : 0, chests:p.chests || null, eqs:p.eqs || [], mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, pure:p.pure || null, eqs:p.eqs || [], mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;

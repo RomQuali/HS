@@ -1897,6 +1897,19 @@ body.cs-entering #scene *{animation-play-state:running!important}
 @keyframes chrevCard{from{opacity:0;transform:scale(.3) rotate(-10deg)}}
 @media (max-height:540px){ .chrev-c{--hw:min(150px,30vw)} .chrev-t{font-size:24px} }
 .pcost.ck{color:#fff;background:radial-gradient(circle at 38% 32%,#bfe8ff,#2a6ad8 60%,#0c2a6a);box-shadow:0 0 0 2px #0c1a3a,0 0 0 3.5px #bfe8ff}
+/* grand coffre de fin de combat */
+.bigchest{position:fixed;inset:0;z-index:70;display:grid;place-items:center;background:radial-gradient(circle,rgba(10,6,4,.35),rgba(10,6,4,.8));animation:chrevIn .3s ease-out}
+.bc-in{display:grid;justify-items:center;gap:12px}
+.bc-t{font-family:var(--f-disp);font-size:34px;color:#ffd86a;text-shadow:0 3px 0 #120a06}
+.bigchest.min .bc-t{color:#bfe8ff}
+.bc-box{width:240px;height:210px;padding:0;border:0;background:none;cursor:pointer;animation:bcbob 1.6s ease-in-out infinite}
+.bc-box svg{width:100%;height:100%;filter:drop-shadow(0 0 24px rgba(255,210,90,.75)) drop-shadow(0 14px 18px rgba(0,0,0,.6))}
+.bigchest.min .bc-box svg{filter:drop-shadow(0 0 24px rgba(110,200,255,.8)) drop-shadow(0 14px 18px rgba(0,0,0,.6))}
+.bc-box:hover{transform:scale(1.05)}
+.bc-s{font-family:var(--f-label);font-size:15px;color:#fff3c0}
+@keyframes bcbob{50%{transform:translateY(-8px) rotate(-2deg)}}
+.eveil{padding:3px 10px;border-radius:99px;font-family:var(--f-label);font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#120a06;background:linear-gradient(90deg,#ff7a2a,#6fd8a0,#ffd23a,#c8a878,#4ab0e8);box-shadow:0 0 12px rgba(255,220,140,.6)}
+@media (max-height:540px){ .bc-box{width:150px;height:130px} .bc-t{font-size:22px} }
 </style>
 </head><body>
 
@@ -2586,8 +2599,8 @@ function runRecruit0(G, p, m, e, ctx) {
     case 'bc_buff_rand': { const o = others(); if (o.length) buff(pickR(o), A, Hh); break; }
     case 'bc_summon': for (let i = 0; i < e.n; i++) recruitSummon(p, e.card, m.g, m); break;
     case 'bc_gold': p.g += e.n * k; break;
-    case 'bc_chakra': case 'eot_chakra': p.ck = Math.min(CK_MAX, (p.ck || 0) + e.n * k); break;
-    case 'cast_ck': p.ck = Math.min(CK_MAX, (p.ck || 0) + e.n * k); break;
+    case 'bc_chakra': case 'eot_chakra': p.ck = Math.min(ckMax(p), (p.ck || 0) + e.n * k); break;
+    case 'cast_ck': p.ck = Math.min(ckMax(p), (p.ck || 0) + e.n * k); break;
     case 'eot_ck_spend': if ((p.ck || 0) >= e.n) { p.ck -= e.n; buff(m, A, Hh); } break;
     case 'cast_memo': if (p.lastCast && SPELLS[p.lastCast] && SPELLS[p.lastCast].nin) { m.memo = p.lastCast; if (SPELLS[p.lastCast].el) m.el = SPELLS[p.lastCast].el; } break;
     case 'sot_memo': if (m.memo && SPELLS[m.memo]) for (let i = 0; i < k + (m.memo2 ? 1 : 0); i++) if (p.hd.length < 10) p.hd.push({ sp:m.memo, u:UID++ }); break;
@@ -2847,6 +2860,7 @@ function checkTriple(G, p) {
   }
 }
 const CK_MAX = 10;
+const ckMax = p => CK_MAX + ((p && p.ckx) || 0);
 // dans l'univers du chakra, les pouvoirs héroïques se paient en chakra
 const powPaid = G => !!(G && inMechAny(G, 'chakra'));
 const powPurse = (G, p) => powPaid(G) ? (p.ck || 0) : p.g;
@@ -2875,10 +2889,28 @@ const FUSIONS = {
   'feu+terre':{ n:'Lave', col:'#ff5a1a', fx:{ k:'soc_aoe', d:2 } },
   'eau+feu':{ n:'Vapeur', col:'#e8e2da', fx:{ k:'soc_kw', kw:'s' } },
   'foudre+terre':{ n:'Explosion', col:'#ffb04a', fx:{ k:'dr_dmg', d:5, n:2 } },
+  'feu+vent':{ n:'Fournaise', col:'#ff9a4a', fx:{ k:'soc_dmg', d:3, n:3 } },
+  'foudre+vent':{ n:'Tempête', col:'#c8f0ff', fx:{ k:'atk_zap', d:2, n:2 } },
+  'eau+foudre':{ n:'Pluie d\'orage', col:'#6a9ad8', fx:{ k:'soc_buff', a:2, h:2 } },
+  'feu+foudre':{ n:'Plasma', col:'#ff6ad8', fx:{ k:'atk_self', a:3, h:0 } },
+  'terre+vent':{ n:'Sable', col:'#d8b878', fx:{ k:'eot_buff_all', a:1, h:1 } },
+};
+// fusions à trois éléments : compagnon de niveau 4 ou plus
+const FUSIONS3 = {
+  'eau+terre+vent':{ n:'Forêt glaciaire', col:'#8fe0c8', fx:{ k:'eot_buff_all', a:2, h:3 } },
+  'feu+foudre+vent':{ n:'Ciel ardent', col:'#ffb0e0', fx:{ k:'soc_dmg', d:5, n:4 } },
+  'eau+feu+terre':{ n:'Volcan', col:'#ff4a2a', fx:{ k:'soc_aoe', d:4 } },
+  'eau+foudre+terre':{ n:'Cataclysme', col:'#8a9ad8', fx:{ k:'dr_dmg', d:8, n:3 } },
 };
 const fusionOf = (a, b) => a && b && a !== b ? FUSIONS[[a, b].sort().join('+')] || null : null;
+const fusion3Of = (a, b, c) => a && b && c && new Set([a, b, c]).size === 3 ? FUSIONS3[[a, b, c].sort().join('+')] || null : null;
+// niveaux d'entraînement du compagnon : expérience gagnée en lançant des techniques (+1) et en gagnant un combat (+2)
+const XP_LV = [0, 3, 7, 12, 18];
+const compLv = m => { let lv = 1; XP_LV.forEach((x, k) => { if ((m.xp || 0) >= x) lv = k + 1; }); return Math.min(5, lv); };
+const eqSlots = m => 3 + (compLv(m) >= 3 ? 1 : 0) + (compLv(m) >= 5 ? 1 : 0);
+function giveXp(m, n) { const before = compLv(m); m.xp = (m.xp || 0) + n; const after = compLv(m); for (let l = before + 1; l <= after; l++) buff(m, 2, 2); m.lv = after; }
 // affinité : une technique de l'élément du héros coûte 1 chakra de moins
-const ckCost = (p, S) => Math.max(0, (S.ck || 0) - (S.el && HEROES[p.hero] && HEROES[p.hero].clan === S.el ? 1 : 0));
+const ckCost = (p, S) => Math.max(0, (S.ck || 0) - (S.el && HEROES[p.hero] && HEROES[p.hero].clan === S.el ? 1 : 0) - (((typeof H !== 'undefined' && H.G && H.G.eveil) || p.ev) && S.nin && !S.forb ? 1 : 0));
 const CLAN_EL = { n_feu:'feu', n_vent:'vent', n_eau:'eau', n_foudre:'foudre', n_terre:'terre' };
 const isComp = m => !!(m && C[m.c] && C[m.c].comp);
 const compEl = m => m.el || CLAN_EL[CD(m.c).tr] || null;
@@ -2928,10 +2960,9 @@ const OPS = {
   },
   rdy(G, p) { p.rdy = !p.rdy; return true; },
   // entraînement : les coffres s'ouvrent gratuitement, les équipements se rangent comme des médailles
-  chest(G, p, a) {
-    const k = String(a.k || ''), m = /^(min|maj)([1-6])$/.exec(k); if (!m || !p.chests || !(p.chests[k] > 0)) return false;
-    if ((p.eqs || []).length >= EQS_MAX) return false;
-    const q = m[1], t = +m[2]; p.chests[k]--; if (!p.chests[k]) delete p.chests[k];
+  chest(G, p) {
+    const k = p.pendChest || '', m = /^(min|maj)([1-6])$/.exec(k); if (!m) return false;
+    const q = m[1], t = +m[2]; p.pendChest = null;
     p.eqs = p.eqs || [];
     chestLoot(q, t, p).forEach(id => { if (SPELLS[id] && SPELLS[id].eq) { if (p.eqs.length < EQS_MAX) p.eqs.push(id); } else if (p.hd.length < 10) p.hd.push({ sp:id, u:UID++ }); });
     return true;
@@ -2940,7 +2971,7 @@ const OPS = {
   equip(G, p, a) {
     const id = (p.eqs || [])[a.i]; if (!id || !SPELLS[id]) return false;
     const c = EQ_COST(id); if ((p.ck || 0) < c) return false;
-    const comp = p.bd.filter(isComp).find(m => (m.eq || []).length < 3 && !(m.eq || []).includes(id)); if (!comp) return false;
+    const comp = p.bd.filter(isComp).find(m => (m.eq || []).length < eqSlots(m) && !(m.eq || []).includes(id)); if (!comp) return false;
     p.ck -= c; p.eqs.splice(a.i, 1);
     withSrc('Entraînement · ' + SPELLS[id].n, () => applyEquip(comp, id));
     return true;
@@ -2954,7 +2985,7 @@ const OPS = {
 const pwPool = (p, w) => (p.bd || []).filter(m => !w.tb || tribe(m) === w.tb);
 function powCanW(p, w) {
   switch (w.k) {
-    case 'ck': return (p.ck || 0) < CK_MAX;
+    case 'ck': return (p.ck || 0) < ckMax(p);
     case 'tech': return (p.hd || []).length < 10;
     case 'buffr': case 'buffall': return pwPool(p, w).length > 0;
     case 'kw': return (p.bd || []).some(m => !has(m, w.kw));
@@ -2966,7 +2997,7 @@ function powCanW(p, w) {
 function powRun(G, p, w) {
   if (!powCanW(p, w)) return false;
   switch (w.k) {
-    case 'ck': p.ck = Math.min(CK_MAX, (p.ck || 0) + w.n); break;
+    case 'ck': p.ck = Math.min(ckMax(p), (p.ck || 0) + w.n); break;
     case 'tech': { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); break; }
     case 'buffr': buff(pickR(pwPool(p, w)), w.a, w.h); break;
     case 'buffall': pwPool(p, w).forEach(m => buff(m, w.a, w.h)); break;
@@ -3058,10 +3089,12 @@ function startRecruit() {
     trigBoard(G, p, 'sot');
     p.mkt = 0;
     if (inMechAny(G, 'ames') && (p.souls || 0) >= 3) { const k = Math.floor(p.souls / 3); p.souls -= k * 3; withSrc('Moisson d\'âmes', () => p.bd.forEach(m => { if (inMech(G, 'ames', m)) buff(m, k, k); })); }
-    if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; if (n) p.ck = Math.min(CK_MAX, (p.ck || 0) + n); }
+    if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; if (n) p.ck = Math.min(ckMax(p), (p.ck || 0) + n); }
     // un coffre après chaque combat : meilleur après une victoire, mineur après une égalité ou une défaite
-    if (inMechAny(G, 'chakra') && p.lastRes) { const k = (p.lastRes === 'win' ? 'maj' : 'min') + (p.t || 1); p.chests = p.chests || {}; p.chests[k] = (p.chests[k] || 0) + 1; }
-    { const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'pck') p.ck = Math.min(CK_MAX, (p.ck || 0) + w.n); if (w && w.k === 'ptech' && G.rd % 2 === 0 && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); } }
+    if (inMechAny(G, 'chakra') && p.lastRes) p.pendChest = (p.lastRes === 'win' ? 'maj' : 'min') + (p.t || 1);
+    // pureté : 5 serviteurs ou plus d'un même clan → +1 chakra
+    if (inMechAny(G, 'chakra')) { const n = {}; p.bd.forEach(m => { const t = CD(m.c).tr; if (CLAN_EL[t]) n[t] = (n[t] || 0) + 1; }); const pure = Object.keys(n).find(t => n[t] >= 5) || null; p.pure = pure; if (pure) p.ck = Math.min(ckMax(p), (p.ck || 0) + 1); }
+    { const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'pck') p.ck = Math.min(ckMax(p), (p.ck || 0) + w.n); if (w && w.k === 'ptech' && G.rd % 2 === 0 && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); } }
     p.bd.forEach(m => { delete m.tmp; }); p.tma = null;
   }
   G.ph = 'recruit';
@@ -3074,6 +3107,7 @@ function startRecruit() {
 function endRecruit() {
   const G = H.G;
   for (const p of G.ps) if (p.al) {
+    if (p.pendChest) OPS.chest(G, p);
     const neot = auraTimes(p.bd, 'aura_eot');
     for (const m of p.bd.slice()) for (let r = 0; r < neot; r++) fxOf(m, 'eot').forEach(e => runRecruit(G, p, m, e));
     if (p.hero === 'maelle' && p.bd[0]) withSrc('Passif de Maëlle', () => buff(p.bd[0], 1, 1));
@@ -3102,6 +3136,7 @@ function endRecruit() {
     if (r.w === 1) G.pend.push({ pid:p.pid, d });
     if (r.w === 0 && !ghost) G.pend.push({ pid:q.pid, d });
     p.res = { o:qn, r:r.w === 0 ? 'win' : r.w === 1 ? 'loss' : 'draw', d };
+    if (r.w === 0) p.bd.filter(isComp).forEach(m => giveXp(m, 2)); if (!ghost && r.w === 1) q.bd.filter(isComp).forEach(m => giveXp(m, 2));
     if (!ghost) q.res = { o:p.n, r:r.w === 1 ? 'win' : r.w === 0 ? 'loss' : 'draw', d };
     const base = { rd:G.rd, a:pb.map(fullM), b:qcb.map(fullM), seed, ta:p.t, tb:qt, cap, ha:p.hero, hb:ghost ? ghost.hero : q.hero, fire, mx:G.mx || {} };
     if (p.human && !p.bot) { deliverFight(p, Object.assign({ me:0, on:qn }, base)); maxFrames = Math.max(maxFrames, r.frames.length); }
@@ -3128,7 +3163,7 @@ function elementDuel(a, b) {
 function chakraSteal(p, q, pb, qb, r) {
   const n = (b, k) => b.reduce((t, m) => t + (CD(m.c).fxAll || []).filter(e => e.k === k).reduce((u, e) => u + e.n * (m.g ? 2 : 1), 0), 0);
   const dead = (side, k) => r.dead[side].reduce((t, c) => t + ((C[c] && C[c].fxAll) || []).filter(e => e.k === k).reduce((u, e) => u + e.n, 0), 0);
-  const take = (from, to, x) => { const v = Math.min(from.ck || 0, x); if (v > 0) { from.ck -= v; to.ck = Math.min(CK_MAX, (to.ck || 0) + v); } };
+  const take = (from, to, x) => { const v = Math.min(from.ck || 0, x); if (v > 0) { from.ck -= v; to.ck = Math.min(ckMax(to), (to.ck || 0) + v); } };
   take(q, p, n(pb, 'soc_steal') + dead(0, 'dr_steal')); take(p, q, n(qb, 'soc_steal') + dead(1, 'dr_steal'));
 }
 function lawsAfterFight(G, p, r, side) {
@@ -3142,6 +3177,7 @@ function endCombat() {
   const dead = G.ps.filter(p => p.al && p.hp <= 0).sort((a, b) => b.hp - a.hp);
   let alive = G.ps.filter(p => p.al && p.hp > 0).length;
   dead.forEach((p, k) => { p.al = false; p.place = alive + 1 + k; p.sh.forEach(m => toPool(G, m)); p.bd.forEach(m => toPool(G, m)); p.sh = []; });
+  if (inMechAny(G, 'chakra') && !G.eveil && alive <= 4) { G.eveil = G.rd + 1; }
   if (alive <= 1) {
     const w = G.ps.find(p => p.al); if (w) w.place = 1;
     if (!w && dead[0]) dead[0].place = 1;
@@ -3166,17 +3202,17 @@ function hostTick() {
 }
 
 /* ---------- diffusion ---------- */
-const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u }; const o = { c:m.c, a:m.a, h:m.h }; if (m.memo) o.memo = m.memo; if (m.el) o.el = m.el; if (m.fu) o.fu = m.fu; if (m.eq && m.eq.length) o.eq = m.eq; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; if (m.bn) o.bn = m.bn; return o; };
+const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u }; const o = { c:m.c, a:m.a, h:m.h }; if (m.memo) o.memo = m.memo; if (m.el) o.el = m.el; if (m.fu) o.fu = m.fu; if (m.xp) o.xp = m.xp; if (m.eq && m.eq.length) o.eq = m.eq; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; if (m.bn) o.bn = m.bn; return o; };
 const fullM = m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g || 0, f:m.f || '', u:m.u }; if (m.x) o.x = m.x; return o; };
 function pubData() {
   const G = H.G;
   if (!G) return { ph:'lobby', code:H.code, cv:CAT_REV, us:(V.univSel || []).slice(), pl:H.roster.map(r => ({ n:r.n, pe:r.peer })), last:H.last || null };
-  return { ph:G.ph, rd:G.rd, rem:Math.max(0, G.end - Date.now()), code:H.code, cv:CAT_REV, trs:G.trs, ban:G.ban, univ:G.univ, laws:G.laws || [], mhp:(+RU().hp || 40) + 10,
+  return { ph:G.ph, rd:G.rd, rem:Math.max(0, G.end - Date.now()), code:H.code, cv:CAT_REV, trs:G.trs, ban:G.ban, univ:G.univ, laws:G.laws || [], ev:G.eveil || 0, mhp:(+RU().hp || 40) + 10,
     pl:G.ps.map(p => ({ pid:p.pid, n:p.n, hp:p.hp, t:p.t, ai:!p.human, bot:p.bot, al:p.al, pl:p.place, r:p.rdy, h:p.hero, pe:p.peer, nb:p.bd.length })) };
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, ck:p.ck || 0, ckPay:powPaid(H.G) ? 1 : 0, chests:p.chests || null, eqs:p.eqs || [], mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, pure:p.pure || null, eqs:p.eqs || [], mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;
@@ -5548,6 +5584,10 @@ const SPELLS = {
   nj_invoc:{ el:'terre', n:'Invocation', t:4, c:3, ck:4, nin:1, ty:'nin', tx:'Invoque sur ton plateau un serviteur aléatoire de ton niveau de taverne.' },
   nj_sceau:{ el:'foudre', n:'Sceau de puissance', t:5, c:4, ck:5, nin:1, ty:'nin', tg:1, tx:'Donne +4/+4 et Renaissance à un de tes serviteurs.' },
   nj_deluge:{ el:'feu', n:'Déluge élémentaire', t:6, c:5, ck:7, nin:1, ty:'nin', tx:'Prochain combat : tous tes serviteurs gagnent +4/+4 et 4 dégâts frappent l\'ennemi au début du combat.' },
+  // ----- techniques interdites : seulement après l'Éveil des clans -----
+  nj_x_cinq:{ el:'feu', n:'Tempête des cinq éléments', t:5, c:5, ck:9, nin:1, forb:1, ty:'nin', tx:'Technique interdite. Prochain combat : tous tes serviteurs gagnent +6/+6 et 6 dégâts frappent l\'ennemi au début du combat.' },
+  nj_x_sceau:{ el:'terre', n:'Sceau inversé', t:5, c:4, ck:8, nin:1, forb:1, ty:'nin', tg:1, tx:'Technique interdite. Le serviteur ciblé gagne +10/+10 ; un autre de tes serviteurs aléatoire est détruit.' },
+  nj_x_eveil:{ el:'eau', n:'Éveil intérieur', t:5, c:4, ck:7, nin:1, forb:1, ty:'nin', tx:'Technique interdite. Ton compagnon gagne 2 niveaux d\'entraînement.' },
   // ----- équipements (pour le compagnon) et coffres (ouverts au chakra) -----
   eq_lame:{ n:'Lame de chakra', t:1, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : +4 attaque.' },
   eq_armure:{ n:'Armure de mailles', t:1, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : +6 vie et Provocation.' },
@@ -5561,7 +5601,7 @@ const SPELLS = {
   cf_or:{ n:'Coffre d\'or', t:1, c:0, ck:6, item:1, ty:'cof', tx:'Reçu après une victoire avec une taverne de niveau 4 ou plus. Ouvre-le avec 6 chakra : deux équipements rares.' },
 };
 const SPELL_IDS = Object.keys(SPELLS);
-function drawSpell(t) { const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra'); const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !!SPELLS[id].nin === !!nin); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
+function drawSpell(t) { const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra'); const ev = typeof H !== 'undefined' && H.G && H.G.eveil; const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !!SPELLS[id].nin === !!nin && (!SPELLS[id].forb || ev)); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
 
 // pourquoi un sort ne peut pas être lancé (null = il peut)
 function spellBlock(p, id, tgt) {
@@ -5569,8 +5609,9 @@ function spellBlock(p, id, tgt) {
   if (S.ck && (p.ck || 0) < ckCost(p, S)) return `Il te faut ${ckCost(p, S)} chakra pour lancer cette technique (tu en as ${p.ck || 0}).`;
   if (S.tg && !tgt) return 'Choisis un de tes serviteurs.';
   if ((id === 'nj_doubles' || id === 'nj_invoc') && p.bd.length >= 7) return 'Ton plateau est plein.';
+  if (id === 'nj_x_eveil' && !p.bd.some(isComp)) return 'Ton compagnon doit être sur le plateau.';
   if (S.eq && !(C[tgt.c] && C[tgt.c].comp)) return 'Un équipement se pose sur ton compagnon.';
-  if (S.eq && (tgt.eq || []).length >= 3) return 'Ton compagnon porte déjà trois équipements.';
+
   if (S.eq && (tgt.eq || []).includes(id)) return 'Ton compagnon porte déjà cet équipement.';
   if (id.startsWith('cf_') && p.hd.length > 10) return 'Ta main est pleine.';
   if (id === 'nj_rafale' && !p.bd.length) return 'Tu n\'as aucun serviteur.';
@@ -5656,11 +5697,19 @@ function castSpell0(G, p, hi, tg) {
       else p.hd.push({ sp:pickR(all), u:UID++ });
       break;
     }
+    case 'nj_x_cinq': p.tma = { a:((p.tma && p.tma.a) || 0) + 6, h:((p.tma && p.tma.h) || 0) + 6 }; p.njf = (p.njf || 0) + 6; break;
+    case 'nj_x_sceau': { buff(tgt, 10, 10); const o = p.bd.filter(x => x !== tgt); if (o.length) { const v = pickR(o); p.bd.splice(p.bd.indexOf(v), 1); toPool(G, v); } break; }
+    case 'nj_x_eveil': p.bd.filter(isComp).forEach(c => { const need = (XP_LV[Math.min(4, compLv(c) + 1)] || c.xp) - (c.xp || 0); giveXp(c, Math.max(0, need)); giveXp(c, Math.max(0, (XP_LV[Math.min(4, compLv(c))] || c.xp) - (c.xp || 0))); }); break;
     case 'sp_ascension': p.bd.forEach(x => { buff(x, 2, 2); addF(x, 's'); }); break;
   }
   if (S.eq) (tgt.eq = tgt.eq || []).push(id);
   // enchaînement : la technique lancée est l'élément que nourrit celui retenu par le compagnon
-  if (S.el) p.bd.filter(isComp).forEach(c => { const F = fusionOf(compEl(c), S.el); if (F) { c.x = (c.x || []).filter(e => !e.fusion); c.x.push(Object.assign({ src:'Fusion · ' + F.n, fusion:1 }, F.fx)); c.fu = F.n; } });
+  if (S.el) p.bd.filter(isComp).forEach(c => {
+    const F3 = compLv(c) >= 4 ? fusion3Of(c.el2, compEl(c), S.el) : null, F = F3 || fusionOf(compEl(c), S.el);
+    if (F) { c.x = (c.x || []).filter(e => !e.fusion); c.x.push(Object.assign({ src:'Fusion · ' + F.n, fusion:1 }, F.fx)); c.fu = F.n; }
+    c.el2 = compEl(c);
+  });
+  if (S.nin) p.bd.filter(isComp).forEach(c => giveXp(c, 1));
   if (S.el) p.bd.filter(isComp).forEach(c => { const e = compEl(c); if (e && EL_GEN[e] === S.el) { const x = (c.eq || []).includes('eq_talisman') ? 2 : 1; p.ck = Math.min(CK_MAX, (p.ck || 0) + 2 * x); buff(c, 2 * x, 2 * x); } });
   if (!S.item) trigBoard(G, p, 'cast');
   checkTriple(G, p);
@@ -5716,6 +5765,9 @@ function aiSpells(G, p) {
 const NJA = (col, inner) => () => softGlow(50, 52, 34, col, .35) + `<g transform="translate(50 54)">${inner}</g>` + [[-26, -30], [28, -26], [-30, 26], [30, 28]].map(([x, y]) => Ci(50 + x, 54 + y, 1.6, '#fff', 'opacity=".6"')).join('');
 const HANDS = `<path d="M-9 14 L-9 -6 Q-9 -14 -3 -16 L-1 -2 M9 14 L9 -6 Q9 -14 3 -16 L1 -2" fill="#f1c7a0" ${so(1.8)}/><path d="M-3 -16 Q0 -20 3 -16 L1 -2 L-1 -2 Z" fill="#f1c7a0" ${so(1.6)}/>`;
 const SPART = {
+  nj_x_cinq: NJA('#ffffff', ['#ff7a2a', '#6fd8a0', '#ffd23a', '#c8a878', '#4ab0e8'].map((c, k) => { const a = (-90 + k * 72) * Math.PI / 180; return `<circle cx="${(Math.cos(a) * 18).toFixed(1)}" cy="${(Math.sin(a) * 18).toFixed(1)}" r="7" fill="${c}" ${so(1.4)}/>`; }).join('') + `<circle r="7" fill="#2a1a3a" ${so(1.6)}/><path d="M-26 0 H26 M0 -26 V26" stroke="#a8322a" stroke-width="2.4" opacity=".8"/>`),
+  nj_x_sceau: NJA('#ff6a6a', `<rect x="-18" y="-24" width="36" height="46" rx="3" fill="#2a1a1a" ${so(2)}/><circle cy="-2" r="11" fill="none" stroke="#ff4a4a" stroke-width="3"/><path d="M6 -2 H-6 M0 4 V-8 M-8 -10 L8 6" stroke="#ff4a4a" stroke-width="3"/>`),
+  nj_x_eveil: NJA('#bfe8ff', `<circle r="16" fill="none" stroke="#bfe8ff" stroke-width="3"/><circle r="8" fill="#6fd0ff" ${so(1.6)}/>` + [0, 60, 120, 180, 240, 300].map(a => `<path d="M0 -20 L0 -28" stroke="#e8fcff" stroke-width="3" stroke-linecap="round" transform="rotate(${a})"/>`).join('')),
   eq_lame: NJA('#bfe8ff', `<path d="M-20 20 L16 -16 L22 -22 L18 -12 L-16 24 Z" fill="#d8dce4" ${so(1.8)}/><path d="M-24 12 L-12 24" stroke="#5a3a1a" stroke-width="6" stroke-linecap="round"/><path d="M-4 4 L10 -10" stroke="#6fd0ff" stroke-width="2"/>`),
   eq_armure: NJA('#c8a878', `<path d="M-20 -18 L-8 -22 Q0 -14 8 -22 L20 -18 L18 20 L-18 20 Z" fill="#8a929c" ${so(2)}/>` + [-10, 0, 10].map(y => `<path d="M-16 ${y} H16" stroke="#5a626c" stroke-width="1.6" stroke-dasharray="3 2"/>`).join('')),
   eq_gants: NJA('#e8ffd0', `<path d="M-14 -10 L-14 16 L8 16 L10 -2 L4 -4 L4 -16 L-2 -16 L-2 -8 L-8 -8 L-8 -14 Z" fill="#a8744a" ${so(1.8)}/>` + Ln('M12 -14 Q22 -6 14 4', '#e8ffd0', 2.4)),
@@ -6349,6 +6401,7 @@ function tokenH(m, z, i, o = {}) {
     + (b.t && z === 'sh' ? `<g class="tflag"><path d="M37 -6 H63 V17 L50 12 L37 17 Z" fill="#4a4044" stroke="#0c0808" stroke-width="2"/><path d="M39.5 -4 H60.5 V14 L50 10 L39.5 14 Z" fill="none" stroke="#ffb050" stroke-width="1.2"/>${Array.from({ length:b.t }, (_, k) => { const row = k < 3 ? 0 : 1, n = row ? b.t - 3 : Math.min(3, b.t), j = row ? k - 3 : k; return `<text x="${f1(50 + (j - (n - 1) / 2) * 6.4)}" y="${row ? 9 : 2.6}" font-size="7" text-anchor="middle" fill="#ffd27a">★</text>`; }).join('')}</g>` : '')
     + ics.map(([ic, col, nm], k) => { const a = KW_ANG[k] * Math.PI / 180; return `<g class="kwi" transform="translate(${f1(50 + 51 * Math.sin(a))} ${f1(55 - 58 * Math.cos(a))})"><title>${nm}</title><circle r="8.4" fill="#1b120b" stroke="${col}" stroke-width="1.8"/><use href="#ic-${ic}" x="-5.6" y="-5.6" width="11.2" height="11.2" style="color:${col}"/></g>`; }).join('')
     + (isComp(m) && compEl(m) ? `<g class="elb"><title>Élément retenu : ${ELS[compEl(m)].n}${m.memo && SPELLS[m.memo] ? ' · technique : ' + SPELLS[m.memo].n : ''}${m.fu ? ' · fusion : ' + m.fu : ''}</title><circle cx="14" cy="12" r="10" fill="${ELS[compEl(m)].col}" stroke="#120a06" stroke-width="2.2"/><text x="14" y="12" dy=".36em" text-anchor="middle" font-size="10" font-weight="700" fill="#120a06">${ELS[compEl(m)].n[0]}</text></g>` : '')
+    + (isComp(m) ? `<g><title>Niveau d'entraînement ${compLv(m)} · ${m.xp || 0} expérience${compLv(m) < 5 ? ' (prochain niveau à ' + XP_LV[compLv(m)] + ')' : ''}</title><rect x="38" y="113" width="24" height="12" rx="6" fill="#2a6ad8" stroke="#120a06" stroke-width="1.8"/><text x="50" y="119" dy=".36em" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff">Nv ${compLv(m)}</text></g>` : '')
     + (m.eq && m.eq.length ? `<g><title>Équipements : ${m.eq.map(e => SPELLS[e] ? SPELLS[e].n : e).join(', ')}</title><rect x="72" y="4" width="22" height="14" rx="7" fill="#8a6a3a" stroke="#120a06" stroke-width="2"/><text x="83" y="11" dy=".36em" text-anchor="middle" font-size="9" font-weight="700" fill="#fff3c0">⚒${m.eq.length}</text></g>` : '')
     + `<use href="#gem-a" x="-1" y="90" width="34" height="34"/><text class="gt${up(m.a, b.a)}" x="16" y="107" dy=".36em">${m.a}</text>`
     + `<use href="#gem-h" x="67" y="88" width="34" height="34"/><text class="gt${up(m.h, b.h)}" x="84" y="108.6" dy=".36em">${m.h}</text></svg>`;
@@ -6621,7 +6674,7 @@ function gameH() {
       <span class="op-face">${faceH(playerSym(p))}<b class="op-hp">${p.al ? Math.max(0, p.hp) : p.pl + 'e'}</b><span class="op-t">${p.t}</span>${d.ph === 'recruit' && p.r && p.al ? '<span class="op-r">✓</span>' : ''}</span>
       <span class="op-n">${esc(p.n)}</span></li>`).join('');
   const myInfo = d.pl.find(p => p.pid === myPid), alive = !!(myInfo && myInfo.al);
-  const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span>${d.laws && d.laws.length && d.ph !== 'end' ? `<span class="hud-laws">${d.laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<span class="hl" data-hov="law" data-tip="${esc(M.n + ' : ' + M.d)}">${icon(M.ic)}</span>`; }).join('')}${d.laws.some(l => l.k === 'chakra') && V.me ? `<span class="souls chakra" data-tip="Chakra : il sert à lancer tes techniques ninja. Chaque serviteur des Cinq Nations en génère 1 au début de ton tour (10 au plus).">${icon('k_spark')}<b>${V.me.ck || 0}</b></span>` : ''}${V.me && V.me.souls ? `<span class="souls" data-tip="Âmes récoltées : toutes les 3 âmes, tes serviteurs des Ténèbres gagnent +1/+1 au début du tour.">${icon('skull')}<b>${V.me.souls}</b></span>` : ''}</span>` : ''}<span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerTxt()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm" data-act="leave">Quitter</button></div>`;
+  const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span>${d.ev && d.rd >= d.ev ? '<span class="eveil" data-tip="Éveil des clans : il reste 4 joueurs ou moins. Les techniques coûtent 1 chakra de moins et des techniques interdites apparaissent.">Éveil</span>' : ''}${d.laws && d.laws.length && d.ph !== 'end' ? `<span class="hud-laws">${d.laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<span class="hl" data-hov="law" data-tip="${esc(M.n + ' : ' + M.d)}">${icon(M.ic)}</span>`; }).join('')}${d.laws.some(l => l.k === 'chakra') && V.me ? `<span class="souls chakra" data-tip="Chakra : il sert à lancer tes techniques ninja. Chaque serviteur des Cinq Nations en génère 1 au début de ton tour (10 au plus).">${icon('k_spark')}<b>${V.me.ck || 0}</b></span>` : ''}${V.me && V.me.souls ? `<span class="souls" data-tip="Âmes récoltées : toutes les 3 âmes, tes serviteurs des Ténèbres gagnent +1/+1 au début du tour.">${icon('skull')}<b>${V.me.souls}</b></span>` : ''}</span>` : ''}<span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerTxt()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm" data-act="leave">Quitter</button></div>`;
   let table;
   if (me && alive) {
     const canAct = d.ph === 'recruit';
@@ -6669,13 +6722,22 @@ function gameH() {
     const n = me.hd.length;
     const hand = fighting ? '' : `<section class="hand" data-drop="hd" aria-label="Ta main · ${n}/10"><div class="fan${n > 7 ? ' many' : n > 4 ? ' some' : ''}" style="--n:${n}">${n ? me.hd.map((m, i) => { const o = i - (n - 1) / 2, op = { drag:canAct, style:`--o:${f1(o)};--o2:${f1(o * o)}` }; return m.sp ? spellCardH(m.sp, 'hd', i, op) : cardH(m, 'hd', i, op); }).join('') : ''}</div></section>`;
     const det = !fighting && V.sel ? `<div class="detail-pop">${detailH(canAct)}<button class="dp-x" data-act="unsel" aria-label="Fermer">×</button></div>` : '';
-    table = `<div class="table${fighting ? ' fighting arena' : ''}">${hud}${topZone}${board}${banner}${heroZone}${hand}${det}</div>`;
+    table = `<div class="table${fighting ? ' fighting arena' : ''}">${hud}${topZone}${board}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}`;
   } else if (myInfo) {
     table = `<div class="table">${hud}<section class="plaque solo-msg"><h2>Éliminé · ${myInfo.pl}e place</h2><p class="note">Tu peux suivre la fin de la partie à gauche ou retourner au menu.</p><div class="btns"><button class="btn" data-act="leave">Retour au menu</button></div></section></div>`;
   } else {
     table = `<div class="table">${hud}<section class="plaque solo-msg"><h2>Spectateur</h2><p class="note">Tu observes cette partie.</p></section></div>`;
   }
   return `<div class="stage"><aside class="opps" aria-label="Joueurs"><ol>${opps}</ol></aside>${table}</div>${overlayH()}`;
+}
+// fin de combat : un grand coffre au centre de l'écran, à ouvrir d'un clic
+function bigChestH(d, me) {
+  if (!me || !me.pend || d.ph !== 'recruit' || (V.fight && !V.fight.done) || V.chestRev) return '';
+  const q = me.pend.slice(0, 3), t = +me.pend.slice(3), maj = q === 'maj';
+  return `<div class="bigchest ${q}" role="dialog" aria-label="Coffre de fin de combat"><div class="bc-in">
+    <b class="bc-t">${maj ? 'Victoire : coffre majeur' : 'Coffre mineur'} · niveau ${t}</b>
+    <button class="bc-box" data-act="chest" aria-label="Ouvrir le coffre"><svg viewBox="0 0 80 70" aria-hidden="true"><rect x="6" y="30" width="68" height="36" rx="4" fill="${maj ? '#e2b04e' : '#a8744a'}" stroke="#120a06" stroke-width="3"/><path d="M6 44 H74" stroke="#120a06" stroke-width="2" opacity=".4"/><path d="M6 30 Q40 2 74 30 Z" fill="${maj ? '#c88a26' : '#8a5a32'}" stroke="#120a06" stroke-width="3"/><rect x="34" y="32" width="12" height="12" rx="2" fill="${maj ? '#ffd24a' : '#6fd0ff'}" stroke="#120a06" stroke-width="2"/></svg></button>
+    <small class="bc-s">Clique sur le coffre pour l'ouvrir</small></div></div>`;
 }
 // après l'ouverture : les cartes obtenues en grand au centre de l'écran
 function chestReveal(ids) {
@@ -6686,7 +6748,7 @@ function chestReveal(ids) {
 }
 // animation d'ouverture : le coffre vient au centre, tremble, s'ouvre dans un halo (bleu = mineur, doré = majeur)
 function fxChest(btn) {
-  const maj = btn.classList.contains('maj'), r = btn.getBoundingClientRect(), col = maj ? '#ffd24a' : '#6fd0ff';
+  const maj = btn.classList.contains('maj') || !!btn.closest('.bigchest.maj'), r = btn.getBoundingClientRect(), col = maj ? '#ffd24a' : '#6fd0ff';
   const el = document.createElement('div'); el.className = 'chfx ' + (maj ? 'maj' : 'min');
   el.style.setProperty('--x', (r.left + r.width / 2 - innerWidth / 2) + 'px'); el.style.setProperty('--y', (r.top + r.height / 2 - innerHeight / 2) + 'px'); el.style.setProperty('--c', col);
   el.innerHTML = `<span class="chfx-halo"></span><span class="chfx-rays"></span><svg class="chfx-box" viewBox="0 0 80 70" aria-hidden="true">
@@ -6706,11 +6768,10 @@ function trainH(d, me, canAct) {
       <svg viewBox="0 0 40 34" aria-hidden="true"><rect x="3" y="13" width="34" height="18" rx="2" fill="${q === 'maj' ? '#e2b04e' : '#a8744a'}" stroke="#120a06" stroke-width="2"/><path d="M3 13 Q20 -1 37 13 Z" fill="${q === 'maj' ? '#c88a26' : '#8a5a32'}" stroke="#120a06" stroke-width="2"/><rect x="16" y="15" width="8" height="8" rx="1.5" fill="#6fd0ff" stroke="#120a06" stroke-width="1.4"/></svg>
       <b class="ch-n">×${me.chests[k]}</b><small>${q === 'maj' ? 'Majeur' : 'Mineur'} · ${t}</small></button>`; }).join('');
   const medals = (me.eqs || []).map((id, i) => { const S = SPELLS[id], c = EQ_COST(id);
-    const why = !comps.length ? 'Recrute ton compagnon pour l\'équiper.' : !comps.some(m => (m.eq || []).length < 3 && !(m.eq || []).includes(id)) ? 'Ton compagnon porte déjà cet équipement ou trois équipements.' : (me.ck || 0) < c ? `Il te faut ${c} chakra.` : '';
+    const why = !comps.length ? 'Recrute ton compagnon pour l\'équiper.' : !comps.some(m => (m.eq || []).length < eqSlots(m) && !(m.eq || []).includes(id)) ? 'Ton compagnon porte déjà cet équipement, ou n\'a plus d\'emplacement libre.' : (me.ck || 0) < c ? `Il te faut ${c} chakra.` : '';
     return `<button class="eqm" data-act="equip" data-i="${i}" data-sp="${id}" data-why="${esc('Équiper coûte ' + c + ' chakra.' + (why ? ' ' + why : ''))}" ${canAct && !why ? '' : 'aria-disabled="true"'} aria-label="Équiper ${esc(S.n)} pour ${c} chakra"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="eqc${i}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#eqc${i})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span class="ch-c">${c}</span></button>`; }).join('');
   return `<section class="train" aria-label="Entraînement"><b class="tr-h">Entraînement</b>
-    <div class="tr-row">${chests || '<small class="tr-e">Les coffres gagnés après chaque combat arrivent ici.</small>'}</div>
-    <div class="tr-row med">${medals || '<small class="tr-e">Ouvre un coffre : ses équipements se rangent ici.</small>'}</div></section>`;
+    <div class="tr-row med">${medals || '<small class="tr-e">Les équipements des coffres de fin de combat se rangent ici.</small>'}</div></section>`;
 }
 // la jauge de chakra (univers des Cinq Nations) : un grand orbe bleu et dix perles
 function ckGauge(d, me) {
@@ -6926,7 +6987,7 @@ function doAct(act, btn) {
     case 'skip': if (V.fight) { clearTimeout(V.fightT); if (V.fight.lunge) { try { V.fight.lunge.cancel(); } catch (e) {} V.fight.lunge = null; } V.fi = V.fight.r.frames.length - 1; V.fight.done = true; render(); fxEnd(); } break;
     case 'buy': if (s) { sendAct({ t:'buy', i:s.i }); V.sel = null; } break;
     case 'buysp': sendAct({ t:'buysp' }); V.sel = null; break;
-    case 'chest': V.chestRev = { eq:(V.me && V.me.eqs || []).slice(), hd:(V.me && V.me.hd || []).map(x => x.u), at:Date.now() }; fxChest(btn); sendAct({ t:'chest', k:btn.dataset.k }); break;
+    case 'chest': V.chestRev = { eq:(V.me && V.me.eqs || []).slice(), hd:(V.me && V.me.hd || []).map(x => x.u), at:Date.now() }; fxChest(btn); { const o = btn.closest('.bigchest'); if (o) o.remove(); } sendAct({ t:'chest' }); break;
     case 'equip': if (btn.getAttribute('aria-disabled') === 'true') { toast(btn.dataset.why || ''); break; } sendAct({ t:'equip', i:+btn.dataset.i }); hidePeek(); break;
     case 'cast': if (s) { sendAct({ t:'cast', i:s.i }); V.sel = null; } break;
     case 'aim': if (s) { V.aim = s.i; V.sel = null; render(); } break;

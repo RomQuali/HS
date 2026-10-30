@@ -38,6 +38,10 @@ const SPELLS = {
   nj_invoc:{ el:'terre', n:'Invocation', t:4, c:3, ck:4, nin:1, ty:'nin', tx:'Invoque sur ton plateau un serviteur aléatoire de ton niveau de taverne.' },
   nj_sceau:{ el:'foudre', n:'Sceau de puissance', t:5, c:4, ck:5, nin:1, ty:'nin', tg:1, tx:'Donne +4/+4 et Renaissance à un de tes serviteurs.' },
   nj_deluge:{ el:'feu', n:'Déluge élémentaire', t:6, c:5, ck:7, nin:1, ty:'nin', tx:'Prochain combat : tous tes serviteurs gagnent +4/+4 et 4 dégâts frappent l\'ennemi au début du combat.' },
+  // ----- techniques interdites : seulement après l'Éveil des clans -----
+  nj_x_cinq:{ el:'feu', n:'Tempête des cinq éléments', t:5, c:5, ck:9, nin:1, forb:1, ty:'nin', tx:'Technique interdite. Prochain combat : tous tes serviteurs gagnent +6/+6 et 6 dégâts frappent l\'ennemi au début du combat.' },
+  nj_x_sceau:{ el:'terre', n:'Sceau inversé', t:5, c:4, ck:8, nin:1, forb:1, ty:'nin', tg:1, tx:'Technique interdite. Le serviteur ciblé gagne +10/+10 ; un autre de tes serviteurs aléatoire est détruit.' },
+  nj_x_eveil:{ el:'eau', n:'Éveil intérieur', t:5, c:4, ck:7, nin:1, forb:1, ty:'nin', tx:'Technique interdite. Ton compagnon gagne 2 niveaux d\'entraînement.' },
   // ----- équipements (pour le compagnon) et coffres (ouverts au chakra) -----
   eq_lame:{ n:'Lame de chakra', t:1, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : +4 attaque.' },
   eq_armure:{ n:'Armure de mailles', t:1, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : +6 vie et Provocation.' },
@@ -51,7 +55,7 @@ const SPELLS = {
   cf_or:{ n:'Coffre d\'or', t:1, c:0, ck:6, item:1, ty:'cof', tx:'Reçu après une victoire avec une taverne de niveau 4 ou plus. Ouvre-le avec 6 chakra : deux équipements rares.' },
 };
 const SPELL_IDS = Object.keys(SPELLS);
-function drawSpell(t) { const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra'); const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !!SPELLS[id].nin === !!nin); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
+function drawSpell(t) { const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra'); const ev = typeof H !== 'undefined' && H.G && H.G.eveil; const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !!SPELLS[id].nin === !!nin && (!SPELLS[id].forb || ev)); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
 
 // pourquoi un sort ne peut pas être lancé (null = il peut)
 function spellBlock(p, id, tgt) {
@@ -59,8 +63,9 @@ function spellBlock(p, id, tgt) {
   if (S.ck && (p.ck || 0) < ckCost(p, S)) return `Il te faut ${ckCost(p, S)} chakra pour lancer cette technique (tu en as ${p.ck || 0}).`;
   if (S.tg && !tgt) return 'Choisis un de tes serviteurs.';
   if ((id === 'nj_doubles' || id === 'nj_invoc') && p.bd.length >= 7) return 'Ton plateau est plein.';
+  if (id === 'nj_x_eveil' && !p.bd.some(isComp)) return 'Ton compagnon doit être sur le plateau.';
   if (S.eq && !(C[tgt.c] && C[tgt.c].comp)) return 'Un équipement se pose sur ton compagnon.';
-  if (S.eq && (tgt.eq || []).length >= 3) return 'Ton compagnon porte déjà trois équipements.';
+
   if (S.eq && (tgt.eq || []).includes(id)) return 'Ton compagnon porte déjà cet équipement.';
   if (id.startsWith('cf_') && p.hd.length > 10) return 'Ta main est pleine.';
   if (id === 'nj_rafale' && !p.bd.length) return 'Tu n\'as aucun serviteur.';
@@ -146,11 +151,19 @@ function castSpell0(G, p, hi, tg) {
       else p.hd.push({ sp:pickR(all), u:UID++ });
       break;
     }
+    case 'nj_x_cinq': p.tma = { a:((p.tma && p.tma.a) || 0) + 6, h:((p.tma && p.tma.h) || 0) + 6 }; p.njf = (p.njf || 0) + 6; break;
+    case 'nj_x_sceau': { buff(tgt, 10, 10); const o = p.bd.filter(x => x !== tgt); if (o.length) { const v = pickR(o); p.bd.splice(p.bd.indexOf(v), 1); toPool(G, v); } break; }
+    case 'nj_x_eveil': p.bd.filter(isComp).forEach(c => { const need = (XP_LV[Math.min(4, compLv(c) + 1)] || c.xp) - (c.xp || 0); giveXp(c, Math.max(0, need)); giveXp(c, Math.max(0, (XP_LV[Math.min(4, compLv(c))] || c.xp) - (c.xp || 0))); }); break;
     case 'sp_ascension': p.bd.forEach(x => { buff(x, 2, 2); addF(x, 's'); }); break;
   }
   if (S.eq) (tgt.eq = tgt.eq || []).push(id);
   // enchaînement : la technique lancée est l'élément que nourrit celui retenu par le compagnon
-  if (S.el) p.bd.filter(isComp).forEach(c => { const F = fusionOf(compEl(c), S.el); if (F) { c.x = (c.x || []).filter(e => !e.fusion); c.x.push(Object.assign({ src:'Fusion · ' + F.n, fusion:1 }, F.fx)); c.fu = F.n; } });
+  if (S.el) p.bd.filter(isComp).forEach(c => {
+    const F3 = compLv(c) >= 4 ? fusion3Of(c.el2, compEl(c), S.el) : null, F = F3 || fusionOf(compEl(c), S.el);
+    if (F) { c.x = (c.x || []).filter(e => !e.fusion); c.x.push(Object.assign({ src:'Fusion · ' + F.n, fusion:1 }, F.fx)); c.fu = F.n; }
+    c.el2 = compEl(c);
+  });
+  if (S.nin) p.bd.filter(isComp).forEach(c => giveXp(c, 1));
   if (S.el) p.bd.filter(isComp).forEach(c => { const e = compEl(c); if (e && EL_GEN[e] === S.el) { const x = (c.eq || []).includes('eq_talisman') ? 2 : 1; p.ck = Math.min(CK_MAX, (p.ck || 0) + 2 * x); buff(c, 2 * x, 2 * x); } });
   if (!S.item) trigBoard(G, p, 'cast');
   checkTriple(G, p);
@@ -206,6 +219,9 @@ function aiSpells(G, p) {
 const NJA = (col, inner) => () => softGlow(50, 52, 34, col, .35) + `<g transform="translate(50 54)">${inner}</g>` + [[-26, -30], [28, -26], [-30, 26], [30, 28]].map(([x, y]) => Ci(50 + x, 54 + y, 1.6, '#fff', 'opacity=".6"')).join('');
 const HANDS = `<path d="M-9 14 L-9 -6 Q-9 -14 -3 -16 L-1 -2 M9 14 L9 -6 Q9 -14 3 -16 L1 -2" fill="#f1c7a0" ${so(1.8)}/><path d="M-3 -16 Q0 -20 3 -16 L1 -2 L-1 -2 Z" fill="#f1c7a0" ${so(1.6)}/>`;
 const SPART = {
+  nj_x_cinq: NJA('#ffffff', ['#ff7a2a', '#6fd8a0', '#ffd23a', '#c8a878', '#4ab0e8'].map((c, k) => { const a = (-90 + k * 72) * Math.PI / 180; return `<circle cx="${(Math.cos(a) * 18).toFixed(1)}" cy="${(Math.sin(a) * 18).toFixed(1)}" r="7" fill="${c}" ${so(1.4)}/>`; }).join('') + `<circle r="7" fill="#2a1a3a" ${so(1.6)}/><path d="M-26 0 H26 M0 -26 V26" stroke="#a8322a" stroke-width="2.4" opacity=".8"/>`),
+  nj_x_sceau: NJA('#ff6a6a', `<rect x="-18" y="-24" width="36" height="46" rx="3" fill="#2a1a1a" ${so(2)}/><circle cy="-2" r="11" fill="none" stroke="#ff4a4a" stroke-width="3"/><path d="M6 -2 H-6 M0 4 V-8 M-8 -10 L8 6" stroke="#ff4a4a" stroke-width="3"/>`),
+  nj_x_eveil: NJA('#bfe8ff', `<circle r="16" fill="none" stroke="#bfe8ff" stroke-width="3"/><circle r="8" fill="#6fd0ff" ${so(1.6)}/>` + [0, 60, 120, 180, 240, 300].map(a => `<path d="M0 -20 L0 -28" stroke="#e8fcff" stroke-width="3" stroke-linecap="round" transform="rotate(${a})"/>`).join('')),
   eq_lame: NJA('#bfe8ff', `<path d="M-20 20 L16 -16 L22 -22 L18 -12 L-16 24 Z" fill="#d8dce4" ${so(1.8)}/><path d="M-24 12 L-12 24" stroke="#5a3a1a" stroke-width="6" stroke-linecap="round"/><path d="M-4 4 L10 -10" stroke="#6fd0ff" stroke-width="2"/>`),
   eq_armure: NJA('#c8a878', `<path d="M-20 -18 L-8 -22 Q0 -14 8 -22 L20 -18 L18 20 L-18 20 Z" fill="#8a929c" ${so(2)}/>` + [-10, 0, 10].map(y => `<path d="M-16 ${y} H16" stroke="#5a626c" stroke-width="1.6" stroke-dasharray="3 2"/>`).join('')),
   eq_gants: NJA('#e8ffd0', `<path d="M-14 -10 L-14 16 L8 16 L10 -2 L4 -4 L4 -16 L-2 -16 L-2 -8 L-8 -8 L-8 -14 Z" fill="#a8744a" ${so(1.8)}/>` + Ln('M12 -14 Q22 -6 14 4', '#e8ffd0', 2.4)),

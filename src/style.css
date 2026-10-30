@@ -1889,3 +1889,16 @@ body.cs-entering #scene *{animation-play-state:running!important}
 @keyframes chrevCard{from{opacity:0;transform:scale(.3) rotate(-10deg)}}
 @media (max-height:540px){ .chrev-c{--hw:min(150px,30vw)} .chrev-t{font-size:24px} }
 .pcost.ck{color:#fff;background:radial-gradient(circle at 38% 32%,#bfe8ff,#2a6ad8 60%,#0c2a6a);box-shadow:0 0 0 2px #0c1a3a,0 0 0 3.5px #bfe8ff}
+/* grand coffre de fin de combat */
+.bigchest{position:fixed;inset:0;z-index:70;display:grid;place-items:center;background:radial-gradient(circle,rgba(10,6,4,.35),rgba(10,6,4,.8));animation:chrevIn .3s ease-out}
+.bc-in{display:grid;justify-items:center;gap:12px}
+.bc-t{font-family:var(--f-disp);font-size:34px;color:#ffd86a;text-shadow:0 3px 0 #120a06}
+.bigchest.min .bc-t{color:#bfe8ff}
+.bc-box{width:240px;height:210px;padding:0;border:0;background:none;cursor:pointer;animation:bcbob 1.6s ease-in-out infinite}
+.bc-box svg{width:100%;height:100%;filter:drop-shadow(0 0 24px rgba(255,210,90,.75)) drop-shadow(0 14px 18px rgba(0,0,0,.6))}
+.bigchest.min .bc-box svg{filter:drop-shadow(0 0 24px rgba(110,200,255,.8)) drop-shadow(0 14px 18px rgba(0,0,0,.6))}
+.bc-box:hover{transform:scale(1.05)}
+.bc-s{font-family:var(--f-label);font-size:15px;color:#fff3c0}
+@keyframes bcbob{50%{transform:translateY(-8px) rotate(-2deg)}}
+.eveil{padding:3px 10px;border-radius:99px;font-family:var(--f-label);font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#120a06;background:linear-gradient(90deg,#ff7a2a,#6fd8a0,#ffd23a,#c8a878,#4ab0e8);box-shadow:0 0 12px rgba(255,220,140,.6)}
+@media (max-height:540px){ .bc-box{width:150px;height:130px} .bc-t{font-size:22px} }
