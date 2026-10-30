@@ -900,9 +900,11 @@ function giveXp(m, n) { const before = compLv(m); m.xp = (m.xp || 0) + n; const 
 const ckCost = (p, S) => Math.max(0, (S.ck || 0) - (S.el && HEROES[p.hero] && HEROES[p.hero].clan === S.el ? 1 : 0) - (((typeof H !== 'undefined' && H.G && H.G.eveil) || p.ev) && S.nin && !S.forb ? 1 : 0));
 const CLAN_EL = { n_feu:'feu', n_vent:'vent', n_eau:'eau', n_foudre:'foudre', n_terre:'terre' };
 const isComp = m => !!(m && C[m.c] && C[m.c].comp);
+// Cinq Nations : le compagnon est déjà en jeu (triplé) à côté du héros, hors plateau
+const comps = p => p.cp ? [p.cp] : (p.bd || []).filter(isComp);
 const compEl = m => m.el || CLAN_EL[CD(m.c).tr] || null;
 const spCost = (p, S) => p.hero === 'sylvara' && !p.sylv ? Math.max(0, S.c - 1) : S.c;
-const trigBoard = (G, p, tr) => p.bd.slice().forEach(x => fxOf(x, tr).forEach(e => runRecruit(G, p, x, e)));
+const trigBoard = (G, p, tr) => p.bd.concat(p.cp ? [p.cp] : []).forEach(x => fxOf(x, tr).forEach(e => runRecruit(G, p, x, e)));
 const SQ = ['sq_feu', 'sq_eau', 'sq_terre', 'sq_vent', 'sq_glace', 'sq_foudre'];
 const isSq = m => SQ.includes(tribe(m));
 const elems = list => new Set(list.filter(x => x.h > 0 && isSq(x)).map(tribe)).size;
@@ -927,7 +929,7 @@ const OPS = {
   roll(G, p) { const free = p.hero === 'rivet' && p.rr === 0; if (!free && p.g < 1) return false; if (!free) p.g -= 1; p.rr++; p.fz = false; fillShop(G, p); trigBoard(G, p, 'roll'); return true; },
   frz(G, p) { p.fz = !p.fz; return true; },
   up(G, p) { const c = upCost(p); if (p.t >= 6 || p.g < c) return false; p.g -= c; p.t++; p.uc = +RU().up[p.t] || 0; trigBoard(G, p, 'up'); return true; },
-  comp(G, p) { const id = compOf(p.hero); if (!id || !C[id] || (p.cb || 0) >= compLimit(G.rd) || p.g < 3 || p.hd.length >= 10) return false; p.g -= 3; p.cb = (p.cb || 0) + 1; p.hd.push(mk(id, 0)); checkTriple(G, p); return true; },
+  comp(G, p) { const id = compOf(p.hero); if (inMechAny(G, 'chakra') || !id || !C[id] || (p.cb || 0) >= compLimit(G.rd) || p.g < 3 || p.hd.length >= 10) return false; p.g -= 3; p.cb = (p.cb || 0) + 1; p.hd.push(mk(id, 0)); checkTriple(G, p); return true; },
   pow(G, p) { return withSrc(HEROES[p.hero] ? 'Pouvoir de ' + HEROES[p.hero].n.split(' ')[0] : null, () => OPS.pow0(G, p)); },
   pow0(G, p) {
     const h = HEROES[p.hero]; if (!h || !h.cost || p.pu || powPurse(G, p) < h.cost) return false;
@@ -953,7 +955,7 @@ const OPS = {
     p.eqs = p.eqs || []; p.eqlv = p.eqlv || {}; p.loot = [];
     chestLoot(q, t, p).forEach(id => {
       if (!(SPELLS[id] && SPELLS[id].eq)) { if (p.hd.length < 10) { p.hd.push({ sp:id, u:UID++ }); p.loot.push({ id }); } return; }
-      const worn = p.bd.find(m => isComp(m) && (m.eq || []).includes(id));
+      const worn = comps(p).find(m => (m.eq || []).includes(id));
       if (worn || p.eqs.includes(id)) {            // déjà obtenu : on l'améliore
         p.eqlv[id] = Math.min(EQ_MAXLV, (p.eqlv[id] || 1) + 1);
         if (worn) withSrc('Amélioration · ' + SPELLS[id].n, () => eqUpgrade(worn, id));
@@ -966,7 +968,7 @@ const OPS = {
   equip(G, p, a) {
     const id = (p.eqs || [])[a.i]; if (!id || !SPELLS[id]) return false;
     const c = EQ_COST(id); if ((p.ck || 0) < c) return false;
-    const comp = p.bd.filter(isComp).find(m => (m.eq || []).length < eqSlots(m) && !(m.eq || []).includes(id)); if (!comp) return false;
+    const comp = comps(p).find(m => (m.eq || []).length < eqSlots(m) && !(m.eq || []).includes(id)); if (!comp) return false;
     p.ck -= c; p.eqs.splice(a.i, 1);
     withSrc('Entraînement · ' + SPELLS[id].n, () => { applyEquip(comp, id); for (let l = 1; l < ((p.eqlv || {})[id] || 1); l++) eqUpgrade(comp, id); });
     return true;
@@ -1075,17 +1077,18 @@ const humansLive = G => G.ps.filter(p => p.al && p.human && !p.bot);
 function startRecruit() {
   const G = H.G; G.rd++;
   for (const p of G.ps) if (p.al) {
+    if (inMechAny(G, 'chakra') && !p.cp && p.hero && compOf(p.hero)) { p.cp = mk(compOf(p.hero), 1); p.cb = 3; }
     p.mg = Math.min(10, 2 + G.rd); p.g = p.mg;
     if (p.hero === 'barnabe' && G.rd % 2 === 0) p.g += 1;
     p.uc = Math.max(0, p.uc - 1);
     if (p.fz) { p.fz = false; topUpShop(G, p); } else fillShop(G, p);
-    p.pu = false; p.fbq = false; p.njf = 0; p.sylv = false; p.rr = 0; p.rdy = false; p.lastRes = p.res ? p.res.r : null; p.res = null;
+    p.pu = false; p.fbq = false; p.njf = 0; p.sylv = false; p.rr = 0; p.rdy = false; p.lastRes = p.res ? (p.res.cr || p.res.r) : null; p.res = null;
     if (p.inc && p.inc.length) p.g += p.inc.shift() || 0;
     trigBoard(G, p, 'sot');
     p.mkt = 0;
     if (inMechAny(G, 'ames') && (p.souls || 0) >= 3) { const k = Math.floor(p.souls / 3); p.souls -= k * 3; withSrc('Moisson d\'âmes', () => p.bd.forEach(m => { if (inMech(G, 'ames', m)) buff(m, k, k); })); }
     if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; if (n) p.ck = Math.min(ckMax(p), (p.ck || 0) + n); }
-    // un coffre après chaque combat : meilleur après une victoire, mineur après une égalité ou une défaite
+    // un coffre après chaque combat : majeur si le compagnon gagne son duel, mineur sinon
     if (inMechAny(G, 'chakra') && p.lastRes) p.pendChest = (p.lastRes === 'win' ? 'maj' : 'min') + (p.t || 1);
     // pureté : 5 serviteurs ou plus d'un même clan → +1 chakra
     if (inMechAny(G, 'chakra')) { const n = {}; p.bd.forEach(m => { const t = CD(m.c).tr; if (CLAN_EL[t]) n[t] = (n[t] || 0) + 1; }); const pure = Object.keys(n).find(t => n[t] >= 5) || null; p.pure = pure; if (pure) p.ck = Math.min(ckMax(p), (p.ck || 0) + 1); }
@@ -1104,7 +1107,7 @@ function endRecruit() {
   for (const p of G.ps) if (p.al) {
     if (p.pendChest) OPS.chest(G, p);
     const neot = auraTimes(p.bd, 'aura_eot');
-    for (const m of p.bd.slice()) for (let r = 0; r < neot; r++) fxOf(m, 'eot').forEach(e => runRecruit(G, p, m, e));
+    for (const m of p.bd.concat(p.cp ? [p.cp] : [])) for (let r = 0; r < neot; r++) fxOf(m, 'eot').forEach(e => runRecruit(G, p, m, e));
     if (p.hero === 'maelle' && p.bd[0]) withSrc('Passif de Maëlle', () => buff(p.bd[0], 1, 1));
     if (inMechAny(G, 'fusion') && elems(p.bd) >= 4) withSrc('Fusion élémentaire', () => p.bd.forEach(m => { if (inMech(G, 'fusion', m)) buff(m, 1, 1); }));
     if (p.hero === 'nono' && G.rd >= 3 && !p.pu) p.fb = (p.fb || 3) + 1;
@@ -1130,10 +1133,20 @@ function endRecruit() {
     const d = Math.min(cap, r.dmg);
     if (r.w === 1) G.pend.push({ pid:p.pid, d });
     if (r.w === 0 && !ghost) G.pend.push({ pid:q.pid, d });
-    p.res = { o:qn, r:r.w === 0 ? 'win' : r.w === 1 ? 'loss' : 'draw', d };
+    const W = w => w === 0 ? 'win' : w === 1 ? 'loss' : 'draw', X = w => w === 0 ? 'loss' : w === 1 ? 'win' : 'draw';
+    // duel des compagnons : ils ne combattent que le compagnon adverse, ne touchent jamais le héros, et décident du coffre
+    const qq = ghost || q; let duel = null;
+    if (p.cp || qq.cp) {
+      const ca = p.cp ? [Object.assign({}, p.cp)] : [], cbb = qq.cp ? [Object.assign({}, qq.cp)] : [];
+      elementDuel(ca, cbb);
+      const cs = rint(1e9), cr = simulate(ca, cbb, cs, p.t, qt, [0, 0], G.mx);
+      duel = { a:ca.map(fullM), b:cbb.map(fullM), w:cr.w };
+      if (cr.w === 0 && p.cp) giveXp(p.cp, 2); if (!ghost && cr.w === 1 && q.cp) giveXp(q.cp, 2);
+    }
+    p.res = { o:qn, r:W(r.w), d, cr:duel ? W(duel.w) : null };
     if (r.w === 0) p.bd.filter(isComp).forEach(m => giveXp(m, 2)); if (!ghost && r.w === 1) q.bd.filter(isComp).forEach(m => giveXp(m, 2));
-    if (!ghost) q.res = { o:p.n, r:r.w === 1 ? 'win' : r.w === 0 ? 'loss' : 'draw', d };
-    const base = { rd:G.rd, a:pb.map(fullM), b:qcb.map(fullM), seed, ta:p.t, tb:qt, cap, ha:p.hero, hb:ghost ? ghost.hero : q.hero, fire, mx:G.mx || {} };
+    if (!ghost) q.res = { o:p.n, r:X(r.w), d, cr:duel ? X(duel.w) : null };
+    const base = { duel, rd:G.rd, a:pb.map(fullM), b:qcb.map(fullM), seed, ta:p.t, tb:qt, cap, ha:p.hero, hb:ghost ? ghost.hero : q.hero, fire, mx:G.mx || {} };
     if (p.human && !p.bot) { deliverFight(p, Object.assign({ me:0, on:qn }, base)); maxFrames = Math.max(maxFrames, r.frames.length); }
     if (!ghost && q.human && !q.bot) { deliverFight(q, Object.assign({ me:1, on:p.n }, base)); maxFrames = Math.max(maxFrames, r.frames.length); }
     p.lastOpp = ghost ? null : q.pid; if (!ghost) q.lastOpp = p.pid;
@@ -1207,7 +1220,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;

@@ -63,7 +63,7 @@ function spellBlock(p, id, tgt) {
   if (S.ck && (p.ck || 0) < ckCost(p, S)) return `Il te faut ${ckCost(p, S)} chakra pour lancer cette technique (tu en as ${p.ck || 0}).`;
   if (S.tg && !tgt) return 'Choisis un de tes serviteurs.';
   if ((id === 'nj_doubles' || id === 'nj_invoc') && p.bd.length >= 7) return 'Ton plateau est plein.';
-  if (id === 'nj_x_eveil' && !p.bd.some(isComp)) return 'Ton compagnon doit être sur le plateau.';
+  if (id === 'nj_x_eveil' && !comps(p).length) return 'Ton compagnon doit être sur le plateau.';
   if (S.eq && !(C[tgt.c] && C[tgt.c].comp)) return 'Un équipement se pose sur ton compagnon.';
 
   if (S.eq && (tgt.eq || []).includes(id)) return 'Ton compagnon porte déjà cet équipement.';
@@ -163,18 +163,18 @@ function castSpell0(G, p, hi, tg) {
     }
     case 'nj_x_cinq': p.tma = { a:((p.tma && p.tma.a) || 0) + 6, h:((p.tma && p.tma.h) || 0) + 6 }; p.njf = (p.njf || 0) + 6; break;
     case 'nj_x_sceau': { buff(tgt, 10, 10); const o = p.bd.filter(x => x !== tgt); if (o.length) { const v = pickR(o); p.bd.splice(p.bd.indexOf(v), 1); toPool(G, v); } break; }
-    case 'nj_x_eveil': p.bd.filter(isComp).forEach(c => { const need = (XP_LV[Math.min(4, compLv(c) + 1)] || c.xp) - (c.xp || 0); giveXp(c, Math.max(0, need)); giveXp(c, Math.max(0, (XP_LV[Math.min(4, compLv(c))] || c.xp) - (c.xp || 0))); }); break;
+    case 'nj_x_eveil': comps(p).forEach(c => { const need = (XP_LV[Math.min(4, compLv(c) + 1)] || c.xp) - (c.xp || 0); giveXp(c, Math.max(0, need)); giveXp(c, Math.max(0, (XP_LV[Math.min(4, compLv(c))] || c.xp) - (c.xp || 0))); }); break;
     case 'sp_ascension': p.bd.forEach(x => { buff(x, 2, 2); addF(x, 's'); }); break;
   }
   if (S.eq) (tgt.eq = tgt.eq || []).push(id);
   // enchaînement : la technique lancée est l'élément que nourrit celui retenu par le compagnon
-  if (S.el) p.bd.filter(isComp).forEach(c => {
+  if (S.el) comps(p).forEach(c => {
     const F3 = compLv(c) >= 4 ? fusion3Of(c.el2, compEl(c), S.el) : null, F = F3 || fusionOf(compEl(c), S.el);
     if (F) { c.x = (c.x || []).filter(e => !e.fusion); c.x.push(Object.assign({ src:'Fusion · ' + F.n, fusion:1 }, F.fx)); c.fu = F.n; }
     c.el2 = compEl(c);
   });
-  if (S.nin) p.bd.filter(isComp).forEach(c => giveXp(c, 1));
-  if (S.el) p.bd.filter(isComp).forEach(c => { const e = compEl(c); if (e && EL_GEN[e] === S.el) { const x = (c.eq || []).includes('eq_talisman') ? 2 : 1; p.ck = Math.min(CK_MAX, (p.ck || 0) + 2 * x); buff(c, 2 * x, 2 * x); } });
+  if (S.nin) comps(p).forEach(c => giveXp(c, 1));
+  if (S.el) comps(p).forEach(c => { const e = compEl(c); if (e && EL_GEN[e] === S.el) { const x = (c.eq || []).includes('eq_talisman') ? 2 : 1; p.ck = Math.min(CK_MAX, (p.ck || 0) + 2 * x); buff(c, 2 * x, 2 * x); } });
   if (!S.item) trigBoard(G, p, 'cast');
   checkTriple(G, p);
   return true;

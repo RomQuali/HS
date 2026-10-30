@@ -293,7 +293,7 @@ function chakraLawH(big) {
   return `<span class="ban-law ck-law${big ? ' big' : ''}"><b>Loi · Chakra et éléments</b>
     <small><b>Chakra :</b> chaque serviteur de l'univers en donne 1 par tour. Il lance les techniques (achetées en or) et paie les équipements de ton compagnon.</small>
     <small><b>Compagnon :</b> il retient la dernière technique lancée et son élément, puis la remet en main à chaque tour.</small>
-    <small><b>Entraînement :</b> après chaque combat, un coffre du niveau de ta taverne arrive (majeur après une victoire, mineur sinon). Il s'ouvre gratuitement ; ses équipements se rangent en médailles et se posent sur ton compagnon contre du chakra.</small>
+    <small><b>Entraînement :</b> ton compagnon commence en jeu, déjà triplé, à côté de ton héros (il ne prend pas de place sur le plateau). En combat, il affronte uniquement le compagnon adverse et ne blesse jamais le héros : ce duel décide du coffre du niveau de ta taverne (majeur s'il gagne, mineur sinon). Il s'ouvre gratuitement ; ses équipements se rangent en médailles et se posent sur ton compagnon contre du chakra.</small>
     <span class="elx">
       <span class="elx-c">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b style="color:#ff8a6a">Domination</b> · ton compagnon l'emporte sur l'élément d'en face : +4/+4 au combat.</small></span>
       <span class="elx-c">${elCycleSvg(['vent', 'feu', 'foudre', 'terre', 'eau'], '#6fd0ff', 'Génération')}<small><b style="color:#8fdcff">Génération</b> · lance l'élément que nourrit celui retenu : +2 chakra et +2/+2.</small></span>
@@ -428,7 +428,7 @@ function gameH() {
       boardRow = fightRow(F, mine);
       if (F.done) {
         const won = F.r.w === mine, lost = F.r.w === 1 - mine, dmg = Math.min(F.cap || 99, F.r.dmg);
-        banner = `<div class="table-banner"><div class="banner ${won ? 'win' : lost ? 'loss' : 'draw'}">${won ? 'Victoire !' : lost ? 'Défaite' : 'Égalité'}</div><p class="banner-s">${won ? `Tu infliges ${dmg} dégâts à ${esc(F.on)}.` : lost ? `Tu subis ${dmg} dégâts.` : 'Personne ne perd de points de vie.'}</p>${d.ph === 'combat' ? '<p class="mute">Les autres tables terminent leur combat…</p>' : ''}</div>`;
+        banner = `<div class="table-banner"><div class="banner ${won ? 'win' : lost ? 'loss' : 'draw'}">${won ? 'Victoire !' : lost ? 'Défaite' : 'Égalité'}</div><p class="banner-s">${won ? `Tu infliges ${dmg} dégâts à ${esc(F.on)}.` : lost ? `Tu subis ${dmg} dégâts.` : 'Personne ne perd de points de vie.'}</p>${duelLine(F)}${d.ph === 'combat' ? '<p class="mute">Les autres tables terminent leur combat…</p>' : ''}</div>`;
       } else banner = `<div class="table-skip"><button class="btn sm" data-act="skip">Passer l'animation</button></div>`;
     } else {
       topZone = `<section class="keeper-zone${me.fz ? ' frozen' : ''}" data-drop="sh" aria-label="Taverne">
@@ -451,7 +451,7 @@ function gameH() {
       : `<span class="powm passive" aria-label="${esc(hero ? hero.tx : '')}">${hero ? powArtH(me.hero) : icon('crown')}<small>Passif</small>${hero ? `<span class="pc-tx">${esc(hero.tx)}</span>` : ''}</span>`;
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
-      <div class="hz-left">${trainH(d, me, canAct)}<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span></div>
+      <div class="hz-left">${trainH(d, me, canAct)}${me.cp ? cpSlotH(me, fighting ? V.fight : null) : `<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span>`}</div>
       <div class="hz-hero" data-hov="hero"><span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? 'art-h-' + me.hero : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span></div>
       <div class="hz-right"><span class="hov" data-hov="pow">${power}</span><span class="purses">${coins}${canAct ? ckGauge(d, me) : ''}</span></div>
       <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}">${icon('bell')}<span>${me.rdy ? 'Prêt !' : 'Prêt'}</span></button></div></section>`;
@@ -499,7 +499,7 @@ function fxChest(btn) {
 function trainH(d, me, canAct) {
   if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
   const ks = Object.keys(me.chests || {}).filter(k => me.chests[k] > 0).sort((a, b) => a.slice(3) - b.slice(3) || (a < b ? 1 : -1));
-  const comps = (me.bd || []).filter(isComp), full = (me.eqs || []).length >= EQS_MAX;
+  const comps = me.cp ? [me.cp] : (me.bd || []).filter(isComp), full = (me.eqs || []).length >= EQS_MAX;
   const chests = ks.map(k => { const q = k.slice(0, 3), t = +k.slice(3);
     return `<button class="chest ${q}" data-act="chest" data-k="${k}" ${canAct && !full ? '' : 'disabled'} data-tip="Coffre ${q === 'maj' ? 'majeur' : 'mineur'} de niveau ${t} : ${q === 'maj' ? (t >= 6 ? 'deux équipements rares et une technique' : t >= 4 ? 'deux équipements rares' : 'un équipement rare') : t <= 3 ? 'un équipement commun' : 'un équipement'}. Clique pour l'ouvrir (gratuit).${full ? ' Ta zone d\'entraînement est pleine.' : ''}" aria-label="Ouvrir un coffre ${q === 'maj' ? 'majeur' : 'mineur'} de niveau ${t} (${me.chests[k]} en réserve)">
       <svg viewBox="0 0 40 34" aria-hidden="true"><rect x="3" y="13" width="34" height="18" rx="2" fill="${q === 'maj' ? '#e2b04e' : '#a8744a'}" stroke="#120a06" stroke-width="2"/><path d="M3 13 Q20 -1 37 13 Z" fill="${q === 'maj' ? '#c88a26' : '#8a5a32'}" stroke="#120a06" stroke-width="2"/><rect x="16" y="15" width="8" height="8" rx="1.5" fill="#6fd0ff" stroke="#120a06" stroke-width="1.4"/></svg>
@@ -520,6 +520,22 @@ function ckGauge(d, me) {
 const clanCtrH = me => { const c = [['braise', 'Braises', '#ff9a5a', 'Braises (Clan du Feu) : chaque technique les attise. Après l\'Éveil, Phénix : tes serviteurs du Feu gagnent +1/+1 par paire de braises et Renaissance.'], ['maree', 'Marée', '#6fc8ff', 'Marée (Clan de l\'Eau) : elle monte à chaque fin de tour. Après l\'Éveil, raz-de-marée : tous tes serviteurs gagnent +1/+1 par tranche de 4.'], ['charge', 'Charge', '#ffe14a', 'Charge (Clan de la Foudre) : elle s\'accumule à chaque fin de tour. Après l\'Éveil, orage total : la moitié frappe l\'ennemi au début de chaque combat.']].filter(([k]) => me[k]);
   return c.length ? `<span class="ctrs">${c.map(([k, n, col, tip]) => `<span class="ctr" style="--cc:${col}" data-tip="${esc(tip)}">${n} <b>${me[k]}</b></span>`).join('')}</span>` : ''; };
 const medal = (act, ic, label, cost, dis, on) => `<button class="medal${on ? ' on' : ''}" data-act="${act}" ${dis ? 'disabled' : ''} title="${label}">${icon(ic)}${cost != null ? `<span class="cost">${cost}</span>` : ''}<small>${label}</small></button>`;
+// Cinq Nations : le compagnon, déjà triplé, se tient à côté du héros (hors plateau)
+// pendant le combat, il affronte seulement le compagnon adverse : ce duel décide du coffre
+function duelRes(F) { if (!F || !F.duel) return null; return F.duel.w === F.me ? 'win' : F.duel.w === 1 - F.me ? 'loss' : 'draw'; }
+function duelLine(F) {
+  const r = duelRes(F); if (!r) return '';
+  return `<p class="duel-l ${r}">Duel des compagnons : ${r === 'win' ? 'gagné · coffre majeur' : r === 'loss' ? 'perdu · coffre mineur' : 'égalité · coffre mineur'}</p>`;
+}
+function cpSlotH(me, F) {
+  const lv = compLv(me.cp);
+  if (F && F.duel) {
+    const mine = F.me ? F.duel.b : F.duel.a, theirs = F.me ? F.duel.a : F.duel.b, r = F.done ? duelRes(F) : null;
+    const tk = (m, k) => m ? tokenH(m, 'duel', k, { cls:'cp-tok' }) : '<span class="cp-none">—</span>';
+    return `<div class="cpz duel${r ? ' ' + r : ''}" aria-label="Duel des compagnons"><b class="cpz-h">Duel des compagnons</b><div class="cpz-row">${tk(mine[0], 0)}<span class="vs">VS</span>${tk(theirs[0], 1)}</div><small>${r ? (r === 'win' ? 'Gagné · coffre majeur' : r === 'loss' ? 'Perdu · coffre mineur' : 'Égalité · coffre mineur') : 'Le gagnant ouvre un coffre majeur'}</small></div>`;
+  }
+  return `<div class="cpz" aria-label="Ton compagnon"><b class="cpz-h">Compagnon</b>${tokenH(me.cp, 'cp', 0, { cls:'cp-tok' })}<small>Niveau ${lv} · hors plateau</small></div>`;
+}
 function compMedal(canAct, own) {
   const me = V.me, id = me.cid; if (!id || !C[id]) return '';
   const lim = compLimit(me.rd || 0), cb = me.cb || 0, c = C[id];
@@ -1196,7 +1212,7 @@ function compCardH(hid, id, me) {
 /* ---------- bulle des améliorations d'un serviteur ---------- */
 function findMine(u) {
   if (u == null || !V.me) return null;
-  for (const L of [V.me.bd, V.me.hd, V.me.sh, V.me.disc || []]) { const m = (L || []).find(x => x && x.u != null && String(x.u) === String(u)); if (m) return m; }
+  for (const L of [V.me.bd, V.me.hd, V.me.sh, V.me.disc || [], V.me.cp ? [V.me.cp] : []]) { const m = (L || []).find(x => x && x.u != null && String(x.u) === String(u)); if (m) return m; }
   return null;
 }
 const sgn = v => (v >= 0 ? '+' : '') + v;
@@ -1460,3 +1476,16 @@ function arenaCleanup() {
     el.style.removeProperty('z-index'); el.style.removeProperty('transform');
   });
 }
+
+/* compagnon des Cinq Nations, à côté du héros */
+(function(){ const st = document.createElement('style'); st.textContent = `
+.cpz{display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px 8px 6px;border-radius:12px;background:rgba(20,12,6,.55);box-shadow:inset 0 0 0 1.5px rgba(242,193,78,.45);flex:none}
+.cpz-h{font:700 10px/1 Grenze,serif;letter-spacing:.12em;text-transform:uppercase;color:#f2c14e}
+.cpz small{font-size:10px;color:#e8d6b0;white-space:nowrap}
+.cpz .mn.cp-tok{--tw:64px;transform:none;margin:0}
+.cpz-row{display:flex;align-items:center;gap:4px}
+.cpz .vs{font:700 14px Grenze,serif;color:#ff9a5a;text-shadow:0 1px 0 #000}
+.cpz.win{box-shadow:inset 0 0 0 2px #f2c14e,0 0 14px rgba(242,193,78,.6)}
+.cpz.loss{box-shadow:inset 0 0 0 2px #7a8aa0}
+.duel-l{margin:4px 0 0;font-size:13px;color:#e8d6b0}.duel-l.win{color:#f2c14e}
+`; document.head.appendChild(st); })();
