@@ -1829,14 +1829,14 @@ const DEFAULT_SETTINGS = {
     { id:'sq_foudre', n:'Zapou', col:'#ffd23a', bg:'sqfoudre', on:true },
   ],
   univ:[
-    { n:'Ténèbres', col:'#6a2a8a', ic:'moon', lore:'Ici, mourir n\'est qu\'un contretemps.', mech:'ames', tribes:['spec', 'vamp', 'garou', 'mort'] },
-    { n:'Royaumes anciens', col:'#9a7228', ic:'crown', lore:'Les vieilles lignées tiennent parole.', mech:'serment', tribes:['nain', 'elfe', 'ogre', 'bete'] },
-    { n:'Ateliers et bas-fonds', col:'#4a6a86', ic:'gear', lore:'Tout se vend, surtout ce qui fume.', mech:'marche', tribes:['meca', 'gob', 'nain', 'cors'] },
-    { n:'Terres sauvages', col:'#4a7a2a', ic:'leaf', lore:'La meute charge d\'abord.', mech:'ruee', tribes:['bete', 'garou', 'elfe', 'drag'] },
-    { n:'Mers et cieux', col:'#1f6a96', ic:'wave', lore:'Chaque victoire a son butin.', mech:'pillage', tribes:['cors', 'drag', 'elem', 'spec'] },
-    { n:'Arcanes', col:'#5a3a9a', ic:'star', lore:'Un sort, et tout s\'illumine.', mech:'resonance', tribes:['elem', 'elfe', 'meca', 'mort'] },
-    { n:'Montagnes', col:'#6a5038', ic:'mount', lore:'Ils tombent… et tout s\'effondre.', mech:'eboulement', tribes:['nain', 'ogre', 'gob', 'drag'] },
-    { n:'Squishys', col:'#b04a6a', ic:'blob', lore:'Une grosse boule de câlins.', mech:'fusion', tribes:['sq_feu', 'sq_eau', 'sq_terre', 'sq_vent', 'sq_glace', 'sq_foudre'] },
+    { n:'Ténèbres', col:'#6a2a8a', ic:'moon', lore:'Ici, mourir n\'est qu\'un contretemps.', mech:'ames', tribes:['spec', 'vamp', 'garou', 'mort', 'bete'] },
+    { n:'Royaumes anciens', col:'#9a7228', ic:'crown', lore:'Les vieilles lignées tiennent parole.', mech:'serment', tribes:['nain', 'elfe', 'ogre', 'bete', 'vamp'] },
+    { n:'Ateliers et bas-fonds', col:'#4a6a86', ic:'gear', lore:'Tout se vend, surtout ce qui fume.', mech:'marche', tribes:['meca', 'gob', 'nain', 'cors', 'ogre'] },
+    { n:'Terres sauvages', col:'#4a7a2a', ic:'leaf', lore:'La meute charge d\'abord.', mech:'ruee', tribes:['bete', 'garou', 'elfe', 'drag', 'elem'] },
+    { n:'Mers et cieux', col:'#1f6a96', ic:'wave', lore:'Chaque victoire a son butin.', mech:'pillage', tribes:['cors', 'drag', 'elem', 'spec', 'meca'] },
+    { n:'Arcanes', col:'#5a3a9a', ic:'star', lore:'Un sort, et tout s\'illumine.', mech:'resonance', tribes:['elem', 'elfe', 'meca', 'mort', 'spec'] },
+    { n:'Montagnes', col:'#6a5038', ic:'mount', lore:'Ils tombent… et tout s\'effondre.', mech:'eboulement', tribes:['nain', 'ogre', 'gob', 'drag', 'garou'] },
+    { n:'Squishys', col:'#b04a6a', ic:'blob', lore:'Une grosse boule de câlins.', mech:'fusion', tribes:['sq_feu', 'sq_eau', 'sq_terre', 'sq_vent', 'sq_foudre'] },
   ],
   heroFam:{},
   neutral:{ n:'Neutre', col:'#8a5a30', bg:'neu' },
@@ -2451,9 +2451,11 @@ function newPlayer(pid, n, human, peer) {
 }
 const upCost = p => p.t >= 6 ? 0 : Math.max(0, p.uc - (p.hero === 'ilka' ? 1 : 0));
 
+const UNIV_FAMS = 5;   // chaque univers compte 5 familles ; on n'en joue qu'un par partie
 function univChosen(sel) {
   const on = SET.tribes.filter(t => t.on !== false).map(t => t.id);
-  const us = (SET.univ || []).filter(u => (sel || []).includes(u.n) && u.tribes.some(t => on.includes(t)));
+  const first = (sel || [])[0];
+  const us = (SET.univ || []).filter(u => u.n === first && u.tribes.some(t => on.includes(t)));
   const trs = [];
   for (const u of us) for (const t of u.tribes) if (on.includes(t) && !trs.includes(t)) trs.push(t);
   return { us:us.map(u => u.n), trs };
@@ -2464,7 +2466,9 @@ function hostStart(humans, opt) {
   const n = +RU().tribesPerGame || 0;
   const ch = univChosen(opt && opt.univ);
   G.univ = [];
+  const pool = (SET.univ || []).filter(u => u.tribes.some(t => on.includes(t)));
   if (ch.trs.length) { G.univ = ch.us; G.trs = ch.trs; G.pick = 1; }
+  else if (pool.length) { const u = pickR(pool); G.univ = [u.n]; G.trs = u.tribes.filter(t => on.includes(t)); }
   else if (n > 0 && n < on.length) {
     const picked = [];
     for (const u of shuffle((SET.univ || []).slice())) {
@@ -2787,7 +2791,7 @@ function applyLive() {
   for (const t of DEFAULT_SETTINGS.tribes) if (!SET.tribes.some(x => x.id === t.id) && !delT.includes(t.id)) SET.tribes.push(clone(t));
   SET.univ = SET.univ || [];
   const delU = SET.delUniv || [];
-  for (const u of DEFAULT_SETTINGS.univ) { if (delU.includes(u.n)) continue; const mine = SET.univ.find(x => x.n === u.n); if (!mine) SET.univ.push(clone(u)); else { if (!mine.mech) mine.mech = u.mech; if (!mine.fixed) for (const t of u.tribes) if (!mine.tribes.includes(t) && !delT.includes(t)) mine.tribes.push(t); } }
+  for (const u of DEFAULT_SETTINGS.univ) { if (delU.includes(u.n)) continue; const mine = SET.univ.find(x => x.n === u.n); if (!mine) SET.univ.push(clone(u)); else { if (!mine.mech) mine.mech = u.mech; if (!mine.fixed) mine.tribes = u.tribes.filter(t => !delT.includes(t)); } }
   CARDS = clone(DEFAULT_CARDS);
   for (const id in (DATA.liveCards || {})) CARDS[id] = clone(DATA.liveCards[id]);
   for (const id of (SET.deleted || [])) delete CARDS[id];
@@ -5347,7 +5351,7 @@ function univTabH() {
     </article>`;
   };
   const heroRow = h => `<div class="hrow">${faceH('art-h-' + h)}<b>${esc(HEROES[h].n)}</b><div class="ftogs">${S.tribes.map(t => `<button class="ftog sm${fam(h).includes(t.id) ? ' on' : ''}" style="--c:${esc(t.col)}" data-act="atl-hfam" data-h="${h}" data-t="${esc(t.id)}" aria-pressed="${fam(h).includes(t.id)}" ${d}>${esc(t.n)}</button>`).join('')}</div></div>`;
-  return `<p class="atl-intro">Un univers regroupe des familles, une loi qui lui est propre et un vivier de héros. Une famille peut appartenir à plusieurs univers : elle profite alors de chaque loi. Un héros est proposé en début de partie dès qu'une de ses familles est en jeu.</p>
+  return `<p class="atl-intro">Un univers regroupe exactement 5 familles ; une partie se joue dans un seul univers. Il regroupe ces familles, une loi qui lui est propre et un vivier de héros. Une famille peut appartenir à plusieurs univers : elle profite alors de chaque loi. Un héros est proposé en début de partie dès qu'une de ses familles est en jeu.</p>
     <div class="ulist">${S.univ.map(card).join('')}</div>
     ${DATA.admin ? `<button class="btn pri" data-act="atl-unew">${icon('plus')}Nouvel univers</button>` : ''}
     <section class="vsec"><h3 class="atl-h">Héros et familles</h3><p class="mini">Rattache chaque héros à une ou plusieurs familles. Il rejoint alors le vivier des univers qui contiennent ces familles.</p><div class="hlist">${Object.keys(HEROES).map(heroRow).join('')}</div></section>`;
@@ -5492,6 +5496,7 @@ function atlValidateSet(S) {
   for (const t of [1, 2, 3, 4, 5, 6]) if (!(+S.budget[t][0] <= +S.budget[t][1])) return `Le budget du niveau ${t} a un minimum plus grand que son maximum.`;
   if (S.tribes.some(t => !String(t.n || '').trim())) return 'Chaque tribu doit avoir un nom.';
   if ((S.univ || []).some(u => !String(u.n || '').trim())) return 'Chaque univers doit avoir un nom.';
+  { const bad = (S.univ || []).find(u => u.tribes.length !== UNIV_FAMS); if (bad) return `L'univers « ${bad.n} » doit compter exactement ${UNIV_FAMS} familles (il en a ${bad.tribes.length}).`; }
   if (new Set((S.univ || []).map(u => u.n.trim())).size !== (S.univ || []).length) return 'Deux univers portent le même nom.';
   if (Object.values(S.kw).some(k => !String(k.n || '').trim())) return 'Chaque mot-clé doit avoir un nom.';
   return '';
@@ -5532,7 +5537,7 @@ async function atlAct(act, btn) {
     case 'atl-tdel': { const t = A.set.tribes.splice(+btn.dataset.i, 1)[0]; if (t && DEFAULT_SETTINGS.tribes.some(x => x.id === t.id)) A.set.delTribes = (A.set.delTribes || []).concat(t.id); A.setDirty = true; break; }
     case 'atl-unew': if (ro()) break; A.set.univ = (A.set.univ || []).concat({ n:'Nouvel univers', mech:'none', tribes:[], fixed:true }); A.setDirty = true; break;
     case 'atl-udel': { if (ro()) break; const u = A.set.univ.splice(+btn.dataset.i, 1)[0]; if (u && DEFAULT_SETTINGS.univ.some(x => x.n === u.n)) A.set.delUniv = (A.set.delUniv || []).concat(u.n); A.setDirty = true; break; }
-    case 'atl-ufam': { if (ro()) break; const u = A.set.univ[+btn.dataset.i], t = btn.dataset.t; if (!u) break; u.tribes = u.tribes.includes(t) ? u.tribes.filter(x => x !== t) : u.tribes.concat(t); u.fixed = true; A.setDirty = true; break; }
+    case 'atl-ufam': { if (ro()) break; const u = A.set.univ[+btn.dataset.i], t = btn.dataset.t; if (!u) break; if (!u.tribes.includes(t) && u.tribes.length >= UNIV_FAMS) { toast(`Un univers compte ${UNIV_FAMS} familles : retire-en une avant d'en ajouter.`); break; } u.tribes = u.tribes.includes(t) ? u.tribes.filter(x => x !== t) : u.tribes.concat(t); u.fixed = true; A.setDirty = true; break; }
     case 'atl-hfam': {
       if (ro()) break; const h = btn.dataset.h, t = btn.dataset.t; A.set.heroFam = A.set.heroFam || {};
       const cur = Array.isArray(A.set.heroFam[h]) && A.set.heroFam[h].length ? A.set.heroFam[h] : (HEROES[h].fam || []);
@@ -5569,7 +5574,7 @@ if (LITE) document.documentElement.classList.add('lite');
 /* =====================================================================
    INTERFACE
    ===================================================================== */
-let savedUniv = []; try { savedUniv = JSON.parse(localStorage.getItem('tav-univ') || '[]'); if (!Array.isArray(savedUniv)) savedUniv = []; } catch (e) { savedUniv = []; }
+let savedUniv = []; try { savedUniv = JSON.parse(localStorage.getItem('tav-univ') || '[]'); savedUniv = Array.isArray(savedUniv) ? savedUniv.slice(0, 1) : []; } catch (e) { savedUniv = []; }
 let savedName = ''; try { savedName = localStorage.getItem('tav-name') || ''; } catch (e) {}
 const V = { screen:'menu', name:savedName || 'Aventurier', nameRaw:savedName, pub:null, pubAt:0, me:null, sel:null, fight:null, fi:0, hostGone:false, univSel:savedUniv };
 
@@ -5854,8 +5859,8 @@ function univPickH(sel, edit, actions) {
     </button>`;
   };
   const rnd = !ch.us.length, n = +RU().tribesPerGame || 0;
-  const sum = rnd ? `Au hasard · ${n || on.length} familles tirées au sort` : `${ch.us.length} univers · ${ch.trs.length} familles en jeu`;
-  const laws = rnd ? 'Les lois suivront les univers tirés.' : 'Lois actives : ' + ch.us.map(nm => { const u = SET.univ.find(x => x.n === nm); return u && MECHS[u.mech] && u.mech !== 'none' ? MECHS[u.mech].n : null; }).filter(Boolean).join(' · ');
+  const sum = rnd ? 'Au hasard · un univers tiré au sort' : `${ch.us[0]} · ${ch.trs.length} familles en jeu`;
+  const laws = rnd ? 'Sa loi s\'appliquera à la partie.' : 'Loi active : ' + ch.us.map(nm => { const u = SET.univ.find(x => x.n === nm); return u && MECHS[u.mech] && u.mech !== 'none' ? MECHS[u.mech].n : null; }).filter(Boolean).join(' · ');
   return `<div class="upick">
     <div class="bans">${us.map(banner).join('')}</div>
     <div class="ubar"><div class="ubar-t"><b>${sum}</b><span>${esc(laws)}</span></div>${edit ? `<button type="button" class="btn ubar-r${rnd ? ' on' : ''}" data-act="univ" data-u="-1" aria-pressed="${rnd}">${icon('dice')}Au hasard</button>` : ''}${actions || ''}</div>
@@ -6163,7 +6168,7 @@ function doAct(act, btn) {
     case 'univ': {
       const k = +btn.dataset.u, u = (SET.univ || [])[k];
       let sel = (V.univSel || []).slice();
-      if (k < 0 || !u) sel = []; else sel = sel.includes(u.n) ? sel.filter(x => x !== u.n) : sel.concat(u.n);
+      if (k < 0 || !u) sel = []; else sel = sel[0] === u.n ? [] : [u.n];   // un seul univers à la fois
       V.univSel = sel; try { localStorage.setItem('tav-univ', JSON.stringify(sel)); } catch (e) {}
       if (Net.role === 'host' && !H.G) sendPub(); else render();
       break;
