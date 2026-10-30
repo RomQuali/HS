@@ -65,7 +65,7 @@ const SPELLS = {
   cf_or:{ n:'Coffre d\'or', t:1, c:0, ck:6, item:1, ty:'cof', tx:'Reçu après une victoire avec une taverne de niveau 4 ou plus. Ouvre-le avec 6 chakra : deux équipements rares.' },
 };
 const SPELL_IDS = Object.keys(SPELLS);
-function drawSpell(t) { const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra'); const ev = typeof H !== 'undefined' && H.G && H.G.eveil; const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !!SPELLS[id].nin === !!nin && (!SPELLS[id].forb || ev)); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
+function drawSpell(t, el) { const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra'); const ev = typeof H !== 'undefined' && H.G && H.G.eveil; const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !!SPELLS[id].nin === !!nin && (!SPELLS[id].forb || ev) && (!el || SPELLS[id].el === el)); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
 
 // pourquoi un sort ne peut pas être lancé (null = il peut)
 function spellBlock(p, id, tgt) {
@@ -375,10 +375,14 @@ const comboTx = F => F ? (COMBO_BD[F.n] || [''])[0] : '';
 function rsvFill(G, p, el) {
   p.rsv = p.rsv || [];
   p.rsv.push(el);
+  comps(p).forEach(c => { c.el = el; });   // le compagnon prend l'élément de la dernière technique
   if (p.rsv.length < 2) return;
   const [a, b] = p.rsv, F = comboOf(a, b); p.rsv = [];
   if (!F) return;
-  const bd = COMBO_BD[F.n]; if (bd) withSrc('Combo · ' + F.n, () => bd[1](G, p));
+  const bd = COMBO_BD[F.n], w = HEROES[p.hero] && HEROES[p.hero].pw;
+  if (bd) withSrc('Combo · ' + F.n, () => { bd[1](G, p); if (w && w.k === 'pdouble' && !p.cdbl) { p.cdbl = 1; bd[1](G, p); } });
+  if (w && w.k === 'pcombo') withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => { if (w.d && (a === w.el || b === w.el)) p.njf = (p.njf || 0) + w.d; if (w.h) p.bd.forEach(m => buff(m, 0, w.h)); });
+  trigBoard(G, p, 'combo');
   comps(p).forEach(c => { c.x = (c.x || []).filter(e => !e.fusion); c.x.push(Object.assign({ src:'Combo · ' + F.n, fusion:1 }, F.fx)); c.fu = F.n; });
   p.combo = { n:F.n, col:F.col, a, b, pure:a === b ? 1 : 0, id:UID++ };
 }
