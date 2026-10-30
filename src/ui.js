@@ -127,9 +127,9 @@ function kwIcons(m) {
 const KW_ANG = [62, -62, 92, -92, 34, -34, 120, -120];
 const SHIELD_D = 'M50 -4 C 85 -4, 102 28, 102 60 C 102 93, 79 115, 50 115 C 21 115, -2 93, -2 60 C -2 28, 15 -4, 50 -4 Z';
 function tokenH(m, z, i, o = {}) {
-  const b = CD(m.c), f = m.f || '', g = !!m.g;
+  const b = CD(m.c), f = (m.f || '') + (m.tmp && m.tmp.f ? m.tmp.f : ''), g = !!m.g;   // mots-clés permanents + ceux du prochain combat
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
-  const cls = ['mn', o.trip && 'tripok', g && 'g', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
+  const cls = ['mn', ...['s', 't', 'r', 'w', 'v'].filter(k => f.includes(k)).map(k => 'kw-' + k), o.trip && 'tripok', g && 'g', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
   const ics = kwIcons(m);
   const up = (v, base) => v > base * (g ? 2 : 1) ? ' up' : '';
   const svg = `<svg class="mn-svg" viewBox="-4 -6 108 132" aria-hidden="true">`
@@ -2033,4 +2033,33 @@ svg.ck-gem.aff{box-shadow:none;filter:drop-shadow(0 0 5px rgba(155,227,106,.95))
 .fxtxt.buffinfo .bl-src{font-size:10.5px;color:#e8d6b0;letter-spacing:.02em}
 .fxtxt.bufftmp b{font:700 15px var(--f-label),serif;color:#9fd8ff;text-shadow:0 2px 0 #000}
 @media (prefers-reduced-motion:reduce){.mn.buffup .mn-svg,.mn.buffup::before{animation:none}}
+`; document.head.appendChild(st); })();
+
+/* effets visibles des mots-clés, au recrutement comme au combat */
+(function(){ const st = document.createElement('style'); st.textContent = `
+.mn[class*="kw-"]{--kwz:2}
+.mn.kw-s::after,.mn.kw-r::after,.mn.kw-w::after,.mn.kw-v::after,.mn.kw-t::after{content:'';position:absolute;pointer-events:none;z-index:var(--kwz)}
+/* Bouclier divin : bulle dorée scintillante */
+.mn.kw-s .mn-svg{filter:drop-shadow(0 0 9px rgba(255,220,100,.95)) drop-shadow(0 0 18px rgba(255,200,60,.55)) drop-shadow(0 4px 4px rgba(0,0,0,.45))}
+.mn.kw-s::after{left:-4%;right:-4%;top:-2%;bottom:14%;border-radius:50%;
+  background:radial-gradient(ellipse at 34% 26%,rgba(255,255,255,.55),transparent 22%),radial-gradient(ellipse at 50% 50%,transparent 58%,rgba(255,236,150,.55) 70%,rgba(255,210,80,.85) 76%,transparent 80%);
+  box-shadow:0 0 14px rgba(255,220,110,.6);animation:kwShield 2.4s ease-in-out infinite}
+@keyframes kwShield{50%{transform:scale(1.04);opacity:.8}}
+/* Provocation : rempart de pierre lumineux */
+.mn.kw-t .mn-svg{filter:drop-shadow(0 0 0 #000) drop-shadow(0 0 6px rgba(200,180,140,.9))}
+/* Renaissance : esprit vert qui monte */
+.mn.kw-r::after{left:15%;right:15%;top:-8%;bottom:30%;border-radius:50%;background:radial-gradient(circle at 30% 80%,rgba(160,255,220,.9) 0 3%,transparent 4%),radial-gradient(circle at 70% 70%,rgba(160,255,220,.8) 0 2.5%,transparent 3.5%),radial-gradient(circle at 50% 40%,rgba(160,255,220,.7) 0 2%,transparent 3%);animation:kwReborn 2.2s linear infinite}
+@keyframes kwReborn{from{transform:translateY(20%);opacity:0}30%{opacity:1}to{transform:translateY(-25%);opacity:0}}
+/* Furie des vents : tourbillon */
+.mn.kw-w::after{left:-10%;right:-10%;top:4%;bottom:18%;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 20%,rgba(200,255,230,.7) 24%,transparent 30% 70%,rgba(200,255,230,.6) 74%,transparent 80%);
+  -webkit-mask:radial-gradient(circle,transparent 60%,#000 66%,transparent 74%);mask:radial-gradient(circle,transparent 60%,#000 66%,transparent 74%);animation:kwWind 1.6s linear infinite}
+@keyframes kwWind{to{transform:rotate(360deg)}}
+/* Toxique : halo vert */
+.mn.kw-v .mn-svg{filter:drop-shadow(0 0 8px rgba(120,230,60,.9)) drop-shadow(0 4px 4px rgba(0,0,0,.45))}
+.mn.kw-v.kw-s .mn-svg{filter:drop-shadow(0 0 9px rgba(255,220,100,.95)) drop-shadow(0 0 14px rgba(120,230,60,.8))}
+/* plusieurs effets : pseudo-élément partagé, le bouclier a la priorité visuelle */
+.mn.kw-s.kw-w::after{background:radial-gradient(ellipse at 34% 26%,rgba(255,255,255,.55),transparent 22%),radial-gradient(ellipse at 50% 50%,transparent 58%,rgba(255,236,150,.55) 70%,rgba(255,210,80,.85) 76%,transparent 80%);-webkit-mask:none;mask:none;animation:kwShield 2.4s ease-in-out infinite}
+.mn.kw-s.kw-r::after{animation:kwShield 2.4s ease-in-out infinite}
+@media (prefers-reduced-motion:reduce){.mn[class*="kw-"]::after{animation:none}}
+html.lite .mn[class*="kw-"]::after{display:none}
 `; document.head.appendChild(st); })();
