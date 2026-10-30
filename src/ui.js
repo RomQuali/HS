@@ -435,8 +435,8 @@ function gameH() {
       const F = V.fight, last = F.r.frames.length - 1, fr = F.r.frames[Math.min(V.fi, last)];
       const mine = F.me;
       const enHero = mine ? F.ha : F.hb;
-      topZone = `<section class="keeper-zone enemy"><div class="keeper">${faceH(enHero && HART[enHero] ? 'art-h-' + enHero : avatarSym(F.on), 'face kf')}<div class="kname"><b>${esc(F.on)}</b><span>Taverne niveau ${mine ? F.ta : F.tb}</span></div></div>
-        <div class="line counter-line">${fightRow(F, 1 - mine)}</div></section>`;
+      topZone = `<section class="keeper-zone enemy${F.duel ? ' has-cp' : ''}"><div class="keeper">${faceH(enHero && HART[enHero] ? 'art-h-' + enHero : avatarSym(F.on), 'face kf')}<div class="kname"><b>${esc(F.on)}</b><span>Taverne niveau ${mine ? F.ta : F.tb}</span></div></div>
+        ${F.duel ? cpSideH(me, F, 1) : ''}<div class="line counter-line">${fightRow(F, 1 - mine)}</div></section>`;
       boardRow = fightRow(F, mine);
       if (F.done) {
         const won = F.r.w === mine, lost = F.r.w === 1 - mine, dmg = Math.min(F.cap || 99, F.r.dmg);
@@ -453,7 +453,8 @@ function gameH() {
     }
     const aimS = !fighting && V.aim != null && me.hd[V.aim] && me.hd[V.aim].sp ? SPELLS[me.hd[V.aim].sp] : null;
     const sockets = Array.from({ length:7 }, () => '<i></i>').join('');
-    const board = `<section class="board-zone${aimS ? ' aim' : ''}" ${fighting ? '' : 'data-drop="bd"'} aria-label="Ton plateau">
+    const cpSide = me.cp ? cpSideH(me, fighting ? V.fight : null, 0) : '';
+    const board = `<section class="board-zone${aimS ? ' aim' : ''}${cpSide ? ' has-cp' : ''}" ${fighting ? '' : 'data-drop="bd"'} aria-label="Ton plateau">${cpSide}
       ${aimS ? `<div class="aimbar"><span>${icon('bolt')}<b>${esc(aimS.n)}</b> : touche le serviteur à cibler.</span><button class="btn sm" data-act="aimcancel">Annuler</button></div>` : ''}
       ${!fighting && me.tma ? `<span class="tma-b">Prochain combat : +${me.tma.a}/+${me.tma.h} pour tous</span>` : ''}
       <div class="line" id="bdrow">${boardRow}</div></section>`;
@@ -463,7 +464,7 @@ function gameH() {
       : `<span class="powm passive" aria-label="${esc(hero ? hero.tx : '')}">${hero ? powArtH(me.hero) : icon('crown')}<small>Passif</small>${hero ? `<span class="pc-tx">${esc(hero.tx)}</span>` : ''}</span>`;
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
-      <div class="hz-left">${trainH(d, me, canAct)}${me.cp ? cpSlotH(me, fighting ? V.fight : null) : `<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span>`}</div>
+      <div class="hz-left">${trainH(d, me, canAct)}${me.cp ? '' : `<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span>`}</div>
       <div class="hz-hero" data-hov="hero"><span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? 'art-h-' + me.hero : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span></div>
       <div class="hz-right"><span class="hov" data-hov="pow">${power}</span><span class="purses">${coins}${canAct ? ckGauge(d, me) : ''}</span>${rsvH(d, me)}</div>
       <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}">${icon('bell')}<span>${me.rdy ? 'Prêt !' : 'Prêt'}</span></button></div></section>`;
@@ -588,6 +589,18 @@ function duelRes(F) { if (!F || !F.duel) return null; return F.duel.w === F.me ?
 function duelLine(F) {
   const r = duelRes(F); if (!r) return '';
   return `<p class="duel-l ${r}">Duel des compagnons : ${r === 'win' ? 'gagné · coffre majeur' : r === 'loss' ? 'perdu · coffre mineur' : 'égalité · coffre mineur'}</p>`;
+}
+// compagnon Ninja posé sur le bord gauche de la zone de jeu, séparé par un fil léger
+// side 0 : le mien (plateau du bas) · side 1 : celui de l'adversaire (pendant le duel)
+function cpSideH(me, F, side) {
+  let m = me.cp, lab = `Compagnon · niv. ${compLv(me.cp)}`, cls = '';
+  if (F && F.duel) {
+    const mine = F.me ? F.duel.b : F.duel.a, theirs = F.me ? F.duel.a : F.duel.b, r = F.done ? duelRes(F) : null;
+    m = (side ? theirs : mine)[0]; if (!m) return '';
+    lab = side ? 'Compagnon adverse' : r ? (r === 'win' ? 'Duel gagné · coffre majeur' : r === 'loss' ? 'Duel perdu · coffre mineur' : 'Égalité · coffre mineur') : 'Duel des compagnons';
+    cls = r ? (side ? (r === 'win' ? ' loss' : r === 'loss' ? ' win' : '') : ' ' + r) : '';
+  }
+  return `<div class="cp-side${cls}" aria-label="${esc(lab)}">${tokenH(m, side ? 'duelb' : 'cp', 0, { cls:'cp-tok' })}<small>${esc(lab)}</small></div>`;
 }
 function cpSlotH(me, F) {
   const lv = compLv(me.cp);
@@ -1629,4 +1642,20 @@ svg.ck-gem.aff{box-shadow:none;filter:drop-shadow(0 0 5px rgba(155,227,106,.95))
 .train{flex:1 1 auto;min-width:360px}
 .train .tr-row.med{padding:10px 8px 7px 7px;gap:10px;min-height:56px;overflow-x:auto;overflow-y:visible}
 @media (min-width:821px){ .train{min-width:380px;padding:4px 12px 6px} .eqm,.eqm svg{width:44px;height:44px} }
+`; document.head.appendChild(st); })();
+
+/* compagnon sur le bord gauche de la zone de jeu */
+(function(){ const st = document.createElement('style'); st.textContent = `
+.has-cp{position:relative}
+:root body .table:has(.has-cp){--tw:min(98px, calc((100cqi - 130px) / 8.9))}
+@media (min-width:821px){ :root body .table .board-zone.has-cp{--tw:min(118px, calc((100cqi - 150px) / 8.4), 13.4vh)} .board-zone.has-cp .cp-side{width:calc(var(--tw) + 12px)} }
+.board-zone.has-cp,.keeper-zone.has-cp{padding-left:calc(var(--tw) + 40px)}
+.keeper-zone.has-cp > .cp-side{top:auto;bottom:16px;transform:none}
+.cp-side{position:absolute;left:14px;top:50%;transform:translateY(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:3px;width:calc(var(--tw) + 12px);padding-right:14px}
+.cp-side::after{content:'';position:absolute;right:0;top:-6%;bottom:-6%;width:1.5px;background:linear-gradient(180deg,transparent,rgba(242,193,78,.55) 18%,rgba(242,193,78,.55) 82%,transparent);box-shadow:0 0 6px rgba(242,193,78,.35)}
+.cp-side .mn.cp-tok{margin:0}
+.cp-side small{font:700 10px/1.15 var(--f-label),serif;color:#f2c14e;text-align:center;letter-spacing:.04em;text-shadow:0 1px 2px #000}
+.cp-side.win small{color:#ffe27a}.cp-side.loss small{color:#a8b4c8}
+.cp-side.win .mn{filter:drop-shadow(0 0 10px rgba(242,193,78,.8))}
+@media (max-width:820px){ :root body .table:has(.has-cp){--tw:min(80px, calc((100cqi - 40px) / 8.6))} .board-zone.has-cp,.keeper-zone.has-cp{padding-left:calc(var(--tw) + 22px)} .cp-side{left:4px;padding-right:8px} .cp-side small{display:none} }
 `; document.head.appendChild(st); })();
