@@ -130,7 +130,7 @@ function tokenH(m, z, i, o = {}) {
     + (f.includes('t') ? '<use href="#tk-taunt"/>' : '')
     + `<use href="#tk-frame${g ? '-g' : ''}"/><g clip-path="url(#tk-clip)"><use href="#art-${m.c}" x="12" y="9.5" width="76" height="91.5"/></g><use href="#tk-rim"/>`
     + (f.includes('s') ? `<g class="bubg"><use class="bub" href="#tk-shield"/><path class="bub-run" pathLength="100" d="${SHIELD_D}"/></g>` : '')
-    + (b.t ? `<circle cx="50" cy="3.5" r="9" fill="url(#gr-badge)" stroke="#e2b452" stroke-width="2"/><text class="gt tb" x="50" y="3.5" dy=".36em">${b.t}</text>` : '')
+    + (b.t && z === 'sh' ? `<g class="tflag"><path d="M37 -6 H63 V17 L50 12 L37 17 Z" fill="#4a4044" stroke="#0c0808" stroke-width="2"/><path d="M39.5 -4 H60.5 V14 L50 10 L39.5 14 Z" fill="none" stroke="#ffb050" stroke-width="1.2"/>${Array.from({ length:b.t }, (_, k) => { const row = k < 3 ? 0 : 1, n = row ? b.t - 3 : Math.min(3, b.t), j = row ? k - 3 : k; return `<text x="${f1(50 + (j - (n - 1) / 2) * 6.4)}" y="${row ? 9 : 2.6}" font-size="7" text-anchor="middle" fill="#ffd27a">★</text>`; }).join('')}</g>` : '')
     + ics.map(([ic, col, nm], k) => { const a = KW_ANG[k] * Math.PI / 180; return `<g class="kwi" transform="translate(${f1(50 + 51 * Math.sin(a))} ${f1(55 - 58 * Math.cos(a))})"><title>${nm}</title><circle r="8.4" fill="#1b120b" stroke="${col}" stroke-width="1.8"/><use href="#ic-${ic}" x="-5.6" y="-5.6" width="11.2" height="11.2" style="color:${col}"/></g>`; }).join('')
     + `<use href="#gem-a" x="-1" y="90" width="34" height="34"/><text class="gt${up(m.a, b.a)}" x="16" y="107" dy=".36em">${m.a}</text>`
     + `<use href="#gem-h" x="67" y="88" width="34" height="34"/><text class="gt${up(m.h, b.h)}" x="84" y="108.6" dy=".36em">${m.h}</text></svg>`;
@@ -379,7 +379,7 @@ function gameH() {
     } else {
       topZone = `<section class="keeper-zone${me.fz ? ' frozen' : ''}" data-drop="sh" aria-label="Taverne">
         <div class="keeper">${medal('up', 'up', me.t >= 6 ? 'Niveau max' : 'Améliorer', me.t >= 6 ? null : me.uc, !canAct || me.t >= 6 || me.g < me.uc)}
-          <div class="kc">${faceH('art-h-keeper', 'face kf')}<div class="kname"><b>Bastien, tavernier</b><span class="lv">${tierStars(me.t)}</span></div></div>
+          <div class="kc"><span class="face kf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-h-keeper" width="100" height="100"/></svg></span><div class="kname"><b>Bastien, tavernier</b><span class="lv">${tierStars(me.t)}</span></div></div>
           <div class="kr">${medal('roll', 'roll', 'Actualiser', freeRoll ? 0 : 1, !canAct || (me.g < 1 && !freeRoll))}${medal('frz', 'frz', me.fz ? 'Gelée' : 'Geler', null, !canAct, me.fz)}</div></div>
         <div class="line counter-line">${me.sh.length ? me.sh.map((m, i) => tokenH(m, 'sh', i, { drag:canAct, trip:(own[m.c] || 0) >= 2 && !CD(m.c).tok })).join('') : '<p class="hint">La taverne est vide. Actualise pour faire entrer du monde.</p>'}${me.sp ? `<div class="shelf" title="Étagère à sorts"><span class="shelf-l">Sort</span>${spellTokenH(me.sp, 'ss', 0, { drag:canAct })}</div>` : ''}</div>
         ${d.trs ? `<span class="trs ktrs">${d.trs.map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span>` : ''}</section>`;
