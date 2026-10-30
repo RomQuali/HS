@@ -670,6 +670,8 @@ function awkWatch() {
   el.innerHTML = `<div class="awk-in"><span class="awk-rays"></span><small>Il reste 4 ninjas ou moins</small><b>Éveil</b><p>Les clans libèrent leur pouvoir · ton compagnon s'éveille · ton héros se renforce · tes techniques gagnent leur effet d'Éveil</p></div>`;
   document.body.appendChild(el); setTimeout(() => el.remove(), 3400);
 }
+window.addEventListener('resize', () => { clearTimeout(V.rzT); V.rzT = setTimeout(() => { placeDuelCol(); }, 60); });
+document.addEventListener('fullscreenchange', () => setTimeout(() => { if (V.screen === 'game') render(); }, 120));
 function placeDuelCol() {
   const col = document.querySelector('.duel-col'), tb = document.querySelector('.table'); if (!col || !tb) return;
   const T = tb.getBoundingClientRect(), bz = document.querySelector('.board-zone'), top = document.querySelector('.counter-line'), mine = document.getElementById('bdrow');
@@ -1747,7 +1749,7 @@ svg.ck-gem.aff{box-shadow:none;filter:drop-shadow(0 0 5px rgba(155,227,106,.95))
 (function(){ const st = document.createElement('style'); st.textContent = `
 .has-cp{position:relative}
 :root body .table:has(.has-cp){--tw:min(98px, calc((100cqi - 130px) / 8.9))}
-@media (min-width:821px){ :root body .table .board-zone.has-cp{--tw:min(118px, calc((100cqi - 150px) / 8.4), 13.4vh)} .board-zone.has-cp .cp-side{width:calc(var(--tw) + 12px)} }
+@media (min-width:821px){ :root body .table .board-zone.has-cp{--tw:min(110px, calc((100cqi - 190px) / 8.6), 13vh)} .board-zone.has-cp .cp-side{width:calc(var(--tw) + 12px)} }
 .board-zone.has-cp,.keeper-zone.has-cp{padding-left:calc(var(--tw) + 40px)}
 .keeper-zone.has-cp > .cp-side{top:auto;bottom:16px;transform:none}
 .cp-side{position:absolute;left:14px;top:50%;transform:translateY(-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:3px;width:calc(var(--tw) + 12px);padding-right:14px}
