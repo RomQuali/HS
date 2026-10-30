@@ -4421,14 +4421,31 @@ function csKnights() {
 
 /* ---------- loups-garous ---------- */
 function csWolf(id, x, y, H, flip, delay) {
-  const fur = 'M24 120 C26 116 32 114 36 112 C34 104 30 98 32 90 C34 84 38 80 38 74 C34 66 32 58 34 50 C36 40 42 32 48 26 L46 24 L50 23 L49 20 L53 20 C54 18 53 14 52 10 L47 -7 L55 2 L55 -12 L60 -1 C64 -7 70 -15 76 -23 L81 -25 L80 -20 C78 -16 76 -12 74 -10 L85 -17 C83 -10 78 -4 72 2 C72 8 74 14 76 22 C76 26 76 28 76 30 L79 32 L76 34 C78 40 78 44 76 48 C82 52 88 58 90 66 L92 70 L88 69 L89 73 L85 70 L84 72 L82 66 C78 60 74 58 70 58 C70 64 68 70 66 74 C70 80 72 86 70 92 C66 98 62 104 62 112 C68 114 74 116 76 120 Z';
-  const k = H / 120, w = 100 * k;
-  const s = `<defs>${csRim('wr' + id, -.6, 1.4, '#c8d6ff')}<filter id="wf${id}" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency=".7" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="3.2" xChannelSelector="R" yChannelSelector="G"/></filter>${csBlur('wl', 1.1)}${csBlur('we', 1.5)}<radialGradient id="ws${id}" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#000" stop-opacity=".55"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient></defs>
-    <g transform="translate(${flip ? w : 0} ${csF(26 * k)}) scale(${flip ? -k : k} ${k})"><ellipse cx="48" cy="120" rx="30" ry="4" fill="url(#ws${id})"/>
-    <g filter="url(#wr${id})"><path d="${fur}" fill="#0c0e16" filter="url(#wf${id})"/></g>
-    <path d="M44 44 C52 50 62 52 70 50" stroke="#1c2030" stroke-width="${csF(1.2 / k)}" fill="none"/>
-    <circle cx="65" cy="-5" r="2.4" fill="#ffd040" filter="url(#we)"/><circle cx="65" cy="-5" r="1.1" fill="#fff6b0"/></g>`;
-  return { ink: 2.6, id, x, y: y - 26 * H / 120, w, h: H * 146 / 120 + 4, d: .3, svg: s, cls: 'cs-howl', ox: '45%', oy: '100%', delay, vb: [0, 0] };
+  const pal = { w1: ['#8a6444', '#c8a07a', '#5e4430'], w2: ['#727a90', '#b8c0d4', '#4c5266'], w3: ['#5a5a6a', '#9a9aae', '#3a3a48'] }[id] || ['#727a90', '#b8c0d4', '#4c5266'];
+  const [fur, light, dark] = pal, k = H / 120, w = 112 * k, L = csF(1.6 / k);
+  const st = `stroke="#120a06" stroke-width="${L}" stroke-linejoin="round"`;
+  const s = `<g transform="translate(${flip ? w : 0} ${csF(42 * k)}) scale(${flip ? -k : k} ${k})">
+    <ellipse cx="46" cy="122" rx="30" ry="4" fill="#000" opacity=".35"/>
+    <path d="M30 92 C14 90 6 76 10 62 C14 70 20 74 26 74 C22 66 24 58 30 54 C32 66 36 78 40 86 Z" fill="${dark}" ${st}/>
+    <path d="M44 34 C38 44 36 54 38 62 L34 68 L39 67 L38 72 L43 68 L44 70 L45 62 C46 54 50 44 52 38 Z" fill="${dark}" ${st}/>
+    <path d="M34 70 C26 80 28 94 36 100 L30 116 L22 118 L22 122 L44 122 L44 116 L40 114 L46 98 C52 90 50 76 44 68 Z" fill="${dark}" ${st}/>
+    <path d="M32 74 C26 56 30 36 42 24 C50 16 62 14 70 20 C78 28 78 44 72 58 C68 70 60 80 48 82 C40 82 34 80 32 74 Z" fill="${fur}" ${st}/>
+    <path d="M56 30 C66 30 72 40 70 52 C68 64 60 74 52 76 C56 64 58 50 56 30 Z" fill="${light}"/>
+    <path d="M60 22 L66 30 L62 30 L68 38 L62 37 L66 46 L58 40 Z" fill="${light}" ${st}/>
+    <path d="M54 74 C60 84 60 96 56 104 L58 116 L52 118 L52 122 L72 122 L70 116 L64 114 L66 102 C70 92 68 80 62 72 Z" fill="${fur}" ${st}/>
+    <path d="M62 34 C70 40 76 50 78 60 L84 66 L80 67 L82 71 L77 69 L76 72 L72 64 C68 56 62 48 58 42 Z" fill="${fur}" ${st}/>
+    <path d="M56 -6 L50 -22 L62 -12 Z M62 -10 L60 -26 L68 -12 Z" fill="${dark}" ${st}/><path d="M55 -9 L52 -17 L58 -12 Z M63 -12 L62 -20 L66 -13 Z" fill="#e8a0a8"/>
+    <path d="M50 20 C46 8 50 -6 62 -10 C72 -12 80 -6 80 4 C80 12 74 20 66 24 Z" fill="${fur}" ${st}/>
+    <path d="M50 12 L44 14 L50 18 L44 22 L54 22 Z" fill="${light}" ${st}/>
+    <path d="M78 -1 L95 -22 L96 -9 L79 5 Z" fill="#8a1a2a"/><path d="M86 -8 Q90 -12 94 -12" stroke="#e8606a" stroke-width="${L}" fill="none"/>
+    <path d="M70 -6 L92 -28 C96 -31 100 -27 97 -23 L80 0 Z" fill="${fur}" ${st}/>
+    <path d="M76 4 L96 -10 C99 -11 100 -7 97 -5 L80 10 Z" fill="${light}" ${st}/>
+    <path d="M86 -16 L88 -11 L90 -18 Z M90 -9 L92 -13 L94 -10 Z" fill="#fff" ${st}/>
+    <circle cx="97" cy="-25" r="3.4" fill="#120a06"/><circle cx="96" cy="-26" r="1" fill="#fff"/>
+    <path d="M64 -2 Q69 -7 74 -2" stroke="#120a06" stroke-width="${csF(2.2 / k)}" fill="none" stroke-linecap="round"/><path d="M63 -8 L72 -9" stroke="#120a06" stroke-width="${L}" stroke-linecap="round"/>
+    <path d="M102 -34 q6 4 4 12 M107 -40 q9 6 7 20" stroke="#fff" stroke-width="${csF(2 / k)}" fill="none" stroke-linecap="round" opacity=".85"/>
+  </g>`;
+  return { ink: 2.2, id, x, y: y - 42 * H / 120, w, h: H * 166 / 120 + 4, d: .3, svg: s, cls: 'cs-howl', ox: '45%', oy: '100%', delay, vb: [0, 0] };
 }
 
 /* ---------- Squishys (gelées translucides) ---------- */
@@ -4564,7 +4581,7 @@ function csFireworks() {
   return [['#ffd24a', 520, 150, 70], ['#ff5a8a', 1060, 120, 80], ['#6ad8ff', 760, 90, 60], ['#9aff6a', 1180, 200, 54], ['#ff9a3a', 420, 230, 50]].map(([c, x, y, R], k) => {
     let rays = ''; for (let i = 0; i < 24; i++) { const a = i / 24 * Math.PI * 2; rays += `<path d="M${csF(Math.cos(a) * R * .2 + R)} ${csF(Math.sin(a) * R * .2 + R)} L${csF(Math.cos(a) * R * .95 + R)} ${csF(Math.sin(a) * R * .95 + R)}"/><circle cx="${csF(Math.cos(a) * R + R)}" cy="${csF(Math.sin(a) * R + R)}" r="2.4"/>`; }
     const s = `<defs>${csBlur('fwb', 2)}<radialGradient id="fwg"><stop offset="0" stop-color="${c}" stop-opacity=".45"/><stop offset="1" stop-color="${c}" stop-opacity="0"/></radialGradient></defs><circle cx="${R}" cy="${R}" r="${R}" fill="url(#fwg)"/><g stroke="${c}" fill="#fff" stroke-width="2" stroke-linecap="round" filter="url(#fwb)">${rays}</g><g stroke="#fff" fill="#fff" stroke-width=".8" opacity=".8">${rays}</g>`;
-    return { id: 'fw' + k, x: x - R, y: y - R, w: R * 2, h: R * 2, vb: [0, 0], d: .1, svg: s, cls: 'cs-fw', delay: -(k * 1.3) };
+    return { id: 'fw' + k, x: x - R - 24, y: y - R - 24, w: R * 2 + 48, h: R * 2 + 48, vb: [-24, -24], d: .1, svg: s, cls: 'cs-fw', delay: -(k * 1.3) };
   });
 }
 
