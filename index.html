@@ -1366,7 +1366,7 @@ body.sc-game #scene *,body.sc-atl #scene *{animation-play-state:paused!important
 /* ===================== MODE LÉGER (téléphones) ===================== */
 html.lite *,html.lite *::before,html.lite *::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 html.lite #scene{transition:none}
-html.lite body.sc-game #scene,html.lite body.sc-atl #scene,html.lite body.sc-lobby #scene{display:none}
+html.lite body.sc-game #scene,html.lite body.sc-atl #scene{display:none}
 html.lite body:has(#scene){background:radial-gradient(120% 80% at 50% 40%,#1e2a36,#0a0f16 70%) fixed #0a0f16}
 html.lite .table::before{content:none}
 html.lite .table{background-image:radial-gradient(70% 45% at 50% 52%,rgba(60,190,255,.14),transparent 70%),linear-gradient(180deg,#0b1a28,#060e18);box-shadow:inset 0 0 0 1.5px rgba(143,244,255,.6),inset 0 0 0 5px #0a1e2c,0 0 18px rgba(60,190,255,.2)}
@@ -1517,6 +1517,65 @@ body.cs-still #scene .cs-p{transition:none}
 #scene .cs-plain{position:absolute;inset:0;z-index:5;opacity:0;pointer-events:none;transition:opacity .5s ease;background:#3a2210}
 #scene .cs-plain svg{position:absolute;inset:0;width:100%;height:100%}
 body.sc-menu #scene.cs-inside .cs-plain{opacity:1}
+/* ===================== CRÉER UNE PARTIE : LA TABLE RONDE ===================== */
+.title.with-side .t-main{grid-template-columns:minmax(300px,380px) minmax(0,1fr);grid-template-rows:auto auto;align-content:center;justify-items:start;column-gap:clamp(20px,4vw,60px);padding:12px clamp(16px,3vw,44px)}
+.title.with-side .t-logo{grid-column:1;text-align:left;justify-items:start}
+.title.with-side .t-stage{grid-column:1;display:block;width:100%}
+.title.with-side .t-menu{width:100%}
+.title.with-side .rt{grid-column:2;grid-row:1 / span 2}
+.title.with-side::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,rgba(10,5,2,.78) 0%,rgba(10,5,2,.5) 34%,rgba(10,5,2,.8) 60%,rgba(10,5,2,.88) 100%)}
+.t-btn.on{transform:translateX(10px);box-shadow:inset 0 0 0 1.5px #5a3a10,0 0 22px rgba(242,193,78,.45);background:linear-gradient(180deg,#ffe9a8,#f2c14e 55%,#c88a26);color:#2e1c08}
+.t-btn.on small{color:#4a2e0c}
+.rt{display:grid;grid-template-rows:auto 1fr auto;gap:12px;width:min(860px,100%);animation:rtIn .7s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rtIn{from{transform:translateX(90px);opacity:0}to{transform:none;opacity:1}}
+.rt-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
+.rt-hd h2{margin:0;font-family:var(--f-label);font-weight:700;font-size:30px;color:var(--gold);text-shadow:0 2px 0 #2a1204}
+.rt-hd p{margin:2px 0 0;font-size:15px;color:#e8d8b8}
+.rt-x{flex:none;width:44px;height:44px;border:0;border-radius:50%;cursor:pointer;font-size:22px;color:#f1e4c6;background:#2a1608;box-shadow:inset 0 0 0 1.5px #c8963e}
+.rt-body{display:grid;grid-template-columns:auto minmax(150px,210px);gap:clamp(14px,3vw,34px);align-items:center}
+.rt-tw{position:relative;width:min(58vh,40vw);aspect-ratio:1}
+.rt-top{position:absolute;inset:18%;border-radius:50%;background:radial-gradient(circle at 42% 38%,#b07a42,#8a5428 55%,#5a3418);box-shadow:0 0 0 5px #120a06,0 0 0 14px #5a3418,0 0 0 18px #120a06,0 22px 36px rgba(0,0,0,.6)}
+.rt-tok{position:absolute;width:11%;aspect-ratio:1;padding:0;border:0;border-radius:50%;display:grid;place-items:center;cursor:pointer;color:#fff6dc;background:var(--uc);transform:translate(-50%,-50%);opacity:.55;box-shadow:0 0 0 3px #120a06,0 0 0 6px #5a3418;transition:transform .15s,opacity .15s,box-shadow .2s}
+.rt-tok .ic{width:52%;height:52%}
+.rt-tok:hover:not(:disabled){opacity:.85}
+.rt-tok.on{opacity:1;transform:translate(-50%,-62%);box-shadow:0 0 0 3px #120a06,0 0 0 6px var(--gold),0 9px 14px rgba(0,0,0,.5),0 0 20px rgba(242,193,78,.5)}
+.rt-tok:disabled{cursor:default}
+.rt-code{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:32%;padding:6px 0;border:0;border-radius:10px;display:flex;flex-direction:column;align-items:center;cursor:pointer;background:linear-gradient(180deg,#ffe9a8,#e0aa3e);box-shadow:0 0 0 4px #120a06}
+.rt-code small{font-family:var(--f-label);font-weight:700;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#5a3a10}
+.rt-code b{font-family:var(--f-label);font-size:clamp(13px,2.4vh,22px);line-height:1;color:#2e1c08;white-space:nowrap}
+.rt-code:disabled{cursor:default}
+.rt-seat{position:absolute;width:15%;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px}
+.rt-seat .face,.rt-free{width:100%;height:auto;aspect-ratio:1;border-radius:50%;box-sizing:border-box}
+.rt-seat .face{box-shadow:0 0 0 4px #120a06}
+.rt-seat.host .face{box-shadow:0 0 0 4px #120a06,0 0 0 7px var(--gold),0 0 20px rgba(242,193,78,.55)}
+.rt-free{display:grid;place-items:center;font-family:var(--f-label);font-size:clamp(16px,3vh,28px);color:#c8a86a;background:rgba(42,22,8,.88);border:3px dashed #c8963e}
+.rt-seat small{font-size:12.5px;color:#d8c8a8;white-space:nowrap;max-width:150%;overflow:hidden;text-overflow:ellipsis}
+.rt-seat.host small{color:var(--gold)}
+.rt-side{display:flex;flex-direction:column;gap:8px}
+.rt-st{font-family:var(--f-label);font-size:16px;color:var(--gold)}
+.rt-ch{display:flex;flex-direction:column;padding:6px 10px;border-radius:8px;background:rgba(10,5,2,.65);border:2px solid var(--uc)}
+.rt-ch b{font-family:var(--f-label);font-size:15px;color:#fff6dc}
+.rt-ch small{font-size:12.5px;color:#e8d8b8}
+.rt-note{margin:0;font-size:13.5px;color:#d8c8a8}
+.rt-ft{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.rt-sum{flex-grow:1;font-size:15px;color:#e8d8b8}
+.rt-sum b{color:var(--gold)}
+.rt-ft .btn{display:inline-flex;align-items:center;gap:8px;height:48px}
+.rt-ft .btn .ic{width:18px;height:18px}
+.rt-ft .t-go{height:48px;padding:0 24px}
+.rt-wait{font-style:italic;color:#d8c8a8}
+body.sc-lobby #scene{transform:none;filter:none}
+@media (max-width:900px){.title.with-side .t-main{grid-template-columns:1fr}.title.with-side .t-logo,.title.with-side .t-stage{display:none}.title.with-side .rt{grid-column:1;grid-row:1}.rt-tw{width:min(56vh,62vw)}}
+@media (orientation:landscape) and (max-height:540px){
+  .title.with-side .t-main{grid-template-columns:1fr;padding:52px max(12px, env(safe-area-inset-right, 0px)) 6px max(12px, env(safe-area-inset-left, 0px))}
+  .title.with-side .t-logo,.title.with-side .t-stage{display:none}
+  .title.with-side .rt{grid-column:1;grid-row:1;width:100%;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto 1fr auto;grid-template-areas:"t h" "t s" "t f";column-gap:18px;row-gap:6px}
+  .rt-body{display:contents}.rt-hd{grid-area:h}.rt-tw{grid-area:t;align-self:center;width:min(74vh,44vw)}.rt-side{grid-area:s;align-self:start;gap:5px}.rt-ft{grid-area:f;gap:8px}
+  .rt-hd h2{font-size:20px}.rt-hd p{font-size:12.5px}.rt-x{width:38px;height:38px}
+  .rt-ch{padding:3px 8px}.rt-ch b{font-size:13px}.rt-ch small{font-size:11px}.rt-st{font-size:13px}
+  .rt-sum{flex-basis:100%;font-size:12.5px}.rt-ft .btn,.rt-ft .t-go{height:40px}.rt-ft .t-go{padding:0 16px;font-size:16px}
+  .rt-seat small{font-size:10px}
+}
 </style>
 </head><body>
 
@@ -5609,7 +5668,7 @@ const STEPS = [
   ['Fusionne', 'Trois copies du même serviteur deviennent une version dorée aux stats doublées, avec un cadeau de niveau supérieur.'],
   ['Combats', 'Les combats sont automatiques. Le perdant subit le niveau de taverne du gagnant plus le niveau de ses survivants.'],
 ];
-function menuH() {
+function menuH(side) {
   const online = !!Net.room, games = Net.games.filter(g => g.code);
   const pref = ['b_roi', 'r_colosse', 's_liche', 'n_taver', 'p_kraken', 'b_cerf', 's_lueur', 'r_bombe', 'sz_tonnerre', 'sg_yeti'].filter(id => C[id]);
   const extra = POOL_IDS.filter(id => !pref.includes(id)).sort((a, b) => C[b].t - C[a].t);
@@ -5617,7 +5676,7 @@ function menuH() {
   const tok = (id, k) => `<div class="t-mate" style="--k:${k}">${tokenH(demo(id, k === 1 || k === 6 ? 1 : 0), 'x', k, { name:false })}</div>`;
   const embers = Array.from({ length:26 }, (_, k) => `<i style="--x:${(k * 37) % 100}%;--d:${(5 + (k * 7) % 6).toFixed(1)}s;--dl:${(-(k * 1.3) % 9).toFixed(1)}s;--s:${2 + (k % 3)}px;--w:${(k % 5) * 6 - 12}px"></i>`).join('');
   const btn = (act, ic, t, sub, cls = '') => `<button class="t-btn ${cls}" data-act="${act}"><span class="t-ic">${icon(ic)}</span><span class="t-lb"><b>${t}</b><small>${sub}</small></span></button>`;
-  return `<div class="title">
+  return `<div class="title${side ? ' with-side' : ''}">
     <div class="t-scene" aria-hidden="true"><div class="t-hearth"></div><div class="t-beams"></div><div class="embers">${embers}</div></div>
     <header class="t-bar">
       <label class="t-name" for="nm">${faceH(avatarSym(V.name))}<span class="t-nmw"><small>Ton nom</small><input id="nm" maxlength="20" value="${esc(V.nameRaw != null ? V.nameRaw : V.name)}" placeholder="Aventurier" autocomplete="nickname" spellcheck="false"></span>${icon('pen', 'pen')}</label>
@@ -5632,15 +5691,16 @@ function menuH() {
         <div class="t-crew l">${crew.slice(0, 4).map((id, k) => tok(id, k)).join('')}</div>
         <nav class="t-menu" aria-label="Menu principal">
           ${btn('m-solo', 'sword', 'Jouer', 'Seul contre 7 IA', 'pri')}
-          ${btn('m-online', 'users', 'Créer une partie', online ? 'Invite tes amis, les IA complètent' : 'À plusieurs, en ligne')}
+          ${btn('m-online', 'users', 'Créer une partie', online ? 'Invite tes amis, les IA complètent' : 'À plusieurs, en ligne', side ? 'on' : '')}
           ${btn('m-join', 'key', 'Rejoindre', 'Avec le code d\'un ami')}
           <button class="t-link" data-act="atl-open">${icon(DATA.admin ? 'gear' : 'book')}${DATA.admin ? 'Atelier des cartes' : 'Toutes les cartes'}${DATA.admin ? '<span class="badge-admin">Admin</span>' : ''}</button>
         </nav>
         <div class="t-crew r">${crew.slice(4, 8).map((id, k) => tok(id, k + 4)).join('')}</div>
       </div>
+      ${side || ''}
     </main>
-    <footer class="t-how">${STEPS.map(([t, d], k) => `<div class="t-step"><span>${k + 1}</span><b>${t}</b><p>${d}</p></div>`).join('')}</footer>
-    ${menuPanelH(online, games)}
+    ${side ? '' : `<footer class="t-how">${STEPS.map(([t, d], k) => `<div class="t-step"><span>${k + 1}</span><b>${t}</b><p>${d}</p></div>`).join('')}</footer>`}
+    ${side ? '' : menuPanelH(online, games)}
   </div>`;
 }
 function menuPanelH(online, games) {
@@ -5697,19 +5757,37 @@ function offlineWhy() {
   return 'Ton compte est reconnu, mais le jeu en ligne n\'est pas proposé dans cette vue. Ouvre le lien dans un navigateur (Chrome, Safari…) connecté à claude.ai plutôt que dans une autre app.';
 }
 function lobbyH() {
-  const isHost = Net.role === 'host';
   if (V.hostGone) return `<div class="menu"><section class="plaque solo-msg"><h2>L'hôte a quitté la table</h2><p class="note">La partie s'est arrêtée avec lui.</p><div class="btns"><button class="btn pri" data-act="leave">Retour au menu</button></div></section></div>`;
-  const d = V.pub, pl = d && d.pl ? d.pl : [];
+  return menuH(roundTableH());
+}
+// la table ronde : 8 places autour, les jetons des univers posés dessus
+function roundTableH() {
+  const isHost = Net.role === 'host', d = V.pub, pl = d && d.pl ? d.pl : [];
+  const univ = SET.univ || [], sel = isHost ? (V.univSel || []) : (d ? d.us || [] : []);
+  const code = H.code || (d && d.code) || '';
+  const pos = (deg, r) => { const a = deg * Math.PI / 180; return `left:${(50 + r * Math.cos(a)).toFixed(2)}%;top:${(50 + r * Math.sin(a)).toFixed(2)}%`; };
+  const toks = univ.map((u, k) => {
+    const L = univLook(u), on = sel.includes(u.n), M = u.mech && u.mech !== 'none' ? MECHS[u.mech] : null;
+    return `<button class="rt-tok${on ? ' on' : ''}" style="--uc:${esc(L.col)};${pos(-90 + k * 360 / univ.length, univ.length > 8 ? 22 : 20)}" data-act="univ" data-u="${k}" aria-pressed="${on}" ${isHost ? '' : 'disabled'} data-tip="${esc(u.n + (M ? ' · ' + M.n : ''))}">${icon(L.ic)}</button>`;
+  }).join('');
   const seats = Array.from({ length:8 }, (_, i) => {
     const p = pl[i];
-    return p ? `<div class="seat full">${faceH(avatarSym(p.n))}<b class="chalk">${esc(p.n)}</b><small>${i === 0 ? 'Hôte' : 'Joueur'}</small></div>`
-      : '<div class="seat"><span class="face"></span><b>Place libre</b><small>Une IA s\'y assiéra</small></div>';
+    return `<div class="rt-seat${p ? (i === 0 ? ' host' : ' in') : ''}" style="${pos(90 + i * 45, 44)}">${p ? faceH(avatarSym(p.n)) : '<span class="rt-free">+</span>'}<small>${p ? esc(p.n) + (i === 0 ? ' · hôte' : '') : 'Libre'}</small></div>`;
   }).join('');
-  return `<div class="title lobbyw"><div class="t-scene" aria-hidden="true"><div class="t-hearth"></div><div class="t-beams"></div></div><main class="t-main"><div class="menu">
-    <header class="sign-wrap"><div class="chains" aria-hidden="true"></div><div class="sign sm"><h1>Le salon</h1><p>${isHost ? 'Attends tes amis, puis lance la partie.' : 'En attente du lancement par l\'hôte…'}</p></div></header>
-    <section class="slate lobby">${H.code || (d && d.code) ? `<div class="codebox"><span class="lbl">Code de la partie</span><b class="chalk">${esc(H.code || d.code)}</b>${isHost ? '<button class="btn sm" data-act="copycode">Copier</button>' : ''}<small>Les autres joueurs tapent ce code dans « Rejoindre une partie ».</small></div>` : ''}<h2 class="chalk">À table · ${pl.length}/8</h2><div class="seats">${seats}</div>${isHost ? univPickH(V.univSel, true) : d ? univPickH(d.us || [], false) : ''}
-      <div class="btns">${isHost ? '<button class="btn pri big" data-act="launch">Lancer la partie</button>' : ''}<button class="btn" data-act="leave">Quitter le salon</button></div>
-      ${!d ? '<p class="note">Connexion à l\'hôte…</p>' : ''}</section></div></main></div>`;
+  const chosen = univ.filter(u => sel.includes(u.n));
+  const list = chosen.length ? chosen.map(u => { const M = u.mech && u.mech !== 'none' ? MECHS[u.mech] : null; return `<div class="rt-ch" style="--uc:${esc(univLook(u).col)}"><b>${esc(u.n)}</b>${M ? `<small>Loi · ${esc(M.n)}</small>` : ''}</div>`; }).join('')
+    : `<p class="rt-note">Aucun jeton posé : cinq familles seront tirées au sort.</p>`;
+  const foot = !d ? '<span class="rt-sum">Connexion à l\'hôte…</span>'
+    : `<span class="rt-sum"><b>${pl.length} / 8</b> à table · ${pl.length < 8 ? 'les places libres iront aux IA' : 'table complète'}</span>`
+      + (isHost ? `<button class="btn" data-act="univ" data-u="-1">${icon('dice')}Au hasard</button><button class="t-go" data-act="launch">Lancer la partie</button>` : '<span class="rt-wait">En attente de l\'hôte…</span>');
+  return `<aside class="rt" aria-label="La table">
+    <div class="rt-hd"><div><h2>${isHost ? 'Ta table' : 'À table'}</h2><p>${isHost ? 'Pose sur la table les jetons des univers, donne le code à tes amis, puis lance la partie.' : 'L\'hôte choisit les univers. La partie démarre à son signal.'}</p></div><button class="rt-x" data-act="leave" aria-label="Quitter la table">×</button></div>
+    <div class="rt-body">
+      <div class="rt-tw"><div class="rt-top"></div>${toks}<button class="rt-code" data-act="copycode" ${isHost ? 'data-tip="Copier le code"' : 'disabled'}><small>Code</small><b>${esc(code.toUpperCase())}</b></button>${seats}</div>
+      <div class="rt-side"><b class="rt-st">Sur la table</b>${list}</div>
+    </div>
+    <div class="rt-ft">${foot}</div>
+  </aside>`;
 }
 
 function timerTxt() {
@@ -5945,10 +6023,11 @@ document.addEventListener('keydown', e => {
 });
 function doAct(act, btn) {
   const s = V.sel;
+  if (V.screen === 'lobby' && (act === 'm-solo' || act === 'm-join' || act === 'atl-open')) { leaveGame().then(() => doAct(act, btn)); return; }
   switch (act) {
     case 'solo': V.mp = null; startSolo(); break;
     case 'm-solo': if (typeof csEnter === 'function' && csEnter(() => { V.mp = 'solo'; render(); })) break; V.mp = 'solo'; render(); break;
-    case 'm-online': V.mp = 'online'; render(); break;
+    case 'm-online': if (V.screen === 'lobby') break; if (Net.room) { V.mp = null; createOnline(); break; } V.mp = 'online'; render(); break;
     case 'm-join': V.mp = 'join'; render(); setTimeout(() => { const j = document.getElementById('jcode'); if (j && !j.disabled && matchMedia('(hover:hover)').matches) j.focus(); }, 30); break;
     case 'm-close': V.mp = null; render(); break;
     case 'fs': {
