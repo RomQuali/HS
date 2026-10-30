@@ -1908,3 +1908,6 @@ body.cs-entering #scene *{animation-play-state:running!important}
   box-shadow:inset 0 0 0 3px #0c0808,0 24px 50px rgba(0,0,0,.7)!important}
 :root body .table > .hero-zone,:root body .table > .hand{background:none!important;box-shadow:none!important}
 :root body .keeper-zone::after{display:none}
+.ctrs{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.ctr{padding:1px 8px;border-radius:99px;font-family:var(--f-label);font-weight:700;font-size:11.5px;color:var(--cc);background:rgba(10,6,4,.7);box-shadow:inset 0 0 0 1.5px var(--cc)}
+.ctr b{color:#fff}
