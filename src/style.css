@@ -1903,3 +1903,8 @@ body.cs-entering #scene *{animation-play-state:running!important}
 .eveil{padding:3px 10px;border-radius:99px;font-family:var(--f-label);font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#120a06;background:linear-gradient(90deg,#ff7a2a,#6fd8a0,#ffd23a,#c8a878,#4ab0e8);box-shadow:0 0 12px rgba(255,220,140,.6)}
 @media (max-height:540px){ .bc-box{width:150px;height:130px} .bc-t{font-size:22px} }
 .souls.ctr{color:var(--cc)} .souls.ctr b{color:#fff}
+/* ===================== FOND DE TABLE : PLATEAU DE TAVERNE EN BOIS ===================== */
+:root body .table{background:linear-gradient(180deg,rgba(12,8,6,.25),rgba(12,8,6,0) 18%,rgba(12,8,6,0) 75%,rgba(12,8,6,.3)),var(--board-img,none) center 46%/cover no-repeat,#2a1a10!important;
+  box-shadow:inset 0 0 0 3px #0c0808,0 24px 50px rgba(0,0,0,.7)!important}
+:root body .table > .hero-zone,:root body .table > .hand{background:none!important;box-shadow:none!important}
+:root body .keeper-zone::after{display:none}
