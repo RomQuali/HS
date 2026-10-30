@@ -1019,9 +1019,9 @@ const OPS = {
     return true;
   },
   // choisir une des 3 améliorations du coffre
-  upick(G, p, a) { const o = p.choice && p.choice[a.i]; if (!o || !p.cp) return false; applyUp(p.cp, o);
-    // les 2 améliorations non choisies restent dans l'entraînement (8 au plus : on garde les plus rares)
-    p.ups = (p.ups || []).concat(p.choice.filter((x, i) => i !== a.i)).sort((x, y) => y.r - x.r).slice(0, UPS_MAX);
+  // choix obligatoire d'une récompense sur 3 : elle se range dans l'entraînement, les 2 autres sont perdues
+  upick(G, p, a) { const o = p.choice && p.choice[a.i]; if (!o || !p.cp) return false;
+    p.ups = (p.ups || []).concat([o]).sort((x, y) => y.r - x.r).slice(0, UPS_MAX);
     p.choice = null; p.lastUp = o; return true; },
   // poser une amélioration rangée : coûte du chakra selon sa rareté
   uapply(G, p, a) { const o = (p.ups || [])[a.i]; if (!o || !p.cp) return false; const c = upgCost(o); if ((p.ck || 0) < c) return false; p.ck -= c; applyUp(p.cp, o); p.ups.splice(a.i, 1); return true; },
@@ -1193,6 +1193,7 @@ function endRecruit() {
   for (const p of G.ps) if (p.al) {
     if (p.pendChest) OPS.chest(G, p);
     if (p.choice) { const b = p.choice.reduce((bi, o, i) => o.r > p.choice[bi].r ? i : bi, 0); OPS.upick(G, p, { i:b }); }
+    if (p.bot && p.cp) for (let g = 0; g < 8 && (p.ups || []).length && (p.ck || 0) >= upgCost(p.ups[0]); g++) OPS.uapply(G, p, { i:0 });
     { const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'prsv' && (p.rsv || []).length === 1) p.maree = (p.maree || 0) + w.n; }
     const neot = auraTimes(p.bd, 'aura_eot');
     for (const m of p.bd.concat(p.cp ? [p.cp] : [])) for (let r = 0; r < neot; r++) fxOf(m, 'eot').forEach(e => runRecruit(G, p, m, e));

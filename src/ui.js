@@ -298,7 +298,7 @@ function chakraLawH(big) {
   return `<span class="ban-law ck-law${big ? ' big' : ''}"><b>Loi · Chakra et éléments</b>
     <small><b>Chakra :</b> chaque serviteur de l'univers en donne 1 par tour. Il lance les techniques (achetées en or). Le pouvoir du héros, lui, se paie en or.</small>
     <small><b>Compagnon :</b> il prend l'élément de ta dernière technique (utile pour la domination) et gagne le pouvoir hybride de chaque combo.</small>
-    <small><b>Entraînement :</b> ton compagnon commence en jeu, déjà triplé, à côté de ton héros (il ne prend pas de place sur le plateau). En combat, il affronte uniquement le compagnon adverse et ne blesse jamais le héros : ce duel décide du coffre du niveau de ta taverne (majeur s'il gagne, mineur sinon). Il porte 5 pièces (lame, armure, bandeau, gantelets, talisman) : chaque coffre propose 3 améliorations au choix, de rareté Normal, Héroïque, Épique ou Légendaire. Un coffre majeur et une taverne haute donnent de meilleures raretés ; une amélioration Épique ou Légendaire ajoute aussi une technique à ta main.</small>
+    <small><b>Entraînement :</b> ton compagnon commence en jeu, déjà triplé, à côté de ton héros (il ne prend pas de place sur le plateau). En combat, il affronte uniquement le compagnon adverse et ne blesse jamais le héros : ce duel décide du coffre du niveau de ta taverne (majeur s'il gagne, mineur sinon). Il porte 5 pièces (lame, armure, bandeau, gantelets, talisman) : chaque coffre t'oblige à choisir 1 récompense sur 3, de rareté Normal, Héroïque, Épique ou Légendaire ; elle se range dans l'entraînement et se pose sur ton compagnon avec du chakra (1 à 4 selon la rareté). Un coffre majeur et une taverne haute donnent de meilleures raretés ; une amélioration Épique ou Légendaire ajoute aussi une technique à ta main.</small>
     <span class="elx">
       <span class="elx-c">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b style="color:#ff8a6a">Domination</b> · ton compagnon l'emporte sur l'élément d'en face : +4/+4 au combat.</small></span>
       <span class="elx-c">${elCycleSvg(['vent', 'feu', 'foudre', 'terre', 'eau'], '#6fd0ff', 'Génération')}<small><b style="color:#8fdcff">Génération</b> · lance l'élément que nourrit celui de ton compagnon : +2 chakra et +2/+2.</small></span>
@@ -315,7 +315,7 @@ function ninjaCardH() {
   return `<span class="ban-law nj-law"><b>Loi · Chakra</b>
     ${row('<svg viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="#6fc8ff" stroke="#120a06" stroke-width="2"/><circle cx="8" cy="8" r="2.2" fill="#dff4ff"/></svg>', '#2a5a86', 'Techniques', 'Achetées en or, lancées avec le chakra (1 par ninja en jeu et par tour). Chacune suit le jeu de son clan.')}
     ${row('<svg viewBox="0 0 20 20"><path d="M3 15 L5 6 L8 10 L10 4 L12 10 L15 6 L17 15 Z" fill="#f2c14e" stroke="#120a06" stroke-width="1.6" stroke-linejoin="round"/></svg>', '#7a5a1a', 'Compagnon', 'Déjà triplé, hors plateau. Il prend l\'élément de ta dernière technique et ne combat que le compagnon adverse.')}
-    ${row('<svg viewBox="0 0 20 20"><rect x="3" y="8" width="14" height="9" rx="1.5" fill="#e2b04e" stroke="#120a06" stroke-width="1.6"/><path d="M3 8 Q10 1 17 8 Z" fill="#c88a26" stroke="#120a06" stroke-width="1.6"/><rect x="8.6" y="9.5" width="2.8" height="3.4" fill="#120a06"/></svg>', '#6a3a12', 'Duel = coffre', 'Compagnon vainqueur : coffre majeur, sinon mineur. Chaque coffre propose 3 améliorations au choix : Normal, Héroïque, Épique ou Légendaire.')}
+    ${row('<svg viewBox="0 0 20 20"><rect x="3" y="8" width="14" height="9" rx="1.5" fill="#e2b04e" stroke="#120a06" stroke-width="1.6"/><path d="M3 8 Q10 1 17 8 Z" fill="#c88a26" stroke="#120a06" stroke-width="1.6"/><rect x="8.6" y="9.5" width="2.8" height="3.4" fill="#120a06"/></svg>', '#6a3a12', 'Duel = coffre', 'Compagnon vainqueur : coffre majeur, sinon mineur. Choisis 1 récompense sur 3 (Normal à Légendaire), puis pose-la avec du chakra.')}
     ${row('<svg viewBox="0 0 20 20"><path d="M10 2 C14 7 15 10 15 12 A5 5 0 0 1 5 12 C5 9 7 8 8 5 C9 8 10 8 10 2 Z" fill="#ff7a3a" stroke="#120a06" stroke-width="1.6"/></svg>', '#7a2a12', 'Éveil', 'À 4 joueurs ou moins, chaque clan libère son pouvoir ultime et les techniques interdites.')}
     <span class="nj-el">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<small><b>Réservoir et combos</b>Deux techniques remplissent le réservoir : leur mélange déclenche l'un des 15 combos. Chaque élément domine aussi le suivant : +4/+4 au compagnon.</small></span>
   </span>`;
@@ -534,9 +534,9 @@ function choiceH(d, me) {
   if (!me || !me.choice || !me.cp || Date.now() < (V.choiceAt || 0) || d.ph !== 'recruit') return '';
   const tech = (me.loot || []).filter(o => SPELLS[o.id]);
   return `<div class="upch" role="dialog" aria-label="Choisis une amélioration"><div class="upch-in">
-    <b class="upch-t">Choisis une amélioration</b><small class="upch-s">Pour ${esc(C[me.cp.c] ? C[me.cp.c].n : 'ton compagnon')}</small>
+    <b class="upch-t">Choisis ta récompense</b><small class="upch-s">Une seule : elle se range dans l'entraînement, et tu la poses sur ${esc(C[me.cp.c] ? C[me.cp.c].n : 'ton compagnon')} avec du chakra.</small>
     <div class="upch-row">${me.choice.map((o, i) => { const R = RARS[o.r], n = pieceList(me.cp, o.pc).length;
-      return `<button class="upc r${o.r}" style="--rc:${R.col};--k:${i}" data-act="upick" data-i="${i}"><span class="upc-r">${R.n}</span>${pieceIco(o.pc, 'big')}<b>${esc(PIECES[o.pc].n)}</b><span class="upc-tx">${esc(upTx(o))}</span><small>${n ? `Déjà ${n} amélioration${n > 1 ? 's' : ''}` : 'Première amélioration'}</small></button>`; }).join('')}</div>
+      return `<button class="upc r${o.r}" style="--rc:${R.col};--k:${i}" data-act="upick" data-i="${i}"><span class="upc-r">${R.n}</span>${pieceIco(o.pc, 'big')}<b>${esc(PIECES[o.pc].n)}</b><span class="upc-tx">${esc(upTx(o))}</span><span class="uppk-c">${ckMarkH(upgCost(o))}<small>à poser</small></span><small>${n ? `Déjà ${n} amélioration${n > 1 ? 's' : ''}` : 'Première amélioration'}</small></button>`; }).join('')}</div>
     ${tech.length ? `<p class="upch-b">Bonus du coffre : <b>${tech.map(o => esc(SPELLS[o.id].n)).join(', ')}</b> ajoutée à ta main</p>` : ''}
   </div></div>`;
 }
@@ -545,7 +545,7 @@ function trainH(d, me, canAct) {
   if (me.cp) { const ups = me.ups || [];
     const md = ups.map((o, i) => { const c = upgCost(o), ok = canAct && (me.ck || 0) >= c;
       return `<button class="upm" style="--rc:${RARS[o.r].col}" data-act="uapply" data-i="${i}" data-hov="upm" ${ok ? '' : 'aria-disabled="true"'} aria-label="${esc(PIECES[o.pc].n + ' ' + RARS[o.r].n + ' : ' + upTx(o) + '. Poser coûte ' + c + ' chakra.')}">${pieceIco(o.pc)}<span class="upm-c">${ckMarkH(c)}</span></button>`; }).join('');
-    return `<section class="train" aria-label="Entraînement"><b class="tr-h">Entraînement · améliorations en réserve</b><div class="tr-row med pcs-row">${md || '<small class="tr-e">Les améliorations que tu ne choisis pas dans les coffres se rangent ici.</small>'}</div></section>`; }
+    return `<section class="train" aria-label="Entraînement"><b class="tr-h">Entraînement · récompenses à poser</b><div class="tr-row med pcs-row">${md || '<small class="tr-e">Les récompenses choisies dans les coffres se rangent ici : pose-les avec du chakra.</small>'}</div></section>`; }
   const ks = Object.keys(me.chests || {}).filter(k => me.chests[k] > 0).sort((a, b) => a.slice(3) - b.slice(3) || (a < b ? 1 : -1));
   const comps = me.cp ? [me.cp] : (me.bd || []).filter(isComp), full = (me.eqs || []).length >= EQS_MAX;
   const chests = ks.map(k => { const q = k.slice(0, 3), t = +k.slice(3);
