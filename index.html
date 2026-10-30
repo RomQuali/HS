@@ -3243,8 +3243,9 @@ function endRecruit() {
     if (p.cp || qq.cp) {
       const ca = p.cp ? [Object.assign({}, p.cp)] : [], cbb = qq.cp ? [Object.assign({}, qq.cp)] : [];
       elementDuel(ca, cbb);
+      const ca0 = ca.map(fullM), cb0 = cbb.map(fullM);
       const cs = rint(1e9), cr = simulate(ca, cbb, cs, p.t, qt, [0, 0], G.mx);
-      duel = { a:ca.map(fullM), b:cbb.map(fullM), w:cr.w };
+      duel = { a:ca0, b:cb0, w:cr.w, seed:cs };
       if (cr.w === 0 && p.cp) giveXp(p.cp, 2); if (!ghost && cr.w === 1 && q.cp) giveXp(q.cp, 2);
     }
     p.res = { o:qn, r:W(r.w), d, cr:duel ? W(duel.w) : null };
@@ -6536,7 +6537,10 @@ function onFight(d) {
   if (V.fight && V.fight.rd === d.rd) return;
   const r = simulate(d.a, d.b, d.seed, d.ta, d.tb, d.fire, d.mx);
   V.fight = { ...d, r, done:false }; V.fi = 0; V.sel = null;
-  clearTimeout(V.fightT); stepFight();
+  clearTimeout(V.fightT); clearTimeout(V.duelT);
+  if (d.duel && d.duel.seed != null) { try { V.fight.dr = simulate(d.duel.a, d.duel.b, d.duel.seed, d.ta, d.tb, [0, 0], d.mx); } catch (e) { V.fight.dr = null; } V.di = 0; }
+  stepFight();
+  if (V.fight.dr) V.duelT = setTimeout(stepDuel, 1300);
 }
 function fq(u) { return document.querySelector(`.arena [data-u="${u}"]:not(.dying)`) || document.querySelector(`.arena [data-u="${u}"]`); }
 /* Chaque image du combat montre l'état AVANT l'action qu'elle annonce (at = attaque, fb = boule de feu) :
@@ -7090,15 +7094,51 @@ function duelLine(F) {
 }
 // compagnon Ninja posé sur le bord gauche de la zone de jeu, séparé par un fil léger
 // side 0 : le mien (plateau du bas) · side 1 : celui de l'adversaire (pendant le duel)
+// animation du duel des compagnons : il avance en parallèle du combat des plateaux
+function duelPaint() { const F = V.fight; if (!F || !V.me || !V.me.cp) return; [0, 1].forEach(s => { const el = document.getElementById('cps' + s); if (el) el.outerHTML = cpSideH(V.me, F, s); }); }
+function stepDuel() {
+  const F = V.fight; if (!F || !F.dr) return;
+  clearTimeout(V.duelT);
+  duelPaint(); duelFx();
+  const D = F.dr.frames, last = D.length - 1;
+  if (V.di >= last) { F.ddone = true; duelPaint(); const el = document.getElementById('cps0'); if (el && !FX_OFF()) { const r = el.querySelector('.mn').getBoundingClientRect(), w = duelRes(F) === 'win'; fxRing(r.left + r.width / 2, r.top + r.height / 2, w ? '#ffe39a' : '#9ab0c8', 1.4); if (w) fxBurst(r.left + r.width / 2, r.top + r.height / 2, 'buff', 14, 1.1); } return; }
+  const fr = D[V.di];
+  V.duelT = setTimeout(() => {
+    if (V.fight !== F) return;
+    if (fr.at) { const t = duelLunge(fr); V.duelT = setTimeout(() => { V.di++; stepDuel(); }, t); }
+    else if (fr.fb) { V.duelT = setTimeout(() => { V.di++; stepDuel(); }, 420); }
+    else { V.di++; stepDuel(); }
+  }, V.di === 0 ? 300 : 520);
+}
+const duelTok = u => document.querySelector(`.cp-side [data-u="${u}"]`);
+function duelLunge(fr) {
+  const a = duelTok(fr.at), t = duelTok(fr.tg); if (!a || !t || FX_OFF()) return 160;
+  const ra = a.getBoundingClientRect(), rt = t.getBoundingClientRect(), dx = (rt.left - ra.left) * .82, dy = (rt.top - ra.top) * .82;
+  // un double du jeton fait l'attaque au-dessus de la page : le rendu du combat des plateaux ne peut pas l'interrompre
+  const cl = a.cloneNode(true); cl.removeAttribute('data-u'); cl.classList.add('duel-ghost'); cl.style.cssText = `position:fixed;left:${f1(ra.left)}px;top:${f1(ra.top)}px;width:${f1(ra.width)}px;--tw:${f1(ra.width)}px;z-index:80;pointer-events:none;margin:0`;
+  document.body.appendChild(cl); V.dHide = fr.at; a.classList.add('dhide');
+  const an = cl.animate([{ transform:'none' }, { transform:`translate(${f1(-dx * .07)}px,${f1(-dy * .07)}px) scale(1.12)`, offset:.4 }, { transform:`translate(${f1(dx)}px,${f1(dy)}px) scale(1.05)` }, { transform:'none' }], { duration:620, easing:'cubic-bezier(.5,0,.5,1)' });
+  an.onfinish = an.oncancel = () => { cl.remove(); V.dHide = null; const o = duelTok(fr.at); if (o) o.classList.remove('dhide'); };
+  setTimeout(() => { const r = t.getBoundingClientRect(); if (!FX_OFF()) { fxRing(r.left + r.width / 2, r.top + r.height / 2, '#fff1c8', 1); fxBurst(r.left + r.width / 2, r.top + r.height / 2, 'hit', 12); } }, 380);
+  return 640;
+}
+function duelFx() { document.querySelectorAll('.cp-side .mn.dead').forEach(el => { const r = el.getBoundingClientRect(); if (!FX_OFF() && !el.dataset.fxd) { el.dataset.fxd = 1; fxBurst(r.left + r.width / 2, r.top + r.height * .45, 'shard', 14); } }); }
 function cpSideH(me, F, side) {
   let m = me.cp, lab = `Compagnon · niv. ${compLv(me.cp)}`, cls = '';
+  let ex = '', tc = '';
   if (F && F.duel) {
-    const mine = F.me ? F.duel.b : F.duel.a, theirs = F.me ? F.duel.a : F.duel.b, r = F.done ? duelRes(F) : null;
+    const mine = F.me ? F.duel.b : F.duel.a, theirs = F.me ? F.duel.a : F.duel.b, r = (F.dr ? F.ddone : F.done) ? duelRes(F) : null;
     m = (side ? theirs : mine)[0]; if (!m) return '';
+    if (F.dr) {   // état animé du duel
+      const D = F.dr.frames, i = Math.min(V.di || 0, D.length - 1), sd = (side ? 1 - F.me : F.me), cur = D[i].s[sd][0], prev = i > 0 ? D[i - 1].s[sd][0] : null;
+      if (cur) { m = Object.assign({}, m, { a:cur.a, h:cur.h, f:cur.f }); if (prev && cur.h < prev.h) { tc = 'hit'; ex = `<span class="dmg"><b>-${prev.h - cur.h}</b></span>`; } }
+      else { tc = 'dead'; m = Object.assign({}, m, { h:0 }); }
+    }
     lab = side ? 'Compagnon adverse' : r ? (r === 'win' ? 'Duel gagné · coffre majeur' : r === 'loss' ? 'Duel perdu · coffre mineur' : 'Égalité · coffre mineur') : 'Duel des compagnons';
     cls = r ? (side ? (r === 'win' ? ' loss' : r === 'loss' ? ' win' : '') : ' ' + r) : '';
   }
-  return `<div class="cp-side${cls}" aria-label="${esc(lab)}">${tokenH(m, side ? 'duelb' : 'cp', 0, { cls:'cp-tok' })}<small>${esc(lab)}</small></div>`;
+  const tok = tokenH(m, side ? 'duelb' : 'cp', 0, { cls:'cp-tok' + (tc ? ' ' + tc : '') + (V.dHide != null && V.dHide === m.u ? ' dhide' : '') }).replace(/<\/div>$/, ex + '</div>');
+  return `<div class="cp-side${cls}" id="cps${side}" aria-label="${esc(lab)}">${tok}<small>${esc(lab)}</small></div>`;
 }
 function cpSlotH(me, F) {
   const lv = compLv(me.cp);
@@ -7313,7 +7353,7 @@ function doAct(act, btn) {
     case 'leave': leaveGame(); break;
     case 'hero': sendAct({ t:'hero', h:btn.dataset.h }); V.heroSel = null; break;
     case 'hsel': V.heroSel = btn.dataset.h; render(); break;
-    case 'skip': if (V.fight) { clearTimeout(V.fightT); if (V.fight.lunge) { try { V.fight.lunge.cancel(); } catch (e) {} V.fight.lunge = null; } V.fi = V.fight.r.frames.length - 1; V.fight.done = true; render(); fxEnd(); } break;
+    case 'skip': if (V.fight) { clearTimeout(V.fightT); clearTimeout(V.duelT); if (V.fight.dr) { V.di = V.fight.dr.frames.length - 1; V.fight.ddone = true; } if (V.fight.lunge) { try { V.fight.lunge.cancel(); } catch (e) {} V.fight.lunge = null; } V.fi = V.fight.r.frames.length - 1; V.fight.done = true; render(); fxEnd(); } break;
     case 'buy': if (s) { sendAct({ t:'buy', i:s.i }); V.sel = null; } break;
     case 'buysp': sendAct({ t:'buysp' }); V.sel = null; break;
     case 'chest': V.chestRev = { eq:(V.me && V.me.eqs || []).slice(), hd:(V.me && V.me.hd || []).map(x => x.u), at:Date.now() }; fxChest(btn); { const o = btn.closest('.bigchest'); if (o) o.remove(); } sendAct({ t:'chest' }); break;
@@ -8156,6 +8196,15 @@ svg.ck-gem.aff{box-shadow:none;filter:drop-shadow(0 0 5px rgba(155,227,106,.95))
 .cp-side.win small{color:#ffe27a}.cp-side.loss small{color:#a8b4c8}
 .cp-side.win .mn{filter:drop-shadow(0 0 10px rgba(242,193,78,.8))}
 @media (max-width:820px){ :root body .table:has(.has-cp){--tw:min(80px, calc((100cqi - 40px) / 8.6))} .board-zone.has-cp,.keeper-zone.has-cp{padding-left:calc(var(--tw) + 22px)} .cp-side{left:4px;padding-right:8px} .cp-side small{display:none} }
+`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `
+.mn.dhide{visibility:hidden}
+.duel-ghost .dmg{display:none}
+.cp-side .mn.dead{filter:grayscale(1) brightness(.55);opacity:.7;transform:rotate(-6deg) scale(.94)}
+.cp-side .mn.hit{animation:cphit .4s ease-out}
+@keyframes cphit{20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-2px)}}
+.cp-side .mn .dmg{position:absolute;left:50%;top:30%;transform:translateX(-50%);z-index:5;pointer-events:none}
 `; document.head.appendChild(st); })();
 </script>
 </body></html>

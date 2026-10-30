@@ -1182,8 +1182,9 @@ function endRecruit() {
     if (p.cp || qq.cp) {
       const ca = p.cp ? [Object.assign({}, p.cp)] : [], cbb = qq.cp ? [Object.assign({}, qq.cp)] : [];
       elementDuel(ca, cbb);
+      const ca0 = ca.map(fullM), cb0 = cbb.map(fullM);
       const cs = rint(1e9), cr = simulate(ca, cbb, cs, p.t, qt, [0, 0], G.mx);
-      duel = { a:ca.map(fullM), b:cbb.map(fullM), w:cr.w };
+      duel = { a:ca0, b:cb0, w:cr.w, seed:cs };
       if (cr.w === 0 && p.cp) giveXp(p.cp, 2); if (!ghost && cr.w === 1 && q.cp) giveXp(q.cp, 2);
     }
     p.res = { o:qn, r:W(r.w), d, cr:duel ? W(duel.w) : null };
