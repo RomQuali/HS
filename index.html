@@ -1602,6 +1602,8 @@ body.sc-lobby #scene{transform:none;filter:none}
 .md-go{margin-top:4px}
 @container (max-width:560px){.mds{gap:8px}.md-comp small,.md-tx{display:none}.md-rib{font-size:12px;padding:4px 14px}}
 @media (orientation:landscape) and (max-height:540px){.md-coin{width:min(120px,70%)}.md-rib{margin-top:-14px;font-size:12.5px;padding:4px 16px}.md-comp{padding:4px 8px}.md-comp .face{width:34px;height:34px}.md-comp small{font-size:11px}.md-tx{font-size:11.5px;margin-top:4px}.md .famc{display:none}}
+body.cs-entering #scene{filter:none!important;transform:none!important;display:block!important}
+body.cs-entering #scene *{animation-play-state:running!important}
 </style>
 </head><body>
 
@@ -5497,6 +5499,8 @@ function onPub(d) {
   const same = key === V.pubKey && screen === V.screen;
   const pk = d.ph + ':' + d.rd;
   if (pk !== V.phKey) { V.phKey = pk; V.phTotal = Math.max(1, d.rem || 1); }
+  // multijoueur : au lancement, tout le monde franchit la porte (la partie s'affiche derrière l'éblouissement)
+  if (V.screen === 'lobby' && screen === 'game' && typeof csEnter === 'function') csEnter(() => render());
   V.pub = d; V.pubAt = Date.now(); V.pubKey = key; V.screen = screen;
   if (d.cv && d.cv !== CAT_REV && Net.role === 'client' && !V.cvWarn) { V.cvWarn = true; toast('Les cartes de l\'hôte diffèrent des tiennes : recharge la page avant la prochaine partie.'); }
   if (d.ph === 'recruit' && V.fight && V.fight.rd !== d.rd) V.fight = null;
