@@ -28,6 +28,7 @@ function onPriv(d) {
   const key = JSON.stringify(d);
   if (key === V.privKey) return;
   V.privKey = key; V.me = d;
+  if (V.chestRev) { const R = V.chestRev; V.chestRev = null; const got = (d.eqs || []).slice(R.eq.length).concat((d.hd || []).filter(x => x.sp && !R.hd.includes(x.u)).map(x => x.sp)); if (got.length) setTimeout(() => chestReveal(got), Math.max(0, 950 - (Date.now() - R.at))); }
   if (V.sel) { const z = V.sel.z === 'ss' ? (d.sp ? [d.sp] : []) : V.sel.z === 'sh' ? d.sh : V.sel.z === 'bd' ? d.bd : d.hd; if (!z || !z[V.sel.i]) V.sel = null; }
   if (V.aim != null && !(d.hd[V.aim] && d.hd[V.aim].sp)) V.aim = null;
   render();
@@ -462,6 +463,13 @@ function gameH() {
   }
   return `<div class="stage"><aside class="opps" aria-label="Joueurs"><ol>${opps}</ol></aside>${table}</div>${overlayH()}`;
 }
+// après l'ouverture : les cartes obtenues en grand au centre de l'écran
+function chestReveal(ids) {
+  const el = document.createElement('div'); el.className = 'chrev'; el.setAttribute('role', 'dialog'); el.setAttribute('aria-label', 'Contenu du coffre');
+  el.innerHTML = `<div class="chrev-in"><b class="chrev-t">Tu obtiens</b><div class="chrev-cards">${ids.map((id, k) => `<div class="chrev-c" style="--k:${k}">${spellCardH(id, 'p', 0)}<small>${SPELLS[id] && SPELLS[id].eq ? 'Rangé dans l\'entraînement' : 'Ajouté à ta main'}</small></div>`).join('')}</div><small class="chrev-x">Clique pour fermer</small></div>`;
+  const close = () => { el.classList.add('out'); setTimeout(() => el.remove(), 250); };
+  el.addEventListener('click', close); document.body.appendChild(el); setTimeout(close, 3200 + ids.length * 400);
+}
 // animation d'ouverture : le coffre vient au centre, tremble, s'ouvre dans un halo (bleu = mineur, doré = majeur)
 function fxChest(btn) {
   const maj = btn.classList.contains('maj'), r = btn.getBoundingClientRect(), col = maj ? '#ffd24a' : '#6fd0ff';
@@ -485,7 +493,7 @@ function trainH(d, me, canAct) {
       <b class="ch-n">×${me.chests[k]}</b><small>${q === 'maj' ? 'Majeur' : 'Mineur'} · ${t}</small></button>`; }).join('');
   const medals = (me.eqs || []).map((id, i) => { const S = SPELLS[id], c = EQ_COST(id);
     const why = !comps.length ? 'Recrute ton compagnon pour l\'équiper.' : !comps.some(m => (m.eq || []).length < 3 && !(m.eq || []).includes(id)) ? 'Ton compagnon porte déjà cet équipement ou trois équipements.' : (me.ck || 0) < c ? `Il te faut ${c} chakra.` : '';
-    return `<button class="eqm" data-act="equip" data-i="${i}" ${canAct && !why ? '' : 'disabled'} data-tip="${esc(S.n + ' : ' + S.tx.replace('Équipe ton compagnon : ', '') + ' Équiper coûte ' + c + ' chakra.' + (why ? ' ' + why : ''))}" aria-label="Équiper ${esc(S.n)} pour ${c} chakra"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="eqc${i}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#eqc${i})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span class="ch-c">${c}</span></button>`; }).join('');
+    return `<button class="eqm" data-act="equip" data-i="${i}" data-sp="${id}" data-why="${esc('Équiper coûte ' + c + ' chakra.' + (why ? ' ' + why : ''))}" ${canAct && !why ? '' : 'aria-disabled="true"'} aria-label="Équiper ${esc(S.n)} pour ${c} chakra"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="eqc${i}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#eqc${i})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span class="ch-c">${c}</span></button>`; }).join('');
   return `<section class="train" aria-label="Entraînement"><b class="tr-h">Entraînement</b>
     <div class="tr-row">${chests || '<small class="tr-e">Les coffres gagnés après chaque combat arrivent ici.</small>'}</div>
     <div class="tr-row med">${medals || '<small class="tr-e">Ouvre un coffre : ses équipements se rangent ici.</small>'}</div></section>`;
@@ -704,8 +712,8 @@ function doAct(act, btn) {
     case 'skip': if (V.fight) { clearTimeout(V.fightT); if (V.fight.lunge) { try { V.fight.lunge.cancel(); } catch (e) {} V.fight.lunge = null; } V.fi = V.fight.r.frames.length - 1; V.fight.done = true; render(); fxEnd(); } break;
     case 'buy': if (s) { sendAct({ t:'buy', i:s.i }); V.sel = null; } break;
     case 'buysp': sendAct({ t:'buysp' }); V.sel = null; break;
-    case 'chest': fxChest(btn); sendAct({ t:'chest', k:btn.dataset.k }); break;
-    case 'equip': sendAct({ t:'equip', i:+btn.dataset.i }); break;
+    case 'chest': V.chestRev = { eq:(V.me && V.me.eqs || []).slice(), hd:(V.me && V.me.hd || []).map(x => x.u), at:Date.now() }; fxChest(btn); sendAct({ t:'chest', k:btn.dataset.k }); break;
+    case 'equip': if (btn.getAttribute('aria-disabled') === 'true') { toast(btn.dataset.why || ''); break; } sendAct({ t:'equip', i:+btn.dataset.i }); hidePeek(); break;
     case 'cast': if (s) { sendAct({ t:'cast', i:s.i }); V.sel = null; } break;
     case 'aim': if (s) { V.aim = s.i; V.sel = null; render(); } break;
     case 'aimcancel': V.aim = null; render(); break;
@@ -886,6 +894,7 @@ function placePeek(r, pw, ph, touch) {
 function peekSize() { const v = parseFloat(getComputedStyle(peekEl).getPropertyValue('--hw')) || 176; return [v, v * 1.4]; }
 function showPeek(t, touch) {
   const r = t.getBoundingClientRect();
+  if (t.classList.contains('eqm') && t.dataset.sp) { peekFor = t; peekEl.innerHTML = spellCardH(t.dataset.sp, 'p', 0) + `<div class="peek-note">${esc(t.dataset.why || '')}</div>`; peekEl.hidden = false; const [pw, ph] = peekSize(); placePeek(r, pw, ph + 40, touch); return true; }
   if (t.classList.contains('spt') && t.dataset.sp) { peekFor = t; peekEl.innerHTML = spellCardH(t.dataset.sp, 'p', 0); peekEl.hidden = false; const [pw, ph] = peekSize(); placePeek(r, pw, ph, touch); return true; }
   if (t.matches('.mn,.cd')) {
     if (t.dataset.sp) { peekFor = t; peekEl.innerHTML = spellCardH(t.dataset.sp, 'p', 0); peekEl.hidden = false; const [pw, ph] = peekSize(); placePeek(r, pw, ph, touch); return true; }
@@ -925,13 +934,13 @@ function showPeek(t, touch) {
 }
 document.addEventListener('pointerover', e => {
   if (e.pointerType && e.pointerType !== 'mouse') return;
-  const t = e.target.closest ? e.target.closest('.mn,.cd,.spt,[data-hov]') : null;
+  const t = e.target.closest ? e.target.closest('.mn,.cd,.spt,.eqm,[data-hov]') : null;
   if (!t || DRAG || t.closest('#peek') || t.closest('.det') || t.closest('.parade') || t.closest('.atl') || t.closest('.ed')) { if (!t) hidePeek(); return; }
   if (t === peekFor) return;
   if (!showPeek(t, false)) hidePeek();
 });
 /* téléphone : appui long = aperçu (carte, créature, pouvoir, compagnon, héros, adversaire…) */
-const LP_SEL = '.mn,.cd,.spt,[data-hov],.medal,.bell,.kc,.purse';
+const LP_SEL = '.mn,.cd,.spt,.eqm,[data-hov],.medal,.bell,.kc,.purse';
 let LP = null;
 document.addEventListener('pointerdown', e => {
   if (e.pointerType === 'mouse') return;
@@ -946,7 +955,7 @@ const lpEnd = () => { if (!LP) return; clearTimeout(LP.tm); if (LP.on) { V.lpBlo
 document.addEventListener('pointerup', lpEnd); document.addEventListener('pointercancel', lpEnd);
 document.addEventListener('contextmenu', e => { if (e.target.closest && e.target.closest(LP_SEL)) e.preventDefault(); });
 document.addEventListener('click', e => { if (V.lpBlock && Date.now() - V.lpBlock < 450) { e.preventDefault(); e.stopPropagation(); V.lpBlock = 0; } }, true);
-document.addEventListener('pointerout', e => { const t = e.target.closest ? e.target.closest('.mn,.cd,.spt,[data-hov]') : null; if (t && t === peekFor && !t.contains(e.relatedTarget)) hidePeek(); });
+document.addEventListener('pointerout', e => { const t = e.target.closest ? e.target.closest('.mn,.cd,.spt,.eqm,[data-hov]') : null; if (t && t === peekFor && !t.contains(e.relatedTarget)) hidePeek(); });
 setInterval(() => {
   if (!V.pub || V.screen !== 'game') return;
   const left = V.pub.rem - (Date.now() - V.pubAt);
