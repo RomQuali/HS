@@ -535,8 +535,8 @@ function upPeekH(me, i) {
 // styles des récompenses (10 au choix, mémorisés sur l'appareil)
 const RW_NAMES = ['Bois de taverne', 'Parchemin', 'Médaillon', 'Cristal de chakra', 'Talisman scellé', 'Bannière', 'Pierre runique', 'Néon', 'Holographique', 'Épuré'];
 function rwSet(n) { V.rw = n; document.body.className = document.body.className.replace(/\brw-\d+\b/g, '').trim() + ' rw-' + n; try { localStorage.setItem('mdt-rw', String(n)); } catch (e) {} }
-try { const s = +localStorage.getItem('mdt-rw'); if (s >= 0 && s < 10) V.rw = s; } catch (e) {}
-setTimeout(() => rwSet(V.rw || 0), 0);
+V.rw = 5;   // style retenu : Bannière
+setTimeout(() => rwSet(5), 0);
 function choiceH(d, me) {
   if (!me || !me.choice || !me.cp || Date.now() < (V.choiceAt || 0) || d.ph !== 'recruit' || awkPending()) return '';
   const tech = (me.loot || []).filter(o => SPELLS[o.id]);
@@ -544,7 +544,6 @@ function choiceH(d, me) {
     <b class="upch-t">Choisis ta récompense</b>${me.chFav ? '<small class="upch-s fav">Coffre de l\'Éveil · tu es parmi les derniers : raretés Épique ou mieux, et la carte va gratuitement dans ta main.</small>' : ''}<small class="upch-s"${me.chFav ? ' hidden' : ''}>Une seule : elle se range dans l'inventaire, et tu la poses sur ${esc(C[me.cp.c] ? C[me.cp.c].n : 'ton compagnon')} avec du chakra.</small>
     <div class="upch-row">${me.choice.map((o, i) => { const R = RARS[o.r], n = o.kind ? 0 : pieceList(me.cp, o.pc).length;
       return `<button class="upc r${o.r}" style="--rc:${R.col};--k:${i}" data-act="upick" data-i="${i}"><span class="upc-r">${R.n}</span>${pieceIco(o.kind ? o : o.pc, 'big')}<b>${esc(o.kind ? (o.kind === 'mn' ? 'Serviteur' : 'Technique') : PIECES[o.pc].n)}</b><span class="upc-tx">${esc(upTx(o, me.cp))}</span>${o.kind && me.chFav ? '<span class="uppk-c"><small>gratuit</small></span>' : `<span class="uppk-c">${ckMarkH(upgCost(o))}<small>à poser</small></span>`}<small>${o.kind ? (me.chFav ? 'Gratuit · directement en main' : 'À poser au chakra') : n ? `Déjà ${n} amélioration${n > 1 ? 's' : ''}` : 'Première amélioration'}</small></button>`; }).join('')}</div>
-    <div class="rw-pick" aria-label="Style des récompenses"><button class="btn sm" data-act="rwst" data-d="-1" aria-label="Style précédent">◀</button><span>Style ${(V.rw || 0) + 1} / 10 · ${RW_NAMES[V.rw || 0]}</span><button class="btn sm" data-act="rwst" data-d="1" aria-label="Style suivant">▶</button></div>
     ${tech.length ? `<p class="upch-b">Bonus du coffre : <b>${tech.map(o => esc(SPELLS[o.id].n)).join(', ')}</b> ajoutée à ta main</p>` : ''}
   </div></div>`;
 }
