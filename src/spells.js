@@ -34,12 +34,12 @@ const SPELLS = {
   nj_deluge:{ el:'feu', n:'Pluie de flammes', t:6, c:5, ck:7, nin:1, ty:'nin', tx:'Prochain combat : tous tes serviteurs gagnent +4/+4 et 4 dégâts frappent l\'ennemi au début du combat. Gagne 3 braises.' },
   // Vent : économie et circulation
   nj_permut:{ el:'vent', n:'Permutation', t:1, c:1, ck:1, nin:1, ty:'nin', tg:1, tx:'Prochain combat seulement : un de tes serviteurs gagne Bouclier divin. Récupère 1 or.' },
-  nj_porteur:{ el:'vent', n:'Vent porteur', t:2, c:1, ck:2, nin:1, ty:'nin', tx:'Gagne 2 or et rafraîchis gratuitement la taverne.' },
+  nj_porteur:{ el:'vent', n:'Brise porteuse', t:2, c:1, ck:2, nin:1, ty:'nin', tx:'Gagne 2 or et rafraîchis gratuitement la taverne.' },
   nj_rafale:{ el:'vent', n:'Rafale tranchante', t:3, c:3, ck:3, nin:1, ty:'nin', tx:'Donne +2/+1 à trois de tes serviteurs aléatoires. Récupère 1 or.' },
   // Eau : la marée monte, on accumule
   nj_brume:{ el:'eau', n:'Rideau de brume', t:2, c:2, ck:2, nin:1, ty:'nin', tx:'Prochain combat seulement : tous tes serviteurs gagnent +0/+3. La marée monte de 1.' },
   nj_doubles:{ el:'eau', n:'Technique des doubles', t:3, c:2, ck:3, nin:1, ty:'nin', tg:1, tx:'Invoque une copie 1/1 du serviteur ciblé, sans ses bonus. La marée monte de 1.' },
-  nj_vague:{ el:'eau', n:'Vague montante', t:4, c:3, ck:4, nin:1, ty:'nin', tx:'La marée monte de 2, puis tes serviteurs du Clan de l\'Eau gagnent +1/+1 par tranche de 2 marée.' },
+  nj_vague:{ el:'eau', n:'Vague montante', t:4, c:3, ck:4, nin:1, ty:'nin', tx:'La marée monte de 2, puis tes serviteurs du Clan Suiton gagnent +1/+1 par tranche de 2 marée.' },
   // Foudre : surcharge et chakra
   nj_decharge:{ el:'foudre', n:'Décharge', t:1, c:1, ck:1, nin:1, ty:'nin', tx:'Gagne 1 charge et récupère 2 chakra.' },
   nj_foudre:{ el:'foudre', n:'Lame de foudre', t:3, c:3, ck:3, nin:1, ty:'nin', tg:1, tx:'Prochain combat seulement : un de tes serviteurs gagne +3 attaque et Toxique. Gagne 1 charge.' },
