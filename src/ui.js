@@ -678,6 +678,36 @@ const TAUNT = {
   replyAdv:['T\'as la confiance d\'Orochimarre devant un nouveau corps. Ça finit mal, en général.', 'Parle moins, Narutrop. Frappe plus.', 'Cause toujours, petit genin. Le dernier qui m\'a dit ça faisait la vaisselle à l\'Académie.', 'Ouais ouais, tous les méchants disent ça avant leur flashback.', 'Ta gueule et forme tes signes.'],
   replyDis:['Je crois que je vais faire un Hinatatouille dans mon coin.', 'Je peux invoquer Jiraiyaourt en renfort ? Non ? Bon.', '…Merde. Je peux appeler mon sensei ?', 'Attends, je dois aller acheter des ramen, là, tout de suite.', 'C\'est… c\'est pas grave. Je vais débloquer un nouveau pouvoir. Probablement.'],
 };
+// bulle de dialogue au-dessus d'un compagnon du duel (une seule bulle par côté)
+function cpSay(side, txt, cls = '', lab = '', ms = 2600) {
+  const host = document.getElementById('cps' + side); if (!host || !V.fight || FX_OFF()) return;
+  document.querySelectorAll('.taunt.s' + side).forEach(x => x.remove());
+  const r = host.getBoundingClientRect(), b = document.createElement('div');
+  b.className = 'taunt s' + side + ' ' + (side ? 'th ' : 'me ') + cls; b.innerHTML = (lab ? `<small>${esc(lab)}</small>` : '') + esc(txt);
+  b.style.left = (r.right + 8) + 'px'; b.style.top = (r.top + r.height * .25) + 'px';
+  document.body.appendChild(b); setTimeout(() => { b.classList.add('out'); setTimeout(() => b.remove(), 300); }, ms);
+}
+// joute verbale pendant le duel
+const BANTER = {
+  hit:['Et ÇA, c\'est pour mon sensei !', 'Tu l\'as pas vu venir, hein ? Moi non plus, j\'avais les yeux fermés.', 'Technique secrète : la baffe ! Interdite dans trois villages.', 'Sens ce chakra, crétin ! Enfin… surtout sens mon poing.', 'Ça, c\'est pas un clone. Ça, c\'est la vraie douleur.', 'Rasengalette ! Avec supplément beurre salé !', 'Un coup pour chaque bol de ramen que tu m\'as pas payé !', 'Je l\'ai répétée trois épisodes de remplissage, celle-là !', 'Oups. J\'ai encore oublié de crier le nom de mon attaque.'],
+  hurt:['Aïe ! Bordel, c\'était pas dans le script !', 'Ça… ça chatouille. Si si. Je pleure pas, c\'est la fumée.', 'Pas grave, je vais débloquer un nouveau pouvoir dans un flashback.', 'Tu frappes comme Narutrop au premier chapitre !', 'Merde, il est sérieux, lui.', 'C\'est pas juste ! J\'avais pas fini ma pose dramatique !', 'Kakachiche, si tu me regardes, c\'est le moment d\'intervenir.', 'Ça va laisser une cicatrice stylée au moins ?'],
+  shield:['Hé hé ! Bouclier ! Tu croyais quoi, Gaarapide ?', 'Raté ! Mon sable… enfin ma bulle… enfin bref, raté !'],
+  ko:['Je… reviendrai… au prochain arc…', 'Dites à ma mère… que j\'ai jamais rangé mes rouleaux…', 'C\'était… un genjutsu… pas vrai ?', 'Itachiant… jusqu\'au bout…'],
+  win:['Victoire ! Croyez-moi, dattebaillon !', 'Et c\'est comme ça qu\'on devient Hokagrue !', 'Trop facile. Je vais quand même dramatiser ça en flashback.', 'Ramen pour tout le monde ! C\'est le perdant qui paie.'],
+  draw:['Match nul ? On dirait la fin d\'une saison sans budget.', 'On reprendra ça au prochain chapitre, rival.'],
+};
+const bPick = (k, n) => BANTER[k][Math.abs(n) % BANTER[k].length];
+function duelBanter(F, fr, prevFr) {
+  if (!F || !F.dr || !prevFr || V.duelChat === F.seed + ':' + V.di) return; V.duelChat = F.seed + ':' + V.di;
+  const n = (F.seed || 0) + V.di * 7, sideOf = s => s === F.me ? 0 : 1;   // 0 = mon compagnon (bas), 1 = adverse
+  for (const s of [0, 1]) {
+    const before = {}, now = {}; prevFr.s[s].forEach(x => before[x.u] = x); fr.s[s].forEach(x => now[x.u] = x);
+    for (const u in before) { const b = before[u], a = now[u];
+      if (!a) { cpSay(sideOf(s), bPick('ko', n + s), 'dis'); if (fr.s[1 - s].length) cpSay(1 - sideOf(s), bPick('win', n + 3), 'adv'); return; }
+      if (a.h < b.h) { cpSay(sideOf(s), bPick('hurt', n + s), ''); setTimeout(() => cpSay(1 - sideOf(s), bPick('hit', n + 5), ''), 700); return; }
+      if ((b.f || '').includes('s') && !(a.f || '').includes('s')) { cpSay(sideOf(s), bPick('shield', n), 'adv'); return; } }
+  }
+}
 function duelTaunt(F) {
   if (!F || !F.duel || FX_OFF()) return;
   const mine = (F.me ? F.duel.b : F.duel.a)[0], th = (F.me ? F.duel.a : F.duel.b)[0]; if (!mine || !th) return;
@@ -689,9 +719,7 @@ function duelTaunt(F) {
   else if (EL_DOM[et] === em) { me = pick(TAUNT.dis[em + '<' + et] || TAUNT.even, 1); them = pick(TAUNT.replyAdv, 2); }
   else { me = pick(TAUNT.even, 1); them = pick(TAUNT.even, 4); if (them === me) them = pick(TAUNT.replyAdv, 5); }
   const tag = EL_DOM[em] === et ? ['adv', 'Avantage ' + ELS[em].n] : EL_DOM[et] === em ? ['dis', 'Désavantage ' + ELS[em].n] : ['eq', ELS[em].n + ' contre ' + ELS[et].n];
-  const say = (side, txt, d, cls, lab) => setTimeout(() => { const host = document.getElementById('cps' + side); if (!host || !V.fight) return; const r = host.getBoundingClientRect(), b = document.createElement('div');
-    b.className = 'taunt ' + (side ? 'th ' : 'me ') + (cls || ''); b.innerHTML = (lab ? `<small>${esc(lab)}</small>` : '') + esc(txt); b.style.left = (r.right + 8) + 'px'; b.style.top = (r.top + r.height * .25) + 'px';
-    document.body.appendChild(b); setTimeout(() => { b.classList.add('out'); setTimeout(() => b.remove(), 300); }, 3000); }, d);
+  const say = (side, txt, d, cls, lab) => setTimeout(() => cpSay(side, txt, cls, lab, 3000), d);
   say(0, me, 150, tag[0], tag[1]); say(1, them, 1500, '', '');
 }
 function stepDuel() {
@@ -699,6 +727,8 @@ function stepDuel() {
   clearTimeout(V.duelT);
   duelPaint(); duelFx();
   const D = F.dr.frames, last = D.length - 1;
+  if (V.di > 0) duelBanter(F, D[V.di], D[V.di - 1]);
+  if (V.di >= last && F.duel && F.duel.w === -1) cpSay(0, bPick('draw', F.seed || 0), 'eq');
   if (V.di >= last) { F.ddone = true; duelPaint(); const el = document.getElementById('cps0'); if (el && !FX_OFF()) { const r = el.querySelector('.mn').getBoundingClientRect(), w = duelRes(F) === 'win'; fxRing(r.left + r.width / 2, r.top + r.height / 2, w ? '#ffe39a' : '#9ab0c8', 1.4); if (w) fxBurst(r.left + r.width / 2, r.top + r.height / 2, 'buff', 14, 1.1); } return; }
   const fr = D[V.di];
   V.duelT = setTimeout(() => {
@@ -706,7 +736,7 @@ function stepDuel() {
     if (fr.at) { const t = duelLunge(fr); V.duelT = setTimeout(() => { V.di++; stepDuel(); }, t); }
     else if (fr.fb) { V.duelT = setTimeout(() => { V.di++; stepDuel(); }, 420); }
     else { V.di++; stepDuel(); }
-  }, V.di === 0 ? 300 : 520);
+  }, V.di === 0 ? 300 : 1100);
 }
 const duelTok = u => document.querySelector(`.cp-side [data-u="${u}"]`);
 function duelLunge(fr) {
