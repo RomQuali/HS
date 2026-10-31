@@ -642,6 +642,11 @@ const medal = (act, ic, label, cost, dis, on) => `<button class="medal${on ? ' o
 // pendant le combat, il affronte seulement le compagnon adverse : ce duel décide du coffre
 function duelRes(F) { if (!F || !F.duel) return null; return F.duel.w === F.me ? 'win' : F.duel.w === 1 - F.me ? 'loss' : 'draw'; }
 function duelLine(F) {
+  const st = F && F.stl ? [F.stl[F.me], F.stl[1 - F.me]] : [0, 0];
+  const stH = st[0] || st[1] ? `<p class="duel-l stl">${st[0] ? `Vol de chakra : <b>+${st[0]}</b>` : ''}${st[0] && st[1] ? ' · ' : ''}${st[1] ? `${esc(F.on)} te vole <b>${st[1]}</b> chakra` : ''}</p>` : '';
+  return stH + duelLine0(F);
+}
+function duelLine0(F) {
   if (F && !F.duel && V.me && V.me.cp && F.r && F.r.alive) { const up = (F.r.alive[F.me] || []).includes(V.me.cp.c); return `<p class="duel-l ${up ? 'win' : 'loss'}">Ton compagnon ${up ? 'est encore debout · coffre majeur' : 'est tombé · coffre mineur'}</p>`; }
   const r = duelRes(F); if (!r) return '';
   return `<p class="duel-l ${r}">Duel des compagnons : ${r === 'win' ? 'gagné · coffre majeur' : r === 'loss' ? 'perdu · coffre mineur' : 'égalité · coffre mineur'}</p>`;
@@ -2205,3 +2210,5 @@ html.lite .mko.ready{animation:none;box-shadow:0 0 0 2px #120a06,0 0 0 4px var(-
 .cbx-b{font-weight:700;font-size:13px!important}
 @media (orientation:landscape) and (max-height:540px){ .mkorbs{--orr:40px} .mko{width:18px;height:18px} .mko b{font-size:10px} .mko svg,.mko i{display:none} .mkpeek{width:min(92vw,520px)} }
 `; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `.duel-l.stl{color:#8fd8ff}.duel-l.stl b{color:#bfe8ff}`; document.head.appendChild(st); })();

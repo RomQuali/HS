@@ -1322,7 +1322,7 @@ function endRecruit() {
     elementDuel(pb, qcb);
     const r = simulate(pb, qcb, seed, p.t, qt, fire, G.mx);
     lawsAfterFight(G, p, r, 0); if (!ghost) lawsAfterFight(G, q, r, 1);
-    if (!ghost) chakraSteal(p, q, pb, qcb, r);
+    const stl = !ghost ? chakraSteal(p, q, pb, qcb, r) : [0, 0];
     const d = Math.min(cap, r.dmg);
     if (r.w === 1) G.pend.push({ pid:p.pid, d });
     if (r.w === 0 && !ghost) G.pend.push({ pid:q.pid, d });
@@ -1343,7 +1343,7 @@ function endRecruit() {
     if (join) { if (r.w === 0 && p.cp) giveXp(p.cp, 2); if (!ghost && r.w === 1 && q.cp) giveXp(q.cp, 2); }
     if (r.w === 0) p.bd.filter(isComp).forEach(m => giveXp(m, 2)); if (!ghost && r.w === 1) q.bd.filter(isComp).forEach(m => giveXp(m, 2));
     if (!ghost) q.res = { o:p.n, r:X(r.w), d, cr:duel ? X(duel.w) : join && q.cp ? stand(q, 1) : null };
-    const base = { duel, rd:G.rd, a:pb.map(fullM), b:qcb.map(fullM), seed, ta:p.t, tb:qt, cap, ha:p.hero, hb:ghost ? ghost.hero : q.hero, fire, mx:G.mx || {} };
+    const base = { duel, stl, rd:G.rd, a:pb.map(fullM), b:qcb.map(fullM), seed, ta:p.t, tb:qt, cap, ha:p.hero, hb:ghost ? ghost.hero : q.hero, fire, mx:G.mx || {} };
     if (p.human && !p.bot) { deliverFight(p, Object.assign({ me:0, on:qn }, base)); maxFrames = Math.max(maxFrames, r.frames.length); }
     if (!ghost && q.human && !q.bot) { deliverFight(q, Object.assign({ me:1, on:p.n }, base)); maxFrames = Math.max(maxFrames, r.frames.length); }
     p.lastOpp = ghost ? null : q.pid; if (!ghost) q.lastOpp = p.pid;
@@ -1368,8 +1368,10 @@ function elementDuel(a, b) {
 function chakraSteal(p, q, pb, qb, r) {
   const n = (b, k) => b.reduce((t, m) => t + (CD(m.c).fxAll || []).filter(e => e.k === k).reduce((u, e) => u + e.n * (m.g ? 2 : 1), 0), 0);
   const dead = (side, k) => r.dead[side].reduce((t, c) => t + ((C[c] && C[c].fxAll) || []).filter(e => e.k === k).reduce((u, e) => u + e.n, 0), 0);
-  const take = (from, to, x) => { const v = Math.min(from.ck || 0, x); if (v > 0) { from.ck -= v; to.ck = Math.min(ckMax(to), (to.ck || 0) + v); } };
-  take(q, p, n(pb, 'soc_steal') + dead(0, 'dr_steal')); take(p, q, n(qb, 'soc_steal') + dead(1, 'dr_steal'));
+  // le voleur gagne toujours le chakra volé ; la victime perd ce qu'elle a (souvent peu : on dépense son chakra avant le combat)
+  const take = (from, to, x) => { if (x <= 0) return 0; const v = Math.min(from.ck || 0, x); from.ck = (from.ck || 0) - v; to.ck = Math.min(ckMax(to), (to.ck || 0) + x); return x; };
+  const a = take(q, p, n(pb, 'soc_steal') + dead(0, 'dr_steal')), b = take(p, q, n(qb, 'soc_steal') + dead(1, 'dr_steal'));
+  return [a, b];
 }
 function lawsAfterFight(G, p, r, side) {
   if (inMechAny(G, 'ames')) { const n = r.dead[side].filter(c => C[c] && G.mx.ames.includes(C[c].tr)).length; if (n) p.souls = (p.souls || 0) + n; }
