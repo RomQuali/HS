@@ -769,8 +769,9 @@ function simulate0(bA, bB, seed, tA, tB, fire, mx) {
   const a = S.sides[0].length, b = S.sides[1].length;
   const w = a && !b ? 0 : b && !a ? 1 : -1;
   let dmg = 0;
-  if (w === 0) dmg = tA + S.sides[0].reduce((t, m) => t + tierOf(m), 0);
-  if (w === 1) dmg = tB + S.sides[1].reduce((t, m) => t + tierOf(m), 0);
+  const tierD = m => C[m.c] && (C[m.c].comp || /^nb_/.test(m.c)) ? 0 : tierOf(m);   // compagnon et invocation n'ajoutent pas de dégâts au héros
+  if (w === 0) dmg = tA + S.sides[0].reduce((t, m) => t + tierD(m), 0);
+  if (w === 1) dmg = tB + S.sides[1].reduce((t, m) => t + tierD(m), 0);
   return { w, dmg, frames:S.frames, dead:S.dead, alive:S.sides.map(a => a.map(m => m.c)) };
 }
 
@@ -870,6 +871,7 @@ const CK_MAX = 10;
 const ckMax = p => CK_MAX + ((p && p.bd) || []).reduce((t, m) => t + ((CD(m.c).fxAll || []).filter(e => e.k === 'pas_ckx').reduce((u, e) => u + e.n, 0)) * (m.g ? 2 : 1), 0);
 const pureX = (p, tr) => p && p.pure === tr ? 2 : 1;
 const awake = G => !!(G && G.eveil && G.rd >= G.eveil);
+var AWK_JOIN = true;
 const awakeNow = () => typeof H !== 'undefined' && awake(H.G);
 /* ---------- Éveil (4 joueurs ou moins) : héros, compagnon et techniques s'éveillent ---------- */
 // pouvoir éveillé : les valeurs sont doublées (sauf les coûts) et certains pouvoirs gagnent un bonus
@@ -1283,6 +1285,10 @@ function endRecruit() {
     const heat = x => (x.fbq ? (x.fb || 3) : 0) + (x.hero === 'pyra' ? 2 : 0) + (x.njf || 0) + (HEROES[x.hero] && HEROES[x.hero].pw && HEROES[x.hero].pw.k === 'pfire' ? HEROES[x.hero].pw.d * (awake(G) ? 2 : 1) : 0) + (awake(G) && x.bd ? Math.floor((x.charge || 0) / 2) * (x.bd.some(m => hasFx(m, 'awk_storm')) ? 2 : 1) : 0);
     const fire = [heat(p), ghost ? 0 : heat(q)];
     const pb = combatBoard(p), qcb = combatBoard(ghost || q);
+    // après l'Éveil (Ninja) : compagnon et bête d'invocation rejoignent la bataille, en tête de rangée
+    const join = awake(G) && inMechAny(G, 'chakra') && (typeof AWK_JOIN === 'undefined' || AWK_JOIN);
+    const lead = x => x && x.cp ? [Object.assign({}, x.cp)].concat(x.bst ? [Object.assign({}, x.bst)] : []) : [];
+    if (join) { pb.unshift(...lead(p)); qcb.unshift(...lead(ghost || q)); }
     elementDuel(pb, qcb);
     const r = simulate(pb, qcb, seed, p.t, qt, fire, G.mx);
     lawsAfterFight(G, p, r, 0); if (!ghost) lawsAfterFight(G, q, r, 1);
@@ -1293,7 +1299,7 @@ function endRecruit() {
     const W = w => w === 0 ? 'win' : w === 1 ? 'loss' : 'draw', X = w => w === 0 ? 'loss' : w === 1 ? 'win' : 'draw';
     // duel des compagnons : ils ne combattent que le compagnon adverse, ne touchent jamais le héros, et décident du coffre
     const qq = ghost || q; let duel = null;
-    if (p.cp || qq.cp) {
+    if (!join && (p.cp || qq.cp)) {
       const ca = p.cp ? [Object.assign({}, p.cp)].concat(p.bst ? [Object.assign({}, p.bst)] : []) : [], cbb = qq.cp ? [Object.assign({}, qq.cp)].concat(qq.bst ? [Object.assign({}, qq.bst)] : []) : [];
       elementDuel(ca, cbb);
       const ca0 = ca.map(fullM), cb0 = cbb.map(fullM);
@@ -1302,6 +1308,7 @@ function endRecruit() {
       if (cr.w === 0 && p.cp) giveXp(p.cp, 2); if (!ghost && cr.w === 1 && q.cp) giveXp(q.cp, 2);
     }
     p.res = { o:qn, r:W(r.w), d, cr:duel ? W(duel.w) : null };
+    if (join) { if (r.w === 0 && p.cp) giveXp(p.cp, 2); if (!ghost && r.w === 1 && q.cp) giveXp(q.cp, 2); }
     if (r.w === 0) p.bd.filter(isComp).forEach(m => giveXp(m, 2)); if (!ghost && r.w === 1) q.bd.filter(isComp).forEach(m => giveXp(m, 2));
     if (!ghost) q.res = { o:p.n, r:X(r.w), d, cr:duel ? X(duel.w) : null };
     const base = { duel, rd:G.rd, a:pb.map(fullM), b:qcb.map(fullM), seed, ta:p.t, tb:qt, cap, ha:p.hero, hb:ghost ? ghost.hero : q.hero, fire, mx:G.mx || {} };

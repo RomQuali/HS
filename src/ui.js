@@ -129,7 +129,7 @@ const SHIELD_D = 'M50 -4 C 85 -4, 102 28, 102 60 C 102 93, 79 115, 50 115 C 21 1
 function tokenH(m, z, i, o = {}) {
   const b = CD(m.c), f = (m.f || '') + (m.tmp && m.tmp.f ? m.tmp.f : ''), g = !!m.g;   // mots-clés permanents + ceux du prochain combat
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
-  const cls = ['mn', ...['s', 't', 'r', 'w', 'v'].filter(k => f.includes(k)).map(k => 'kw-' + k), o.trip && 'tripok', g && 'g', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
+  const cls = ['mn', z === 'f' && C[m.c] && (C[m.c].comp || /^nb_/.test(m.c)) && 'cp-join', ...['s', 't', 'r', 'w', 'v'].filter(k => f.includes(k)).map(k => 'kw-' + k), o.trip && 'tripok', g && 'g', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
   const ics = kwIcons(m);
   const up = (v, base) => v > base * (g ? 2 : 1) ? ' up' : '';
   const svg = `<svg class="mn-svg" viewBox="-4 -6 108 132" aria-hidden="true">`
@@ -458,7 +458,7 @@ function gameH() {
     const aimS = !fighting && V.aim != null && me.hd[V.aim] && me.hd[V.aim].sp ? SPELLS[me.hd[V.aim].sp] : null;
     const sockets = Array.from({ length:7 }, () => '<i></i>').join('');
     const cpSide = me.cp && !fighting ? cpSideH(me, null, 0) : '';
-    const board = `<section class="board-zone${aimS ? ' aim' : ''}${me.cp ? ' has-cp' : ''}" ${fighting ? '' : 'data-drop="bd"'} aria-label="Ton plateau">${cpSide}
+    const board = `<section class="board-zone${aimS ? ' aim' : ''}${me.cp && (!fighting || V.fight.duel) ? ' has-cp' : ''}" ${fighting ? '' : 'data-drop="bd"'} aria-label="Ton plateau">${cpSide}
       ${aimS ? `<div class="aimbar"><span>${icon('bolt')}<b>${esc(aimS.n)}</b> : touche le serviteur à cibler.</span><button class="btn sm" data-act="aimcancel">Annuler</button></div>` : ''}
       ${!fighting && me.tma ? `<span class="tma-b">Prochain combat : +${me.tma.a}/+${me.tma.h} pour tous</span>` : ''}
       <div class="line" id="bdrow">${boardRow}</div></section>`;
@@ -476,7 +476,7 @@ function gameH() {
     const hand = fighting ? '' : `<section class="hand" data-drop="hd" aria-label="Ta main · ${n}/10"><div class="fan${n > 7 ? ' many' : n > 4 ? ' some' : ''}" style="--n:${n}">${n ? me.hd.map((m, i) => { const o = i - (n - 1) / 2, op = { drag:canAct, style:`--o:${f1(o)};--o2:${f1(o * o)}` }; return m.sp ? spellCardH(m.sp, 'hd', i, op) : cardH(m, 'hd', i, op); }).join('') : ''}</div></section>`;
     const det = !fighting && V.sel ? `<div class="detail-pop">${detailH(canAct)}<button class="dp-x" data-act="unsel" aria-label="Fermer">×</button></div>` : '';
     const duelCol = fighting && V.fight.duel && me.cp ? `<div class="duel-col" aria-label="Duel des compagnons">${cpSideH(me, V.fight, 1)}<span class="duel-vs">VS</span>${cpSideH(me, V.fight, 0)}</div>` : '';
-    table = `<div class="table${fighting ? ' fighting arena' : ''}${awakeUI() && (d.laws || []).some(l => l.k === 'chakra') ? ' awakened' + awkElCls(me) : ''}">${duelCol}${hud}${topZone}${board}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}${choiceH(d, me)}`;
+    table = `<div class="table${fighting ? ' fighting arena' + (V.fight.duel ? '' : (me.cp ? ' joined' : '')) : ''}${awakeUI() && (d.laws || []).some(l => l.k === 'chakra') ? ' awakened' + awkElCls(me) : ''}">${duelCol}${hud}${topZone}${board}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}${choiceH(d, me)}`;
   } else if (myInfo) {
     table = `<div class="table">${hud}<section class="plaque solo-msg"><h2>Éliminé · ${myInfo.pl}e place</h2><p class="note">Tu peux suivre la fin de la partie à gauche ou retourner au menu.</p><div class="btns"><button class="btn" data-act="leave">Retour au menu</button></div></section></div>`;
   } else {
@@ -2133,4 +2133,31 @@ html.lite .upc{animation:none}
 .cp-side.two{width:auto}
 .mn.bst-tok .mn-svg{filter:drop-shadow(0 0 8px rgba(255,170,80,.75)) drop-shadow(0 3px 3px rgba(0,0,0,.5))}
 html.lite .mn.bst-tok .mn-svg{filter:none}
+`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `
+:root body .table.fighting.joined .board-zone,:root body .table.fighting.joined .keeper-zone{--tw:min(96px, calc((100cqi - 80px) / 9.6), 12vh)}
+.mn.cp-join .mn-svg{filter:drop-shadow(0 0 8px rgba(255,190,90,.9)) drop-shadow(0 3px 3px rgba(0,0,0,.5))}
+.mn.cp-join::before{content:'';position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);width:60%;height:4px;border-radius:2px;background:#ffb050;box-shadow:0 0 6px #ffb050;z-index:3}
+html.lite .mn.cp-join .mn-svg{filter:none}
+`; document.head.appendChild(st); })();
+/* combat harmonieux : alliés et ennemis à la même taille, rangées centrées l'une sur l'autre */
+(function(){ const st = document.createElement('style'); st.textContent = `
+:root body .table.fighting{--tw:min(100px, calc((100cqi - 90px) / 7.8), 12.5vh)}
+:root body .table.fighting:has(.duel-col){--tw:min(96px, calc((100cqi - 300px) / 7.6), 12vh)}
+:root body .table.fighting.joined{--tw:min(94px, calc((100cqi - 90px) / 9.6), 12vh)}
+:root body .table.fighting .board-zone,:root body .table.fighting .keeper-zone,:root body .table.fighting .board-zone.has-cp,:root body .table.fighting .keeper-zone.has-cp,
+:root body .table.fighting.joined .board-zone,:root body .table.fighting.joined .keeper-zone{--tw:inherit}
+:root body .table.fighting .board-zone,:root body .table.fighting .keeper-zone{padding-left:12px;padding-right:12px}
+:root body .table.fighting:has(.duel-col) .board-zone,:root body .table.fighting:has(.duel-col) .keeper-zone{padding-left:calc(var(--tw) + 44px);padding-right:calc(var(--tw) + 44px)}
+:root body .table.fighting .line{justify-content:center}
+:root body .table.fighting .keeper-zone .line.counter-line,:root body .table.fighting #bdrow{padding-left:0;padding-right:0;justify-self:stretch;width:100%;box-sizing:border-box}
+:root body .table.fighting .duel-col .mn.cp-tok{--tw:inherit}
+:root body .table.fighting .duel-col .cp-side.two .cp-toks{--bw:var(--tw)}
+@media (orientation:landscape) and (max-height:540px){
+  :root body .table.fighting{--tw:min(62px, calc((100cqi - 140px) / 7.8))}
+  :root body .table.fighting:has(.duel-col){--tw:min(54px, calc((100cqi - 220px) / 7.6))}
+  :root body .table.fighting.joined{--tw:min(54px, calc((100cqi - 140px) / 9.6))}
+  :root body .table.fighting:has(.duel-col) .board-zone,:root body .table.fighting:has(.duel-col) .keeper-zone{padding-left:calc(var(--tw) + 20px);padding-right:calc(var(--tw) + 20px)}
+}
 `; document.head.appendChild(st); })();

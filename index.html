@@ -2830,8 +2830,9 @@ function simulate0(bA, bB, seed, tA, tB, fire, mx) {
   const a = S.sides[0].length, b = S.sides[1].length;
   const w = a && !b ? 0 : b && !a ? 1 : -1;
   let dmg = 0;
-  if (w === 0) dmg = tA + S.sides[0].reduce((t, m) => t + tierOf(m), 0);
-  if (w === 1) dmg = tB + S.sides[1].reduce((t, m) => t + tierOf(m), 0);
+  const tierD = m => C[m.c] && (C[m.c].comp || /^nb_/.test(m.c)) ? 0 : tierOf(m);   // compagnon et invocation n'ajoutent pas de dégâts au héros
+  if (w === 0) dmg = tA + S.sides[0].reduce((t, m) => t + tierD(m), 0);
+  if (w === 1) dmg = tB + S.sides[1].reduce((t, m) => t + tierD(m), 0);
   return { w, dmg, frames:S.frames, dead:S.dead, alive:S.sides.map(a => a.map(m => m.c)) };
 }
 
@@ -2931,6 +2932,7 @@ const CK_MAX = 10;
 const ckMax = p => CK_MAX + ((p && p.bd) || []).reduce((t, m) => t + ((CD(m.c).fxAll || []).filter(e => e.k === 'pas_ckx').reduce((u, e) => u + e.n, 0)) * (m.g ? 2 : 1), 0);
 const pureX = (p, tr) => p && p.pure === tr ? 2 : 1;
 const awake = G => !!(G && G.eveil && G.rd >= G.eveil);
+var AWK_JOIN = true;
 const awakeNow = () => typeof H !== 'undefined' && awake(H.G);
 /* ---------- Éveil (4 joueurs ou moins) : héros, compagnon et techniques s'éveillent ---------- */
 // pouvoir éveillé : les valeurs sont doublées (sauf les coûts) et certains pouvoirs gagnent un bonus
@@ -3344,6 +3346,10 @@ function endRecruit() {
     const heat = x => (x.fbq ? (x.fb || 3) : 0) + (x.hero === 'pyra' ? 2 : 0) + (x.njf || 0) + (HEROES[x.hero] && HEROES[x.hero].pw && HEROES[x.hero].pw.k === 'pfire' ? HEROES[x.hero].pw.d * (awake(G) ? 2 : 1) : 0) + (awake(G) && x.bd ? Math.floor((x.charge || 0) / 2) * (x.bd.some(m => hasFx(m, 'awk_storm')) ? 2 : 1) : 0);
     const fire = [heat(p), ghost ? 0 : heat(q)];
     const pb = combatBoard(p), qcb = combatBoard(ghost || q);
+    // après l'Éveil (Ninja) : compagnon et bête d'invocation rejoignent la bataille, en tête de rangée
+    const join = awake(G) && inMechAny(G, 'chakra') && (typeof AWK_JOIN === 'undefined' || AWK_JOIN);
+    const lead = x => x && x.cp ? [Object.assign({}, x.cp)].concat(x.bst ? [Object.assign({}, x.bst)] : []) : [];
+    if (join) { pb.unshift(...lead(p)); qcb.unshift(...lead(ghost || q)); }
     elementDuel(pb, qcb);
     const r = simulate(pb, qcb, seed, p.t, qt, fire, G.mx);
     lawsAfterFight(G, p, r, 0); if (!ghost) lawsAfterFight(G, q, r, 1);
@@ -3354,7 +3360,7 @@ function endRecruit() {
     const W = w => w === 0 ? 'win' : w === 1 ? 'loss' : 'draw', X = w => w === 0 ? 'loss' : w === 1 ? 'win' : 'draw';
     // duel des compagnons : ils ne combattent que le compagnon adverse, ne touchent jamais le héros, et décident du coffre
     const qq = ghost || q; let duel = null;
-    if (p.cp || qq.cp) {
+    if (!join && (p.cp || qq.cp)) {
       const ca = p.cp ? [Object.assign({}, p.cp)].concat(p.bst ? [Object.assign({}, p.bst)] : []) : [], cbb = qq.cp ? [Object.assign({}, qq.cp)].concat(qq.bst ? [Object.assign({}, qq.bst)] : []) : [];
       elementDuel(ca, cbb);
       const ca0 = ca.map(fullM), cb0 = cbb.map(fullM);
@@ -3363,6 +3369,7 @@ function endRecruit() {
       if (cr.w === 0 && p.cp) giveXp(p.cp, 2); if (!ghost && cr.w === 1 && q.cp) giveXp(q.cp, 2);
     }
     p.res = { o:qn, r:W(r.w), d, cr:duel ? W(duel.w) : null };
+    if (join) { if (r.w === 0 && p.cp) giveXp(p.cp, 2); if (!ghost && r.w === 1 && q.cp) giveXp(q.cp, 2); }
     if (r.w === 0) p.bd.filter(isComp).forEach(m => giveXp(m, 2)); if (!ghost && r.w === 1) q.bd.filter(isComp).forEach(m => giveXp(m, 2));
     if (!ghost) q.res = { o:p.n, r:X(r.w), d, cr:duel ? X(duel.w) : null };
     const base = { duel, rd:G.rd, a:pb.map(fullM), b:qcb.map(fullM), seed, ta:p.t, tb:qt, cap, ha:p.hero, hb:ghost ? ghost.hero : q.hero, fire, mx:G.mx || {} };
@@ -6770,7 +6777,7 @@ const SHIELD_D = 'M50 -4 C 85 -4, 102 28, 102 60 C 102 93, 79 115, 50 115 C 21 1
 function tokenH(m, z, i, o = {}) {
   const b = CD(m.c), f = (m.f || '') + (m.tmp && m.tmp.f ? m.tmp.f : ''), g = !!m.g;   // mots-clés permanents + ceux du prochain combat
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
-  const cls = ['mn', ...['s', 't', 'r', 'w', 'v'].filter(k => f.includes(k)).map(k => 'kw-' + k), o.trip && 'tripok', g && 'g', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
+  const cls = ['mn', z === 'f' && C[m.c] && (C[m.c].comp || /^nb_/.test(m.c)) && 'cp-join', ...['s', 't', 'r', 'w', 'v'].filter(k => f.includes(k)).map(k => 'kw-' + k), o.trip && 'tripok', g && 'g', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
   const ics = kwIcons(m);
   const up = (v, base) => v > base * (g ? 2 : 1) ? ' up' : '';
   const svg = `<svg class="mn-svg" viewBox="-4 -6 108 132" aria-hidden="true">`
@@ -7099,7 +7106,7 @@ function gameH() {
     const aimS = !fighting && V.aim != null && me.hd[V.aim] && me.hd[V.aim].sp ? SPELLS[me.hd[V.aim].sp] : null;
     const sockets = Array.from({ length:7 }, () => '<i></i>').join('');
     const cpSide = me.cp && !fighting ? cpSideH(me, null, 0) : '';
-    const board = `<section class="board-zone${aimS ? ' aim' : ''}${me.cp ? ' has-cp' : ''}" ${fighting ? '' : 'data-drop="bd"'} aria-label="Ton plateau">${cpSide}
+    const board = `<section class="board-zone${aimS ? ' aim' : ''}${me.cp && (!fighting || V.fight.duel) ? ' has-cp' : ''}" ${fighting ? '' : 'data-drop="bd"'} aria-label="Ton plateau">${cpSide}
       ${aimS ? `<div class="aimbar"><span>${icon('bolt')}<b>${esc(aimS.n)}</b> : touche le serviteur à cibler.</span><button class="btn sm" data-act="aimcancel">Annuler</button></div>` : ''}
       ${!fighting && me.tma ? `<span class="tma-b">Prochain combat : +${me.tma.a}/+${me.tma.h} pour tous</span>` : ''}
       <div class="line" id="bdrow">${boardRow}</div></section>`;
@@ -7117,7 +7124,7 @@ function gameH() {
     const hand = fighting ? '' : `<section class="hand" data-drop="hd" aria-label="Ta main · ${n}/10"><div class="fan${n > 7 ? ' many' : n > 4 ? ' some' : ''}" style="--n:${n}">${n ? me.hd.map((m, i) => { const o = i - (n - 1) / 2, op = { drag:canAct, style:`--o:${f1(o)};--o2:${f1(o * o)}` }; return m.sp ? spellCardH(m.sp, 'hd', i, op) : cardH(m, 'hd', i, op); }).join('') : ''}</div></section>`;
     const det = !fighting && V.sel ? `<div class="detail-pop">${detailH(canAct)}<button class="dp-x" data-act="unsel" aria-label="Fermer">×</button></div>` : '';
     const duelCol = fighting && V.fight.duel && me.cp ? `<div class="duel-col" aria-label="Duel des compagnons">${cpSideH(me, V.fight, 1)}<span class="duel-vs">VS</span>${cpSideH(me, V.fight, 0)}</div>` : '';
-    table = `<div class="table${fighting ? ' fighting arena' : ''}${awakeUI() && (d.laws || []).some(l => l.k === 'chakra') ? ' awakened' + awkElCls(me) : ''}">${duelCol}${hud}${topZone}${board}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}${choiceH(d, me)}`;
+    table = `<div class="table${fighting ? ' fighting arena' + (V.fight.duel ? '' : (me.cp ? ' joined' : '')) : ''}${awakeUI() && (d.laws || []).some(l => l.k === 'chakra') ? ' awakened' + awkElCls(me) : ''}">${duelCol}${hud}${topZone}${board}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}${choiceH(d, me)}`;
   } else if (myInfo) {
     table = `<div class="table">${hud}<section class="plaque solo-msg"><h2>Éliminé · ${myInfo.pl}e place</h2><p class="note">Tu peux suivre la fin de la partie à gauche ou retourner au menu.</p><div class="btns"><button class="btn" data-act="leave">Retour au menu</button></div></section></div>`;
   } else {
@@ -8774,6 +8781,33 @@ html.lite .upc{animation:none}
 .cp-side.two{width:auto}
 .mn.bst-tok .mn-svg{filter:drop-shadow(0 0 8px rgba(255,170,80,.75)) drop-shadow(0 3px 3px rgba(0,0,0,.5))}
 html.lite .mn.bst-tok .mn-svg{filter:none}
+`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `
+:root body .table.fighting.joined .board-zone,:root body .table.fighting.joined .keeper-zone{--tw:min(96px, calc((100cqi - 80px) / 9.6), 12vh)}
+.mn.cp-join .mn-svg{filter:drop-shadow(0 0 8px rgba(255,190,90,.9)) drop-shadow(0 3px 3px rgba(0,0,0,.5))}
+.mn.cp-join::before{content:'';position:absolute;left:50%;bottom:-2px;transform:translateX(-50%);width:60%;height:4px;border-radius:2px;background:#ffb050;box-shadow:0 0 6px #ffb050;z-index:3}
+html.lite .mn.cp-join .mn-svg{filter:none}
+`; document.head.appendChild(st); })();
+/* combat harmonieux : alliés et ennemis à la même taille, rangées centrées l'une sur l'autre */
+(function(){ const st = document.createElement('style'); st.textContent = `
+:root body .table.fighting{--tw:min(100px, calc((100cqi - 90px) / 7.8), 12.5vh)}
+:root body .table.fighting:has(.duel-col){--tw:min(96px, calc((100cqi - 300px) / 7.6), 12vh)}
+:root body .table.fighting.joined{--tw:min(94px, calc((100cqi - 90px) / 9.6), 12vh)}
+:root body .table.fighting .board-zone,:root body .table.fighting .keeper-zone,:root body .table.fighting .board-zone.has-cp,:root body .table.fighting .keeper-zone.has-cp,
+:root body .table.fighting.joined .board-zone,:root body .table.fighting.joined .keeper-zone{--tw:inherit}
+:root body .table.fighting .board-zone,:root body .table.fighting .keeper-zone{padding-left:12px;padding-right:12px}
+:root body .table.fighting:has(.duel-col) .board-zone,:root body .table.fighting:has(.duel-col) .keeper-zone{padding-left:calc(var(--tw) + 44px);padding-right:calc(var(--tw) + 44px)}
+:root body .table.fighting .line{justify-content:center}
+:root body .table.fighting .keeper-zone .line.counter-line,:root body .table.fighting #bdrow{padding-left:0;padding-right:0;justify-self:stretch;width:100%;box-sizing:border-box}
+:root body .table.fighting .duel-col .mn.cp-tok{--tw:inherit}
+:root body .table.fighting .duel-col .cp-side.two .cp-toks{--bw:var(--tw)}
+@media (orientation:landscape) and (max-height:540px){
+  :root body .table.fighting{--tw:min(62px, calc((100cqi - 140px) / 7.8))}
+  :root body .table.fighting:has(.duel-col){--tw:min(54px, calc((100cqi - 220px) / 7.6))}
+  :root body .table.fighting.joined{--tw:min(54px, calc((100cqi - 140px) / 9.6))}
+  :root body .table.fighting:has(.duel-col) .board-zone,:root body .table.fighting:has(.duel-col) .keeper-zone{padding-left:calc(var(--tw) + 20px);padding-right:calc(var(--tw) + 20px)}
+}
 `; document.head.appendChild(st); })();
 </script>
 </body></html>
