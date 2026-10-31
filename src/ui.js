@@ -660,23 +660,23 @@ function duelPaint() { const F = V.fight; if (!F || !V.me || !V.me.cp) return; [
 /* répliques des compagnons avant le duel (second degré assumé) */
 const TAUNT = {
   adv:{
-    'feu>vent':['Du vent ? Souffle tant que tu veux, connard, tu ne fais qu\'attiser mes flammes.', 'Merci pour l\'oxygène, abruti. Je vais te cramer avec.', 'Ah, un ventilateur. Parfait, j\'avais un peu chaud.'],
-    'vent>foudre':['Ta foudre ? Je la disperse comme un pet dans un ouragan.', 'Hé l\'ampoule ! Je vais te souffler comme une bougie d\'anniversaire.', 'T\'as du jus, mais moi j\'ai de l\'air. Et toi, t\'en as plus.'],
-    'foudre>terre':['Un caillou contre la foudre ? Je vais te transformer en gravier, tête de pioche.', 'Toi t\'es terre à terre. Moi je suis à 10 000 volts au-dessus.', 'Sois pas choqué. Enfin si, sois-le, c\'est le principe.'],
-    'terre>eau':['Une flaque ? Je t\'endigue, je t\'absorbe, et je te transforme en boue, petite flaque de merde.', 'Coule, coule, mon grand… droit dans mes sables mouvants.', 'Je suis un barrage. Toi t\'es juste mouillé.'],
-    'eau>feu':['L\'allumette veut jouer ? Pschhht. Fallait rester dans ta boîte.', 'Je vais t\'éteindre si fort que tu vas fumer pendant trois tours.', 'On appelle les pompiers ? Ah non, c\'est moi les pompiers, bordel.'],
+    'feu>vent':['Ton vent nourrit mes flammes, crétin ! C\'est écrit dans tous les rouleaux de l\'Académie !', 'Souffle, souffle… chaque bourrasque, c\'est un bol de ramen offert à mon brasier !', 'Ma volonté brûle, et toi tu fais l\'éventail. Merci du coup de main, abruti !'],
+    'vent>foudre':['Tes éclairs ? Je les tranche avant même que t\'aies fini tes signes, l\'ampoule !', 'Le vent coupe la foudre. Révise tes bases, t\'as séché les cours ou quoi ?', 'Hé, la pile ! Ma lame de vent va te faire sauter les plombs !'],
+    'foudre>terre':['Ton mur de pierre ? Ma foudre le traverse comme du papier de parchemin, tête de pioche !', 'Je vais t\'en mettre mille volts dans la caillasse. Ça, c\'est ma voie du ninja !', 'Un caillou contre l\'éclair ? T\'as triché à l\'examen chûnin, toi.'],
+    'terre>eau':['Ta vague s\'écrase sur mon rempart. Et toi tu finis en boue, petite flaque de merde !', 'Je bois ton eau comme un sol sec en été. Glou. Glou. Perdu.', 'Les clones d\'eau, c\'est mignon. Moi je suis une montagne, bordel.'],
+    'eau>feu':['L\'allumette veut jouer ? Pschhht ! Retourne t\'entraîner avec ton sensei !', 'Ta grande boule de feu ? Moi j\'ai une grande vague. Devine qui gagne, abruti.', 'Je vais t\'éteindre si fort que tu vas fumer jusqu\'au prochain arc narratif !'],
   },
   dis:{
-    'vent<feu':['Putain, un mec en feu. Et moi qui souffle dessus comme un con.', 'Chaque fois que j\'attaque, il grandit. C\'est quoi ce bordel ?'],
-    'foudre<vent':['Le vent disperse mes éclairs… j\'ai le jus mais pas le courant porteur.', 'Je vais finir en électricité statique. La honte.'],
-    'terre<foudre':['La foudre. Sur moi. Le caillou. Génial, je vais finir en paratonnerre.', 'Quelqu\'un a un tapis en caoutchouc ? Non ? Fait chier.'],
-    'eau<terre':['Un mur de terre… je vais finir en boue. Quelle merde. Littéralement.', 'Je coule, je coule… et lui il m\'absorbe comme une éponge. Dégueulasse.'],
-    'feu<eau':['De l\'eau ?! Bordel, j\'ai oublié mon parapluie ignifugé.', 'Je sens que je vais partir en fumée. Et pas dans le bon sens.'],
+    'vent<feu':['Putain… chaque fois que je souffle, il grandit. C\'est pas du tout ce que mon sensei m\'avait promis !', 'Bon. Plan B : je hurle très fort et j\'espère un flashback qui me donne la puissance.'],
+    'foudre<vent':['Il coupe mes éclairs en rondelles… Je retire ce que j\'ai dit sur les rouleaux, ils mentent pas.', 'Désavantage élémentaire ? Pas grave : le héros gagne toujours au dernier chapitre. Hein ? HEIN ?'],
+    'terre<foudre':['La foudre. Sur moi. Le caillou. Génial, je vais servir de paratonnerre à tout le village.', 'Quelqu\'un a un parchemin d\'isolation ? Non ? Fait chier.'],
+    'eau<terre':['Un mur de terre… je vais finir en boue. Quelle merde. Littéralement.', 'Il m\'absorbe comme une éponge… Ma voie du ninja, c\'est de ne jamais abandonner. Même trempé.'],
+    'feu<eau':['De l\'eau ?! Bordel, j\'ai oublié de signer le contrat d\'invocation avec un parapluie !', 'Je vais m\'éteindre… mais pas avant d\'avoir crié mon attaque super fort !'],
   },
-  same:['Même élément ? C\'est un combat de miroirs, sauf que moi je suis le beau.', 'Deux comme nous, c\'est un de trop. Dégage.', 'On a le même style… mais moi je le porte mieux, abruti.'],
-  even:['Pas d\'avantage, pas de chichis : on règle ça à coups de tatane.', 'Ni chaud ni froid. Juste toi, moi, et beaucoup de baffes.', 'Équilibré ? Parfait, comme ça quand je gagne, c\'est grâce à mon talent.', 'Les éléments s\'en foutent. Moi aussi. Viens là.'],
-  replyAdv:['Cause toujours, tu m\'intéresses.', 'Ouais ouais, on dit tous ça avant de perdre.', 'Ta gueule et frappe.'],
-  replyDis:['…Merde.', 'J\'ai peut-être un rendez-vous chez le dentiste, en fait.', 'Bon, on peut négocier ?'],
+  same:['Même élément ? On est rivaux, alors. Je te préviens : je reviens jamais sur ma parole !', 'Deux comme nous ? Ça sent l\'arc du rival, ça. Et c\'est moi le perso principal, abruti.', 'Même chakra, même style… mais moi j\'ai plus de flashbacks tristes. J\'suis plus fort.'],
+  even:['Pas d\'avantage ? Parfait ! On règle ça avec du sang, de la sueur et des signes de main !', 'Ni chaud ni froid. Juste toi, moi, et un combat qui va durer trois chapitres.', 'Les éléments s\'en foutent. Moi j\'ai la rage de vaincre. Viens là, mon pote !', 'Je vais pas courir les bras en arrière pour rien, crois-moi !'],
+  replyAdv:['Cause toujours, petit genin. Le dernier qui m\'a dit ça faisait la vaisselle à l\'Académie.', 'Ouais ouais, tous les méchants disent ça avant leur flashback.', 'Ta gueule et forme tes signes.'],
+  replyDis:['…Merde. Je peux appeler mon sensei ?', 'Attends, je dois aller acheter des ramen, là, tout de suite.', 'C\'est… c\'est pas grave. Je vais débloquer un nouveau pouvoir. Probablement.'],
 };
 function duelTaunt(F) {
   if (!F || !F.duel || FX_OFF()) return;
