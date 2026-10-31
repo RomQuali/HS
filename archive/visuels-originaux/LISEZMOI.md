@@ -6,4 +6,4 @@ Sauvegarde du 31/10/2026, avant le remplacement des visuels.
 - `planche_heros_ninja.png`, `heros_ninja.csv`, `heros_ninja.json` : planche et fiches (noms, éléments, pouvoirs, passifs).
 - `art3.js` : le code qui dessine ces portraits dans le jeu.
 
-Pour les remettre : remplacer `src/art3.js` par ce fichier, ou revenir au tag git `visuels-originaux`.
+Pour les remettre : remplacer `src/art3.js` par ce fichier, ou reprendre l’état du commit `f735804` (« Stock : sauvegarde des visuels originaux »).
