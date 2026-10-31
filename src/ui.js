@@ -303,7 +303,7 @@ function chakraLawH(big) {
     ${sec('🪙', 'Ressources', `<small><b>Or</b> : serviteurs, techniques et pouvoir du héros.</small><small><b>Chakra</b> : chaque ninja en jeu en donne 1 par tour (10 au plus). Il lance les techniques et pose les récompenses.</small>`)}
     ${sec('📜', 'Techniques et réservoir', `<small>Les techniques ont une <b>nature</b> (Feu, Vent, Eau, Foudre, Terre) et suivent le jeu de leur clan ; celles de l'élément de ton héros coûtent 1 chakra de moins.</small><small>Chaque technique remplit une moitié du <b>réservoir</b> ; la 2e déclenche un <b>combo</b> (effet sur ton plateau + pouvoir hybride au compagnon). Deux fois le même élément : combo pur.</small><span class="njl-combos">${pairs}</span>`)}
     ${sec('⚔️', 'Compagnon et duel', `<span class="njl-row">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<span><small>Ton compagnon est déjà en jeu, <b>triplé</b> et hors plateau. En combat, il affronte <b>seulement le compagnon adverse</b> et ne blesse jamais le héros.</small><small>Il prend l'élément de ta dernière technique : s'il domine celui d'en face, <b>+4/+4</b>.</small><small>Il gagne de l'expérience (technique +1, duel gagné +2) et monte de niveau.</small></span></span>`)}
-    ${sec('🎁', 'Coffres et entraînement', `<small>Le <b>duel</b> décide du coffre : majeur s'il gagne, mineur sinon. Tu choisis <b>1 récompense sur 3</b> pour une des 5 pièces du compagnon (lame, armure, bandeau, gantelets, talisman).</small><span class="njl-rar">${RARS.map((R, i) => `<i style="--c:${R.col}">${R.n} · ${i + 1} chakra</i>`).join('')}</span><small>Elle se range dans l'entraînement et se pose avec du chakra.</small>`)}
+    ${sec('🎁', 'Coffres et entraînement', `<small>Le <b>duel</b> décide du coffre : majeur s'il gagne, mineur sinon. Tu choisis <b>1 récompense sur 3</b> pour une des 5 pièces du compagnon (lame, armure, bandeau, gantelets, talisman).</small><span class="njl-rar">${RARS.map((R, i) => `<i style="--c:${R.col}">${R.n} · ${i + 1} chakra</i>`).join('')}</span><small>Elle se range dans l'entraînement et se pose avec du chakra.</small><small><b>Parchemins de pacte</b> : ils préparent la <b>bête d'invocation</b> du clan de ton compagnon (Salamandre, Loup, Serpent, Tigre, Sanglier). Elle apparaît à l'Éveil, plus forte à chaque parchemin, et combat à ses côtés dans le duel.</small>`)}
     ${sec('🔥', 'Marqueurs de clan', `<span class="njl-ctrs">${ctr('Braises', '#ff8a4a', 'Feu : la Grande boule de feu les consume, le Phénix s\'en nourrit.')}${ctr('Marée', '#6fc8ff', 'Eau : renforce le Clan de l\'Eau, déferle au Raz-de-marée.')}${ctr('Charge', '#ffd23a', 'Foudre : frappe au début du combat avec l\'Orage total.')}</span><small><b>Pureté</b> : 5 serviteurs d'un même clan donnent +1 chakra par tour et doublent les marqueurs gagnés.</small>`)}
     ${sec('🌅', 'Éveil (4 joueurs ou moins)', `<small>Les <b>clans</b> libèrent leur pouvoir (Phénix, Ouragan, Raz-de-marée, Orage total, Avalanche), ton <b>compagnon</b> prend sa forme ultime, le pouvoir de ton <b>héros</b> est renforcé, chaque <b>technique</b> gagne son effet d'Éveil et des techniques interdites apparaissent. Tes cartes prennent l'aura de ton marqueur dominant.</small>`)}
   </span>`;
@@ -316,7 +316,7 @@ function ninjaCardH() {
     ${row(svg(EL_ICON.feu), '#5a1e0c', 'Techniques ninja', 'Achetées en or, lancées au chakra (1 par ninja en jeu et par tour). Chacune a une nature et suit le jeu de son clan.')}
     ${row(svg('<rect x="-7" y="-6" width="14" height="12" rx="1.5" fill="#f1e2bd" stroke="#120a06" stroke-width="1.4"/><rect x="-7" y="-6" width="7" height="12" fill="#4ab0e8" opacity=".8"/><rect x="-9.5" y="-7.5" width="3" height="15" rx="1.5" fill="#a8744a" stroke="#120a06" stroke-width="1.2"/><rect x="6.5" y="-7.5" width="3" height="15" rx="1.5" fill="#a8744a" stroke="#120a06" stroke-width="1.2"/>'), '#2a3a5a', 'Réservoir et combos', 'Deux techniques remplissent le réservoir : leur mélange déclenche l\'un des 15 combos, sur ton plateau et ton compagnon.')}
     ${row(svg('<path d="M-6 6 L6 -6 M-6 -6 L6 6" stroke="#e8e2da" stroke-width="2.6" stroke-linecap="round"/><circle r="2.4" fill="#f2c14e" stroke="#120a06"/>'), '#5a3a12', 'Duel des compagnons', 'Ton compagnon, déjà triplé et hors plateau, affronte seulement celui d\'en face. S\'il gagne : coffre majeur.')}
-    ${row(svg('<rect x="-7" y="-2" width="14" height="8" rx="1.5" fill="#e2b04e" stroke="#120a06" stroke-width="1.3"/><path d="M-7 -2 Q0 -9 7 -2 Z" fill="#c88a26" stroke="#120a06" stroke-width="1.3"/>'), '#4a2a5a', 'Récompenses', 'Choisis 1 amélioration sur 3, de Normal à Légendaire, et pose-la sur ton compagnon avec du chakra.')}
+    ${row(svg('<rect x="-7" y="-2" width="14" height="8" rx="1.5" fill="#e2b04e" stroke="#120a06" stroke-width="1.3"/><path d="M-7 -2 Q0 -9 7 -2 Z" fill="#c88a26" stroke="#120a06" stroke-width="1.3"/>'), '#4a2a5a', 'Récompenses', 'Choisis 1 amélioration sur 3, de Normal à Légendaire, et pose-la avec du chakra. Les parchemins de pacte préparent une bête d\'invocation qui arrive à l\'Éveil.')}
     ${row(svg('<path d="M0 -8 L2 -2 L8 -2 L3 2 L5 8 L0 4 L-5 8 L-3 2 L-8 -2 L-2 -2 Z" fill="#ffb050" stroke="#120a06" stroke-width="1.2"/>'), '#6a2a0c', 'Éveil', 'À 4 joueurs ou moins : clans, compagnon, héros et techniques s\'éveillent.')}
   </span>`;
 }
@@ -526,7 +526,7 @@ function piecesH(c) {
 function upPeekH(me, i) {
   const o = (me.ups || [])[i]; if (!o) return '';
   const R = RARS[o.r], L = pieceList(me.cp, o.pc), c = upgCost(o), ok = (me.ck || 0) >= c;
-  return `<div class="uppk" style="--rc:${R.col}"><span class="upc-r">${R.n}</span>${pieceIco(o.pc, 'big')}<b>${esc(PIECES[o.pc].n)}</b><span class="upc-tx">${esc(upTx(o))}</span>
+  return `<div class="uppk" style="--rc:${R.col}"><span class="upc-r">${R.n}</span>${pieceIco(o.pc, 'big')}<b>${esc(PIECES[o.pc].n)}</b><span class="upc-tx">${esc(upTx(o, me.cp))}</span>
     <span class="uppk-c">${ckMarkH(c)}<small>${ok ? 'Clique pour la poser sur ton compagnon' : `Il te faut ${c} chakra`}</small></span>
     <small class="uppk-h">${L.length ? 'Déjà sur cette pièce : ' + L.map(r => `<em style="color:${RARS[r].col}">${RARS[r].n}</em>`).join(', ') : 'Aucune amélioration sur cette pièce'}</small></div>`;
 }
@@ -537,7 +537,7 @@ function choiceH(d, me) {
   return `<div class="upch" role="dialog" aria-label="Choisis une amélioration"><div class="upch-in">
     <b class="upch-t">Choisis ta récompense</b><small class="upch-s">Une seule : elle se range dans l'entraînement, et tu la poses sur ${esc(C[me.cp.c] ? C[me.cp.c].n : 'ton compagnon')} avec du chakra.</small>
     <div class="upch-row">${me.choice.map((o, i) => { const R = RARS[o.r], n = pieceList(me.cp, o.pc).length;
-      return `<button class="upc r${o.r}" style="--rc:${R.col};--k:${i}" data-act="upick" data-i="${i}"><span class="upc-r">${R.n}</span>${pieceIco(o.pc, 'big')}<b>${esc(PIECES[o.pc].n)}</b><span class="upc-tx">${esc(upTx(o))}</span><span class="uppk-c">${ckMarkH(upgCost(o))}<small>à poser</small></span><small>${n ? `Déjà ${n} amélioration${n > 1 ? 's' : ''}` : 'Première amélioration'}</small></button>`; }).join('')}</div>
+      return `<button class="upc r${o.r}" style="--rc:${R.col};--k:${i}" data-act="upick" data-i="${i}"><span class="upc-r">${R.n}</span>${pieceIco(o.pc, 'big')}<b>${esc(PIECES[o.pc].n)}</b><span class="upc-tx">${esc(upTx(o, me.cp))}</span><span class="uppk-c">${ckMarkH(upgCost(o))}<small>à poser</small></span><small>${n ? `Déjà ${n} amélioration${n > 1 ? 's' : ''}` : 'Première amélioration'}</small></button>`; }).join('')}</div>
     ${tech.length ? `<p class="upch-b">Bonus du coffre : <b>${tech.map(o => esc(SPELLS[o.id].n)).join(', ')}</b> ajoutée à ta main</p>` : ''}
   </div></div>`;
 }
@@ -545,7 +545,7 @@ function trainH(d, me, canAct) {
   if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
   if (me.cp) { const ups = me.ups || [];
     const md = ups.map((o, i) => { const c = upgCost(o), ok = canAct && (me.ck || 0) >= c;
-      return `<button class="upm" style="--rc:${RARS[o.r].col}" data-act="uapply" data-i="${i}" data-hov="upm" ${ok ? '' : 'aria-disabled="true"'} aria-label="${esc(PIECES[o.pc].n + ' ' + RARS[o.r].n + ' : ' + upTx(o) + '. Poser coûte ' + c + ' chakra.')}">${pieceIco(o.pc)}<span class="upm-c">${ckMarkH(c)}</span></button>`; }).join('');
+      return `<button class="upm" style="--rc:${RARS[o.r].col}" data-act="uapply" data-i="${i}" data-hov="upm" ${ok ? '' : 'aria-disabled="true"'} aria-label="${esc(PIECES[o.pc].n + ' ' + RARS[o.r].n + ' : ' + upTx(o, me.cp) + '. Poser coûte ' + c + ' chakra.')}">${pieceIco(o.pc)}<span class="upm-c">${ckMarkH(c)}</span></button>`; }).join('');
     return `<section class="train" aria-label="Entraînement"><b class="tr-h">Entraînement · récompenses à poser</b><div class="tr-row med pcs-row">${md || '<small class="tr-e">Les récompenses choisies dans les coffres se rangent ici : pose-les avec du chakra.</small>'}</div></section>`; }
   const ks = Object.keys(me.chests || {}).filter(k => me.chests[k] > 0).sort((a, b) => a.slice(3) - b.slice(3) || (a < b ? 1 : -1));
   const comps = me.cp ? [me.cp] : (me.bd || []).filter(isComp), full = (me.eqs || []).length >= EQS_MAX;
@@ -570,8 +570,9 @@ function compSheetH(mc, lv, eq) {
     <div class="pq-row"><span class="pq-lv"><b>Niveau ${L}</b><small>${nx ? `${mc.xp || 0} / ${nx} expérience` : 'Niveau maximum'}</small></span>
       ${E ? `<span class="pq-el" style="--c:${E.col}"><i></i><span><b>${E.n}</b><small>domine ${ELS[EL_DOM[el]].n} · +4/+4</small></span></span>` : ''}</div>
     ${(() => { const A = COMP_AWK[CLAN_EL[CD(mc.c).tr]]; return A ? `<div class="pq-awk${mc.awk ? ' on' : ''}"><b>${mc.awk ? 'Forme éveillée' : 'À l\'Éveil'} · ${esc(A.n)}</b><small>${mc.awk ? '' : 'Stats doublées · '}${esc(A.tx)}</small></div>` : ''; })()}
+    ${(() => { const n = (mc.pact || []).length, el = CLAN_EL[CD(mc.c).tr], bc = el && C['nb_' + el]; if (!bc) return ''; const b = V.me && V.me.bst; return `<div class="pq-awk pq-bst${b ? ' on' : ''}"><b>${b ? 'Bête invoquée' : 'Invocation à l\'Éveil'} · ${esc(bc.n)}</b><small>${b ? `${b.a}/${b.h} · combat avec lui dans le duel` : n ? `${n} parchemin${n > 1 ? 's' : ''} de pacte : elle apparaîtra à l'Éveil et combattra avec lui dans le duel.` : 'Pose des parchemins de pacte (coffres) pour qu\'elle apparaisse à l\'Éveil.'}</small></div>`; })()}
     <div class="pq-combo${fu ? '' : ' none'}" style="--c:${fuCol || '#8a7a5a'}"><b>${fu ? 'Combo · ' + esc(mc.fu) : 'Aucun combo'}</b><small>${fu ? esc(fxText(fu)) : 'Remplis le réservoir avec deux techniques : le combo lui donne un pouvoir hybride.'}</small></div>
-    <b class="peq-t">Pièces · ${PIECE_IDS.reduce((t, pc) => t + pieceList(mc, pc).length, 0)} amélioration(s)</b>${PIECE_IDS.map(pc => { const L = pieceList(mc, pc); return `<div class="peq-i">${pieceIco(pc)}<span><b>${esc(PIECES[pc].n)}</b><small>${L.length ? L.map(r => `<em style="color:${RARS[r].col}">${RARS[r].n}</em> ${esc(upTx({ pc, r }))}`).join(' · ') : 'Aucune amélioration'}</small></span></div>`; }).join('')}
+    <b class="peq-t">Pièces · ${PIECE_IDS.reduce((t, pc) => t + pieceList(mc, pc).length, 0)} amélioration(s)</b>${PIECE_IDS.map(pc => { const L = pieceList(mc, pc); return `<div class="peq-i">${pieceIco(pc)}<span><b>${esc(PIECES[pc].n)}</b><small>${L.length ? L.map(r => `<em style="color:${RARS[r].col}">${RARS[r].n}</em> ${esc(upTx({ pc, r }, mc))}`).join(' · ') : 'Aucune amélioration'}</small></span></div>`; }).join('')}
     <small class="pq-duel">En combat, il affronte seulement le compagnon adverse : s'il gagne, coffre majeur.</small>
   </div>`;
 }
@@ -682,21 +683,25 @@ function placeDuelCol() {
   if (vs && a && b) { const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(); vs.style.left = (ra.left - T.left + ra.width / 2 - 7) + 'px'; vs.style.top = ((ra.bottom + rb.top) / 2 - T.top) + 'px'; }
 }
 function cpSideH(me, F, side) {
-  let m = me.cp, lab = `Compagnon · niv. ${compLv(me.cp)}`, cls = '';
-  let ex = '', tc = '';
+  let list = [me.cp].concat(me.bst ? [me.bst] : []), lab = `Compagnon · niv. ${compLv(me.cp)}${me.bst ? ' + bête' : ''}`, cls = '';
+  const fx = {};   // u -> [classe, extra]
   if (F && F.duel) {
     const mine = F.me ? F.duel.b : F.duel.a, theirs = F.me ? F.duel.a : F.duel.b, r = (F.dr ? F.ddone : F.done) ? duelRes(F) : null;
-    m = (side ? theirs : mine)[0]; if (!m) return '';
+    list = (side ? theirs : mine).slice(); if (!list.length) return '';
     if (F.dr) {   // état animé du duel
-      const D = F.dr.frames, i = Math.min(V.di || 0, D.length - 1), sd = (side ? 1 - F.me : F.me), cur = D[i].s[sd][0], prev = i > 0 ? D[i - 1].s[sd][0] : null;
-      if (cur) { m = Object.assign({}, m, { a:cur.a, h:cur.h, f:cur.f }); if (prev && cur.h < prev.h) { tc = 'hit'; ex = `<span class="dmg"><b>-${prev.h - cur.h}</b></span>`; } }
-      else { tc = 'dead'; m = Object.assign({}, m, { h:0 }); }
+      const D = F.dr.frames, i = Math.min(V.di || 0, D.length - 1), sd = (side ? 1 - F.me : F.me);
+      const now = {}, bef = {}; D[i].s[sd].forEach(x => now[x.u] = x); if (i > 0) D[i - 1].s[sd].forEach(x => bef[x.u] = x);
+      list = list.map(m => { const cur = now[m.u], prev = bef[m.u];
+        if (!cur) { fx[m.u] = ['dead', '']; return Object.assign({}, m, { h:0 }); }
+        if (prev && cur.h < prev.h) fx[m.u] = ['hit', `<span class="dmg"><b>-${prev.h - cur.h}</b></span>`];
+        return Object.assign({}, m, { a:cur.a, h:cur.h, f:cur.f }); });
     }
     lab = side ? 'Compagnon adverse' : r ? (r === 'win' ? 'Duel gagné · coffre majeur' : r === 'loss' ? 'Duel perdu · coffre mineur' : 'Égalité · coffre mineur') : 'Duel des compagnons';
     cls = r ? (side ? (r === 'win' ? ' loss' : r === 'loss' ? ' win' : '') : ' ' + r) : '';
   }
-  const tok = tokenH(m, side ? 'duelb' : 'cp', 0, { cls:'cp-tok' + (m.awk ? ' awk' : '') + (tc ? ' ' + tc : '') + (V.dHide != null && V.dHide === m.u ? ' dhide' : '') }).replace(/<\/div>$/, ex + '</div>');
-  return `<div class="cp-side${cls}" id="cps${side}" aria-label="${esc(lab)}">${tok}<small>${esc(lab)}</small></div>`;
+  const toks = list.map((m, k) => { const [tc, ex] = fx[m.u] || ['', ''];
+    return tokenH(m, side ? 'duelb' : 'cp', k, { cls:'cp-tok' + (k ? ' bst-tok' : '') + (m.awk ? ' awk' : '') + (tc ? ' ' + tc : '') + (V.dHide != null && V.dHide === m.u ? ' dhide' : '') }).replace(/<\/div>$/, ex + '</div>'); }).join('');
+  return `<div class="cp-side${cls}${list.length > 1 ? ' two' : ''}" id="cps${side}" aria-label="${esc(lab)}"><span class="cp-toks">${toks}</span><small>${esc(lab)}</small></div>`;
 }
 function cpSlotH(me, F) {
   const lv = compLv(me.cp);
@@ -2117,4 +2122,15 @@ html.lite .upc{animation:none}
   :root body .table > .hud .timer{position:static;min-width:0;height:auto;padding:1px 8px;border-radius:8px;font-size:15px;background:rgba(10,5,2,.55);box-shadow:inset 0 0 0 1px rgba(242,193,78,.4);transform:none}
   .keeper-zone.has-cp .kname span{display:none}
 }
+`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `
+.cp-toks{display:flex;align-items:center;gap:4px}
+.cp-side.two .cp-toks{--bw:calc(var(--tw) * .72)}
+.cp-side.two .mn.bst-tok{--tw:var(--bw)}
+:root body .board-zone.has-cp:has(.cp-side.two),:root body .keeper-zone.has-cp:has(.cp-side.two){padding-left:calc(var(--tw) * 1.75 + 46px)}
+.table:has(.duel-col .cp-side.two) .keeper-zone.has-cp,.table:has(.duel-col .cp-side.two) .board-zone.has-cp{padding-left:calc(var(--tw) * 1.75 + 46px)}
+.cp-side.two{width:auto}
+.mn.bst-tok .mn-svg{filter:drop-shadow(0 0 8px rgba(255,170,80,.75)) drop-shadow(0 3px 3px rgba(0,0,0,.5))}
+html.lite .mn.bst-tok .mn-svg{filter:none}
 `; document.head.appendChild(st); })();

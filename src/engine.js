@@ -269,6 +269,12 @@ const DEFAULT_CARD_LIST = [
   ['n_t3', 'Garde des roches', 3, 'n_terre', 2, 6, 't', [{ k:'eot_buff_taunt', a:1, h:1 }]],
   ['n_t4', 'Lanceur de rochers', 4, 'n_terre', 5, 4, '', [{ k:'soc_dmg', d:4, n:1 }, { k:'eot_anchor' }]],
   ['n_t5', 'Colosse de granit', 5, 'n_terre', 4, 9, 't', [{ k:'eot_anchor' }, { k:'surv_self', a:2, h:0 }]],
+  // bêtes d'invocation (apparaissent à l'Éveil grâce au pacte)
+  ['nb_feu', 'Salamandre de braise', 0, 'n_feu', 6, 6, '', []],
+  ['nb_vent', 'Loup des vents', 0, 'n_vent', 6, 5, '', []],
+  ['nb_eau', 'Serpent des marées', 0, 'n_eau', 5, 7, '', []],
+  ['nb_foudre', 'Tigre de foudre', 0, 'n_foudre', 7, 5, '', []],
+  ['nb_terre', 'Sanglier de roc', 0, 'n_terre', 4, 9, '', []],
   ['n_f9', 'Gardien du foyer', 3, 'n_feu', 3, 3, '', [{ k:'combo_self', a:2, h:2 }]],
   ['n_v9', 'Courrier des vents', 2, 'n_vent', 2, 3, '', [{ k:'combo_gold', n:1 }]],
   ['n_e9', 'Puits sans fond', 4, 'n_eau', 3, 6, '', [{ k:'rsv_bc' }, { k:'combo_tribe', a:1, h:1, tb:'n_eau' }]],
@@ -901,10 +907,26 @@ const PIECES = {
   bandeau:{ n:'Bandeau du maître', art:'eq_bandeau' },
   gants:{ n:'Gantelets du vent', art:'eq_gants' },
   talisman:{ n:'Talisman des cycles', art:'eq_talisman' },
+  pacte:{ n:'Parchemin de pacte', art:'nj_invoc' },
 };
 const PIECE_IDS = Object.keys(PIECES);
 const xAdd = (c, e, src) => (c.x = c.x || []).push(Object.assign({ src }, e));
 // [texte, effet] pour chaque pièce et chaque rareté
+// pacte d'invocation : chaque parchemin posé renforce la bête qui arrivera à l'Éveil (ou la renforce tout de suite si elle est là)
+const BEAST_KW = { feu:{ tx:'Début du duel : 5 dégâts au compagnon adverse', fn:b => (b.x = b.x || []).push({ k:'soc_dmg', d:5, n:1, src:'Pacte légendaire' }) },
+  vent:{ tx:'Furie des vents et après avoir attaqué : +2/+0', fn:b => { addF(b, 'w'); (b.x = b.x || []).push({ k:'atk_self', a:2, h:0, src:'Pacte légendaire' }); } },
+  eau:{ tx:'Quand elle survit à un coup : +3/+3', fn:b => (b.x = b.x || []).push({ k:'surv_self', a:3, h:3, src:'Pacte légendaire' }) },
+  foudre:{ tx:'Après avoir attaqué : 4 dégâts à l\'ennemi', fn:b => (b.x = b.x || []).push({ k:'atk_zap', d:4, n:1, src:'Pacte légendaire' }) },
+  terre:{ tx:'+0/+8 et Provocation', fn:b => { buff(b, 0, 8); addF(b, 't'); } } };
+const pactEl = c => CLAN_EL[CD(c.c).tr] || 'feu';
+const PACT = [['+2/+2', b => buff(b, 2, 2)], ['+4/+4', b => buff(b, 4, 4)], ['+3/+3 et Bouclier divin', b => { buff(b, 3, 3); addF(b, 's'); }], ['+5/+5 et pouvoir ultime', (b, el) => { buff(b, 5, 5); BEAST_KW[el].fn(b); }]];
+const pactTx = (o, c) => o.r === 3 && c ? PACT[3][0].replace('pouvoir ultime', BEAST_KW[pactEl(c)].tx.toLowerCase()) : PACT[o.r][0];
+function summonBeast(p) {
+  const c = p.cp; if (!c || p.bst || !(c.pact || []).length) return;
+  const el = pactEl(c), b = mk('nb_' + el, 0);
+  withSrc('Pacte d\'invocation', () => c.pact.forEach(r => PACT[r][1](b, el)));
+  p.bst = b;
+}
 const UPS = {
   // Lame : frapper le premier
   lame:[['+2 attaque', c => buff(c, 2, 0)],
@@ -933,7 +955,7 @@ const UPS = {
 };
 const UPS_MAX = 8;
 const upgCost = o => 1 + o.r;   // Normal 1 · Héroïque 2 · Épique 3 · Légendaire 4 chakra
-const upTx = o => (UPS[o.pc] && UPS[o.pc][o.r] || [''])[0];
+const upTx = (o, c) => o.pc === 'pacte' ? 'Invocation : ' + pactTx(o, c) : (UPS[o.pc] && UPS[o.pc][o.r] || [''])[0];
 // rareté : meilleure avec un coffre majeur (duel gagné) et une taverne haute
 function rollRar(q, t) {
   const s = t + (q === 'maj' ? 2 : 0);
@@ -941,7 +963,8 @@ function rollRar(q, t) {
   let x = Math.random() * 100; for (let r = 0; r < 4; r++) { x -= W[r]; if (x < 0) return r; } return 0;
 }
 function chestChoice(q, t) { return shuffle(PIECE_IDS.slice()).slice(0, 3).map(pc => ({ pc, r:rollRar(q, t) })); }
-function applyUp(c, o) { const U = UPS[o.pc] && UPS[o.pc][o.r]; if (!U) return; withSrc(PIECES[o.pc].n + ' · ' + RARS[o.r].n, () => U[1](c)); c.pc = c.pc || {}; (c.pc[o.pc] = c.pc[o.pc] || []).push(o.r); }
+function applyUp(c, o) { if (o.pc === 'pacte') { (c.pact = c.pact || []).push(o.r); c.pc = c.pc || {}; (c.pc.pacte = c.pc.pacte || []).push(o.r); if (o.p && o.p.bst) withSrc('Pacte d\'invocation', () => PACT[o.r][1](o.p.bst, pactEl(c))); return; }
+  const U = UPS[o.pc] && UPS[o.pc][o.r]; if (!U) return; withSrc(PIECES[o.pc].n + ' · ' + RARS[o.r].n, () => U[1](c)); c.pc = c.pc || {}; (c.pc[o.pc] = c.pc[o.pc] || []).push(o.r); }
 const EQS_MAX = 8;
 const chestCost = (q, t) => q === 'maj' ? 3 + Math.floor(t / 2) : 2 + Math.floor(t / 3);
 // jamais deux fois le même équipement : ni dans un même coffre, ni s'il est déjà rangé ou porté
@@ -1064,7 +1087,7 @@ const OPS = {
     p.ups = (p.ups || []).concat([o]).sort((x, y) => y.r - x.r).slice(0, UPS_MAX);
     p.choice = null; p.lastUp = o; return true; },
   // poser une amélioration rangée : coûte du chakra selon sa rareté
-  uapply(G, p, a) { const o = (p.ups || [])[a.i]; if (!o || !p.cp) return false; const c = upgCost(o); if ((p.ck || 0) < c) return false; p.ck -= c; applyUp(p.cp, o); p.ups.splice(a.i, 1); return true; },
+  uapply(G, p, a) { const o = (p.ups || [])[a.i]; if (!o || !p.cp) return false; const c = upgCost(o); if ((p.ck || 0) < c) return false; p.ck -= c; applyUp(p.cp, Object.assign({ p }, o)); p.ups.splice(a.i, 1); return true; },
   // équiper le compagnon coûte du chakra
   equip(G, p, a) {
     const id = (p.eqs || [])[a.i]; if (!id || !SPELLS[id]) return false;
@@ -1206,6 +1229,7 @@ function startRecruit() {
   for (const p of G.ps) if (p.al) {
     if (inMechAny(G, 'chakra') && !p.cp && p.hero && compOf(p.hero)) { p.cp = mk(compOf(p.hero), 1); p.cb = 3; }
     if (p.cp && awake(G) && !p.cp.awk) awakenComp(p.cp);
+    if (p.cp && awake(G)) summonBeast(p);
     p.mg = Math.min(10, 2 + G.rd); p.g = p.mg;
     if (p.hero === 'barnabe' && G.rd % 2 === 0) p.g += 1;
     p.uc = Math.max(0, p.uc - 1);
@@ -1270,7 +1294,7 @@ function endRecruit() {
     // duel des compagnons : ils ne combattent que le compagnon adverse, ne touchent jamais le héros, et décident du coffre
     const qq = ghost || q; let duel = null;
     if (p.cp || qq.cp) {
-      const ca = p.cp ? [Object.assign({}, p.cp)] : [], cbb = qq.cp ? [Object.assign({}, qq.cp)] : [];
+      const ca = p.cp ? [Object.assign({}, p.cp)].concat(p.bst ? [Object.assign({}, p.bst)] : []) : [], cbb = qq.cp ? [Object.assign({}, qq.cp)].concat(qq.bst ? [Object.assign({}, qq.bst)] : []) : [];
       elementDuel(ca, cbb);
       const ca0 = ca.map(fullM), cb0 = cbb.map(fullM);
       const cs = rint(1e9), cr = simulate(ca, cbb, cs, p.t, qt, [0, 0], G.mx);
@@ -1354,7 +1378,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, choice:p.choice || null, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, choice:p.choice || null, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;
