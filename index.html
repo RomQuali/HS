@@ -2351,11 +2351,11 @@ const DEFAULT_CARD_LIST = [
   ['n_o8', 'Tempête intérieure', 5, 'n_foudre', 5, 5, '', [{ k:'soc_ck', a:1, h:1 }]],
   ['n_t7', 'Pilleur souterrain', 4, 'n_terre', 4, 5, 't', [{ k:'soc_steal', n:2 }]],
   ['n_t8', 'Ermite des cimes', 6, 'n_terre', 5, 8, '', [{ k:'eot_ck_spend', n:3, a:3, h:3 }, { k:'cast_ck', n:1 }]],
-  ['c_nj_feu', 'Disciple de la flamme', 3, 'n_feu', 4, 4, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:2, h:1 }]],
-  ['c_nj_vent', 'Disciple du vent', 3, 'n_vent', 6, 4, 'w', [{ k:'atk_self', a:1, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_eau', 'Disciple de la brume', 3, 'n_eau', 2, 7, 's', [{ k:'surv_self', a:1, h:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_foudre', 'Disciple de l\'orage', 3, 'n_foudre', 7, 4, '', [{ k:'atk_zap', d:2, n:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_terre', 'Disciple du roc', 3, 'n_terre', 2, 8, '', [{ k:'soc_self', a:1, h:0 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_feu', 'Disciple de la flamme', 3, 'n_feu', 6, 4, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_vent', 'Disciple du vent', 3, 'n_vent', 5, 5, 'w', [{ k:'atk_self', a:1, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_eau', 'Disciple de la brume', 3, 'n_eau', 3, 8, '', [{ k:'surv_self', a:1, h:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_foudre', 'Disciple de l\'orage', 3, 'n_foudre', 4, 8, '', [{ k:'atk_zap', d:2, n:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_terre', 'Disciple du roc', 3, 'n_terre', 3, 9, '', [{ k:'soc_self', a:1, h:0 }, { k:'combo_self', a:1, h:2 }]],
   ['n_t6', 'Seigneur des roches', 6, 'n_terre', 6, 10, 't', [{ k:'awk_quake' }, { k:'eot_buff_taunt', a:2, h:2 }]],
 ];
 const DEFAULT_CARDS = {};
@@ -2977,7 +2977,7 @@ const heroAwkTx = h => !h || !h.pw ? '' : PW_AWK_TX[h.pw.k] || 'effet doublé';
 const COMP_AWK = {
   feu:{ n:'Phénix de flammes', tx:'Renaissance et début du duel : 4 dégâts au compagnon adverse', fn:c => { addF(c, 'r'); (c.x = c.x || []).push({ k:'soc_dmg', d:4, n:1, src:'Phénix de flammes' }); } },
   vent:{ n:'Lame d\'ouragan', tx:'Furie des vents et après avoir attaqué : +2/+0', fn:c => { addF(c, 'w'); (c.x = c.x || []).push({ k:'atk_self', a:2, h:0, src:'Lame d\'ouragan' }); } },
-  eau:{ n:'Corps de l\'eau', tx:'Bouclier divin à chaque duel et quand il survit à un coup : +3/+3', fn:c => { addF(c, 's'); (c.x = c.x || []).push({ k:'surv_self', a:3, h:3, src:'Corps de l\'eau' }); } },
+  eau:{ n:'Corps de l\'eau', tx:'+0/+8 et quand il survit à un coup : +3/+3', fn:c => { buff(c, 0, 8); (c.x = c.x || []).push({ k:'surv_self', a:3, h:3, src:'Corps de l\'eau' }); } },
   foudre:{ n:'Chakra de foudre', tx:'+3 attaque et après avoir attaqué : 4 dégâts à l\'ennemi', fn:c => { buff(c, 3, 0); (c.x = c.x || []).push({ k:'atk_zap', d:4, n:1, src:'Chakra de foudre' }); } },
   terre:{ n:'Golem de pierre', tx:'+0/+10 et début du duel : gagne +3/+3', fn:c => { buff(c, 0, 10); (c.x = c.x || []).push({ k:'soc_self', a:3, h:3, src:'Golem de pierre' }); } },
 };
@@ -3114,7 +3114,7 @@ const eqSlots = m => 3 + (compLv(m) >= 3 ? 1 : 0) + (compLv(m) >= 5 ? 1 : 0);
 const COMP_LV = {
   feu:{ 3:['Début du duel : 2 dégâts à l\'adversaire', { k:'soc_dmg', d:2, n:1 }], 5:['Après avoir attaqué : gagne +3 attaque', { k:'atk_self', a:3, h:0 }] },
   vent:{ 3:['Furie des vents (attaque deux fois)', 'w'], 5:['Après avoir attaqué : 2 dégâts à l\'ennemi', { k:'atk_zap', d:2, n:1 }] },
-  eau:{ 3:['Bouclier divin', 's'], 5:['Quand il survit à un coup : +2/+2', { k:'surv_self', a:2, h:2 }] },
+  eau:{ 3:['Début du duel : gagne +0/+4', { k:'soc_self', a:0, h:4 }], 5:['Quand il survit à un coup : +2/+2', { k:'surv_self', a:2, h:2 }] },
   foudre:{ 3:['Après avoir attaqué : 2 dégâts à l\'ennemi', { k:'atk_zap', d:2, n:1 }], 5:['Début du duel : 3 dégâts à l\'adversaire', { k:'soc_dmg', d:3, n:1 }] },
   terre:{ 3:['Début du duel : gagne +2/+0', { k:'soc_self', a:2, h:0 }], 5:['Après avoir attaqué : +1/+1', { k:'atk_self', a:1, h:1 }] },
 };
@@ -3424,6 +3424,8 @@ function endRecruit() {
       if (ca[0] && cbb[0]) { const ea = compEl(ca[0]), eb = compEl(cbb[0]); if (EL_DOM[ea] === eb) buff(ca[0], 2, 2); if (EL_DOM[eb] === ea) buff(cbb[0], 2, 2); }
       const ca0 = ca.map(fullM), cb0 = cbb.map(fullM);
       const cs = rint(1e9), cr = simulate(ca, cbb, cs, p.t, qt, [0, 0], G.mx);
+      // double K.-O. : le compagnon le plus rapide (plus d'attaque au départ) l'emporte ; à égalité, vrai match nul
+      if (cr.w === -1 && ca[0] && cbb[0] && !cr.alive[0].length && !cr.alive[1].length && ca0[0].a !== cb0[0].a) cr.w = ca0[0].a > cb0[0].a ? 0 : 1;
       duel = { a:ca0, b:cb0, w:cr.w, seed:cs };
       if (cr.w === 0 && p.cp) { giveXp(p.cp, 2); mkAdd(p, compEl(p.cp), 2); } if (!ghost && cr.w === 1 && q.cp) { giveXp(q.cp, 2); mkAdd(q, compEl(q.cp), 2); }
     }
