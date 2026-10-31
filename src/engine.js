@@ -950,7 +950,7 @@ const BEAST_KW = { feu:{ tx:'Début du duel : 5 dégâts au compagnon adverse', 
   foudre:{ tx:'Après avoir attaqué : 4 dégâts à l\'ennemi', fn:b => (b.x = b.x || []).push({ k:'atk_zap', d:4, n:1, src:'Pacte légendaire' }) },
   terre:{ tx:'+0/+8 et Provocation', fn:b => { buff(b, 0, 8); addF(b, 't'); } } };
 const pactEl = c => CLAN_EL[CD(c.c).tr] || 'feu';
-const PACT = [['+2/+2', b => buff(b, 2, 2)], ['+4/+4', b => buff(b, 4, 4)], ['+3/+3 et Bouclier divin', b => { buff(b, 3, 3); addF(b, 's'); }], ['+5/+5 et pouvoir ultime', (b, el) => { buff(b, 5, 5); BEAST_KW[el].fn(b); }]];
+const PACT = [['+2/+2', b => buff(b, 2, 2)], ['+4/+4', b => buff(b, 4, 4)], ['+5/+5', b => buff(b, 5, 5)], ['+5/+5 et pouvoir ultime', (b, el) => { buff(b, 5, 5); BEAST_KW[el].fn(b); }]];
 const pactTx = (o, c) => o.r === 3 && c ? PACT[3][0].replace('pouvoir ultime', BEAST_KW[pactEl(c)].tx.toLowerCase()) : PACT[o.r][0];
 function summonBeast(p) {
   const c = p.cp; if (!c || p.bst || !(c.pact || []).length) return;
@@ -966,7 +966,7 @@ const UPS = {
         ['Début du duel : inflige 6 dégâts au compagnon adverse', c => xAdd(c, { k:'soc_dmg', d:6, n:1 }, 'Lame de chakra')]],
   // Armure : encaisser
   armure:[['+3 vie', c => buff(c, 0, 3)], ['+6 vie', c => buff(c, 0, 6)],
-          ['Bouclier divin : pare le premier coup du duel', c => addF(c, 's')],
+          ['+2/+9', c => buff(c, 2, 9)],
           ['+6 vie et Renaissance : se relève une fois pendant le duel', c => { buff(c, 0, 6); addF(c, 'r'); }]],
   // Bandeau : concentration du ninja
   bandeau:[['+1/+1', c => buff(c, 1, 1)],
