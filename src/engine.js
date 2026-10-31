@@ -290,11 +290,11 @@ const DEFAULT_CARD_LIST = [
   ['n_o8', 'Tempête intérieure', 5, 'n_foudre', 5, 5, '', [{ k:'soc_ck', a:1, h:1 }]],
   ['n_t7', 'Pilleur souterrain', 4, 'n_terre', 4, 5, 't', [{ k:'soc_steal', n:2 }]],
   ['n_t8', 'Ermite des cimes', 6, 'n_terre', 5, 8, '', [{ k:'eot_ck_spend', n:3, a:3, h:3 }, { k:'cast_ck', n:1 }]],
-  ['c_nj_feu', 'Disciple de la flamme', 3, 'n_feu', 6, 4, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:2, h:1 }]],
-  ['c_nj_vent', 'Disciple du vent', 3, 'n_vent', 5, 5, 'w', [{ k:'atk_self', a:1, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_feu', 'Disciple de la flamme', 3, 'n_feu', 6, 5, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_vent', 'Disciple du vent', 3, 'n_vent', 5, 4, 'w', [{ k:'atk_self', a:1, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
   ['c_nj_eau', 'Disciple de la brume', 3, 'n_eau', 3, 8, '', [{ k:'surv_self', a:1, h:1 }, { k:'combo_self', a:1, h:2 }]],
-  ['c_nj_foudre', 'Disciple de l\'orage', 3, 'n_foudre', 4, 8, '', [{ k:'atk_zap', d:2, n:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_terre', 'Disciple du roc', 3, 'n_terre', 3, 9, '', [{ k:'soc_self', a:1, h:0 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_foudre', 'Disciple de l\'orage', 3, 'n_foudre', 5, 6, '', [{ k:'atk_zap', d:2, n:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_terre', 'Disciple du roc', 3, 'n_terre', 2, 11, '', [{ k:'soc_self', a:1, h:0 }, { k:'combo_self', a:1, h:2 }]],
   ['n_t6', 'Seigneur des roches', 6, 'n_terre', 6, 10, 't', [{ k:'awk_quake' }, { k:'eot_buff_taunt', a:2, h:2 }]],
 ];
 const DEFAULT_CARDS = {};
@@ -761,7 +761,7 @@ function simulate0(bA, bB, seed, tA, tB, fire, mx) {
       S.frames.push({ s:snap(S), at:att.u, tg:tgt.u });
       posBefore = arr.indexOf(att);
       const aa = att.a, ta = tgt.a;
-      simDamage(S, tgt, aa, att); simDamage(S, att, ta, tgt);
+      simDamage(S, tgt, aa, att); if (!(S.mx.first && tgt.h <= 0)) simDamage(S, att, ta, tgt);   // duel : la cible abattue ne riposte pas
       if (att.h > 0) fxOf(att, 'atk').forEach(e => runCombat(S, cur, att, e));
       simDeaths(S);
       // duo lié (Éveil) : le partenaire du compagnon frappe aussitôt la même cible
@@ -1362,7 +1362,7 @@ function endRecruit() {
       // petit avantage d'élément (cycle de domination) : +2/+2
       if (ca[0] && cbb[0]) { const ea = compEl(ca[0]), eb = compEl(cbb[0]); if (EL_DOM[ea] === eb) buff(ca[0], 2, 2); if (EL_DOM[eb] === ea) buff(cbb[0], 2, 2); }
       const ca0 = ca.map(fullM), cb0 = cbb.map(fullM);
-      const cs = rint(1e9), cr = simulate(ca, cbb, cs, p.t, qt, [0, 0], G.mx);
+      const cs = rint(1e9), cr = simulate(ca, cbb, cs, p.t, qt, [0, 0], Object.assign({}, G.mx, { first:1 }));
       duel = { a:ca0, b:cb0, w:cr.w, seed:cs };
       if (cr.w === 0 && p.cp) { giveXp(p.cp, 2); mkAdd(p, compEl(p.cp), 2); } if (!ghost && cr.w === 1 && q.cp) { giveXp(q.cp, 2); mkAdd(q, compEl(q.cp), 2); }
     }
