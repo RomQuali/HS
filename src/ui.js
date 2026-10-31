@@ -129,7 +129,7 @@ const SHIELD_D = 'M50 -4 C 85 -4, 102 28, 102 60 C 102 93, 79 115, 50 115 C 21 1
 function tokenH(m, z, i, o = {}) {
   const b = CD(m.c), f = (m.f || '') + (m.tmp && m.tmp.f ? m.tmp.f : ''), g = !!m.g;   // mots-clés permanents + ceux du prochain combat
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
-  const cls = ['mn', z === 'f' && C[m.c] && (C[m.c].comp || /^nb_/.test(m.c)) && 'cp-join', ...['s', 't', 'r', 'w', 'v'].filter(k => f.includes(k)).map(k => 'kw-' + k), o.trip && 'tripok', g && 'g', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
+  const cls = ['mn', z === 'f' && C[m.c] && (C[m.c].comp || /^nb_/.test(m.c)) && 'cp-join', ...['s', 't', 'r', 'w', 'v'].filter(k => f.includes(k)).map(k => 'kw-' + k), o.trip && 'tripok', o.pair && 'pairok', g && 'g', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
   const ics = kwIcons(m);
   const up = (v, base) => v > base * (g ? 3 : 1) ? ' up' : '';
   const svg = `<svg class="mn-svg" viewBox="-4 -6 108 132" aria-hidden="true">`
@@ -451,7 +451,7 @@ function gameH() {
         <div class="keeper">${medal('up', 'up', me.t >= 6 ? 'Niveau max' : 'Améliorer', me.t >= 6 ? null : me.uc, !canAct || me.t >= 6 || me.g < me.uc)}
           <div class="kc"><span class="face kf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-h-keeper" width="100" height="100"/></svg></span><div class="kname"><b>Bastien, tavernier</b><span class="lv">${tierStars(me.t)}</span></div></div>
           <div class="kr">${medal('roll', 'roll', 'Actualiser', freeRoll ? 0 : 1, !canAct || (me.g < 1 && !freeRoll))}${medal('frz', 'frz', me.fz ? 'Gelée' : 'Geler', null, !canAct, me.fz)}</div></div>
-        <div class="line counter-line">${me.sh.length ? me.sh.map((m, i) => tokenH(m, 'sh', i, { drag:canAct, trip:(own[m.c] || 0) >= 2 && !CD(m.c).tok })).join('') : '<p class="hint">La taverne est vide. Actualise pour faire entrer du monde.</p>'}${me.sp ? `<div class="shelf" title="Étagère à sorts"><span class="shelf-l">Sort</span>${spellTokenH(me.sp, 'ss', 0, { drag:canAct })}</div>` : ''}</div>
+        <div class="line counter-line">${me.sh.length ? me.sh.map((m, i) => tokenH(m, 'sh', i, { drag:canAct, trip:(own[m.c] || 0) >= 2 && !CD(m.c).tok, pair:(own[m.c] || 0) === 1 && !CD(m.c).tok })).join('') : '<p class="hint">La taverne est vide. Actualise pour faire entrer du monde.</p>'}${me.sp ? `<div class="shelf" title="Étagère à sorts"><span class="shelf-l">Sort</span>${spellTokenH(me.sp, 'ss', 0, { drag:canAct })}</div>` : ''}</div>
         ${d.trs ? `<span class="trs ktrs">${d.trs.map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span>` : ''}</section>`;
       boardRow = me.bd.length ? me.bd.map((m, i) => tokenH(m, 'bd', i, { drag:canAct })).join('') : '<p class="hint">Joue tes serviteurs ici. Ils attaquent de gauche à droite.</p>';
     }
@@ -2616,3 +2616,18 @@ html.lite .table[class*="awk-"] .board-zone .mn::after{display:none}
 }
 `; document.head.appendChild(st); })();
 (function(){ const st = document.createElement('style'); st.textContent = `@media (min-width:1100px) and (min-height:700px){ #peek .peq{max-height:calc(100vh / 1.1 - 24px);overflow:auto} }`; document.head.appendChild(st); })();
+/* taverne : un serviteur que tu possèdes déjà (paire) ou deux fois (triple) se signale */
+(function(){ const st = document.createElement('style'); st.textContent = `
+.keeper-zone .mn.pairok::after,.keeper-zone .mn.tripok::after{position:absolute;left:50%;top:-4%;transform:translateX(-50%);z-index:6;padding:2px 9px;border-radius:99px;font:700 clamp(10px, calc(var(--tw) * .12), 15px)/1.2 var(--f-label),serif;white-space:nowrap;pointer-events:none;letter-spacing:.03em}
+.keeper-zone .mn.pairok::after{content:'Paire ×2';color:#e8f4ff;background:linear-gradient(180deg,#5a7aa8,#2a3e62);box-shadow:0 0 0 1.5px #bcd6ff,0 2px 6px rgba(0,0,0,.6)}
+.keeper-zone .mn.tripok::after{content:'Triple !';color:#3a2206;background:linear-gradient(180deg,#fff1b8,#e2a83a);box-shadow:0 0 0 1.5px #fff6d0,0 0 14px rgba(255,210,90,.9);animation:tripTag 1s ease-in-out infinite}
+.keeper-zone .mn.pairok .mn-svg{filter:drop-shadow(0 0 6px rgba(150,200,255,.95)) drop-shadow(0 0 2px #fff)}
+.keeper-zone .mn.pairok::before{content:'';position:absolute;left:2%;right:2%;top:2%;bottom:18%;border-radius:50%;pointer-events:none;z-index:0;box-shadow:0 0 0 2px rgba(190,220,255,.8),0 0 16px rgba(120,180,255,.7);animation:pairPulse 1.8s ease-in-out infinite}
+.keeper-zone .mn.tripok::before{content:'';position:absolute;left:-14%;right:-14%;top:-10%;bottom:6%;border-radius:50%;pointer-events:none;z-index:0;
+  background:repeating-conic-gradient(rgba(255,226,130,.85) 0 7deg,transparent 7deg 22deg);-webkit-mask:radial-gradient(farthest-side,transparent 52%,#000 66%,transparent 100%);mask:radial-gradient(farthest-side,transparent 52%,#000 66%,transparent 100%);animation:akSpin 5s linear infinite}
+.keeper-zone .mn.pairok .mn-svg,.keeper-zone .mn.tripok .mn-svg{position:relative;z-index:1}
+@keyframes pairPulse{50%{box-shadow:0 0 0 3px rgba(220,236,255,.95),0 0 26px rgba(120,180,255,.9)}}
+@keyframes tripTag{50%{transform:translateX(-50%) scale(1.1)}}
+html.lite .keeper-zone .mn.tripok .mn-svg{filter:drop-shadow(0 0 8px rgba(255,210,90,.95))}
+html.lite .keeper-zone .mn.pairok::before,html.lite .keeper-zone .mn.tripok::before,html.lite .keeper-zone .mn.tripok::after{animation:none}
+`; document.head.appendChild(st); })();
