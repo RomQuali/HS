@@ -187,6 +187,7 @@ function castSpell0(G, p, hi, tg) {
   // réservoir : chaque technique remplit une moitié ; la seconde moitié déclenche le combo et le vide
   if (S.el && S.nin) withSrc('Réservoir', () => rsvFill(G, p, S.el));
   if (S.nin) comps(p).forEach(c => giveXp(c, 1));
+  if (S.nin && S.el && !S.item) mkAdd(p, S.el, 1);   // chaque technique donne 1 marqueur de sa nature
   if (S.el) comps(p).forEach(c => { const e = compEl(c); if (e && EL_GEN[e] === S.el) { const x = (c.eq || []).includes('eq_talisman') ? 2 : 1; p.ck = Math.min(CK_MAX, (p.ck || 0) + 2 * x); buff(c, 2 * x, 2 * x); } });
   if (!S.item) trigBoard(G, p, 'cast');
   checkTriple(G, p);
@@ -204,6 +205,7 @@ function combatBoard(p) {
     if (m.tmp) { c.a += m.tmp.a || 0; c.h += m.tmp.h || 0; if (m.tmp.f) addF(c, m.tmp.f); }
     if (p.tma) { c.a += p.tma.a; c.h += p.tma.h; }
     if (ninja) {
+      { const el = CLAN_EL[CD(m.c).tr], t = el ? mkTier(p, el) : 0; if (t && !(C[m.c] && C[m.c].comp)) { const B = MK_TIER[el][t - 1]; c.a += B[0]; c.h += B[1]; if (B[2]) addF(c, B[2]); } }
       const tr = CD(m.c).tr, k = m.g ? 2 : 1, x = c.x = (c.x || []).slice();
       (CD(m.c).fxAll || []).filter(e => e.k === 'awk_surge').forEach(e => { if ((p.ck || 0) >= 7) { c.a += e.a * k; c.h += e.h * k; } });
       if (aw) {
@@ -426,5 +428,8 @@ function rsvFill(G, p, el) {
   if (w && w.k === 'pcombo') withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => { if (w.d && (a === w.el || b === w.el)) p.njf = (p.njf || 0) + w.d; if (w.h) p.bd.forEach(m => buff(m, 0, w.h)); });
   trigBoard(G, p, 'combo');
   comps(p).forEach(c => { c.x = (c.x || []).filter(e => !e.fusion); c.x.push(Object.assign({ src:'Combo · ' + F.n, fusion:1 }, F.fx)); c.fu = F.n; });
-  p.combo = { n:F.n, col:F.col, a, b, pure:a === b ? 1 : 0, id:UID++ };
+  // résonance : chaque combo consomme 5 marqueurs de chacun de ses éléments pour déclencher leur éclat
+  const bursts = [];
+  [...new Set([a, b])].forEach(e => { const k = MK[e]; if ((p[k] || 0) >= 5) { p[k] -= 5; mkSync(p); withSrc('Éclat · ' + MK_N[e], () => MK_BURST[e][1](G, p)); bursts.push(e); } });
+  p.combo = { n:F.n, col:F.col, a, b, pure:a === b ? 1 : 0, id:UID++, bursts };
 }

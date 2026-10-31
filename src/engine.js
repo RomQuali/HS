@@ -248,8 +248,8 @@ const DEFAULT_CARD_LIST = [
   ['n_f6', 'Grand Sage du Feu', 6, 'n_feu', 7, 6, '', [{ k:'awk_phoenix' }, { k:'cast_braise', n:2 }]],
   ['n_v1', 'Éclaireur des dunes', 1, 'n_vent', 1, 2, '', [{ k:'bc_gold', n:1 }]],
   ['n_v2', 'Lame tourbillon', 2, 'n_vent', 2, 2, 'w', [{ k:'bc_upd', n:1 }]],
-  ['n_v3', 'Cerf-volant de guerre', 3, 'n_vent', 3, 3, '', [{ k:'roll_buff_tribe', a:1, h:1, tb:'n_vent' }]],
-  ['n_v4', 'Faucheuse du vent', 4, 'n_vent', 4, 3, 'w', [{ k:'awk_hurricane', d:1 }, { k:'eot_inc', n:1 }]],
+  ['n_v3', 'Cerf-volant de guerre', 3, 'n_vent', 3, 3, '', [{ k:'roll_buff_tribe', a:1, h:1, tb:'n_vent' }, { k:'eot_souffle', n:1 }]],
+  ['n_v4', 'Faucheuse du vent', 4, 'n_vent', 4, 3, 'w', [{ k:'awk_hurricane', d:1 }, { k:'eot_inc', n:1 }, { k:'eot_souffle', n:1 }]],
   ['n_v5', 'Mur de sable', 5, 'n_vent', 5, 4, '', [{ k:'eot_inc', n:2 }]],
   ['n_v6', 'Seigneur des dunes', 6, 'n_vent', 6, 8, 't', [{ k:'awk_hurricane', d:2 }, { k:'eot_buff_all', a:1, h:1, tb:'n_vent' }]],
   ['n_e1', 'Guetteur des brumes', 1, 'n_eau', 1, 3, '', [{ k:'eot_maree', n:1 }]],
@@ -264,9 +264,9 @@ const DEFAULT_CARD_LIST = [
   ['n_o4', 'Hurleur du tonnerre', 4, 'n_foudre', 3, 5, '', [{ k:'eot_charge', n:2 }, { k:'bc_chakra', n:2 }]],
   ['n_o5', 'Cuirasse d\'éclairs', 5, 'n_foudre', 6, 5, 'w', [{ k:'awk_surge', a:3, h:3 }, { k:'atk_zap', d:2, n:2 }]],
   ['n_o6', 'Seigneur de l\'orage', 6, 'n_foudre', 7, 7, '', [{ k:'awk_storm' }, { k:'eot_chakra', n:2 }]],
-  ['n_t1', 'Petit golem de pierre', 1, 'n_terre', 1, 3, 't', [{ k:'eot_anchor' }]],
+  ['n_t1', 'Petit golem de pierre', 1, 'n_terre', 1, 3, 't', [{ k:'eot_anchor' }, { k:'eot_roche', n:1 }]],
   ['n_t2', 'Bâtisseur de remparts', 2, 'n_terre', 2, 3, 't', [{ k:'bc_buff_tribe', a:0, h:2, tb:'n_terre' }]],
-  ['n_t3', 'Garde des roches', 3, 'n_terre', 2, 6, 't', [{ k:'eot_buff_taunt', a:1, h:1 }]],
+  ['n_t3', 'Garde des roches', 3, 'n_terre', 2, 6, 't', [{ k:'eot_buff_taunt', a:1, h:1 }, { k:'eot_roche', n:2 }]],
   ['n_t4', 'Lanceur de rochers', 4, 'n_terre', 5, 4, '', [{ k:'soc_dmg', d:4, n:1 }, { k:'eot_anchor' }]],
   ['n_t5', 'Colosse de granit', 5, 'n_terre', 4, 9, 't', [{ k:'eot_anchor' }, { k:'surv_self', a:2, h:0 }]],
   // bêtes d'invocation (apparaissent à l'Éveil grâce au pacte)
@@ -474,6 +474,8 @@ const ET = {
   pas_ckx:{ tr:'pas', l:'Grande réserve de chakra', ps:['n'], w:1.2, mag:e => e.n * 2, txt:e => `Grande réserve : votre chakra peut monter jusqu\'à ${CK_MAX + e.n} tant qu\'il est sur le plateau.` },
   eot_charge:{ tr:'eot', l:'Accumuler de la charge', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Fin de tour : gagnez ${e.n * k} charge.` },
   awk_surge:{ tr:'awk', l:'Surtension (7 chakra ou plus)', ps:['a', 'h'], w:1.3, mag:e => e.a + e.h, txt:(e, k) => `Surtension : au combat, gagne ${sign(e.a * k, e.h * k)} si vous avez 7 chakra ou plus.` },
+  eot_souffle:{ tr:'eot', l:'Faire souffler le vent', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Fin de tour : gagnez ${e.n * k} souffle.` },
+  eot_roche:{ tr:'eot', l:'Amasser la roche', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Fin de tour : gagnez ${e.n * k} roche.` },
   eot_anchor:{ tr:'eot', l:'Ancrage : le chakra restant renforce', ps:[], w:1.2, mag:() => 4, txt:(e, k) => `Ancrage : fin de tour, gagne +0/+1 par chakra non dépensé (${3 * k} au plus).` },
   awk_phoenix:{ tr:'awk', l:'Phénix renforcé', ps:[], w:1.5, mag:() => 6, txt:() => 'Après l\'Éveil : le Phénix de vos serviteurs du Feu est doublé.' },
   awk_hurricane:{ tr:'awk', l:'Ouragan', ps:['d'], w:1.5, mag:e => e.d * 5, txt:e => `Après l\'Éveil : après avoir attaqué, inflige ${e.d} dégât${e.d > 1 ? 's' : ''} à 3 ennemis de plus.` },
@@ -614,6 +616,8 @@ function runRecruit0(G, p, m, e, ctx) {
     case 'sell_gold': p.g += e.n * k; break;
     case 'roll_self': case 'cast_self': case 'combo_self': buff(m, A, Hh); break;
     case 'combo_gold': p.g += e.n * k; break;
+    case 'eot_souffle': mkAdd(p, 'vent', e.n * k * pureX(p, 'n_vent')); break;
+    case 'eot_roche': mkAdd(p, 'terre', e.n * k * pureX(p, 'n_terre')); break;
     case 'eot_braise_self': { const x = Math.min(e.n * k, Math.floor((p.braise || 0) / 2)); if (x) buff(m, x, 0); break; }
     case 'eot_maree_self': { const x = Math.min(e.n * k, Math.floor((p.maree || 0) / 3)); if (x) buff(m, x, x); break; }
     case 'combo_ck': p.ck = Math.min(ckMax(p), (p.ck || 0) + e.n * k); break;
@@ -871,6 +875,29 @@ const ckMax = p => CK_MAX + ((p && p.bd) || []).reduce((t, m) => t + ((CD(m.c).f
 const pureX = (p, tr) => p && p.pure === tr ? 2 : 1;
 const awake = G => !!(G && G.eveil && G.rd >= G.eveil);
 var AWK_JOIN = true;
+/* ---------- Marqueurs de clan (Ninja) : un par élément ----------
+   Gagnés par les techniques de leur nature, les serviteurs du clan et les coffres (Sceau de clan).
+   Paliers (5, 10, 20 marqueurs gagnés au total) : bonus permanents pour le clan.
+   Résonance : chaque combo consomme 5 marqueurs de chacun de ses éléments pour déclencher leur éclat. */
+const MK = { feu:'braise', vent:'souffle', eau:'maree', foudre:'charge', terre:'roche' };
+const MK_N = { feu:'Braises', vent:'Souffle', eau:'Marée', foudre:'Charge', terre:'Roche' };
+const MK_STEPS = [5, 10, 20];
+// bonus de palier en combat pour les serviteurs du clan : [attaque, vie, mot-clé au 3e palier]
+const MK_TIER = { feu:[[1, 0], [2, 1], [4, 2, 'r']], vent:[[1, 1], [2, 1], [3, 2, 'w']], eau:[[0, 2], [1, 3], [2, 5, 's']], foudre:[[1, 0], [2, 1], [3, 3, 'v']], terre:[[0, 3], [1, 5], [2, 8, 't']] };
+const MK_TIER_TX = { feu:'Clan du Feu', vent:'Clan du Vent', eau:'Clan de l\'Eau', foudre:'Clan de la Foudre', terre:'Clan de la Terre' };
+const MK_KW = { r:'Renaissance', w:'Furie des vents', s:'Bouclier divin', v:'Toxique', t:'Provocation' };
+// éclat de résonance (5 marqueurs consommés par un combo)
+const MK_BURST = {
+  feu:['Prochain combat : 5 dégâts à l\'ennemi', (G, p) => { p.njf = (p.njf || 0) + 5; }],
+  vent:['Gagne 2 or', (G, p) => { p.g += 2; }],
+  eau:['Tes serviteurs gagnent +1/+2', (G, p) => p.bd.forEach(m => buff(m, 1, 2))],
+  foudre:['Récupère 3 chakra', (G, p) => { p.ck = Math.min(ckMax(p), (p.ck || 0) + 3); }],
+  terre:['Tes serviteurs gagnent +0/+3', (G, p) => p.bd.forEach(m => buff(m, 0, 3))],
+};
+function mkSync(p) { p.mkl = p.mkl || {}; p.mkLast = p.mkLast || {}; for (const el in MK) { const v = p[MK[el]] || 0, l = p.mkLast[el] || 0; if (v > l) p.mkl[el] = (p.mkl[el] || 0) + (v - l); p.mkLast[el] = v; } }
+const mkAdd = (p, el, n) => { if (!MK[el] || !n) return; p[MK[el]] = (p[MK[el]] || 0) + n; mkSync(p); };
+const mkTier = (p, el) => { const t = ((p.mkl || {})[el]) || 0; return MK_STEPS.filter(s => t >= s).length; };
+var AWK_JOIN = true;
 const awakeNow = () => typeof H !== 'undefined' && awake(H.G);
 /* ---------- Éveil (4 joueurs ou moins) : héros, compagnon et techniques s'éveillent ---------- */
 // pouvoir éveillé : les valeurs sont doublées (sauf les coûts) et certains pouvoirs gagnent un bonus
@@ -909,6 +936,7 @@ const PIECES = {
   gants:{ n:'Gantelets du vent', art:'eq_gants' },
   talisman:{ n:'Talisman des cycles', art:'eq_talisman' },
   pacte:{ n:'Parchemin de pacte', art:'nj_invoc' },
+  sceau:{ n:'Sceau de clan', art:'nj_sceau' },
 };
 const PIECE_IDS = Object.keys(PIECES);
 const xAdd = (c, e, src) => (c.x = c.x || []).push(Object.assign({ src }, e));
@@ -956,7 +984,7 @@ const UPS = {
 };
 const UPS_MAX = 8;
 const upgCost = o => 1 + o.r;   // Normal 1 · Héroïque 2 · Épique 3 · Légendaire 4 chakra
-const upTx = (o, c) => o.pc === 'pacte' ? 'Invocation : ' + pactTx(o, c) : (UPS[o.pc] && UPS[o.pc][o.r] || [''])[0];
+const upTx = (o, c) => o.pc === 'sceau' ? `+${SCEAU[o.r]} ${c ? (MK_N[CLAN_EL[CD(c.c).tr]] || 'marqueurs').toLowerCase() : 'marqueurs du clan'}` : o.pc === 'pacte' ? 'Invocation : ' + pactTx(o, c) : (UPS[o.pc] && UPS[o.pc][o.r] || [''])[0];
 // rareté : meilleure avec un coffre majeur (duel gagné) et une taverne haute
 function rollRar(q, t) {
   const s = t + (q === 'maj' ? 2 : 0);
@@ -964,7 +992,9 @@ function rollRar(q, t) {
   let x = Math.random() * 100; for (let r = 0; r < 4; r++) { x -= W[r]; if (x < 0) return r; } return 0;
 }
 function chestChoice(q, t) { return shuffle(PIECE_IDS.slice()).slice(0, 3).map(pc => ({ pc, r:rollRar(q, t) })); }
-function applyUp(c, o) { if (o.pc === 'pacte') { (c.pact = c.pact || []).push(o.r); c.pc = c.pc || {}; (c.pc.pacte = c.pc.pacte || []).push(o.r); if (o.p && o.p.bst) withSrc('Pacte d\'invocation', () => PACT[o.r][1](o.p.bst, pactEl(c))); return; }
+const SCEAU = [3, 5, 8, 12];
+function applyUp(c, o) { if (o.pc === 'sceau') { const el = CLAN_EL[CD(c.c).tr] || 'feu'; if (o.p) mkAdd(o.p, el, SCEAU[o.r]); c.pc = c.pc || {}; (c.pc.sceau = c.pc.sceau || []).push(o.r); return; }
+  if (o.pc === 'pacte') { (c.pact = c.pact || []).push(o.r); c.pc = c.pc || {}; (c.pc.pacte = c.pc.pacte || []).push(o.r); if (o.p && o.p.bst) withSrc('Pacte d\'invocation', () => PACT[o.r][1](o.p.bst, pactEl(c))); return; }
   const U = UPS[o.pc] && UPS[o.pc][o.r]; if (!U) return; withSrc(PIECES[o.pc].n + ' · ' + RARS[o.r].n, () => U[1](c)); c.pc = c.pc || {}; (c.pc[o.pc] = c.pc[o.pc] || []).push(o.r); }
 const EQS_MAX = 8;
 const chestCost = (q, t) => q === 'maj' ? 3 + Math.floor(t / 2) : 2 + Math.floor(t / 3);
@@ -1240,7 +1270,7 @@ function startRecruit() {
     trigBoard(G, p, 'sot');
     p.mkt = 0; p.cdbl = 0;
     if (inMechAny(G, 'ames') && (p.souls || 0) >= 3) { const k = Math.floor(p.souls / 3); p.souls -= k * 3; withSrc('Moisson d\'âmes', () => p.bd.forEach(m => { if (inMech(G, 'ames', m)) buff(m, k, k); })); }
-    if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; p.ck = Math.min(ckMax(p), (p.ck || 0) + n); }
+    if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; p.ck = Math.min(ckMax(p), (p.ck || 0) + n); mkSync(p); }
     // un coffre après chaque combat : majeur si le compagnon gagne son duel, mineur sinon
     if (inMechAny(G, 'chakra') && p.lastRes) p.pendChest = (p.lastRes === 'win' ? 'maj' : 'min') + (p.t || 1);
     // pureté : 5 serviteurs ou plus d'un même clan → +1 chakra
@@ -1266,6 +1296,7 @@ function endRecruit() {
     { const w = pwOf(p); if (w && w.k === 'prsv' && (p.rsv || []).length === 1) p.maree = (p.maree || 0) + w.n; }
     const neot = auraTimes(p.bd, 'aura_eot');
     for (const m of p.bd.concat(p.cp ? [p.cp] : [])) for (let r = 0; r < neot; r++) fxOf(m, 'eot').forEach(e => runRecruit(G, p, m, e));
+    mkSync(p);
     if (p.hero === 'maelle' && p.bd[0]) withSrc('Passif de Maëlle', () => buff(p.bd[0], 1, 1));
     if (inMechAny(G, 'fusion') && elems(p.bd) >= 4) withSrc('Fusion élémentaire', () => p.bd.forEach(m => { if (inMech(G, 'fusion', m)) buff(m, 1, 1); }));
     if (p.hero === 'nono' && G.rd >= 3 && !p.pu) p.fb = (p.fb || 3) + 1;
@@ -1386,7 +1417,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, choice:p.choice || null, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, mkl:(mkSync(p), p.mkl) || {}, souffle:p.souffle || 0, roche:p.roche || 0, choice:p.choice || null, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;

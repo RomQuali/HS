@@ -2309,8 +2309,8 @@ const DEFAULT_CARD_LIST = [
   ['n_f6', 'Grand Sage du Feu', 6, 'n_feu', 7, 6, '', [{ k:'awk_phoenix' }, { k:'cast_braise', n:2 }]],
   ['n_v1', 'Éclaireur des dunes', 1, 'n_vent', 1, 2, '', [{ k:'bc_gold', n:1 }]],
   ['n_v2', 'Lame tourbillon', 2, 'n_vent', 2, 2, 'w', [{ k:'bc_upd', n:1 }]],
-  ['n_v3', 'Cerf-volant de guerre', 3, 'n_vent', 3, 3, '', [{ k:'roll_buff_tribe', a:1, h:1, tb:'n_vent' }]],
-  ['n_v4', 'Faucheuse du vent', 4, 'n_vent', 4, 3, 'w', [{ k:'awk_hurricane', d:1 }, { k:'eot_inc', n:1 }]],
+  ['n_v3', 'Cerf-volant de guerre', 3, 'n_vent', 3, 3, '', [{ k:'roll_buff_tribe', a:1, h:1, tb:'n_vent' }, { k:'eot_souffle', n:1 }]],
+  ['n_v4', 'Faucheuse du vent', 4, 'n_vent', 4, 3, 'w', [{ k:'awk_hurricane', d:1 }, { k:'eot_inc', n:1 }, { k:'eot_souffle', n:1 }]],
   ['n_v5', 'Mur de sable', 5, 'n_vent', 5, 4, '', [{ k:'eot_inc', n:2 }]],
   ['n_v6', 'Seigneur des dunes', 6, 'n_vent', 6, 8, 't', [{ k:'awk_hurricane', d:2 }, { k:'eot_buff_all', a:1, h:1, tb:'n_vent' }]],
   ['n_e1', 'Guetteur des brumes', 1, 'n_eau', 1, 3, '', [{ k:'eot_maree', n:1 }]],
@@ -2325,9 +2325,9 @@ const DEFAULT_CARD_LIST = [
   ['n_o4', 'Hurleur du tonnerre', 4, 'n_foudre', 3, 5, '', [{ k:'eot_charge', n:2 }, { k:'bc_chakra', n:2 }]],
   ['n_o5', 'Cuirasse d\'éclairs', 5, 'n_foudre', 6, 5, 'w', [{ k:'awk_surge', a:3, h:3 }, { k:'atk_zap', d:2, n:2 }]],
   ['n_o6', 'Seigneur de l\'orage', 6, 'n_foudre', 7, 7, '', [{ k:'awk_storm' }, { k:'eot_chakra', n:2 }]],
-  ['n_t1', 'Petit golem de pierre', 1, 'n_terre', 1, 3, 't', [{ k:'eot_anchor' }]],
+  ['n_t1', 'Petit golem de pierre', 1, 'n_terre', 1, 3, 't', [{ k:'eot_anchor' }, { k:'eot_roche', n:1 }]],
   ['n_t2', 'Bâtisseur de remparts', 2, 'n_terre', 2, 3, 't', [{ k:'bc_buff_tribe', a:0, h:2, tb:'n_terre' }]],
-  ['n_t3', 'Garde des roches', 3, 'n_terre', 2, 6, 't', [{ k:'eot_buff_taunt', a:1, h:1 }]],
+  ['n_t3', 'Garde des roches', 3, 'n_terre', 2, 6, 't', [{ k:'eot_buff_taunt', a:1, h:1 }, { k:'eot_roche', n:2 }]],
   ['n_t4', 'Lanceur de rochers', 4, 'n_terre', 5, 4, '', [{ k:'soc_dmg', d:4, n:1 }, { k:'eot_anchor' }]],
   ['n_t5', 'Colosse de granit', 5, 'n_terre', 4, 9, 't', [{ k:'eot_anchor' }, { k:'surv_self', a:2, h:0 }]],
   // bêtes d'invocation (apparaissent à l'Éveil grâce au pacte)
@@ -2535,6 +2535,8 @@ const ET = {
   pas_ckx:{ tr:'pas', l:'Grande réserve de chakra', ps:['n'], w:1.2, mag:e => e.n * 2, txt:e => `Grande réserve : votre chakra peut monter jusqu\'à ${CK_MAX + e.n} tant qu\'il est sur le plateau.` },
   eot_charge:{ tr:'eot', l:'Accumuler de la charge', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Fin de tour : gagnez ${e.n * k} charge.` },
   awk_surge:{ tr:'awk', l:'Surtension (7 chakra ou plus)', ps:['a', 'h'], w:1.3, mag:e => e.a + e.h, txt:(e, k) => `Surtension : au combat, gagne ${sign(e.a * k, e.h * k)} si vous avez 7 chakra ou plus.` },
+  eot_souffle:{ tr:'eot', l:'Faire souffler le vent', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Fin de tour : gagnez ${e.n * k} souffle.` },
+  eot_roche:{ tr:'eot', l:'Amasser la roche', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Fin de tour : gagnez ${e.n * k} roche.` },
   eot_anchor:{ tr:'eot', l:'Ancrage : le chakra restant renforce', ps:[], w:1.2, mag:() => 4, txt:(e, k) => `Ancrage : fin de tour, gagne +0/+1 par chakra non dépensé (${3 * k} au plus).` },
   awk_phoenix:{ tr:'awk', l:'Phénix renforcé', ps:[], w:1.5, mag:() => 6, txt:() => 'Après l\'Éveil : le Phénix de vos serviteurs du Feu est doublé.' },
   awk_hurricane:{ tr:'awk', l:'Ouragan', ps:['d'], w:1.5, mag:e => e.d * 5, txt:e => `Après l\'Éveil : après avoir attaqué, inflige ${e.d} dégât${e.d > 1 ? 's' : ''} à 3 ennemis de plus.` },
@@ -2675,6 +2677,8 @@ function runRecruit0(G, p, m, e, ctx) {
     case 'sell_gold': p.g += e.n * k; break;
     case 'roll_self': case 'cast_self': case 'combo_self': buff(m, A, Hh); break;
     case 'combo_gold': p.g += e.n * k; break;
+    case 'eot_souffle': mkAdd(p, 'vent', e.n * k * pureX(p, 'n_vent')); break;
+    case 'eot_roche': mkAdd(p, 'terre', e.n * k * pureX(p, 'n_terre')); break;
     case 'eot_braise_self': { const x = Math.min(e.n * k, Math.floor((p.braise || 0) / 2)); if (x) buff(m, x, 0); break; }
     case 'eot_maree_self': { const x = Math.min(e.n * k, Math.floor((p.maree || 0) / 3)); if (x) buff(m, x, x); break; }
     case 'combo_ck': p.ck = Math.min(ckMax(p), (p.ck || 0) + e.n * k); break;
@@ -2932,6 +2936,29 @@ const ckMax = p => CK_MAX + ((p && p.bd) || []).reduce((t, m) => t + ((CD(m.c).f
 const pureX = (p, tr) => p && p.pure === tr ? 2 : 1;
 const awake = G => !!(G && G.eveil && G.rd >= G.eveil);
 var AWK_JOIN = true;
+/* ---------- Marqueurs de clan (Ninja) : un par élément ----------
+   Gagnés par les techniques de leur nature, les serviteurs du clan et les coffres (Sceau de clan).
+   Paliers (5, 10, 20 marqueurs gagnés au total) : bonus permanents pour le clan.
+   Résonance : chaque combo consomme 5 marqueurs de chacun de ses éléments pour déclencher leur éclat. */
+const MK = { feu:'braise', vent:'souffle', eau:'maree', foudre:'charge', terre:'roche' };
+const MK_N = { feu:'Braises', vent:'Souffle', eau:'Marée', foudre:'Charge', terre:'Roche' };
+const MK_STEPS = [5, 10, 20];
+// bonus de palier en combat pour les serviteurs du clan : [attaque, vie, mot-clé au 3e palier]
+const MK_TIER = { feu:[[1, 0], [2, 1], [4, 2, 'r']], vent:[[1, 1], [2, 1], [3, 2, 'w']], eau:[[0, 2], [1, 3], [2, 5, 's']], foudre:[[1, 0], [2, 1], [3, 3, 'v']], terre:[[0, 3], [1, 5], [2, 8, 't']] };
+const MK_TIER_TX = { feu:'Clan du Feu', vent:'Clan du Vent', eau:'Clan de l\'Eau', foudre:'Clan de la Foudre', terre:'Clan de la Terre' };
+const MK_KW = { r:'Renaissance', w:'Furie des vents', s:'Bouclier divin', v:'Toxique', t:'Provocation' };
+// éclat de résonance (5 marqueurs consommés par un combo)
+const MK_BURST = {
+  feu:['Prochain combat : 5 dégâts à l\'ennemi', (G, p) => { p.njf = (p.njf || 0) + 5; }],
+  vent:['Gagne 2 or', (G, p) => { p.g += 2; }],
+  eau:['Tes serviteurs gagnent +1/+2', (G, p) => p.bd.forEach(m => buff(m, 1, 2))],
+  foudre:['Récupère 3 chakra', (G, p) => { p.ck = Math.min(ckMax(p), (p.ck || 0) + 3); }],
+  terre:['Tes serviteurs gagnent +0/+3', (G, p) => p.bd.forEach(m => buff(m, 0, 3))],
+};
+function mkSync(p) { p.mkl = p.mkl || {}; p.mkLast = p.mkLast || {}; for (const el in MK) { const v = p[MK[el]] || 0, l = p.mkLast[el] || 0; if (v > l) p.mkl[el] = (p.mkl[el] || 0) + (v - l); p.mkLast[el] = v; } }
+const mkAdd = (p, el, n) => { if (!MK[el] || !n) return; p[MK[el]] = (p[MK[el]] || 0) + n; mkSync(p); };
+const mkTier = (p, el) => { const t = ((p.mkl || {})[el]) || 0; return MK_STEPS.filter(s => t >= s).length; };
+var AWK_JOIN = true;
 const awakeNow = () => typeof H !== 'undefined' && awake(H.G);
 /* ---------- Éveil (4 joueurs ou moins) : héros, compagnon et techniques s'éveillent ---------- */
 // pouvoir éveillé : les valeurs sont doublées (sauf les coûts) et certains pouvoirs gagnent un bonus
@@ -2970,6 +2997,7 @@ const PIECES = {
   gants:{ n:'Gantelets du vent', art:'eq_gants' },
   talisman:{ n:'Talisman des cycles', art:'eq_talisman' },
   pacte:{ n:'Parchemin de pacte', art:'nj_invoc' },
+  sceau:{ n:'Sceau de clan', art:'nj_sceau' },
 };
 const PIECE_IDS = Object.keys(PIECES);
 const xAdd = (c, e, src) => (c.x = c.x || []).push(Object.assign({ src }, e));
@@ -3017,7 +3045,7 @@ const UPS = {
 };
 const UPS_MAX = 8;
 const upgCost = o => 1 + o.r;   // Normal 1 · Héroïque 2 · Épique 3 · Légendaire 4 chakra
-const upTx = (o, c) => o.pc === 'pacte' ? 'Invocation : ' + pactTx(o, c) : (UPS[o.pc] && UPS[o.pc][o.r] || [''])[0];
+const upTx = (o, c) => o.pc === 'sceau' ? `+${SCEAU[o.r]} ${c ? (MK_N[CLAN_EL[CD(c.c).tr]] || 'marqueurs').toLowerCase() : 'marqueurs du clan'}` : o.pc === 'pacte' ? 'Invocation : ' + pactTx(o, c) : (UPS[o.pc] && UPS[o.pc][o.r] || [''])[0];
 // rareté : meilleure avec un coffre majeur (duel gagné) et une taverne haute
 function rollRar(q, t) {
   const s = t + (q === 'maj' ? 2 : 0);
@@ -3025,7 +3053,9 @@ function rollRar(q, t) {
   let x = Math.random() * 100; for (let r = 0; r < 4; r++) { x -= W[r]; if (x < 0) return r; } return 0;
 }
 function chestChoice(q, t) { return shuffle(PIECE_IDS.slice()).slice(0, 3).map(pc => ({ pc, r:rollRar(q, t) })); }
-function applyUp(c, o) { if (o.pc === 'pacte') { (c.pact = c.pact || []).push(o.r); c.pc = c.pc || {}; (c.pc.pacte = c.pc.pacte || []).push(o.r); if (o.p && o.p.bst) withSrc('Pacte d\'invocation', () => PACT[o.r][1](o.p.bst, pactEl(c))); return; }
+const SCEAU = [3, 5, 8, 12];
+function applyUp(c, o) { if (o.pc === 'sceau') { const el = CLAN_EL[CD(c.c).tr] || 'feu'; if (o.p) mkAdd(o.p, el, SCEAU[o.r]); c.pc = c.pc || {}; (c.pc.sceau = c.pc.sceau || []).push(o.r); return; }
+  if (o.pc === 'pacte') { (c.pact = c.pact || []).push(o.r); c.pc = c.pc || {}; (c.pc.pacte = c.pc.pacte || []).push(o.r); if (o.p && o.p.bst) withSrc('Pacte d\'invocation', () => PACT[o.r][1](o.p.bst, pactEl(c))); return; }
   const U = UPS[o.pc] && UPS[o.pc][o.r]; if (!U) return; withSrc(PIECES[o.pc].n + ' · ' + RARS[o.r].n, () => U[1](c)); c.pc = c.pc || {}; (c.pc[o.pc] = c.pc[o.pc] || []).push(o.r); }
 const EQS_MAX = 8;
 const chestCost = (q, t) => q === 'maj' ? 3 + Math.floor(t / 2) : 2 + Math.floor(t / 3);
@@ -3301,7 +3331,7 @@ function startRecruit() {
     trigBoard(G, p, 'sot');
     p.mkt = 0; p.cdbl = 0;
     if (inMechAny(G, 'ames') && (p.souls || 0) >= 3) { const k = Math.floor(p.souls / 3); p.souls -= k * 3; withSrc('Moisson d\'âmes', () => p.bd.forEach(m => { if (inMech(G, 'ames', m)) buff(m, k, k); })); }
-    if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; p.ck = Math.min(ckMax(p), (p.ck || 0) + n); }
+    if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; p.ck = Math.min(ckMax(p), (p.ck || 0) + n); mkSync(p); }
     // un coffre après chaque combat : majeur si le compagnon gagne son duel, mineur sinon
     if (inMechAny(G, 'chakra') && p.lastRes) p.pendChest = (p.lastRes === 'win' ? 'maj' : 'min') + (p.t || 1);
     // pureté : 5 serviteurs ou plus d'un même clan → +1 chakra
@@ -3327,6 +3357,7 @@ function endRecruit() {
     { const w = pwOf(p); if (w && w.k === 'prsv' && (p.rsv || []).length === 1) p.maree = (p.maree || 0) + w.n; }
     const neot = auraTimes(p.bd, 'aura_eot');
     for (const m of p.bd.concat(p.cp ? [p.cp] : [])) for (let r = 0; r < neot; r++) fxOf(m, 'eot').forEach(e => runRecruit(G, p, m, e));
+    mkSync(p);
     if (p.hero === 'maelle' && p.bd[0]) withSrc('Passif de Maëlle', () => buff(p.bd[0], 1, 1));
     if (inMechAny(G, 'fusion') && elems(p.bd) >= 4) withSrc('Fusion élémentaire', () => p.bd.forEach(m => { if (inMech(G, 'fusion', m)) buff(m, 1, 1); }));
     if (p.hero === 'nono' && G.rd >= 3 && !p.pu) p.fb = (p.fb || 3) + 1;
@@ -3447,7 +3478,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, choice:p.choice || null, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, mkl:(mkSync(p), p.mkl) || {}, souffle:p.souffle || 0, roche:p.roche || 0, choice:p.choice || null, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;
@@ -5984,6 +6015,7 @@ function castSpell0(G, p, hi, tg) {
   // réservoir : chaque technique remplit une moitié ; la seconde moitié déclenche le combo et le vide
   if (S.el && S.nin) withSrc('Réservoir', () => rsvFill(G, p, S.el));
   if (S.nin) comps(p).forEach(c => giveXp(c, 1));
+  if (S.nin && S.el && !S.item) mkAdd(p, S.el, 1);   // chaque technique donne 1 marqueur de sa nature
   if (S.el) comps(p).forEach(c => { const e = compEl(c); if (e && EL_GEN[e] === S.el) { const x = (c.eq || []).includes('eq_talisman') ? 2 : 1; p.ck = Math.min(CK_MAX, (p.ck || 0) + 2 * x); buff(c, 2 * x, 2 * x); } });
   if (!S.item) trigBoard(G, p, 'cast');
   checkTriple(G, p);
@@ -6001,6 +6033,7 @@ function combatBoard(p) {
     if (m.tmp) { c.a += m.tmp.a || 0; c.h += m.tmp.h || 0; if (m.tmp.f) addF(c, m.tmp.f); }
     if (p.tma) { c.a += p.tma.a; c.h += p.tma.h; }
     if (ninja) {
+      { const el = CLAN_EL[CD(m.c).tr], t = el ? mkTier(p, el) : 0; if (t && !(C[m.c] && C[m.c].comp)) { const B = MK_TIER[el][t - 1]; c.a += B[0]; c.h += B[1]; if (B[2]) addF(c, B[2]); } }
       const tr = CD(m.c).tr, k = m.g ? 2 : 1, x = c.x = (c.x || []).slice();
       (CD(m.c).fxAll || []).filter(e => e.k === 'awk_surge').forEach(e => { if ((p.ck || 0) >= 7) { c.a += e.a * k; c.h += e.h * k; } });
       if (aw) {
@@ -6223,7 +6256,10 @@ function rsvFill(G, p, el) {
   if (w && w.k === 'pcombo') withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => { if (w.d && (a === w.el || b === w.el)) p.njf = (p.njf || 0) + w.d; if (w.h) p.bd.forEach(m => buff(m, 0, w.h)); });
   trigBoard(G, p, 'combo');
   comps(p).forEach(c => { c.x = (c.x || []).filter(e => !e.fusion); c.x.push(Object.assign({ src:'Combo · ' + F.n, fusion:1 }, F.fx)); c.fu = F.n; });
-  p.combo = { n:F.n, col:F.col, a, b, pure:a === b ? 1 : 0, id:UID++ };
+  // résonance : chaque combo consomme 5 marqueurs de chacun de ses éléments pour déclencher leur éclat
+  const bursts = [];
+  [...new Set([a, b])].forEach(e => { const k = MK[e]; if ((p[k] || 0) >= 5) { p[k] -= 5; mkSync(p); withSrc('Éclat · ' + MK_N[e], () => MK_BURST[e][1](G, p)); bursts.push(e); } });
+  p.combo = { n:F.n, col:F.col, a, b, pure:a === b ? 1 : 0, id:UID++, bursts };
 }
 
 /* =====================================================================
@@ -6953,7 +6989,7 @@ function chakraLawH(big) {
     ${sec('📜', 'Techniques et réservoir', `<small>Les techniques ont une <b>nature</b> (Feu, Vent, Eau, Foudre, Terre) et suivent le jeu de leur clan ; celles de l'élément de ton héros coûtent 1 chakra de moins.</small><small>Chaque technique remplit une moitié du <b>réservoir</b> ; la 2e déclenche un <b>combo</b> (effet sur ton plateau + pouvoir hybride au compagnon). Deux fois le même élément : combo pur.</small><span class="njl-combos">${pairs}</span>`)}
     ${sec('⚔️', 'Compagnon et duel', `<span class="njl-row">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<span><small>Ton compagnon est déjà en jeu, <b>triplé</b> et hors plateau. En combat, il affronte <b>seulement le compagnon adverse</b> et ne blesse jamais le héros.</small><small>Il prend l'élément de ta dernière technique : s'il domine celui d'en face, <b>+4/+4</b>.</small><small>Il gagne de l'expérience (technique +1, duel gagné +2) et monte de niveau.</small></span></span>`)}
     ${sec('🎁', 'Coffres et entraînement', `<small>Le <b>duel</b> décide du coffre : majeur s'il gagne, mineur sinon. Tu choisis <b>1 récompense sur 3</b> pour une des 5 pièces du compagnon (lame, armure, bandeau, gantelets, talisman).</small><span class="njl-rar">${RARS.map((R, i) => `<i style="--c:${R.col}">${R.n} · ${i + 1} chakra</i>`).join('')}</span><small>Elle se range dans l'entraînement et se pose avec du chakra.</small><small><b>Parchemins de pacte</b> : ils préparent la <b>bête d'invocation</b> du clan de ton compagnon (Salamandre, Loup, Serpent, Tigre, Sanglier). Elle apparaît à l'Éveil, plus forte à chaque parchemin, et combat à ses côtés dans le duel.</small>`)}
-    ${sec('🔥', 'Marqueurs de clan', `<span class="njl-ctrs">${ctr('Braises', '#ff8a4a', 'Feu : la Grande boule de feu les consume, le Phénix s\'en nourrit.')}${ctr('Marée', '#6fc8ff', 'Eau : renforce le Clan de l\'Eau, déferle au Raz-de-marée.')}${ctr('Charge', '#ffd23a', 'Foudre : frappe au début du combat avec l\'Orage total.')}</span><small><b>Pureté</b> : 5 serviteurs d'un même clan donnent +1 chakra par tour et doublent les marqueurs gagnés.</small>`)}
+    ${sec('🔥', 'Marqueurs de clan', `<small>Chaque clan a son marqueur : <b style="color:#ff8a4a">Braises</b>, <b style="color:#8fe0b0">Souffle</b>, <b style="color:#6fc8ff">Marée</b>, <b style="color:#ffd23a">Charge</b>, <b style="color:#d8c0a0">Roche</b>. Ils tournent autour de ton héros.</small><small><b>Gain</b> : +1 par technique de leur nature, serviteurs du clan, Sceaux de clan des coffres.</small><small><b>Paliers</b> (5, 10, 20 gagnés) : le clan gagne des stats en combat, puis un mot-clé au 3e palier.</small><small><b>Éclat</b> : chaque combo consomme 5 marqueurs de chacun de ses éléments pour un effet en plus.</small><small><b>Pureté</b> : 5 serviteurs d'un même clan donnent +1 chakra par tour et doublent les marqueurs gagnés.</small>`)}
     ${sec('🌅', 'Éveil (4 joueurs ou moins)', `<small>Les <b>clans</b> libèrent leur pouvoir (Phénix, Ouragan, Raz-de-marée, Orage total, Avalanche), ton <b>compagnon</b> prend sa forme ultime et <b>rejoint la bataille</b> avec sa bête d'invocation (au centre de ta rangée ; coffre majeur s'il est encore debout), le pouvoir de ton <b>héros</b> est renforcé, chaque <b>technique</b> gagne son effet d'Éveil et des techniques interdites apparaissent. Tes cartes prennent l'aura de ton marqueur dominant.</small>`)}
   </span>`;
 }
@@ -7118,7 +7154,7 @@ function gameH() {
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
       <div class="hz-left">${trainH(d, me, canAct)}${me.cp ? '' : `<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span>`}</div>
-      <div class="hz-hero" data-hov="hero"><span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? 'art-h-' + me.hero : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span></div>
+      <div class="hz-hero" data-hov="hero"><span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? 'art-h-' + me.hero : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}${mkOrbsH(d, me)}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span></div>
       <div class="hz-right"><span class="hov" data-hov="pow">${power}</span><span class="purses">${coins}${canAct ? ckGauge(d, me) : ''}</span>${rsvH(d, me)}</div>
       <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}"><span class="bell-shine" aria-hidden="true"></span>${icon('bell')}<span class="bell-t">${me.rdy ? 'Prêt !' : 'Prêt'}</span><small class="bell-s">${me.rdy ? 'en attente' : 'fin du tour'}</small></button></div></section>`;
     const n = me.hd.length;
@@ -7254,18 +7290,34 @@ function rsvPeekH(me) {
   else { const pairs = []; E.forEach((x, i) => E.slice(i).forEach(y => pairs.push([x, y]))); pairs.sort((p, q) => (p[0] === p[1]) - (q[0] === q[1])); rows = pairs.map(([x, y]) => row(x, y)).join(''); }
   return `<div class="rpeek${a ? '' : ' all'}"><b class="rp-h">${a ? `Réservoir · moitié ${ELS[a].n}` : 'Réservoir vide'}</b><small class="rp-s">${a ? 'Ta prochaine technique déclenche :' : 'Lance deux techniques : leur mélange déclenche un combo. Le compagnon gagne aussi son pouvoir hybride.'}</small><ul>${rows}</ul></div>`;
 }
+// marqueurs de clan : 5 orbes autour du portrait du héros (anneau = progression vers le prochain palier)
+const MK_COL = { feu:'#ff7a2a', vent:'#6fd8a0', eau:'#4ab0e8', foudre:'#ffd23a', terre:'#c8a878' };
+function mkOrbsH(d, me) {
+  if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
+  const els = ['feu', 'vent', 'foudre', 'terre', 'eau'];
+  return `<span class="mkorbs" data-hov="mk" aria-label="Marqueurs de clan">${els.map((e, k) => {
+    const v = me[MK[e]] || 0, tot = (me.mkl || {})[e] || 0, t = MK_STEPS.filter(s => tot >= s).length, nx = MK_STEPS[t], pr = nx ? (tot - (MK_STEPS[t - 1] || 0)) / (nx - (MK_STEPS[t - 1] || 0)) : 1;
+    const a = (-162 + k * 31) * Math.PI / 180;
+    return `<span class="mko t${t}${v >= 5 ? ' ready' : ''}" style="--c:${MK_COL[e]};--p:${pr.toFixed(2)};left:calc(50% + ${Math.cos(a).toFixed(3)} * var(--orr));top:calc(46% + ${Math.sin(a).toFixed(3)} * var(--orr))"><svg viewBox="-12 -12 24 24" aria-hidden="true">${EL_ICON[e]}</svg><b>${v}</b>${t ? `<i>${'★'.repeat(t)}</i>` : ''}</span>`; }).join('')}</span>`;
+}
+function mkPeekH(me) {
+  const row = e => { const v = me[MK[e]] || 0, tot = (me.mkl || {})[e] || 0, t = MK_STEPS.filter(s => tot >= s).length;
+    const steps = MK_STEPS.map((s, i) => { const B = MK_TIER[e][i]; return `<li class="${tot >= s ? 'on' : ''}"><b>${s}</b> ${MK_TIER_TX[e]} : +${B[0]}/+${B[1]}${B[2] ? ' et ' + MK_KW[B[2]] : ''} en combat</li>`; }).join('');
+    return `<div class="mkp-r" style="--c:${MK_COL[e]}"><span class="mkp-h"><svg viewBox="-12 -12 24 24">${EL_ICON[e]}</svg><b>${MK_N[e]}</b><em>${v} en réserve · ${tot} gagnés</em></span><ul>${steps}</ul><small>Éclat (combo avec l'élément ${ELS[e].n}, 5 ${MK_N[e].toLowerCase()}) : ${esc(MK_BURST[e][0])}</small></div>`; };
+  return `<div class="mkpeek"><b class="mkp-t">Marqueurs de clan</b><small class="mkp-s">Gagnés par les techniques de leur nature (+1), les serviteurs du clan et les Sceaux de clan des coffres. Les paliers comptent tout ce que tu as gagné ; chaque combo consomme 5 marqueurs de ses éléments pour leur éclat.</small><div class="mkp-g">${['feu', 'vent', 'eau', 'foudre', 'terre'].map(row).join('')}</div></div>`;
+}
 // combo déclenché : grande annonce au centre de l'écran
 function comboWatch() {
   if (!V.me) return; const c = V.me.combo; if (!c) { if (V.comboSeen === undefined) V.comboSeen = null; return; } if (V.comboSeen === c.id) return;
   const first = V.comboSeen === undefined; V.comboSeen = c.id; if (first) return;
   const el = document.createElement('div'); el.className = 'combo-fx';
-  el.innerHTML = `<div class="cbx" style="--c1:${ELS[c.a] ? ELS[c.a].col : c.col};--c2:${ELS[c.b] ? ELS[c.b].col : c.col};--cc:${c.col}"><span class="cbx-orb"></span><small>${c.pure ? 'Combo pur' : 'Combo'} · ${esc((ELS[c.a] || {}).n || '')} + ${esc((ELS[c.b] || {}).n || '')}</small><b>${esc(c.n)}</b><p>${esc(comboTx({ n:c.n }))}</p></div>`;
+  el.innerHTML = `<div class="cbx" style="--c1:${ELS[c.a] ? ELS[c.a].col : c.col};--c2:${ELS[c.b] ? ELS[c.b].col : c.col};--cc:${c.col}"><span class="cbx-orb"></span><small>${c.pure ? 'Combo pur' : 'Combo'} · ${esc((ELS[c.a] || {}).n || '')} + ${esc((ELS[c.b] || {}).n || '')}</small><b>${esc(c.n)}</b><p>${esc(comboTx({ n:c.n }))}</p>${(c.bursts || []).map(e => `<p class="cbx-b" style="color:${MK_COL[e]}">Éclat · ${MK_N[e]} : ${esc(MK_BURST[e][0])}</p>`).join('')}</div>`;
   document.body.appendChild(el); setTimeout(() => el.remove(), 2600);
 }
 function ckGauge(d, me) {
   const law = (d.laws || []).find(l => l.k === 'chakra'); if (!law) return '';
   const ck = me.ck || 0, inc = (me.bd || []).filter(m => (law.trs || []).includes(CD(m.c).tr)).length;
-  return `<div class="purse ckp" aria-label="${ck} chakra sur 10" data-tip="Chakra : il lance tes techniques ninja (le pouvoir du héros se paie en or). Chaque serviteur Ninja en génère 1 au début de ton tour (10 au plus).${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ck}<small>/10</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:10 }, (_, k) => `<i class="ckc${k < ck ? '' : ' off'}"></i>`).join('')}</span>${clanCtrH(me)}</div>`;
+  return `<div class="purse ckp" aria-label="${ck} chakra sur 10" data-tip="Chakra : il lance tes techniques ninja (le pouvoir du héros se paie en or). Chaque serviteur Ninja en génère 1 au début de ton tour (10 au plus).${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ck}<small>/10</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:10 }, (_, k) => `<i class="ckc${k < ck ? '' : ' off'}"></i>`).join('')}</span></div>`;
 }
 // compteurs de clan (braises, marée, charge) sous le chakra
 const clanCtrH = me => { const c = [['braise', 'Braises', '#ff9a5a', 'Braises (Clan du Feu) : chaque technique les attise. Après l\'Éveil, Phénix : tes serviteurs du Feu gagnent +1/+1 par paire de braises et Renaissance.'], ['maree', 'Marée', '#6fc8ff', 'Marée (Clan de l\'Eau) : elle monte à chaque fin de tour. Après l\'Éveil, raz-de-marée : tous tes serviteurs gagnent +1/+1 par tranche de 4.'], ['charge', 'Charge', '#ffe14a', 'Charge (Clan de la Foudre) : elle s\'accumule à chaque fin de tour. Après l\'Éveil, orage total : la moitié frappe l\'ennemi au début de chaque combat.']].filter(([k]) => me[k]);
@@ -7786,6 +7838,7 @@ function showPeek(t, touch) {
     else if ((hv === 'pow' || hv === 'hero') && HEROES[V.me.hero]) { const h = HEROES[V.me.hero]; html = heroCardH(V.me.hero, { foot:h.cost ? (V.me.pu ? 'Déjà utilisé ce tour' : h.minRound && (V.me.rd || 0) < h.minRound ? `Disponible dès la manche ${h.minRound}` : 'Disponible') : 'Toujours actif' }); }
     else if (hv === 'comp' && compOf(V.me.hero) && C[compOf(V.me.hero)]) html = compCardH(V.me.hero, compOf(V.me.hero), V.me);
     else if (hv === 'rsv') html = rsvPeekH(V.me);
+    else if (hv === 'mk') html = mkPeekH(V.me);
     else if (hv === 'upm') html = upPeekH(V.me, +t.dataset.i);
     if (html) { peekFor = t; peekEl.innerHTML = html; peekEl.hidden = false; const q = peekEl.firstElementChild.getBoundingClientRect(); placePeek(r, q.width, q.height, touch); return true; }
   }
@@ -8810,6 +8863,32 @@ html.lite .mn.cp-join .mn-svg{filter:none}
   :root body .table.fighting.joined{--tw:min(54px, calc((100cqi - 140px) / 9.6))}
   :root body .table.fighting:has(.duel-col) .board-zone,:root body .table.fighting:has(.duel-col) .keeper-zone{padding-left:calc(var(--tw) + 20px);padding-right:calc(var(--tw) + 20px)}
 }
+`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `
+.hz-hero{position:relative}
+.mkorbs{--orr:66px;position:absolute;inset:0;pointer-events:auto;cursor:help}
+.mko{position:absolute;width:30px;height:30px;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;z-index:4;
+  background:radial-gradient(circle at 38% 32%,color-mix(in srgb,var(--c) 40%,#fff),var(--c) 55%,color-mix(in srgb,var(--c) 50%,#000));
+  box-shadow:0 0 0 2px #120a06,0 0 0 4px rgba(0,0,0,.35),0 0 0 4px var(--c) inset,0 3px 6px rgba(0,0,0,.5);
+  -webkit-mask:none}
+.mko::before{content:'';position:absolute;inset:-5px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--p) * 360deg),rgba(0,0,0,.45) 0);-webkit-mask:radial-gradient(circle,transparent 62%,#000 64%);mask:radial-gradient(circle,transparent 62%,#000 64%)}
+.mko svg{width:15px;height:15px;opacity:.55;position:absolute}
+.mko b{position:relative;font:700 14px var(--f-num);color:#fff;text-shadow:0 1px 0 #000,0 0 3px #000}
+.mko i{position:absolute;bottom:-11px;left:50%;transform:translateX(-50%);font-style:normal;font-size:8px;letter-spacing:-1px;color:#ffe27a;text-shadow:0 1px 0 #000}
+.mko.ready{animation:mkReady 1.6s ease-in-out infinite}
+@keyframes mkReady{50%{box-shadow:0 0 0 2px #120a06,0 0 14px 4px var(--c)}}
+html.lite .mko.ready{animation:none;box-shadow:0 0 0 2px #120a06,0 0 0 4px var(--c)}
+.mkpeek{width:520px;padding:12px 14px;border-radius:14px;background:rgba(16,10,5,.97);box-shadow:0 0 0 2px #f2c14e,0 10px 30px rgba(0,0,0,.6);color:#f1e4c6}
+.mkp-t{display:block;font:700 16px Grenze,serif;color:#f2c14e}.mkp-s{display:block;font-size:11px;color:#e8d6b0;margin:2px 0 8px}
+.mkp-g{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mkp-r{padding:6px 8px;border-radius:9px;background:rgba(255,255,255,.04);box-shadow:inset 3px 0 0 var(--c)}
+.mkp-h{display:flex;align-items:center;gap:5px}.mkp-h svg{width:16px;height:16px}.mkp-h b{color:var(--c);font-size:13px}.mkp-h em{margin-left:auto;font-style:normal;font-size:10px;color:#bfae8a}
+.mkp-r ul{list-style:none;margin:3px 0;padding:0;display:grid;gap:1px}.mkp-r li{font-size:10.5px;color:#8a7a5a}.mkp-r li b{display:inline-block;min-width:16px;color:#8a7a5a}
+.mkp-r li.on{color:#f1e4c6}.mkp-r li.on b{color:var(--c)}
+.mkp-r small{font-size:10.5px;color:#e8d6b0}
+.cbx-b{font-weight:700;font-size:13px!important}
+@media (orientation:landscape) and (max-height:540px){ .mkorbs{--orr:40px} .mko{width:18px;height:18px} .mko b{font-size:10px} .mko svg,.mko i{display:none} .mkpeek{width:min(92vw,520px)} }
 `; document.head.appendChild(st); })();
 </script>
 </body></html>

@@ -304,7 +304,7 @@ function chakraLawH(big) {
     ${sec('📜', 'Techniques et réservoir', `<small>Les techniques ont une <b>nature</b> (Feu, Vent, Eau, Foudre, Terre) et suivent le jeu de leur clan ; celles de l'élément de ton héros coûtent 1 chakra de moins.</small><small>Chaque technique remplit une moitié du <b>réservoir</b> ; la 2e déclenche un <b>combo</b> (effet sur ton plateau + pouvoir hybride au compagnon). Deux fois le même élément : combo pur.</small><span class="njl-combos">${pairs}</span>`)}
     ${sec('⚔️', 'Compagnon et duel', `<span class="njl-row">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<span><small>Ton compagnon est déjà en jeu, <b>triplé</b> et hors plateau. En combat, il affronte <b>seulement le compagnon adverse</b> et ne blesse jamais le héros.</small><small>Il prend l'élément de ta dernière technique : s'il domine celui d'en face, <b>+4/+4</b>.</small><small>Il gagne de l'expérience (technique +1, duel gagné +2) et monte de niveau.</small></span></span>`)}
     ${sec('🎁', 'Coffres et entraînement', `<small>Le <b>duel</b> décide du coffre : majeur s'il gagne, mineur sinon. Tu choisis <b>1 récompense sur 3</b> pour une des 5 pièces du compagnon (lame, armure, bandeau, gantelets, talisman).</small><span class="njl-rar">${RARS.map((R, i) => `<i style="--c:${R.col}">${R.n} · ${i + 1} chakra</i>`).join('')}</span><small>Elle se range dans l'entraînement et se pose avec du chakra.</small><small><b>Parchemins de pacte</b> : ils préparent la <b>bête d'invocation</b> du clan de ton compagnon (Salamandre, Loup, Serpent, Tigre, Sanglier). Elle apparaît à l'Éveil, plus forte à chaque parchemin, et combat à ses côtés dans le duel.</small>`)}
-    ${sec('🔥', 'Marqueurs de clan', `<span class="njl-ctrs">${ctr('Braises', '#ff8a4a', 'Feu : la Grande boule de feu les consume, le Phénix s\'en nourrit.')}${ctr('Marée', '#6fc8ff', 'Eau : renforce le Clan de l\'Eau, déferle au Raz-de-marée.')}${ctr('Charge', '#ffd23a', 'Foudre : frappe au début du combat avec l\'Orage total.')}</span><small><b>Pureté</b> : 5 serviteurs d'un même clan donnent +1 chakra par tour et doublent les marqueurs gagnés.</small>`)}
+    ${sec('🔥', 'Marqueurs de clan', `<small>Chaque clan a son marqueur : <b style="color:#ff8a4a">Braises</b>, <b style="color:#8fe0b0">Souffle</b>, <b style="color:#6fc8ff">Marée</b>, <b style="color:#ffd23a">Charge</b>, <b style="color:#d8c0a0">Roche</b>. Ils tournent autour de ton héros.</small><small><b>Gain</b> : +1 par technique de leur nature, serviteurs du clan, Sceaux de clan des coffres.</small><small><b>Paliers</b> (5, 10, 20 gagnés) : le clan gagne des stats en combat, puis un mot-clé au 3e palier.</small><small><b>Éclat</b> : chaque combo consomme 5 marqueurs de chacun de ses éléments pour un effet en plus.</small><small><b>Pureté</b> : 5 serviteurs d'un même clan donnent +1 chakra par tour et doublent les marqueurs gagnés.</small>`)}
     ${sec('🌅', 'Éveil (4 joueurs ou moins)', `<small>Les <b>clans</b> libèrent leur pouvoir (Phénix, Ouragan, Raz-de-marée, Orage total, Avalanche), ton <b>compagnon</b> prend sa forme ultime et <b>rejoint la bataille</b> avec sa bête d'invocation (au centre de ta rangée ; coffre majeur s'il est encore debout), le pouvoir de ton <b>héros</b> est renforcé, chaque <b>technique</b> gagne son effet d'Éveil et des techniques interdites apparaissent. Tes cartes prennent l'aura de ton marqueur dominant.</small>`)}
   </span>`;
 }
@@ -469,7 +469,7 @@ function gameH() {
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
       <div class="hz-left">${trainH(d, me, canAct)}${me.cp ? '' : `<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span>`}</div>
-      <div class="hz-hero" data-hov="hero"><span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? 'art-h-' + me.hero : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span></div>
+      <div class="hz-hero" data-hov="hero"><span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? 'art-h-' + me.hero : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}${mkOrbsH(d, me)}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span></div>
       <div class="hz-right"><span class="hov" data-hov="pow">${power}</span><span class="purses">${coins}${canAct ? ckGauge(d, me) : ''}</span>${rsvH(d, me)}</div>
       <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}"><span class="bell-shine" aria-hidden="true"></span>${icon('bell')}<span class="bell-t">${me.rdy ? 'Prêt !' : 'Prêt'}</span><small class="bell-s">${me.rdy ? 'en attente' : 'fin du tour'}</small></button></div></section>`;
     const n = me.hd.length;
@@ -605,18 +605,34 @@ function rsvPeekH(me) {
   else { const pairs = []; E.forEach((x, i) => E.slice(i).forEach(y => pairs.push([x, y]))); pairs.sort((p, q) => (p[0] === p[1]) - (q[0] === q[1])); rows = pairs.map(([x, y]) => row(x, y)).join(''); }
   return `<div class="rpeek${a ? '' : ' all'}"><b class="rp-h">${a ? `Réservoir · moitié ${ELS[a].n}` : 'Réservoir vide'}</b><small class="rp-s">${a ? 'Ta prochaine technique déclenche :' : 'Lance deux techniques : leur mélange déclenche un combo. Le compagnon gagne aussi son pouvoir hybride.'}</small><ul>${rows}</ul></div>`;
 }
+// marqueurs de clan : 5 orbes autour du portrait du héros (anneau = progression vers le prochain palier)
+const MK_COL = { feu:'#ff7a2a', vent:'#6fd8a0', eau:'#4ab0e8', foudre:'#ffd23a', terre:'#c8a878' };
+function mkOrbsH(d, me) {
+  if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
+  const els = ['feu', 'vent', 'foudre', 'terre', 'eau'];
+  return `<span class="mkorbs" data-hov="mk" aria-label="Marqueurs de clan">${els.map((e, k) => {
+    const v = me[MK[e]] || 0, tot = (me.mkl || {})[e] || 0, t = MK_STEPS.filter(s => tot >= s).length, nx = MK_STEPS[t], pr = nx ? (tot - (MK_STEPS[t - 1] || 0)) / (nx - (MK_STEPS[t - 1] || 0)) : 1;
+    const a = (-162 + k * 31) * Math.PI / 180;
+    return `<span class="mko t${t}${v >= 5 ? ' ready' : ''}" style="--c:${MK_COL[e]};--p:${pr.toFixed(2)};left:calc(50% + ${Math.cos(a).toFixed(3)} * var(--orr));top:calc(46% + ${Math.sin(a).toFixed(3)} * var(--orr))"><svg viewBox="-12 -12 24 24" aria-hidden="true">${EL_ICON[e]}</svg><b>${v}</b>${t ? `<i>${'★'.repeat(t)}</i>` : ''}</span>`; }).join('')}</span>`;
+}
+function mkPeekH(me) {
+  const row = e => { const v = me[MK[e]] || 0, tot = (me.mkl || {})[e] || 0, t = MK_STEPS.filter(s => tot >= s).length;
+    const steps = MK_STEPS.map((s, i) => { const B = MK_TIER[e][i]; return `<li class="${tot >= s ? 'on' : ''}"><b>${s}</b> ${MK_TIER_TX[e]} : +${B[0]}/+${B[1]}${B[2] ? ' et ' + MK_KW[B[2]] : ''} en combat</li>`; }).join('');
+    return `<div class="mkp-r" style="--c:${MK_COL[e]}"><span class="mkp-h"><svg viewBox="-12 -12 24 24">${EL_ICON[e]}</svg><b>${MK_N[e]}</b><em>${v} en réserve · ${tot} gagnés</em></span><ul>${steps}</ul><small>Éclat (combo avec l'élément ${ELS[e].n}, 5 ${MK_N[e].toLowerCase()}) : ${esc(MK_BURST[e][0])}</small></div>`; };
+  return `<div class="mkpeek"><b class="mkp-t">Marqueurs de clan</b><small class="mkp-s">Gagnés par les techniques de leur nature (+1), les serviteurs du clan et les Sceaux de clan des coffres. Les paliers comptent tout ce que tu as gagné ; chaque combo consomme 5 marqueurs de ses éléments pour leur éclat.</small><div class="mkp-g">${['feu', 'vent', 'eau', 'foudre', 'terre'].map(row).join('')}</div></div>`;
+}
 // combo déclenché : grande annonce au centre de l'écran
 function comboWatch() {
   if (!V.me) return; const c = V.me.combo; if (!c) { if (V.comboSeen === undefined) V.comboSeen = null; return; } if (V.comboSeen === c.id) return;
   const first = V.comboSeen === undefined; V.comboSeen = c.id; if (first) return;
   const el = document.createElement('div'); el.className = 'combo-fx';
-  el.innerHTML = `<div class="cbx" style="--c1:${ELS[c.a] ? ELS[c.a].col : c.col};--c2:${ELS[c.b] ? ELS[c.b].col : c.col};--cc:${c.col}"><span class="cbx-orb"></span><small>${c.pure ? 'Combo pur' : 'Combo'} · ${esc((ELS[c.a] || {}).n || '')} + ${esc((ELS[c.b] || {}).n || '')}</small><b>${esc(c.n)}</b><p>${esc(comboTx({ n:c.n }))}</p></div>`;
+  el.innerHTML = `<div class="cbx" style="--c1:${ELS[c.a] ? ELS[c.a].col : c.col};--c2:${ELS[c.b] ? ELS[c.b].col : c.col};--cc:${c.col}"><span class="cbx-orb"></span><small>${c.pure ? 'Combo pur' : 'Combo'} · ${esc((ELS[c.a] || {}).n || '')} + ${esc((ELS[c.b] || {}).n || '')}</small><b>${esc(c.n)}</b><p>${esc(comboTx({ n:c.n }))}</p>${(c.bursts || []).map(e => `<p class="cbx-b" style="color:${MK_COL[e]}">Éclat · ${MK_N[e]} : ${esc(MK_BURST[e][0])}</p>`).join('')}</div>`;
   document.body.appendChild(el); setTimeout(() => el.remove(), 2600);
 }
 function ckGauge(d, me) {
   const law = (d.laws || []).find(l => l.k === 'chakra'); if (!law) return '';
   const ck = me.ck || 0, inc = (me.bd || []).filter(m => (law.trs || []).includes(CD(m.c).tr)).length;
-  return `<div class="purse ckp" aria-label="${ck} chakra sur 10" data-tip="Chakra : il lance tes techniques ninja (le pouvoir du héros se paie en or). Chaque serviteur Ninja en génère 1 au début de ton tour (10 au plus).${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ck}<small>/10</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:10 }, (_, k) => `<i class="ckc${k < ck ? '' : ' off'}"></i>`).join('')}</span>${clanCtrH(me)}</div>`;
+  return `<div class="purse ckp" aria-label="${ck} chakra sur 10" data-tip="Chakra : il lance tes techniques ninja (le pouvoir du héros se paie en or). Chaque serviteur Ninja en génère 1 au début de ton tour (10 au plus).${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ck}<small>/10</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:10 }, (_, k) => `<i class="ckc${k < ck ? '' : ' off'}"></i>`).join('')}</span></div>`;
 }
 // compteurs de clan (braises, marée, charge) sous le chakra
 const clanCtrH = me => { const c = [['braise', 'Braises', '#ff9a5a', 'Braises (Clan du Feu) : chaque technique les attise. Après l\'Éveil, Phénix : tes serviteurs du Feu gagnent +1/+1 par paire de braises et Renaissance.'], ['maree', 'Marée', '#6fc8ff', 'Marée (Clan de l\'Eau) : elle monte à chaque fin de tour. Après l\'Éveil, raz-de-marée : tous tes serviteurs gagnent +1/+1 par tranche de 4.'], ['charge', 'Charge', '#ffe14a', 'Charge (Clan de la Foudre) : elle s\'accumule à chaque fin de tour. Après l\'Éveil, orage total : la moitié frappe l\'ennemi au début de chaque combat.']].filter(([k]) => me[k]);
@@ -1137,6 +1153,7 @@ function showPeek(t, touch) {
     else if ((hv === 'pow' || hv === 'hero') && HEROES[V.me.hero]) { const h = HEROES[V.me.hero]; html = heroCardH(V.me.hero, { foot:h.cost ? (V.me.pu ? 'Déjà utilisé ce tour' : h.minRound && (V.me.rd || 0) < h.minRound ? `Disponible dès la manche ${h.minRound}` : 'Disponible') : 'Toujours actif' }); }
     else if (hv === 'comp' && compOf(V.me.hero) && C[compOf(V.me.hero)]) html = compCardH(V.me.hero, compOf(V.me.hero), V.me);
     else if (hv === 'rsv') html = rsvPeekH(V.me);
+    else if (hv === 'mk') html = mkPeekH(V.me);
     else if (hv === 'upm') html = upPeekH(V.me, +t.dataset.i);
     if (html) { peekFor = t; peekEl.innerHTML = html; peekEl.hidden = false; const q = peekEl.firstElementChild.getBoundingClientRect(); placePeek(r, q.width, q.height, touch); return true; }
   }
@@ -2161,4 +2178,30 @@ html.lite .mn.cp-join .mn-svg{filter:none}
   :root body .table.fighting.joined{--tw:min(54px, calc((100cqi - 140px) / 9.6))}
   :root body .table.fighting:has(.duel-col) .board-zone,:root body .table.fighting:has(.duel-col) .keeper-zone{padding-left:calc(var(--tw) + 20px);padding-right:calc(var(--tw) + 20px)}
 }
+`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `
+.hz-hero{position:relative}
+.mkorbs{--orr:66px;position:absolute;inset:0;pointer-events:auto;cursor:help}
+.mko{position:absolute;width:30px;height:30px;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;z-index:4;
+  background:radial-gradient(circle at 38% 32%,color-mix(in srgb,var(--c) 40%,#fff),var(--c) 55%,color-mix(in srgb,var(--c) 50%,#000));
+  box-shadow:0 0 0 2px #120a06,0 0 0 4px rgba(0,0,0,.35),0 0 0 4px var(--c) inset,0 3px 6px rgba(0,0,0,.5);
+  -webkit-mask:none}
+.mko::before{content:'';position:absolute;inset:-5px;border-radius:50%;background:conic-gradient(var(--c) calc(var(--p) * 360deg),rgba(0,0,0,.45) 0);-webkit-mask:radial-gradient(circle,transparent 62%,#000 64%);mask:radial-gradient(circle,transparent 62%,#000 64%)}
+.mko svg{width:15px;height:15px;opacity:.55;position:absolute}
+.mko b{position:relative;font:700 14px var(--f-num);color:#fff;text-shadow:0 1px 0 #000,0 0 3px #000}
+.mko i{position:absolute;bottom:-11px;left:50%;transform:translateX(-50%);font-style:normal;font-size:8px;letter-spacing:-1px;color:#ffe27a;text-shadow:0 1px 0 #000}
+.mko.ready{animation:mkReady 1.6s ease-in-out infinite}
+@keyframes mkReady{50%{box-shadow:0 0 0 2px #120a06,0 0 14px 4px var(--c)}}
+html.lite .mko.ready{animation:none;box-shadow:0 0 0 2px #120a06,0 0 0 4px var(--c)}
+.mkpeek{width:520px;padding:12px 14px;border-radius:14px;background:rgba(16,10,5,.97);box-shadow:0 0 0 2px #f2c14e,0 10px 30px rgba(0,0,0,.6);color:#f1e4c6}
+.mkp-t{display:block;font:700 16px Grenze,serif;color:#f2c14e}.mkp-s{display:block;font-size:11px;color:#e8d6b0;margin:2px 0 8px}
+.mkp-g{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mkp-r{padding:6px 8px;border-radius:9px;background:rgba(255,255,255,.04);box-shadow:inset 3px 0 0 var(--c)}
+.mkp-h{display:flex;align-items:center;gap:5px}.mkp-h svg{width:16px;height:16px}.mkp-h b{color:var(--c);font-size:13px}.mkp-h em{margin-left:auto;font-style:normal;font-size:10px;color:#bfae8a}
+.mkp-r ul{list-style:none;margin:3px 0;padding:0;display:grid;gap:1px}.mkp-r li{font-size:10.5px;color:#8a7a5a}.mkp-r li b{display:inline-block;min-width:16px;color:#8a7a5a}
+.mkp-r li.on{color:#f1e4c6}.mkp-r li.on b{color:var(--c)}
+.mkp-r small{font-size:10.5px;color:#e8d6b0}
+.cbx-b{font-weight:700;font-size:13px!important}
+@media (orientation:landscape) and (max-height:540px){ .mkorbs{--orr:40px} .mko{width:18px;height:18px} .mko b{font-size:10px} .mko svg,.mko i{display:none} .mkpeek{width:min(92vw,520px)} }
 `; document.head.appendChild(st); })();
