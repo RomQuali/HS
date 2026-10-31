@@ -769,9 +769,8 @@ function simulate0(bA, bB, seed, tA, tB, fire, mx) {
   const a = S.sides[0].length, b = S.sides[1].length;
   const w = a && !b ? 0 : b && !a ? 1 : -1;
   let dmg = 0;
-  const tierD = m => C[m.c] && (C[m.c].comp || /^nb_/.test(m.c)) ? 0 : tierOf(m);   // compagnon et invocation n'ajoutent pas de dégâts au héros
-  if (w === 0) dmg = tA + S.sides[0].reduce((t, m) => t + tierD(m), 0);
-  if (w === 1) dmg = tB + S.sides[1].reduce((t, m) => t + tierD(m), 0);
+  if (w === 0) dmg = tA + S.sides[0].reduce((t, m) => t + tierOf(m), 0);
+  if (w === 1) dmg = tB + S.sides[1].reduce((t, m) => t + tierOf(m), 0);
   return { w, dmg, frames:S.frames, dead:S.dead, alive:S.sides.map(a => a.map(m => m.c)) };
 }
 
@@ -884,7 +883,7 @@ function awkPw(w) {
 const pwOf = p => { const w = HEROES[p.hero] && HEROES[p.hero].pw; return w && typeof H !== 'undefined' && awake(H.G) ? awkPw(w) : w; };
 const PW_AWK_TX = { rfill:'remplit la moitié et récupère 2 chakra', techel:'ajoute 2 techniques', rpure:'déclenche le combo pur et gagne 2 or', pdouble:'les deux premiers combos du tour s\'appliquent deux fois', ptechc:'tes techniques coûtent 2 or de moins', rcycle:'gagne 2 or', rdump:'gagne 6 or' };
 const heroAwkTx = h => !h || !h.pw ? '' : PW_AWK_TX[h.pw.k] || 'effet doublé';
-// forme éveillée du compagnon : stats doublées une fois et pouvoir de duel ultime de son clan
+// forme éveillée du compagnon : pouvoir ultime de son clan (sans doublement des stats)
 const COMP_AWK = {
   feu:{ n:'Phénix de flammes', tx:'Renaissance et début du duel : 4 dégâts au compagnon adverse', fn:c => { addF(c, 'r'); (c.x = c.x || []).push({ k:'soc_dmg', d:4, n:1, src:'Phénix de flammes' }); } },
   vent:{ n:'Lame d\'ouragan', tx:'Furie des vents et après avoir attaqué : +2/+0', fn:c => { addF(c, 'w'); (c.x = c.x || []).push({ k:'atk_self', a:2, h:0, src:'Lame d\'ouragan' }); } },
@@ -892,7 +891,7 @@ const COMP_AWK = {
   foudre:{ n:'Chakra de foudre', tx:'+3 attaque et après avoir attaqué : 4 dégâts à l\'ennemi', fn:c => { buff(c, 3, 0); (c.x = c.x || []).push({ k:'atk_zap', d:4, n:1, src:'Chakra de foudre' }); } },
   terre:{ n:'Golem de pierre', tx:'+0/+10 et début du duel : gagne +3/+3', fn:c => { buff(c, 0, 10); (c.x = c.x || []).push({ k:'soc_self', a:3, h:3, src:'Golem de pierre' }); } },
 };
-function awakenComp(c) { if (!c || c.awk) return; const el = CLAN_EL[CD(c.c).tr], A = COMP_AWK[el]; c.awk = 1; withSrc('Éveil du compagnon', () => { buff(c, c.a, c.h); if (A) A.fn(c); }); c.awkN = A ? A.n : ''; }
+function awakenComp(c) { if (!c || c.awk) return; const el = CLAN_EL[CD(c.c).tr], A = COMP_AWK[el]; c.awk = 1; withSrc('Éveil du compagnon', () => { if (A) A.fn(c); }); c.awkN = A ? A.n : ''; }
 const hasFx = (m, k) => (CD(m.c).fxAll || []).some(e => e.k === k);
 // dans l'univers du chakra, les pouvoirs héroïques se paient en chakra
 const powPaid = G => false;   // le pouvoir du héros se paie toujours en or (Ninja compris)
@@ -1288,7 +1287,7 @@ function endRecruit() {
     // après l'Éveil (Ninja) : compagnon et bête d'invocation rejoignent la bataille, en tête de rangée
     const join = awake(G) && inMechAny(G, 'chakra') && (typeof AWK_JOIN === 'undefined' || AWK_JOIN);
     const lead = x => x && x.cp ? [Object.assign({}, x.cp)].concat(x.bst ? [Object.assign({}, x.bst)] : []) : [];
-    if (join) { pb.unshift(...lead(p)); qcb.unshift(...lead(ghost || q)); }
+    if (join) { pb.splice(Math.floor(pb.length / 2), 0, ...lead(p)); const qx = ghost || q; qcb.splice(Math.floor(qcb.length / 2), 0, ...lead(qx)); }   // au centre de la rangée
     elementDuel(pb, qcb);
     const r = simulate(pb, qcb, seed, p.t, qt, fire, G.mx);
     lawsAfterFight(G, p, r, 0); if (!ghost) lawsAfterFight(G, q, r, 1);
@@ -1307,10 +1306,12 @@ function endRecruit() {
       duel = { a:ca0, b:cb0, w:cr.w, seed:cs };
       if (cr.w === 0 && p.cp) giveXp(p.cp, 2); if (!ghost && cr.w === 1 && q.cp) giveXp(q.cp, 2);
     }
-    p.res = { o:qn, r:W(r.w), d, cr:duel ? W(duel.w) : null };
+    // après l'Éveil : coffre majeur si le compagnon est encore debout à la fin de la bataille
+    const stand = (x, side) => x && x.cp && r.alive && (r.alive[side] || []).includes(x.cp.c) ? 'win' : 'loss';
+    p.res = { o:qn, r:W(r.w), d, cr:duel ? W(duel.w) : join && p.cp ? stand(p, 0) : null };
     if (join) { if (r.w === 0 && p.cp) giveXp(p.cp, 2); if (!ghost && r.w === 1 && q.cp) giveXp(q.cp, 2); }
     if (r.w === 0) p.bd.filter(isComp).forEach(m => giveXp(m, 2)); if (!ghost && r.w === 1) q.bd.filter(isComp).forEach(m => giveXp(m, 2));
-    if (!ghost) q.res = { o:p.n, r:X(r.w), d, cr:duel ? X(duel.w) : null };
+    if (!ghost) q.res = { o:p.n, r:X(r.w), d, cr:duel ? X(duel.w) : join && q.cp ? stand(q, 1) : null };
     const base = { duel, rd:G.rd, a:pb.map(fullM), b:qcb.map(fullM), seed, ta:p.t, tb:qt, cap, ha:p.hero, hb:ghost ? ghost.hero : q.hero, fire, mx:G.mx || {} };
     if (p.human && !p.bot) { deliverFight(p, Object.assign({ me:0, on:qn }, base)); maxFrames = Math.max(maxFrames, r.frames.length); }
     if (!ghost && q.human && !q.bot) { deliverFight(q, Object.assign({ me:1, on:p.n }, base)); maxFrames = Math.max(maxFrames, r.frames.length); }

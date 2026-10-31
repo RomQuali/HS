@@ -2830,9 +2830,8 @@ function simulate0(bA, bB, seed, tA, tB, fire, mx) {
   const a = S.sides[0].length, b = S.sides[1].length;
   const w = a && !b ? 0 : b && !a ? 1 : -1;
   let dmg = 0;
-  const tierD = m => C[m.c] && (C[m.c].comp || /^nb_/.test(m.c)) ? 0 : tierOf(m);   // compagnon et invocation n'ajoutent pas de dégâts au héros
-  if (w === 0) dmg = tA + S.sides[0].reduce((t, m) => t + tierD(m), 0);
-  if (w === 1) dmg = tB + S.sides[1].reduce((t, m) => t + tierD(m), 0);
+  if (w === 0) dmg = tA + S.sides[0].reduce((t, m) => t + tierOf(m), 0);
+  if (w === 1) dmg = tB + S.sides[1].reduce((t, m) => t + tierOf(m), 0);
   return { w, dmg, frames:S.frames, dead:S.dead, alive:S.sides.map(a => a.map(m => m.c)) };
 }
 
@@ -2945,7 +2944,7 @@ function awkPw(w) {
 const pwOf = p => { const w = HEROES[p.hero] && HEROES[p.hero].pw; return w && typeof H !== 'undefined' && awake(H.G) ? awkPw(w) : w; };
 const PW_AWK_TX = { rfill:'remplit la moitié et récupère 2 chakra', techel:'ajoute 2 techniques', rpure:'déclenche le combo pur et gagne 2 or', pdouble:'les deux premiers combos du tour s\'appliquent deux fois', ptechc:'tes techniques coûtent 2 or de moins', rcycle:'gagne 2 or', rdump:'gagne 6 or' };
 const heroAwkTx = h => !h || !h.pw ? '' : PW_AWK_TX[h.pw.k] || 'effet doublé';
-// forme éveillée du compagnon : stats doublées une fois et pouvoir de duel ultime de son clan
+// forme éveillée du compagnon : pouvoir ultime de son clan (sans doublement des stats)
 const COMP_AWK = {
   feu:{ n:'Phénix de flammes', tx:'Renaissance et début du duel : 4 dégâts au compagnon adverse', fn:c => { addF(c, 'r'); (c.x = c.x || []).push({ k:'soc_dmg', d:4, n:1, src:'Phénix de flammes' }); } },
   vent:{ n:'Lame d\'ouragan', tx:'Furie des vents et après avoir attaqué : +2/+0', fn:c => { addF(c, 'w'); (c.x = c.x || []).push({ k:'atk_self', a:2, h:0, src:'Lame d\'ouragan' }); } },
@@ -2953,7 +2952,7 @@ const COMP_AWK = {
   foudre:{ n:'Chakra de foudre', tx:'+3 attaque et après avoir attaqué : 4 dégâts à l\'ennemi', fn:c => { buff(c, 3, 0); (c.x = c.x || []).push({ k:'atk_zap', d:4, n:1, src:'Chakra de foudre' }); } },
   terre:{ n:'Golem de pierre', tx:'+0/+10 et début du duel : gagne +3/+3', fn:c => { buff(c, 0, 10); (c.x = c.x || []).push({ k:'soc_self', a:3, h:3, src:'Golem de pierre' }); } },
 };
-function awakenComp(c) { if (!c || c.awk) return; const el = CLAN_EL[CD(c.c).tr], A = COMP_AWK[el]; c.awk = 1; withSrc('Éveil du compagnon', () => { buff(c, c.a, c.h); if (A) A.fn(c); }); c.awkN = A ? A.n : ''; }
+function awakenComp(c) { if (!c || c.awk) return; const el = CLAN_EL[CD(c.c).tr], A = COMP_AWK[el]; c.awk = 1; withSrc('Éveil du compagnon', () => { if (A) A.fn(c); }); c.awkN = A ? A.n : ''; }
 const hasFx = (m, k) => (CD(m.c).fxAll || []).some(e => e.k === k);
 // dans l'univers du chakra, les pouvoirs héroïques se paient en chakra
 const powPaid = G => false;   // le pouvoir du héros se paie toujours en or (Ninja compris)
@@ -3349,7 +3348,7 @@ function endRecruit() {
     // après l'Éveil (Ninja) : compagnon et bête d'invocation rejoignent la bataille, en tête de rangée
     const join = awake(G) && inMechAny(G, 'chakra') && (typeof AWK_JOIN === 'undefined' || AWK_JOIN);
     const lead = x => x && x.cp ? [Object.assign({}, x.cp)].concat(x.bst ? [Object.assign({}, x.bst)] : []) : [];
-    if (join) { pb.unshift(...lead(p)); qcb.unshift(...lead(ghost || q)); }
+    if (join) { pb.splice(Math.floor(pb.length / 2), 0, ...lead(p)); const qx = ghost || q; qcb.splice(Math.floor(qcb.length / 2), 0, ...lead(qx)); }   // au centre de la rangée
     elementDuel(pb, qcb);
     const r = simulate(pb, qcb, seed, p.t, qt, fire, G.mx);
     lawsAfterFight(G, p, r, 0); if (!ghost) lawsAfterFight(G, q, r, 1);
@@ -3368,10 +3367,12 @@ function endRecruit() {
       duel = { a:ca0, b:cb0, w:cr.w, seed:cs };
       if (cr.w === 0 && p.cp) giveXp(p.cp, 2); if (!ghost && cr.w === 1 && q.cp) giveXp(q.cp, 2);
     }
-    p.res = { o:qn, r:W(r.w), d, cr:duel ? W(duel.w) : null };
+    // après l'Éveil : coffre majeur si le compagnon est encore debout à la fin de la bataille
+    const stand = (x, side) => x && x.cp && r.alive && (r.alive[side] || []).includes(x.cp.c) ? 'win' : 'loss';
+    p.res = { o:qn, r:W(r.w), d, cr:duel ? W(duel.w) : join && p.cp ? stand(p, 0) : null };
     if (join) { if (r.w === 0 && p.cp) giveXp(p.cp, 2); if (!ghost && r.w === 1 && q.cp) giveXp(q.cp, 2); }
     if (r.w === 0) p.bd.filter(isComp).forEach(m => giveXp(m, 2)); if (!ghost && r.w === 1) q.bd.filter(isComp).forEach(m => giveXp(m, 2));
-    if (!ghost) q.res = { o:p.n, r:X(r.w), d, cr:duel ? X(duel.w) : null };
+    if (!ghost) q.res = { o:p.n, r:X(r.w), d, cr:duel ? X(duel.w) : join && q.cp ? stand(q, 1) : null };
     const base = { duel, rd:G.rd, a:pb.map(fullM), b:qcb.map(fullM), seed, ta:p.t, tb:qt, cap, ha:p.hero, hb:ghost ? ghost.hero : q.hero, fire, mx:G.mx || {} };
     if (p.human && !p.bot) { deliverFight(p, Object.assign({ me:0, on:qn }, base)); maxFrames = Math.max(maxFrames, r.frames.length); }
     if (!ghost && q.human && !q.bot) { deliverFight(q, Object.assign({ me:1, on:p.n }, base)); maxFrames = Math.max(maxFrames, r.frames.length); }
@@ -6953,7 +6954,7 @@ function chakraLawH(big) {
     ${sec('⚔️', 'Compagnon et duel', `<span class="njl-row">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<span><small>Ton compagnon est déjà en jeu, <b>triplé</b> et hors plateau. En combat, il affronte <b>seulement le compagnon adverse</b> et ne blesse jamais le héros.</small><small>Il prend l'élément de ta dernière technique : s'il domine celui d'en face, <b>+4/+4</b>.</small><small>Il gagne de l'expérience (technique +1, duel gagné +2) et monte de niveau.</small></span></span>`)}
     ${sec('🎁', 'Coffres et entraînement', `<small>Le <b>duel</b> décide du coffre : majeur s'il gagne, mineur sinon. Tu choisis <b>1 récompense sur 3</b> pour une des 5 pièces du compagnon (lame, armure, bandeau, gantelets, talisman).</small><span class="njl-rar">${RARS.map((R, i) => `<i style="--c:${R.col}">${R.n} · ${i + 1} chakra</i>`).join('')}</span><small>Elle se range dans l'entraînement et se pose avec du chakra.</small><small><b>Parchemins de pacte</b> : ils préparent la <b>bête d'invocation</b> du clan de ton compagnon (Salamandre, Loup, Serpent, Tigre, Sanglier). Elle apparaît à l'Éveil, plus forte à chaque parchemin, et combat à ses côtés dans le duel.</small>`)}
     ${sec('🔥', 'Marqueurs de clan', `<span class="njl-ctrs">${ctr('Braises', '#ff8a4a', 'Feu : la Grande boule de feu les consume, le Phénix s\'en nourrit.')}${ctr('Marée', '#6fc8ff', 'Eau : renforce le Clan de l\'Eau, déferle au Raz-de-marée.')}${ctr('Charge', '#ffd23a', 'Foudre : frappe au début du combat avec l\'Orage total.')}</span><small><b>Pureté</b> : 5 serviteurs d'un même clan donnent +1 chakra par tour et doublent les marqueurs gagnés.</small>`)}
-    ${sec('🌅', 'Éveil (4 joueurs ou moins)', `<small>Les <b>clans</b> libèrent leur pouvoir (Phénix, Ouragan, Raz-de-marée, Orage total, Avalanche), ton <b>compagnon</b> prend sa forme ultime, le pouvoir de ton <b>héros</b> est renforcé, chaque <b>technique</b> gagne son effet d'Éveil et des techniques interdites apparaissent. Tes cartes prennent l'aura de ton marqueur dominant.</small>`)}
+    ${sec('🌅', 'Éveil (4 joueurs ou moins)', `<small>Les <b>clans</b> libèrent leur pouvoir (Phénix, Ouragan, Raz-de-marée, Orage total, Avalanche), ton <b>compagnon</b> prend sa forme ultime et <b>rejoint la bataille</b> avec sa bête d'invocation (au centre de ta rangée ; coffre majeur s'il est encore debout), le pouvoir de ton <b>héros</b> est renforcé, chaque <b>technique</b> gagne son effet d'Éveil et des techniques interdites apparaissent. Tes cartes prennent l'aura de ton marqueur dominant.</small>`)}
   </span>`;
 }
 // fiche de l'univers Ninja : quatre règles courtes et le cycle des éléments (le détail complet est sur l'écran du héros)
@@ -7217,7 +7218,7 @@ function compSheetH(mc, lv, eq) {
   return `<div class="peq">
     <div class="pq-row"><span class="pq-lv"><b>Niveau ${L}</b><small>${nx ? `${mc.xp || 0} / ${nx} expérience` : 'Niveau maximum'}</small></span>
       ${E ? `<span class="pq-el" style="--c:${E.col}"><i></i><span><b>${E.n}</b><small>domine ${ELS[EL_DOM[el]].n} · +4/+4</small></span></span>` : ''}</div>
-    ${(() => { const A = COMP_AWK[CLAN_EL[CD(mc.c).tr]]; return A ? `<div class="pq-awk${mc.awk ? ' on' : ''}"><b>${mc.awk ? 'Forme éveillée' : 'À l\'Éveil'} · ${esc(A.n)}</b><small>${mc.awk ? '' : 'Stats doublées · '}${esc(A.tx)}</small></div>` : ''; })()}
+    ${(() => { const A = COMP_AWK[CLAN_EL[CD(mc.c).tr]]; return A ? `<div class="pq-awk${mc.awk ? ' on' : ''}"><b>${mc.awk ? 'Forme éveillée' : 'À l\'Éveil'} · ${esc(A.n)}</b><small>${esc(A.tx)}</small></div>` : ''; })()}
     ${(() => { const n = (mc.pact || []).length, el = CLAN_EL[CD(mc.c).tr], bc = el && C['nb_' + el]; if (!bc) return ''; const b = V.me && V.me.bst; return `<div class="pq-awk pq-bst${b ? ' on' : ''}"><b>${b ? 'Bête invoquée' : 'Invocation à l\'Éveil'} · ${esc(bc.n)}</b><small>${b ? `${b.a}/${b.h} · combat avec lui dans le duel` : n ? `${n} parchemin${n > 1 ? 's' : ''} de pacte : elle apparaîtra à l'Éveil et combattra avec lui dans le duel.` : 'Pose des parchemins de pacte (coffres) pour qu\'elle apparaisse à l\'Éveil.'}</small></div>`; })()}
     <div class="pq-combo${fu ? '' : ' none'}" style="--c:${fuCol || '#8a7a5a'}"><b>${fu ? 'Combo · ' + esc(mc.fu) : 'Aucun combo'}</b><small>${fu ? esc(fxText(fu)) : 'Remplis le réservoir avec deux techniques : le combo lui donne un pouvoir hybride.'}</small></div>
     <b class="peq-t">Pièces · ${PIECE_IDS.reduce((t, pc) => t + pieceList(mc, pc).length, 0)} amélioration(s)</b>${PIECE_IDS.map(pc => { const L = pieceList(mc, pc); return `<div class="peq-i">${pieceIco(pc)}<span><b>${esc(PIECES[pc].n)}</b><small>${L.length ? L.map(r => `<em style="color:${RARS[r].col}">${RARS[r].n}</em> ${esc(upTx({ pc, r }, mc))}`).join(' · ') : 'Aucune amélioration'}</small></span></div>`; }).join('')}
@@ -7274,6 +7275,7 @@ const medal = (act, ic, label, cost, dis, on) => `<button class="medal${on ? ' o
 // pendant le combat, il affronte seulement le compagnon adverse : ce duel décide du coffre
 function duelRes(F) { if (!F || !F.duel) return null; return F.duel.w === F.me ? 'win' : F.duel.w === 1 - F.me ? 'loss' : 'draw'; }
 function duelLine(F) {
+  if (F && !F.duel && V.me && V.me.cp && F.r && F.r.alive) { const up = (F.r.alive[F.me] || []).includes(V.me.cp.c); return `<p class="duel-l ${up ? 'win' : 'loss'}">Ton compagnon ${up ? 'est encore debout · coffre majeur' : 'est tombé · coffre mineur'}</p>`; }
   const r = duelRes(F); if (!r) return '';
   return `<p class="duel-l ${r}">Duel des compagnons : ${r === 'win' ? 'gagné · coffre majeur' : r === 'loss' ? 'perdu · coffre mineur' : 'égalité · coffre mineur'}</p>`;
 }
