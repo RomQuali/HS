@@ -300,7 +300,7 @@ function chakraLawH(big) {
   const sec = (ic, t, body) => `<div class="njl-s"><b class="njl-h"><span>${ic}</span>${t}</b>${body}</div>`;
   const ctr = (n, col, tx) => `<span class="njl-ctr" style="--c:${col}"><b>${n}</b> ${tx}</span>`;
   return `<span class="ban-law ck-law njl${big ? ' big' : ''}">
-    ${sec('🪙', 'Ressources', `<small><b>Or</b> : serviteurs et techniques.</small><small><b>Chakra</b> : chaque ninja en jeu en donne 1 par tour (10 au plus). Il lance les techniques, le pouvoir du héros (1 à 3) et pose les récompenses.</small>`)}
+    ${sec('🪙', 'Ressources', `<small><b>Or</b> : serviteurs et techniques.</small><small><b>Chakra</b> : chaque ninja en jeu en donne 1 par tour (10 au plus). Il lance les techniques, le pouvoir du héros (3 à 6) et pose les récompenses.</small>`)}
     ${sec('📜', 'Techniques et réservoir', `<small>Les techniques ont une <b>nature</b> (Katon, Fûton, Suiton, Raiton, Doton) et suivent le jeu de leur clan ; celles de l'élément de ton héros coûtent 1 chakra de moins.</small><small>Chaque technique remplit une moitié du <b>réservoir</b> ; la 2e déclenche un <b>combo</b> (effet sur ton plateau + pouvoir hybride au compagnon). Deux fois le même élément : combo pur.</small><span class="njl-combos">${pairs}</span>`)}
     ${sec('⚔️', 'Compagnon et duel', `<span class="njl-row"><span><small>Ton compagnon est déjà en jeu, <b>triplé</b> et hors plateau. En combat, il affronte <b>seulement le compagnon adverse</b> et ne blesse jamais le héros.</small><small>En duel, celui qui frappe <b>frappe en premier</b> : un compagnon abattu ne riposte pas. Égalité seulement si les deux tombent ensemble.</small><small>Il prend l'élément de ta dernière technique, ou celui que tu fixes (2 chakra). <b>Résonance</b> : en duel, +1/+1 par tranche de 3 marqueurs de son élément. Gagner le duel donne +2 marqueurs de son élément.</small><small>Il grandit par les <b>coffres</b> et chaque <b>combo</b> ; l'expérience (technique +1, duel gagné +2) débloque un pouvoir de clan aux niveaux 3 et 5.</small></span></span>`)}
     ${sec('🎁', 'Coffres et entraînement', `<small>Le <b>duel</b> décide du coffre : majeur s'il gagne, mineur sinon. Tu choisis <b>1 récompense sur 3</b> pour une des 5 pièces du compagnon (lame, armure, bandeau, gantelets, talisman).</small><span class="njl-rar">${RARS.map((R, i) => `<i style="--c:${R.col}">${R.n} · ${i + 1} chakra</i>`).join('')}</span><small>Elle se range dans l'entraînement et se pose avec du chakra.</small><small><b>Parchemins de pacte</b> : ils préparent la <b>bête d'invocation</b> du clan de ton compagnon (Salamandre, Loup, Serpent, Tigre, Sanglier). Elle apparaît à l'Éveil, plus forte à chaque parchemin, et combat à ses côtés dans le duel.</small>`)}
@@ -868,7 +868,7 @@ function ruleTabH(k) {
     case 'tour': return `<ol class="rl-steps">
       ${step(1, 'Recrute', `Achète des ninjas avec ${coin} l'or. Chacun te rapportera 1 ${ck} chakra par tour (10 au plus).`, faceH('art-n_f1'))}
       ${step(2, 'Lance tes techniques', 'Achetées en or, lancées au chakra. Deux techniques remplissent le réservoir et déclenchent un combo.', '<span class="rl-scroll"><i style="background:#4ab0e8"></i><i style="background:#ff7a2a"></i></span>')}
-      ${step(3, 'Utilise ton pouvoir', 'Le pouvoir de ton héros coûte 1 à 3 chakra, une fois par tour.', '<span class="rl-pow">✦</span>')}
+      ${step(3, 'Utilise ton pouvoir', 'Le pouvoir de ton héros coûte 3 à 6 chakra, une fois par tour.', '<span class="rl-pow">✦</span>')}
       ${step(4, 'Combat + duel', 'Tes serviteurs affrontent ceux d\'en face (dégâts au héros). En parallèle, ton compagnon affronte seulement le compagnon adverse.', '<span class="rl-vs">VS</span>')}
       ${step(5, 'Ouvre ton coffre', 'Duel gagné : coffre majeur, sinon mineur. Choisis 1 récompense sur 3.', '<span class="rl-chest"></span>')}
     </ol>`;
@@ -878,7 +878,7 @@ function ruleTabH(k) {
         <div class="rl-rsv"><span class="rl-scroll big"><i style="background:#4ab0e8"></i><i></i></span><span>→</span><span class="rl-scroll big"><i style="background:#4ab0e8"></i><i style="background:#ff7a2a"></i></span><span>→</span><b class="rl-boom">Combo !</b></div>
         <p>La 1re technique remplit une moitié du <b>réservoir</b>, la 2e l'autre : le mélange déclenche un <b>combo</b> (effet sur ton plateau + pouvoir au compagnon), puis le réservoir se vide. Deux fois le même élément : <b>combo pur</b>. La moitié remplie reste d'un tour à l'autre.</p>
         <div class="njl-combos">${pairs}</div></div>`; }
-    case 'comp': return `<div class="rl-p"><div class="rl-duel">${faceH('art-c_nj_eau')}<span class="rl-vs">VS</span>${faceH('art-c_nj_feu')}</div>
+    case 'comp': return `<div class="rl-p"><div class="rl-duel">${faceH('art-c_nj_glaces')}<span class="rl-vs">VS</span>${faceH('art-c_nj_kurama')}</div>
       <p>Ton compagnon est <b>déjà en jeu, doré</b>, à côté de ton plateau. Il ne combat que le <b>compagnon adverse</b> et ne blesse jamais le héros.</p>
       <ul class="rl-ul"><li><b>Frappe en premier</b> : un compagnon abattu ne riposte pas. Nul seulement si les deux tombent ensemble.</li>
       <li><b>Élément</b> : celui de ta dernière technique, ou fixé pour 2 ${ck}. Il résonne avec tes marqueurs : <b>+1/+1 par 3 marqueurs</b> de son élément. Petit avantage (+2/+2) s'il domine celui d'en face.</li>
@@ -912,8 +912,8 @@ function heroPickNinjaH(d, me) {
   const card = (h, i) => { const x = HEROES[h], on = h === sel, cid = COMPANIONS[h], c = cid && C[cid], el = x.clan;
     return `<button class="hpk${on ? ' on' : ''}" data-act="hsel" data-h="${h}" aria-pressed="${on}" style="--c:${ELS[el] ? ELS[el].col : '#c8a86a'}">
       ${rollH(me, i)}<span class="hpk-face">${faceH('art-h-' + h)}${x.cost ? `<span class="hpk-ck">${ckMarkH(x.cost)}</span>` : '<span class="hpk-pas">Passif</span>'}</span>
-      <span class="hpk-b"><b>${esc(x.n)}</b><span class="hpk-d">${x.diff ? '★'.repeat(x.diff) + '☆'.repeat(3 - x.diff) + ' ' + ['', 'Simple', 'Intermédiaire', 'Expert'][x.diff] : ''}</span>
-        <small>${esc((t => t.charAt(0).toUpperCase() + t.slice(1))(x.tx.replace(/^Passif : /, '')))}</small>
+      <span class="hpk-b"><b>${esc(x.n)}</b><span class="hpk-d">${x.stars ? '★'.repeat(x.stars) : x.diff ? '★'.repeat(x.diff) + '☆'.repeat(3 - x.diff) + ' ' + ['', 'Simple', 'Intermédiaire', 'Expert'][x.diff] : ''}</span>
+        <small>${x.pwn ? `<b class="hpk-pn">${esc(x.pwn)}</b> · ` : ''}${esc((t => t.charAt(0).toUpperCase() + t.slice(1))(x.tx.replace(/^Passif : /, '')))}</small>
         ${c ? `<span class="hpk-c">${faceH('art-' + cid)}<em>${esc(c.n)} · ${c.a * 3}/${c.h * 3}</em></span>` : ''}</span></button>`; };
   return `<div class="ov hpick-ov"><div class="hpick">
     <div class="hpick-l"><h2 class="ov-t">Choisis ton héros</h2><p class="ov-s">Son pouvoir et son compagnon t'accompagnent toute la partie.</p>${rollInfoH(me)}
@@ -1513,7 +1513,7 @@ document.addEventListener('pointermove', e => {
 }, { passive:true });
 
 /* ---------- cartes de héros, de pouvoir et de compagnon (aperçu au survol) ---------- */
-const HTHEME = { nh_akari:'fire', nh_hoshi:'fire', nh_ren:'fire', nh_tsubaki:'fire', nh_daigo:'fire', nh_mira:'wind', nh_taro:'wind', nh_haru:'wind', nh_gen:'wind', nh_saki:'wind', nh_mizu:'bubble', nh_ryota:'bubble', nh_umi:'bubble', nh_kenji:'bubble', nh_aya:'bubble', nh_raiko:'storm', nh_kenta:'storm', nh_hikari:'storm', nh_akio:'storm', nh_rika:'storm', nh_goro:'rock', nh_kaito:'rock', nh_masa:'rock', nh_toshi:'rock', nh_emi:'rock', nh_hina:'fire', nh_kazan:'fire', nh_tatsu:'fire', nh_sora:'wind', nh_fumi:'wind', nh_shin:'wind', nh_nami:'bubble', nh_shizuka:'bubble', nh_kai:'bubble', nh_jin:'storm', nh_ikazu:'storm', nh_sho:'storm', nh_iwao:'rock', nh_daichi:'rock', nh_kuro:'rock', rivet:'spark', egide:'holy', ondine:'potion', barnabe:'coin', maelle:'leaf', oren:'rune', gor:'rock', ilka:'spark', selene:'blood', brok:'ember', sylvara:'arcane', grumbo:'steam', vaskor:'soul', pyra:'fire', paul:'fire', leon:'leaf', zoe:'bubble', jeanne:'wind', nono:'fire' };
+const HTHEME = { nh_kushina:'fire', nh_jiraiya:'fire', nh_sasuke:'fire', nh_mikoto:'fire', nh_itachi:'fire', nh_temari:'wind', nh_naruto:'wind', nh_kankuro:'wind', nh_shikamaru:'wind', nh_gaara:'wind', nh_haku:'bubble', nh_zabuza:'bubble', nh_suigetsu:'bubble', nh_mangetsu:'bubble', nh_mei:'bubble', nh_omoi:'storm', nh_darui:'storm', nh_samui:'storm', nh_bee:'storm', nh_kakashi:'storm', nh_roshi:'rock', nh_akatsuchi:'rock', nh_hashirama:'rock', nh_deidara:'rock', nh_kurotsuchi:'rock', nh_karin:'fire', nh_asuma:'fire', nh_madara:'fire', nh_konohamaru:'wind', nh_pakura:'wind', nh_baki:'wind', nh_chojuro:'bubble', nh_ao:'bubble', nh_kisame:'bubble', nh_yugito:'storm', nh_raikage:'storm', nh_c:'storm', nh_kitsuchi:'rock', nh_onoki:'rock', nh_yamato:'rock', rivet:'spark', egide:'holy', ondine:'potion', barnabe:'coin', maelle:'leaf', oren:'rune', gor:'rock', ilka:'spark', selene:'blood', brok:'ember', sylvara:'arcane', grumbo:'steam', vaskor:'soul', pyra:'fire', paul:'fire', leon:'leaf', zoe:'bubble', jeanne:'wind', nono:'fire' };
 const THC = { storm:'#ffe14a', fire:'#ff7a2a', ember:'#ff9a3a', spark:'#ffc24a', holy:'#ffe08a', potion:'#6fe0a0', coin:'#f2c14e', leaf:'#8fd05a', rune:'#7ac4ff', rock:'#c8a878', blood:'#e0405a', arcane:'#b48cff', steam:'#f0e2d0', soul:'#7dffb0', bubble:'#6fc8ff', wind:'#bff0e6' };
 const THN = { storm:'Foudre', fire:'Feu', ember:'Forge', spark:'Mécanique', holy:'Lumière', potion:'Alchimie', coin:'Commerce', leaf:'Nature', rune:'Savoir', rock:'Force', blood:'Sang', arcane:'Arcanes', steam:'Festin', soul:'Nécromancie', bubble:'Eau', wind:'Vent' };
 const PWART = {
@@ -1546,6 +1546,7 @@ function hfxH(th, n = 18) {
   return h;
 }
 function powerTitle(h) {
+  if (h.pwn) return [h.pwn, h.tx || '', ''];
   const tx = h.tx || ''; const dot = tx.indexOf(' · '); const body = dot > 0 ? tx.slice(dot + 3) : tx;
   const c = body.indexOf(' : ');
   if (c > 0 && c < 26 && !/^(Passif|Dès|Prochain|Après|Quand|Au début|À la fin)/.test(body)) return [body.slice(0, c), body.slice(c + 3), dot > 0 ? tx.slice(0, dot) : ''];
@@ -1558,7 +1559,7 @@ function heroCardH(hid, o = {}) {
   return `<div class="hcard th-${th}" style="--hc:${col}">
     <div class="hc-fx" aria-hidden="true">${hfxH(th)}</div>
     <div class="hc-port">${faceH('art-h-' + hid, 'face')}${h.cost ? `<span class="hc-cost">${h.cost}</span>` : ''}</div>
-    <div class="hc-nm">${esc(h.n)}</div>${h.diff ? `<div class="hc-diff d${h.diff}" title="Difficulté">${'★'.repeat(h.diff)}${'☆'.repeat(3 - h.diff)} <small>${['', 'Simple', 'Intermédiaire', 'Expert'][h.diff]}</small></div>` : ''}
+    <div class="hc-nm">${esc(h.n)}</div>${h.stars ? `<div class="hc-diff d${h.diff}" title="Rang">${'★'.repeat(h.stars)}</div>` : h.diff ? `<div class="hc-diff d${h.diff}" title="Difficulté">${'★'.repeat(h.diff)}${'☆'.repeat(3 - h.diff)} <small>${['', 'Simple', 'Intermédiaire', 'Expert'][h.diff]}</small></div>` : ''}
     ${o.who && o.who !== h.n ? `<div class="hc-who">joué par ${esc(o.who)}</div>` : ''}
     <div class="hc-kind">${h.cost ? 'Pouvoir héroïque' : 'Pouvoir passif'} · ${aff ? esc(aff) : THN[th]}</div>
     ${famChips(heroFam(hid))}
@@ -2481,3 +2482,5 @@ html.lite .awk-go{animation:none}
   .hpick .hpk-g{grid-template-columns:1fr 1fr;gap:6px}.hpick .hpk-g .hpk:last-child:nth-child(odd){width:calc(50% - 3px)}
   .hpick-l .ov-t{font-size:24px}.hpk .h-roll{width:22px;height:22px}.hpk .h-roll svg{width:13px;height:13px}
 }`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `.hpk-b small .hpk-pn{font-size:12px;color:#ffd86a;font-weight:700}`; document.head.appendChild(st); })();

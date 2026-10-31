@@ -2351,98 +2351,98 @@ const DEFAULT_CARD_LIST = [
   ['n_o8', 'Tempête intérieure', 5, 'n_foudre', 5, 5, '', [{ k:'soc_ck', a:1, h:1 }]],
   ['n_t7', 'Pilleur souterrain', 4, 'n_terre', 4, 5, 't', [{ k:'soc_steal', n:2 }]],
   ['n_t8', 'Ermite des cimes', 6, 'n_terre', 5, 7, '', [{ k:'eot_ck_spend', n:3, a:3, h:3 }, { k:'cast_ck', n:1 }]],
-  ['c_nj_feu', 'Disciple de la flamme', 3, 'n_feu', 6, 5, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:2, h:1 }]],
-  ['c_nj_vent', 'Disciple du vent', 3, 'n_vent', 5, 4, 'w', [{ k:'atk_self', a:2, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_eau', 'Disciple de la brume', 3, 'n_eau', 3, 8, '', [{ k:'surv_self', a:1, h:1 }, { k:'combo_self', a:1, h:2 }]],
-  ['c_nj_foudre', 'Disciple de l\'orage', 3, 'n_foudre', 5, 6, '', [{ k:'atk_zap', d:1, n:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_terre', 'Disciple du roc', 3, 'n_terre', 2, 11, '', [{ k:'soc_self', a:1, h:0 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_kurama', 'Mini Kurama', 3, 'n_feu', 6, 5, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_shukaku', 'Shukaku (tanuki)', 3, 'n_vent', 5, 4, 'w', [{ k:'atk_self', a:2, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_glaces', 'Esprit des glaces', 3, 'n_eau', 3, 8, '', [{ k:'surv_self', a:1, h:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_lapin', 'Bébé lapin électrique', 3, 'n_foudre', 5, 6, '', [{ k:'atk_zap', d:1, n:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_songoku', 'Singe à 4 queues', 3, 'n_terre', 2, 11, '', [{ k:'soc_self', a:1, h:0 }, { k:'combo_self', a:1, h:2 }]],
   // un compagnon par héros (même profil que son élément, passif propre)
-  ['c_nj_cendre', 'Loup de cendre', 3, 'n_feu', 6, 5, '', [{ k:'eot_braise_self', n:1 }, { k:'combo_self', a:2, h:1 }]],
-  ['c_nj_flamm', 'Esprit flammèche', 3, 'n_feu', 6, 5, '', [{ k:'cast_self', a:1, h:0 }, { k:'combo_self', a:2, h:1 }]],
-  ['c_nj_foyer', 'Garde du foyer', 3, 'n_feu', 6, 5, '', [{ k:'soc_self', a:1, h:0 }, { k:'combo_self', a:2, h:1 }]],
-  ['c_nj_salam', 'Salamandrin', 3, 'n_feu', 6, 5, '', [{ k:'soc_dmg', d:1, n:2 }, { k:'combo_self', a:2, h:1 }]],
-  ['c_nj_luciole', 'Luciole de lave', 3, 'n_feu', 6, 5, '', [{ k:'atk_zap', d:1, n:1 }, { k:'combo_self', a:2, h:1 }]],
-  ['c_nj_forge', 'Apprenti forgeron', 3, 'n_feu', 6, 5, '', [{ k:'atk_self', a:2, h:1 }, { k:'combo_self', a:2, h:1 }]],
-  ['c_nj_dragonnet', 'Dragonnet écarlate', 3, 'n_feu', 6, 5, '', [{ k:'surv_self', a:1, h:0 }, { k:'combo_self', a:2, h:1 }]],
-  ['c_nj_dunes', 'Chat des dunes', 3, 'n_vent', 5, 4, 'w', [{ k:'cast_self', a:0, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_cerf', 'Cerf des steppes', 3, 'n_vent', 5, 4, 'w', [{ k:'soc_self', a:1, h:0 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_bourr', 'Esprit bourrasque', 3, 'n_vent', 5, 4, 'w', [{ k:'atk_zap', d:2, n:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_messag', 'Messagère des vents', 3, 'n_vent', 5, 4, 'w', [{ k:'surv_self', a:1, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_fennec', 'Fennec planeur', 3, 'n_vent', 5, 4, 'w', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_plume', 'Dragonnet plume', 3, 'n_vent', 5, 4, 'w', [{ k:'atk_self', a:2, h:0 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_vagab', 'Vagabond des sables', 3, 'n_vent', 5, 4, 'w', [{ k:'eot_souffle', n:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_anguille', 'Anguille d’ombre', 3, 'n_eau', 3, 8, '', [{ k:'eot_maree_self', n:1 }, { k:'combo_self', a:1, h:2 }]],
-  ['c_nj_marees', 'Esprit des marées', 3, 'n_eau', 3, 8, '', [{ k:'cast_self', a:0, h:1 }, { k:'combo_self', a:1, h:2 }]],
-  ['c_nj_sabreur', 'Élève sabreur', 3, 'n_eau', 3, 8, '', [{ k:'atk_self', a:2, h:2 }, { k:'combo_self', a:1, h:2 }]],
-  ['c_nj_murene', 'Murène des abysses', 3, 'n_eau', 3, 8, '', [{ k:'atk_zap', d:2, n:1 }, { k:'combo_self', a:1, h:2 }]],
-  ['c_nj_ecume', 'Serpent d’écume', 3, 'n_eau', 3, 8, '', [{ k:'surv_self', a:1, h:2 }, { k:'combo_self', a:1, h:2 }]],
-  ['c_nj_source', 'Chat des sources', 3, 'n_eau', 3, 8, '', [{ k:'soc_self', a:1, h:2 }, { k:'combo_self', a:1, h:2 }]],
-  ['c_nj_loutre', 'Loutre du récif', 3, 'n_eau', 3, 8, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:1, h:2 }]],
-  ['c_nj_lion', 'Lion tonnerre', 3, 'n_foudre', 5, 6, '', [{ k:'atk_zap', d:1, n:2 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_follet', 'Feu follet d’orage', 3, 'n_foudre', 5, 6, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_loupor', 'Loup d’orage', 3, 'n_foudre', 5, 6, '', [{ k:'atk_self', a:1, h:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_courriere', 'Courrière foudre', 3, 'n_foudre', 5, 6, '', [{ k:'cast_self', a:1, h:0 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_lynx', 'Lynx fulgurant', 3, 'n_foudre', 5, 6, '', [{ k:'atk_self', a:3, h:0 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_tambour', 'Tambourinaire', 3, 'n_foudre', 5, 6, '', [{ k:'soc_self', a:1, h:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_eclair', 'Dragonnet d’éclair', 3, 'n_foudre', 5, 6, '', [{ k:'surv_self', a:1, h:0 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
-  ['c_nj_macon', 'Petit maçon', 3, 'n_terre', 2, 11, '', [{ k:'surv_self', a:0, h:1 }, { k:'combo_self', a:1, h:2 }]],
-  ['c_nj_mont', 'Esprit de la montagne', 3, 'n_terre', 2, 11, '', [{ k:'cast_self', a:0, h:1 }, { k:'combo_self', a:1, h:2 }]],
-  ['c_nj_granit', 'Sanglier de granit', 3, 'n_terre', 2, 11, '', [{ k:'soc_self', a:1, h:1 }, { k:'combo_self', a:1, h:2 }]],
-  ['c_nj_quartz', 'Golem de quartz', 3, 'n_terre', 2, 11, '', [{ k:'eot_roche', n:1 }, { k:'combo_self', a:1, h:2 }]],
-  ['c_nj_bouq', 'Bouquetin des falaises', 3, 'n_terre', 2, 11, '', [{ k:'surv_self', a:1, h:0 }, { k:'combo_self', a:1, h:2 }]],
-  ['c_nj_lionpierre', 'Lion de pierre', 3, 'n_terre', 2, 11, '', [{ k:'atk_self', a:2, h:1 }, { k:'combo_self', a:1, h:2 }]],
-  ['c_nj_blaireau', 'Blaireau des galeries', 3, 'n_terre', 2, 11, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_gamabunta', 'Gamabunta (crapaud)', 3, 'n_feu', 6, 5, '', [{ k:'eot_braise_self', n:1 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_aigle', 'Aigle de flamme', 3, 'n_feu', 6, 5, '', [{ k:'cast_self', a:1, h:0 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_chatnoir', 'Chat noir', 3, 'n_feu', 6, 5, '', [{ k:'soc_self', a:1, h:0 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_corbeau', 'Corbeau noir', 3, 'n_feu', 6, 5, '', [{ k:'soc_dmg', d:1, n:2 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_renard1', 'Renard à 1 queue', 3, 'n_feu', 6, 5, '', [{ k:'atk_zap', d:1, n:1 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_katoncrow', 'Katon Crow', 3, 'n_feu', 6, 5, '', [{ k:'atk_self', a:2, h:1 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_zetsu', 'Zetsu enflammé', 3, 'n_feu', 6, 5, '', [{ k:'surv_self', a:1, h:0 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_grenouille', 'Paix (grenouille)', 3, 'n_vent', 5, 4, 'w', [{ k:'cast_self', a:0, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_sasori', 'Sasori (marionnette)', 3, 'n_vent', 5, 4, 'w', [{ k:'soc_self', a:1, h:0 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_cerfvolant', 'Cerf-volant ninja', 3, 'n_vent', 5, 4, 'w', [{ k:'atk_zap', d:2, n:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_tanuki', 'Tanuki de sable', 3, 'n_vent', 5, 4, 'w', [{ k:'surv_self', a:1, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_singe', 'Petit singe', 3, 'n_vent', 5, 4, 'w', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_espritvent', 'Esprit du vent', 3, 'n_vent', 5, 4, 'w', [{ k:'atk_self', a:2, h:0 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_faucon', 'Faucon du désert', 3, 'n_vent', 5, 4, 'w', [{ k:'eot_souffle', n:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_requin', 'Requin-ninja', 3, 'n_eau', 3, 8, '', [{ k:'eot_maree_self', n:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_bulle', 'Bulle d’eau vivante', 3, 'n_eau', 3, 8, '', [{ k:'cast_self', a:0, h:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_hiramekarei', 'Épée légendaire (Hiramekarei)', 3, 'n_eau', 3, 8, '', [{ k:'atk_self', a:2, h:2 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_meduse', 'Méduse d’eau', 3, 'n_eau', 3, 8, '', [{ k:'atk_zap', d:2, n:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_poissonscie', 'Poisson-scie', 3, 'n_eau', 3, 8, '', [{ k:'surv_self', a:1, h:2 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_tortue', 'Tortue des profondeurs', 3, 'n_eau', 3, 8, '', [{ k:'soc_self', a:1, h:2 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_samehada', 'Samehada (requin)', 3, 'n_eau', 3, 8, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_nuage', 'Nuage d’orage', 3, 'n_foudre', 5, 6, '', [{ k:'atk_zap', d:1, n:2 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_renardblanc', 'Renard blanc', 3, 'n_foudre', 5, 6, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_gyuki', 'Hachibi (Gyūki)', 3, 'n_foudre', 5, 6, '', [{ k:'atk_self', a:1, h:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_ninken', 'Ninken (chiens)', 3, 'n_foudre', 5, 6, '', [{ k:'cast_self', a:1, h:0 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_matatabi', 'Matatabi (chat à 2 queues)', 3, 'n_foudre', 5, 6, '', [{ k:'atk_self', a:3, h:0 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_puma', 'Puma de foudre', 3, 'n_foudre', 5, 6, '', [{ k:'soc_self', a:1, h:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_hibou', 'Hibou éclaireur', 3, 'n_foudre', 5, 6, '', [{ k:'surv_self', a:1, h:0 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_geant', 'Géant rocheux', 3, 'n_terre', 2, 11, '', [{ k:'surv_self', a:0, h:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_dragonbois', 'Dragon de bois', 3, 'n_terre', 2, 11, '', [{ k:'cast_self', a:0, h:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_argile', 'Iwa (argile)', 3, 'n_terre', 2, 11, '', [{ k:'soc_self', a:1, h:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_dragonpierre', 'Petit dragon de pierre', 3, 'n_terre', 2, 11, '', [{ k:'eot_roche', n:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_rocher', 'Rocher animé', 3, 'n_terre', 2, 11, '', [{ k:'surv_self', a:1, h:0 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_golem', 'Golem de pierre', 3, 'n_terre', 2, 11, '', [{ k:'atk_self', a:2, h:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_arbre', 'Arbre gardien', 3, 'n_terre', 2, 11, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:1, h:2 }]],
   ['n_t6', 'Seigneur des roches', 6, 'n_terre', 6, 10, 't', [{ k:'awk_quake' }, { k:'eot_buff_taunt', a:2, h:2 }]],
 ];
 const DEFAULT_CARDS = {};
 DEFAULT_CARD_LIST.forEach(([id, n, t, tr, a, h, kw, fx]) => { DEFAULT_CARDS[id] = { id, n, t, tr, a, h, kw:kw.split(''), fx, art:{ f:'base', id } }; });
-const COMPANIONS = { nh_akari:'c_nj_feu', nh_hoshi:'c_nj_cendre', nh_ren:'c_nj_flamm', nh_tsubaki:'c_nj_foyer', nh_daigo:'c_nj_salam', nh_mira:'c_nj_vent', nh_taro:'c_nj_dunes', nh_haru:'c_nj_cerf', nh_gen:'c_nj_bourr', nh_saki:'c_nj_messag', nh_mizu:'c_nj_eau', nh_ryota:'c_nj_anguille', nh_umi:'c_nj_marees', nh_kenji:'c_nj_sabreur', nh_aya:'c_nj_murene', nh_raiko:'c_nj_foudre', nh_kenta:'c_nj_lion', nh_hikari:'c_nj_follet', nh_akio:'c_nj_loupor', nh_rika:'c_nj_courriere', nh_goro:'c_nj_terre', nh_kaito:'c_nj_macon', nh_masa:'c_nj_mont', nh_toshi:'c_nj_granit', nh_emi:'c_nj_quartz', nh_hina:'c_nj_luciole', nh_kazan:'c_nj_forge', nh_tatsu:'c_nj_dragonnet', nh_sora:'c_nj_fennec', nh_fumi:'c_nj_plume', nh_shin:'c_nj_vagab', nh_nami:'c_nj_ecume', nh_shizuka:'c_nj_source', nh_kai:'c_nj_loutre', nh_jin:'c_nj_lynx', nh_ikazu:'c_nj_tambour', nh_sho:'c_nj_eclair', nh_iwao:'c_nj_bouq', nh_daichi:'c_nj_lionpierre', nh_kuro:'c_nj_blaireau', paul:'c_pouf', leon:'c_caillou', zoe:'c_gloup', jeanne:'c_frisouille', selene:'c_nyx', brok:'c_enclume', sylvara:'c_lys', grumbo:'c_miette', vaskor:'c_osbrise', pyra:'c_etincelle', rivet:'c_bricole', egide:'c_lumen', ondine:'c_fiole', barnabe:'c_sou', maelle:'c_croc', oren:'c_plume', gor:'c_bastion', ilka:'c_truelle', nono:'c_braise' };
+const COMPANIONS = { nh_kushina:'c_nj_kurama', nh_jiraiya:'c_nj_gamabunta', nh_sasuke:'c_nj_aigle', nh_mikoto:'c_nj_chatnoir', nh_itachi:'c_nj_corbeau', nh_temari:'c_nj_shukaku', nh_naruto:'c_nj_grenouille', nh_kankuro:'c_nj_sasori', nh_shikamaru:'c_nj_cerfvolant', nh_gaara:'c_nj_tanuki', nh_haku:'c_nj_glaces', nh_zabuza:'c_nj_requin', nh_suigetsu:'c_nj_bulle', nh_mangetsu:'c_nj_hiramekarei', nh_mei:'c_nj_meduse', nh_omoi:'c_nj_lapin', nh_darui:'c_nj_nuage', nh_samui:'c_nj_renardblanc', nh_bee:'c_nj_gyuki', nh_kakashi:'c_nj_ninken', nh_roshi:'c_nj_songoku', nh_akatsuchi:'c_nj_geant', nh_hashirama:'c_nj_dragonbois', nh_deidara:'c_nj_argile', nh_kurotsuchi:'c_nj_dragonpierre', nh_karin:'c_nj_renard1', nh_asuma:'c_nj_katoncrow', nh_madara:'c_nj_zetsu', nh_konohamaru:'c_nj_singe', nh_pakura:'c_nj_espritvent', nh_baki:'c_nj_faucon', nh_chojuro:'c_nj_poissonscie', nh_ao:'c_nj_tortue', nh_kisame:'c_nj_samehada', nh_yugito:'c_nj_matatabi', nh_raikage:'c_nj_puma', nh_c:'c_nj_hibou', nh_kitsuchi:'c_nj_rocher', nh_onoki:'c_nj_golem', nh_yamato:'c_nj_arbre', paul:'c_pouf', leon:'c_caillou', zoe:'c_gloup', jeanne:'c_frisouille', selene:'c_nyx', brok:'c_enclume', sylvara:'c_lys', grumbo:'c_miette', vaskor:'c_osbrise', pyra:'c_etincelle', rivet:'c_bricole', egide:'c_lumen', ondine:'c_fiole', barnabe:'c_sou', maelle:'c_croc', oren:'c_plume', gor:'c_bastion', ilka:'c_truelle', nono:'c_braise' };
 for (const h in COMPANIONS) DEFAULT_CARDS[COMPANIONS[h]].comp = h;
 const compOf = hero => { const id = COMPANIONS[hero]; if (id && CARDS[id]) return id; return Object.keys(CARDS).find(k => CARDS[k].comp === hero) || null; };
 const compLimit = rd => rd >= 6 ? 3 : rd >= 5 ? 2 : rd >= 3 ? 1 : 0;
 
 const SLOTS = { 1:3, 2:4, 3:4, 4:5, 5:5, 6:6 };
 const HEROES = {
-  nh_akari: {diff:1, fam:['n_feu'], n:'Akari l\'ardente', cost:1, clan:'feu', pw:{ k:'rfill', el:'feu', b:2 }, tx:'Remplis une moitié de ton réservoir Katon (comme une technique Katon) et gagne 2 braises.' },
-  nh_hoshi: {diff:3, fam:['n_feu'], n:'Hoshi le vieux sage', clan:'feu', pw:{ k:'pcombo', el:'feu', d:5, b:1 }, tx:'Passif : chaque combo qui contient du Katon inflige aussi 5 dégâts à l\'ennemi au début du prochain combat et donne 1 braise.' },
-  nh_ren: {diff:2, fam:['n_feu'], n:'Ren aux mille braises', cost:1, clan:'feu', pw:{ k:'ctr', c:'braise', n:3, el:'feu', n2:5 }, tx:'Gagne 3 braises, ou 5 si ton réservoir contient du Katon.' },
-  nh_tsubaki: {diff:2, fam:['n_feu'], n:'Tsubaki la gardienne', cost:1, clan:'feu', pw:{ k:'braisebuff', n:2, a:2, h:2, tb:'n_feu' }, tx:'Consume 2 braises : tes serviteurs du Clan Katon gagnent +2/+2.' },
-  nh_daigo: {diff:2, fam:['n_feu'], n:'Daigo le souffleur', cost:1, clan:'feu', pw:{ k:'techel', el:'feu' }, tx:'Ajoute à ta main une technique Katon aléatoire de ton niveau.' },
-  nh_mira: {diff:1, fam:['n_vent'], n:'Mira des dunes', cost:2, clan:'vent', pw:{ k:'rfill', el:'vent' }, tx:'Remplis une moitié de ton réservoir Fûton (comme une technique Fûton).' },
-  nh_taro: {diff:2, fam:['n_vent'], n:'Taro le cerf-volant', cost:1, clan:'vent', pw:{ k:'rdump', g:4 }, tx:'Vide la moitié remplie de ton réservoir : gagne 4 or.' },
-  nh_haru: {diff:3, fam:['n_vent'], n:'Haru le nomade', clan:'vent', pw:{ k:'ptechc' }, tx:'Passif : tes techniques ninja coûtent 1 or et 1 chakra de moins, et chacune te rend 1 or de plus si elle remplit un réservoir vide.' },
-  nh_gen: {diff:3, fam:['n_vent'], n:'Gen aux éventails', cost:1, clan:'vent', pw:{ k:'rcycle', g:2 }, tx:'L\'élément de ton réservoir devient celui qu\'il nourrit (cycle de génération). Gagne 2 or.' },
-  nh_saki: {diff:2, fam:['n_vent'], n:'Saki la bourrasque', cost:1, clan:'vent', pw:{ k:'rollg', el:'vent', g:1 }, tx:'Rafraîchis la taverne et sa technique et gagne 1 or (2 si ton réservoir contient du Fûton).' },
-  nh_mizu: {diff:1, fam:['n_eau'], n:'Mizu la brume', cost:1, clan:'eau', pw:{ k:'mist', n:1, n2:2, el:'eau' }, tx:'Brume : prochain combat, un de tes serviteurs aléatoires gagne Bouclier divin (deux si ton réservoir contient du Suiton).' },
-  nh_ryota: {diff:3, fam:['n_eau'], n:'Ryota le silencieux', clan:'eau', pw:{ k:'prsv', n:1 }, tx:'Passif : en fin de tour, si ton réservoir est à moitié plein, la marée monte de 1.' },
-  nh_umi: {diff:3, fam:['n_eau'], n:'Umi la marée', cost:3, clan:'eau', pw:{ k:'rpure' }, tx:'Remplis l\'autre moitié de ton réservoir avec le même élément : déclenche son combo pur.' },
-  nh_kenji: {diff:2, fam:['n_eau'], n:'Kenji l\'épéiste', cost:1, clan:'eau', pw:{ k:'tmamaree', max:6 }, tx:'Prochain combat : tes serviteurs gagnent +1 attaque par tranche de 2 marée (+6 au plus).' },
-  nh_aya: {diff:1, fam:['n_eau'], n:'Aya des abysses', cost:1, clan:'eau', pw:{ k:'ckmaree', n:2, m:1 }, tx:'Gagne 2 chakra et la marée monte de 1.' },
-  nh_raiko: {diff:1, fam:['n_foudre'], n:'Raiko l\'éclair', cost:2, clan:'foudre', pw:{ k:'rfill', el:'foudre' }, tx:'Remplis une moitié de ton réservoir Raiton (comme une technique Raiton).' },
-  nh_kenta: {diff:3, fam:['n_foudre'], n:'Kenta le tonnerre', clan:'foudre', pw:{ k:'pdouble' }, tx:'Passif : le premier combo de chaque tour applique deux fois son effet sur le plateau.' },
-  nh_hikari: {diff:3, fam:['n_foudre'], n:'Hikari l\'étincelle', clan:'foudre', pw:{ k:'pfire', d:2 }, tx:'Passif : au début de chaque combat, 2 dégâts frappent l\'ennemi.' },
-  nh_akio: {diff:2, fam:['n_foudre'], n:'Akio l\'orage', cost:1, clan:'foudre', pw:{ k:'chargebuff', n:2, el:'foudre', a:2, h:1, tb:'n_foudre' }, tx:'Gagne 2 charges. Si ton réservoir contient du Raiton, tes serviteurs du Clan Raiton gagnent aussi +2/+1.' },
-  nh_rika: {diff:2, fam:['n_foudre'], n:'Rika la foudroyante', cost:1, clan:'foudre', pw:{ k:'g2ck', g:2, n:4 }, tx:'Dépense 2 or : gagne 4 chakra.' },
-  nh_goro: {diff:1, fam:['n_terre'], n:'Goro le roc', cost:3, clan:'terre', pw:{ k:'rfill', el:'terre' }, tx:'Remplis une moitié de ton réservoir Doton (comme une technique Doton).' },
-  nh_kaito: {diff:1, fam:['n_terre'], n:'Kaito le bâtisseur', cost:1, clan:'terre', pw:{ k:'kwbuff', kw:'t', a:1, h:4, tb:'n_terre' }, tx:'Un serviteur du Clan Doton aléatoire gagne +1/+4 et Provocation.' },
-  nh_masa: {diff:3, fam:['n_terre'], n:'Masa la montagne', clan:'terre', pw:{ k:'pcombo', h:1 }, tx:'Passif : chaque fois que tu déclenches un combo, tes serviteurs gagnent +0/+1.' },
-  nh_toshi: {diff:1, fam:['n_terre'], n:'Toshi le colosse', cost:2, clan:'terre', pw:{ k:'buffrsv', tb:'n_terre', a:1, h:2, el:'terre', a2:1, h2:3 }, tx:'Tes serviteurs du Clan Doton gagnent +1/+2, ou +1/+3 si ton réservoir contient du Doton.' },
-  nh_emi: {diff:2, fam:['n_terre'], n:'Emi la géode', cost:2, clan:'terre', pw:{ k:'techel', el:'rsv' }, tx:'Ajoute à ta main une technique du même élément que ton réservoir (combo pur assuré), sinon Doton.' },
-  nh_hina: {diff:1, fam:['n_feu'], n:'Hina la flammèche', cost:1, clan:'feu', pw:{ k:'fire', d:3 }, tx:'Prochain combat : 3 dégâts frappent l\'ennemi au début du combat.' },
-  nh_kazan: {diff:1, fam:['n_feu'], n:'Kazan le forgeron', cost:2, clan:'feu', pw:{ k:'buffr', tb:'n_feu', a:3, h:1 }, tx:'Un serviteur du Clan Katon aléatoire gagne +3/+1.' },
-  nh_tatsu: {diff:2, fam:['n_feu'], n:'Tatsu le dragon rouge', clan:'feu', pw:{ k:'pturn', el:'feu', n:1 }, tx:'Passif : au début de chaque tour, gagne 1 braise.' },
-  nh_sora: {diff:1, fam:['n_vent'], n:'Sora le planeur', cost:1, clan:'vent', pw:{ k:'techel', el:'vent' }, tx:'Ajoute à ta main une technique Fûton aléatoire de ton niveau.' },
-  nh_fumi: {diff:1, fam:['n_vent'], n:'Fumi la plume', cost:1, clan:'vent', pw:{ k:'tma', a:2, h:0 }, tx:'Prochain combat : tes serviteurs gagnent +2/+0.' },
-  nh_shin: {diff:2, fam:['n_vent'], n:'Shin le vagabond', clan:'vent', pw:{ k:'pturn', g:1 }, tx:'Passif : au début de chaque tour, gagne 1 or de plus.' },
-  nh_nami: {diff:1, fam:['n_eau'], n:'Nami la vague', cost:1, clan:'eau', pw:{ k:'buffr', tb:'n_eau', a:1, h:3 }, tx:'Un serviteur du Clan Suiton aléatoire gagne +1/+3.' },
-  nh_shizuka: {diff:1, fam:['n_eau'], n:'Shizuka la source', cost:2, clan:'eau', pw:{ k:'ck', n:3 }, tx:'Gagne 3 chakra.' },
-  nh_kai: {diff:2, fam:['n_eau'], n:'Kai le récif', clan:'eau', pw:{ k:'pturn', el:'eau', n:1 }, tx:'Passif : au début de chaque tour, la marée monte de 1.' },
-  nh_jin: {diff:2, fam:['n_foudre'], n:'Jin le fulgurant', cost:2, clan:'foudre', pw:{ k:'kw', kw:'w' }, tx:'Un de tes serviteurs aléatoires gagne Furie des vents.' },
-  nh_ikazu: {diff:1, fam:['n_foudre'], n:'Ikazu le tambour', cost:2, clan:'foudre', pw:{ k:'buffall', tb:'n_foudre', a:1, h:1 }, tx:'Tes serviteurs du Clan Raiton gagnent +1/+1.' },
-  nh_sho: {diff:2, fam:['n_foudre'], n:'Shō l\'aiguille', clan:'foudre', pw:{ k:'pturn', el:'foudre', n:2 }, tx:'Passif : au début de chaque tour, gagne 2 charges.' },
-  nh_iwao: {diff:1, fam:['n_terre'], n:'Iwao la falaise', cost:1, clan:'terre', pw:{ k:'buffr', tb:'n_terre', a:0, h:5 }, tx:'Un serviteur du Clan Doton aléatoire gagne +0/+5.' },
-  nh_daichi: {diff:1, fam:['n_terre'], n:'Daichi l\'ermite', cost:2, clan:'terre', pw:{ k:'tech' }, tx:'Ajoute à ta main une technique aléatoire de ton niveau.' },
-  nh_kuro: {diff:2, fam:['n_terre'], n:'Kuro la taupe', clan:'terre', pw:{ k:'pturn', el:'terre', n:1 }, tx:'Passif : au début de chaque tour, gagne 1 roche.' },
+  nh_kushina: {diff:3, stars:4, fam:['n_feu'], n:'Kushina Uzumaki', cost:5, clan:'feu', pwn:'Explosions de chakra en série', pw:{ k:'multi', s:[{ k:'fire', d:10 }, { k:'mk', el:'feu', n:1 }] }, tx:'Prochain combat : une série d\'explosions inflige 10 dégâts répartis sur l\'ennemi. Gagne 1 braise.' },
+  nh_jiraiya: {diff:3, stars:4, fam:['n_feu'], n:'Jiraiya', cost:4, clan:'feu', pwn:'Sagesse & invocation', pw:{ k:'multi', s:[{ k:'card', tb:'n_feu' }, { k:'mk', el:'feu', n:2 }] }, tx:'Invocation : ajoute à ta main un serviteur du Clan Katon de ton niveau. Gagne 2 braises.' },
+  nh_sasuke: {diff:3, stars:4, fam:['n_feu'], n:'Sasuke Uchiha', cost:5, clan:'feu', pwn:'Katon : Gōkakyū no Jutsu', pw:{ k:'multi', s:[{ k:'fire', d:6 }, { k:'buffr', tb:'n_feu', a:2, h:1, n:2 }] }, tx:'Grande boule de feu : 6 dégâts à l\'ennemi au prochain combat, et deux serviteurs du Clan Katon gagnent +2/+1.' },
+  nh_mikoto: {diff:2, stars:3, fam:['n_feu'], n:'Mikoto Uchiha', cost:3, clan:'feu', pwn:'Protection de clan', pw:{ k:'multi', s:[{ k:'tkw', kw:'s', n:1 }, { k:'buffall', tb:'n_feu', a:0, h:1 }] }, tx:'Prochain combat : un de tes serviteurs gagne Bouclier divin. Tes serviteurs du Clan Katon gagnent +0/+1.' },
+  nh_itachi: {diff:3, stars:4, fam:['n_feu'], n:'Itachi Uchiha', cost:5, clan:'feu', pwn:'Amaterasu éternel', pw:{ k:'multi', s:[{ k:'fire', d:5 }, { k:'tkw', kw:'v', n:1 }] }, tx:'Prochain combat : les flammes noires infligent 5 dégâts à l\'ennemi et un de tes serviteurs gagne Toxique.' },
+  nh_temari: {diff:3, stars:4, fam:['n_vent'], n:'Temari', cost:4, clan:'vent', pwn:'Vent tranchant en éventail', pw:{ k:'multi', s:[{ k:'tma', a:2, h:1 }, { k:'mk', el:'vent', n:1 }] }, tx:'Prochain combat : tes serviteurs gagnent +2/+1. Gagne 1 souffle.' },
+  nh_naruto: {diff:3, stars:4, fam:['n_vent'], n:'Naruto Uzumaki', cost:5, clan:'vent', pwn:'Rasengan Fûton', pw:{ k:'multi', s:[{ k:'buffr', a:4, h:4, n:1 }] }, tx:'Un de tes serviteurs aléatoires gagne +4/+4.' },
+  nh_kankuro: {diff:3, stars:4, fam:['n_vent'], n:'Kankuro', cost:4, clan:'vent', pwn:'Marionnettes dans le vent', pw:{ k:'multi', s:[{ k:'card' }] }, tx:'Ajoute à ta main un serviteur aléatoire de ton niveau de taverne.' },
+  nh_shikamaru: {diff:3, stars:4, fam:['n_vent'], n:'Shikamaru Nara', cost:4, clan:'vent', pwn:'Stratégie & pièges aériens', pw:{ k:'multi', s:[{ k:'tech', n:1 }, { k:'g', n:1 }] }, tx:'Ajoute à ta main une technique de ton niveau et gagne 1 or.' },
+  nh_gaara: {diff:3, stars:4, fam:['n_vent'], n:'Gaara', cost:5, clan:'vent', pwn:'Sable mouvant absolu', pw:{ k:'multi', s:[{ k:'buffall', a:1, h:2 }, { k:'tkw', kw:'t', n:1 }] }, tx:'Tes serviteurs gagnent +1/+2. Prochain combat : l\'un d\'eux gagne Provocation.' },
+  nh_haku: {diff:3, stars:4, fam:['n_eau'], n:'Haku', cost:4, clan:'eau', pwn:'Miroir de glace', pw:{ k:'multi', s:[{ k:'tkw', kw:'s', n:2 }] }, tx:'Prochain combat : deux de tes serviteurs gagnent Bouclier divin.' },
+  nh_zabuza: {diff:3, stars:4, fam:['n_eau'], n:'Zabuza Momochi', cost:4, clan:'eau', pwn:'Brume assassine', pw:{ k:'multi', s:[{ k:'tkw', kw:'s', n:2, a:3 }, { k:'fire', d:3 }] }, tx:'Prochain combat : dans la brume, deux de tes serviteurs gagnent Bouclier divin et +3/+0, et 3 dégâts frappent l\'ennemi.' },
+  nh_suigetsu: {diff:3, stars:4, fam:['n_eau'], n:'Suigetsu Hozuki', cost:4, clan:'eau', pwn:'Corps liquide', pw:{ k:'multi', s:[{ k:'buffr', a:1, h:3, n:2 }] }, tx:'Deux de tes serviteurs aléatoires gagnent +1/+3.' },
+  nh_mangetsu: {diff:3, stars:4, fam:['n_eau'], n:'Mangetsu Hozuki', cost:4, clan:'eau', pwn:'Épée fondante', pw:{ k:'multi', s:[{ k:'buffhi', a:4, h:3 }] }, tx:'Ton serviteur le plus puissant gagne +4/+3.' },
+  nh_mei: {diff:3, stars:4, fam:['n_eau'], n:'Mei Terumi', cost:5, clan:'eau', pwn:'Vapeur corrosive', pw:{ k:'multi', s:[{ k:'fire', d:4 }, { k:'tma', a:1, h:1 }] }, tx:'Prochain combat : la vapeur inflige 4 dégâts à l\'ennemi et tes serviteurs gagnent +1/+1.' },
+  nh_omoi: {diff:2, stars:3, fam:['n_foudre'], n:'Omoi', cost:3, clan:'foudre', pwn:'Éclair prudent', pw:{ k:'multi', s:[{ k:'buffall', tb:'n_foudre', a:1, h:1 }, { k:'ck', n:1 }] }, tx:'Tes serviteurs du Clan Raiton gagnent +1/+1 et tu gagnes 1 chakra.' },
+  nh_darui: {diff:2, stars:3, fam:['n_foudre'], n:'Darui', cost:4, clan:'foudre', pwn:'Éclair noir', pw:{ k:'multi', s:[{ k:'fire', d:4 }, { k:'mk', el:'foudre', n:1 }] }, tx:'Prochain combat : l\'éclair noir inflige 4 dégâts à l\'ennemi. Gagne 1 charge.' },
+  nh_samui: {diff:2, stars:3, fam:['n_foudre'], n:'Samui', cost:3, clan:'foudre', pwn:'Foudre froide', pw:{ k:'multi', s:[{ k:'tma', a:0, h:3 }] }, tx:'Prochain combat : tes serviteurs gagnent +0/+3.' },
+  nh_bee: {diff:3, stars:4, fam:['n_foudre'], n:'Killer Bee', cost:5, clan:'foudre', pwn:'Raiton déchaîné', pw:{ k:'multi', s:[{ k:'mk', el:'foudre', n:3 }, { k:'tma', a:2, h:0 }] }, tx:'Gagne 3 charges. Prochain combat : tes serviteurs gagnent +2/+0.' },
+  nh_kakashi: {diff:3, stars:4, fam:['n_foudre'], n:'Kakashi Hatake', cost:5, clan:'foudre', pwn:'Chidori / Raiton', pw:{ k:'multi', s:[{ k:'buffhi', a:3, h:0, kw:'w' }] }, tx:'Chidori : ton serviteur le plus puissant gagne +3/+0 et Furie des vents.' },
+  nh_roshi: {diff:3, stars:4, fam:['n_terre'], n:'Roshi', cost:4, clan:'terre', pwn:'Son Goku enragé', pw:{ k:'multi', s:[{ k:'comp', a:3, h:5 }, { k:'mk', el:'terre', n:1 }] }, tx:'Ton compagnon gagne +3/+5. Gagne 1 roche.' },
+  nh_akatsuchi: {diff:2, stars:3, fam:['n_terre'], n:'Akatsuchi', cost:3, clan:'terre', pwn:'Force brute terrestre', pw:{ k:'multi', s:[{ k:'buffr', a:2, h:2, n:1 }] }, tx:'Un de tes serviteurs aléatoires gagne +2/+2.' },
+  nh_hashirama: {diff:3, stars:4, fam:['n_terre'], n:'Hashirama Senju', cost:6, clan:'terre', pwn:'Forêt primordiale', pw:{ k:'multi', s:[{ k:'buffall', a:1, h:2 }] }, tx:'Tes serviteurs gagnent +1/+2.' },
+  nh_deidara: {diff:3, stars:4, fam:['n_terre'], n:'Deidara', cost:5, clan:'terre', pwn:'Art explosif (C2)', pw:{ k:'multi', s:[{ k:'fire', d:7 }] }, tx:'Prochain combat : un dragon d\'argile explose et inflige 7 dégâts répartis sur l\'ennemi.' },
+  nh_kurotsuchi: {diff:3, stars:4, fam:['n_terre'], n:'Kurotsuchi', cost:4, clan:'terre', pwn:'Bouclier de lave', pw:{ k:'multi', s:[{ k:'tkw', kw:'s', n:1 }, { k:'fire', d:2 }] }, tx:'Prochain combat : un de tes serviteurs gagne Bouclier divin et la lave inflige 2 dégâts à l\'ennemi.' },
+  nh_karin: {diff:3, stars:4, fam:['n_feu'], n:'Karin Uzumaki', cost:4, clan:'feu', pwn:'Détection et absorption de chakra', pw:{ k:'multi', s:[{ k:'ck', n:3 }, { k:'comp', a:4, h:4 }] }, tx:'Absorbe le chakra : gagne 3 chakra et ton compagnon gagne +4/+4.' },
+  nh_asuma: {diff:3, stars:4, fam:['n_feu'], n:'Asuma Sarutobi', cost:4, clan:'feu', pwn:'Ash Pile, lame de chakra', pw:{ k:'multi', s:[{ k:'fire', d:4 }, { k:'tma', a:1, h:0 }] }, tx:'Prochain combat : un nuage de cendres inflige 4 dégâts à l\'ennemi et tes serviteurs gagnent +1/+0.' },
+  nh_madara: {diff:3, stars:4, fam:['n_feu'], n:'Madara Uchiha', cost:6, clan:'feu', pwn:'Meteor Impact', pw:{ k:'multi', s:[{ k:'fire', d:12 }] }, tx:'Prochain combat : une météorite inflige 12 dégâts répartis sur l\'ennemi.' },
+  nh_konohamaru: {diff:2, stars:3, fam:['n_vent'], n:'Konohamaru', cost:3, clan:'vent', pwn:'Rafale de vent rapide', pw:{ k:'multi', s:[{ k:'roll' }, { k:'g', n:2 }] }, tx:'Rafraîchis la taverne gratuitement et gagne 2 or.' },
+  nh_pakura: {diff:2, stars:3, fam:['n_vent'], n:'Pakura', cost:3, clan:'vent', pwn:'Scorch explosif', pw:{ k:'multi', s:[{ k:'fire', d:4 }, { k:'g', n:1 }] }, tx:'Prochain combat : 4 dégâts brûlants à l\'ennemi. Gagne 1 or.' },
+  nh_baki: {diff:2, stars:3, fam:['n_vent'], n:'Baki', cost:3, clan:'vent', pwn:'Lame du vent silencieuse', pw:{ k:'multi', s:[{ k:'kw', kw:'w', n:1, tb:'n_vent' }] }, tx:'Un de tes serviteurs du Clan Fûton gagne Furie des vents.' },
+  nh_chojuro: {diff:2, stars:3, fam:['n_eau'], n:'Chojuro', cost:3, clan:'eau', pwn:'Fendre les vagues', pw:{ k:'multi', s:[{ k:'buffr', tb:'n_eau', a:2, h:1, n:1 }, { k:'mk', el:'eau', n:1 }] }, tx:'Un serviteur du Clan Suiton gagne +2/+1 et la marée monte de 1.' },
+  nh_ao: {diff:2, stars:3, fam:['n_eau'], n:'Ao', cost:3, clan:'eau', pwn:'Clairvoyance d’eau', pw:{ k:'multi', s:[{ k:'techel', el:'eau' }, { k:'ck', n:1 }] }, tx:'Ajoute à ta main une technique Suiton de ton niveau et gagne 1 chakra.' },
+  nh_kisame: {diff:3, stars:4, fam:['n_eau'], n:'Kisame Hoshigaki', cost:5, clan:'eau', pwn:'Grande vague dévorante', pw:{ k:'multi', s:[{ k:'mk', el:'eau', n:2 }, { k:'buffall', tb:'n_eau', a:1, h:1 }] }, tx:'La marée monte de 2 et tes serviteurs du Clan Suiton gagnent +1/+1.' },
+  nh_yugito: {diff:3, stars:4, fam:['n_foudre'], n:'Yugito Nii', cost:4, clan:'foudre', pwn:'Matatabi rugissant', pw:{ k:'multi', s:[{ k:'comp', a:3, h:2 }, { k:'mk', el:'foudre', n:1 }] }, tx:'Ton compagnon gagne +3/+2. Gagne 1 charge.' },
+  nh_raikage: {diff:3, stars:4, fam:['n_foudre'], n:'A (Raikage)', cost:6, clan:'foudre', pwn:'Vitesse éclair', pw:{ k:'multi', s:[{ k:'tkw', kw:'w', n:3 }, { k:'tma', a:2, h:1 }] }, tx:'Prochain combat : trois de tes serviteurs gagnent Furie des vents et tous gagnent +2/+1.' },
+  nh_c: {diff:2, stars:3, fam:['n_foudre'], n:'C', cost:3, clan:'foudre', pwn:'Analyse & soutien', pw:{ k:'multi', s:[{ k:'roll' }, { k:'ck', n:2 }] }, tx:'Rafraîchis la taverne gratuitement et gagne 2 chakra.' },
+  nh_kitsuchi: {diff:3, stars:4, fam:['n_terre'], n:'Kitsuchi', cost:4, clan:'terre', pwn:'Poing rocheux massif', pw:{ k:'multi', s:[{ k:'buffhi', a:2, h:3 }] }, tx:'Ton serviteur le plus puissant gagne +2/+3.' },
+  nh_onoki: {diff:3, stars:4, fam:['n_terre'], n:'Onoki', cost:5, clan:'terre', pwn:'Gravité terrestre', pw:{ k:'multi', s:[{ k:'buffall', tb:'n_terre', a:1, h:2 }, { k:'mk', el:'terre', n:2 }] }, tx:'Tes serviteurs du Clan Doton gagnent +1/+2. Gagne 2 roches.' },
+  nh_yamato: {diff:2, stars:3, fam:['n_terre'], n:'Yamato', cost:4, clan:'terre', pwn:'Mokuton (bois)', pw:{ k:'multi', s:[{ k:'kw', kw:'t', n:2, a:1, h:3 }] }, tx:'Deux de tes serviteurs gagnent Provocation et +1/+3.' },
   rivet:   {fam:['meca', 'gob'], n:'Rivet', tx:'Passif : votre première actualisation de chaque tour est gratuite.' },
   egide:   {fam:['nain', 'elfe'], n:'Égide', cost:2, tx:'Donne Bouclier divin à un de vos serviteurs aléatoire.' },
   ondine:  {fam:['elem', 'cors'], n:'Ondine l\'alchimiste', cost:1, tx:'Donne +1/+2 à un de vos serviteurs aléatoire.' },
@@ -3032,6 +3032,7 @@ const awakeNow = () => typeof H !== 'undefined' && awake(H.G);
 const PW_COSTS = { braisebuff:['n'], g2ck:['g'] };
 function awkPw(w) {
   if (!w) return w; const o = Object.assign({}, w), keep = PW_COSTS[w.k] || [];
+  if (w.k === 'multi') { o.s = (w.s || []).map(st => { const x = Object.assign({}, st); ['n', 'd', 'a', 'h'].forEach(k => { if (typeof x[k] === 'number') x[k] *= 2; }); return x; }); return o; }
   ['n', 'd', 'a', 'h', 'g', 'n2', 'a2', 'h2', 'm', 'max'].forEach(k => { if (typeof o[k] === 'number' && !keep.includes(k)) o[k] *= 2; });
   return o;
 }
@@ -3185,13 +3186,13 @@ const COMP_LV = {
 };
 function giveXp(m, n) { const before = compLv(m); m.xp = (m.xp || 0) + n; const after = compLv(m); for (let l = before + 1; l <= after; l++) { const P = (COMP_LV[CLAN_EL[CD(m.c).tr]] || {})[l]; if (P) withSrc('Niveau ' + l, () => { if (typeof P[1] === 'string') addF(m, P[1]); else (m.x = m.x || []).push(Object.assign({ src:'Niveau ' + l }, P[1])); }); } m.lv = after; }
 // affinité : une technique de l'élément du héros coûte 1 chakra de moins
-const ckCost = (p, S) => Math.max(0, (S.ck || 0) - (S.el && HEROES[p.hero] && HEROES[p.hero].clan === S.el ? 1 : 0) - (p.hero === 'nh_haru' && S.nin ? 1 : 0));   // affinité : 1 de moins dans l'élément du héros
+const ckCost = (p, S) => Math.max(0, (S.ck || 0) - (S.el && HEROES[p.hero] && HEROES[p.hero].clan === S.el ? 1 : 0) - ((HEROES[p.hero] && HEROES[p.hero].pw && HEROES[p.hero].pw.k === 'ptechc') && S.nin ? 1 : 0));   // affinité : 1 de moins dans l'élément du héros
 const CLAN_EL = { n_feu:'feu', n_vent:'vent', n_eau:'eau', n_foudre:'foudre', n_terre:'terre' };
 const isComp = m => !!(m && C[m.c] && C[m.c].comp);
 // Cinq Nations : le compagnon est déjà en jeu (triplé) à côté du héros, hors plateau
 const comps = p => p.cp ? [p.cp] : (p.bd || []).filter(isComp);
 const compEl = m => m.el || CLAN_EL[CD(m.c).tr] || null;
-const spCost = (p, S) => p.hero === 'sylvara' && !p.sylv ? Math.max(0, S.c - 1) : p.hero === 'nh_haru' && S.nin ? Math.max(0, S.c - (awakeNow() ? 2 : 1)) : S.c;
+const spCost = (p, S) => p.hero === 'sylvara' && !p.sylv ? Math.max(0, S.c - 1) : (HEROES[p.hero] && HEROES[p.hero].pw && HEROES[p.hero].pw.k === 'ptechc') && S.nin ? Math.max(0, S.c - (awakeNow() ? 2 : 1)) : S.c;
 const trigBoard = (G, p, tr) => p.bd.concat(p.cp ? [p.cp] : []).forEach(x => fxOf(x, tr).forEach(e => runRecruit(G, p, x, e)));
 const SQ = ['sq_feu', 'sq_eau', 'sq_terre', 'sq_vent', 'sq_glace', 'sq_foudre'];
 const isSq = m => SQ.includes(tribe(m));
@@ -3286,6 +3287,7 @@ const OPS = {
 const rsvHas = (p, el) => (p.rsv || []).includes(el);
 const pwPool = (p, w) => (p.bd || []).filter(m => !w.tb || tribe(m) === w.tb);
 function powCanW(p, w) {
+  if (w.k === 'multi') return powStepCan(p, (w.s || [])[0] || {});
   switch (w.k) {
     case 'ck': return (p.ck || 0) < ckMax(p);
     case 'tech': return (p.hd || []).length < 10;
@@ -3306,9 +3308,43 @@ function powCanW(p, w) {
   }
   return false;
 }
+// pouvoirs à étapes (héros Ninja) : chaque étape est un petit effet
+function powStepCan(p, s) {
+  switch (s.k) {
+    case 'buffr': case 'buffall': case 'buffhi': return pwPool(p, s).length > 0;
+    case 'kw': return pwPool(p, s).some(m => !has(m, s.kw));
+    case 'tkw': return (p.bd || []).some(m => !has(m, s.kw) && !(m.tmp && (m.tmp.f || '').includes(s.kw)));
+    case 'tma': return (p.bd || []).length > 0;
+    case 'comp': return comps(p).length > 0;
+    case 'card': case 'tech': case 'techel': return (p.hd || []).length < 10;
+    case 'ck': return (p.ck || 0) < ckMax(p);
+  }
+  return true;
+}
+function powStep(G, p, s) {
+  const N = s.n || 1;
+  switch (s.k) {
+    case 'ck': p.ck = Math.min(ckMax(p), (p.ck || 0) + s.n); break;
+    case 'g': p.g += s.n; break;
+    case 'mk': mkAdd(p, s.el, s.n); break;
+    case 'fire': p.njf = (p.njf || 0) + s.d; break;
+    case 'tma': p.tma = { a:((p.tma && p.tma.a) || 0) + (s.a || 0), h:((p.tma && p.tma.h) || 0) + (s.h || 0) }; break;
+    case 'buffr': for (let i = 0; i < N; i++) { const o = pwPool(p, s); if (o.length) buff(pickR(o), s.a || 0, s.h || 0); } break;
+    case 'buffall': pwPool(p, s).forEach(m => buff(m, s.a || 0, s.h || 0)); break;
+    case 'buffhi': { const o = pwPool(p, s); if (o.length) { const m = o.reduce((b, x) => x.a + x.h > b.a + b.h ? x : b); buff(m, s.a || 0, s.h || 0); if (s.kw) addF(m, s.kw); } break; }
+    case 'kw': shuffle(pwPool(p, s).filter(m => !has(m, s.kw))).slice(0, N).forEach(m => { addF(m, s.kw); if (s.a || s.h) buff(m, s.a || 0, s.h || 0); }); break;
+    case 'tkw': shuffle((p.bd || []).filter(m => !has(m, s.kw) && !(m.tmp && (m.tmp.f || '').includes(s.kw)))).slice(0, N).forEach(m => { m.tmp = { a:((m.tmp && m.tmp.a) || 0) + (s.a || 0), h:((m.tmp && m.tmp.h) || 0) + (s.h || 0), f:((m.tmp && m.tmp.f) || '') + s.kw, s:BSRC || 'Pouvoir' }; }); break;
+    case 'comp': comps(p).forEach(c => buff(c, s.a || 0, s.h || 0)); break;
+    case 'card': for (let i = 0; i < N; i++) if (p.hd.length < 10) { const c = drawOne(G, p.t, null, s.tb) || drawOne(G, p.t, null, null); if (c) p.hd.push(c); } break;
+    case 'tech': for (let i = 0; i < N; i++) if (p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); } break;
+    case 'techel': { const lo = SPELL_IDS.filter(id => SPELLS[id].nin && !SPELLS[id].forb && SPELLS[id].el === s.el).reduce((m, id) => Math.min(m, SPELLS[id].t), 9); for (let i = 0; i < N; i++) if (p.hd.length < 10) { const sp = drawSpell(Math.max(p.t, lo), s.el); if (sp) p.hd.push(sp); } break; }
+    case 'roll': p.fz = false; fillShop(G, p); trigBoard(G, p, 'roll'); break;
+  }
+}
 function powRun(G, p, w0) {
   const w = awake(G) ? awkPw(w0) : w0;
   if (!powCanW(p, w)) return false;
+  if (w.k === 'multi') { (w.s || []).forEach(st => { if (powStepCan(p, st) || ['ck', 'g', 'mk', 'fire', 'roll'].includes(st.k)) powStep(G, p, st); }); return true; }
   switch (w.k) {
     case 'ck': p.ck = Math.min(ckMax(p), (p.ck || 0) + w.n); break;
     case 'tech': { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); break; }
@@ -5134,90 +5170,90 @@ Object.assign(ART, {
   n_o8: NJ('foudre', '#c8a020', { skin:'#8a5a3c', hair:'#2a1d14', hs:'curly', eyes:'glow', glow:'#ffe14a', mask:false, mouth:'grin', shirt:'#3a3a4a', aura:'#6fd0ff' }),
   n_t7: NJ('terre', '#7a5a3a', { skin:'#9a9088', hair:'#2a1d14', hs:'part', eyes:'dot', shirt:'#3a2e22', maskc:'#5a4a32', tails:1 }),
   n_t8: NJ('terre', '#c8a878', { skin:'#e8b894', hair:'#e8e2da', hs:'bald', mask:false, eyes:'happy', mouth:'smile', beard:'full', beardc:'#e8e2da', hood:1, hoodc:'#6a5a44', shirt:'#4a3a28', aura:'#6fd0ff' }),
-  c_nj_feu: NJ('feu', '#c8402a', { skin:'#f3d0b0', hair:'#2a1d14', hs:'short', mask:false, eyes:'happy', mouth:'smile', shirt:'#6a2a1a' }),
-  c_nj_vent: NJ('vent', '#3aa86a', { skin:'#d9a27a', hair:'#b8452c', hs:'braids', mask:false, eyes:'dot', mouth:'grin', shirt:'#7a5a2a' }),
-  c_nj_eau: NJ('eau', '#2f7ab8', { skin:'#f0c4a0', hair:'#2e8a8a', hs:'bun', mask:false, eyes:'happy', mouth:'smile', shirt:'#2a5a7a' }),
-  c_nj_foudre: NJ('foudre', '#c8a020', { skin:'#8a5a3c', hair:'#e8e2da', hs:'short', mask:false, eyes:'dot', mouth:'o', shirt:'#3a3a4a' }),
-  c_nj_terre: NJ('terre', '#7a5a3a', { skin:'#c98e66', hair:'#4a2f1d', hs:'curly', mask:false, eyes:'dot', mouth:'smile', shirt:'#5a4a32' }),
-  c_nj_cendre: () => beast({ sp:'wolf', col:'#8a5a4a', belly:'#e8b894', eye:'#ffb04a', glow:'#ff7a2a' }),
-  c_nj_flamm: () => elemental({ kind:'fire', sparks:'#ffd34d' }),
-  c_nj_foyer: () => NJ('feu', '#c8402a', { skin:'#e8b894', hair:'#c8392f', hs:'bun', mask:false, eyes:'dot', mouth:'flat', shirt:'#8a2a1a', earring:1 })(),
-  c_nj_salam: () => dragonHead({ col:'#e8602a', fire:true, frill:1 }),
-  c_nj_luciole: () => elemental({ kind:'magma', sparks:'#ffb04a' }),
-  c_nj_forge: () => NJ('feu', '#8a2a1a', { skin:'#c98e66', hair:'#2a1d14', hs:'short', mask:false, eyes:'dot', mouth:'grin', shirt:'#3a1a14', freckles:1 })(),
-  c_nj_dragonnet: () => dragonHead({ col:'#b8282a', fire:true, horn:1, wings:1 }),
-  c_nj_dunes: () => beast({ sp:'cat', col:'#d9a860', belly:'#f4e4c0', eye:'#6fd8a0', stripes:1 }),
-  c_nj_cerf: () => beast({ sp:'stag', col:'#a8744a', belly:'#e8d0b0', eye:'#e8fff0' }),
-  c_nj_bourr: () => elemental({ kind:'air' }),
-  c_nj_messag: () => NJ('vent', '#3aa86a', { skin:'#f0c4a0', hair:'#e0b25a', hs:'braids', mask:false, eyes:'happy', mouth:'smile', shirt:'#4a6a3a' })(),
-  c_nj_fennec: () => beast({ sp:'dog', col:'#e0a94a', belly:'#fff0d0', eye:'#3a2a22', pup:1 }),
-  c_nj_plume: () => dragonHead({ col:'#5ab07a', wings:1, eye:'#e8fff0' }),
-  c_nj_vagab: () => NJ('vent', '#8fe0a8', { skin:'#a8714f', hair:'#2a1d14', hs:'side', eyes:'dot', hood:1, hoodc:'#c8a860', shirt:'#6a5232', maskc:'#a8844a' })(),
-  c_nj_anguille: () => beast({ sp:'snake', col:'#2a3a5a', belly:'#6f9ac8', eye:'#8fd0ff', glow:'#8fd0ff' }),
-  c_nj_marees: () => elemental({ kind:'water' }),
-  c_nj_sabreur: () => NJ('eau', '#2f7ab8', { skin:'#f3d0b0', hair:'#14243a', hs:'side', mask:false, eyes:'dot', mouth:'smirk', shirt:'#1e2a44', scar:1 })(),
-  c_nj_murene: () => beast({ sp:'snake', col:'#3a2a5a', belly:'#8a6ac8', eye:'#ffe14a', fangs:1 }),
-  c_nj_ecume: () => beast({ sp:'snake', col:'#6fc8e8', belly:'#e8fbff', eye:'#2f7ab8' }),
-  c_nj_source: () => beast({ sp:'cat', col:'#cfcac3', belly:'#ffffff', eye:'#4ab0e8', kitten:1 }),
-  c_nj_loutre: () => beast({ sp:'dog', col:'#7a5232', belly:'#d8c0a0', eye:'#2a1d14', tongue:1 }),
-  c_nj_lion: () => beast({ sp:'lion', col:'#e0b22a', belly:'#fff0b0', eye:'#6fd0ff', mane:'#5a3d7a', angry:1 }),
-  c_nj_follet: () => elemental({ kind:'storm' }),
-  c_nj_loupor: () => beast({ sp:'wolf', col:'#5a5f69', belly:'#d8dce4', eye:'#ffe14a', glow:'#ffe14a', fangs:1 }),
-  c_nj_courriere: () => NJ('foudre', '#ffe14a', { skin:'#e8b894', hair:'#ffe14a', hs:'braids', mask:false, eyes:'dot', mouth:'grin', shirt:'#2a2a3a' })(),
-  c_nj_lynx: () => beast({ sp:'cat', col:'#e0c84a', belly:'#fff8d0', eye:'#6fd0ff', stripes:1, angry:1 }),
-  c_nj_tambour: () => NJ('foudre', '#c8a020', { skin:'#7a5232', hair:'#2a1d14', hs:'mohawk', mask:false, eyes:'happy', mouth:'grin', shirt:'#3a3a4a', beard:'goatee' })(),
-  c_nj_eclair: () => dragonHead({ col:'#d8b02a', horn:1, eye:'#6fd0ff' }),
-  c_nj_macon: () => NJ('terre', '#7a5a3a', { skin:'#f0c4a0', hair:'#7a4a2a', hs:'curly', mask:false, eyes:'happy', mouth:'smile', shirt:'#5a4a32', freckles:1 })(),
-  c_nj_mont: () => elemental({ kind:'stone' }),
-  c_nj_granit: () => beast({ sp:'boar', col:'#8d938f', belly:'#d8dcd8', eye:'#ffb050', horns:1, angry:1 }),
-  c_nj_quartz: () => golem(),
-  c_nj_bouq: () => beast({ sp:'stag', col:'#b8b2ac', belly:'#ece8e2', eye:'#3a2a22', horns:1 }),
-  c_nj_lionpierre: () => beast({ sp:'lion', col:'#a8a098', belly:'#e0dcd4', eye:'#ffb050', mane:'#6a6058' }),
-  c_nj_blaireau: () => beast({ sp:'dog', col:'#3d3a44', belly:'#e6dcc8', eye:'#ffe14a', stripes:1 }),
+  c_nj_kurama: NJ('feu', '#c8402a', { skin:'#f3d0b0', hair:'#2a1d14', hs:'short', mask:false, eyes:'happy', mouth:'smile', shirt:'#6a2a1a' }),
+  c_nj_shukaku: NJ('vent', '#3aa86a', { skin:'#d9a27a', hair:'#b8452c', hs:'braids', mask:false, eyes:'dot', mouth:'grin', shirt:'#7a5a2a' }),
+  c_nj_glaces: NJ('eau', '#2f7ab8', { skin:'#f0c4a0', hair:'#2e8a8a', hs:'bun', mask:false, eyes:'happy', mouth:'smile', shirt:'#2a5a7a' }),
+  c_nj_lapin: NJ('foudre', '#c8a020', { skin:'#8a5a3c', hair:'#e8e2da', hs:'short', mask:false, eyes:'dot', mouth:'o', shirt:'#3a3a4a' }),
+  c_nj_songoku: NJ('terre', '#7a5a3a', { skin:'#c98e66', hair:'#4a2f1d', hs:'curly', mask:false, eyes:'dot', mouth:'smile', shirt:'#5a4a32' }),
+  c_nj_gamabunta: () => beast({ sp:'wolf', col:'#8a5a4a', belly:'#e8b894', eye:'#ffb04a', glow:'#ff7a2a' }),
+  c_nj_aigle: () => elemental({ kind:'fire', sparks:'#ffd34d' }),
+  c_nj_chatnoir: () => NJ('feu', '#c8402a', { skin:'#e8b894', hair:'#c8392f', hs:'bun', mask:false, eyes:'dot', mouth:'flat', shirt:'#8a2a1a', earring:1 })(),
+  c_nj_corbeau: () => dragonHead({ col:'#e8602a', fire:true, frill:1 }),
+  c_nj_renard1: () => elemental({ kind:'magma', sparks:'#ffb04a' }),
+  c_nj_katoncrow: () => NJ('feu', '#8a2a1a', { skin:'#c98e66', hair:'#2a1d14', hs:'short', mask:false, eyes:'dot', mouth:'grin', shirt:'#3a1a14', freckles:1 })(),
+  c_nj_zetsu: () => dragonHead({ col:'#b8282a', fire:true, horn:1, wings:1 }),
+  c_nj_grenouille: () => beast({ sp:'cat', col:'#d9a860', belly:'#f4e4c0', eye:'#6fd8a0', stripes:1 }),
+  c_nj_sasori: () => beast({ sp:'stag', col:'#a8744a', belly:'#e8d0b0', eye:'#e8fff0' }),
+  c_nj_cerfvolant: () => elemental({ kind:'air' }),
+  c_nj_tanuki: () => NJ('vent', '#3aa86a', { skin:'#f0c4a0', hair:'#e0b25a', hs:'braids', mask:false, eyes:'happy', mouth:'smile', shirt:'#4a6a3a' })(),
+  c_nj_singe: () => beast({ sp:'dog', col:'#e0a94a', belly:'#fff0d0', eye:'#3a2a22', pup:1 }),
+  c_nj_espritvent: () => dragonHead({ col:'#5ab07a', wings:1, eye:'#e8fff0' }),
+  c_nj_faucon: () => NJ('vent', '#8fe0a8', { skin:'#a8714f', hair:'#2a1d14', hs:'side', eyes:'dot', hood:1, hoodc:'#c8a860', shirt:'#6a5232', maskc:'#a8844a' })(),
+  c_nj_requin: () => beast({ sp:'snake', col:'#2a3a5a', belly:'#6f9ac8', eye:'#8fd0ff', glow:'#8fd0ff' }),
+  c_nj_bulle: () => elemental({ kind:'water' }),
+  c_nj_hiramekarei: () => NJ('eau', '#2f7ab8', { skin:'#f3d0b0', hair:'#14243a', hs:'side', mask:false, eyes:'dot', mouth:'smirk', shirt:'#1e2a44', scar:1 })(),
+  c_nj_meduse: () => beast({ sp:'snake', col:'#3a2a5a', belly:'#8a6ac8', eye:'#ffe14a', fangs:1 }),
+  c_nj_poissonscie: () => beast({ sp:'snake', col:'#6fc8e8', belly:'#e8fbff', eye:'#2f7ab8' }),
+  c_nj_tortue: () => beast({ sp:'cat', col:'#cfcac3', belly:'#ffffff', eye:'#4ab0e8', kitten:1 }),
+  c_nj_samehada: () => beast({ sp:'dog', col:'#7a5232', belly:'#d8c0a0', eye:'#2a1d14', tongue:1 }),
+  c_nj_nuage: () => beast({ sp:'lion', col:'#e0b22a', belly:'#fff0b0', eye:'#6fd0ff', mane:'#5a3d7a', angry:1 }),
+  c_nj_renardblanc: () => elemental({ kind:'storm' }),
+  c_nj_gyuki: () => beast({ sp:'wolf', col:'#5a5f69', belly:'#d8dce4', eye:'#ffe14a', glow:'#ffe14a', fangs:1 }),
+  c_nj_ninken: () => NJ('foudre', '#ffe14a', { skin:'#e8b894', hair:'#ffe14a', hs:'braids', mask:false, eyes:'dot', mouth:'grin', shirt:'#2a2a3a' })(),
+  c_nj_matatabi: () => beast({ sp:'cat', col:'#e0c84a', belly:'#fff8d0', eye:'#6fd0ff', stripes:1, angry:1 }),
+  c_nj_puma: () => NJ('foudre', '#c8a020', { skin:'#7a5232', hair:'#2a1d14', hs:'mohawk', mask:false, eyes:'happy', mouth:'grin', shirt:'#3a3a4a', beard:'goatee' })(),
+  c_nj_hibou: () => dragonHead({ col:'#d8b02a', horn:1, eye:'#6fd0ff' }),
+  c_nj_geant: () => NJ('terre', '#7a5a3a', { skin:'#f0c4a0', hair:'#7a4a2a', hs:'curly', mask:false, eyes:'happy', mouth:'smile', shirt:'#5a4a32', freckles:1 })(),
+  c_nj_dragonbois: () => elemental({ kind:'stone' }),
+  c_nj_argile: () => beast({ sp:'boar', col:'#8d938f', belly:'#d8dcd8', eye:'#ffb050', horns:1, angry:1 }),
+  c_nj_dragonpierre: () => golem(),
+  c_nj_rocher: () => beast({ sp:'stag', col:'#b8b2ac', belly:'#ece8e2', eye:'#3a2a22', horns:1 }),
+  c_nj_golem: () => beast({ sp:'lion', col:'#a8a098', belly:'#e0dcd4', eye:'#ffb050', mane:'#6a6058' }),
+  c_nj_arbre: () => beast({ sp:'dog', col:'#3d3a44', belly:'#e6dcc8', eye:'#ffe14a', stripes:1 }),
 });
 // les 40 héros des Cinq Nations : portraits ninja originaux
 const NH = (el, band, x) => () => ninja(Object.assign({ el, band, aura:band }, x));
 Object.assign(HART, {
-  nh_akari: NH('feu', '#c8402a', { skin:'#f3d0b0', hair:'#c8392f', hs:'long', mask:false, eyes:'dot', mouth:'smirk', shirt:'#5a1a12' }),
-  nh_hoshi: NH('feu', '#e8b84a', { skin:'#e8b894', hair:'#e8e2da', hs:'bald', mask:false, eyes:'happy', mouth:'smile', beard:'long', beardc:'#e8e2da', hood:1, hoodc:'#8a2a1a', shirt:'#6a2a1a' }),
-  nh_ren: NH('feu', '#c8402a', { skin:'#d9a27a', hair:'#2a1d14', hs:'mohawk', eyes:'glow', glow:'#ffb04a', shirt:'#3a1a14', tails:1 }),
-  nh_tsubaki: NH('feu', '#c8402a', { skin:'#f0c4a0', hair:'#2a1d14', hs:'bun', mask:false, eyes:'dot', mouth:'smile', shirt:'#8a2a1a', earring:1 }),
-  nh_daigo: NH('feu', '#c8402a', { skin:'#c98e66', hair:'#4a2f1d', hs:'short', eyes:'dot', shirt:'#5a2a22', maskc:'#5a1a12', scar:1 }),
-  nh_mira: NH('vent', '#3aa86a', { skin:'#d9a27a', hair:'#e0b25a', hs:'long', mask:false, eyes:'dot', mouth:'smirk', shirt:'#7a5a2a' }),
-  nh_taro: NH('vent', '#3aa86a', { skin:'#f3d0b0', hair:'#7a4a2a', hs:'curly', mask:false, eyes:'happy', mouth:'grin', shirt:'#6a5232', freckles:1 }),
-  nh_haru: NH('vent', '#3aa86a', { skin:'#a8714f', hair:'#2a1d14', hs:'side', eyes:'dot', hood:1, hoodc:'#c8a860', shirt:'#4a3a22', maskc:'#a8844a' }),
-  nh_gen: NH('vent', '#8fe0a8', { skin:'#e8b894', hair:'#5a3d7a', hs:'part', mask:false, eyes:'dot', mouth:'flat', beard:'goatee', shirt:'#5a4228' }),
-  nh_saki: NH('vent', '#3aa86a', { skin:'#f0c4a0', hair:'#c8392f', hs:'braids', eyes:'glow', glow:'#e8ffd0', shirt:'#6a5232', tails:1 }),
-  nh_mizu: NH('eau', '#2f7ab8', { skin:'#f3d0b0', hair:'#e8e2da', hs:'long', eyes:'dot', shirt:'#1e3a5a', maskc:'#e8e2da' }),
-  nh_ryota: NH('eau', '#2f7ab8', { skin:'#c98e66', hair:'#2a1d14', hs:'short', eyes:'dot', shirt:'#14243a', maskc:'#2a2a34' }),
-  nh_umi: NH('eau', '#2f7ab8', { skin:'#bfe3df', hair:'#2e8a8a', hs:'braids', mask:false, eyes:'happy', mouth:'smile', shirt:'#2a5a7a' }),
-  nh_kenji: NH('eau', '#8fd0ff', { skin:'#e8b894', hair:'#2a1d14', hs:'side', mask:false, eyes:'dot', mouth:'flat', scar:1, shirt:'#1e2a44' }),
-  nh_aya: NH('eau', '#2f7ab8', { skin:'#f0c4a0', hair:'#5a3d7a', hs:'long', eyes:'glow', glow:'#8fd0ff', hood:1, hoodc:'#14243a', shirt:'#14243a' }),
-  nh_raiko: NH('foudre', '#c8a020', { skin:'#8a5a3c', hair:'#e8e2da', hs:'mohawk', mask:false, eyes:'dot', mouth:'grin', shirt:'#2a2a3a' }),
-  nh_kenta: NH('foudre', '#c8a020', { skin:'#a8714f', hair:'#2a1d14', hs:'curly', mask:false, eyes:'dot', mouth:'o', beard:'full', shirt:'#3a3a4a' }),
-  nh_hikari: NH('foudre', '#ffe14a', { skin:'#f3d0b0', hair:'#e0b25a', hs:'bun', eyes:'glow', glow:'#ffe14a', shirt:'#2a2a3a', maskc:'#3a3a4a' }),
-  nh_akio: NH('foudre', '#c8a020', { skin:'#7a5232', hair:'#2a1d14', hs:'bald', mask:false, eyes:'dot', mouth:'smirk', beard:'goatee', shirt:'#3a3a4a', earring:1 }),
-  nh_rika: NH('foudre', '#c8a020', { skin:'#e8b894', hair:'#5a3d7a', hs:'side', eyes:'dot', shirt:'#2a2a3a', maskc:'#c8a020', tails:1 }),
-  nh_goro: NH('terre', '#7a5a3a', { skin:'#9a9088', hair:'#5a5450', hs:'bald', mask:false, eyes:'dot', mouth:'flat', beard:'stubble', shirt:'#4a443e' }),
-  nh_kaito: NH('terre', '#7a5a3a', { skin:'#e8b894', hair:'#7a4a2a', hs:'short', mask:false, eyes:'happy', mouth:'smile', shirt:'#5a4a32' }),
-  nh_masa: NH('terre', '#c8a878', { skin:'#c98e66', hair:'#2a1d14', hs:'long', mask:false, eyes:'dot', mouth:'smile', hood:1, hoodc:'#6a5a44', shirt:'#3a2e22' }),
-  nh_toshi: NH('terre', '#7a5a3a', { skin:'#d9a27a', hair:'#2a1d14', hs:'mohawk', eyes:'glow', glow:'#ffb050', shirt:'#4a3a28', maskc:'#5a4a32' }),
-  nh_emi: NH('terre', '#7a5a3a', { skin:'#f0c4a0', hair:'#b8452c', hs:'curly', mask:false, eyes:'dot', mouth:'grin', shirt:'#5a4a32', freckles:1 }),
-  nh_hina: NH('feu', '#ff7a2a', { skin:'#f3d0b0', hair:'#ff7a2a', hs:'braids', mask:false, eyes:'happy', mouth:'grin', shirt:'#7a2a12', freckles:1 }),
-  nh_kazan: NH('feu', '#8a2a1a', { skin:'#a8714f', hair:'#2a1d14', hs:'bald', mask:false, eyes:'dot', mouth:'flat', beard:'full', shirt:'#3a1a14', scar:1 }),
-  nh_tatsu: NH('feu', '#c8402a', { skin:'#e8b894', hair:'#c8392f', hs:'mohawk', eyes:'glow', glow:'#ff7a2a', shirt:'#5a1a12', maskc:'#2a1410', tails:1 }),
-  nh_sora: NH('vent', '#8fe0a8', { skin:'#f0c4a0', hair:'#e8e2da', hs:'side', mask:false, eyes:'happy', mouth:'smile', shirt:'#4a6a3a' }),
-  nh_fumi: NH('vent', '#3aa86a', { skin:'#d9a27a', hair:'#2e8a8a', hs:'bun', mask:false, eyes:'dot', mouth:'smirk', shirt:'#6a5232', earring:1 }),
-  nh_shin: NH('vent', '#3aa86a', { skin:'#c98e66', hair:'#4a2f1d', hs:'long', eyes:'dot', hood:1, hoodc:'#7a6a4a', shirt:'#4a3a22', maskc:'#6a5a3a' }),
-  nh_nami: NH('eau', '#4ab0e8', { skin:'#f3d0b0', hair:'#2f7ab8', hs:'long', mask:false, eyes:'happy', mouth:'smile', shirt:'#1e3a5a' }),
-  nh_shizuka: NH('eau', '#8fd0ff', { skin:'#e8b894', hair:'#e8e2da', hs:'bun', mask:false, eyes:'dot', mouth:'flat', shirt:'#2a4a6a', earring:1 }),
-  nh_kai: NH('eau', '#2f7ab8', { skin:'#7a5232', hair:'#2a1d14', hs:'curly', mask:false, eyes:'dot', mouth:'grin', beard:'stubble', shirt:'#14243a' }),
-  nh_jin: NH('foudre', '#ffe14a', { skin:'#f0c4a0', hair:'#2a1d14', hs:'mohawk', eyes:'glow', glow:'#ffe14a', shirt:'#2a2a3a', maskc:'#c8a020' }),
-  nh_ikazu: NH('foudre', '#c8a020', { skin:'#8a5a3c', hair:'#5a3d7a', hs:'short', mask:false, eyes:'dot', mouth:'o', beard:'full', shirt:'#3a3a4a' }),
-  nh_sho: NH('foudre', '#c8a020', { skin:'#e8b894', hair:'#e0b25a', hs:'part', mask:false, eyes:'dot', mouth:'smirk', shirt:'#2a2a3a', scar:1 }),
-  nh_iwao: NH('terre', '#7a5a3a', { skin:'#c98e66', hair:'#5a5450', hs:'short', mask:false, eyes:'dot', mouth:'flat', beard:'long', beardc:'#8a847e', shirt:'#4a443e' }),
-  nh_daichi: NH('terre', '#c8a878', { skin:'#e8b894', hair:'#e8e2da', hs:'bald', mask:false, eyes:'happy', mouth:'smile', beard:'goatee', beardc:'#e8e2da', hood:1, hoodc:'#6a5a44', shirt:'#3a2e22' }),
-  nh_kuro: NH('terre', '#7a5a3a', { skin:'#a8714f', hair:'#2a1d14', hs:'braids', eyes:'dot', shirt:'#3a2e22', maskc:'#4a3a28', tails:1 }),
+  nh_kushina: NH('feu', '#c8402a', { skin:'#f3d0b0', hair:'#c8392f', hs:'long', mask:false, eyes:'dot', mouth:'smirk', shirt:'#5a1a12' }),
+  nh_jiraiya: NH('feu', '#e8b84a', { skin:'#e8b894', hair:'#e8e2da', hs:'bald', mask:false, eyes:'happy', mouth:'smile', beard:'long', beardc:'#e8e2da', hood:1, hoodc:'#8a2a1a', shirt:'#6a2a1a' }),
+  nh_sasuke: NH('feu', '#c8402a', { skin:'#d9a27a', hair:'#2a1d14', hs:'mohawk', eyes:'glow', glow:'#ffb04a', shirt:'#3a1a14', tails:1 }),
+  nh_mikoto: NH('feu', '#c8402a', { skin:'#f0c4a0', hair:'#2a1d14', hs:'bun', mask:false, eyes:'dot', mouth:'smile', shirt:'#8a2a1a', earring:1 }),
+  nh_itachi: NH('feu', '#c8402a', { skin:'#c98e66', hair:'#4a2f1d', hs:'short', eyes:'dot', shirt:'#5a2a22', maskc:'#5a1a12', scar:1 }),
+  nh_temari: NH('vent', '#3aa86a', { skin:'#d9a27a', hair:'#e0b25a', hs:'long', mask:false, eyes:'dot', mouth:'smirk', shirt:'#7a5a2a' }),
+  nh_naruto: NH('vent', '#3aa86a', { skin:'#f3d0b0', hair:'#7a4a2a', hs:'curly', mask:false, eyes:'happy', mouth:'grin', shirt:'#6a5232', freckles:1 }),
+  nh_kankuro: NH('vent', '#3aa86a', { skin:'#a8714f', hair:'#2a1d14', hs:'side', eyes:'dot', hood:1, hoodc:'#c8a860', shirt:'#4a3a22', maskc:'#a8844a' }),
+  nh_shikamaru: NH('vent', '#8fe0a8', { skin:'#e8b894', hair:'#5a3d7a', hs:'part', mask:false, eyes:'dot', mouth:'flat', beard:'goatee', shirt:'#5a4228' }),
+  nh_gaara: NH('vent', '#3aa86a', { skin:'#f0c4a0', hair:'#c8392f', hs:'braids', eyes:'glow', glow:'#e8ffd0', shirt:'#6a5232', tails:1 }),
+  nh_haku: NH('eau', '#2f7ab8', { skin:'#f3d0b0', hair:'#e8e2da', hs:'long', eyes:'dot', shirt:'#1e3a5a', maskc:'#e8e2da' }),
+  nh_zabuza: NH('eau', '#2f7ab8', { skin:'#c98e66', hair:'#2a1d14', hs:'short', eyes:'dot', shirt:'#14243a', maskc:'#2a2a34' }),
+  nh_suigetsu: NH('eau', '#2f7ab8', { skin:'#bfe3df', hair:'#2e8a8a', hs:'braids', mask:false, eyes:'happy', mouth:'smile', shirt:'#2a5a7a' }),
+  nh_mangetsu: NH('eau', '#8fd0ff', { skin:'#e8b894', hair:'#2a1d14', hs:'side', mask:false, eyes:'dot', mouth:'flat', scar:1, shirt:'#1e2a44' }),
+  nh_mei: NH('eau', '#2f7ab8', { skin:'#f0c4a0', hair:'#5a3d7a', hs:'long', eyes:'glow', glow:'#8fd0ff', hood:1, hoodc:'#14243a', shirt:'#14243a' }),
+  nh_omoi: NH('foudre', '#c8a020', { skin:'#8a5a3c', hair:'#e8e2da', hs:'mohawk', mask:false, eyes:'dot', mouth:'grin', shirt:'#2a2a3a' }),
+  nh_darui: NH('foudre', '#c8a020', { skin:'#a8714f', hair:'#2a1d14', hs:'curly', mask:false, eyes:'dot', mouth:'o', beard:'full', shirt:'#3a3a4a' }),
+  nh_samui: NH('foudre', '#ffe14a', { skin:'#f3d0b0', hair:'#e0b25a', hs:'bun', eyes:'glow', glow:'#ffe14a', shirt:'#2a2a3a', maskc:'#3a3a4a' }),
+  nh_bee: NH('foudre', '#c8a020', { skin:'#7a5232', hair:'#2a1d14', hs:'bald', mask:false, eyes:'dot', mouth:'smirk', beard:'goatee', shirt:'#3a3a4a', earring:1 }),
+  nh_kakashi: NH('foudre', '#c8a020', { skin:'#e8b894', hair:'#5a3d7a', hs:'side', eyes:'dot', shirt:'#2a2a3a', maskc:'#c8a020', tails:1 }),
+  nh_roshi: NH('terre', '#7a5a3a', { skin:'#9a9088', hair:'#5a5450', hs:'bald', mask:false, eyes:'dot', mouth:'flat', beard:'stubble', shirt:'#4a443e' }),
+  nh_akatsuchi: NH('terre', '#7a5a3a', { skin:'#e8b894', hair:'#7a4a2a', hs:'short', mask:false, eyes:'happy', mouth:'smile', shirt:'#5a4a32' }),
+  nh_hashirama: NH('terre', '#c8a878', { skin:'#c98e66', hair:'#2a1d14', hs:'long', mask:false, eyes:'dot', mouth:'smile', hood:1, hoodc:'#6a5a44', shirt:'#3a2e22' }),
+  nh_deidara: NH('terre', '#7a5a3a', { skin:'#d9a27a', hair:'#2a1d14', hs:'mohawk', eyes:'glow', glow:'#ffb050', shirt:'#4a3a28', maskc:'#5a4a32' }),
+  nh_kurotsuchi: NH('terre', '#7a5a3a', { skin:'#f0c4a0', hair:'#b8452c', hs:'curly', mask:false, eyes:'dot', mouth:'grin', shirt:'#5a4a32', freckles:1 }),
+  nh_karin: NH('feu', '#ff7a2a', { skin:'#f3d0b0', hair:'#ff7a2a', hs:'braids', mask:false, eyes:'happy', mouth:'grin', shirt:'#7a2a12', freckles:1 }),
+  nh_asuma: NH('feu', '#8a2a1a', { skin:'#a8714f', hair:'#2a1d14', hs:'bald', mask:false, eyes:'dot', mouth:'flat', beard:'full', shirt:'#3a1a14', scar:1 }),
+  nh_madara: NH('feu', '#c8402a', { skin:'#e8b894', hair:'#c8392f', hs:'mohawk', eyes:'glow', glow:'#ff7a2a', shirt:'#5a1a12', maskc:'#2a1410', tails:1 }),
+  nh_konohamaru: NH('vent', '#8fe0a8', { skin:'#f0c4a0', hair:'#e8e2da', hs:'side', mask:false, eyes:'happy', mouth:'smile', shirt:'#4a6a3a' }),
+  nh_pakura: NH('vent', '#3aa86a', { skin:'#d9a27a', hair:'#2e8a8a', hs:'bun', mask:false, eyes:'dot', mouth:'smirk', shirt:'#6a5232', earring:1 }),
+  nh_baki: NH('vent', '#3aa86a', { skin:'#c98e66', hair:'#4a2f1d', hs:'long', eyes:'dot', hood:1, hoodc:'#7a6a4a', shirt:'#4a3a22', maskc:'#6a5a3a' }),
+  nh_chojuro: NH('eau', '#4ab0e8', { skin:'#f3d0b0', hair:'#2f7ab8', hs:'long', mask:false, eyes:'happy', mouth:'smile', shirt:'#1e3a5a' }),
+  nh_ao: NH('eau', '#8fd0ff', { skin:'#e8b894', hair:'#e8e2da', hs:'bun', mask:false, eyes:'dot', mouth:'flat', shirt:'#2a4a6a', earring:1 }),
+  nh_kisame: NH('eau', '#2f7ab8', { skin:'#7a5232', hair:'#2a1d14', hs:'curly', mask:false, eyes:'dot', mouth:'grin', beard:'stubble', shirt:'#14243a' }),
+  nh_yugito: NH('foudre', '#ffe14a', { skin:'#f0c4a0', hair:'#2a1d14', hs:'mohawk', eyes:'glow', glow:'#ffe14a', shirt:'#2a2a3a', maskc:'#c8a020' }),
+  nh_raikage: NH('foudre', '#c8a020', { skin:'#8a5a3c', hair:'#5a3d7a', hs:'short', mask:false, eyes:'dot', mouth:'o', beard:'full', shirt:'#3a3a4a' }),
+  nh_c: NH('foudre', '#c8a020', { skin:'#e8b894', hair:'#e0b25a', hs:'part', mask:false, eyes:'dot', mouth:'smirk', shirt:'#2a2a3a', scar:1 }),
+  nh_kitsuchi: NH('terre', '#7a5a3a', { skin:'#c98e66', hair:'#5a5450', hs:'short', mask:false, eyes:'dot', mouth:'flat', beard:'long', beardc:'#8a847e', shirt:'#4a443e' }),
+  nh_onoki: NH('terre', '#c8a878', { skin:'#e8b894', hair:'#e8e2da', hs:'bald', mask:false, eyes:'happy', mouth:'smile', beard:'goatee', beardc:'#e8e2da', hood:1, hoodc:'#6a5a44', shirt:'#3a2e22' }),
+  nh_yamato: NH('terre', '#7a5a3a', { skin:'#a8714f', hair:'#2a1d14', hs:'braids', eyes:'dot', shirt:'#3a2e22', maskc:'#4a3a28', tails:1 }),
 });
 
 /* =====================================================================
@@ -6102,7 +6138,7 @@ function castSpell0(G, p, hi, tg) {
   if (spellBlock(p, id, tgt)) return false;
   p.hd.splice(hi, 1);
   if (S.ck) p.ck = (p.ck || 0) - ckCost(p, S);
-  if (S.nin && p.hero === 'nh_haru' && !(p.rsv || []).length) p.g += 1;
+  if (S.nin && (HEROES[p.hero] && HEROES[p.hero].pw && HEROES[p.hero].pw.k === 'ptechc') && !(p.rsv || []).length) p.g += 1;
   p.lastCast = id;
   switch (id) {
     case 'sp_pinte': buff(tgt, 2, 1); break;
@@ -7141,7 +7177,7 @@ function chakraLawH(big) {
   const sec = (ic, t, body) => `<div class="njl-s"><b class="njl-h"><span>${ic}</span>${t}</b>${body}</div>`;
   const ctr = (n, col, tx) => `<span class="njl-ctr" style="--c:${col}"><b>${n}</b> ${tx}</span>`;
   return `<span class="ban-law ck-law njl${big ? ' big' : ''}">
-    ${sec('🪙', 'Ressources', `<small><b>Or</b> : serviteurs et techniques.</small><small><b>Chakra</b> : chaque ninja en jeu en donne 1 par tour (10 au plus). Il lance les techniques, le pouvoir du héros (1 à 3) et pose les récompenses.</small>`)}
+    ${sec('🪙', 'Ressources', `<small><b>Or</b> : serviteurs et techniques.</small><small><b>Chakra</b> : chaque ninja en jeu en donne 1 par tour (10 au plus). Il lance les techniques, le pouvoir du héros (3 à 6) et pose les récompenses.</small>`)}
     ${sec('📜', 'Techniques et réservoir', `<small>Les techniques ont une <b>nature</b> (Katon, Fûton, Suiton, Raiton, Doton) et suivent le jeu de leur clan ; celles de l'élément de ton héros coûtent 1 chakra de moins.</small><small>Chaque technique remplit une moitié du <b>réservoir</b> ; la 2e déclenche un <b>combo</b> (effet sur ton plateau + pouvoir hybride au compagnon). Deux fois le même élément : combo pur.</small><span class="njl-combos">${pairs}</span>`)}
     ${sec('⚔️', 'Compagnon et duel', `<span class="njl-row"><span><small>Ton compagnon est déjà en jeu, <b>triplé</b> et hors plateau. En combat, il affronte <b>seulement le compagnon adverse</b> et ne blesse jamais le héros.</small><small>En duel, celui qui frappe <b>frappe en premier</b> : un compagnon abattu ne riposte pas. Égalité seulement si les deux tombent ensemble.</small><small>Il prend l'élément de ta dernière technique, ou celui que tu fixes (2 chakra). <b>Résonance</b> : en duel, +1/+1 par tranche de 3 marqueurs de son élément. Gagner le duel donne +2 marqueurs de son élément.</small><small>Il grandit par les <b>coffres</b> et chaque <b>combo</b> ; l'expérience (technique +1, duel gagné +2) débloque un pouvoir de clan aux niveaux 3 et 5.</small></span></span>`)}
     ${sec('🎁', 'Coffres et entraînement', `<small>Le <b>duel</b> décide du coffre : majeur s'il gagne, mineur sinon. Tu choisis <b>1 récompense sur 3</b> pour une des 5 pièces du compagnon (lame, armure, bandeau, gantelets, talisman).</small><span class="njl-rar">${RARS.map((R, i) => `<i style="--c:${R.col}">${R.n} · ${i + 1} chakra</i>`).join('')}</span><small>Elle se range dans l'entraînement et se pose avec du chakra.</small><small><b>Parchemins de pacte</b> : ils préparent la <b>bête d'invocation</b> du clan de ton compagnon (Salamandre, Loup, Serpent, Tigre, Sanglier). Elle apparaît à l'Éveil, plus forte à chaque parchemin, et combat à ses côtés dans le duel.</small>`)}
@@ -7709,7 +7745,7 @@ function ruleTabH(k) {
     case 'tour': return `<ol class="rl-steps">
       ${step(1, 'Recrute', `Achète des ninjas avec ${coin} l'or. Chacun te rapportera 1 ${ck} chakra par tour (10 au plus).`, faceH('art-n_f1'))}
       ${step(2, 'Lance tes techniques', 'Achetées en or, lancées au chakra. Deux techniques remplissent le réservoir et déclenchent un combo.', '<span class="rl-scroll"><i style="background:#4ab0e8"></i><i style="background:#ff7a2a"></i></span>')}
-      ${step(3, 'Utilise ton pouvoir', 'Le pouvoir de ton héros coûte 1 à 3 chakra, une fois par tour.', '<span class="rl-pow">✦</span>')}
+      ${step(3, 'Utilise ton pouvoir', 'Le pouvoir de ton héros coûte 3 à 6 chakra, une fois par tour.', '<span class="rl-pow">✦</span>')}
       ${step(4, 'Combat + duel', 'Tes serviteurs affrontent ceux d\'en face (dégâts au héros). En parallèle, ton compagnon affronte seulement le compagnon adverse.', '<span class="rl-vs">VS</span>')}
       ${step(5, 'Ouvre ton coffre', 'Duel gagné : coffre majeur, sinon mineur. Choisis 1 récompense sur 3.', '<span class="rl-chest"></span>')}
     </ol>`;
@@ -7719,7 +7755,7 @@ function ruleTabH(k) {
         <div class="rl-rsv"><span class="rl-scroll big"><i style="background:#4ab0e8"></i><i></i></span><span>→</span><span class="rl-scroll big"><i style="background:#4ab0e8"></i><i style="background:#ff7a2a"></i></span><span>→</span><b class="rl-boom">Combo !</b></div>
         <p>La 1re technique remplit une moitié du <b>réservoir</b>, la 2e l'autre : le mélange déclenche un <b>combo</b> (effet sur ton plateau + pouvoir au compagnon), puis le réservoir se vide. Deux fois le même élément : <b>combo pur</b>. La moitié remplie reste d'un tour à l'autre.</p>
         <div class="njl-combos">${pairs}</div></div>`; }
-    case 'comp': return `<div class="rl-p"><div class="rl-duel">${faceH('art-c_nj_eau')}<span class="rl-vs">VS</span>${faceH('art-c_nj_feu')}</div>
+    case 'comp': return `<div class="rl-p"><div class="rl-duel">${faceH('art-c_nj_glaces')}<span class="rl-vs">VS</span>${faceH('art-c_nj_kurama')}</div>
       <p>Ton compagnon est <b>déjà en jeu, doré</b>, à côté de ton plateau. Il ne combat que le <b>compagnon adverse</b> et ne blesse jamais le héros.</p>
       <ul class="rl-ul"><li><b>Frappe en premier</b> : un compagnon abattu ne riposte pas. Nul seulement si les deux tombent ensemble.</li>
       <li><b>Élément</b> : celui de ta dernière technique, ou fixé pour 2 ${ck}. Il résonne avec tes marqueurs : <b>+1/+1 par 3 marqueurs</b> de son élément. Petit avantage (+2/+2) s'il domine celui d'en face.</li>
@@ -7753,8 +7789,8 @@ function heroPickNinjaH(d, me) {
   const card = (h, i) => { const x = HEROES[h], on = h === sel, cid = COMPANIONS[h], c = cid && C[cid], el = x.clan;
     return `<button class="hpk${on ? ' on' : ''}" data-act="hsel" data-h="${h}" aria-pressed="${on}" style="--c:${ELS[el] ? ELS[el].col : '#c8a86a'}">
       ${rollH(me, i)}<span class="hpk-face">${faceH('art-h-' + h)}${x.cost ? `<span class="hpk-ck">${ckMarkH(x.cost)}</span>` : '<span class="hpk-pas">Passif</span>'}</span>
-      <span class="hpk-b"><b>${esc(x.n)}</b><span class="hpk-d">${x.diff ? '★'.repeat(x.diff) + '☆'.repeat(3 - x.diff) + ' ' + ['', 'Simple', 'Intermédiaire', 'Expert'][x.diff] : ''}</span>
-        <small>${esc((t => t.charAt(0).toUpperCase() + t.slice(1))(x.tx.replace(/^Passif : /, '')))}</small>
+      <span class="hpk-b"><b>${esc(x.n)}</b><span class="hpk-d">${x.stars ? '★'.repeat(x.stars) : x.diff ? '★'.repeat(x.diff) + '☆'.repeat(3 - x.diff) + ' ' + ['', 'Simple', 'Intermédiaire', 'Expert'][x.diff] : ''}</span>
+        <small>${x.pwn ? `<b class="hpk-pn">${esc(x.pwn)}</b> · ` : ''}${esc((t => t.charAt(0).toUpperCase() + t.slice(1))(x.tx.replace(/^Passif : /, '')))}</small>
         ${c ? `<span class="hpk-c">${faceH('art-' + cid)}<em>${esc(c.n)} · ${c.a * 3}/${c.h * 3}</em></span>` : ''}</span></button>`; };
   return `<div class="ov hpick-ov"><div class="hpick">
     <div class="hpick-l"><h2 class="ov-t">Choisis ton héros</h2><p class="ov-s">Son pouvoir et son compagnon t'accompagnent toute la partie.</p>${rollInfoH(me)}
@@ -8354,7 +8390,7 @@ document.addEventListener('pointermove', e => {
 }, { passive:true });
 
 /* ---------- cartes de héros, de pouvoir et de compagnon (aperçu au survol) ---------- */
-const HTHEME = { nh_akari:'fire', nh_hoshi:'fire', nh_ren:'fire', nh_tsubaki:'fire', nh_daigo:'fire', nh_mira:'wind', nh_taro:'wind', nh_haru:'wind', nh_gen:'wind', nh_saki:'wind', nh_mizu:'bubble', nh_ryota:'bubble', nh_umi:'bubble', nh_kenji:'bubble', nh_aya:'bubble', nh_raiko:'storm', nh_kenta:'storm', nh_hikari:'storm', nh_akio:'storm', nh_rika:'storm', nh_goro:'rock', nh_kaito:'rock', nh_masa:'rock', nh_toshi:'rock', nh_emi:'rock', nh_hina:'fire', nh_kazan:'fire', nh_tatsu:'fire', nh_sora:'wind', nh_fumi:'wind', nh_shin:'wind', nh_nami:'bubble', nh_shizuka:'bubble', nh_kai:'bubble', nh_jin:'storm', nh_ikazu:'storm', nh_sho:'storm', nh_iwao:'rock', nh_daichi:'rock', nh_kuro:'rock', rivet:'spark', egide:'holy', ondine:'potion', barnabe:'coin', maelle:'leaf', oren:'rune', gor:'rock', ilka:'spark', selene:'blood', brok:'ember', sylvara:'arcane', grumbo:'steam', vaskor:'soul', pyra:'fire', paul:'fire', leon:'leaf', zoe:'bubble', jeanne:'wind', nono:'fire' };
+const HTHEME = { nh_kushina:'fire', nh_jiraiya:'fire', nh_sasuke:'fire', nh_mikoto:'fire', nh_itachi:'fire', nh_temari:'wind', nh_naruto:'wind', nh_kankuro:'wind', nh_shikamaru:'wind', nh_gaara:'wind', nh_haku:'bubble', nh_zabuza:'bubble', nh_suigetsu:'bubble', nh_mangetsu:'bubble', nh_mei:'bubble', nh_omoi:'storm', nh_darui:'storm', nh_samui:'storm', nh_bee:'storm', nh_kakashi:'storm', nh_roshi:'rock', nh_akatsuchi:'rock', nh_hashirama:'rock', nh_deidara:'rock', nh_kurotsuchi:'rock', nh_karin:'fire', nh_asuma:'fire', nh_madara:'fire', nh_konohamaru:'wind', nh_pakura:'wind', nh_baki:'wind', nh_chojuro:'bubble', nh_ao:'bubble', nh_kisame:'bubble', nh_yugito:'storm', nh_raikage:'storm', nh_c:'storm', nh_kitsuchi:'rock', nh_onoki:'rock', nh_yamato:'rock', rivet:'spark', egide:'holy', ondine:'potion', barnabe:'coin', maelle:'leaf', oren:'rune', gor:'rock', ilka:'spark', selene:'blood', brok:'ember', sylvara:'arcane', grumbo:'steam', vaskor:'soul', pyra:'fire', paul:'fire', leon:'leaf', zoe:'bubble', jeanne:'wind', nono:'fire' };
 const THC = { storm:'#ffe14a', fire:'#ff7a2a', ember:'#ff9a3a', spark:'#ffc24a', holy:'#ffe08a', potion:'#6fe0a0', coin:'#f2c14e', leaf:'#8fd05a', rune:'#7ac4ff', rock:'#c8a878', blood:'#e0405a', arcane:'#b48cff', steam:'#f0e2d0', soul:'#7dffb0', bubble:'#6fc8ff', wind:'#bff0e6' };
 const THN = { storm:'Foudre', fire:'Feu', ember:'Forge', spark:'Mécanique', holy:'Lumière', potion:'Alchimie', coin:'Commerce', leaf:'Nature', rune:'Savoir', rock:'Force', blood:'Sang', arcane:'Arcanes', steam:'Festin', soul:'Nécromancie', bubble:'Eau', wind:'Vent' };
 const PWART = {
@@ -8387,6 +8423,7 @@ function hfxH(th, n = 18) {
   return h;
 }
 function powerTitle(h) {
+  if (h.pwn) return [h.pwn, h.tx || '', ''];
   const tx = h.tx || ''; const dot = tx.indexOf(' · '); const body = dot > 0 ? tx.slice(dot + 3) : tx;
   const c = body.indexOf(' : ');
   if (c > 0 && c < 26 && !/^(Passif|Dès|Prochain|Après|Quand|Au début|À la fin)/.test(body)) return [body.slice(0, c), body.slice(c + 3), dot > 0 ? tx.slice(0, dot) : ''];
@@ -8399,7 +8436,7 @@ function heroCardH(hid, o = {}) {
   return `<div class="hcard th-${th}" style="--hc:${col}">
     <div class="hc-fx" aria-hidden="true">${hfxH(th)}</div>
     <div class="hc-port">${faceH('art-h-' + hid, 'face')}${h.cost ? `<span class="hc-cost">${h.cost}</span>` : ''}</div>
-    <div class="hc-nm">${esc(h.n)}</div>${h.diff ? `<div class="hc-diff d${h.diff}" title="Difficulté">${'★'.repeat(h.diff)}${'☆'.repeat(3 - h.diff)} <small>${['', 'Simple', 'Intermédiaire', 'Expert'][h.diff]}</small></div>` : ''}
+    <div class="hc-nm">${esc(h.n)}</div>${h.stars ? `<div class="hc-diff d${h.diff}" title="Rang">${'★'.repeat(h.stars)}</div>` : h.diff ? `<div class="hc-diff d${h.diff}" title="Difficulté">${'★'.repeat(h.diff)}${'☆'.repeat(3 - h.diff)} <small>${['', 'Simple', 'Intermédiaire', 'Expert'][h.diff]}</small></div>` : ''}
     ${o.who && o.who !== h.n ? `<div class="hc-who">joué par ${esc(o.who)}</div>` : ''}
     <div class="hc-kind">${h.cost ? 'Pouvoir héroïque' : 'Pouvoir passif'} · ${aff ? esc(aff) : THN[th]}</div>
     ${famChips(heroFam(hid))}
@@ -9322,5 +9359,7 @@ html.lite .awk-go{animation:none}
   .hpick .hpk-g{grid-template-columns:1fr 1fr;gap:6px}.hpick .hpk-g .hpk:last-child:nth-child(odd){width:calc(50% - 3px)}
   .hpick-l .ov-t{font-size:24px}.hpk .h-roll{width:22px;height:22px}.hpk .h-roll svg{width:13px;height:13px}
 }`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `.hpk-b small .hpk-pn{font-size:12px;color:#ffd86a;font-weight:700}`; document.head.appendChild(st); })();
 </script>
 </body></html>

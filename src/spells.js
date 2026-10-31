@@ -119,7 +119,7 @@ function castSpell0(G, p, hi, tg) {
   if (spellBlock(p, id, tgt)) return false;
   p.hd.splice(hi, 1);
   if (S.ck) p.ck = (p.ck || 0) - ckCost(p, S);
-  if (S.nin && p.hero === 'nh_haru' && !(p.rsv || []).length) p.g += 1;
+  if (S.nin && (HEROES[p.hero] && HEROES[p.hero].pw && HEROES[p.hero].pw.k === 'ptechc') && !(p.rsv || []).length) p.g += 1;
   p.lastCast = id;
   switch (id) {
     case 'sp_pinte': buff(tgt, 2, 1); break;
