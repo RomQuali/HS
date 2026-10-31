@@ -753,7 +753,7 @@ function duelLunge(fr) {
 function duelFx() { document.querySelectorAll('.cp-side .mn.dead').forEach(el => { const r = el.getBoundingClientRect(); if (!FX_OFF() && !el.dataset.fxd) { el.dataset.fxd = 1; fxBurst(r.left + r.width / 2, r.top + r.height * .45, 'shard', 14); } }); }
 // en combat : les deux compagnons face à face, dans la même colonne, chacun à la hauteur de sa rangée
 // après l'Éveil : les cartes prennent l'effet de l'élément qui a le plus de marqueurs (braises = Feu, marée = Eau, charge = Foudre)
-function awkElCls(me) { if (!me) return ''; const c = [['feu', me.braise || 0], ['eau', me.maree || 0], ['foudre', me.charge || 0]].sort((x, y) => y[1] - x[1])[0]; return c[1] > 0 ? ' awk-' + c[0] : ''; }
+function awkElCls(me) { if (!me) return ''; const c = [['feu', me.braise || 0], ['vent', me.souffle || 0], ['eau', me.maree || 0], ['foudre', me.charge || 0], ['terre', me.roche || 0]].sort((x, y) => y[1] - x[1])[0]; return c[1] > 0 ? ' awk-' + c[0] + (c[1] >= 20 ? ' awk-hi' : '') : ''; }
 // l'Éveil : grande annonce plein écran, une seule fois
 const awkKey = () => (V.pub.code || '') + ':' + V.pub.ev;
 // l'annonce de l'Éveil est en attente (ou affichée) : on cache le reste, coffre compris, jusqu'au clic
@@ -2092,46 +2092,7 @@ svg.ck-gem.aff{box-shadow:none;filter:drop-shadow(0 0 5px rgba(155,227,106,.95))
 @keyframes awkR{to{transform:rotate(360deg)}}
 `; document.head.appendChild(st); })();
 
-/* après l'Éveil : cartes enflammées / ruisselantes / électrisées selon le marqueur dominant */
-(function(){ const st = document.createElement('style'); st.textContent = `
-.table[class*="awk-"] .board-zone .mn::after,.table[class*="awk-"] .hand .cd::after{content:'';position:absolute;pointer-events:none;z-index:4;mix-blend-mode:screen}
-.table[class*="awk-"] .board-zone .mn::after{left:-14%;right:-14%;top:-8%;bottom:6%;
-  -webkit-mask:radial-gradient(ellipse 50% 50% at 50% 47%,transparent 56%,#000 68%,#000 82%,transparent 100%);mask:radial-gradient(ellipse 50% 50% at 50% 47%,transparent 56%,#000 68%,#000 82%,transparent 100%)}
-.table[class*="awk-"] .hand .cd::after{inset:-6%;border-radius:12px;-webkit-mask:radial-gradient(closest-side,transparent 78%,#000 96%);mask:linear-gradient(#000,#000) border-box,linear-gradient(#000,#000) padding-box;-webkit-mask-composite:xor;mask-composite:exclude;padding:7px}
-/* Feu : la carte s'embrase */
-.table.awk-feu .board-zone .mn::after,.table.awk-feu .hand .cd::after{
-  background:radial-gradient(22% 40% at 20% 92%,rgba(255,200,60,.95),transparent 70%),radial-gradient(24% 55% at 42% 96%,rgba(255,110,20,.95),transparent 72%),radial-gradient(20% 48% at 64% 94%,rgba(255,170,40,.95),transparent 70%),radial-gradient(22% 52% at 84% 96%,rgba(255,90,20,.9),transparent 72%),
-    radial-gradient(18% 30% at 4% 50%,rgba(255,120,30,.8),transparent 70%),radial-gradient(18% 30% at 96% 50%,rgba(255,120,30,.8),transparent 70%),radial-gradient(30% 22% at 50% 4%,rgba(255,150,40,.7),transparent 70%);
-  filter:blur(1.5px);animation:awkFire .9s ease-in-out infinite alternate}
-.table.awk-feu .board-zone .mn .mn-svg{filter:drop-shadow(0 0 6px rgba(255,120,30,.9)) drop-shadow(0 -4px 10px rgba(255,80,20,.6))}
-@keyframes awkFire{0%{transform:translateY(0) scaleY(1);opacity:.85}50%{transform:translateY(-3%) scaleY(1.06);opacity:1}100%{transform:translateY(-1%) scaleY(.97) scaleX(1.03);opacity:.9}}
-/* Eau : la carte ruisselle */
-.table.awk-eau .board-zone .mn::after,.table.awk-eau .hand .cd::after{
-  background:radial-gradient(circle at 20% 80%,rgba(190,240,255,.95) 0 3%,transparent 4%),radial-gradient(circle at 78% 70%,rgba(190,240,255,.9) 0 2.5%,transparent 3.5%),radial-gradient(circle at 50% 95%,rgba(190,240,255,.9) 0 3%,transparent 4%),radial-gradient(circle at 88% 30%,rgba(190,240,255,.85) 0 2%,transparent 3%),
-    radial-gradient(ellipse 50% 50% at 50% 46%,transparent 60%,rgba(80,190,255,.85) 72%,transparent 86%);
-  background-size:100% 100%;animation:awkWater 2.2s ease-in-out infinite}
-.table.awk-eau .board-zone .mn .mn-svg{filter:drop-shadow(0 0 7px rgba(80,190,255,.9))}
-@keyframes awkWater{0%{transform:scale(.96);opacity:.7;background-position:0 0}50%{transform:scale(1.04);opacity:1;background-position:0 -6px}100%{transform:scale(.96);opacity:.7;background-position:0 -12px}}
-/* Foudre : la carte crépite */
-.table.awk-foudre .board-zone .mn::after,.table.awk-foudre .hand .cd::after{
-  background:conic-gradient(from 0deg,transparent 0 8%,rgba(255,240,120,.95) 8% 9%,transparent 9% 30%,rgba(190,230,255,.95) 30% 31%,transparent 31% 55%,rgba(255,240,120,.95) 55% 56.5%,transparent 56.5% 78%,rgba(255,255,200,.95) 78% 79%,transparent 79%),
-    radial-gradient(ellipse 50% 50% at 50% 46%,transparent 62%,rgba(255,220,60,.7) 74%,transparent 88%);
-  animation:awkBolt .35s steps(2) infinite}
-.table.awk-foudre .board-zone .mn .mn-svg{filter:drop-shadow(0 0 5px rgba(255,230,80,.95)) drop-shadow(0 0 12px rgba(140,200,255,.6))}
-@keyframes awkBolt{0%{transform:rotate(0deg);opacity:1}50%{transform:rotate(47deg);opacity:.55}100%{transform:rotate(113deg);opacity:1}}
-@media (prefers-reduced-motion:reduce){.table[class*="awk-"] .board-zone .mn::after,.table[class*="awk-"] .hand .cd::after{animation:none}}
-`; document.head.appendChild(st); })();
-(function(){ const st = document.createElement('style'); st.textContent = `
-.table.awk-feu .board-zone .mn::before{content:'';position:absolute;left:-10%;right:-10%;top:-26%;bottom:20%;z-index:3;pointer-events:none;mix-blend-mode:screen;filter:blur(2px);
-  background:radial-gradient(9% 34% at 22% 62%,rgba(255,210,80,.95),transparent 72%),radial-gradient(10% 42% at 36% 52%,rgba(255,120,30,.95),transparent 72%),radial-gradient(11% 48% at 50% 46%,rgba(255,170,50,.95),transparent 72%),radial-gradient(10% 42% at 64% 52%,rgba(255,100,20,.95),transparent 72%),radial-gradient(9% 34% at 78% 62%,rgba(255,200,70,.95),transparent 72%),
-    radial-gradient(7% 26% at 12% 78%,rgba(255,140,40,.9),transparent 72%),radial-gradient(7% 26% at 88% 78%,rgba(255,140,40,.9),transparent 72%);
-  -webkit-mask:radial-gradient(ellipse 46% 40% at 50% 74%,transparent 70%,#000 84%);mask:radial-gradient(ellipse 46% 40% at 50% 74%,transparent 70%,#000 84%);
-  animation:awkTongue .7s ease-in-out infinite alternate;transform-origin:50% 100%}
-@keyframes awkTongue{0%{transform:scaleY(.92) translateY(2%);opacity:.8}50%{transform:scaleY(1.08) translateY(-3%) skewX(-2deg);opacity:1}100%{transform:scaleY(1) translateY(-1%) skewX(2deg);opacity:.9}}
-.table.awk-eau .board-zone .mn::before{content:'';position:absolute;left:-6%;right:-6%;top:-6%;bottom:14%;z-index:3;pointer-events:none;border-radius:50%;box-shadow:0 0 0 3px rgba(120,210,255,.6),0 0 14px 4px rgba(80,180,255,.55);animation:awkRipple 1.8s ease-out infinite}
-@keyframes awkRipple{0%{transform:scale(.92);opacity:.95}100%{transform:scale(1.18);opacity:0}}
-@media (prefers-reduced-motion:reduce){.table[class*="awk-"] .board-zone .mn::before{animation:none}}
-`; document.head.appendChild(st); })();
+
 
 /* description de l'univers Ninja (choix du héros) */
 (function(){ const st = document.createElement('style'); st.textContent = `
@@ -2289,9 +2250,9 @@ html.lite .mn[class*="kw-"]::after{display:none}
   .awk-in b{font-size:54px}
 }
 /* mode allégé (téléphones, petits processeurs) : on coupe les animations continues et les filtres coûteux */
-html.lite .table[class*="awk-"] .board-zone .mn::after,html.lite .table[class*="awk-"] .board-zone .mn::before,html.lite .table[class*="awk-"] .hand .cd::after{display:none}
+html.lite .table[class*="awk-"] .hand .cd::after{display:none}
 html.lite .table[class*="awk-"] .board-zone .mn .mn-svg{filter:none}
-html.lite .table.awk-feu .board-zone .mn{box-shadow:0 0 0 2px rgba(255,120,30,.8);border-radius:50%}
+
 html.lite .table.awk-eau .board-zone .mn{box-shadow:0 0 0 2px rgba(80,180,255,.8);border-radius:50%}
 html.lite .table.awk-foudre .board-zone .mn{box-shadow:0 0 0 2px rgba(255,220,60,.8);border-radius:50%}
 html.lite .mn.buffup::before{display:none}
@@ -2513,4 +2474,86 @@ html.lite .awk-go{animation:none}
 @keyframes cpFlash{0%,100%{box-shadow:none}25%{box-shadow:0 0 0 2px var(--cpc,#ffe39a),0 0 30px color-mix(in srgb,var(--cpc,#ffe39a) 60%,transparent)}}
 body.lite .cp-tok.cpboost::after{display:none}
 @media (prefers-reduced-motion:reduce){.cp-tok.cpboost,.cp-tok.cpboost::after,.cp-side.cpflash{animation:none}}
+`; document.head.appendChild(st); })();
+/* PC : la table occupe toute la page ; combats symétriques autour du centre */
+(function(){ const st = document.createElement('style'); st.textContent = `
+@media (min-width:1100px) and (min-height:700px){
+  body .stage{max-width:none;width:100%;height:calc(100vh - 20px);min-height:0;grid-template-columns:104px minmax(0,1fr);box-sizing:border-box}
+  :root body .table{height:100%;align-content:stretch;--tw:min(150px, calc((100cqi - 80px) / 7.4), 15.5vh);--hw:min(178px, calc((100cqi - 40px) / 8.2), 22vh)}
+  :root body .table:not(.fighting){grid-template-rows:auto auto minmax(0,1fr) auto auto}
+  :root body .table:not(.fighting) .board-zone{align-self:center}
+  :root body .table.fighting{grid-template-rows:auto minmax(0,1.5fr) minmax(0,1fr) auto auto;--tw:min(140px, calc((100cqi - 120px) / 7.8), 15vh)}
+  :root body .table.fighting:has(.duel-col){--tw:min(134px, calc((100cqi - 330px) / 7.6), 14.5vh)}
+  :root body .table.fighting.joined{--tw:min(128px, calc((100cqi - 120px) / 9.6), 14vh)}
+  :root body .table.fighting .keeper-zone.enemy{display:flex;flex-direction:column;justify-content:space-between;align-items:stretch;padding-bottom:calc(var(--tw) * .12)}
+  :root body .table.fighting .keeper-zone.enemy > .keeper{align-self:center}
+  :root body .table.fighting .board-zone{align-self:start;padding-top:calc(var(--tw) * .12)}
+  :root body .table.fighting #bdrow,:root body .table.fighting .counter-line{min-height:0}
+}
+`; document.head.appendChild(st); })();
+
+/* Éveil : manteau de chakra autour des créatures, selon le marqueur dominant (anneau tournant + particules de l'élément) */
+(function(){ const st = document.createElement('style'); st.textContent = `
+.table[class*="awk-"]{--ak1:#ffb050;--ak2:#ff6a1a;--akg:rgba(255,140,40,.85)}
+.table.awk-feu{--ak1:#ffd54f;--ak2:#ff3d00;--akg:rgba(255,110,20,.9)}
+.table.awk-vent{--ak1:#d8ffe6;--ak2:#2ee08a;--akg:rgba(80,230,150,.85)}
+.table.awk-eau{--ak1:#c8f0ff;--ak2:#1e9be0;--akg:rgba(70,180,255,.9)}
+.table.awk-foudre{--ak1:#fff7b0;--ak2:#ffd000;--akg:rgba(255,220,60,.95)}
+.table.awk-terre{--ak1:#f0d38a;--ak2:#8a5a2a;--akg:rgba(220,170,90,.85)}
+.table[class*="awk-"] .board-zone .mn:not(.dying)::before,.table[class*="awk-"] .board-zone .mn:not(.dying)::after{content:'';position:absolute;pointer-events:none;z-index:0}
+.table[class*="awk-"] .board-zone .mn .mn-svg{position:relative;z-index:1}
+/* l'anneau : un halo ovale qui tourne autour du portrait */
+.table[class*="awk-"] .board-zone .mn:not(.dying)::before{left:-5%;right:-5%;top:-5%;bottom:13%;border-radius:50%;
+  -webkit-mask:radial-gradient(farthest-side,transparent 80%,#000 86%,#000 94%,transparent 100%);mask:radial-gradient(farthest-side,transparent 80%,#000 86%,#000 94%,transparent 100%);
+  filter:drop-shadow(0 0 6px var(--akg));animation:akSpin 4s linear infinite}
+.table[class*="awk-"] .board-zone .mn .mn-svg{filter:drop-shadow(0 0 7px var(--akg)) drop-shadow(0 2px 3px rgba(0,0,0,.5))}
+.table.awk-hi .board-zone .mn .mn-svg{filter:drop-shadow(0 0 12px var(--akg)) drop-shadow(0 0 22px var(--akg))}
+@keyframes akSpin{to{transform:rotate(360deg)}}
+/* Katon : anneau de flammes + braises qui montent */
+.table.awk-feu .board-zone .mn:not(.dying)::before{background:conic-gradient(from 0deg,#ff3d00,#ffd54f 12%,#ff6d00 25%,#ffb300 40%,#ff3d00 55%,#ffd54f 70%,#ff6d00 85%,#ff3d00);animation:akSpin 3s linear infinite,akFlick .25s steps(2) infinite}
+.table.awk-feu .board-zone .mn:not(.dying)::after{left:-4%;right:-4%;top:-30%;bottom:34%;mix-blend-mode:screen;
+  background:radial-gradient(circle,#ffe082 0 1.6px,transparent 2.6px) 0 0/22% 34%,radial-gradient(circle,#ff9100 0 2px,transparent 3px) 11% 15%/29% 41%,radial-gradient(circle,#ffd54f 0 1.3px,transparent 2.3px) 5% 7%/17% 27%;
+  -webkit-mask:linear-gradient(0deg,transparent,#000 30%,#000 60%,transparent);mask:linear-gradient(0deg,transparent,#000 30%,#000 60%,transparent);animation:akEmber 1.6s linear infinite}
+@keyframes akFlick{50%{opacity:.78}}
+@keyframes akEmber{from{background-position:0 100%,11% 115%,5% 107%}to{background-position:0 0,11% 15%,5% 7%}}
+/* Fûton : bourrasques qui tournoient vite + traînées */
+.table.awk-vent .board-zone .mn:not(.dying)::before{background:conic-gradient(transparent 0 8%,#d8ffe6 8% 20%,transparent 20% 33%,#2ee08a 33% 45%,transparent 45% 58%,#d8ffe6 58% 70%,transparent 70% 83%,#2ee08a 83% 95%,transparent 95%);animation:akSpin 1.1s linear infinite}
+.table.awk-vent .board-zone .mn:not(.dying)::after{left:-18%;right:-18%;top:10%;bottom:40%;mix-blend-mode:screen;
+  background:linear-gradient(90deg,transparent,rgba(216,255,230,.9) 45%,transparent 55%) 0 20%/60% 2px no-repeat,linear-gradient(90deg,transparent,rgba(46,224,138,.9) 45%,transparent 55%) 0 60%/45% 2px no-repeat,linear-gradient(90deg,transparent,rgba(216,255,230,.8) 45%,transparent 55%) 0 90%/55% 2px no-repeat;
+  animation:akGust 1.2s linear infinite}
+@keyframes akGust{from{background-position:-80% 20%,-60% 60%,-90% 90%}to{background-position:180% 20%,170% 60%,190% 90%}}
+/* Suiton : anneau d'eau lent + ondes qui s'élargissent */
+.table.awk-eau .board-zone .mn:not(.dying)::before{background:conic-gradient(from 0deg,#1e9be0,#c8f0ff 15%,#4fc3f7 30%,#0277bd 50%,#b3e5fc 70%,#29b6f6 85%,#1e9be0);animation:akSpin 6s linear infinite}
+.table.awk-eau .board-zone .mn:not(.dying)::after{left:-2%;right:-2%;top:-2%;bottom:16%;border-radius:50%;box-shadow:0 0 0 2px rgba(200,240,255,.85),0 0 12px rgba(70,180,255,.8);animation:akRipple 2s ease-out infinite}
+@keyframes akRipple{0%{transform:scale(.95);opacity:.95}100%{transform:scale(1.28);opacity:0}}
+/* Raiton : arcs électriques qui crépitent */
+.table.awk-foudre .board-zone .mn:not(.dying)::before{background:conic-gradient(transparent 0 6%,#fff7b0 6% 8%,transparent 8% 22%,#ffd000 22% 25%,transparent 25% 41%,#b8e4ff 41% 43%,transparent 43% 58%,#fff7b0 58% 61%,transparent 61% 76%,#ffd000 76% 78%,transparent 78% 92%,#b8e4ff 92% 94%,transparent 94%);
+  -webkit-mask:radial-gradient(farthest-side,transparent 74%,#000 80%,#000 100%);mask:radial-gradient(farthest-side,transparent 74%,#000 80%,#000 100%);animation:akBolt .32s steps(3) infinite}
+.table.awk-foudre .board-zone .mn:not(.dying)::after{left:-3%;right:-3%;top:-3%;bottom:15%;border-radius:50%;box-shadow:0 0 0 1.5px rgba(255,247,176,.9),0 0 14px rgba(255,220,60,.9),inset 0 0 10px rgba(140,200,255,.6);animation:akZap .9s steps(2) infinite}
+@keyframes akBolt{0%{transform:rotate(0)}33%{transform:rotate(71deg)}66%{transform:rotate(203deg)}100%{transform:rotate(290deg)}}
+@keyframes akZap{50%{opacity:.35}}
+/* Doton : halo de roche ambrée et éclats qui orbitent lentement */
+.table.awk-terre .board-zone .mn:not(.dying)::before{background:conic-gradient(from 0deg,#b07a3a,#ffe7a0 14%,#8a5a2a 30%,#f5d27a 48%,#b07a3a 64%,#ffdf8a 80%,#b07a3a);
+  -webkit-mask:radial-gradient(farthest-side,transparent 78%,#000 84%,#000 97%,transparent 100%);mask:radial-gradient(farthest-side,transparent 78%,#000 84%,#000 97%,transparent 100%);animation:akSpin 12s linear infinite,akPulse 2.4s ease-in-out infinite}
+.table.awk-terre .board-zone .mn:not(.dying)::after{left:-9%;right:-9%;top:-9%;bottom:9%;border-radius:50%;
+  background:radial-gradient(circle at 50% 4%,#ffe7a0 0 5%,#5a3a1a 6.5%,transparent 7.5%),radial-gradient(circle at 96% 52%,#f5d27a 0 4.5%,#5a3a1a 6%,transparent 7%),radial-gradient(circle at 50% 96%,#ffe7a0 0 5%,#5a3a1a 6.5%,transparent 7.5%),radial-gradient(circle at 4% 48%,#f5d27a 0 4.5%,#5a3a1a 6%,transparent 7%);
+  animation:akSpin 7s linear infinite reverse}
+@keyframes akPulse{50%{filter:drop-shadow(0 0 12px var(--akg)) brightness(1.25)}}
+/* main : liseré lumineux de l'élément */
+.table[class*="awk-"] .hand .cd{box-shadow:0 0 0 2px var(--ak2),0 0 14px var(--akg)}
+html.lite .table[class*="awk-"] .board-zone .mn::before,html.lite .table[class*="awk-"] .board-zone .mn::after{animation:none}
+html.lite .table[class*="awk-"] .board-zone .mn::after{display:none}
+@media (prefers-reduced-motion:reduce){.table[class*="awk-"] .board-zone .mn::before,.table[class*="awk-"] .board-zone .mn::after{animation:none}}
+`; document.head.appendChild(st); })();
+(function(){ const st = document.createElement('style'); st.textContent = `
+@media (min-width:1100px) and (min-height:700px) and (max-height:900px){
+  :root body .table{--tw:min(130px, calc((100cqi - 80px) / 7.4), 13vh);--hw:min(150px, calc((100cqi - 40px) / 8.2), 19vh)}
+  :root body .table.fighting{--tw:min(120px, calc((100cqi - 120px) / 7.8), 12vh)}
+  :root body .table.fighting:has(.duel-col){--tw:min(116px, calc((100cqi - 330px) / 7.6), 11.5vh)}
+  :root body .table.fighting.joined{--tw:min(110px, calc((100cqi - 120px) / 9.6), 11.5vh)}
+}
+@media (min-width:1100px) and (min-height:1200px){
+  :root body .table{--tw:min(190px, calc((100cqi - 80px) / 7.4), 15vh)}
+  :root body .table.fighting:has(.duel-col){--tw:min(170px, calc((100cqi - 380px) / 7.6), 14vh)}
+}
 `; document.head.appendChild(st); })();
