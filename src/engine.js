@@ -1204,6 +1204,7 @@ const OPS = {
   pow0(G, p) {
     const h = HEROES[p.hero]; if (!h || !h.cost || p.pu || powPurse(G, p) < h.cost) return false;
     if (h.pw && !powRun(G, p, h.pw)) return false;
+    if (powPaid(G)) p.ckSpent = 1;
     if (p.hero === 'egide') { const c = p.bd.filter(m => !has(m, 's')); if (!c.length) return false; addF(pickR(c), 's'); }
     if (p.hero === 'ondine') { if (!p.bd.length) return false; buff(pickR(p.bd), 1, 2); }
     if (p.hero === 'paul') { const f = p.bd.filter(m => tribe(m) === 'sq_feu'); if (!f.length) return false; const t = pickR(f); buff(t, 2, 1); f.forEach(m => { if (m !== t) buff(m, 1, 0); }); }
@@ -1434,7 +1435,7 @@ function startRecruit() {
     if (p.hero === 'barnabe' && G.rd % 2 === 0) p.g += 1;
     p.uc = Math.max(0, p.uc - 1);
     if (p.fz) { p.fz = false; topUpShop(G, p); } else fillShop(G, p);
-    p.pu = false; p.castN = 0; p.fbq = false; p.njf = 0; p.sylv = false; p.rr = 0; p.rdy = false; p.lastRes = p.res ? (p.res.cr || p.res.r) : null; p.res = null;
+    p.pu = false; p.castN = 0; p.castEls = []; p.ckSpentLast = p.ckSpent || 0; p.ckSpent = 0; p.hd.forEach(x => { if (x.sp && SPELLS[x.sp] && SPELLS[x.sp].chg) x.ch = Math.min(2, (x.ch || 0) + 1); }); p.fbq = false; p.njf = 0; p.sylv = false; p.rr = 0; p.rdy = false; p.lastRes = p.res ? (p.res.cr || p.res.r) : null; p.res = null;
     if (p.inc && p.inc.length) p.g += p.inc.shift() || 0;
     { const w = pwOf(p); if (w && w.k === 'pturn' && p.hero && /^nh_/.test(p.hero)) { if (w.g) p.g += w.g; if (w.el) mkAdd(p, w.el, w.n); } }
     trigBoard(G, p, 'sot');
@@ -1449,7 +1450,7 @@ function startRecruit() {
     // pureté : 5 serviteurs ou plus d'un même clan → +1 chakra
     if (inMechAny(G, 'chakra')) { const n = {}; p.bd.forEach(m => { const t = CD(m.c).tr; if (CLAN_EL[t]) n[t] = (n[t] || 0) + 1; }); const pure = Object.keys(n).find(t => n[t] >= 5) || null; p.pure = pure; if (pure) p.ck = Math.min(ckMax(p), (p.ck || 0) + 1); }
     { const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'pck') p.ck = Math.min(ckMax(p), (p.ck || 0) + w.n); if (w && w.k === 'ptech' && G.rd % 2 === 0 && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); } }
-    p.bd.forEach(m => { delete m.tmp; }); p.tma = null;
+    p.bd.forEach(m => { delete m.tmp; }); p.tma = null; p.foe = null;
   }
   G.ph = 'recruit';
   const live = humansLive(G).length;
@@ -1488,6 +1489,7 @@ function endRecruit() {
     const heat = x => (x.fbq ? (x.fb || 3) : 0) + (x.hero === 'pyra' ? 2 : 0) + (x.njf || 0) + (HEROES[x.hero] && HEROES[x.hero].pw && HEROES[x.hero].pw.k === 'pfire' ? HEROES[x.hero].pw.d * (awake(G) ? 2 : 1) : 0) + (awake(G) && x.bd ? Math.floor((x.charge || 0) / 2) * (x.bd.some(m => hasFx(m, 'awk_storm')) ? 2 : 1) : 0);
     const fire = [heat(p), ghost ? 0 : heat(q)];
     const pb = combatBoard(p), qcb = combatBoard(ghost || q);
+    foeApply(p, qcb); if (!ghost) foeApply(q, pb);
     // après l'Éveil (Ninja) : compagnon et bête d'invocation rejoignent la bataille, en tête de rangée
     const join = awake(G) && inMechAny(G, 'chakra') && (typeof AWK_JOIN === 'undefined' || AWK_JOIN);
     const lead = x => x && x.cp ? [resonate(x, Object.assign({}, x.cp, { duo:1 }))].concat(x.bst ? [Object.assign({}, x.bst, { duo:1 })] : []) : [];
@@ -1591,7 +1593,7 @@ function hostTick() {
 }
 
 /* ---------- diffusion ---------- */
-const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u }; const o = { c:m.c, a:m.a, h:m.h }; if (m.rk) o.rk = m.rk; if (m.memo) o.memo = m.memo; if (m.el) o.el = m.el; if (m.fu) o.fu = m.fu; if (m.xp) o.xp = m.xp; if (m.eq && m.eq.length) o.eq = m.eq; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; if (m.bn) o.bn = m.bn; return o; };
+const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u, ch:m.ch || 0, us:m.us || 0 }; const o = { c:m.c, a:m.a, h:m.h }; if (m.rk) o.rk = m.rk; if (m.memo) o.memo = m.memo; if (m.el) o.el = m.el; if (m.fu) o.fu = m.fu; if (m.xp) o.xp = m.xp; if (m.eq && m.eq.length) o.eq = m.eq; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; if (m.bn) o.bn = m.bn; return o; };
 const fullM = m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g || 0, f:m.f || '', u:m.u }; if (m.x) o.x = m.x; if (m.domb) o.domb = m.domb; if (m.awk) o.awk = m.awk; if (m.duo) o.duo = 1; if (m.el) o.el = m.el; return o; };
 function pubData() {
   const G = H.G;

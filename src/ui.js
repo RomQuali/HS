@@ -877,6 +877,7 @@ function ruleTabH(k) {
       return `<div class="rl-p"><p>Chaque technique a une <b>nature</b> : ${['feu', 'vent', 'eau', 'foudre', 'terre'].map(el).join('')}. Celles de l'élément de ton héros coûtent <b>1 chakra de moins</b>.</p>
         <div class="rl-rsv"><span class="rl-scroll big"><i style="background:#4ab0e8"></i><i></i></span><span>→</span><span class="rl-scroll big"><i style="background:#4ab0e8"></i><i style="background:#ff7a2a"></i></span><span>→</span><b class="rl-boom">Combo !</b></div>
         <p>La 1re technique remplit une moitié du <b>réservoir</b>, la 2e l'autre : le mélange déclenche un <b>combo</b> (effet sur ton plateau + pouvoir au compagnon), puis le réservoir se vide. Deux fois le même élément : <b>combo pur</b>. La moitié remplie reste d'un tour à l'autre.</p>
+        <ul class="rl-ul"><li><b>Katon · Kinjutsu</b> : se paient en PV du héros au lieu du chakra.</li><li><b>Fûton · À charger</b> : gardée en main, la technique se renforce (×2 puis ×3).</li><li><b>Suiton · Rouleaux</b> : utilisables 2 fois.</li><li><b>Raiton · Combiné</b> : bonus si tu as déjà lancé une technique d'une autre nature ce tour.</li><li><b>Doton · Mode ermite</b> : bonus si ton chakra est plein ou si tu n'as rien dépensé au tour précédent.</li><li><b>Hiden</b> (1 par clan) : il faut 3 serviteurs du clan. <b>Henge</b> : transforme un serviteur en un de son clan d'un niveau plus haut.</li></ul>
         <div class="njl-combos">${pairs}</div></div>`; }
     case 'comp': return `<div class="rl-p"><div class="rl-duel">${faceH('art-c_nj_glaces')}<span class="rl-vs">VS</span>${faceH('art-c_nj_kurama')}</div>
       <p>Ton compagnon est <b>déjà en jeu, doré</b>, à côté de ton plateau. Il ne combat que le <b>compagnon adverse</b> et ne blesse jamais le héros.</p>
@@ -2484,3 +2485,5 @@ html.lite .awk-go{animation:none}
 }`; document.head.appendChild(st); })();
 
 (function(){ const st = document.createElement('style'); st.textContent = `.hpk-b small .hpk-pn{font-size:12px;color:#ffd86a;font-weight:700}`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `.tx-tag{display:inline-block;padding:0 5px;margin-right:2px;border-radius:6px;font-weight:700;font-size:.9em;color:#120a06;background:#c8e8ff}.tx-tag.kin{background:#ff9a7a}.tx-tag.hid{background:#ffd86a}`; document.head.appendChild(st); })();
