@@ -264,7 +264,14 @@ Object.assign(ART, {
   c_nj_glaces: NJ('eau', '#2f7ab8', { skin:'#f0c4a0', hair:'#2e8a8a', hs:'bun', mask:false, eyes:'happy', mouth:'smile', shirt:'#2a5a7a' }),
   c_nj_lapin: NJ('foudre', '#c8a020', { skin:'#8a5a3c', hair:'#e8e2da', hs:'short', mask:false, eyes:'dot', mouth:'o', shirt:'#3a3a4a' }),
   c_nj_songoku: NJ('terre', '#7a5a3a', { skin:'#c98e66', hair:'#4a2f1d', hs:'curly', mask:false, eyes:'dot', mouth:'smile', shirt:'#5a4a32' }),
-  c_nj_gamabunta: () => beast({ sp:'wolf', col:'#8a5a4a', belly:'#e8b894', eye:'#ffb04a', glow:'#ff7a2a' }),
+  // crapaud des montagnes : dessin original (corps trapu, gros yeux, verrues)
+  c_nj_gamabunta: () => `<ellipse cx="50" cy="96" rx="44" ry="20" fill="#4f6b2a" ${so()}/>`
+    + `<path d="M12 70 C 10 44, 28 30, 50 30 C 72 30, 90 44, 88 70 C 86 86, 70 94, 50 94 C 30 94, 14 86, 12 70 Z" fill="#7a9a3a" ${so()}/>`
+    + `<path d="M24 74 C 34 86, 66 86, 76 74 C 70 90, 30 90, 24 74 Z" fill="#d8d49a" ${so(1.6)}/>`
+    + [[28, 34], [72, 34]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r="13" fill="#7a9a3a" ${so()}/><circle cx="${x}" cy="${y}" r="8.5" fill="#f4e27a" ${so(1.6)}/><ellipse cx="${x}" cy="${y + 1}" rx="7" ry="2.6" fill="#1a1208"/>`).join('')
+    + `<path d="M26 66 Q50 80 74 66" fill="none" ${so(2.6)}/><path d="M24 64 L28 68 M76 64 L72 68" ${so(2)}/>`
+    + `<circle cx="44" cy="54" r="1.6" fill="#1a1208"/><circle cx="56" cy="54" r="1.6" fill="#1a1208"/>`
+    + [[20, 56, 3], [80, 58, 3.4], [34, 46, 2.2], [66, 46, 2.4], [86, 72, 2.6], [15, 76, 2.4], [62, 88, 2], [40, 89, 2]].map(([x, y, r]) => `<circle cx="${x}" cy="${y}" r="${r}" fill="#5f7d2c" stroke="#3a4a1a" stroke-width="1"/>`).join(''),
   c_nj_aigle: () => elemental({ kind:'fire', sparks:'#ffd34d' }),
   c_nj_chatnoir: () => NJ('feu', '#c8402a', { skin:'#e8b894', hair:'#c8392f', hs:'bun', mask:false, eyes:'dot', mouth:'flat', shirt:'#8a2a1a', earring:1 })(),
   c_nj_corbeau: () => dragonHead({ col:'#e8602a', fire:true, frill:1 }),
