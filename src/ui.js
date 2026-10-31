@@ -2631,3 +2631,23 @@ html.lite .table[class*="awk-"] .board-zone .mn::after{display:none}
 html.lite .keeper-zone .mn.tripok .mn-svg{filter:drop-shadow(0 0 8px rgba(255,210,90,.95))}
 html.lite .keeper-zone .mn.pairok::before,html.lite .keeper-zone .mn.tripok::before,html.lite .keeper-zone .mn.tripok::after{animation:none}
 `; document.head.appendChild(st); })();
+/* PC : proportions d'un auto-battler classique (portraits ~16 % de la hauteur, créatures ~17 %, rangées à 35 % / 57 %, héros à 80 %, main qui dépasse du bas) */
+(function(){ const st = document.createElement('style'); st.textContent = `
+@media (min-width:1100px) and (min-height:700px){
+  :root body .table:not(.fighting) .board-zone,:root body .table:not(.fighting) .board-zone.has-cp,:root body .table:not(.fighting) .keeper-zone,
+  :root body .table.fighting,:root body .table.fighting:has(.duel-col),:root body .table.fighting.joined{--tw:min(200px, calc((100cqi - 300px) / 7.6), 14.2vh)}
+  :root body .table{--hw:min(230px, calc((100cqi - 40px) / 7.4), 20vh)}
+  :root body .table .hand{height:calc(var(--hw) * .5);overflow:visible}
+  :root body .table .keeper{zoom:1.55}
+  :root body .table .hero-zone{zoom:1.35}
+  :root body .table.fighting{grid-template-rows:auto minmax(0,1.65fr) minmax(0,1fr) auto auto}
+}
+@media (min-width:1100px) and (min-height:700px) and (max-height:900px){
+  :root body .table .keeper{zoom:1.25}
+  :root body .table .hero-zone{zoom:1.05}
+}
+`; document.head.appendChild(st); })();
+(function(){ const st = document.createElement('style'); st.textContent = `
+@media (min-width:1100px) and (min-height:700px) and (max-height:900px){ :root body .table.fighting{grid-template-rows:auto minmax(0,1.3fr) minmax(0,1fr) auto auto} }
+@media (min-width:1100px) and (min-height:1200px){ :root body .table .keeper{zoom:2.05} :root body .table .hero-zone{zoom:1.8} }
+`; document.head.appendChild(st); })();
