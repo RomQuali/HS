@@ -419,7 +419,7 @@ const comboTx = F => F ? (COMBO_BD[F.n] || [''])[0] : '';
 function rsvFill(G, p, el) {
   p.rsv = p.rsv || [];
   p.rsv.push(el);
-  comps(p).forEach(c => { c.el = el; });   // le compagnon prend l'élément de la dernière technique
+  comps(p).forEach(c => { if (!c.elLock) c.el = el; });   // le compagnon prend l'élément de la dernière technique (sauf s'il a été fixé)
   if (p.rsv.length < 2) return;
   const [a, b] = p.rsv, F = comboOf(a, b); p.rsv = [];
   if (!F) return;

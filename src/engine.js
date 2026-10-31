@@ -1047,7 +1047,15 @@ const fusion3Of = (a, b, c) => a && b && c && new Set([a, b, c]).size === 3 ? FU
 const XP_LV = [0, 3, 7, 12, 18];
 const compLv = m => { let lv = 1; XP_LV.forEach((x, k) => { if ((m.xp || 0) >= x) lv = k + 1; }); return Math.min(5, lv); };
 const eqSlots = m => 3 + (compLv(m) >= 3 ? 1 : 0) + (compLv(m) >= 5 ? 1 : 0);
-function giveXp(m, n) { const before = compLv(m); m.xp = (m.xp || 0) + n; const after = compLv(m); for (let l = before + 1; l <= after; l++) buff(m, 2, 2); m.lv = after; }
+// pouvoirs fixes du compagnon aux niveaux 3 et 5, propres à son clan
+const COMP_LV = {
+  feu:{ 3:['Début du duel : 2 dégâts à l\'adversaire', { k:'soc_dmg', d:2, n:1 }], 5:['Après avoir attaqué : gagne +3 attaque', { k:'atk_self', a:3, h:0 }] },
+  vent:{ 3:['Furie des vents (attaque deux fois)', 'w'], 5:['Après avoir attaqué : 2 dégâts à l\'ennemi', { k:'atk_zap', d:2, n:1 }] },
+  eau:{ 3:['Bouclier divin', 's'], 5:['Quand il survit à un coup : +2/+2', { k:'surv_self', a:2, h:2 }] },
+  foudre:{ 3:['Après avoir attaqué : 2 dégâts à l\'ennemi', { k:'atk_zap', d:2, n:1 }], 5:['Début du duel : 3 dégâts à l\'adversaire', { k:'soc_dmg', d:3, n:1 }] },
+  terre:{ 3:['Début du duel : gagne +2/+0', { k:'soc_self', a:2, h:0 }], 5:['Après avoir attaqué : +1/+1', { k:'atk_self', a:1, h:1 }] },
+};
+function giveXp(m, n) { const before = compLv(m); m.xp = (m.xp || 0) + n; const after = compLv(m); for (let l = before + 1; l <= after; l++) { buff(m, 2, 2); const P = (COMP_LV[CLAN_EL[CD(m.c).tr]] || {})[l]; if (P) withSrc('Niveau ' + l, () => { if (typeof P[1] === 'string') addF(m, P[1]); else (m.x = m.x || []).push(Object.assign({ src:'Niveau ' + l }, P[1])); }); } m.lv = after; }
 // affinité : une technique de l'élément du héros coûte 1 chakra de moins
 const ckCost = (p, S) => Math.max(0, (S.ck || 0) - (S.el && HEROES[p.hero] && HEROES[p.hero].clan === S.el ? 1 : 0));   // affinité : 1 de moins dans l'élément du héros
 const CLAN_EL = { n_feu:'feu', n_vent:'vent', n_eau:'eau', n_foudre:'foudre', n_terre:'terre' };
@@ -1122,6 +1130,8 @@ const OPS = {
     });
     return true;
   },
+  // fixer l'élément du compagnon (2 chakra)
+  cpel(G, p, a) { if (!p.cp || !ELS[a.el] || (p.ck || 0) < 2 || compEl(p.cp) === a.el) return false; p.ck -= 2; p.cp.el = a.el; p.cp.elLock = 1; return true; },
   // choisir une des 3 améliorations du coffre
   // choix obligatoire d'une récompense sur 3 : elle se range dans l'entraînement, les 2 autres sont perdues
   upick(G, p, a) { const o = p.choice && p.choice[a.i]; if (!o || !p.cp) return false;
@@ -1349,7 +1359,7 @@ function endRecruit() {
       const ca0 = ca.map(fullM), cb0 = cbb.map(fullM);
       const cs = rint(1e9), cr = simulate(ca, cbb, cs, p.t, qt, [0, 0], G.mx);
       duel = { a:ca0, b:cb0, w:cr.w, seed:cs };
-      if (cr.w === 0 && p.cp) giveXp(p.cp, 2); if (!ghost && cr.w === 1 && q.cp) giveXp(q.cp, 2);
+      if (cr.w === 0 && p.cp) { giveXp(p.cp, 2); mkAdd(p, compEl(p.cp), 2); } if (!ghost && cr.w === 1 && q.cp) { giveXp(q.cp, 2); mkAdd(q, compEl(q.cp), 2); }
     }
     // après l'Éveil : coffre majeur si le compagnon est encore debout à la fin de la bataille
     const stand = (x, side) => x && x.cp && r.alive && (r.alive[side] || []).includes(x.cp.c) ? 'win' : 'loss';
@@ -1370,12 +1380,16 @@ function endRecruit() {
   broadcast();
 }
 // domination : un compagnon dont l'élément l'emporte sur celui d'en face gagne +4/+4 pour ce combat (×2 avec le Talisman des cycles)
+var DOM = { up:.5, dn:.35 };
 function elementDuel(a, b) {
   const elOf = bd => { const c = bd.find(isComp); if (c) return compEl(c); const n = {}; bd.forEach(m => { const e = CLAN_EL[CD(m.c).tr]; if (e) n[e] = (n[e] || 0) + 1; }); return Object.keys(n).sort((x, y) => n[y] - n[x])[0] || null; };
   const ea = elOf(a), eb = elOf(b);
   for (const [bd, mine, theirs] of [[a, ea, eb], [b, eb, ea]]) {
     if (!mine || !theirs || EL_DOM[mine] !== theirs) continue;
-    bd.filter(isComp).forEach(c => { const x = ((c.eq || []).includes('eq_talisman') ? 8 : 4) + (c.domb || 0); c.a += x; c.h += x; });
+    // domination renforcée : le compagnon dominant gagne +4/+4 (+ talisman) et +DOM.up de ses stats ; le compagnon dominé perd DOM.dn de son attaque et de sa vie
+    const foe = bd === a ? b : a;
+    bd.filter(isComp).forEach(c => { const x = ((c.eq || []).includes('eq_talisman') ? 8 : 4) + (c.domb || 0); c.a += x + Math.round(c.a * DOM.up); c.h += x + Math.round(c.h * DOM.up); });
+    foe.filter(isComp).forEach(c => { c.a = Math.max(1, Math.round(c.a * (1 - DOM.dn))); c.h = Math.max(1, Math.round(c.h * (1 - DOM.dn))); });
   }
 }
 // vol de chakra : « Début du combat » (plateaux de départ) et « Râle d'agonie » (serviteurs morts)

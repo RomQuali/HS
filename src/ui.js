@@ -302,7 +302,7 @@ function chakraLawH(big) {
   return `<span class="ban-law ck-law njl${big ? ' big' : ''}">
     ${sec('🪙', 'Ressources', `<small><b>Or</b> : serviteurs, techniques et pouvoir du héros.</small><small><b>Chakra</b> : chaque ninja en jeu en donne 1 par tour (10 au plus). Il lance les techniques et pose les récompenses.</small>`)}
     ${sec('📜', 'Techniques et réservoir', `<small>Les techniques ont une <b>nature</b> (Feu, Vent, Eau, Foudre, Terre) et suivent le jeu de leur clan ; celles de l'élément de ton héros coûtent 1 chakra de moins.</small><small>Chaque technique remplit une moitié du <b>réservoir</b> ; la 2e déclenche un <b>combo</b> (effet sur ton plateau + pouvoir hybride au compagnon). Deux fois le même élément : combo pur.</small><span class="njl-combos">${pairs}</span>`)}
-    ${sec('⚔️', 'Compagnon et duel', `<span class="njl-row">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<span><small>Ton compagnon est déjà en jeu, <b>triplé</b> et hors plateau. En combat, il affronte <b>seulement le compagnon adverse</b> et ne blesse jamais le héros.</small><small>Il prend l'élément de ta dernière technique : s'il domine celui d'en face, <b>+4/+4</b>.</small><small>Il gagne de l'expérience (technique +1, duel gagné +2) et monte de niveau.</small></span></span>`)}
+    ${sec('⚔️', 'Compagnon et duel', `<span class="njl-row">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<span><small>Ton compagnon est déjà en jeu, <b>triplé</b> et hors plateau. En combat, il affronte <b>seulement le compagnon adverse</b> et ne blesse jamais le héros.</small><small>Il prend l'élément de ta dernière technique, ou celui que tu fixes (2 chakra). S'il domine celui d'en face, il se renforce et l'adversaire s'affaiblit. Gagner le duel donne +2 marqueurs de son élément.</small><small>Il gagne de l'expérience (technique +1, duel gagné +2) ; les niveaux 3 et 5 débloquent un pouvoir propre à son clan.</small></span></span>`)}
     ${sec('🎁', 'Coffres et entraînement', `<small>Le <b>duel</b> décide du coffre : majeur s'il gagne, mineur sinon. Tu choisis <b>1 récompense sur 3</b> pour une des 5 pièces du compagnon (lame, armure, bandeau, gantelets, talisman).</small><span class="njl-rar">${RARS.map((R, i) => `<i style="--c:${R.col}">${R.n} · ${i + 1} chakra</i>`).join('')}</span><small>Elle se range dans l'entraînement et se pose avec du chakra.</small><small><b>Parchemins de pacte</b> : ils préparent la <b>bête d'invocation</b> du clan de ton compagnon (Salamandre, Loup, Serpent, Tigre, Sanglier). Elle apparaît à l'Éveil, plus forte à chaque parchemin, et combat à ses côtés dans le duel.</small>`)}
     ${sec('🔥', 'Marqueurs de clan', `<small>Chaque clan a son marqueur : <b style="color:#ff8a4a">Braises</b>, <b style="color:#8fe0b0">Souffle</b>, <b style="color:#6fc8ff">Marée</b>, <b style="color:#ffd23a">Charge</b>, <b style="color:#d8c0a0">Roche</b>. Ils tournent autour de ton héros.</small><small><b>Gain</b> : +1 par technique de leur nature, serviteurs du clan, Sceaux de clan des coffres.</small><small><b>Paliers</b> (5, 10, 20 gagnés) : le clan gagne des stats en combat, puis un mot-clé au 3e palier.</small><small><b>Éclat</b> : chaque combo consomme 5 marqueurs de chacun de ses éléments pour un effet en plus.</small><small><b>Pureté</b> : 5 serviteurs d'un même clan donnent +1 chakra par tour et doublent les marqueurs gagnés.</small>`)}
     ${sec('🌅', 'Éveil (4 joueurs ou moins)', `<small>Les <b>clans</b> libèrent leur pouvoir (Phénix, Ouragan, Raz-de-marée, Orage total, Avalanche), ton <b>compagnon</b> prend sa forme ultime et <b>rejoint la bataille</b> avec sa bête d'invocation (au centre de ta rangée ; coffre majeur s'il est encore debout), le pouvoir de ton <b>héros</b> est renforcé, chaque <b>technique</b> gagne son effet d'Éveil et des techniques interdites apparaissent. Les <b>coffres</b> donnent alors des serviteurs ou techniques puissants ; les joueurs de la moitié basse au classement ont au moins de l'Épique et les reçoivent gratuitement en main. Tes cartes prennent l'aura de ton marqueur dominant.</small>`)}
@@ -569,9 +569,10 @@ function compSheetH(mc, lv, eq) {
   const eqH = eq.length ? eq.map(id => `<div class="peq-i"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="pq-${id}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#pq-${id})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span><b>${esc(SPELLS[id].n)}${(lv[id] || 1) > 1 ? ` · niv. ${lv[id]}` : ''}</b><small>${esc(eqBonusTx(id, lv[id] || 1))}</small></span></div>`).join('') : '<small class="peq-e">Aucun équipement : pose-lui des médailles depuis l\'entraînement.</small>';
   return `<div class="peq">
     <div class="pq-row"><span class="pq-lv"><b>Niveau ${L}</b><small>${nx ? `${mc.xp || 0} / ${nx} expérience` : 'Niveau maximum'}</small></span>
-      ${E ? `<span class="pq-el" style="--c:${E.col}"><i></i><span><b>${E.n}</b><small>domine ${ELS[EL_DOM[el]].n} · +4/+4</small></span></span>` : ''}</div>
+      ${E ? `<span class="pq-el" style="--c:${E.col}"><i></i><span><b>${E.n}${mc.elLock ? ' · fixé' : ''}</b><small>domine ${ELS[EL_DOM[el]].n} : il se renforce, l'adversaire s'affaiblit</small></span></span>` : ''}</div>
     ${(() => { const A = COMP_AWK[CLAN_EL[CD(mc.c).tr]]; return A ? `<div class="pq-awk${mc.awk ? ' on' : ''}"><b>${mc.awk ? 'Forme éveillée' : 'À l\'Éveil'} · ${esc(A.n)}</b><small>${esc(A.tx)}</small></div>` : ''; })()}
     ${(() => { const n = (mc.pact || []).length, el = CLAN_EL[CD(mc.c).tr], bc = el && C['nb_' + el]; if (!bc) return ''; const b = V.me && V.me.bst; return `<div class="pq-awk pq-bst${b ? ' on' : ''}"><b>${b ? 'Bête invoquée' : 'Invocation à l\'Éveil'} · ${esc(bc.n)}</b><small>${b ? `${b.a}/${b.h} · combat avec lui dans le duel` : n ? `${n} parchemin${n > 1 ? 's' : ''} de pacte : elle apparaîtra à l'Éveil et combattra avec lui dans le duel.` : 'Pose des parchemins de pacte (coffres) pour qu\'elle apparaisse à l\'Éveil.'}</small></div>`; })()}
+    ${(() => { const P = COMP_LV[CLAN_EL[CD(mc.c).tr]]; return P ? `<div class="pq-lvp">${[3, 5].map(l => `<span class="${L >= l ? 'on' : ''}"><b>Niv. ${l}</b> ${esc(P[l][0])}</span>`).join('')}</div>` : ''; })()}
     <div class="pq-combo${fu ? '' : ' none'}" style="--c:${fuCol || '#8a7a5a'}"><b>${fu ? 'Combo · ' + esc(mc.fu) : 'Aucun combo'}</b><small>${fu ? esc(fxText(fu)) : 'Remplis le réservoir avec deux techniques : le combo lui donne un pouvoir hybride.'}</small></div>
     <b class="peq-t">Pièces · ${PIECE_IDS.reduce((t, pc) => t + pieceList(mc, pc).length, 0)} amélioration(s)</b>${PIECE_IDS.map(pc => { const L = pieceList(mc, pc); return `<div class="peq-i">${pieceIco(pc)}<span><b>${esc(PIECES[pc].n)}</b><small>${L.length ? L.map(r => `<em style="color:${RARS[r].col}">${RARS[r].n}</em> ${esc(upTx({ pc, r }, mc))}`).join(' · ') : 'Aucune amélioration'}</small></span></div>`; }).join('')}
     <small class="pq-duel">En combat, il affronte seulement le compagnon adverse : s'il gagne, coffre majeur.</small>
@@ -724,7 +725,8 @@ function cpSideH(me, F, side) {
   }
   const toks = list.map((m, k) => { const [tc, ex] = fx[m.u] || ['', ''];
     return tokenH(m, side ? 'duelb' : 'cp', k, { cls:'cp-tok' + (k ? ' bst-tok' : '') + (m.awk ? ' awk' : '') + (tc ? ' ' + tc : '') + (V.dHide != null && V.dHide === m.u ? ' dhide' : '') }).replace(/<\/div>$/, ex + '</div>'); }).join('');
-  return `<div class="cp-side${cls}${list.length > 1 ? ' two' : ''}" id="cps${side}" aria-label="${esc(lab)}"><span class="cp-toks">${toks}</span><small>${esc(lab)}</small></div>`;
+  const elPick = !F && !side && me.cp && V.pub && V.pub.ph === 'recruit' ? `<span class="cp-els" aria-label="Fixer l'élément du compagnon (2 chakra)">${['feu', 'vent', 'foudre', 'terre', 'eau'].map(e => `<button class="cp-el${compEl(me.cp) === e ? ' on' : ''}" style="--c:${ELS[e].col}" data-act="cpel" data-el="${e}" ${compEl(me.cp) === e || (me.ck || 0) < 2 ? 'disabled' : ''} title="${esc('Élément ' + ELS[e].n + ' : domine ' + ELS[EL_DOM[e]].n + '. Fixer coûte 2 chakra.')}"><svg viewBox="-12 -12 24 24">${EL_ICON[e]}</svg></button>`).join('')}</span>` : '';
+  return `<div class="cp-side${cls}${list.length > 1 ? ' two' : ''}" id="cps${side}" aria-label="${esc(lab)}"><span class="cp-toks">${toks}</span>${elPick}<small>${esc(lab)}</small></div>`;
 }
 function cpSlotH(me, F) {
   const lv = compLv(me.cp);
@@ -942,6 +944,7 @@ function doAct(act, btn) {
     case 'skip': if (V.fight) { clearTimeout(V.fightT); clearTimeout(V.duelT); if (V.fight.dr) { V.di = V.fight.dr.frames.length - 1; V.fight.ddone = true; } if (V.fight.lunge) { try { V.fight.lunge.cancel(); } catch (e) {} V.fight.lunge = null; } V.fi = V.fight.r.frames.length - 1; V.fight.done = true; render(); fxEnd(); } break;
     case 'buy': if (s) { sendAct({ t:'buy', i:s.i }); V.sel = null; } break;
     case 'buysp': sendAct({ t:'buysp' }); V.sel = null; break;
+    case 'cpel': sendAct({ t:'cpel', el:btn.dataset.el }); break;
     case 'uapply': { const o = V.me && (V.me.ups || [])[+btn.dataset.i]; if (o && (V.me.ck || 0) < upgCost(o)) { toast(`Il te faut ${upgCost(o)} chakra pour poser cette amélioration.`); break; } sendAct({ t:'uapply', i:+btn.dataset.i }); hidePeek(); break; }
     case 'lawtog': { const n = btn.dataset.u; V.lawOpen = V.lawOpen || {}; V.lawOpen[n] = !V.lawOpen[n]; render(); break; }
     case 'upick': sendAct({ t:'upick', i:+btn.dataset.i }); hidePeek(); break;
@@ -2215,3 +2218,17 @@ html.lite .mko.ready{animation:none;box-shadow:0 0 0 2px #120a06,0 0 0 4px var(-
 (function(){ const st = document.createElement('style'); st.textContent = `.duel-l.stl{color:#8fd8ff}.duel-l.stl b{color:#bfe8ff}`; document.head.appendChild(st); })();
 
 (function(){ const st = document.createElement('style'); st.textContent = `.upch-s.fav{color:#ffb050;font-weight:700}`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `
+.cp-els{display:flex;gap:3px;margin-top:2px}
+.cp-el{width:20px;height:20px;padding:0;border:0;border-radius:50%;cursor:pointer;display:grid;place-items:center;background:#1b120b;box-shadow:0 0 0 1.5px var(--c);opacity:.75}
+.cp-el svg{width:14px;height:14px}
+.cp-el.on{opacity:1;box-shadow:0 0 0 2px var(--c),0 0 8px var(--c)}
+.cp-el:disabled:not(.on){opacity:.35;cursor:not-allowed}
+.cp-el:hover:not(:disabled){opacity:1;transform:scale(1.15)}
+.pq-lvp{display:grid;gap:2px;margin-bottom:7px}
+.pq-lvp span{font-size:10.5px;color:#8a7a5a;padding:3px 7px;border-radius:7px;background:rgba(255,255,255,.03)}
+.pq-lvp span b{color:#8a7a5a;margin-right:4px}
+.pq-lvp span.on{color:#f1e4c6;background:rgba(111,200,255,.1)}.pq-lvp span.on b{color:#8fd8ff}
+@media (orientation:landscape) and (max-height:540px){ .cp-el{width:14px;height:14px} .cp-el svg{width:10px;height:10px} }
+`; document.head.appendChild(st); })();
