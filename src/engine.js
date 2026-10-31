@@ -243,32 +243,32 @@ const DEFAULT_CARD_LIST = [
   ['n_f1', 'Apprentie des braises', 1, 'n_feu', 2, 1, '', [{ k:'cast_braise', n:1 }]],
   ['n_f2', 'Souffleur de flammes', 2, 'n_feu', 3, 2, '', [{ k:'eot_ck_braise', n:1 }]],
   ['n_f3', 'Gardienne du foyer', 3, 'n_feu', 3, 4, '', [{ k:'cast_buff_tribe', a:1, h:1, tb:'n_feu' }]],
-  ['n_f4', 'Danseur de cendres', 4, 'n_feu', 4, 4, '', [{ k:'cast_braise', n:2 }, { k:'soc_dmg', d:2, n:2 }]],
+  ['n_f4', 'Danseur de cendres', 4, 'n_feu', 4, 5, '', [{ k:'cast_braise', n:2 }, { k:'soc_dmg', d:2, n:2 }]],
   ['n_f5', 'Maître du brasier', 5, 'n_feu', 5, 5, '', [{ k:'bc_spell', n:1 }, { k:'cast_buff_tribe', a:2, h:1, tb:'n_feu' }]],
-  ['n_f6', 'Grand Sage du Feu', 6, 'n_feu', 7, 6, '', [{ k:'awk_phoenix' }, { k:'cast_braise', n:2 }]],
-  ['n_v1', 'Éclaireur des dunes', 1, 'n_vent', 1, 2, '', [{ k:'bc_gold', n:1 }]],
-  ['n_v2', 'Lame tourbillon', 2, 'n_vent', 2, 2, 'w', [{ k:'bc_upd', n:1 }]],
-  ['n_v3', 'Cerf-volant de guerre', 3, 'n_vent', 3, 3, '', [{ k:'roll_buff_tribe', a:1, h:1, tb:'n_vent' }, { k:'eot_souffle', n:1 }]],
-  ['n_v4', 'Faucheuse du vent', 4, 'n_vent', 4, 3, 'w', [{ k:'awk_hurricane', d:1 }, { k:'eot_inc', n:1 }, { k:'eot_souffle', n:1 }]],
-  ['n_v5', 'Mur de sable', 5, 'n_vent', 5, 4, '', [{ k:'eot_inc', n:2 }]],
-  ['n_v6', 'Seigneur des dunes', 6, 'n_vent', 6, 8, 't', [{ k:'awk_hurricane', d:2 }, { k:'eot_buff_all', a:1, h:1, tb:'n_vent' }]],
-  ['n_e1', 'Guetteur des brumes', 1, 'n_eau', 1, 3, '', [{ k:'eot_maree', n:1 }]],
+  ['n_f6', 'Grand Sage du Feu', 6, 'n_feu', 7, 7, '', [{ k:'awk_phoenix' }, { k:'cast_braise', n:2 }]],
+  ['n_v1', 'Éclaireur des dunes', 1, 'n_vent', 2, 2, '', [{ k:'bc_gold', n:1 }]],
+  ['n_v2', 'Lame tourbillon', 2, 'n_vent', 2, 3, 'w', [{ k:'bc_upd', n:1 }]],
+  ['n_v3', 'Cerf-volant de guerre', 3, 'n_vent', 3, 4, '', [{ k:'roll_buff_tribe', a:1, h:2, tb:'n_vent' }, { k:'eot_souffle', n:1 }]],
+  ['n_v4', 'Faucheuse du vent', 4, 'n_vent', 4, 4, 'w', [{ k:'awk_hurricane', d:1 }, { k:'eot_inc', n:1 }, { k:'eot_souffle', n:1 }]],
+  ['n_v5', 'Mur de sable', 5, 'n_vent', 5, 6, '', [{ k:'eot_inc', n:2 }, { k:'eot_souffle', n:1 }]],
+  ['n_v6', 'Seigneur des dunes', 6, 'n_vent', 7, 8, 't', [{ k:'awk_hurricane', d:2 }, { k:'eot_buff_all', a:1, h:2, tb:'n_vent' }]],
+  ['n_e1', 'Guetteur des brumes', 1, 'n_eau', 1, 2, '', [{ k:'eot_maree', n:1 }]],
   ['n_e2', 'Ondine silencieuse', 2, 'n_eau', 2, 3, 's', [{ k:'eot_wave', a:1, h:1 }]],
-  ['n_e3', 'Porteuse de marée', 3, 'n_eau', 3, 3, '', [{ k:'eot_maree', n:1 }, { k:'eot_wave', a:1, h:2 }]],
-  ['n_e4', 'Duelliste des brumes', 4, 'n_eau', 4, 5, '', [{ k:'pas_ckx', n:2 }, { k:'dr_kw', kw:'s', tb:'n_eau' }]],
-  ['n_e5', 'Serpent de marée', 5, 'n_eau', 5, 6, '', [{ k:'bc_chakra', n:3 }, { k:'eot_maree', n:2 }]],
-  ['n_e6', 'Gardien des abysses', 6, 'n_eau', 6, 9, 's', [{ k:'awk_tsunami' }, { k:'pas_ckx', n:3 }]],
-  ['n_o1', 'Étincelle rapide', 1, 'n_foudre', 2, 1, '', [{ k:'eot_charge', n:1 }]],
+  ['n_e3', 'Porteuse de marée', 3, 'n_eau', 3, 3, '', [{ k:'eot_maree', n:1 }, { k:'eot_wave', a:1, h:1 }]],
+  ['n_e4', 'Duelliste des brumes', 4, 'n_eau', 4, 4, '', [{ k:'pas_ckx', n:2 }, { k:'dr_kw', kw:'s', tb:'n_eau' }]],
+  ['n_e5', 'Serpent de marée', 5, 'n_eau', 5, 5, '', [{ k:'bc_chakra', n:3 }, { k:'eot_maree', n:2 }]],
+  ['n_e6', 'Gardien des abysses', 6, 'n_eau', 6, 8, 's', [{ k:'awk_tsunami' }, { k:'pas_ckx', n:3 }]],
+  ['n_o1', 'Étincelle rapide', 1, 'n_foudre', 2, 2, '', [{ k:'eot_charge', n:1 }]],
   ['n_o2', 'Messager de l\'orage', 2, 'n_foudre', 2, 3, '', [{ k:'eot_chakra', n:1 }]],
-  ['n_o3', 'Lame crépitante', 3, 'n_foudre', 4, 2, '', [{ k:'awk_surge', a:3, h:0 }, { k:'atk_zap', d:2, n:1 }]],
-  ['n_o4', 'Hurleur du tonnerre', 4, 'n_foudre', 3, 5, '', [{ k:'eot_charge', n:2 }, { k:'bc_chakra', n:2 }]],
-  ['n_o5', 'Cuirasse d\'éclairs', 5, 'n_foudre', 6, 5, 'w', [{ k:'awk_surge', a:3, h:3 }, { k:'atk_zap', d:2, n:2 }]],
-  ['n_o6', 'Seigneur de l\'orage', 6, 'n_foudre', 7, 7, '', [{ k:'awk_storm' }, { k:'eot_chakra', n:2 }]],
-  ['n_t1', 'Petit golem de pierre', 1, 'n_terre', 1, 3, 't', [{ k:'eot_anchor' }, { k:'eot_roche', n:1 }]],
-  ['n_t2', 'Bâtisseur de remparts', 2, 'n_terre', 2, 3, 't', [{ k:'bc_buff_tribe', a:0, h:2, tb:'n_terre' }]],
-  ['n_t3', 'Garde des roches', 3, 'n_terre', 2, 6, 't', [{ k:'eot_buff_taunt', a:1, h:1 }, { k:'eot_roche', n:2 }]],
-  ['n_t4', 'Lanceur de rochers', 4, 'n_terre', 5, 4, '', [{ k:'soc_dmg', d:4, n:1 }, { k:'eot_anchor' }]],
-  ['n_t5', 'Colosse de granit', 5, 'n_terre', 4, 9, 't', [{ k:'eot_anchor' }, { k:'surv_self', a:2, h:0 }]],
+  ['n_o3', 'Lame crépitante', 3, 'n_foudre', 4, 3, '', [{ k:'awk_surge', a:3, h:0 }, { k:'atk_zap', d:2, n:1 }]],
+  ['n_o4', 'Hurleur du tonnerre', 4, 'n_foudre', 4, 5, '', [{ k:'eot_charge', n:2 }, { k:'bc_chakra', n:2 }]],
+  ['n_o5', 'Cuirasse d\'éclairs', 5, 'n_foudre', 6, 6, 'w', [{ k:'awk_surge', a:3, h:3 }, { k:'atk_zap', d:2, n:2 }]],
+  ['n_o6', 'Seigneur de l\'orage', 6, 'n_foudre', 8, 7, '', [{ k:'awk_storm' }, { k:'eot_chakra', n:2 }]],
+  ['n_t1', 'Petit golem de pierre', 1, 'n_terre', 1, 2, 't', [{ k:'eot_anchor' }, { k:'eot_roche', n:1 }]],
+  ['n_t2', 'Bâtisseur de remparts', 2, 'n_terre', 2, 3, 't', [{ k:'bc_buff_tribe', a:0, h:1, tb:'n_terre' }]],
+  ['n_t3', 'Garde des roches', 3, 'n_terre', 2, 5, 't', [{ k:'eot_buff_taunt', a:1, h:1 }, { k:'eot_roche', n:1 }]],
+  ['n_t4', 'Lanceur de rochers', 4, 'n_terre', 5, 4, '', [{ k:'soc_dmg', d:3, n:1 }, { k:'eot_anchor' }]],
+  ['n_t5', 'Colosse de granit', 5, 'n_terre', 4, 8, 't', [{ k:'eot_anchor' }, { k:'surv_self', a:1, h:0 }]],
   // bêtes d'invocation (apparaissent à l'Éveil grâce au pacte)
   ['nb_feu', 'Salamandre de braise', 0, 'n_feu', 6, 6, '', []],
   ['nb_vent', 'Loup des vents', 0, 'n_vent', 6, 5, '', []],
@@ -276,20 +276,20 @@ const DEFAULT_CARD_LIST = [
   ['nb_foudre', 'Tigre de foudre', 0, 'n_foudre', 7, 5, '', []],
   ['nb_terre', 'Sanglier de roc', 0, 'n_terre', 4, 9, '', []],
   ['n_f9', 'Gardien du foyer', 3, 'n_feu', 3, 3, '', [{ k:'combo_self', a:2, h:2 }]],
-  ['n_v9', 'Courrier des vents', 2, 'n_vent', 2, 3, '', [{ k:'combo_gold', n:1 }]],
+  ['n_v9', 'Courrier des vents', 2, 'n_vent', 3, 3, '', [{ k:'combo_gold', n:1 }]],
   ['n_e9', 'Puits sans fond', 4, 'n_eau', 3, 6, '', [{ k:'rsv_bc' }, { k:'combo_tribe', a:1, h:1, tb:'n_eau' }]],
-  ['n_o9', 'Condensateur vivant', 3, 'n_foudre', 2, 4, '', [{ k:'combo_ck', n:2 }]],
-  ['n_t9', 'Colosse d\'argile', 5, 'n_terre', 4, 8, 't', [{ k:'rsv_bc' }, { k:'combo_self', a:1, h:3 }]],
+  ['n_o9', 'Condensateur vivant', 3, 'n_foudre', 3, 4, '', [{ k:'combo_ck', n:2 }]],
+  ['n_t9', 'Colosse d\'argile', 5, 'n_terre', 4, 7, 't', [{ k:'rsv_bc' }, { k:'combo_self', a:1, h:3 }]],
   ['n_f7', 'Voleur d\'étincelles', 2, 'n_feu', 2, 3, '', [{ k:'soc_steal', n:1 }]],
   ['n_f8', 'Pyromancien avide', 4, 'n_feu', 3, 4, '', [{ k:'eot_ck_braise', n:2 }, { k:'soc_ck', a:1, h:0 }]],
-  ['n_v7', 'Pickpocket des sables', 1, 'n_vent', 2, 1, '', [{ k:'dr_steal', n:1 }]],
-  ['n_v8', 'Danseur d\'éventail', 3, 'n_vent', 3, 3, '', [{ k:'cast_ck', n:1 }]],
+  ['n_v7', 'Pickpocket des sables', 1, 'n_vent', 2, 2, '', [{ k:'dr_steal', n:1 }]],
+  ['n_v8', 'Danseur d\'éventail', 3, 'n_vent', 3, 4, '', [{ k:'cast_ck', n:1 }]],
   ['n_e7', 'Siphon de brume', 3, 'n_eau', 2, 5, '', [{ k:'soc_steal', n:2 }]],
-  ['n_e8', 'Méditant des cascades', 5, 'n_eau', 4, 7, '', [{ k:'eot_ck_spend', n:2, a:2, h:2 }, { k:'pas_ckx', n:2 }]],
-  ['n_o7', 'Parasite de foudre', 2, 'n_foudre', 3, 2, '', [{ k:'dr_steal', n:2 }]],
+  ['n_e8', 'Méditant des cascades', 5, 'n_eau', 4, 6, '', [{ k:'eot_ck_spend', n:2, a:2, h:2 }, { k:'pas_ckx', n:2 }]],
+  ['n_o7', 'Parasite de foudre', 2, 'n_foudre', 3, 3, '', [{ k:'dr_steal', n:2 }]],
   ['n_o8', 'Tempête intérieure', 5, 'n_foudre', 5, 5, '', [{ k:'soc_ck', a:1, h:1 }]],
   ['n_t7', 'Pilleur souterrain', 4, 'n_terre', 4, 5, 't', [{ k:'soc_steal', n:2 }]],
-  ['n_t8', 'Ermite des cimes', 6, 'n_terre', 5, 8, '', [{ k:'eot_ck_spend', n:3, a:3, h:3 }, { k:'cast_ck', n:1 }]],
+  ['n_t8', 'Ermite des cimes', 6, 'n_terre', 5, 7, '', [{ k:'eot_ck_spend', n:3, a:3, h:3 }, { k:'cast_ck', n:1 }]],
   ['c_nj_feu', 'Disciple de la flamme', 3, 'n_feu', 6, 5, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:2, h:1 }]],
   ['c_nj_vent', 'Disciple du vent', 3, 'n_vent', 5, 4, 'w', [{ k:'atk_self', a:1, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
   ['c_nj_eau', 'Disciple de la brume', 3, 'n_eau', 3, 8, '', [{ k:'surv_self', a:1, h:1 }, { k:'combo_self', a:1, h:2 }]],
@@ -604,7 +604,7 @@ function runRecruit0(G, p, m, e, ctx) {
     case 'eot_maree': p.maree = (p.maree || 0) + e.n * k * pureX(p, 'n_eau'); break;
     case 'eot_wave': { const r = p.bd[p.bd.indexOf(m) + 1]; if (r) buff(r, A, Hh); break; }
     case 'eot_charge': p.charge = (p.charge || 0) + e.n * k * pureX(p, 'n_foudre'); break;
-    case 'eot_anchor': { const n = Math.min(3 * k, p.ck || 0) * pureX(p, 'n_terre'); if (n) buff(m, 0, n); break; }
+    case 'eot_anchor': { const n = Math.min(2 * k, p.ck || 0) * pureX(p, 'n_terre'); if (n) buff(m, 0, n); break; }
     case 'eot_ck_spend': if ((p.ck || 0) >= e.n) { p.ck -= e.n; buff(m, A, Hh); } break;
     case 'cast_memo': if (p.lastCast && SPELLS[p.lastCast] && SPELLS[p.lastCast].nin) { m.memo = p.lastCast; if (SPELLS[p.lastCast].el) m.el = SPELLS[p.lastCast].el; } break;
     case 'sot_memo': if (m.memo && SPELLS[m.memo]) for (let i = 0; i < k + (m.memo2 ? 1 : 0); i++) if (p.hd.length < 10) p.hd.push({ sp:m.memo, u:UID++ }); break;
@@ -802,7 +802,7 @@ function univChosen(sel) {
   return { us:us.map(u => u.n), trs };
 }
 function hostStart(humans, opt) {
-  const G = { ph:'hero', rd:0, end:Date.now() + 25000, pool:{}, ps:[] };
+  const G = { ph:'hero', rd:0, end:Date.now() + 60000, pool:{}, ps:[] };
   const on = SET.tribes.filter(t => t.on !== false).map(t => t.id);
   const n = +RU().tribesPerGame || 0;
   const ch = univChosen(opt && opt.univ);
@@ -1090,7 +1090,7 @@ const OPS = {
   move(G, p, a) { const m = p.bd[a.i]; if (!m) return false; p.bd.splice(a.i, 1); p.bd.splice(Math.max(0, Math.min(a.to, p.bd.length)), 0, m); return true; },
   roll(G, p) { const free = p.hero === 'rivet' && p.rr === 0; if (!free && p.g < 1) return false; if (!free) p.g -= 1; p.rr++; p.fz = false; fillShop(G, p); trigBoard(G, p, 'roll'); return true; },
   frz(G, p) { p.fz = !p.fz; return true; },
-  up(G, p) { const c = upCost(p); if (p.t >= 6 || p.g < c) return false; p.g -= c; p.t++; p.uc = +RU().up[p.t] || 0; trigBoard(G, p, 'up'); return true; },
+  up(G, p) { const c = upCost(p); if (p.t >= 6 || p.g < c) return false; p.g -= c; p.t++; p.uc = (+RU().up[p.t] || 0) + (inMechAny(G, 'chakra') && p.t < 6 ? 1 : 0); trigBoard(G, p, 'up'); return true; },
   comp(G, p) { const id = compOf(p.hero); if (inMechAny(G, 'chakra') || !id || !C[id] || (p.cb || 0) >= compLimit(G.rd) || p.g < 3 || p.hd.length >= 10) return false; p.g -= 3; p.cb = (p.cb || 0) + 1; p.hd.push(mk(id, 0)); checkTriple(G, p); return true; },
   pow(G, p) { return withSrc(HEROES[p.hero] ? 'Pouvoir de ' + HEROES[p.hero].n.split(' ')[0] : null, () => OPS.pow0(G, p)); },
   pow0(G, p) {
@@ -1247,7 +1247,7 @@ function aiScore(p, m) {
   return s;
 }
 function aiTurn(G, p) {
-  const targetRound = { 1:2, 2:4, 3:6, 4:8, 5:10 };
+  const targetRound = inMechAny(G, 'chakra') ? { 1:2, 2:5, 3:7, 4:9, 5:11 } : { 1:2, 2:4, 3:6, 4:8, 5:10 };
   while (p.g >= 3 && OPS.comp(G, p)) {}
   for (let guard = 0; guard < 40; guard++) {
     let acted = false;
@@ -1420,7 +1420,7 @@ function endCombat() {
   const dead = G.ps.filter(p => p.al && p.hp <= 0).sort((a, b) => b.hp - a.hp);
   let alive = G.ps.filter(p => p.al && p.hp > 0).length;
   dead.forEach((p, k) => { p.al = false; p.place = alive + 1 + k; p.sh.forEach(m => toPool(G, m)); p.bd.forEach(m => toPool(G, m)); p.sh = []; });
-  if (inMechAny(G, 'chakra') && !G.eveil && alive <= 4) { G.eveil = G.rd + 1; }
+  if (inMechAny(G, 'chakra') && !G.eveil) { const al = G.ps.filter(p => p.al), low = al.filter(p => p.hp <= ((+RU().hp || 40) / 2)).length; if (low * 2 >= al.length || alive <= 3) G.eveil = G.rd + 1; }
   if (alive <= 1) {
     const w = G.ps.find(p => p.al); if (w) w.place = 1;
     if (!w && dead[0]) dead[0].place = 1;
