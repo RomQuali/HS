@@ -316,7 +316,7 @@ const HEROES = {
   nh_haru: {diff:3, fam:['n_vent'], n:'Haru le nomade', clan:'vent', pw:{ k:'ptechc' }, tx:'Passif : tes techniques ninja coûtent 1 or et 1 chakra de moins, et chacune te rend 1 or de plus si elle remplit un réservoir vide.' },
   nh_gen: {diff:3, fam:['n_vent'], n:'Gen aux éventails', cost:1, clan:'vent', pw:{ k:'rcycle', g:2 }, tx:'L\'élément de ton réservoir devient celui qu\'il nourrit (cycle de génération). Gagne 2 or.' },
   nh_saki: {diff:2, fam:['n_vent'], n:'Saki la bourrasque', cost:1, clan:'vent', pw:{ k:'rollg', el:'vent', g:1 }, tx:'Rafraîchis la taverne et sa technique et gagne 1 or (2 si ton réservoir contient du Vent).' },
-  nh_mizu: {diff:1, fam:['n_eau'], n:'Mizu la brume', cost:3, clan:'eau', pw:{ k:'rfill', el:'eau' }, tx:'Remplis une moitié de ton réservoir d\'Eau (comme une technique d\'Eau).' },
+  nh_mizu: {diff:1, fam:['n_eau'], n:'Mizu la brume', cost:1, clan:'eau', pw:{ k:'mist', n:1, n2:2, el:'eau' }, tx:'Brume : prochain combat, un de tes serviteurs aléatoires gagne Bouclier divin (deux si ton réservoir contient de l\'Eau).' },
   nh_ryota: {diff:3, fam:['n_eau'], n:'Ryota le silencieux', clan:'eau', pw:{ k:'prsv', n:1 }, tx:'Passif : en fin de tour, si ton réservoir est à moitié plein, la marée monte de 1.' },
   nh_umi: {diff:3, fam:['n_eau'], n:'Umi la marée', cost:3, clan:'eau', pw:{ k:'rpure' }, tx:'Remplis l\'autre moitié de ton réservoir avec le même élément : déclenche son combo pur.' },
   nh_kenji: {diff:2, fam:['n_eau'], n:'Kenji l\'épéiste', cost:1, clan:'eau', pw:{ k:'tmamaree', max:6 }, tx:'Prochain combat : tes serviteurs gagnent +1 attaque par tranche de 2 marée (+6 au plus).' },
@@ -1169,6 +1169,7 @@ function powCanW(p, w) {
     case 'fire': return true;
     case 'rfill': case 'ctr': case 'rollg': return true;
     case 'rpure': return (p.rsv || []).length === 1;
+    case 'mist': return (p.bd || []).some(m => !has(m, 's') && !(m.tmp && (m.tmp.f || '').includes('s')));
     case 'rcycle': case 'rdump': return (p.rsv || []).length === 1;
     case 'braisebuff': return (p.braise || 0) >= w.n && pwPool(p, w).length > 0;
     case 'techel': return (p.hd || []).length < 10;
@@ -1191,6 +1192,7 @@ function powRun(G, p, w0) {
     case 'tma': p.tma = { a:((p.tma && p.tma.a) || 0) + w.a, h:((p.tma && p.tma.h) || 0) + w.h }; break;
     case 'fire': p.njf = (p.njf || 0) + w.d; break;
     // ----- pouvoirs des héros Ninja (réservoir et compteurs de clan) -----
+    case 'mist': { const c = shuffle(p.bd.filter(m => !has(m, 's') && !(m.tmp && (m.tmp.f || '').includes('s')))).slice(0, rsvHas(p, w.el) ? w.n2 : w.n); c.forEach(m => { m.tmp = { a:(m.tmp && m.tmp.a) || 0, h:(m.tmp && m.tmp.h) || 0, f:((m.tmp && m.tmp.f) || '') + 's', s:'Brume de Mizu' }; }); break; }
     case 'rfill': if (w.b) mkAdd(p, w.el, w.b); rsvFill(G, p, w.el); if (awake(G)) p.ck = Math.min(ckMax(p), (p.ck || 0) + 2); break;
     case 'rpure': rsvFill(G, p, p.rsv[0]); if (awake(G)) p.g += 2; break;
     case 'rcycle': p.rsv[0] = EL_GEN[p.rsv[0]]; comps(p).forEach(c => { c.el = p.rsv[0]; }); p.g += w.g || 0; break;
