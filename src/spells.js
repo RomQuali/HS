@@ -119,6 +119,7 @@ function castSpell0(G, p, hi, tg) {
   if (spellBlock(p, id, tgt)) return false;
   p.hd.splice(hi, 1);
   if (S.ck) p.ck = (p.ck || 0) - ckCost(p, S);
+  if (S.nin && p.hero === 'nh_haru' && !(p.rsv || []).length) p.g += 1;
   p.lastCast = id;
   switch (id) {
     case 'sp_pinte': buff(tgt, 2, 1); break;
@@ -425,7 +426,7 @@ function rsvFill(G, p, el) {
   if (!F) return;
   const bd = COMBO_BD[F.n], w = pwOf(p);
   if (bd) withSrc('Combo · ' + F.n, () => { bd[1](G, p); if (w && w.k === 'pdouble' && (p.cdbl || 0) < (awake(G) ? 2 : 1)) { p.cdbl = (p.cdbl || 0) + 1; bd[1](G, p); } });
-  if (w && w.k === 'pcombo') withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => { if (w.d && (a === w.el || b === w.el)) p.njf = (p.njf || 0) + w.d; if (w.h) p.bd.forEach(m => buff(m, 0, w.h)); });
+  if (w && w.k === 'pcombo') withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => { if (w.d && (a === w.el || b === w.el)) { p.njf = (p.njf || 0) + w.d; if (w.b) mkAdd(p, 'feu', w.b); } if (w.h) p.bd.forEach(m => buff(m, 0, w.h)); });
   trigBoard(G, p, 'combo');
   comps(p).forEach(c => { c.x = (c.x || []).filter(e => !e.fusion); c.x.push(Object.assign({ src:'Combo · ' + F.n, fusion:1 }, F.fx)); c.fu = F.n; });
   // résonance : chaque combo consomme 5 marqueurs de chacun de ses éléments pour déclencher leur éclat

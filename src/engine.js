@@ -306,31 +306,31 @@ const compLimit = rd => rd >= 6 ? 3 : rd >= 5 ? 2 : rd >= 3 ? 1 : 0;
 
 const SLOTS = { 1:3, 2:4, 3:4, 4:5, 5:5, 6:6 };
 const HEROES = {
-  nh_akari: {fam:['n_feu'], n:'Akari l\'ardente', cost:1, clan:'feu', pw:{ k:'rfill', el:'feu' }, tx:'Remplis une moitié de ton réservoir de Feu (comme une technique de Feu).' },
-  nh_hoshi: {fam:['n_feu'], n:'Hoshi le vieux sage', clan:'feu', pw:{ k:'pcombo', el:'feu', d:3 }, tx:'Passif : chaque combo qui contient du Feu inflige aussi 3 dégâts à l\'ennemi au début du prochain combat.' },
-  nh_ren: {fam:['n_feu'], n:'Ren aux mille braises', cost:1, clan:'feu', pw:{ k:'ctr', c:'braise', n:2, el:'feu', n2:4 }, tx:'Gagne 2 braises, ou 4 si ton réservoir contient du Feu.' },
-  nh_tsubaki: {fam:['n_feu'], n:'Tsubaki la gardienne', cost:1, clan:'feu', pw:{ k:'braisebuff', n:2, a:2, h:1, tb:'n_feu' }, tx:'Consume 2 braises : tes serviteurs du Clan du Feu gagnent +2/+1.' },
-  nh_daigo: {fam:['n_feu'], n:'Daigo le souffleur', cost:2, clan:'feu', pw:{ k:'techel', el:'feu' }, tx:'Ajoute à ta main une technique de Feu aléatoire de ton niveau.' },
-  nh_mira: {fam:['n_vent'], n:'Mira des dunes', cost:1, clan:'vent', pw:{ k:'rfill', el:'vent' }, tx:'Remplis une moitié de ton réservoir de Vent (comme une technique de Vent).' },
-  nh_taro: {fam:['n_vent'], n:'Taro le cerf-volant', cost:1, clan:'vent', pw:{ k:'rdump', g:3 }, tx:'Vide la moitié remplie de ton réservoir : gagne 3 or.' },
-  nh_haru: {fam:['n_vent'], n:'Haru le nomade', clan:'vent', pw:{ k:'ptechc' }, tx:'Passif : tes techniques ninja coûtent 1 or de moins.' },
-  nh_gen: {fam:['n_vent'], n:'Gen aux éventails', cost:1, clan:'vent', pw:{ k:'rcycle', g:1 }, tx:'L\'élément de ton réservoir devient celui qu\'il nourrit (cycle de génération). Gagne 1 or.' },
-  nh_saki: {fam:['n_vent'], n:'Saki la bourrasque', cost:1, clan:'vent', pw:{ k:'rollg', el:'vent', g:1 }, tx:'Rafraîchis la taverne et sa technique. Gagne 1 or si ton réservoir contient du Vent.' },
-  nh_mizu: {fam:['n_eau'], n:'Mizu la brume', cost:1, clan:'eau', pw:{ k:'rfill', el:'eau' }, tx:'Remplis une moitié de ton réservoir d\'Eau (comme une technique d\'Eau).' },
-  nh_ryota: {fam:['n_eau'], n:'Ryota le silencieux', clan:'eau', pw:{ k:'prsv', n:2 }, tx:'Passif : en fin de tour, si ton réservoir est à moitié plein, la marée monte de 2.' },
-  nh_umi: {fam:['n_eau'], n:'Umi la marée', cost:3, clan:'eau', pw:{ k:'rpure' }, tx:'Remplis l\'autre moitié de ton réservoir avec le même élément : déclenche son combo pur.' },
-  nh_kenji: {fam:['n_eau'], n:'Kenji l\'épéiste', cost:2, clan:'eau', pw:{ k:'tmamaree', max:4 }, tx:'Prochain combat : tes serviteurs gagnent +1 attaque par tranche de 2 marée (+4 au plus).' },
-  nh_aya: {fam:['n_eau'], n:'Aya des abysses', cost:1, clan:'eau', pw:{ k:'ckmaree', n:2, m:1 }, tx:'Gagne 2 chakra et la marée monte de 1.' },
-  nh_raiko: {fam:['n_foudre'], n:'Raiko l\'éclair', cost:1, clan:'foudre', pw:{ k:'rfill', el:'foudre' }, tx:'Remplis une moitié de ton réservoir de Foudre (comme une technique de Foudre).' },
-  nh_kenta: {fam:['n_foudre'], n:'Kenta le tonnerre', clan:'foudre', pw:{ k:'pdouble' }, tx:'Passif : le premier combo de chaque tour applique deux fois son effet sur le plateau.' },
-  nh_hikari: {fam:['n_foudre'], n:'Hikari l\'étincelle', clan:'foudre', pw:{ k:'pfire', d:2 }, tx:'Passif : au début de chaque combat, 2 dégâts frappent l\'ennemi.' },
-  nh_akio: {fam:['n_foudre'], n:'Akio l\'orage', cost:2, clan:'foudre', pw:{ k:'chargebuff', n:2, el:'foudre', a:1, h:1, tb:'n_foudre' }, tx:'Gagne 2 charges. Si ton réservoir contient de la Foudre, tes serviteurs du Clan de la Foudre gagnent aussi +1/+1.' },
-  nh_rika: {fam:['n_foudre'], n:'Rika la foudroyante', cost:1, clan:'foudre', pw:{ k:'g2ck', g:2, n:4 }, tx:'Dépense 2 or : gagne 4 chakra.' },
-  nh_goro: {fam:['n_terre'], n:'Goro le roc', cost:1, clan:'terre', pw:{ k:'rfill', el:'terre' }, tx:'Remplis une moitié de ton réservoir de Terre (comme une technique de Terre).' },
-  nh_kaito: {fam:['n_terre'], n:'Kaito le bâtisseur', cost:1, clan:'terre', pw:{ k:'kwbuff', kw:'t', a:0, h:3, tb:'n_terre' }, tx:'Un serviteur du Clan de la Terre aléatoire gagne +0/+3 et Provocation.' },
-  nh_masa: {fam:['n_terre'], n:'Masa la montagne', clan:'terre', pw:{ k:'pcombo', h:2 }, tx:'Passif : chaque fois que tu déclenches un combo, tes serviteurs gagnent +0/+2.' },
-  nh_toshi: {fam:['n_terre'], n:'Toshi le colosse', cost:2, clan:'terre', pw:{ k:'buffrsv', tb:'n_terre', a:1, h:2, el:'terre', a2:1, h2:3 }, tx:'Tes serviteurs du Clan de la Terre gagnent +1/+2, ou +1/+3 si ton réservoir contient de la Terre.' },
-  nh_emi: {fam:['n_terre'], n:'Emi la géode', cost:2, clan:'terre', pw:{ k:'techel', el:'rsv' }, tx:'Ajoute à ta main une technique du même élément que ton réservoir (combo pur assuré), sinon de Terre.' },
+  nh_akari: {diff:1, fam:['n_feu'], n:'Akari l\'ardente', cost:1, clan:'feu', pw:{ k:'rfill', el:'feu', b:2 }, tx:'Remplis une moitié de ton réservoir de Feu (comme une technique de Feu) et gagne 2 braises.' },
+  nh_hoshi: {diff:3, fam:['n_feu'], n:'Hoshi le vieux sage', clan:'feu', pw:{ k:'pcombo', el:'feu', d:5, b:1 }, tx:'Passif : chaque combo qui contient du Feu inflige aussi 5 dégâts à l\'ennemi au début du prochain combat et donne 1 braise.' },
+  nh_ren: {diff:2, fam:['n_feu'], n:'Ren aux mille braises', cost:1, clan:'feu', pw:{ k:'ctr', c:'braise', n:3, el:'feu', n2:5 }, tx:'Gagne 3 braises, ou 5 si ton réservoir contient du Feu.' },
+  nh_tsubaki: {diff:2, fam:['n_feu'], n:'Tsubaki la gardienne', cost:1, clan:'feu', pw:{ k:'braisebuff', n:2, a:2, h:2, tb:'n_feu' }, tx:'Consume 2 braises : tes serviteurs du Clan du Feu gagnent +2/+2.' },
+  nh_daigo: {diff:2, fam:['n_feu'], n:'Daigo le souffleur', cost:1, clan:'feu', pw:{ k:'techel', el:'feu' }, tx:'Ajoute à ta main une technique de Feu aléatoire de ton niveau.' },
+  nh_mira: {diff:1, fam:['n_vent'], n:'Mira des dunes', cost:2, clan:'vent', pw:{ k:'rfill', el:'vent' }, tx:'Remplis une moitié de ton réservoir de Vent (comme une technique de Vent).' },
+  nh_taro: {diff:2, fam:['n_vent'], n:'Taro le cerf-volant', cost:1, clan:'vent', pw:{ k:'rdump', g:4 }, tx:'Vide la moitié remplie de ton réservoir : gagne 4 or.' },
+  nh_haru: {diff:3, fam:['n_vent'], n:'Haru le nomade', clan:'vent', pw:{ k:'ptechc' }, tx:'Passif : tes techniques ninja coûtent 1 or et 1 chakra de moins, et chacune te rend 1 or de plus si elle remplit un réservoir vide.' },
+  nh_gen: {diff:3, fam:['n_vent'], n:'Gen aux éventails', cost:1, clan:'vent', pw:{ k:'rcycle', g:2 }, tx:'L\'élément de ton réservoir devient celui qu\'il nourrit (cycle de génération). Gagne 2 or.' },
+  nh_saki: {diff:2, fam:['n_vent'], n:'Saki la bourrasque', cost:1, clan:'vent', pw:{ k:'rollg', el:'vent', g:1 }, tx:'Rafraîchis la taverne et sa technique et gagne 1 or (2 si ton réservoir contient du Vent).' },
+  nh_mizu: {diff:1, fam:['n_eau'], n:'Mizu la brume', cost:3, clan:'eau', pw:{ k:'rfill', el:'eau' }, tx:'Remplis une moitié de ton réservoir d\'Eau (comme une technique d\'Eau).' },
+  nh_ryota: {diff:3, fam:['n_eau'], n:'Ryota le silencieux', clan:'eau', pw:{ k:'prsv', n:1 }, tx:'Passif : en fin de tour, si ton réservoir est à moitié plein, la marée monte de 1.' },
+  nh_umi: {diff:3, fam:['n_eau'], n:'Umi la marée', cost:3, clan:'eau', pw:{ k:'rpure' }, tx:'Remplis l\'autre moitié de ton réservoir avec le même élément : déclenche son combo pur.' },
+  nh_kenji: {diff:2, fam:['n_eau'], n:'Kenji l\'épéiste', cost:1, clan:'eau', pw:{ k:'tmamaree', max:6 }, tx:'Prochain combat : tes serviteurs gagnent +1 attaque par tranche de 2 marée (+6 au plus).' },
+  nh_aya: {diff:1, fam:['n_eau'], n:'Aya des abysses', cost:1, clan:'eau', pw:{ k:'ckmaree', n:2, m:1 }, tx:'Gagne 2 chakra et la marée monte de 1.' },
+  nh_raiko: {diff:1, fam:['n_foudre'], n:'Raiko l\'éclair', cost:2, clan:'foudre', pw:{ k:'rfill', el:'foudre' }, tx:'Remplis une moitié de ton réservoir de Foudre (comme une technique de Foudre).' },
+  nh_kenta: {diff:3, fam:['n_foudre'], n:'Kenta le tonnerre', clan:'foudre', pw:{ k:'pdouble' }, tx:'Passif : le premier combo de chaque tour applique deux fois son effet sur le plateau.' },
+  nh_hikari: {diff:3, fam:['n_foudre'], n:'Hikari l\'étincelle', clan:'foudre', pw:{ k:'pfire', d:2 }, tx:'Passif : au début de chaque combat, 2 dégâts frappent l\'ennemi.' },
+  nh_akio: {diff:2, fam:['n_foudre'], n:'Akio l\'orage', cost:1, clan:'foudre', pw:{ k:'chargebuff', n:2, el:'foudre', a:2, h:1, tb:'n_foudre' }, tx:'Gagne 2 charges. Si ton réservoir contient de la Foudre, tes serviteurs du Clan de la Foudre gagnent aussi +2/+1.' },
+  nh_rika: {diff:2, fam:['n_foudre'], n:'Rika la foudroyante', cost:1, clan:'foudre', pw:{ k:'g2ck', g:2, n:4 }, tx:'Dépense 2 or : gagne 4 chakra.' },
+  nh_goro: {diff:1, fam:['n_terre'], n:'Goro le roc', cost:3, clan:'terre', pw:{ k:'rfill', el:'terre' }, tx:'Remplis une moitié de ton réservoir de Terre (comme une technique de Terre).' },
+  nh_kaito: {diff:1, fam:['n_terre'], n:'Kaito le bâtisseur', cost:1, clan:'terre', pw:{ k:'kwbuff', kw:'t', a:1, h:4, tb:'n_terre' }, tx:'Un serviteur du Clan de la Terre aléatoire gagne +1/+4 et Provocation.' },
+  nh_masa: {diff:3, fam:['n_terre'], n:'Masa la montagne', clan:'terre', pw:{ k:'pcombo', h:1 }, tx:'Passif : chaque fois que tu déclenches un combo, tes serviteurs gagnent +0/+1.' },
+  nh_toshi: {diff:1, fam:['n_terre'], n:'Toshi le colosse', cost:2, clan:'terre', pw:{ k:'buffrsv', tb:'n_terre', a:1, h:2, el:'terre', a2:1, h2:3 }, tx:'Tes serviteurs du Clan de la Terre gagnent +1/+2, ou +1/+3 si ton réservoir contient de la Terre.' },
+  nh_emi: {diff:2, fam:['n_terre'], n:'Emi la géode', cost:2, clan:'terre', pw:{ k:'techel', el:'rsv' }, tx:'Ajoute à ta main une technique du même élément que ton réservoir (combo pur assuré), sinon de Terre.' },
   rivet:   {fam:['meca', 'gob'], n:'Rivet', tx:'Passif : votre première actualisation de chaque tour est gratuite.' },
   egide:   {fam:['nain', 'elfe'], n:'Égide', cost:2, tx:'Donne Bouclier divin à un de vos serviteurs aléatoire.' },
   ondine:  {fam:['elem', 'cors'], n:'Ondine l\'alchimiste', cost:1, tx:'Donne +1/+2 à un de vos serviteurs aléatoire.' },
@@ -362,7 +362,7 @@ const MECHS = {
   marche:{ n:'Marché noir', ic:'gear', d:'Vendre un serviteur de l\'univers rapporte 1 or de plus (deux fois par tour).' },
   ruee:{ n:'Ruée sauvage', ic:'leaf', d:'Au début du combat, si vous avez au moins 3 serviteurs de l\'univers, ils gagnent +2/+0 pour ce combat.' },
   pillage:{ n:'Pillage', ic:'drop', d:'Quand vous gagnez un combat avec un serviteur de l\'univers encore debout, vous recevez un sort aléatoire de votre niveau.' },
-  chakra:{ n:'Chakra et cycle des éléments', ic:'k_spark', d:'Chaque serviteur de l\'univers génère 1 chakra au début de votre tour (10 au plus). Les techniques s\'achètent en or et se lancent au chakra (1 de moins dans l\'élément de votre héros) ; le pouvoir du héros se paie en or. Deux techniques remplissent le réservoir : leur mélange déclenche un combo (effet sur le plateau et pouvoir hybride au compagnon). Le compagnon, déjà triplé et hors plateau, affronte seulement le compagnon adverse et ne blesse jamais le héros : ce duel décide du coffre (majeur s\'il gagne). Chaque coffre impose de choisir 1 récompense sur 3 (Normal à Légendaire), rangée dans l\'entraînement et posée au chakra. En duel, le compagnon résonne avec les marqueurs de son élément (+1/+1 par tranche de 3). Après l\'Éveil, compagnon et bête combattent en duo lié dans la bataille.' },
+  chakra:{ n:'Chakra et cycle des éléments', ic:'k_spark', d:'Chaque serviteur de l\'univers génère 1 chakra au début de votre tour (10 au plus). Les techniques s\'achètent en or et se lancent au chakra (1 de moins dans l\'élément de votre héros) ; le pouvoir du héros se paie en chakra. Deux techniques remplissent le réservoir : leur mélange déclenche un combo (effet sur le plateau et pouvoir hybride au compagnon). Le compagnon, déjà triplé et hors plateau, affronte seulement le compagnon adverse et ne blesse jamais le héros : ce duel décide du coffre (majeur s\'il gagne). Chaque coffre impose de choisir 1 récompense sur 3 (Normal à Légendaire), rangée dans l\'entraînement et posée au chakra. En duel, le compagnon résonne avec les marqueurs de son élément (+1/+1 par tranche de 3). Après l\'Éveil, compagnon et bête combattent en duo lié dans la bataille.' },
   resonance:{ n:'Résonance', ic:'twin', d:'Chaque sort que vous lancez donne +1/+1 à deux de vos serviteurs de l\'univers.' },
   eboulement:{ n:'Éboulement', ic:'up', d:'Quand un de vos serviteurs de l\'univers avec Provocation meurt, il inflige 3 dégâts à un ennemi aléatoire.' },
   fusion:{ n:'Fusion élémentaire', ic:'wind', d:'À la fin du tour, si vous avez au moins 4 éléments Squishy différents, vos serviteurs de l\'univers gagnent +1/+1.' },
@@ -923,7 +923,7 @@ const COMP_AWK = {
 function awakenComp(c) { if (!c || c.awk) return; const el = CLAN_EL[CD(c.c).tr], A = COMP_AWK[el]; c.awk = 1; withSrc('Éveil du compagnon', () => { if (A) A.fn(c); }); c.awkN = A ? A.n : ''; }
 const hasFx = (m, k) => (CD(m.c).fxAll || []).some(e => e.k === k);
 // dans l'univers du chakra, les pouvoirs héroïques se paient en chakra
-const powPaid = G => false;   // le pouvoir du héros se paie toujours en or (Ninja compris)
+const powPaid = G => !!(G && inMechAny(G, 'chakra'));   // Ninja : le pouvoir du héros se paie en chakra
 const powPurse = (G, p) => powPaid(G) ? (p.ck || 0) : p.g;
 // coffres : un par combat, rangés hors de la main ; mineur (égalité ou défaite) ou majeur (victoire), du niveau de la taverne
 const CHEST_COMMON = ['eq_lame', 'eq_armure', 'eq_gants'];
@@ -1059,7 +1059,7 @@ const COMP_LV = {
 };
 function giveXp(m, n) { const before = compLv(m); m.xp = (m.xp || 0) + n; const after = compLv(m); for (let l = before + 1; l <= after; l++) { const P = (COMP_LV[CLAN_EL[CD(m.c).tr]] || {})[l]; if (P) withSrc('Niveau ' + l, () => { if (typeof P[1] === 'string') addF(m, P[1]); else (m.x = m.x || []).push(Object.assign({ src:'Niveau ' + l }, P[1])); }); } m.lv = after; }
 // affinité : une technique de l'élément du héros coûte 1 chakra de moins
-const ckCost = (p, S) => Math.max(0, (S.ck || 0) - (S.el && HEROES[p.hero] && HEROES[p.hero].clan === S.el ? 1 : 0));   // affinité : 1 de moins dans l'élément du héros
+const ckCost = (p, S) => Math.max(0, (S.ck || 0) - (S.el && HEROES[p.hero] && HEROES[p.hero].clan === S.el ? 1 : 0) - (p.hero === 'nh_haru' && S.nin ? 1 : 0));   // affinité : 1 de moins dans l'élément du héros
 const CLAN_EL = { n_feu:'feu', n_vent:'vent', n_eau:'eau', n_foudre:'foudre', n_terre:'terre' };
 const isComp = m => !!(m && C[m.c] && C[m.c].comp);
 // Cinq Nations : le compagnon est déjà en jeu (triplé) à côté du héros, hors plateau
@@ -1191,14 +1191,14 @@ function powRun(G, p, w0) {
     case 'tma': p.tma = { a:((p.tma && p.tma.a) || 0) + w.a, h:((p.tma && p.tma.h) || 0) + w.h }; break;
     case 'fire': p.njf = (p.njf || 0) + w.d; break;
     // ----- pouvoirs des héros Ninja (réservoir et compteurs de clan) -----
-    case 'rfill': rsvFill(G, p, w.el); if (awake(G)) p.ck = Math.min(ckMax(p), (p.ck || 0) + 2); break;
+    case 'rfill': if (w.b) mkAdd(p, w.el, w.b); rsvFill(G, p, w.el); if (awake(G)) p.ck = Math.min(ckMax(p), (p.ck || 0) + 2); break;
     case 'rpure': rsvFill(G, p, p.rsv[0]); if (awake(G)) p.g += 2; break;
     case 'rcycle': p.rsv[0] = EL_GEN[p.rsv[0]]; comps(p).forEach(c => { c.el = p.rsv[0]; }); p.g += w.g || 0; break;
     case 'rdump': p.rsv = []; p.g += w.g; break;
     case 'ctr': p[w.c] = (p[w.c] || 0) + (w.el && rsvHas(p, w.el) ? w.n2 : w.n); break;
     case 'braisebuff': p.braise -= w.n; pwPool(p, w).forEach(m => buff(m, w.a, w.h)); break;
     case 'techel': { const el = w.el === 'rsv' ? ((p.rsv || [])[0] || 'terre') : w.el; const lo = SPELL_IDS.filter(id => SPELLS[id].nin && !SPELLS[id].forb && SPELLS[id].el === el).reduce((m, id) => Math.min(m, SPELLS[id].t), 9); for (let i = 0; i < (awake(G) ? 2 : 1); i++) { const sp = drawSpell(Math.max(p.t, lo), el); if (sp && p.hd.length < 10) p.hd.push(sp); } break; }
-    case 'rollg': p.fz = false; fillShop(G, p); trigBoard(G, p, 'roll'); if (rsvHas(p, w.el)) p.g += w.g; break;
+    case 'rollg': p.fz = false; fillShop(G, p); trigBoard(G, p, 'roll'); p.g += w.g + (rsvHas(p, w.el) ? w.g : 0); break;
     case 'tmamaree': { const x = Math.min(w.max, Math.floor((p.maree || 0) / 2)); p.tma = { a:((p.tma && p.tma.a) || 0) + x, h:(p.tma && p.tma.h) || 0 }; break; }
     case 'ckmaree': p.ck = Math.min(ckMax(p), (p.ck || 0) + w.n); p.maree = (p.maree || 0) + w.m; break;
     case 'chargebuff': p.charge = (p.charge || 0) + w.n; if (rsvHas(p, w.el)) pwPool(p, w).forEach(m => buff(m, w.a, w.h)); break;
@@ -1291,7 +1291,7 @@ function startRecruit() {
     p.pu = false; p.fbq = false; p.njf = 0; p.sylv = false; p.rr = 0; p.rdy = false; p.lastRes = p.res ? (p.res.cr || p.res.r) : null; p.res = null;
     if (p.inc && p.inc.length) p.g += p.inc.shift() || 0;
     trigBoard(G, p, 'sot');
-    p.mkt = 0; p.cdbl = 0;
+    p.mkt = 0; p.cdbl = 0; p.hruse = 0;
     if (inMechAny(G, 'ames') && (p.souls || 0) >= 3) { const k = Math.floor(p.souls / 3); p.souls -= k * 3; withSrc('Moisson d\'âmes', () => p.bd.forEach(m => { if (inMech(G, 'ames', m)) buff(m, k, k); })); }
     if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; p.ck = Math.min(ckMax(p), (p.ck || 0) + n); mkSync(p); }
     // un coffre après chaque combat : majeur si le compagnon gagne son duel, mineur sinon

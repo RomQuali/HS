@@ -300,7 +300,7 @@ function chakraLawH(big) {
   const sec = (ic, t, body) => `<div class="njl-s"><b class="njl-h"><span>${ic}</span>${t}</b>${body}</div>`;
   const ctr = (n, col, tx) => `<span class="njl-ctr" style="--c:${col}"><b>${n}</b> ${tx}</span>`;
   return `<span class="ban-law ck-law njl${big ? ' big' : ''}">
-    ${sec('🪙', 'Ressources', `<small><b>Or</b> : serviteurs, techniques et pouvoir du héros.</small><small><b>Chakra</b> : chaque ninja en jeu en donne 1 par tour (10 au plus). Il lance les techniques et pose les récompenses.</small>`)}
+    ${sec('🪙', 'Ressources', `<small><b>Or</b> : serviteurs et techniques.</small><small><b>Chakra</b> : chaque ninja en jeu en donne 1 par tour (10 au plus). Il lance les techniques, le pouvoir du héros (1 à 3) et pose les récompenses.</small>`)}
     ${sec('📜', 'Techniques et réservoir', `<small>Les techniques ont une <b>nature</b> (Feu, Vent, Eau, Foudre, Terre) et suivent le jeu de leur clan ; celles de l'élément de ton héros coûtent 1 chakra de moins.</small><small>Chaque technique remplit une moitié du <b>réservoir</b> ; la 2e déclenche un <b>combo</b> (effet sur ton plateau + pouvoir hybride au compagnon). Deux fois le même élément : combo pur.</small><span class="njl-combos">${pairs}</span>`)}
     ${sec('⚔️', 'Compagnon et duel', `<span class="njl-row"><span><small>Ton compagnon est déjà en jeu, <b>triplé</b> et hors plateau. En combat, il affronte <b>seulement le compagnon adverse</b> et ne blesse jamais le héros.</small><small>Il prend l'élément de ta dernière technique, ou celui que tu fixes (2 chakra). <b>Résonance</b> : en duel, +1/+1 par tranche de 3 marqueurs de son élément. Gagner le duel donne +2 marqueurs de son élément.</small><small>Il grandit par les <b>coffres</b> et chaque <b>combo</b> ; l'expérience (technique +1, duel gagné +2) débloque un pouvoir de clan aux niveaux 3 et 5.</small></span></span>`)}
     ${sec('🎁', 'Coffres et entraînement', `<small>Le <b>duel</b> décide du coffre : majeur s'il gagne, mineur sinon. Tu choisis <b>1 récompense sur 3</b> pour une des 5 pièces du compagnon (lame, armure, bandeau, gantelets, talisman).</small><span class="njl-rar">${RARS.map((R, i) => `<i style="--c:${R.col}">${R.n} · ${i + 1} chakra</i>`).join('')}</span><small>Elle se range dans l'entraînement et se pose avec du chakra.</small><small><b>Parchemins de pacte</b> : ils préparent la <b>bête d'invocation</b> du clan de ton compagnon (Salamandre, Loup, Serpent, Tigre, Sanglier). Elle apparaît à l'Éveil, plus forte à chaque parchemin, et combat à ses côtés dans le duel.</small>`)}
@@ -634,7 +634,7 @@ function comboWatch() {
 function ckGauge(d, me) {
   const law = (d.laws || []).find(l => l.k === 'chakra'); if (!law) return '';
   const ck = me.ck || 0, inc = (me.bd || []).filter(m => (law.trs || []).includes(CD(m.c).tr)).length;
-  return `<div class="purse ckp" aria-label="${ck} chakra sur 10" data-tip="Chakra : il lance tes techniques ninja (le pouvoir du héros se paie en or). Chaque serviteur Ninja en génère 1 au début de ton tour (10 au plus).${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ck}<small>/10</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:10 }, (_, k) => `<i class="ckc${k < ck ? '' : ' off'}"></i>`).join('')}</span></div>`;
+  return `<div class="purse ckp" aria-label="${ck} chakra sur 10" data-tip="Chakra : il lance tes techniques ninja et le pouvoir de ton héros. Chaque serviteur Ninja en génère 1 au début de ton tour (10 au plus).${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ck}<small>/10</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:10 }, (_, k) => `<i class="ckc${k < ck ? '' : ' off'}"></i>`).join('')}</span></div>`;
 }
 // compteurs de clan (braises, marée, charge) sous le chakra
 const clanCtrH = me => { const c = [['braise', 'Braises', '#ff9a5a', 'Braises (Clan du Feu) : chaque technique les attise. Après l\'Éveil, Phénix : tes serviteurs du Feu gagnent +1/+1 par paire de braises et Renaissance.'], ['maree', 'Marée', '#6fc8ff', 'Marée (Clan de l\'Eau) : elle monte à chaque fin de tour. Après l\'Éveil, raz-de-marée : tous tes serviteurs gagnent +1/+1 par tranche de 4.'], ['charge', 'Charge', '#ffe14a', 'Charge (Clan de la Foudre) : elle s\'accumule à chaque fin de tour. Après l\'Éveil, orage total : la moitié frappe l\'ennemi au début de chaque combat.']].filter(([k]) => me[k]);
@@ -1489,7 +1489,7 @@ function heroCardH(hid, o = {}) {
   return `<div class="hcard th-${th}" style="--hc:${col}">
     <div class="hc-fx" aria-hidden="true">${hfxH(th)}</div>
     <div class="hc-port">${faceH('art-h-' + hid, 'face')}${h.cost ? `<span class="hc-cost">${h.cost}</span>` : ''}</div>
-    <div class="hc-nm">${esc(h.n)}</div>
+    <div class="hc-nm">${esc(h.n)}</div>${h.diff ? `<div class="hc-diff d${h.diff}" title="Difficulté">${'★'.repeat(h.diff)}${'☆'.repeat(3 - h.diff)} <small>${['', 'Simple', 'Intermédiaire', 'Expert'][h.diff]}</small></div>` : ''}
     ${o.who && o.who !== h.n ? `<div class="hc-who">joué par ${esc(o.who)}</div>` : ''}
     <div class="hc-kind">${h.cost ? 'Pouvoir héroïque' : 'Pouvoir passif'} · ${aff ? esc(aff) : THN[th]}</div>
     ${famChips(heroFam(hid))}
@@ -2330,3 +2330,5 @@ html.lite .awk-go{animation:none}
 .taunt.out{opacity:0;transform:translateY(-6px);transition:.3s}
 @keyframes tauntIn{from{opacity:0;transform:scale(.6)}}
 `; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `.hc-diff{text-align:center;font-size:13px;color:#ffd86a;letter-spacing:1px;margin-top:-2px}.hc-diff small{font:700 10px var(--f-label),serif;letter-spacing:.08em;text-transform:uppercase;color:#e8d6b0;margin-left:3px}.hc-diff.d3{color:#ff9a5a}`; document.head.appendChild(st); })();
