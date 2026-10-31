@@ -344,3 +344,20 @@ Object.assign(HART, {
   nh_onoki: NH('terre', '#c8a878', { skin:'#e8b894', hair:'#e8e2da', hs:'bald', mask:false, eyes:'happy', mouth:'smile', beard:'goatee', beardc:'#e8e2da', hood:1, hoodc:'#6a5a44', shirt:'#3a2e22' }),
   nh_yamato: NH('terre', '#7a5a3a', { skin:'#a8714f', hair:'#2a1d14', hs:'braids', eyes:'dot', shirt:'#3a2e22', maskc:'#4a3a28', tails:1 }),
 });
+
+// serviteurs kekkei genkai et jetons ninja
+Object.assign(ART, {
+  n_k1: NJ('terre', '#4ab0e8', { skin:'#c98e66', hair:'#3a6a2a', hs:'long', mask:false, eyes:'dot', mouth:'smile', shirt:'#3a4a22', aura:'#6fd08a' }),
+  n_k2: NJ('terre', '#4ab0e8', { skin:'#a8714f', hair:'#2a4a1a', hs:'bun', eyes:'glow', glow:'#8fe0a8', shirt:'#2a3a1a', hood:1, hoodc:'#3a5a2a', aura:'#6fd08a' }),
+  n_k3: NJ('eau', '#8fe0a8', { skin:'#f3d0b0', hair:'#e8f4ff', hs:'side', mask:false, eyes:'dot', mouth:'flat', shirt:'#2a4a6a', aura:'#bfe8ff' }),
+  n_k4: NJ('eau', '#8fe0a8', { skin:'#f0c4a0', hair:'#2a1d14', hs:'long', eyes:'glow', glow:'#e8f8ff', shirt:'#1e3a5a', maskc:'#e8f4ff', aura:'#bfe8ff' }),
+  n_k5: NJ('feu', '#c8a878', { skin:'#c98e66', hair:'#c8392f', hs:'mohawk', mask:false, eyes:'dot', mouth:'grin', shirt:'#4a2a1a', aura:'#ff7a2a' }),
+  n_k6: NJ('feu', '#c8a878', { skin:'#8a5a3c', hair:'#ff7a2a', hs:'bald', eyes:'glow', glow:'#ffb050', shirt:'#3a1a14', beard:'full', beardc:'#c8392f', aura:'#ff5a1a' }),
+  n_k7: NJ('foudre', '#4ab0e8', { skin:'#e8b894', hair:'#e0b25a', hs:'side', mask:false, eyes:'dot', mouth:'smirk', shirt:'#2a3a4a', aura:'#8fd0ff' }),
+  n_k8: NJ('foudre', '#4ab0e8', { skin:'#a8714f', hair:'#ffe14a', hs:'long', eyes:'glow', glow:'#8fd0ff', shirt:'#1e2a44', maskc:'#2a3a4a', aura:'#ffe14a' }),
+  n_k9: NJ('terre', '#ffe14a', { skin:'#f3d0b0', hair:'#e0b25a', hs:'long', mask:false, eyes:'dot', mouth:'grin', shirt:'#4a3a28', aura:'#ffb050' }),
+  n_k10: NJ('terre', '#ffe14a', { skin:'#d9a27a', hair:'#e0b25a', hs:'bun', eyes:'glow', glow:'#ffe14a', shirt:'#3a2e22', maskc:'#5a4a32', aura:'#ffb050' }),
+  tk_clone: NJ('vent', '#8fe0a8', { skin:'#e8e8f0', hair:'#9aa8b8', hs:'short', mask:false, eyes:'dot', mouth:'smile', shirt:'#6a7a8a', aura:'#e8fff0' }),
+  tk_golem: () => golem(),
+  tk_mur: () => elemental({ kind:'stone' }),
+});

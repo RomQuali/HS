@@ -35,7 +35,7 @@ function applyLive() {
   const delU = SET.delUniv || [];
   for (const u of DEFAULT_SETTINGS.univ) { if (delU.includes(u.n)) continue; const mine = SET.univ.find(x => x.n === u.n); if (!mine) SET.univ.push(clone(u)); else { if (!mine.mech) mine.mech = u.mech; if (!mine.fixed) mine.tribes = u.tribes.filter(t => !delT.includes(t)); } }
   CARDS = clone(DEFAULT_CARDS);
-  for (const id in (DATA.liveCards || {})) if (!/^c_nj_/.test(id)) CARDS[id] = clone(DATA.liveCards[id]);   // compagnons Ninja : toujours la version du jeu
+  for (const id in (DATA.liveCards || {})) if (!/^(c_nj_|n_|nb_|tk_clone|tk_golem|tk_mur)/.test(id)) CARDS[id] = clone(DATA.liveCards[id]);   // univers Ninja : toujours la version du jeu
   for (const id of (SET.deleted || [])) delete CARDS[id];
   rebuildCatalog();
   if (typeof atlOnData === 'function') atlOnData();

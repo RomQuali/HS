@@ -190,7 +190,7 @@ function castSpell0(G, p, hi, tg) {
   if (S.nin) comps(p).forEach(c => giveXp(c, 1));
   if (S.nin && S.el && !S.item) mkAdd(p, S.el, 1);   // chaque technique donne 1 marqueur de sa nature
   if (S.el) comps(p).forEach(c => { const e = compEl(c); if (e && EL_GEN[e] === S.el) { const x = (c.eq || []).includes('eq_talisman') ? 2 : 1; p.ck = Math.min(CK_MAX, (p.ck || 0) + 2 * x); buff(c, 2 * x, 2 * x); } });
-  if (!S.item) trigBoard(G, p, 'cast');
+  if (!S.item) { p.castN = (p.castN || 0) + 1; trigBoard(G, p, 'cast'); }
   checkTriple(G, p);
   return true;
 }
@@ -427,7 +427,7 @@ function rsvFill(G, p, el) {
   const bd = COMBO_BD[F.n], w = pwOf(p);
   if (bd) withSrc('Combo · ' + F.n, () => { bd[1](G, p); if (w && w.k === 'pdouble' && (p.cdbl || 0) < (awake(G) ? 2 : 1)) { p.cdbl = (p.cdbl || 0) + 1; bd[1](G, p); } });
   if (w && w.k === 'pcombo') withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => { if (w.d && (a === w.el || b === w.el)) { p.njf = (p.njf || 0) + w.d; if (w.b) mkAdd(p, 'feu', w.b); } if (w.h) p.bd.forEach(m => buff(m, 0, w.h)); });
-  trigBoard(G, p, 'combo');
+  p.lastCombo = [a, b]; trigBoard(G, p, 'combo');
   comps(p).forEach(c => { c.x = (c.x || []).filter(e => !e.fusion); c.x.push(Object.assign({ src:'Combo · ' + F.n, fusion:1 }, F.fx)); c.fu = F.n; });
   // résonance : chaque combo consomme 5 marqueurs de chacun de ses éléments pour déclencher leur éclat
   const bursts = [];

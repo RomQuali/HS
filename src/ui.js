@@ -159,7 +159,7 @@ function cardH(m, z, i, o = {}) {
     + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-${m.c}" y="-4" width="100" height="100"/></svg></div>`
     + (b.t ? `<div class="cd-tier" aria-label="Niveau ${b.t}">${'<i></i>'.repeat(b.t)}</div>` : '')
     + `<div class="cd-nm"><span>${esc(b.n)}</span></div>${(() => { const t = cardTextH(m.c, g), n = t.replace(/<[^>]+>/g, '').length; return `<div class="cd-tx${n > 95 ? ' xlong' : n > 62 ? ' long' : ''}">${t}</div>`; })()}`
-    + (b.tr !== 'neu' && trName(b.tr) ? `<div class="cd-tb">${esc(trName(b.tr))}</div>` : b.tok ? '<div class="cd-tb">Jeton</div>' : '')
+    + (b.tr !== 'neu' && trName(b.tr) ? `<div class="cd-tb">${esc(b.tr2 && trName(b.tr2) ? trName(b.tr).replace(/^Clan /, '') + ' + ' + trName(b.tr2).replace(/^Clan /, '') : trName(b.tr))}</div>` : b.tok ? '<div class="cd-tb">Jeton</div>' : '')
     + `<svg class="cd-gem a" viewBox="0 0 40 40" aria-hidden="true"><use href="#gem-a" width="40" height="40"/><text class="gt${up(m.a, b.a)}" x="20" y="20" dy=".36em">${m.a}</text></svg>`
     + `<svg class="cd-gem h" viewBox="0 0 40 40" aria-hidden="true"><use href="#gem-h" width="40" height="40"/><text class="gt${up(m.h, b.h)}" x="20" y="25" dy=".36em">${m.h}</text></svg>`
     + (m.tr ? '<span class="tri">Triple !</span>' : '') + (z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : '') + '</div>';
