@@ -2561,28 +2561,25 @@ html.lite .table[class*="awk-"] .board-zone .mn::after{display:none}
 (function(){ const st = document.createElement('style'); st.textContent = `
 @media (min-width:1100px) and (min-height:700px){
   body .stage{grid-template-columns:clamp(104px, 7vw, 150px) minmax(0,1fr)}
-  :root body .table{--tw:min(200px, calc((100cqi - 60px) / 7.1), 17.5vh);--hw:min(220px, calc((100cqi - 40px) / 7.4), 25vh)}
+  :root body .table{--tw:min(200px, calc((100cqi - 60px) / 7.1), 17.5vh);--hw:min(210px, calc((100cqi - 40px) / 7.4), 19vh)}
   :root body .table.fighting{--tw:min(180px, calc((100cqi - 100px) / 7.6), 16vh)}
   :root body .table.fighting:has(.duel-col){--tw:min(170px, calc((100cqi - 300px) / 7.4), 15.5vh)}
   :root body .table.fighting.joined{--tw:min(160px, calc((100cqi - 100px) / 9.2), 15vh)}
   :root body .table .mn-nm{font-size:clamp(12px, 1.5vh, 20px)}
   :root body .table .cd-nm{font-size:clamp(12px, 1.55vh, 19px)}
-  :root body .table .cd-tx{font-size:clamp(10.5px, 1.2vh, 15px)}
+  :root body .table .cd-tx{font-size:clamp(11.5px, 1.4vh, 17px)}
   .hud,.hero-zone,.opps,.table-skip,.shop-tools,.kz-tools{zoom:1.12}
   #peek .tip,.tip{font-size:15.5px}
-  #peek{zoom:1.15}
 }
 @media (min-width:1100px) and (min-height:950px){
   .hud,.hero-zone,.opps,.table-skip{zoom:1.28}
-  #peek{zoom:1.3}
 }
 @media (min-width:1100px) and (min-height:1300px){
   .hud,.hero-zone,.opps,.table-skip{zoom:1.55}
-  #peek{zoom:1.55}
   :root body .table{--tw:min(260px, calc((100cqi - 60px) / 7.1), 17.5vh)}
 }
 @media (min-width:1100px) and (min-height:700px) and (max-height:900px){
-  :root body .table{--tw:min(160px, calc((100cqi - 60px) / 7.1), 15.5vh);--hw:min(180px, calc((100cqi - 40px) / 7.6), 22vh)}
+  :root body .table{--tw:min(160px, calc((100cqi - 60px) / 7.1), 15.5vh);--hw:min(170px, calc((100cqi - 40px) / 7.6), 17vh)}
   :root body .table.fighting{--tw:min(140px, calc((100cqi - 100px) / 7.6), 13.5vh)}
   :root body .table.fighting:has(.duel-col){--tw:min(134px, calc((100cqi - 300px) / 7.4), 13vh)}
 }
@@ -2598,3 +2595,24 @@ html.lite .table[class*="awk-"] .board-zone .mn::after{display:none}
 }
 `; document.head.appendChild(st); })();
 (function(){ const st = document.createElement('style'); st.textContent = `@media (min-width:1100px) and (min-height:700px) and (max-height:800px){ .hud,.hero-zone,.opps,.table-skip{zoom:1} }`; document.head.appendChild(st); })();
+/* PC : survols grands et lisibles */
+(function(){ const st = document.createElement('style'); st.textContent = `
+@media (min-width:1100px) and (min-height:700px){
+  #peek{--hw:clamp(250px, 29vh, 420px)}
+  #peek .cd-nm{font-size:clamp(15px, 2.1vh, 26px)}
+  #peek .cd-tx{font-size:clamp(13px, 1.75vh, 22px);line-height:1.3}
+  #peek .cd-tb{font-size:clamp(11px, 1.3vh, 16px)}
+  #peek .tip,#peek .hcard,#peek .peek-note{zoom:1.35}
+  #peek .peq{zoom:1.08}
+  .tip{font-size:16px}
+}
+@media (min-width:1100px) and (min-height:1200px){
+  #peek .tip,#peek .hcard,#peek .peek-note{zoom:1.7}
+  #peek .peq{zoom:1.35}
+}
+@media (min-width:1100px) and (min-height:700px) and (max-height:820px){
+  #peek .tip,#peek .hcard,#peek .peek-note{zoom:1.15}
+  #peek .peq{zoom:1}
+}
+`; document.head.appendChild(st); })();
+(function(){ const st = document.createElement('style'); st.textContent = `@media (min-width:1100px) and (min-height:700px){ #peek .peq{max-height:calc(100vh / 1.1 - 24px);overflow:auto} }`; document.head.appendChild(st); })();
