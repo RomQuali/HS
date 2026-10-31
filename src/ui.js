@@ -532,6 +532,11 @@ function upPeekH(me, i) {
     <small class="uppk-h">${L.length ? 'Déjà sur cette pièce : ' + L.map(r => `<em style="color:${RARS[r].col}">${RARS[r].n}</em>`).join(', ') : 'Aucune amélioration sur cette pièce'}</small></div>`;
 }
 // coffre ouvert : 3 améliorations au choix (et la technique bonus éventuelle)
+// styles des récompenses (10 au choix, mémorisés sur l'appareil)
+const RW_NAMES = ['Bois de taverne', 'Parchemin', 'Médaillon', 'Cristal de chakra', 'Talisman scellé', 'Bannière', 'Pierre runique', 'Néon', 'Holographique', 'Épuré'];
+function rwSet(n) { V.rw = n; document.body.className = document.body.className.replace(/\brw-\d+\b/g, '').trim() + ' rw-' + n; try { localStorage.setItem('mdt-rw', String(n)); } catch (e) {} }
+try { const s = +localStorage.getItem('mdt-rw'); if (s >= 0 && s < 10) V.rw = s; } catch (e) {}
+setTimeout(() => rwSet(V.rw || 0), 0);
 function choiceH(d, me) {
   if (!me || !me.choice || !me.cp || Date.now() < (V.choiceAt || 0) || d.ph !== 'recruit' || awkPending()) return '';
   const tech = (me.loot || []).filter(o => SPELLS[o.id]);
@@ -539,6 +544,7 @@ function choiceH(d, me) {
     <b class="upch-t">Choisis ta récompense</b>${me.chFav ? '<small class="upch-s fav">Coffre de l\'Éveil · tu es parmi les derniers : raretés Épique ou mieux, et la carte va gratuitement dans ta main.</small>' : ''}<small class="upch-s"${me.chFav ? ' hidden' : ''}>Une seule : elle se range dans l'inventaire, et tu la poses sur ${esc(C[me.cp.c] ? C[me.cp.c].n : 'ton compagnon')} avec du chakra.</small>
     <div class="upch-row">${me.choice.map((o, i) => { const R = RARS[o.r], n = o.kind ? 0 : pieceList(me.cp, o.pc).length;
       return `<button class="upc r${o.r}" style="--rc:${R.col};--k:${i}" data-act="upick" data-i="${i}"><span class="upc-r">${R.n}</span>${pieceIco(o.kind ? o : o.pc, 'big')}<b>${esc(o.kind ? (o.kind === 'mn' ? 'Serviteur' : 'Technique') : PIECES[o.pc].n)}</b><span class="upc-tx">${esc(upTx(o, me.cp))}</span>${o.kind && me.chFav ? '<span class="uppk-c"><small>gratuit</small></span>' : `<span class="uppk-c">${ckMarkH(upgCost(o))}<small>à poser</small></span>`}<small>${o.kind ? (me.chFav ? 'Gratuit · directement en main' : 'À poser au chakra') : n ? `Déjà ${n} amélioration${n > 1 ? 's' : ''}` : 'Première amélioration'}</small></button>`; }).join('')}</div>
+    <div class="rw-pick" aria-label="Style des récompenses"><button class="btn sm" data-act="rwst" data-d="-1" aria-label="Style précédent">◀</button><span>Style ${(V.rw || 0) + 1} / 10 · ${RW_NAMES[V.rw || 0]}</span><button class="btn sm" data-act="rwst" data-d="1" aria-label="Style suivant">▶</button></div>
     ${tech.length ? `<p class="upch-b">Bonus du coffre : <b>${tech.map(o => esc(SPELLS[o.id].n)).join(', ')}</b> ajoutée à ta main</p>` : ''}
   </div></div>`;
 }
@@ -1081,6 +1087,7 @@ function doAct(act, btn) {
     case 'leave': leaveGame(); break;
     case 'hero': sendAct({ t:'hero', h:btn.dataset.h }); V.heroSel = null; break;
     case 'hsel': V.heroSel = btn.dataset.h; render(); break;
+    case 'rwst': rwSet(((V.rw || 0) + (+btn.dataset.d) + 10) % 10); render(); break;
     case 'hroll': if ((V.me.hrr || 0) > 0) { if (V.heroSel === V.me.ho[+btn.dataset.i]) V.heroSel = null; sendAct({ t:'hroll', i:+btn.dataset.i }); } break;
     case 'skip': if (V.fight) { clearTimeout(V.fightT); clearTimeout(V.duelT); if (V.fight.dr) { V.di = V.fight.dr.frames.length - 1; V.fight.ddone = true; } if (V.fight.lunge) { try { V.fight.lunge.cancel(); } catch (e) {} V.fight.lunge = null; } V.fi = V.fight.r.frames.length - 1; V.fight.done = true; render(); fxEnd(); } break;
     case 'buy': if (s) { sendAct({ t:'buy', i:s.i }); V.sel = null; } break;
@@ -2650,4 +2657,65 @@ html.lite .keeper-zone .mn.pairok::before,html.lite .keeper-zone .mn.tripok::bef
 (function(){ const st = document.createElement('style'); st.textContent = `
 @media (min-width:1100px) and (min-height:700px) and (max-height:900px){ :root body .table.fighting{grid-template-rows:auto minmax(0,1.3fr) minmax(0,1fr) auto auto} }
 @media (min-width:1100px) and (min-height:1200px){ :root body .table .keeper{zoom:2.05} :root body .table .hero-zone{zoom:1.8} }
+`; document.head.appendChild(st); })();
+
+/* récompenses : plus grandes + 10 styles */
+(function(){ const st = document.createElement('style'); st.textContent = `
+.rw-pick{display:flex;align-items:center;gap:10px;margin-top:14px;color:#e8d6b0;font:700 13px var(--f-label),serif}
+.rw-pick span{min-width:200px;text-align:center}
+@media (min-width:900px){
+  .upch-t{font-size:clamp(32px,4.5vh,52px)} .upch-s{font-size:clamp(13px,1.6vh,18px)}
+  .upch-row{gap:clamp(18px,2.4vw,40px)}
+  .upc{width:clamp(220px,17vw,320px);padding:clamp(14px,1.8vh,24px) 16px clamp(16px,2vh,26px);gap:10px}
+  .upc .pc-ico.big{width:clamp(110px,14vh,170px);height:clamp(110px,14vh,170px)}
+  .upc b{font-size:clamp(17px,2.1vh,24px)} .upc-tx{font-size:clamp(15px,1.85vh,21px);min-height:2.6em} .upc small{font-size:clamp(12px,1.4vh,15px)}
+  .upc-r{font-size:clamp(11px,1.3vh,15px);padding:3px 14px}
+  :root body .upm{width:clamp(48px,5.6vh,72px);height:clamp(48px,5.6vh,72px)}
+  :root body .upm-c{width:26px;height:28px}
+}
+/* 2 · Parchemin */
+body.rw-1 .upc{color:#3a2412;border-radius:6px;background:radial-gradient(120% 90% at 50% 40%,#f6e8c4,#e3c98e 70%,#c9a564);box-shadow:0 0 0 2px #7a5426,0 0 0 5px var(--rc),0 14px 26px rgba(0,0,0,.6);
+  -webkit-mask:radial-gradient(6px at 50% 0,#0000 98%,#000) 50% 0/14px 51% repeat-x,radial-gradient(6px at 50% 100%,#0000 98%,#000) 50% 100%/14px 51% repeat-x}
+body.rw-1 .upc b{color:#4a2a0e} body.rw-1 .upc-tx{color:#7a2a12} body.rw-1 .upc small{color:#6a5032}
+/* 3 · Médaillon */
+body.rw-2 .upc{border-radius:50%;aspect-ratio:1;align-content:center;padding:28px;background:radial-gradient(circle,#3a2614,#160c06 70%);box-shadow:0 0 0 6px #120a06,0 0 0 12px #d8a84a,0 0 0 15px var(--rc),0 0 40px color-mix(in srgb,var(--rc) 70%,transparent)}
+body.rw-2 .upc .pc-ico.big{width:clamp(80px,10vh,120px);height:clamp(80px,10vh,120px)}
+/* 4 · Cristal de chakra */
+body.rw-3 .upc{border-radius:22px;background:linear-gradient(160deg,color-mix(in srgb,var(--rc) 35%,rgba(255,255,255,.15)),rgba(10,20,40,.55));backdrop-filter:blur(8px);box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.55),inset 0 20px 40px rgba(255,255,255,.12),0 0 30px color-mix(in srgb,var(--rc) 70%,transparent),0 14px 26px rgba(0,0,0,.5)}
+body.rw-3 .upc::after{content:'';position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.35) 45%,transparent 55%);background-size:250% 100%;animation:rwShine 3s linear infinite}
+body.rw-3 .upc{position:relative;overflow:hidden}
+@keyframes rwShine{from{background-position:120% 0}to{background-position:-120% 0}}
+/* 5 · Talisman scellé */
+body.rw-4 .upc{border-radius:3px;color:#2a1608;background:linear-gradient(180deg,#fbf3dc,#efe0b4);box-shadow:inset 0 0 0 3px #fbf3dc,inset 0 0 0 5px #b8322a,0 0 0 2px var(--rc),0 14px 26px rgba(0,0,0,.6);position:relative}
+body.rw-4 .upc .pc-ico.big{box-shadow:0 0 0 5px #b8322a,0 0 0 8px #fbf3dc,0 0 0 10px #b8322a}
+body.rw-4 .upc b{color:#2a1608;writing-mode:horizontal-tb} body.rw-4 .upc-tx{color:#8a1e16} body.rw-4 .upc small{color:#6a4a2a}
+body.rw-4 .upc-r{background:#b8322a;color:#fbf3dc}
+/* 6 · Bannière */
+body.rw-5 .upc{border-radius:6px 6px 0 0;padding-bottom:46px;background:linear-gradient(180deg,color-mix(in srgb,var(--rc) 55%,#3a1a0a),color-mix(in srgb,var(--rc) 25%,#160a04));clip-path:polygon(0 0,100% 0,100% 100%,50% 90%,0 100%);box-shadow:none;filter:drop-shadow(0 0 3px var(--rc)) drop-shadow(0 12px 14px rgba(0,0,0,.6))}
+body.rw-5 .upc::before{content:'';position:absolute;left:-6%;right:-6%;top:-10px;height:12px;border-radius:6px;background:linear-gradient(180deg,#e2b452,#8a5a1a)}
+body.rw-5 .upc{position:relative;overflow:visible}
+/* 7 · Pierre runique */
+body.rw-6 .upc{border-radius:14px 14px 30px 30px;background:radial-gradient(120% 80% at 30% 20%,#5a5a62,#2a2a30 60%,#18181c);box-shadow:inset 0 0 0 2px #6a6a74,inset 0 0 18px rgba(0,0,0,.7),0 0 0 3px #1a1a1e,0 0 22px color-mix(in srgb,var(--rc) 70%,transparent)}
+body.rw-6 .upc b,body.rw-6 .upc-tx{color:var(--rc);text-shadow:0 0 8px var(--rc)}
+/* 8 · Néon */
+body.rw-7 .upc{border-radius:10px;background:#0a0814;box-shadow:0 0 0 2px var(--rc),0 0 12px var(--rc),inset 0 0 14px color-mix(in srgb,var(--rc) 50%,transparent);font-family:ui-monospace,Menlo,monospace}
+body.rw-7 .upc b{font-family:inherit;color:#fff;text-shadow:0 0 8px var(--rc)} body.rw-7 .upc-tx{color:var(--rc);text-shadow:0 0 6px var(--rc)}
+body.rw-7 .upc .pc-ico.big{box-shadow:0 0 0 2px var(--rc),0 0 22px var(--rc)}
+/* 9 · Holographique */
+body.rw-8 .upc{position:relative;isolation:isolate;border-radius:18px;background:linear-gradient(180deg,#1c1424,#0c0812);box-shadow:0 14px 26px rgba(0,0,0,.6)}
+body.rw-8 .upc::before{content:'';position:absolute;inset:-3px;border-radius:20px;z-index:-1;background:conic-gradient(from var(--hg,0deg),#ff6ad5,#ffd36a,#6affb4,#6ad5ff,#b46aff,#ff6ad5);animation:rwHolo 4s linear infinite}
+body.rw-8 .upc b{background:linear-gradient(90deg,#ffd36a,#6affb4,#6ad5ff);-webkit-background-clip:text;color:transparent}
+@property --hg{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes rwHolo{to{--hg:360deg}}
+/* 10 · Épuré */
+body.rw-9 .upc{border-radius:12px;background:#17120e;box-shadow:inset 0 3px 0 var(--rc),0 0 0 1px rgba(255,255,255,.12),0 10px 22px rgba(0,0,0,.5)}
+body.rw-9 .upc .pc-ico.big{box-shadow:none} body.rw-9 .upc-r{background:none;color:var(--rc);padding:0}
+html.lite body .upc::after,html.lite body .upc::before{animation:none}
+`; document.head.appendChild(st); })();
+(function(){ const st = document.createElement('style'); st.textContent = `
+.keeper-zone .mn.pairok::before{left:-14%;right:-14%;top:-10%;bottom:6%;box-shadow:none;
+  background:repeating-conic-gradient(rgba(140,200,255,.9) 0 7deg,transparent 7deg 22deg);-webkit-mask:radial-gradient(farthest-side,transparent 52%,#000 66%,transparent 100%);mask:radial-gradient(farthest-side,transparent 52%,#000 66%,transparent 100%);animation:akSpin 5s linear infinite}
+.keeper-zone .mn.pairok::after{color:#0a1a33;background:linear-gradient(180deg,#d8ecff,#5aa0f0);box-shadow:0 0 0 1.5px #e8f4ff,0 0 14px rgba(110,170,255,.9);animation:tripTag 1s ease-in-out infinite}
+.keeper-zone .mn.pairok .mn-svg{filter:drop-shadow(0 0 8px rgba(110,170,255,.95))}
+html.lite .keeper-zone .mn.pairok::after{animation:none}
 `; document.head.appendChild(st); })();
