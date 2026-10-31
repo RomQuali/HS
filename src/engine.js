@@ -291,15 +291,51 @@ const DEFAULT_CARD_LIST = [
   ['n_t7', 'Pilleur souterrain', 4, 'n_terre', 4, 5, 't', [{ k:'soc_steal', n:2 }]],
   ['n_t8', 'Ermite des cimes', 6, 'n_terre', 5, 7, '', [{ k:'eot_ck_spend', n:3, a:3, h:3 }, { k:'cast_ck', n:1 }]],
   ['c_nj_feu', 'Disciple de la flamme', 3, 'n_feu', 6, 5, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:2, h:1 }]],
-  ['c_nj_vent', 'Disciple du vent', 3, 'n_vent', 5, 4, 'w', [{ k:'atk_self', a:1, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_vent', 'Disciple du vent', 3, 'n_vent', 5, 4, 'w', [{ k:'atk_self', a:2, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
   ['c_nj_eau', 'Disciple de la brume', 3, 'n_eau', 3, 8, '', [{ k:'surv_self', a:1, h:1 }, { k:'combo_self', a:1, h:2 }]],
-  ['c_nj_foudre', 'Disciple de l\'orage', 3, 'n_foudre', 5, 6, '', [{ k:'atk_zap', d:2, n:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_foudre', 'Disciple de l\'orage', 3, 'n_foudre', 5, 6, '', [{ k:'atk_zap', d:1, n:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
   ['c_nj_terre', 'Disciple du roc', 3, 'n_terre', 2, 11, '', [{ k:'soc_self', a:1, h:0 }, { k:'combo_self', a:1, h:2 }]],
+  // un compagnon par héros (même profil que son élément, passif propre)
+  ['c_nj_cendre', 'Loup de cendre', 3, 'n_feu', 6, 5, '', [{ k:'eot_braise_self', n:1 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_flamm', 'Esprit flammèche', 3, 'n_feu', 6, 5, '', [{ k:'cast_self', a:1, h:0 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_foyer', 'Garde du foyer', 3, 'n_feu', 6, 5, '', [{ k:'soc_self', a:1, h:0 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_salam', 'Salamandrin', 3, 'n_feu', 6, 5, '', [{ k:'soc_dmg', d:1, n:2 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_luciole', 'Luciole de lave', 3, 'n_feu', 6, 5, '', [{ k:'atk_zap', d:1, n:1 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_forge', 'Apprenti forgeron', 3, 'n_feu', 6, 5, '', [{ k:'atk_self', a:2, h:1 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_dragonnet', 'Dragonnet écarlate', 3, 'n_feu', 6, 5, '', [{ k:'surv_self', a:1, h:0 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_dunes', 'Chat des dunes', 3, 'n_vent', 5, 4, 'w', [{ k:'cast_self', a:0, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_cerf', 'Cerf des steppes', 3, 'n_vent', 5, 4, 'w', [{ k:'soc_self', a:1, h:0 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_bourr', 'Esprit bourrasque', 3, 'n_vent', 5, 4, 'w', [{ k:'atk_zap', d:2, n:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_messag', 'Messagère des vents', 3, 'n_vent', 5, 4, 'w', [{ k:'surv_self', a:1, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_fennec', 'Fennec planeur', 3, 'n_vent', 5, 4, 'w', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_plume', 'Dragonnet plume', 3, 'n_vent', 5, 4, 'w', [{ k:'atk_self', a:2, h:0 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_vagab', 'Vagabond des sables', 3, 'n_vent', 5, 4, 'w', [{ k:'eot_souffle', n:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_anguille', 'Anguille d’ombre', 3, 'n_eau', 3, 8, '', [{ k:'eot_maree_self', n:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_marees', 'Esprit des marées', 3, 'n_eau', 3, 8, '', [{ k:'cast_self', a:0, h:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_sabreur', 'Élève sabreur', 3, 'n_eau', 3, 8, '', [{ k:'atk_self', a:2, h:2 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_murene', 'Murène des abysses', 3, 'n_eau', 3, 8, '', [{ k:'atk_zap', d:2, n:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_ecume', 'Serpent d’écume', 3, 'n_eau', 3, 8, '', [{ k:'surv_self', a:1, h:2 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_source', 'Chat des sources', 3, 'n_eau', 3, 8, '', [{ k:'soc_self', a:1, h:2 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_loutre', 'Loutre du récif', 3, 'n_eau', 3, 8, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_lion', 'Lion tonnerre', 3, 'n_foudre', 5, 6, '', [{ k:'atk_zap', d:1, n:2 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_follet', 'Feu follet d’orage', 3, 'n_foudre', 5, 6, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_loupor', 'Loup d’orage', 3, 'n_foudre', 5, 6, '', [{ k:'atk_self', a:1, h:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_courriere', 'Courrière foudre', 3, 'n_foudre', 5, 6, '', [{ k:'cast_self', a:1, h:0 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_lynx', 'Lynx fulgurant', 3, 'n_foudre', 5, 6, '', [{ k:'atk_self', a:3, h:0 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_tambour', 'Tambourinaire', 3, 'n_foudre', 5, 6, '', [{ k:'soc_self', a:1, h:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_eclair', 'Dragonnet d’éclair', 3, 'n_foudre', 5, 6, '', [{ k:'surv_self', a:1, h:0 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_macon', 'Petit maçon', 3, 'n_terre', 2, 11, '', [{ k:'surv_self', a:0, h:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_mont', 'Esprit de la montagne', 3, 'n_terre', 2, 11, '', [{ k:'cast_self', a:0, h:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_granit', 'Sanglier de granit', 3, 'n_terre', 2, 11, '', [{ k:'soc_self', a:1, h:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_quartz', 'Golem de quartz', 3, 'n_terre', 2, 11, '', [{ k:'eot_roche', n:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_bouq', 'Bouquetin des falaises', 3, 'n_terre', 2, 11, '', [{ k:'surv_self', a:1, h:0 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_lionpierre', 'Lion de pierre', 3, 'n_terre', 2, 11, '', [{ k:'atk_self', a:2, h:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_blaireau', 'Blaireau des galeries', 3, 'n_terre', 2, 11, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:1, h:2 }]],
   ['n_t6', 'Seigneur des roches', 6, 'n_terre', 6, 10, 't', [{ k:'awk_quake' }, { k:'eot_buff_taunt', a:2, h:2 }]],
 ];
 const DEFAULT_CARDS = {};
 DEFAULT_CARD_LIST.forEach(([id, n, t, tr, a, h, kw, fx]) => { DEFAULT_CARDS[id] = { id, n, t, tr, a, h, kw:kw.split(''), fx, art:{ f:'base', id } }; });
-const COMPANIONS = { nh_akari:'c_nj_feu', nh_hoshi:'c_nj_feu', nh_ren:'c_nj_feu', nh_tsubaki:'c_nj_feu', nh_daigo:'c_nj_feu', nh_mira:'c_nj_vent', nh_taro:'c_nj_vent', nh_haru:'c_nj_vent', nh_gen:'c_nj_vent', nh_saki:'c_nj_vent', nh_mizu:'c_nj_eau', nh_ryota:'c_nj_eau', nh_umi:'c_nj_eau', nh_kenji:'c_nj_eau', nh_aya:'c_nj_eau', nh_raiko:'c_nj_foudre', nh_kenta:'c_nj_foudre', nh_hikari:'c_nj_foudre', nh_akio:'c_nj_foudre', nh_rika:'c_nj_foudre', nh_goro:'c_nj_terre', nh_kaito:'c_nj_terre', nh_masa:'c_nj_terre', nh_toshi:'c_nj_terre', nh_emi:'c_nj_terre', nh_hina:'c_nj_feu', nh_kazan:'c_nj_feu', nh_tatsu:'c_nj_feu', nh_sora:'c_nj_vent', nh_fumi:'c_nj_vent', nh_shin:'c_nj_vent', nh_nami:'c_nj_eau', nh_shizuka:'c_nj_eau', nh_kai:'c_nj_eau', nh_jin:'c_nj_foudre', nh_ikazu:'c_nj_foudre', nh_sho:'c_nj_foudre', nh_iwao:'c_nj_terre', nh_daichi:'c_nj_terre', nh_kuro:'c_nj_terre', paul:'c_pouf', leon:'c_caillou', zoe:'c_gloup', jeanne:'c_frisouille', selene:'c_nyx', brok:'c_enclume', sylvara:'c_lys', grumbo:'c_miette', vaskor:'c_osbrise', pyra:'c_etincelle', rivet:'c_bricole', egide:'c_lumen', ondine:'c_fiole', barnabe:'c_sou', maelle:'c_croc', oren:'c_plume', gor:'c_bastion', ilka:'c_truelle', nono:'c_braise' };
+const COMPANIONS = { nh_akari:'c_nj_feu', nh_hoshi:'c_nj_cendre', nh_ren:'c_nj_flamm', nh_tsubaki:'c_nj_foyer', nh_daigo:'c_nj_salam', nh_mira:'c_nj_vent', nh_taro:'c_nj_dunes', nh_haru:'c_nj_cerf', nh_gen:'c_nj_bourr', nh_saki:'c_nj_messag', nh_mizu:'c_nj_eau', nh_ryota:'c_nj_anguille', nh_umi:'c_nj_marees', nh_kenji:'c_nj_sabreur', nh_aya:'c_nj_murene', nh_raiko:'c_nj_foudre', nh_kenta:'c_nj_lion', nh_hikari:'c_nj_follet', nh_akio:'c_nj_loupor', nh_rika:'c_nj_courriere', nh_goro:'c_nj_terre', nh_kaito:'c_nj_macon', nh_masa:'c_nj_mont', nh_toshi:'c_nj_granit', nh_emi:'c_nj_quartz', nh_hina:'c_nj_luciole', nh_kazan:'c_nj_forge', nh_tatsu:'c_nj_dragonnet', nh_sora:'c_nj_fennec', nh_fumi:'c_nj_plume', nh_shin:'c_nj_vagab', nh_nami:'c_nj_ecume', nh_shizuka:'c_nj_source', nh_kai:'c_nj_loutre', nh_jin:'c_nj_lynx', nh_ikazu:'c_nj_tambour', nh_sho:'c_nj_eclair', nh_iwao:'c_nj_bouq', nh_daichi:'c_nj_lionpierre', nh_kuro:'c_nj_blaireau', paul:'c_pouf', leon:'c_caillou', zoe:'c_gloup', jeanne:'c_frisouille', selene:'c_nyx', brok:'c_enclume', sylvara:'c_lys', grumbo:'c_miette', vaskor:'c_osbrise', pyra:'c_etincelle', rivet:'c_bricole', egide:'c_lumen', ondine:'c_fiole', barnabe:'c_sou', maelle:'c_croc', oren:'c_plume', gor:'c_bastion', ilka:'c_truelle', nono:'c_braise' };
 for (const h in COMPANIONS) DEFAULT_CARDS[COMPANIONS[h]].comp = h;
 const compOf = hero => { const id = COMPANIONS[hero]; if (id && CARDS[id]) return id; return Object.keys(CARDS).find(k => CARDS[k].comp === hero) || null; };
 const compLimit = rd => rd >= 6 ? 3 : rd >= 5 ? 2 : rd >= 3 ? 1 : 0;
@@ -447,7 +483,7 @@ function rebuildCatalog() {
   CAT_REV = hashStr(JSON.stringify([SET, CARDS]));
   if (typeof rebuildArt === 'function') rebuildArt();
 }
-function mk(id, g) { const b = CD(id); return { c:id, a:b.a * (g ? 2 : 1), h:b.h * (g ? 2 : 1), g:g ? 1 : 0, f:b.f, u:UID++ }; }
+function mk(id, g) { const b = CD(id); return { c:id, a:b.a * (g ? 3 : 1), h:b.h * (g ? 3 : 1), g:g ? 1 : 0, f:b.f, u:UID++ }; }
 // suivi des améliorations : chaque bonus est noté avec sa source (serviteur, sort, pouvoir…)
 let BSRC = null;
 function withSrc(src, fn) { const o = BSRC; BSRC = src; try { return fn(); } finally { BSRC = o; } }
@@ -664,7 +700,7 @@ function auraTimes(list, k) { let t = 1; for (const m of list) if (m.h > 0 && fx
    ===================================================================== */
 function simSummon(S, s, pos, id, g) {
   const arr = S.sides[s]; if (arr.length >= 7 || !C[id]) return null;
-  const b = C[id]; const m = { c:id, a:b.a * (g ? 2 : 1), h:b.h * (g ? 2 : 1), g:g ? 1 : 0, f:b.f, u:S.uid++ };
+  const b = C[id]; const m = { c:id, a:b.a * (g ? 3 : 1), h:b.h * (g ? 3 : 1), g:g ? 1 : 0, f:b.f, u:S.uid++ };
   arr.splice(Math.min(pos, arr.length), 0, m); return m;
 }
 const sideOf = (S, m) => S.sides[0].includes(m) ? 0 : 1;
@@ -894,7 +930,7 @@ function checkTriple(G, p) {
     const copies = [];
     for (const zone of [p.hd, p.bd]) for (let i = zone.length - 1; i >= 0 && copies.length < 3; i--) if (zone[i].c === id && !zone[i].g && !zone[i].sp) copies.push(zone.splice(i, 1)[0]);
     const b = CD(id);
-    const gm = { c:id, a:b.a * 2 + copies.reduce((t, m) => t + m.a - b.a, 0), h:b.h * 2 + copies.reduce((t, m) => t + m.h - b.h, 0), g:1, f:b.f, u:UID++, tr:1 };
+    const gm = { c:id, a:copies.reduce((t, m) => t + m.a, 0), h:copies.reduce((t, m) => t + m.h, 0), g:1, f:b.f, u:UID++, tr:1 };
     copies.forEach(m => { for (const k of m.f || '') addF(gm, k); if (m.x) gm.x = (gm.x || []).concat(m.x); (m.bn || []).forEach(e => { const L = gm.bn || (gm.bn = []); const f = L.find(x => x.s === e.s); if (f) { f.a += e.a; f.h += e.h; f.n += e.n; for (const k of e.k || '') if (!(f.k || '').includes(k)) f.k = (f.k || '') + k; } else L.push({ ...e }); }); });
     p.hd.push(gm);
     if (inMech(G, 'serment', gm)) withSrc('Serment des anciens', () => p.bd.concat(p.hd).forEach(x => { if (x !== gm && !x.sp && inMech(G, 'serment', x)) buff(x, 2, 2); }));

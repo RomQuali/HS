@@ -2352,15 +2352,51 @@ const DEFAULT_CARD_LIST = [
   ['n_t7', 'Pilleur souterrain', 4, 'n_terre', 4, 5, 't', [{ k:'soc_steal', n:2 }]],
   ['n_t8', 'Ermite des cimes', 6, 'n_terre', 5, 7, '', [{ k:'eot_ck_spend', n:3, a:3, h:3 }, { k:'cast_ck', n:1 }]],
   ['c_nj_feu', 'Disciple de la flamme', 3, 'n_feu', 6, 5, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:2, h:1 }]],
-  ['c_nj_vent', 'Disciple du vent', 3, 'n_vent', 5, 4, 'w', [{ k:'atk_self', a:1, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_vent', 'Disciple du vent', 3, 'n_vent', 5, 4, 'w', [{ k:'atk_self', a:2, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
   ['c_nj_eau', 'Disciple de la brume', 3, 'n_eau', 3, 8, '', [{ k:'surv_self', a:1, h:1 }, { k:'combo_self', a:1, h:2 }]],
-  ['c_nj_foudre', 'Disciple de l\'orage', 3, 'n_foudre', 5, 6, '', [{ k:'atk_zap', d:2, n:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_foudre', 'Disciple de l\'orage', 3, 'n_foudre', 5, 6, '', [{ k:'atk_zap', d:1, n:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
   ['c_nj_terre', 'Disciple du roc', 3, 'n_terre', 2, 11, '', [{ k:'soc_self', a:1, h:0 }, { k:'combo_self', a:1, h:2 }]],
+  // un compagnon par héros (même profil que son élément, passif propre)
+  ['c_nj_cendre', 'Loup de cendre', 3, 'n_feu', 6, 5, '', [{ k:'eot_braise_self', n:1 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_flamm', 'Esprit flammèche', 3, 'n_feu', 6, 5, '', [{ k:'cast_self', a:1, h:0 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_foyer', 'Garde du foyer', 3, 'n_feu', 6, 5, '', [{ k:'soc_self', a:1, h:0 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_salam', 'Salamandrin', 3, 'n_feu', 6, 5, '', [{ k:'soc_dmg', d:1, n:2 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_luciole', 'Luciole de lave', 3, 'n_feu', 6, 5, '', [{ k:'atk_zap', d:1, n:1 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_forge', 'Apprenti forgeron', 3, 'n_feu', 6, 5, '', [{ k:'atk_self', a:2, h:1 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_dragonnet', 'Dragonnet écarlate', 3, 'n_feu', 6, 5, '', [{ k:'surv_self', a:1, h:0 }, { k:'combo_self', a:2, h:1 }]],
+  ['c_nj_dunes', 'Chat des dunes', 3, 'n_vent', 5, 4, 'w', [{ k:'cast_self', a:0, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_cerf', 'Cerf des steppes', 3, 'n_vent', 5, 4, 'w', [{ k:'soc_self', a:1, h:0 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_bourr', 'Esprit bourrasque', 3, 'n_vent', 5, 4, 'w', [{ k:'atk_zap', d:2, n:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_messag', 'Messagère des vents', 3, 'n_vent', 5, 4, 'w', [{ k:'surv_self', a:1, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_fennec', 'Fennec planeur', 3, 'n_vent', 5, 4, 'w', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_plume', 'Dragonnet plume', 3, 'n_vent', 5, 4, 'w', [{ k:'atk_self', a:2, h:0 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_vagab', 'Vagabond des sables', 3, 'n_vent', 5, 4, 'w', [{ k:'eot_souffle', n:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_anguille', 'Anguille d’ombre', 3, 'n_eau', 3, 8, '', [{ k:'eot_maree_self', n:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_marees', 'Esprit des marées', 3, 'n_eau', 3, 8, '', [{ k:'cast_self', a:0, h:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_sabreur', 'Élève sabreur', 3, 'n_eau', 3, 8, '', [{ k:'atk_self', a:2, h:2 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_murene', 'Murène des abysses', 3, 'n_eau', 3, 8, '', [{ k:'atk_zap', d:2, n:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_ecume', 'Serpent d’écume', 3, 'n_eau', 3, 8, '', [{ k:'surv_self', a:1, h:2 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_source', 'Chat des sources', 3, 'n_eau', 3, 8, '', [{ k:'soc_self', a:1, h:2 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_loutre', 'Loutre du récif', 3, 'n_eau', 3, 8, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_lion', 'Lion tonnerre', 3, 'n_foudre', 5, 6, '', [{ k:'atk_zap', d:1, n:2 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_follet', 'Feu follet d’orage', 3, 'n_foudre', 5, 6, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_loupor', 'Loup d’orage', 3, 'n_foudre', 5, 6, '', [{ k:'atk_self', a:1, h:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_courriere', 'Courrière foudre', 3, 'n_foudre', 5, 6, '', [{ k:'cast_self', a:1, h:0 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_lynx', 'Lynx fulgurant', 3, 'n_foudre', 5, 6, '', [{ k:'atk_self', a:3, h:0 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_tambour', 'Tambourinaire', 3, 'n_foudre', 5, 6, '', [{ k:'soc_self', a:1, h:1 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_eclair', 'Dragonnet d’éclair', 3, 'n_foudre', 5, 6, '', [{ k:'surv_self', a:1, h:0 }, { k:'combo_ck', n:1 }, { k:'combo_self', a:1, h:1 }]],
+  ['c_nj_macon', 'Petit maçon', 3, 'n_terre', 2, 11, '', [{ k:'surv_self', a:0, h:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_mont', 'Esprit de la montagne', 3, 'n_terre', 2, 11, '', [{ k:'cast_self', a:0, h:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_granit', 'Sanglier de granit', 3, 'n_terre', 2, 11, '', [{ k:'soc_self', a:1, h:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_quartz', 'Golem de quartz', 3, 'n_terre', 2, 11, '', [{ k:'eot_roche', n:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_bouq', 'Bouquetin des falaises', 3, 'n_terre', 2, 11, '', [{ k:'surv_self', a:1, h:0 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_lionpierre', 'Lion de pierre', 3, 'n_terre', 2, 11, '', [{ k:'atk_self', a:2, h:1 }, { k:'combo_self', a:1, h:2 }]],
+  ['c_nj_blaireau', 'Blaireau des galeries', 3, 'n_terre', 2, 11, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:1, h:2 }]],
   ['n_t6', 'Seigneur des roches', 6, 'n_terre', 6, 10, 't', [{ k:'awk_quake' }, { k:'eot_buff_taunt', a:2, h:2 }]],
 ];
 const DEFAULT_CARDS = {};
 DEFAULT_CARD_LIST.forEach(([id, n, t, tr, a, h, kw, fx]) => { DEFAULT_CARDS[id] = { id, n, t, tr, a, h, kw:kw.split(''), fx, art:{ f:'base', id } }; });
-const COMPANIONS = { nh_akari:'c_nj_feu', nh_hoshi:'c_nj_feu', nh_ren:'c_nj_feu', nh_tsubaki:'c_nj_feu', nh_daigo:'c_nj_feu', nh_mira:'c_nj_vent', nh_taro:'c_nj_vent', nh_haru:'c_nj_vent', nh_gen:'c_nj_vent', nh_saki:'c_nj_vent', nh_mizu:'c_nj_eau', nh_ryota:'c_nj_eau', nh_umi:'c_nj_eau', nh_kenji:'c_nj_eau', nh_aya:'c_nj_eau', nh_raiko:'c_nj_foudre', nh_kenta:'c_nj_foudre', nh_hikari:'c_nj_foudre', nh_akio:'c_nj_foudre', nh_rika:'c_nj_foudre', nh_goro:'c_nj_terre', nh_kaito:'c_nj_terre', nh_masa:'c_nj_terre', nh_toshi:'c_nj_terre', nh_emi:'c_nj_terre', nh_hina:'c_nj_feu', nh_kazan:'c_nj_feu', nh_tatsu:'c_nj_feu', nh_sora:'c_nj_vent', nh_fumi:'c_nj_vent', nh_shin:'c_nj_vent', nh_nami:'c_nj_eau', nh_shizuka:'c_nj_eau', nh_kai:'c_nj_eau', nh_jin:'c_nj_foudre', nh_ikazu:'c_nj_foudre', nh_sho:'c_nj_foudre', nh_iwao:'c_nj_terre', nh_daichi:'c_nj_terre', nh_kuro:'c_nj_terre', paul:'c_pouf', leon:'c_caillou', zoe:'c_gloup', jeanne:'c_frisouille', selene:'c_nyx', brok:'c_enclume', sylvara:'c_lys', grumbo:'c_miette', vaskor:'c_osbrise', pyra:'c_etincelle', rivet:'c_bricole', egide:'c_lumen', ondine:'c_fiole', barnabe:'c_sou', maelle:'c_croc', oren:'c_plume', gor:'c_bastion', ilka:'c_truelle', nono:'c_braise' };
+const COMPANIONS = { nh_akari:'c_nj_feu', nh_hoshi:'c_nj_cendre', nh_ren:'c_nj_flamm', nh_tsubaki:'c_nj_foyer', nh_daigo:'c_nj_salam', nh_mira:'c_nj_vent', nh_taro:'c_nj_dunes', nh_haru:'c_nj_cerf', nh_gen:'c_nj_bourr', nh_saki:'c_nj_messag', nh_mizu:'c_nj_eau', nh_ryota:'c_nj_anguille', nh_umi:'c_nj_marees', nh_kenji:'c_nj_sabreur', nh_aya:'c_nj_murene', nh_raiko:'c_nj_foudre', nh_kenta:'c_nj_lion', nh_hikari:'c_nj_follet', nh_akio:'c_nj_loupor', nh_rika:'c_nj_courriere', nh_goro:'c_nj_terre', nh_kaito:'c_nj_macon', nh_masa:'c_nj_mont', nh_toshi:'c_nj_granit', nh_emi:'c_nj_quartz', nh_hina:'c_nj_luciole', nh_kazan:'c_nj_forge', nh_tatsu:'c_nj_dragonnet', nh_sora:'c_nj_fennec', nh_fumi:'c_nj_plume', nh_shin:'c_nj_vagab', nh_nami:'c_nj_ecume', nh_shizuka:'c_nj_source', nh_kai:'c_nj_loutre', nh_jin:'c_nj_lynx', nh_ikazu:'c_nj_tambour', nh_sho:'c_nj_eclair', nh_iwao:'c_nj_bouq', nh_daichi:'c_nj_lionpierre', nh_kuro:'c_nj_blaireau', paul:'c_pouf', leon:'c_caillou', zoe:'c_gloup', jeanne:'c_frisouille', selene:'c_nyx', brok:'c_enclume', sylvara:'c_lys', grumbo:'c_miette', vaskor:'c_osbrise', pyra:'c_etincelle', rivet:'c_bricole', egide:'c_lumen', ondine:'c_fiole', barnabe:'c_sou', maelle:'c_croc', oren:'c_plume', gor:'c_bastion', ilka:'c_truelle', nono:'c_braise' };
 for (const h in COMPANIONS) DEFAULT_CARDS[COMPANIONS[h]].comp = h;
 const compOf = hero => { const id = COMPANIONS[hero]; if (id && CARDS[id]) return id; return Object.keys(CARDS).find(k => CARDS[k].comp === hero) || null; };
 const compLimit = rd => rd >= 6 ? 3 : rd >= 5 ? 2 : rd >= 3 ? 1 : 0;
@@ -2508,7 +2544,7 @@ function rebuildCatalog() {
   CAT_REV = hashStr(JSON.stringify([SET, CARDS]));
   if (typeof rebuildArt === 'function') rebuildArt();
 }
-function mk(id, g) { const b = CD(id); return { c:id, a:b.a * (g ? 2 : 1), h:b.h * (g ? 2 : 1), g:g ? 1 : 0, f:b.f, u:UID++ }; }
+function mk(id, g) { const b = CD(id); return { c:id, a:b.a * (g ? 3 : 1), h:b.h * (g ? 3 : 1), g:g ? 1 : 0, f:b.f, u:UID++ }; }
 // suivi des améliorations : chaque bonus est noté avec sa source (serviteur, sort, pouvoir…)
 let BSRC = null;
 function withSrc(src, fn) { const o = BSRC; BSRC = src; try { return fn(); } finally { BSRC = o; } }
@@ -2725,7 +2761,7 @@ function auraTimes(list, k) { let t = 1; for (const m of list) if (m.h > 0 && fx
    ===================================================================== */
 function simSummon(S, s, pos, id, g) {
   const arr = S.sides[s]; if (arr.length >= 7 || !C[id]) return null;
-  const b = C[id]; const m = { c:id, a:b.a * (g ? 2 : 1), h:b.h * (g ? 2 : 1), g:g ? 1 : 0, f:b.f, u:S.uid++ };
+  const b = C[id]; const m = { c:id, a:b.a * (g ? 3 : 1), h:b.h * (g ? 3 : 1), g:g ? 1 : 0, f:b.f, u:S.uid++ };
   arr.splice(Math.min(pos, arr.length), 0, m); return m;
 }
 const sideOf = (S, m) => S.sides[0].includes(m) ? 0 : 1;
@@ -2955,7 +2991,7 @@ function checkTriple(G, p) {
     const copies = [];
     for (const zone of [p.hd, p.bd]) for (let i = zone.length - 1; i >= 0 && copies.length < 3; i--) if (zone[i].c === id && !zone[i].g && !zone[i].sp) copies.push(zone.splice(i, 1)[0]);
     const b = CD(id);
-    const gm = { c:id, a:b.a * 2 + copies.reduce((t, m) => t + m.a - b.a, 0), h:b.h * 2 + copies.reduce((t, m) => t + m.h - b.h, 0), g:1, f:b.f, u:UID++, tr:1 };
+    const gm = { c:id, a:copies.reduce((t, m) => t + m.a, 0), h:copies.reduce((t, m) => t + m.h, 0), g:1, f:b.f, u:UID++, tr:1 };
     copies.forEach(m => { for (const k of m.f || '') addF(gm, k); if (m.x) gm.x = (gm.x || []).concat(m.x); (m.bn || []).forEach(e => { const L = gm.bn || (gm.bn = []); const f = L.find(x => x.s === e.s); if (f) { f.a += e.a; f.h += e.h; f.n += e.n; for (const k of e.k || '') if (!(f.k || '').includes(k)) f.k = (f.k || '') + k; } else L.push({ ...e }); }); });
     p.hd.push(gm);
     if (inMech(G, 'serment', gm)) withSrc('Serment des anciens', () => p.bd.concat(p.hd).forEach(x => { if (x !== gm && !x.sp && inMech(G, 'serment', x)) buff(x, 2, 2); }));
@@ -5103,6 +5139,41 @@ Object.assign(ART, {
   c_nj_eau: NJ('eau', '#2f7ab8', { skin:'#f0c4a0', hair:'#2e8a8a', hs:'bun', mask:false, eyes:'happy', mouth:'smile', shirt:'#2a5a7a' }),
   c_nj_foudre: NJ('foudre', '#c8a020', { skin:'#8a5a3c', hair:'#e8e2da', hs:'short', mask:false, eyes:'dot', mouth:'o', shirt:'#3a3a4a' }),
   c_nj_terre: NJ('terre', '#7a5a3a', { skin:'#c98e66', hair:'#4a2f1d', hs:'curly', mask:false, eyes:'dot', mouth:'smile', shirt:'#5a4a32' }),
+  c_nj_cendre: () => beast({ sp:'wolf', col:'#8a5a4a', belly:'#e8b894', eye:'#ffb04a', glow:'#ff7a2a' }),
+  c_nj_flamm: () => elemental({ kind:'fire', sparks:'#ffd34d' }),
+  c_nj_foyer: () => NJ('feu', '#c8402a', { skin:'#e8b894', hair:'#c8392f', hs:'bun', mask:false, eyes:'dot', mouth:'flat', shirt:'#8a2a1a', earring:1 })(),
+  c_nj_salam: () => dragonHead({ col:'#e8602a', fire:true, frill:1 }),
+  c_nj_luciole: () => elemental({ kind:'magma', sparks:'#ffb04a' }),
+  c_nj_forge: () => NJ('feu', '#8a2a1a', { skin:'#c98e66', hair:'#2a1d14', hs:'short', mask:false, eyes:'dot', mouth:'grin', shirt:'#3a1a14', freckles:1 })(),
+  c_nj_dragonnet: () => dragonHead({ col:'#b8282a', fire:true, horn:1, wings:1 }),
+  c_nj_dunes: () => beast({ sp:'cat', col:'#d9a860', belly:'#f4e4c0', eye:'#6fd8a0', stripes:1 }),
+  c_nj_cerf: () => beast({ sp:'stag', col:'#a8744a', belly:'#e8d0b0', eye:'#e8fff0' }),
+  c_nj_bourr: () => elemental({ kind:'air' }),
+  c_nj_messag: () => NJ('vent', '#3aa86a', { skin:'#f0c4a0', hair:'#e0b25a', hs:'braids', mask:false, eyes:'happy', mouth:'smile', shirt:'#4a6a3a' })(),
+  c_nj_fennec: () => beast({ sp:'dog', col:'#e0a94a', belly:'#fff0d0', eye:'#3a2a22', pup:1 }),
+  c_nj_plume: () => dragonHead({ col:'#5ab07a', wings:1, eye:'#e8fff0' }),
+  c_nj_vagab: () => NJ('vent', '#8fe0a8', { skin:'#a8714f', hair:'#2a1d14', hs:'side', eyes:'dot', hood:1, hoodc:'#c8a860', shirt:'#6a5232', maskc:'#a8844a' })(),
+  c_nj_anguille: () => beast({ sp:'snake', col:'#2a3a5a', belly:'#6f9ac8', eye:'#8fd0ff', glow:'#8fd0ff' }),
+  c_nj_marees: () => elemental({ kind:'water' }),
+  c_nj_sabreur: () => NJ('eau', '#2f7ab8', { skin:'#f3d0b0', hair:'#14243a', hs:'side', mask:false, eyes:'dot', mouth:'smirk', shirt:'#1e2a44', scar:1 })(),
+  c_nj_murene: () => beast({ sp:'snake', col:'#3a2a5a', belly:'#8a6ac8', eye:'#ffe14a', fangs:1 }),
+  c_nj_ecume: () => beast({ sp:'snake', col:'#6fc8e8', belly:'#e8fbff', eye:'#2f7ab8' }),
+  c_nj_source: () => beast({ sp:'cat', col:'#cfcac3', belly:'#ffffff', eye:'#4ab0e8', kitten:1 }),
+  c_nj_loutre: () => beast({ sp:'dog', col:'#7a5232', belly:'#d8c0a0', eye:'#2a1d14', tongue:1 }),
+  c_nj_lion: () => beast({ sp:'lion', col:'#e0b22a', belly:'#fff0b0', eye:'#6fd0ff', mane:'#5a3d7a', angry:1 }),
+  c_nj_follet: () => elemental({ kind:'storm' }),
+  c_nj_loupor: () => beast({ sp:'wolf', col:'#5a5f69', belly:'#d8dce4', eye:'#ffe14a', glow:'#ffe14a', fangs:1 }),
+  c_nj_courriere: () => NJ('foudre', '#ffe14a', { skin:'#e8b894', hair:'#ffe14a', hs:'braids', mask:false, eyes:'dot', mouth:'grin', shirt:'#2a2a3a' })(),
+  c_nj_lynx: () => beast({ sp:'cat', col:'#e0c84a', belly:'#fff8d0', eye:'#6fd0ff', stripes:1, angry:1 }),
+  c_nj_tambour: () => NJ('foudre', '#c8a020', { skin:'#7a5232', hair:'#2a1d14', hs:'mohawk', mask:false, eyes:'happy', mouth:'grin', shirt:'#3a3a4a', beard:'goatee' })(),
+  c_nj_eclair: () => dragonHead({ col:'#d8b02a', horn:1, eye:'#6fd0ff' }),
+  c_nj_macon: () => NJ('terre', '#7a5a3a', { skin:'#f0c4a0', hair:'#7a4a2a', hs:'curly', mask:false, eyes:'happy', mouth:'smile', shirt:'#5a4a32', freckles:1 })(),
+  c_nj_mont: () => elemental({ kind:'stone' }),
+  c_nj_granit: () => beast({ sp:'boar', col:'#8d938f', belly:'#d8dcd8', eye:'#ffb050', horns:1, angry:1 }),
+  c_nj_quartz: () => golem(),
+  c_nj_bouq: () => beast({ sp:'stag', col:'#b8b2ac', belly:'#ece8e2', eye:'#3a2a22', horns:1 }),
+  c_nj_lionpierre: () => beast({ sp:'lion', col:'#a8a098', belly:'#e0dcd4', eye:'#ffb050', mane:'#6a6058' }),
+  c_nj_blaireau: () => beast({ sp:'dog', col:'#3d3a44', belly:'#e6dcc8', eye:'#ffe14a', stripes:1 }),
 });
 // les 40 héros des Cinq Nations : portraits ninja originaux
 const NH = (el, band, x) => () => ninja(Object.assign({ el, band, aura:band }, x));
@@ -5935,7 +6006,7 @@ const SPELLS = {
   sp_lettre:{ n:'Lettre de recommandation', t:4, c:3, ty:'arc', tx:'Découvre un serviteur d\'un niveau au-dessus de ta taverne : choisis-en un parmi trois.' },
   sp_ruee:{ n:'Ruée vers l\'or', t:4, c:3, ty:'eco', tx:'Gagne 1 or au début de chacun de tes 4 prochains tours.' },
   sp_rituel:{ n:'Sacrifice rituel', t:4, c:0, ty:'ombre', tg:1, tx:'Détruit un de tes serviteurs. Un autre de tes serviteurs, au hasard, gagne son attaque et sa vie.' },
-  sp_alchimie:{ n:'Alchimie dorée', t:5, c:5, ty:'arc', tg:1, tx:'Rend doré un de tes serviteurs : ses stats de base sont doublées et ses effets aussi.' },
+  sp_alchimie:{ n:'Alchimie dorée', t:5, c:5, ty:'arc', tg:1, tx:'Rend doré un de tes serviteurs : il gagne deux fois ses stats de base (comme un triple) et ses effets sont doublés.' },
   sp_tempete:{ n:'Tempête de mana', t:5, c:3, ty:'comb', tx:'Prochain combat seulement : tous tes serviteurs gagnent +3/+3.' },
   sp_reflet:{ n:'Double reflet', t:6, c:4, ty:'arc', tg:1, tx:'Ajoute à ta main une copie exacte d\'un de tes serviteurs, bonus compris.' },
   sp_ascension:{ n:'Ascension', t:6, c:6, ty:'renf', tx:'Donne +2/+2 et Bouclier divin à tous tes serviteurs.' },
@@ -6046,7 +6117,7 @@ function castSpell0(G, p, hi, tg) {
     case 'sp_meta': {
       const nm = drawOne(G, 6, Math.min(6, tierOf(tgt) + 1)) || drawAny(Math.min(6, tierOf(tgt) + 1));
       if (!nm) { p.hd.splice(hi, 0, { sp:id, u:UID++ }); return false; }
-      if (tgt.g) { nm.g = 1; nm.a *= 2; nm.h *= 2; }
+      if (tgt.g) { nm.g = 1; nm.a *= 3; nm.h *= 3; }
       toPool(G, tgt); p.bd[tg] = nm; break;
     }
     case 'sp_meute': { const tr = tribe(tgt); buff(tgt, 1, 1); if (tr !== 'neu') p.bd.forEach(x => { if (x !== tgt && tribe(x) === tr) buff(x, 1, 1); }); break; }
@@ -6058,7 +6129,7 @@ function castSpell0(G, p, hi, tg) {
     }
     case 'sp_ruee': p.inc = p.inc || []; for (let k = 0; k < 4; k++) p.inc[k] = (p.inc[k] || 0) + 1; break;
     case 'sp_rituel': { p.bd.splice(tg, 1); toPool(G, tgt); const o = pickR(p.bd); buff(o, tgt.a, tgt.h); break; }
-    case 'sp_alchimie': { const b = CD(tgt.c); tgt.g = 1; tgt.a += b.a; tgt.h += b.h; break; }
+    case 'sp_alchimie': { const b = CD(tgt.c); tgt.g = 1; tgt.a += b.a * 2; tgt.h += b.h * 2; break; }
     case 'sp_tempete': p.tma = { a:((p.tma && p.tma.a) || 0) + 3, h:((p.tma && p.tma.h) || 0) + 3 }; break;
     case 'sp_reflet': { const c = clone(tgt); c.u = UID++; delete c.tmp; p.hd.push(c); break; }
     case 'nj_permut': p.g += 1; tgt.tmp = { a:(tgt.tmp && tgt.tmp.a) || 0, h:(tgt.tmp && tgt.tmp.h) || 0, f:((tgt.tmp && tgt.tmp.f) || '') + 's', s:'Permutation' }; break;
@@ -6882,7 +6953,7 @@ const playerSym = p => p && p.h && HART[p.h] ? 'art-h-' + p.h : avatarSym(p ? p.
 const tierStars = (t, only) => `<span class="ts" aria-label="Niveau ${t}">${Array.from({ length:only ? t : 6 }, (_, k) => `<i class="${k < t ? 'on' : ''}"></i>`).join('')}</span>`;
 const dataAttrs = m => `data-c="${m.c}" data-a="${m.a}" data-h="${m.h}" data-g="${m.g ? 1 : 0}" data-f="${esc(m.f || '')}"${m.u ? ` data-u="${m.u}"` : ''}`;
 const ariaM = m => `${CD(m.c).n}${m.g ? ' doré' : ''}, ${m.a} attaque, ${m.h} vie`;
-const demo = (id, g) => { const b = CD(id); return { c:id, a:b.a * (g ? 2 : 1), h:b.h * (g ? 2 : 1), g:g ? 1 : 0, f:b.f }; };
+const demo = (id, g) => { const b = CD(id); return { c:id, a:b.a * (g ? 3 : 1), h:b.h * (g ? 3 : 1), g:g ? 1 : 0, f:b.f }; };
 const hpGem = hp => `<svg class="hpg" viewBox="0 0 40 40" aria-label="${hp} points de vie"><use href="#gem-h" width="40" height="40"/><text class="gt" x="20" y="25" dy=".36em">${hp}</text></svg>`;
 const KWI = { t:['k_taunt', '#d8c8a8', 'Provocation'], s:['k_div', '#ffe58a', 'Bouclier divin'], v:['drop', '#8fe36a', 'Toxique'], r:['k_reborn', '#9fe8ff', 'Renaissance'], w:['wind', '#cdeeff', 'Furie des vents'],
   bc:['k_horn', '#ffcf7a', 'Cri de guerre'], play:['k_spark', '#ffd54a', 'Quand vous jouez'], dr:['skull', '#efe2c2', 'Râle d\'agonie'], soc:['k_cross', '#ffb27a', 'Début du combat'], eot:['k_glass', '#ffe39a', 'Fin de tour'], sot:['k_sun', '#ffe39a', 'Début de tour'],
@@ -6901,7 +6972,7 @@ function tokenH(m, z, i, o = {}) {
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
   const cls = ['mn', z === 'f' && C[m.c] && (C[m.c].comp || /^nb_/.test(m.c)) && 'cp-join', ...['s', 't', 'r', 'w', 'v'].filter(k => f.includes(k)).map(k => 'kw-' + k), o.trip && 'tripok', g && 'g', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
   const ics = kwIcons(m);
-  const up = (v, base) => v > base * (g ? 2 : 1) ? ' up' : '';
+  const up = (v, base) => v > base * (g ? 3 : 1) ? ' up' : '';
   const svg = `<svg class="mn-svg" viewBox="-4 -6 108 132" aria-hidden="true">`
     + (f.includes('t') ? '<use href="#tk-taunt"/>' : '')
     + `<use href="#tk-frame${g ? '-g' : ''}"/><g clip-path="url(#tk-clip)"><use href="#art-${m.c}" x="12" y="9.5" width="76" height="91.5"/></g><use href="#tk-rim"/>`
@@ -6924,7 +6995,7 @@ const MINION_COST = 3;
 function cardH(m, z, i, o = {}) {
   const b = CD(m.c), g = !!m.g;
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
-  const up = (v, base) => v > base * (g ? 2 : 1) ? ' up' : '';
+  const up = (v, base) => v > base * (g ? 3 : 1) ? ' up' : '';
   return `<div class="cd${g ? ' g' : ''}${sel ? ' sel' : ''}${m.tr ? ' newgold' : ''}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">`
     + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-${m.c}" y="-4" width="100" height="100"/></svg></div>`
     + (b.t ? `<div class="cd-tier" aria-label="Niveau ${b.t}">${'<i></i>'.repeat(b.t)}</div>` : '')
@@ -6993,7 +7064,7 @@ function render() {
 
 const STEPS = [
   ['Recrute', 'Achète des serviteurs 3 or, revends-les 1 or. Améliore la taverne pour croiser des serviteurs plus forts.'],
-  ['Fusionne', 'Trois copies du même serviteur deviennent une version dorée aux stats doublées, avec un cadeau de niveau supérieur.'],
+  ['Fusionne', 'Trois copies du même serviteur deviennent une version dorée qui additionne les stats des trois (bonus compris), avec des effets doublés et un cadeau de niveau supérieur.'],
   ['Combats', 'Les combats sont automatiques. Le perdant subit le niveau de taverne du gagnant plus le niveau de ses survivants.'],
 ];
 function menuH(side) {
@@ -7684,7 +7755,7 @@ function heroPickNinjaH(d, me) {
       ${rollH(me, i)}<span class="hpk-face">${faceH('art-h-' + h)}${x.cost ? `<span class="hpk-ck">${ckMarkH(x.cost)}</span>` : '<span class="hpk-pas">Passif</span>'}</span>
       <span class="hpk-b"><b>${esc(x.n)}</b><span class="hpk-d">${x.diff ? '★'.repeat(x.diff) + '☆'.repeat(3 - x.diff) + ' ' + ['', 'Simple', 'Intermédiaire', 'Expert'][x.diff] : ''}</span>
         <small>${esc((t => t.charAt(0).toUpperCase() + t.slice(1))(x.tx.replace(/^Passif : /, '')))}</small>
-        ${c ? `<span class="hpk-c">${faceH('art-' + cid)}<em>${esc(c.n)} · ${c.a * 2}/${c.h * 2}</em></span>` : ''}</span></button>`; };
+        ${c ? `<span class="hpk-c">${faceH('art-' + cid)}<em>${esc(c.n)} · ${c.a * 3}/${c.h * 3}</em></span>` : ''}</span></button>`; };
   return `<div class="ov hpick-ov"><div class="hpick">
     <div class="hpick-l"><h2 class="ov-t">Choisis ton héros</h2><p class="ov-s">Son pouvoir et son compagnon t'accompagnent toute la partie.</p>${rollInfoH(me)}
       <div class="hpk-g">${me.ho.map(card).join('')}</div>
@@ -8360,7 +8431,7 @@ const sgn = v => (v >= 0 ? '+' : '') + v;
 const kwNames = k => (k || '').split('').map(x => (SET.kw[x] || {}).n).filter(Boolean).join(', ');
 function bonusTipH(m) {
   if (!m || m.sp) return '';
-  const b = CD(m.c), g = m.g ? 2 : 1, ba = b.a * g, bh = b.h * g;
+  const b = CD(m.c), g = m.g ? 3 : 1, ba = b.a * g, bh = b.h * g;
   const rows = []; let la = 0, lh = 0;
   (m.bn || []).forEach(e => {
     la += e.a; lh += e.h;

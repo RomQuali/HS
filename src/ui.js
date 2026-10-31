@@ -112,7 +112,7 @@ const playerSym = p => p && p.h && HART[p.h] ? 'art-h-' + p.h : avatarSym(p ? p.
 const tierStars = (t, only) => `<span class="ts" aria-label="Niveau ${t}">${Array.from({ length:only ? t : 6 }, (_, k) => `<i class="${k < t ? 'on' : ''}"></i>`).join('')}</span>`;
 const dataAttrs = m => `data-c="${m.c}" data-a="${m.a}" data-h="${m.h}" data-g="${m.g ? 1 : 0}" data-f="${esc(m.f || '')}"${m.u ? ` data-u="${m.u}"` : ''}`;
 const ariaM = m => `${CD(m.c).n}${m.g ? ' doré' : ''}, ${m.a} attaque, ${m.h} vie`;
-const demo = (id, g) => { const b = CD(id); return { c:id, a:b.a * (g ? 2 : 1), h:b.h * (g ? 2 : 1), g:g ? 1 : 0, f:b.f }; };
+const demo = (id, g) => { const b = CD(id); return { c:id, a:b.a * (g ? 3 : 1), h:b.h * (g ? 3 : 1), g:g ? 1 : 0, f:b.f }; };
 const hpGem = hp => `<svg class="hpg" viewBox="0 0 40 40" aria-label="${hp} points de vie"><use href="#gem-h" width="40" height="40"/><text class="gt" x="20" y="25" dy=".36em">${hp}</text></svg>`;
 const KWI = { t:['k_taunt', '#d8c8a8', 'Provocation'], s:['k_div', '#ffe58a', 'Bouclier divin'], v:['drop', '#8fe36a', 'Toxique'], r:['k_reborn', '#9fe8ff', 'Renaissance'], w:['wind', '#cdeeff', 'Furie des vents'],
   bc:['k_horn', '#ffcf7a', 'Cri de guerre'], play:['k_spark', '#ffd54a', 'Quand vous jouez'], dr:['skull', '#efe2c2', 'Râle d\'agonie'], soc:['k_cross', '#ffb27a', 'Début du combat'], eot:['k_glass', '#ffe39a', 'Fin de tour'], sot:['k_sun', '#ffe39a', 'Début de tour'],
@@ -131,7 +131,7 @@ function tokenH(m, z, i, o = {}) {
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
   const cls = ['mn', z === 'f' && C[m.c] && (C[m.c].comp || /^nb_/.test(m.c)) && 'cp-join', ...['s', 't', 'r', 'w', 'v'].filter(k => f.includes(k)).map(k => 'kw-' + k), o.trip && 'tripok', g && 'g', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
   const ics = kwIcons(m);
-  const up = (v, base) => v > base * (g ? 2 : 1) ? ' up' : '';
+  const up = (v, base) => v > base * (g ? 3 : 1) ? ' up' : '';
   const svg = `<svg class="mn-svg" viewBox="-4 -6 108 132" aria-hidden="true">`
     + (f.includes('t') ? '<use href="#tk-taunt"/>' : '')
     + `<use href="#tk-frame${g ? '-g' : ''}"/><g clip-path="url(#tk-clip)"><use href="#art-${m.c}" x="12" y="9.5" width="76" height="91.5"/></g><use href="#tk-rim"/>`
@@ -154,7 +154,7 @@ const MINION_COST = 3;
 function cardH(m, z, i, o = {}) {
   const b = CD(m.c), g = !!m.g;
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
-  const up = (v, base) => v > base * (g ? 2 : 1) ? ' up' : '';
+  const up = (v, base) => v > base * (g ? 3 : 1) ? ' up' : '';
   return `<div class="cd${g ? ' g' : ''}${sel ? ' sel' : ''}${m.tr ? ' newgold' : ''}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">`
     + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-${m.c}" y="-4" width="100" height="100"/></svg></div>`
     + (b.t ? `<div class="cd-tier" aria-label="Niveau ${b.t}">${'<i></i>'.repeat(b.t)}</div>` : '')
@@ -223,7 +223,7 @@ function render() {
 
 const STEPS = [
   ['Recrute', 'Achète des serviteurs 3 or, revends-les 1 or. Améliore la taverne pour croiser des serviteurs plus forts.'],
-  ['Fusionne', 'Trois copies du même serviteur deviennent une version dorée aux stats doublées, avec un cadeau de niveau supérieur.'],
+  ['Fusionne', 'Trois copies du même serviteur deviennent une version dorée qui additionne les stats des trois (bonus compris), avec des effets doublés et un cadeau de niveau supérieur.'],
   ['Combats', 'Les combats sont automatiques. Le perdant subit le niveau de taverne du gagnant plus le niveau de ses survivants.'],
 ];
 function menuH(side) {
@@ -914,7 +914,7 @@ function heroPickNinjaH(d, me) {
       ${rollH(me, i)}<span class="hpk-face">${faceH('art-h-' + h)}${x.cost ? `<span class="hpk-ck">${ckMarkH(x.cost)}</span>` : '<span class="hpk-pas">Passif</span>'}</span>
       <span class="hpk-b"><b>${esc(x.n)}</b><span class="hpk-d">${x.diff ? '★'.repeat(x.diff) + '☆'.repeat(3 - x.diff) + ' ' + ['', 'Simple', 'Intermédiaire', 'Expert'][x.diff] : ''}</span>
         <small>${esc((t => t.charAt(0).toUpperCase() + t.slice(1))(x.tx.replace(/^Passif : /, '')))}</small>
-        ${c ? `<span class="hpk-c">${faceH('art-' + cid)}<em>${esc(c.n)} · ${c.a * 2}/${c.h * 2}</em></span>` : ''}</span></button>`; };
+        ${c ? `<span class="hpk-c">${faceH('art-' + cid)}<em>${esc(c.n)} · ${c.a * 3}/${c.h * 3}</em></span>` : ''}</span></button>`; };
   return `<div class="ov hpick-ov"><div class="hpick">
     <div class="hpick-l"><h2 class="ov-t">Choisis ton héros</h2><p class="ov-s">Son pouvoir et son compagnon t'accompagnent toute la partie.</p>${rollInfoH(me)}
       <div class="hpk-g">${me.ho.map(card).join('')}</div>
@@ -1590,7 +1590,7 @@ const sgn = v => (v >= 0 ? '+' : '') + v;
 const kwNames = k => (k || '').split('').map(x => (SET.kw[x] || {}).n).filter(Boolean).join(', ');
 function bonusTipH(m) {
   if (!m || m.sp) return '';
-  const b = CD(m.c), g = m.g ? 2 : 1, ba = b.a * g, bh = b.h * g;
+  const b = CD(m.c), g = m.g ? 3 : 1, ba = b.a * g, bh = b.h * g;
   const rows = []; let la = 0, lh = 0;
   (m.bn || []).forEach(e => {
     la += e.a; lh += e.h;

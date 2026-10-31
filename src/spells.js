@@ -23,7 +23,7 @@ const SPELLS = {
   sp_lettre:{ n:'Lettre de recommandation', t:4, c:3, ty:'arc', tx:'Découvre un serviteur d\'un niveau au-dessus de ta taverne : choisis-en un parmi trois.' },
   sp_ruee:{ n:'Ruée vers l\'or', t:4, c:3, ty:'eco', tx:'Gagne 1 or au début de chacun de tes 4 prochains tours.' },
   sp_rituel:{ n:'Sacrifice rituel', t:4, c:0, ty:'ombre', tg:1, tx:'Détruit un de tes serviteurs. Un autre de tes serviteurs, au hasard, gagne son attaque et sa vie.' },
-  sp_alchimie:{ n:'Alchimie dorée', t:5, c:5, ty:'arc', tg:1, tx:'Rend doré un de tes serviteurs : ses stats de base sont doublées et ses effets aussi.' },
+  sp_alchimie:{ n:'Alchimie dorée', t:5, c:5, ty:'arc', tg:1, tx:'Rend doré un de tes serviteurs : il gagne deux fois ses stats de base (comme un triple) et ses effets sont doublés.' },
   sp_tempete:{ n:'Tempête de mana', t:5, c:3, ty:'comb', tx:'Prochain combat seulement : tous tes serviteurs gagnent +3/+3.' },
   sp_reflet:{ n:'Double reflet', t:6, c:4, ty:'arc', tg:1, tx:'Ajoute à ta main une copie exacte d\'un de tes serviteurs, bonus compris.' },
   sp_ascension:{ n:'Ascension', t:6, c:6, ty:'renf', tx:'Donne +2/+2 et Bouclier divin à tous tes serviteurs.' },
@@ -134,7 +134,7 @@ function castSpell0(G, p, hi, tg) {
     case 'sp_meta': {
       const nm = drawOne(G, 6, Math.min(6, tierOf(tgt) + 1)) || drawAny(Math.min(6, tierOf(tgt) + 1));
       if (!nm) { p.hd.splice(hi, 0, { sp:id, u:UID++ }); return false; }
-      if (tgt.g) { nm.g = 1; nm.a *= 2; nm.h *= 2; }
+      if (tgt.g) { nm.g = 1; nm.a *= 3; nm.h *= 3; }
       toPool(G, tgt); p.bd[tg] = nm; break;
     }
     case 'sp_meute': { const tr = tribe(tgt); buff(tgt, 1, 1); if (tr !== 'neu') p.bd.forEach(x => { if (x !== tgt && tribe(x) === tr) buff(x, 1, 1); }); break; }
@@ -146,7 +146,7 @@ function castSpell0(G, p, hi, tg) {
     }
     case 'sp_ruee': p.inc = p.inc || []; for (let k = 0; k < 4; k++) p.inc[k] = (p.inc[k] || 0) + 1; break;
     case 'sp_rituel': { p.bd.splice(tg, 1); toPool(G, tgt); const o = pickR(p.bd); buff(o, tgt.a, tgt.h); break; }
-    case 'sp_alchimie': { const b = CD(tgt.c); tgt.g = 1; tgt.a += b.a; tgt.h += b.h; break; }
+    case 'sp_alchimie': { const b = CD(tgt.c); tgt.g = 1; tgt.a += b.a * 2; tgt.h += b.h * 2; break; }
     case 'sp_tempete': p.tma = { a:((p.tma && p.tma.a) || 0) + 3, h:((p.tma && p.tma.h) || 0) + 3 }; break;
     case 'sp_reflet': { const c = clone(tgt); c.u = UID++; delete c.tmp; p.hd.push(c); break; }
     case 'nj_permut': p.g += 1; tgt.tmp = { a:(tgt.tmp && tgt.tmp.a) || 0, h:(tgt.tmp && tgt.tmp.h) || 0, f:((tgt.tmp && tgt.tmp.f) || '') + 's', s:'Permutation' }; break;
