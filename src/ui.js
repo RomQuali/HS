@@ -305,7 +305,7 @@ function chakraLawH(big) {
     ${sec('⚔️', 'Compagnon et duel', `<span class="njl-row">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<span><small>Ton compagnon est déjà en jeu, <b>triplé</b> et hors plateau. En combat, il affronte <b>seulement le compagnon adverse</b> et ne blesse jamais le héros.</small><small>Il prend l'élément de ta dernière technique : s'il domine celui d'en face, <b>+4/+4</b>.</small><small>Il gagne de l'expérience (technique +1, duel gagné +2) et monte de niveau.</small></span></span>`)}
     ${sec('🎁', 'Coffres et entraînement', `<small>Le <b>duel</b> décide du coffre : majeur s'il gagne, mineur sinon. Tu choisis <b>1 récompense sur 3</b> pour une des 5 pièces du compagnon (lame, armure, bandeau, gantelets, talisman).</small><span class="njl-rar">${RARS.map((R, i) => `<i style="--c:${R.col}">${R.n} · ${i + 1} chakra</i>`).join('')}</span><small>Elle se range dans l'entraînement et se pose avec du chakra.</small><small><b>Parchemins de pacte</b> : ils préparent la <b>bête d'invocation</b> du clan de ton compagnon (Salamandre, Loup, Serpent, Tigre, Sanglier). Elle apparaît à l'Éveil, plus forte à chaque parchemin, et combat à ses côtés dans le duel.</small>`)}
     ${sec('🔥', 'Marqueurs de clan', `<small>Chaque clan a son marqueur : <b style="color:#ff8a4a">Braises</b>, <b style="color:#8fe0b0">Souffle</b>, <b style="color:#6fc8ff">Marée</b>, <b style="color:#ffd23a">Charge</b>, <b style="color:#d8c0a0">Roche</b>. Ils tournent autour de ton héros.</small><small><b>Gain</b> : +1 par technique de leur nature, serviteurs du clan, Sceaux de clan des coffres.</small><small><b>Paliers</b> (5, 10, 20 gagnés) : le clan gagne des stats en combat, puis un mot-clé au 3e palier.</small><small><b>Éclat</b> : chaque combo consomme 5 marqueurs de chacun de ses éléments pour un effet en plus.</small><small><b>Pureté</b> : 5 serviteurs d'un même clan donnent +1 chakra par tour et doublent les marqueurs gagnés.</small>`)}
-    ${sec('🌅', 'Éveil (4 joueurs ou moins)', `<small>Les <b>clans</b> libèrent leur pouvoir (Phénix, Ouragan, Raz-de-marée, Orage total, Avalanche), ton <b>compagnon</b> prend sa forme ultime et <b>rejoint la bataille</b> avec sa bête d'invocation (au centre de ta rangée ; coffre majeur s'il est encore debout), le pouvoir de ton <b>héros</b> est renforcé, chaque <b>technique</b> gagne son effet d'Éveil et des techniques interdites apparaissent. Tes cartes prennent l'aura de ton marqueur dominant.</small>`)}
+    ${sec('🌅', 'Éveil (4 joueurs ou moins)', `<small>Les <b>clans</b> libèrent leur pouvoir (Phénix, Ouragan, Raz-de-marée, Orage total, Avalanche), ton <b>compagnon</b> prend sa forme ultime et <b>rejoint la bataille</b> avec sa bête d'invocation (au centre de ta rangée ; coffre majeur s'il est encore debout), le pouvoir de ton <b>héros</b> est renforcé, chaque <b>technique</b> gagne son effet d'Éveil et des techniques interdites apparaissent. Les <b>coffres</b> donnent alors des serviteurs ou techniques puissants ; les joueurs de la moitié basse au classement ont au moins de l'Épique et les reçoivent gratuitement en main. Tes cartes prennent l'aura de ton marqueur dominant.</small>`)}
   </span>`;
 }
 // fiche de l'univers Ninja : quatre règles courtes et le cycle des éléments (le détail complet est sur l'écran du héros)
@@ -489,7 +489,7 @@ function bigChestH(d, me) {
   if (!me || !me.pend || d.ph !== 'recruit' || (V.fight && !V.fight.done) || V.chestRev) return '';
   const q = me.pend.slice(0, 3), t = +me.pend.slice(3), maj = q === 'maj';
   return `<div class="bigchest ${q}" role="dialog" aria-label="Coffre de fin de combat"><div class="bc-in">
-    <b class="bc-t">${me.cp ? (maj ? 'Duel gagné : coffre majeur' : 'Duel perdu : coffre mineur') : (maj ? 'Victoire : coffre majeur' : 'Coffre mineur')} · niveau ${t}</b>
+    <b class="bc-t">${me.cp && me.chFav ? 'Coffre de l\'Éveil : tu es parmi les derniers' : me.cp && V.pub && V.pub.ev && V.pub.rd >= V.pub.ev ? 'Coffre de l\'Éveil' : me.cp ? (maj ? 'Duel gagné : coffre majeur' : 'Duel perdu : coffre mineur') : (maj ? 'Victoire : coffre majeur' : 'Coffre mineur')} · niveau ${t}</b>
     <button class="bc-box" data-act="chest" aria-label="Ouvrir le coffre"><svg viewBox="0 0 80 70" aria-hidden="true"><rect x="6" y="30" width="68" height="36" rx="4" fill="${maj ? '#e2b04e' : '#a8744a'}" stroke="#120a06" stroke-width="3"/><path d="M6 44 H74" stroke="#120a06" stroke-width="2" opacity=".4"/><path d="M6 30 Q40 2 74 30 Z" fill="${maj ? '#c88a26' : '#8a5a32'}" stroke="#120a06" stroke-width="3"/><rect x="34" y="32" width="12" height="12" rx="2" fill="${maj ? '#ffd24a' : '#6fd0ff'}" stroke="#120a06" stroke-width="2"/></svg></button>
     <small class="bc-s">Clique sur le coffre pour l'ouvrir</small></div></div>`;
 }
@@ -515,7 +515,8 @@ function fxChest(btn) {
 }
 // la zone d'entraînement : coffres (ouverture gratuite) et médailles d'équipement (posées sur le compagnon contre du chakra)
 // les 5 pièces du compagnon : bordure = meilleure rareté obtenue, badge = nombre d'améliorations
-const pieceIco = (pc, cls = '') => `<svg class="pc-ico ${cls}" viewBox="0 0 100 100" aria-hidden="true"><clipPath id="pci-${pc}-${cls}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#pci-${pc}-${cls})"><use href="#sp-${PIECES[pc].art}" width="100" height="100"/></g></svg>`;
+const pieceIco = (pc, cls = '') => typeof pc === 'object' ? (pc.kind === 'mn' ? `<svg class="pc-ico ${cls}" viewBox="0 0 100 100" aria-hidden="true"><clipPath id="pci-x-${cls}-${pc.c}"><circle cx="50" cy="50" r="46"/></clipPath><g clip-path="url(#pci-x-${cls}-${pc.c})"><use href="#art-${pc.c}" width="100" height="100"/></g></svg>` : `<svg class="pc-ico ${cls}" viewBox="0 0 100 100" aria-hidden="true"><clipPath id="pci-s-${cls}-${pc.sp}"><circle cx="50" cy="50" r="46"/></clipPath><g clip-path="url(#pci-s-${cls}-${pc.sp})"><use href="#sp-${pc.sp}" width="100" height="100"/></g></svg>`) : pieceIco0(pc, cls);
+const pieceIco0 = (pc, cls = '') => `<svg class="pc-ico ${cls}" viewBox="0 0 100 100" aria-hidden="true"><clipPath id="pci-${pc}-${cls}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#pci-${pc}-${cls})"><use href="#sp-${PIECES[pc].art}" width="100" height="100"/></g></svg>`;
 function pieceList(c, pc) { const L = (c && c.pc && c.pc[pc]) || []; return L; }
 function piecesH(c) {
   return PIECE_IDS.map(pc => { const L = pieceList(c, pc), best = L.length ? Math.max(...L) : -1, col = best >= 0 ? RARS[best].col : '#5a4a3a';
@@ -525,8 +526,8 @@ function piecesH(c) {
 // survol d'une amélioration rangée : la carte de la pièce, sa rareté, son effet, son coût et ce que la pièce a déjà
 function upPeekH(me, i) {
   const o = (me.ups || [])[i]; if (!o) return '';
-  const R = RARS[o.r], L = pieceList(me.cp, o.pc), c = upgCost(o), ok = (me.ck || 0) >= c;
-  return `<div class="uppk" style="--rc:${R.col}"><span class="upc-r">${R.n}</span>${pieceIco(o.pc, 'big')}<b>${esc(PIECES[o.pc].n)}</b><span class="upc-tx">${esc(upTx(o, me.cp))}</span>
+  const R = RARS[o.r], L = o.kind ? [] : pieceList(me.cp, o.pc), c = upgCost(o), ok = (me.ck || 0) >= c;
+  return `<div class="uppk" style="--rc:${R.col}"><span class="upc-r">${R.n}</span>${pieceIco(o.kind ? o : o.pc, 'big')}<b>${esc(o.kind ? (o.kind === 'mn' ? 'Serviteur' : 'Technique') : PIECES[o.pc].n)}</b><span class="upc-tx">${esc(upTx(o, me.cp))}</span>
     <span class="uppk-c">${ckMarkH(c)}<small>${ok ? 'Clique pour la poser sur ton compagnon' : `Il te faut ${c} chakra`}</small></span>
     <small class="uppk-h">${L.length ? 'Déjà sur cette pièce : ' + L.map(r => `<em style="color:${RARS[r].col}">${RARS[r].n}</em>`).join(', ') : 'Aucune amélioration sur cette pièce'}</small></div>`;
 }
@@ -535,9 +536,9 @@ function choiceH(d, me) {
   if (!me || !me.choice || !me.cp || Date.now() < (V.choiceAt || 0) || d.ph !== 'recruit') return '';
   const tech = (me.loot || []).filter(o => SPELLS[o.id]);
   return `<div class="upch" role="dialog" aria-label="Choisis une amélioration"><div class="upch-in">
-    <b class="upch-t">Choisis ta récompense</b><small class="upch-s">Une seule : elle se range dans l'entraînement, et tu la poses sur ${esc(C[me.cp.c] ? C[me.cp.c].n : 'ton compagnon')} avec du chakra.</small>
-    <div class="upch-row">${me.choice.map((o, i) => { const R = RARS[o.r], n = pieceList(me.cp, o.pc).length;
-      return `<button class="upc r${o.r}" style="--rc:${R.col};--k:${i}" data-act="upick" data-i="${i}"><span class="upc-r">${R.n}</span>${pieceIco(o.pc, 'big')}<b>${esc(PIECES[o.pc].n)}</b><span class="upc-tx">${esc(upTx(o, me.cp))}</span><span class="uppk-c">${ckMarkH(upgCost(o))}<small>à poser</small></span><small>${n ? `Déjà ${n} amélioration${n > 1 ? 's' : ''}` : 'Première amélioration'}</small></button>`; }).join('')}</div>
+    <b class="upch-t">Choisis ta récompense</b>${me.chFav ? '<small class="upch-s fav">Coffre de l\'Éveil · tu es parmi les derniers : raretés Épique ou mieux, et la carte va gratuitement dans ta main.</small>' : ''}<small class="upch-s"${me.chFav ? ' hidden' : ''}>Une seule : elle se range dans l'entraînement, et tu la poses sur ${esc(C[me.cp.c] ? C[me.cp.c].n : 'ton compagnon')} avec du chakra.</small>
+    <div class="upch-row">${me.choice.map((o, i) => { const R = RARS[o.r], n = o.kind ? 0 : pieceList(me.cp, o.pc).length;
+      return `<button class="upc r${o.r}" style="--rc:${R.col};--k:${i}" data-act="upick" data-i="${i}"><span class="upc-r">${R.n}</span>${pieceIco(o.kind ? o : o.pc, 'big')}<b>${esc(o.kind ? (o.kind === 'mn' ? 'Serviteur' : 'Technique') : PIECES[o.pc].n)}</b><span class="upc-tx">${esc(upTx(o, me.cp))}</span>${o.kind && me.chFav ? '<span class="uppk-c"><small>gratuit</small></span>' : `<span class="uppk-c">${ckMarkH(upgCost(o))}<small>à poser</small></span>`}<small>${o.kind ? (me.chFav ? 'Gratuit · directement en main' : 'À poser au chakra') : n ? `Déjà ${n} amélioration${n > 1 ? 's' : ''}` : 'Première amélioration'}</small></button>`; }).join('')}</div>
     ${tech.length ? `<p class="upch-b">Bonus du coffre : <b>${tech.map(o => esc(SPELLS[o.id].n)).join(', ')}</b> ajoutée à ta main</p>` : ''}
   </div></div>`;
 }
@@ -545,7 +546,7 @@ function trainH(d, me, canAct) {
   if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
   if (me.cp) { const ups = me.ups || [];
     const md = ups.map((o, i) => { const c = upgCost(o), ok = canAct && (me.ck || 0) >= c;
-      return `<button class="upm" style="--rc:${RARS[o.r].col}" data-act="uapply" data-i="${i}" data-hov="upm" ${ok ? '' : 'aria-disabled="true"'} aria-label="${esc(PIECES[o.pc].n + ' ' + RARS[o.r].n + ' : ' + upTx(o, me.cp) + '. Poser coûte ' + c + ' chakra.')}">${pieceIco(o.pc)}<span class="upm-c">${ckMarkH(c)}</span></button>`; }).join('');
+      return `<button class="upm" style="--rc:${RARS[o.r].col}" data-act="uapply" data-i="${i}" data-hov="upm" ${ok ? '' : 'aria-disabled="true"'} aria-label="${esc((o.kind ? 'Carte' : PIECES[o.pc].n) + ' ' + RARS[o.r].n + ' : ' + upTx(o, me.cp) + '. Poser coûte ' + c + ' chakra.')}">${pieceIco(o.kind ? o : o.pc)}<span class="upm-c">${ckMarkH(c)}</span></button>`; }).join('');
     return `<section class="train" aria-label="Entraînement"><b class="tr-h">Entraînement · récompenses à poser</b><div class="tr-row med pcs-row">${md || '<small class="tr-e">Les récompenses choisies dans les coffres se rangent ici : pose-les avec du chakra.</small>'}</div></section>`; }
   const ks = Object.keys(me.chests || {}).filter(k => me.chests[k] > 0).sort((a, b) => a.slice(3) - b.slice(3) || (a < b ? 1 : -1));
   const comps = me.cp ? [me.cp] : (me.bd || []).filter(isComp), full = (me.eqs || []).length >= EQS_MAX;
@@ -2212,3 +2213,5 @@ html.lite .mko.ready{animation:none;box-shadow:0 0 0 2px #120a06,0 0 0 4px var(-
 `; document.head.appendChild(st); })();
 
 (function(){ const st = document.createElement('style'); st.textContent = `.duel-l.stl{color:#8fd8ff}.duel-l.stl b{color:#bfe8ff}`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `.upch-s.fav{color:#ffb050;font-weight:700}`; document.head.appendChild(st); })();

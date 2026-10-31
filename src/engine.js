@@ -984,7 +984,7 @@ const UPS = {
 };
 const UPS_MAX = 8;
 const upgCost = o => 1 + o.r;   // Normal 1 · Héroïque 2 · Épique 3 · Légendaire 4 chakra
-const upTx = (o, c) => o.pc === 'sceau' ? `+${SCEAU[o.r]} ${c ? (MK_N[CLAN_EL[CD(c.c).tr]] || 'marqueurs').toLowerCase() : 'marqueurs du clan'}` : o.pc === 'pacte' ? 'Invocation : ' + pactTx(o, c) : (UPS[o.pc] && UPS[o.pc][o.r] || [''])[0];
+const upTx = (o, c) => o.kind === 'mn' ? `${C[o.c] ? C[o.c].n : '?'} ${o.g ? 'doré ' : ''}(niveau ${C[o.c] ? C[o.c].t : '?'}) dans ta main` : o.kind === 'sp' ? `${SPELLS[o.sp] ? SPELLS[o.sp].n : '?'} dans ta main` : o.pc === 'sceau' ? `+${SCEAU[o.r]} ${c ? (MK_N[CLAN_EL[CD(c.c).tr]] || 'marqueurs').toLowerCase() : 'marqueurs du clan'}` : o.pc === 'pacte' ? 'Invocation : ' + pactTx(o, c) : (UPS[o.pc] && UPS[o.pc][o.r] || [''])[0];
 // rareté : meilleure avec un coffre majeur (duel gagné) et une taverne haute
 function rollRar(q, t) {
   const s = t + (q === 'maj' ? 2 : 0);
@@ -993,6 +993,15 @@ function rollRar(q, t) {
 }
 function chestChoice(q, t) { return shuffle(PIECE_IDS.slice()).slice(0, 3).map(pc => ({ pc, r:rollRar(q, t) })); }
 const SCEAU = [3, 5, 8, 12];
+/* Éveil : les coffres donnent des serviteurs ou techniques puissants ; les derniers au classement ont au moins de l'Épique et les reçoivent gratuitement */
+function awkChoice(G, p, q, t) {
+  const roll = () => p.chFav ? (Math.random() < .35 ? 3 : 2) : rollRar(q, t);
+  const minion = r => { const tier = r >= 3 ? 6 : Math.min(6, t + r); const ids = (G.ids || POOL_IDS).filter(id => C[id] && C[id].t === tier && !C[id].comp); const id = ids.length ? pickR(ids) : null; return id ? { kind:'mn', c:id, g:r >= 3 ? 1 : 0, r } : null; };
+  const tech = r => { const ev = SPELL_IDS.filter(id => SPELLS[id].nin && !SPELLS[id].item && (r >= 2 ? (SPELLS[id].forb || SPELLS[id].t >= 5) : SPELLS[id].t <= Math.min(6, t + r))); return ev.length ? { kind:'sp', sp:pickR(ev), r } : null; };
+  const out = []; for (const f of [minion, minion, tech]) { let o = null; for (let k = 0; k < 6 && !o; k++) o = f(roll()); if (o && !out.some(x => x.c && x.c === o.c)) out.push(o); }
+  return out.length ? out : chestChoice(q, t);
+}
+function giveAwkCard(G, p, o) { if (o.kind === 'mn') { const m = mk(o.c, o.g); p.hd.push(m); checkTriple(G, p); } else p.hd.push({ sp:o.sp, u:UID++ }); }
 function applyUp(c, o) { if (o.pc === 'sceau') { const el = CLAN_EL[CD(c.c).tr] || 'feu'; if (o.p) mkAdd(o.p, el, SCEAU[o.r]); c.pc = c.pc || {}; (c.pc.sceau = c.pc.sceau || []).push(o.r); return; }
   if (o.pc === 'pacte') { (c.pact = c.pact || []).push(o.r); c.pc = c.pc || {}; (c.pc.pacte = c.pc.pacte || []).push(o.r); if (o.p && o.p.bst) withSrc('Pacte d\'invocation', () => PACT[o.r][1](o.p.bst, pactEl(c))); return; }
   const U = UPS[o.pc] && UPS[o.pc][o.r]; if (!U) return; withSrc(PIECES[o.pc].n + ' · ' + RARS[o.r].n, () => U[1](c)); c.pc = c.pc || {}; (c.pc[o.pc] = c.pc[o.pc] || []).push(o.r); }
@@ -1095,6 +1104,7 @@ const OPS = {
   chest(G, p) {
     const k = p.pendChest || '', m = /^(min|maj)([1-6])$/.exec(k); if (!m) return false;
     const q = m[1], t = +m[2]; p.pendChest = null;
+    if (p.cp && awake(G)) { p.choice = awkChoice(G, p, q, t); p.loot = []; return true; }
     if (p.cp) {   // Ninja : 3 améliorations au choix, et une technique en bonus si l'une d'elles est épique ou légendaire
       p.choice = chestChoice(q, t); p.loot = [];
       if (Math.max(...p.choice.map(o => o.r)) >= 2 && p.hd.length < 10) { const sp = drawSpell(Math.max(1, t)); if (sp) { p.hd.push(sp); p.loot.push({ id:sp.sp }); } }
@@ -1115,10 +1125,11 @@ const OPS = {
   // choisir une des 3 améliorations du coffre
   // choix obligatoire d'une récompense sur 3 : elle se range dans l'entraînement, les 2 autres sont perdues
   upick(G, p, a) { const o = p.choice && p.choice[a.i]; if (!o || !p.cp) return false;
+    if (o.kind && p.chFav && p.hd.length < 10) { giveAwkCard(G, p, o); p.choice = null; p.lastUp = o; return true; }   // gratuit pour les derniers
     p.ups = (p.ups || []).concat([o]).sort((x, y) => y.r - x.r).slice(0, UPS_MAX);
     p.choice = null; p.lastUp = o; return true; },
   // poser une amélioration rangée : coûte du chakra selon sa rareté
-  uapply(G, p, a) { const o = (p.ups || [])[a.i]; if (!o || !p.cp) return false; const c = upgCost(o); if ((p.ck || 0) < c) return false; p.ck -= c; applyUp(p.cp, Object.assign({ p }, o)); p.ups.splice(a.i, 1); return true; },
+  uapply(G, p, a) { const o = (p.ups || [])[a.i]; if (!o || !p.cp) return false; const c = upgCost(o); if ((p.ck || 0) < c) return false; if (o.kind) { if (p.hd.length >= 10) return false; p.ck -= c; giveAwkCard(G, p, o); p.ups.splice(a.i, 1); return true; } p.ck -= c; applyUp(p.cp, Object.assign({ p }, o)); p.ups.splice(a.i, 1); return true; },
   // équiper le compagnon coûte du chakra
   equip(G, p, a) {
     const id = (p.eqs || [])[a.i]; if (!id || !SPELLS[id]) return false;
@@ -1273,6 +1284,9 @@ function startRecruit() {
     if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; p.ck = Math.min(ckMax(p), (p.ck || 0) + n); mkSync(p); }
     // un coffre après chaque combat : majeur si le compagnon gagne son duel, mineur sinon
     if (inMechAny(G, 'chakra') && p.lastRes) p.pendChest = (p.lastRes === 'win' ? 'maj' : 'min') + (p.t || 1);
+    // Éveil : le coffre favorise les plus bas au classement (moitié inférieure en points de vie)
+    p.chFav = 0;
+    if (inMechAny(G, 'chakra') && awake(G) && p.lastRes) { const al = G.ps.filter(x => x.al).sort((x, y) => x.hp - y.hp), k = al.indexOf(p); p.chFav = k < Math.ceil(al.length / 2) ? 1 : 0; p.pendChest = (p.chFav ? 'maj' : 'min') + (p.t || 1); }
     // pureté : 5 serviteurs ou plus d'un même clan → +1 chakra
     if (inMechAny(G, 'chakra')) { const n = {}; p.bd.forEach(m => { const t = CD(m.c).tr; if (CLAN_EL[t]) n[t] = (n[t] || 0) + 1; }); const pure = Object.keys(n).find(t => n[t] >= 5) || null; p.pure = pure; if (pure) p.ck = Math.min(ckMax(p), (p.ck || 0) + 1); }
     { const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'pck') p.ck = Math.min(ckMax(p), (p.ck || 0) + w.n); if (w && w.k === 'ptech' && G.rd % 2 === 0 && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); } }
@@ -1419,7 +1433,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, mkl:(mkSync(p), p.mkl) || {}, souffle:p.souffle || 0, roche:p.roche || 0, choice:p.choice || null, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, mkl:(mkSync(p), p.mkl) || {}, souffle:p.souffle || 0, roche:p.roche || 0, choice:p.choice || null, chFav:p.chFav || 0, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;
