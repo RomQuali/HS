@@ -1242,7 +1242,7 @@ const OPS = {
     return true;
   },
   // fixer l'élément du compagnon (2 chakra)
-  cpel(G, p, a) { if (!p.cp || !ELS[a.el] || (p.ck || 0) < 2 || compEl(p.cp) === a.el) return false; p.ck -= 2; p.cp.el = a.el; p.cp.elLock = 1; return true; },
+  cpel(G, p, a) { if (!p.cp || !ELS[a.el] || (p.ck || 0) < 2 || compEl(p.cp) === a.el) return false; p.ck -= 2; p.ckSpent = 1; p.cp.el = a.el; p.cp.elLock = 1; return true; },
   // choisir une des 3 améliorations du coffre
   // choix obligatoire d'une récompense sur 3 : elle se range dans l'entraînement, les 2 autres sont perdues
   upick(G, p, a) { const o = p.choice && p.choice[a.i]; if (!o || !p.cp) return false;
@@ -1256,7 +1256,7 @@ const OPS = {
     const id = (p.eqs || [])[a.i]; if (!id || !SPELLS[id]) return false;
     const c = EQ_COST(id); if ((p.ck || 0) < c) return false;
     const comp = comps(p).find(m => (m.eq || []).length < eqSlots(m) && !(m.eq || []).includes(id)); if (!comp) return false;
-    p.ck -= c; p.eqs.splice(a.i, 1);
+    p.ck -= c; p.ckSpent = 1; p.eqs.splice(a.i, 1);
     withSrc('Entraînement · ' + SPELLS[id].n, () => { applyEquip(comp, id); for (let l = 1; l < ((p.eqlv || {})[id] || 1); l++) eqUpgrade(comp, id); });
     return true;
   },
@@ -1389,9 +1389,32 @@ function aiScore(p, m) {
   const copies = p.bd.concat(p.hd).filter(x => x.c === m.c && !x.g).length;
   let s = (b.val || 0) + (m.a - b.a) + (m.h - b.h) + (b.t || 1) * 2 + copies * 6 + (m.g ? 12 : 0);
   if (main && b.tr === main) s += 4;
+  // mécaniques ninja : renforcer le clan d'un hiden en main ou d'un serviteur « Équipe de 3 », valoriser les kekkei genkai du clan
+  const want = new Set();
+  p.hd.forEach(x => { const S = x.sp && SPELLS[x.sp]; if (S && S.hid) want.add('n_' + S.el); });
+  p.bd.forEach(x => { if ((CD(x.c).fxAll || []).some(e => e.k === 'soc_team')) want.add(tribe(x)); });
+  if ([...want].some(t => tribeOk(m, t))) s += 6;
+  if (b.tr2 && main && (b.tr === main || b.tr2 === main)) s += 3;
+  if ((b.fxAll || []).some(e => e.k === 'bc_gate') && p.hp <= 12) s -= 8;
   return s;
 }
+// IA : regroupe les clans autour des serviteurs « Équipe de 3 » (un équipier de chaque côté)
+function aiTeams(p) {
+  const isT = m => (CD(m.c).fxAll || []).some(x => x.k === 'soc_team');
+  const used = new Set(), out = [];
+  for (const t of p.bd.filter(isT)) {
+    if (used.has(t)) continue;
+    const mates = p.bd.filter(m => m !== t && !used.has(m) && tribeOk(m, tribe(t)));
+    if (mates.length < 2) continue;
+    const [l, r] = mates.sort((x, y) => (isT(y) ? 1 : 0) - (isT(x) ? 1 : 0)).slice(0, 2);
+    [l, t, r].forEach(m => used.add(m)); out.push(l, t, r);
+  }
+  if (!out.length) return;
+  const rest = p.bd.filter(m => !used.has(m));
+  p.bd.splice(0, p.bd.length, ...rest.filter(m => fxOf(m, 'dr').length), ...out, ...rest.filter(m => !fxOf(m, 'dr').length));
+}
 function aiTurn(G, p) {
+  p.aiSave = typeof aiSageWait === 'function' && aiSageWait(G, p);
   const targetRound = inMechAny(G, 'chakra') ? { 1:2, 2:5, 3:7, 4:9, 5:11 } : { 1:2, 2:4, 3:6, 4:8, 5:10 };
   while (p.g >= 3 && OPS.comp(G, p)) {}
   for (let guard = 0; guard < 40; guard++) {
@@ -1400,7 +1423,7 @@ function aiTurn(G, p) {
     if (p.t < 6 && p.g >= c && (G.rd >= targetRound[p.t] || p.g - c >= 3)) { OPS.up(G, p); acted = true; continue; }
     const hc = HEROES[p.hero] && HEROES[p.hero].cost;
     const nonoWait = p.hero === 'nono' && (G.rd < 3 || ((p.fb || 1) < 4 && G.rd < 9));
-    if (hc && !nonoWait && !p.pu && (powPaid(G) ? (p.ck || 0) >= hc : p.g >= hc && p.g - hc >= 3) && (p.bd.length || p.hero === 'oren' || p.hero === 'nono')) { if (OPS.pow(G, p)) { acted = true; continue; } }
+    if (hc && !nonoWait && !p.pu && !p.aiSave && (powPaid(G) ? (p.ck || 0) >= hc : p.g >= hc && p.g - hc >= 3) && (p.bd.length || p.hero === 'oren' || p.hero === 'nono')) { if (OPS.pow(G, p)) { acted = true; continue; } }
     aiPlayAll(G, p);
     if (p.g >= 3 && p.sh.length) {
       let bi = 0; p.sh.forEach((m, i) => { if (aiScore(p, m) > aiScore(p, p.sh[bi])) bi = i; });
@@ -1420,6 +1443,7 @@ function aiTurn(G, p) {
   const front = m => fxOf(m, 'dr').length || has(m, 'r') ? 0 : 1;
   p.bd.sort((x, y) => front(x) - front(y) || y.a - x.a);
   aiPlayAll(G, p); aiSpells(G, p);
+  aiTeams(p);
   p.rdy = true;
 }
 

@@ -1422,6 +1422,17 @@ function fxBefore() {
   return rects;
 }
 // un bonus arrive sur un serviteur : aura dorée, étincelles et étiquette avec la source
+// compagnon : colonne de chakra à la couleur de son élément, double onde, étincelles et halo durable
+function cpBoostFx(e, da, dh) {
+  const el = V.me && V.me.cp ? compEl(V.me.cp) : null, col = el && ELS[el] ? ELS[el].col : '#ffe39a';
+  const [x, y] = fxCenter(e, .45);
+  e.style.setProperty('--cpc', col);
+  e.classList.remove('cpboost'); void e.offsetWidth; e.classList.add('cpboost'); setTimeout(() => e.classList.remove('cpboost'), 1800);
+  fxRing(x, y, col, 1.8); setTimeout(() => fxRing(x, y, '#ffffff', 1.3), 160);
+  fxBurst(x, y, 'magic', 22, 1.3); setTimeout(() => fxBurst(x, y - 20, 'buff', 14, 1.1), 200);
+  const big = da + dh >= 6; if (big) setTimeout(() => fxRing(x, y, col, 2.6), 320);
+  const side = e.closest('.cp-side'); if (side) { side.style.setProperty('--cpc', col); side.classList.remove('cpflash'); void side.offsetWidth; side.classList.add('cpflash'); setTimeout(() => side.classList.remove('cpflash'), 1600); }
+}
 function buffFx(e, p, c) {
   const da = c[0] - p[0], dh = c[1] - p[1], kwNew = (c[2] || '').split('').filter(k => !(p[2] || '').includes(k)), tmpNew = c[3] && c[3] !== p[3];
   if (!(da > 0 || dh > 0 || kwNew.length || tmpNew)) return;
@@ -1430,6 +1441,7 @@ function buffFx(e, p, c) {
   const srcTx = src.length ? src.slice(0, 2).join(' · ') : (tmpNew && c[5] ? c[5] : '');
   const [x, y] = fxCenter(e, .42);
   e.classList.remove('buffup'); void e.offsetWidth; e.classList.add('buffed', 'buffup'); setTimeout(() => e.classList.remove('buffup'), 1500);
+  if (e.classList.contains('cp-tok') && (da > 0 || dh > 0 || kwNew.length)) cpBoostFx(e, da, dh);
   if (da > 0 || dh > 0) { fxRing(x, y, '#ffe39a', 1.2); fxBurst(x, y, 'buff', 16, 1.1); }
   if (kwNew.length) { fxRing(x, y, '#cfe8ff', 1.4); fxBurst(x, y, 'magic', 14, 1); }
   if (tmpNew) { e.classList.add('tmpup'); setTimeout(() => e.classList.remove('tmpup'), 1400); }
@@ -1445,6 +1457,7 @@ function fxAfter(rects) {
   const fighting = !!(V.fight && (d.ph === 'combat' || !V.fight.done));
   const cur = { bd:{}, hd:new Set(me.hd.map(m => m.u)), sh:new Set(me.sh.map(m => m.u)), t:me.t, g:me.g, rd:d.rd };
   me.bd.concat(me.cp ? [me.cp] : []).forEach(m => cur.bd[m.u] = [m.a, m.h, m.f || '', m.tmp ? (m.tmp.a || 0) + '/' + (m.tmp.h || 0) + (m.tmp.f || '') : '', Object.fromEntries((m.bn || []).map(e => [e.s, [e.a, e.h, e.k || '']])), m.tmp && m.tmp.s || '']); cur.tma = me.tma ? me.tma.a + '/' + me.tma.h : '';
+  if (me.cp) { cur.cpLv = compLv(me.cp); cur.cpEl = compEl(me.cp); }
   const P = V.fxPrev; V.fxPrev = cur;
   if (fighting || !P || P.rd !== cur.rd || FX_OFF()) return;
   const el = u => document.querySelector(`.table [data-u="${u}"]`);
@@ -1470,6 +1483,9 @@ function fxAfter(rects) {
   if (cur.tma && cur.tma !== P.tma) { const r0 = document.querySelector('#bdrow'); if (r0) { const [x, y] = fxCenter(r0, .1); fxLabel(x, y, `<b>Prochain combat : ${cur.tma.split('/').map(v => '+' + v).join('/')} pour tous</b>`, 'bufftmp'); } }
   const purse = document.querySelector('.purse');
   if (cur.g > P.g && purse) { const [x, y] = fxCenter(purse); fxBurst(x, y, 'gold', 10, .9); fxLabel(x, y - 18, `+${cur.g - P.g}`, 'gold'); }
+  if (me.cp && P.cpLv != null) { const e = document.querySelector('.cp-side .cp-tok'), lv = compLv(me.cp), ce = compEl(me.cp);
+    if (e && lv > P.cpLv) { const [x, y] = fxCenter(e, .4); cpBoostFx(e, 0, 0); setTimeout(() => { fxRing(x, y, '#fff1b8', 2.4); fxBurst(x, y, 'gold', 26, 1.4); fxLabel(x, y - 46, `<b>Compagnon niveau ${lv} !</b>`, 'tier'); }, 250); }
+    else if (e && ce && ce !== P.cpEl) { const [x, y] = fxCenter(e, .4); cpBoostFx(e, 0, 0); fxLabel(x, y - 46, `<b>${esc(ELS[ce] ? ELS[ce].n : ce)}</b>`, 'buffinfo'); } }
   if (cur.t > P.t) { const k = document.querySelector('.kname'); if (k) { const [x, y] = fxCenter(k); fxRing(x, y, '#ffe39a', 2); fxBurst(x, y, 'gold', 22, 1.3); fxLabel(x, y - 30, `<b>Taverne niveau ${cur.t} !</b>`, 'tier'); } }
   document.querySelectorAll('.table .cd.newgold').forEach(e => { if (e.dataset.fx) return; e.dataset.fx = 1; const [x, y] = fxCenter(e); fxRing(x, y, '#fff1b8', 2.2); fxBurst(x, y, 'gold', 20, 1.3); });
 }
@@ -2487,3 +2503,14 @@ html.lite .awk-go{animation:none}
 (function(){ const st = document.createElement('style'); st.textContent = `.hpk-b small .hpk-pn{font-size:12px;color:#ffd86a;font-weight:700}`; document.head.appendChild(st); })();
 
 (function(){ const st = document.createElement('style'); st.textContent = `.tx-tag{display:inline-block;padding:0 5px;margin-right:2px;border-radius:6px;font-weight:700;font-size:.9em;color:#120a06;background:#c8e8ff}.tx-tag.kin{background:#ff9a7a}.tx-tag.hid{background:#ffd86a}`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `
+.cp-tok.cpboost{animation:cpBoost 1.6s ease-out}
+.cp-tok.cpboost::after{content:'';position:absolute;left:50%;bottom:20%;width:70%;height:240%;transform:translateX(-50%);pointer-events:none;border-radius:50% 50% 10% 10%;background:linear-gradient(0deg,color-mix(in srgb,var(--cpc,#ffe39a) 85%,transparent),transparent 85%);filter:blur(6px);opacity:0;animation:cpPillar 1.4s ease-out}
+@keyframes cpBoost{0%{transform:scale(1);filter:none}18%{transform:scale(1.16);filter:drop-shadow(0 0 18px var(--cpc,#ffe39a)) brightness(1.35)}45%{transform:scale(1.04);filter:drop-shadow(0 0 12px var(--cpc,#ffe39a))}100%{transform:scale(1);filter:none}}
+@keyframes cpPillar{0%{opacity:0;transform:translateX(-50%) scaleY(.2)}25%{opacity:.9;transform:translateX(-50%) scaleY(1)}100%{opacity:0;transform:translateX(-50%) scaleY(1.15)}}
+.cp-side.cpflash{animation:cpFlash 1.5s ease-out}
+@keyframes cpFlash{0%,100%{box-shadow:none}25%{box-shadow:0 0 0 2px var(--cpc,#ffe39a),0 0 30px color-mix(in srgb,var(--cpc,#ffe39a) 60%,transparent)}}
+body.lite .cp-tok.cpboost::after{display:none}
+@media (prefers-reduced-motion:reduce){.cp-tok.cpboost,.cp-tok.cpboost::after,.cp-side.cpflash{animation:none}}
+`; document.head.appendChild(st); })();

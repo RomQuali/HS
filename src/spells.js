@@ -297,6 +297,11 @@ const aiBestIndex = (p, list) => { let bi = 0; list.forEach((m, i) => { if (aiSc
 function aiTarget(p, id) {
   const pool = p.bd.map((m, i) => ({ m, i }));
   const by = (f, ok = () => true) => { const c = pool.filter(x => ok(x.m)); if (!c.length) return null; c.sort((a, b) => f(b.m) - f(a.m)); return c[0].i; };
+  const S = SPELLS[id] || {}, st = (S.fx || []).map(x => x.k);
+  if (st.includes('henge')) return by(m => -tierOf(m) * 10 + m.a + m.h, m => tierOf(m) < 6 && !CD(m.c).tok);
+  if (st.includes('tpoing')) return by(m => m.h);
+  if (st.includes('ttmp') || id === 'nj_oyoroi') return by(m => m.a + m.h / 2, m => !CD(m.c).tok);
+  if (st.includes('tbuff')) return by(m => m.a + m.h + tierOf(m) * 2 + (has(m, 'w') ? 4 : 0), m => !CD(m.c).tok);
   switch (id) {
     case 'sp_aube': return by(m => m.a + m.h, m => !has(m, 's'));
     case 'sp_souffle': return by(m => m.a + m.h, m => !has(m, 'r'));
@@ -308,13 +313,31 @@ function aiTarget(p, id) {
   }
 }
 const AI_SKIP = ['sp_chopes', 'sp_rituel'];
+// IA : mode ermite — garde une technique Doton et ne dépense pas de chakra ce tour pour la lancer au suivant
+function aiSageWait(G, p) { return G.rd < 11 && !sageOn(p) && p.hd.some(x => x.sp && SPELLS[x.sp] && SPELLS[x.sp].sage) && (p.ck || 0) >= 2; }
+// IA : une technique vaut-elle d'être lancée maintenant ?
+function aiCanCast(G, p, it) {
+  const S = SPELLS[it.sp]; if (!S || AI_SKIP.includes(it.sp)) return false;
+  if (S.chg && (it.ch || 0) < 2 && G.rd < 12 && p.hd.length < 9) return false;            // on laisse charger
+  if (S.hp && p.hp <= S.hp + 8) return false;                                                // kinjutsu : pas trop risqué
+  if (S.hid && p.bd.filter(m => tribeOk(m, 'n_' + S.el)).length < S.hid) return false;       // hiden : attendre le clan
+  if (p.aiSave && S.ck) return false;                                                        // tour d'économie (mode ermite)
+  return true;
+}
+// ordre : mode ermite d'abord (avant de dépenser), techniques combinées en dernier
+function aiCastPrio(G, p, it) { const S = SPELLS[it.sp] || {}; return (S.sage && sageOn(p) ? 30 : 0) + (S.comb ? ((p.castEls || []).some(e => e !== S.el) ? 25 : -10) : 0) + (S.t || 0); }
+// achat : pas de hiden sans clan, pas de kinjutsu à petite vie
+function aiWantSpell(p, S) { if (S.hid && p.bd.filter(m => tribeOk(m, 'n_' + S.el)).length < Math.max(1, S.hid - 1)) return false; if (S.hp && p.hp <= S.hp + 10) return false; return true; }
 function aiSpells(G, p) {
-  for (let guard = 0; guard < 6; guard++) {
+  const bad = new Set();
+  for (let guard = 0; guard < 8; guard++) {
     const S = p.sp && SPELLS[p.sp.sp];
-    if (S && !AI_SKIP.includes(p.sp.sp) && p.g >= S.c && p.hd.length < 10 && !(S.tg && !p.bd.length)) OPS.buysp(G, p);
-    const hi = p.hd.findIndex(m => m.sp && !AI_SKIP.includes(m.sp)); if (hi < 0) break;
-    const id = p.hd[hi].sp, tg = SPELLS[id].tg ? aiTarget(p, id) : null;
-    if (!castSpell(G, p, hi, tg)) break;
+    if (S && !AI_SKIP.includes(p.sp.sp) && p.g >= S.c && p.hd.length < 10 && !(S.tg && !p.bd.length) && aiWantSpell(p, S)) OPS.buysp(G, p);
+    let hi = -1, best = -1e9;
+    p.hd.forEach((m, i) => { if (!m.sp || bad.has(m.u) || !aiCanCast(G, p, m)) return; const v = aiCastPrio(G, p, m); if (v > best) { best = v; hi = i; } });
+    if (hi < 0) break;
+    const it = p.hd[hi], id = it.sp, tg = SPELLS[id].tg ? aiTarget(p, id) : null;
+    if (!castSpell(G, p, hi, tg)) { bad.add(it.u); continue; }
     if (p.disc) OPS.pick(G, p, { i:aiBestIndex(p, p.disc) });
     aiPlayAll(G, p);
   }
