@@ -2557,3 +2557,44 @@ html.lite .table[class*="awk-"] .board-zone .mn::after{display:none}
   :root body .table.fighting:has(.duel-col){--tw:min(170px, calc((100cqi - 380px) / 7.6), 14vh)}
 }
 `; document.head.appendChild(st); })();
+/* PC : tout plus grand et plus lisible (créatures, noms, cartes, interface) */
+(function(){ const st = document.createElement('style'); st.textContent = `
+@media (min-width:1100px) and (min-height:700px){
+  body .stage{grid-template-columns:clamp(104px, 7vw, 150px) minmax(0,1fr)}
+  :root body .table{--tw:min(200px, calc((100cqi - 60px) / 7.1), 17.5vh);--hw:min(220px, calc((100cqi - 40px) / 7.4), 25vh)}
+  :root body .table.fighting{--tw:min(180px, calc((100cqi - 100px) / 7.6), 16vh)}
+  :root body .table.fighting:has(.duel-col){--tw:min(170px, calc((100cqi - 300px) / 7.4), 15.5vh)}
+  :root body .table.fighting.joined{--tw:min(160px, calc((100cqi - 100px) / 9.2), 15vh)}
+  :root body .table .mn-nm{font-size:clamp(12px, 1.5vh, 20px)}
+  :root body .table .cd-nm{font-size:clamp(12px, 1.55vh, 19px)}
+  :root body .table .cd-tx{font-size:clamp(10.5px, 1.2vh, 15px)}
+  .hud,.hero-zone,.opps,.table-skip,.shop-tools,.kz-tools{zoom:1.12}
+  #peek .tip,.tip{font-size:15.5px}
+  #peek{zoom:1.15}
+}
+@media (min-width:1100px) and (min-height:950px){
+  .hud,.hero-zone,.opps,.table-skip{zoom:1.28}
+  #peek{zoom:1.3}
+}
+@media (min-width:1100px) and (min-height:1300px){
+  .hud,.hero-zone,.opps,.table-skip{zoom:1.55}
+  #peek{zoom:1.55}
+  :root body .table{--tw:min(260px, calc((100cqi - 60px) / 7.1), 17.5vh)}
+}
+@media (min-width:1100px) and (min-height:700px) and (max-height:900px){
+  :root body .table{--tw:min(160px, calc((100cqi - 60px) / 7.1), 15.5vh);--hw:min(180px, calc((100cqi - 40px) / 7.6), 22vh)}
+  :root body .table.fighting{--tw:min(140px, calc((100cqi - 100px) / 7.6), 13.5vh)}
+  :root body .table.fighting:has(.duel-col){--tw:min(134px, calc((100cqi - 300px) / 7.4), 13vh)}
+}
+`; document.head.appendChild(st); })();
+(function(){ const st = document.createElement('style'); st.textContent = `
+@media (min-width:1100px) and (min-height:700px){
+  :root body .table:not(.fighting) .board-zone,:root body .table:not(.fighting) .board-zone.has-cp{--tw:min(190px, calc((100cqi - 280px) / 7.6), 15vh)}
+  :root body .table:not(.fighting) .keeper-zone{--tw:min(170px, calc((100cqi - 280px) / 7.6), 13.5vh)}
+}
+@media (min-width:1100px) and (min-height:700px) and (max-height:900px){
+  :root body .table:not(.fighting) .board-zone,:root body .table:not(.fighting) .board-zone.has-cp{--tw:min(150px, calc((100cqi - 260px) / 7.6), 12.5vh)}
+  :root body .table:not(.fighting) .keeper-zone{--tw:min(130px, calc((100cqi - 260px) / 7.6), 11.5vh)}
+}
+`; document.head.appendChild(st); })();
+(function(){ const st = document.createElement('style'); st.textContent = `@media (min-width:1100px) and (min-height:700px) and (max-height:800px){ .hud,.hero-zone,.opps,.table-skip{zoom:1} }`; document.head.appendChild(st); })();
