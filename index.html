@@ -3424,8 +3424,6 @@ function endRecruit() {
       if (ca[0] && cbb[0]) { const ea = compEl(ca[0]), eb = compEl(cbb[0]); if (EL_DOM[ea] === eb) buff(ca[0], 2, 2); if (EL_DOM[eb] === ea) buff(cbb[0], 2, 2); }
       const ca0 = ca.map(fullM), cb0 = cbb.map(fullM);
       const cs = rint(1e9), cr = simulate(ca, cbb, cs, p.t, qt, [0, 0], G.mx);
-      // double K.-O. : le compagnon le plus rapide (plus d'attaque au départ) l'emporte ; à égalité, vrai match nul
-      if (cr.w === -1 && ca[0] && cbb[0] && !cr.alive[0].length && !cr.alive[1].length && ca0[0].a !== cb0[0].a) cr.w = ca0[0].a > cb0[0].a ? 0 : 1;
       duel = { a:ca0, b:cb0, w:cr.w, seed:cs };
       if (cr.w === 0 && p.cp) { giveXp(p.cp, 2); mkAdd(p, compEl(p.cp), 2); } if (!ghost && cr.w === 1 && q.cp) { giveXp(q.cp, 2); mkAdd(q, compEl(q.cp), 2); }
     }
