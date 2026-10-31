@@ -7201,7 +7201,7 @@ function gameH() {
 }
 // fin de combat : un grand coffre au centre de l'écran, à ouvrir d'un clic
 function bigChestH(d, me) {
-  if (!me || !me.pend || d.ph !== 'recruit' || (V.fight && !V.fight.done) || V.chestRev) return '';
+  if (!me || !me.pend || d.ph !== 'recruit' || (V.fight && !V.fight.done) || V.chestRev || awkPending()) return '';
   const q = me.pend.slice(0, 3), t = +me.pend.slice(3), maj = q === 'maj';
   return `<div class="bigchest ${q}" role="dialog" aria-label="Coffre de fin de combat"><div class="bc-in">
     <b class="bc-t">${me.cp && me.chFav ? 'Coffre de l\'Éveil : tu es parmi les derniers' : me.cp && V.pub && V.pub.ev && V.pub.rd >= V.pub.ev ? 'Coffre de l\'Éveil' : me.cp ? (maj ? 'Duel gagné : coffre majeur' : 'Duel perdu : coffre mineur') : (maj ? 'Victoire : coffre majeur' : 'Coffre mineur')} · niveau ${t}</b>
@@ -7248,7 +7248,7 @@ function upPeekH(me, i) {
 }
 // coffre ouvert : 3 améliorations au choix (et la technique bonus éventuelle)
 function choiceH(d, me) {
-  if (!me || !me.choice || !me.cp || Date.now() < (V.choiceAt || 0) || d.ph !== 'recruit') return '';
+  if (!me || !me.choice || !me.cp || Date.now() < (V.choiceAt || 0) || d.ph !== 'recruit' || awkPending()) return '';
   const tech = (me.loot || []).filter(o => SPELLS[o.id]);
   return `<div class="upch" role="dialog" aria-label="Choisis une amélioration"><div class="upch-in">
     <b class="upch-t">Choisis ta récompense</b>${me.chFav ? '<small class="upch-s fav">Coffre de l\'Éveil · tu es parmi les derniers : raretés Épique ou mieux, et la carte va gratuitement dans ta main.</small>' : ''}<small class="upch-s"${me.chFav ? ' hidden' : ''}>Une seule : elle se range dans l'entraînement, et tu la poses sur ${esc(C[me.cp.c] ? C[me.cp.c].n : 'ton compagnon')} avec du chakra.</small>
@@ -7403,12 +7403,17 @@ function duelFx() { document.querySelectorAll('.cp-side .mn.dead').forEach(el =>
 // après l'Éveil : les cartes prennent l'effet de l'élément qui a le plus de marqueurs (braises = Feu, marée = Eau, charge = Foudre)
 function awkElCls(me) { if (!me) return ''; const c = [['feu', me.braise || 0], ['eau', me.maree || 0], ['foudre', me.charge || 0]].sort((x, y) => y[1] - x[1])[0]; return c[1] > 0 ? ' awk-' + c[0] : ''; }
 // l'Éveil : grande annonce plein écran, une seule fois
+const awkKey = () => (V.pub.code || '') + ':' + V.pub.ev;
+// l'annonce de l'Éveil est en attente (ou affichée) : on cache le reste, coffre compris, jusqu'au clic
+function awkPending() { return V.screen === 'game' && V.pub && V.pub.ph === 'recruit' && awakeUI() && (V.pub.laws || []).some(l => l.k === 'chakra') && V.awkDone !== awkKey(); }
 function awkWatch() {
-  if (V.screen !== 'game' || !V.pub || !awakeUI() || !(V.pub.laws || []).some(l => l.k === 'chakra')) return;
-  const key = (V.pub.code || '') + ':' + V.pub.ev; if (V.awkSeen === key) return; V.awkSeen = key;
-  const el = document.createElement('div'); el.className = 'awk-fx';
-  el.innerHTML = `<div class="awk-in"><span class="awk-rays"></span><small>Il reste 4 ninjas ou moins</small><b>Éveil</b><p>Les clans libèrent leur pouvoir · ton compagnon s'éveille · ton héros se renforce · tes techniques gagnent leur effet d'Éveil</p></div>`;
-  document.body.appendChild(el); setTimeout(() => el.remove(), 3400);
+  if (!awkPending() || document.querySelector('.awk-fx')) return;
+  const key = awkKey(); V.awkSeen = key;
+  const el = document.createElement('div'); el.className = 'awk-fx'; el.setAttribute('role', 'dialog'); el.tabIndex = 0;
+  el.innerHTML = `<div class="awk-in"><span class="awk-rays"></span><small>Il reste 4 ninjas ou moins</small><b>Éveil</b><p>Les clans libèrent leur pouvoir · ton compagnon s'éveille · ton héros se renforce · tes techniques gagnent leur effet d'Éveil</p><button class="awk-go">Continuer</button></div>`;
+  const close = () => { if (V.awkDone === key) return; V.awkDone = key; el.classList.add('out'); setTimeout(() => el.remove(), 300); render(); };
+  el.addEventListener('click', close); el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape') close(); });
+  document.body.appendChild(el); el.focus();
 }
 window.addEventListener('resize', () => { clearTimeout(V.rzT); V.rzT = setTimeout(() => { placeDuelCol(); }, 60); });
 document.addEventListener('fullscreenchange', () => setTimeout(() => { if (V.screen === 'game') render(); }, 120));
@@ -8645,7 +8650,7 @@ svg.ck-gem.aff{box-shadow:none;filter:drop-shadow(0 0 5px rgba(155,227,106,.95))
 .awk-in p{margin:0;font-size:15px;color:#fff3c0;text-shadow:0 2px 4px #000}
 @keyframes awkF{0%{opacity:0}10%{opacity:1}80%{opacity:1}100%{opacity:0}}
 @keyframes awkB{0%{transform:scale(.4);opacity:0}18%{transform:scale(1.15);opacity:1}30%{transform:scale(1)}}
-@keyframes awkR{to{transform:rotate(60deg)}}
+@keyframes awkR{to{transform:rotate(360deg)}}
 `; document.head.appendChild(st); })();
 
 /* après l'Éveil : cartes enflammées / ruisselantes / électrisées selon le marqueur dominant */
@@ -8946,6 +8951,17 @@ html.lite .mko.ready{animation:none;box-shadow:0 0 0 2px #120a06,0 0 0 4px var(-
 .pq-lvp span b{color:#8a7a5a;margin-right:4px}
 .pq-lvp span.on{color:#f1e4c6;background:rgba(111,200,255,.1)}.pq-lvp span.on b{color:#8fd8ff}
 @media (orientation:landscape) and (max-height:540px){ .cp-el{width:14px;height:14px} .cp-el svg{width:10px;height:10px} }
+`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `
+.awk-fx{pointer-events:auto;cursor:pointer;animation:awkIn .5s ease forwards;background:radial-gradient(circle,#4a1e08 0,#1a0a04 55%,#080302 100%)}
+.awk-fx.out{animation:awkOut .3s ease forwards}
+@keyframes awkIn{from{opacity:0}to{opacity:1}}
+@keyframes awkOut{to{opacity:0}}
+.awk-fx .awk-rays{animation:awkR 12s linear infinite}
+.awk-go{margin-top:14px;padding:10px 28px;border:0;border-radius:99px;cursor:pointer;font:700 16px var(--f-label),serif;color:#2a1404;background:linear-gradient(180deg,#ffd27a,#e08a2a);box-shadow:0 0 0 2px #120a06,0 0 20px rgba(255,150,60,.7);animation:awkPulse 1.6s ease-in-out infinite}
+@keyframes awkPulse{50%{transform:scale(1.06)}}
+html.lite .awk-go{animation:none}
 `; document.head.appendChild(st); })();
 </script>
 </body></html>
