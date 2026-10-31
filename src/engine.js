@@ -1244,7 +1244,7 @@ const OPS = {
   // fixer l'élément du compagnon (2 chakra)
   cpel(G, p, a) { if (!p.cp || !ELS[a.el] || (p.ck || 0) < 2 || compEl(p.cp) === a.el) return false; p.ck -= 2; p.ckSpent = 1; p.cp.el = a.el; p.cp.elLock = 1; return true; },
   // choisir une des 3 améliorations du coffre
-  // choix obligatoire d'une récompense sur 3 : elle se range dans l'entraînement, les 2 autres sont perdues
+  // choix obligatoire d'une récompense sur 3 : elle se range dans l'inventaire, les 2 autres sont perdues
   upick(G, p, a) { const o = p.choice && p.choice[a.i]; if (!o || !p.cp) return false;
     if (o.kind && p.chFav && p.hd.length < 10) { giveAwkCard(G, p, o); p.choice = null; p.lastUp = o; return true; }   // gratuit pour les derniers
     p.ups = (p.ups || []).concat([o]).sort((x, y) => y.r - x.r).slice(0, UPS_MAX);
@@ -1257,7 +1257,7 @@ const OPS = {
     const c = EQ_COST(id); if ((p.ck || 0) < c) return false;
     const comp = comps(p).find(m => (m.eq || []).length < eqSlots(m) && !(m.eq || []).includes(id)); if (!comp) return false;
     p.ck -= c; p.ckSpent = 1; p.eqs.splice(a.i, 1);
-    withSrc('Entraînement · ' + SPELLS[id].n, () => { applyEquip(comp, id); for (let l = 1; l < ((p.eqlv || {})[id] || 1); l++) eqUpgrade(comp, id); });
+    withSrc('Inventaire · ' + SPELLS[id].n, () => { applyEquip(comp, id); for (let l = 1; l < ((p.eqlv || {})[id] || 1); l++) eqUpgrade(comp, id); });
     return true;
   },
   buysp(G, p) { const S = p.sp && SPELLS[p.sp.sp]; const c = S ? spCost(p, S) : 0; if (!S || p.g < c || p.hd.length >= 10) return false; p.g -= c; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(p.sp); p.sp = null; return true; },
