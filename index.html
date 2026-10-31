@@ -7582,6 +7582,69 @@ function detailH(canAct) {
 }
 
 // choix du héros : trois médaillons, on en met un en avant puis on le porte
+/* ===== choix du héros (univers Ninja) : héros à gauche, règles illustrées en onglets à droite ===== */
+const RULE_TABS = [['tour', 'Le tour'], ['tech', 'Techniques'], ['comp', 'Compagnon'], ['coffre', 'Coffres'], ['mk', 'Marqueurs'], ['eveil', 'Éveil']];
+function ruleTabH(k) {
+  const el = e => `<i class="rl-el" style="--c:${ELS[e].col}"><svg viewBox="-12 -12 24 24">${EL_ICON[e]}</svg></i>`;
+  const step = (n, t, x, vis) => `<li class="rl-step"><span class="rl-n">${n}</span><span class="rl-v">${vis || ''}</span><span><b>${t}</b><small>${x}</small></span></li>`;
+  const coin = '<i class="rl-coin"></i>', ck = ckMarkH('', 'rl-ck');
+  switch (k) {
+    case 'tour': return `<ol class="rl-steps">
+      ${step(1, 'Recrute', `Achète des ninjas avec ${coin} l'or. Chacun te rapportera 1 ${ck} chakra par tour (10 au plus).`, faceH('art-n_f1'))}
+      ${step(2, 'Lance tes techniques', 'Achetées en or, lancées au chakra. Deux techniques remplissent le réservoir et déclenchent un combo.', '<span class="rl-scroll"><i style="background:#4ab0e8"></i><i style="background:#ff7a2a"></i></span>')}
+      ${step(3, 'Utilise ton pouvoir', 'Le pouvoir de ton héros coûte 1 à 3 chakra, une fois par tour.', '<span class="rl-pow">✦</span>')}
+      ${step(4, 'Combat + duel', 'Tes serviteurs affrontent ceux d\'en face (dégâts au héros). En parallèle, ton compagnon affronte seulement le compagnon adverse.', '<span class="rl-vs">VS</span>')}
+      ${step(5, 'Ouvre ton coffre', 'Duel gagné : coffre majeur, sinon mineur. Choisis 1 récompense sur 3.', '<span class="rl-chest"></span>')}
+    </ol>`;
+    case 'tech': {
+      const pairs = Object.entries(FUSIONS).map(([kk, F]) => { const [a, b] = kk.split('+'); return `<i style="--c:${F.col}">${el(a)}${el(b)}<b>${esc(F.n)}</b></i>`; }).join('') + Object.entries(PURES).map(([e, F]) => `<i style="--c:${F.col}">${el(e)}${el(e)}<b>${esc(F.n)}</b></i>`).join('');
+      return `<div class="rl-p"><p>Chaque technique a une <b>nature</b> : ${['feu', 'vent', 'eau', 'foudre', 'terre'].map(el).join('')}. Celles de l'élément de ton héros coûtent <b>1 chakra de moins</b>.</p>
+        <div class="rl-rsv"><span class="rl-scroll big"><i style="background:#4ab0e8"></i><i></i></span><span>→</span><span class="rl-scroll big"><i style="background:#4ab0e8"></i><i style="background:#ff7a2a"></i></span><span>→</span><b class="rl-boom">Combo !</b></div>
+        <p>La 1re technique remplit une moitié du <b>réservoir</b>, la 2e l'autre : le mélange déclenche un <b>combo</b> (effet sur ton plateau + pouvoir au compagnon), puis le réservoir se vide. Deux fois le même élément : <b>combo pur</b>. La moitié remplie reste d'un tour à l'autre.</p>
+        <div class="njl-combos">${pairs}</div></div>`; }
+    case 'comp': return `<div class="rl-p"><div class="rl-duel">${faceH('art-c_nj_eau')}<span class="rl-vs">VS</span>${faceH('art-c_nj_feu')}</div>
+      <p>Ton compagnon est <b>déjà en jeu, doré</b>, à côté de ton plateau. Il ne combat que le <b>compagnon adverse</b> et ne blesse jamais le héros.</p>
+      <ul class="rl-ul"><li><b>Frappe en premier</b> : un compagnon abattu ne riposte pas. Nul seulement si les deux tombent ensemble.</li>
+      <li><b>Élément</b> : celui de ta dernière technique, ou fixé pour 2 ${ck}. Il résonne avec tes marqueurs : <b>+1/+1 par 3 marqueurs</b> de son élément. Petit avantage (+2/+2) s'il domine celui d'en face.</li>
+      <li><b>Croissance</b> : par les coffres et chaque combo. L'expérience débloque un pouvoir aux niveaux 3 et 5.</li>
+      <li>Duel gagné : <b>coffre majeur</b> et +2 marqueurs de son élément.</li></ul></div>`;
+    case 'coffre': return `<div class="rl-p"><p>Après chaque combat, un coffre du niveau de ta taverne : <b>majeur</b> si ton compagnon gagne le duel, <b>mineur</b> sinon. Tu dois choisir <b>1 récompense sur 3</b>.</p>
+      <div class="njl-rar">${RARS.map((R, i) => `<i style="--c:${R.col}">${R.n} · ${i + 1} chakra</i>`).join('')}</div>
+      <ul class="rl-ul"><li><b>Pièces</b> du compagnon : lame, armure, bandeau, gantelets, talisman.</li><li><b>Parchemins de pacte</b> : préparent la bête d'invocation de l'Éveil.</li><li><b>Sceaux de clan</b> : des marqueurs en plus.</li><li><b>Techniques</b> ninja.</li></ul>
+      <p>La récompense va dans l'<b>entraînement</b> (en bas à gauche) : pose-la avec du chakra quand tu veux.</p></div>`;
+    case 'mk': return `<div class="rl-p"><div class="rl-mks">${['feu', 'vent', 'eau', 'foudre', 'terre'].map(e => `<span style="--c:${MK_COL[e]}">${el(e)}<b>${MK_N[e]}</b></span>`).join('')}</div>
+      <ul class="rl-ul"><li><b>Gain</b> : +1 par technique de leur nature, serviteurs du clan, Sceaux de clan, duels gagnés.</li>
+      <li><b>Paliers</b> à 5, 10 et 20 marqueurs gagnés : tes serviteurs du clan gagnent des stats en combat, puis un mot-clé.</li>
+      <li><b>Éclat</b> : chaque combo consomme 5 marqueurs de chacun de ses éléments pour un effet en plus.</li>
+      <li><b>Résonance</b> : ton compagnon gagne +1/+1 par 3 marqueurs de son élément en duel.</li>
+      <li><b>Pureté</b> : 5 serviteurs d'un même clan donnent +1 chakra par tour et doublent les marqueurs gagnés.</li></ul>
+      <p class="rl-hint">Ils tournent en orbes autour de ton héros.</p></div>`;
+    case 'eveil': return `<div class="rl-p"><p class="rl-awk">Quand il reste <b>4 joueurs ou moins</b>, tout le monde s'éveille :</p>
+      <ul class="rl-ul"><li><b>Clans</b> : pouvoir ultime (Phénix, Ouragan, Raz-de-marée, Orage total, Avalanche).</li>
+      <li><b>Compagnon</b> : forme ultime, et il <b>rejoint la bataille</b> au centre de ta rangée avec sa <b>bête d'invocation</b> (si tu as posé des parchemins de pacte). Ils frappent en <b>duo lié</b> et comptent dans les dégâts.</li>
+      <li><b>Héros</b> : pouvoir renforcé.</li>
+      <li><b>Techniques</b> : chacune gagne son effet d'Éveil ; des techniques interdites apparaissent.</li>
+      <li><b>Coffres</b> : cartes puissantes ; la moitié basse du classement a de l'Épique et les reçoit gratuitement.</li></ul></div>`;
+  }
+  return '';
+}
+function heroPickNinjaH(d, me) {
+  const sel = me.ho.includes(V.heroSel) ? V.heroSel : me.ho[0], tab = V.ruleTab || 'tour';
+  const card = h => { const x = HEROES[h], on = h === sel, cid = COMPANIONS[h], c = cid && C[cid], el = x.clan;
+    return `<button class="hpk${on ? ' on' : ''}" data-act="hsel" data-h="${h}" aria-pressed="${on}" style="--c:${ELS[el] ? ELS[el].col : '#c8a86a'}">
+      <span class="hpk-face">${faceH('art-h-' + h)}${x.cost ? `<span class="hpk-ck">${ckMarkH(x.cost)}</span>` : '<span class="hpk-pas">Passif</span>'}</span>
+      <span class="hpk-b"><b>${esc(x.n)}</b><span class="hpk-d">${x.diff ? '★'.repeat(x.diff) + '☆'.repeat(3 - x.diff) + ' ' + ['', 'Simple', 'Intermédiaire', 'Expert'][x.diff] : ''}</span>
+        <small>${esc((t => t.charAt(0).toUpperCase() + t.slice(1))(x.tx.replace(/^Passif : /, '')))}</small>
+        ${c ? `<span class="hpk-c">${faceH('art-' + cid)}<em>${esc(c.n)} · ${c.a * 2}/${c.h * 2}</em></span>` : ''}</span></button>`; };
+  return `<div class="ov hpick-ov"><div class="hpick">
+    <div class="hpick-l"><h2 class="ov-t">Choisis ton héros</h2><p class="ov-s">Son pouvoir et son compagnon t'accompagnent toute la partie.</p>
+      <div class="hpk-g">${me.ho.map(card).join('')}</div>
+      <button class="t-go md-go" data-act="hero" data-h="${sel}">Jouer ${esc(HEROES[sel].n.split(' ')[0])}</button></div>
+    <div class="hpick-r"><div class="rl-head"><small>Univers · Ninja</small><b>Comment on joue</b></div>
+      <div class="rl-tabs" role="tablist">${RULE_TABS.map(([k, n]) => `<button role="tab" class="rl-tab${k === tab ? ' on' : ''}" data-act="rtab" data-k="${k}" aria-selected="${k === tab}">${n}</button>`).join('')}</div>
+      <div class="rl-body">${ruleTabH(tab)}</div></div>
+  </div></div>`;
+}
 function heroMedalsH(me) {
   const sel = me.ho.includes(V.heroSel) ? V.heroSel : me.ho[Math.floor((me.ho.length - 1) / 2)];
   const md = me.ho.map(h => {
@@ -7600,6 +7663,7 @@ function overlayH() {
   if (me && me.disc && d.ph === 'recruit') return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Découverte</h2><p class="ov-s">Choisis un serviteur. Les deux autres retournent dans la réserve.</p>
     <div class="disc">${me.disc.map((m, i) => `<button class="disc-b" data-act="pick" data-i="${i}" aria-label="Choisir ${esc(CD(m.c).n)}">${cardH(m, 'disc', i)}</button>`).join('')}</div></div></div>`;
   if (d.ph === 'hero' && me) {
+    if (!me.hero && (d.laws || []).some(l => l.k === 'chakra')) return heroPickNinjaH(d, me);
     if (!me.hero) return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Choisis ton héros</h2><p class="ov-s">Son pouvoir et son compagnon t'accompagnent toute la partie.</p>${lawBigH(d)}
       ${heroMedalsH(me)}</div></div>`;
     return `<div class="ov"><div class="ov-box wait">${faceH('art-h-' + me.hero, 'face big')}<h2 class="ov-t">${esc(HEROES[me.hero].n)}</h2><p class="ov-s">En attente des autres joueurs…</p></div></div>`;
@@ -7743,6 +7807,7 @@ function doAct(act, btn) {
     case 'cpel': sendAct({ t:'cpel', el:btn.dataset.el }); break;
     case 'uapply': { const o = V.me && (V.me.ups || [])[+btn.dataset.i]; if (o && (V.me.ck || 0) < upgCost(o)) { toast(`Il te faut ${upgCost(o)} chakra pour poser cette amélioration.`); break; } sendAct({ t:'uapply', i:+btn.dataset.i }); hidePeek(); break; }
     case 'lawtog': { const n = btn.dataset.u; V.lawOpen = V.lawOpen || {}; V.lawOpen[n] = !V.lawOpen[n]; render(); break; }
+    case 'rtab': V.ruleTab = btn.dataset.k; render(); break;
     case 'upick': sendAct({ t:'upick', i:+btn.dataset.i }); hidePeek(); break;
     case 'chest': V.chestRev = { eq:(V.me && V.me.eqs || []).slice(), hd:(V.me && V.me.hd || []).map(x => x.u), at:Date.now() }; fxChest(btn); { const o = btn.closest('.bigchest'); if (o) o.remove(); } sendAct({ t:'chest' }); break;
     case 'equip': if (btn.getAttribute('aria-disabled') === 'true') { toast(btn.dataset.why || ''); break; } sendAct({ t:'equip', i:+btn.dataset.i }); hidePeek(); break;
@@ -9056,5 +9121,56 @@ html.lite .awk-go{animation:none}
 `; document.head.appendChild(st); })();
 
 (function(){ const st = document.createElement('style'); st.textContent = `.hc-diff{text-align:center;font-size:13px;color:#ffd86a;letter-spacing:1px;margin-top:-2px}.hc-diff small{font:700 10px var(--f-label),serif;letter-spacing:.08em;text-transform:uppercase;color:#e8d6b0;margin-left:3px}.hc-diff.d3{color:#ff9a5a}`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `
+.hpick-ov{align-items:center}
+.hpick{width:min(1240px,96vw);max-height:94vh;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:22px;align-items:stretch}
+.hpick-l{display:flex;flex-direction:column;align-items:center;gap:10px;min-height:0}
+.hpick-l .ov-t{margin:0}.hpick-l .ov-s{margin:0 0 4px}
+.hpk-g{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}
+.hpk{position:relative;display:grid;grid-template-columns:78px 1fr;gap:10px;align-items:start;padding:12px;border:0;border-radius:16px;cursor:pointer;text-align:left;font:inherit;color:#f1e4c6;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--c) 22%,#2a1c12),#160e08 70%);box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--c) 45%,transparent),0 6px 14px rgba(0,0,0,.5);transition:transform .15s,box-shadow .15s}
+.hpk:hover{transform:translateY(-3px)}
+.hpk.on{box-shadow:inset 0 0 0 2.5px #f2c14e,0 0 22px rgba(242,193,78,.45),0 8px 18px rgba(0,0,0,.6);transform:translateY(-3px)}
+.hpk-face{position:relative}.hpk-face .face{width:78px;height:78px;border-radius:50%;box-shadow:0 0 0 3px var(--c),0 0 0 5px #120a06}
+.hpk-ck{position:absolute;right:-6px;top:-8px;width:28px;height:30px}.hpk-ck .ckm{width:100%;height:100%}
+.hpk-pas{position:absolute;left:50%;bottom:-6px;transform:translateX(-50%);padding:1px 7px;border-radius:99px;font:700 9px var(--f-label);letter-spacing:.08em;text-transform:uppercase;color:#120a06;background:#c8a86a}
+.hpk-b{display:grid;gap:3px;min-width:0}
+.hpk-b b{font:700 16px var(--f-label),serif;color:#fff3c0}
+.hpk-d{font-size:11px;color:#ffd86a;letter-spacing:.5px}
+.hpk-b small{font-size:12px;line-height:1.3;color:#f1e4c6}
+.hpk-c{display:flex;align-items:center;gap:6px;margin-top:3px;padding-top:5px;border-top:1px solid rgba(242,193,78,.18)}
+.hpk-c .face{width:26px;height:26px;border-radius:50%}.hpk-c em{font-style:normal;font-size:11px;color:#bfae8a}
+.hpick-r{display:flex;flex-direction:column;min-height:0;border-radius:18px;padding:14px 16px;background:linear-gradient(180deg,#3a1e12,#1c0e08);box-shadow:inset 0 0 0 2px #a8402a,0 10px 26px rgba(0,0,0,.6)}
+.rl-head small{display:block;font:700 11px var(--f-label);letter-spacing:.18em;text-transform:uppercase;color:#e8d6b0}
+.rl-head b{font:700 26px Grenze,serif;color:#ffd86a}
+.rl-tabs{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 10px}
+.rl-tab{padding:5px 11px;border:0;border-radius:99px;cursor:pointer;font:700 12px var(--f-label),serif;color:#e8d6b0;background:rgba(0,0,0,.35);box-shadow:inset 0 0 0 1px rgba(242,193,78,.3)}
+.rl-tab.on{color:#2a1404;background:linear-gradient(180deg,#ffd27a,#e0a03a)}
+.rl-body{overflow:auto;min-height:0;padding-right:4px;text-align:left}
+.rl-p p,.rl-ul li{font-size:13px;line-height:1.45;color:#f1e4c6;margin:0 0 8px}.rl-p b,.rl-ul b,.rl-step b{color:#ffd86a}
+.rl-ul{margin:0 0 8px;padding-left:18px}
+.rl-steps{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.rl-step{display:grid;grid-template-columns:26px 46px 1fr;gap:8px;align-items:center;padding:7px 9px;border-radius:12px;background:rgba(0,0,0,.25)}
+.rl-step small{display:block;font-size:12px;line-height:1.35;color:#f1e4c6}
+.rl-n{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font:700 14px var(--f-num);color:#2a1404;background:#ffd27a}
+.rl-v{display:grid;place-items:center}.rl-v .face{width:42px;height:42px;border-radius:50%}
+.rl-el{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#1b120b;box-shadow:0 0 0 1.5px var(--c);vertical-align:middle;margin:0 1px}.rl-el svg{width:14px;height:14px}
+.rl-coin{display:inline-block;width:13px;height:13px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3b0,#e2b04e 60%,#8a5a12);vertical-align:-2px}
+.rl-ck{display:inline-block;width:14px;height:16px;vertical-align:-3px}
+.rl-scroll{display:inline-flex;width:40px;height:24px;border-radius:3px;background:#f1e2bd;box-shadow:0 0 0 2px #7a4a28;overflow:hidden}.rl-scroll i{flex:1}.rl-scroll i+i{border-left:1px dashed #7a5a32}
+.rl-scroll.big{width:64px;height:36px}
+.rl-rsv{display:flex;align-items:center;gap:10px;margin:6px 0 10px;color:#ffd86a;font-weight:700}
+.rl-boom{font:700 20px Grenze,serif;color:#ff9a5a}
+.rl-pow{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:#ffd86a;background:#2a1a3a;box-shadow:0 0 0 3px #d8a84a}
+.rl-vs{font:700 18px Grenze,serif;color:#ff9a5a}
+.rl-chest{width:34px;height:26px;border-radius:4px 4px 3px 3px;background:linear-gradient(180deg,#c88a26 45%,#e2b04e 45%);box-shadow:0 0 0 2px #120a06}
+.rl-duel{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:8px}.rl-duel .face{width:56px;height:56px;border-radius:50%;box-shadow:0 0 0 3px #d8a84a}
+.rl-mks{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px}.rl-mks span{display:flex;align-items:center;gap:4px}.rl-mks b{color:var(--c);font-size:13px}
+.rl-hint{font-size:12px!important;color:#bfae8a!important}
+.rl-awk{font-size:14px!important}
+@media (max-width:900px){ .hpick{grid-template-columns:1fr;overflow:auto} .hpk-g{grid-template-columns:1fr} }
+@media (orientation:landscape) and (max-height:540px){ .hpick{gap:10px} .hpk{grid-template-columns:48px 1fr;padding:7px} .hpk-face .face{width:48px;height:48px} .hpk-b small{font-size:10.5px} .hpk-c{display:none} .hpick-l .ov-s{display:none} .rl-head b{font-size:18px} .rl-p p,.rl-ul li,.rl-step small{font-size:11px} }
+`; document.head.appendChild(st); })();
 </script>
 </body></html>
