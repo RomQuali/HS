@@ -904,16 +904,19 @@ function ruleTabH(k) {
   }
   return '';
 }
+// relance d'un héros : 3 par partie, sur n'importe lequel des héros proposés
+const rollH = (me, i) => `<span class="h-roll${(me.hrr || 0) > 0 ? '' : ' off'}" role="button" tabindex="0" data-act="hroll" data-i="${i}" aria-label="Relancer ce héros" data-tip="${(me.hrr || 0) > 0 ? 'Relancer ce héros (' + me.hrr + ' restante' + (me.hrr > 1 ? 's' : '') + ')' : 'Plus de relance'}">${icon('roll')}</span>`;
+const rollInfoH = me => `<p class="h-rolls">${icon('roll')} Relances : ${[0, 1, 2].map(k => `<i class="${k < (me.hrr || 0) ? 'on' : ''}"></i>`).join('')}<small>clique sur ${icon('roll')} pour changer un héros</small></p>`;
 function heroPickNinjaH(d, me) {
   const sel = me.ho.includes(V.heroSel) ? V.heroSel : me.ho[0], tab = V.ruleTab || 'tour';
-  const card = h => { const x = HEROES[h], on = h === sel, cid = COMPANIONS[h], c = cid && C[cid], el = x.clan;
+  const card = (h, i) => { const x = HEROES[h], on = h === sel, cid = COMPANIONS[h], c = cid && C[cid], el = x.clan;
     return `<button class="hpk${on ? ' on' : ''}" data-act="hsel" data-h="${h}" aria-pressed="${on}" style="--c:${ELS[el] ? ELS[el].col : '#c8a86a'}">
-      <span class="hpk-face">${faceH('art-h-' + h)}${x.cost ? `<span class="hpk-ck">${ckMarkH(x.cost)}</span>` : '<span class="hpk-pas">Passif</span>'}</span>
+      ${rollH(me, i)}<span class="hpk-face">${faceH('art-h-' + h)}${x.cost ? `<span class="hpk-ck">${ckMarkH(x.cost)}</span>` : '<span class="hpk-pas">Passif</span>'}</span>
       <span class="hpk-b"><b>${esc(x.n)}</b><span class="hpk-d">${x.diff ? '★'.repeat(x.diff) + '☆'.repeat(3 - x.diff) + ' ' + ['', 'Simple', 'Intermédiaire', 'Expert'][x.diff] : ''}</span>
         <small>${esc((t => t.charAt(0).toUpperCase() + t.slice(1))(x.tx.replace(/^Passif : /, '')))}</small>
         ${c ? `<span class="hpk-c">${faceH('art-' + cid)}<em>${esc(c.n)} · ${c.a * 2}/${c.h * 2}</em></span>` : ''}</span></button>`; };
   return `<div class="ov hpick-ov"><div class="hpick">
-    <div class="hpick-l"><h2 class="ov-t">Choisis ton héros</h2><p class="ov-s">Son pouvoir et son compagnon t'accompagnent toute la partie.</p>
+    <div class="hpick-l"><h2 class="ov-t">Choisis ton héros</h2><p class="ov-s">Son pouvoir et son compagnon t'accompagnent toute la partie.</p>${rollInfoH(me)}
       <div class="hpk-g">${me.ho.map(card).join('')}</div>
       <button class="t-go md-go" data-act="hero" data-h="${sel}">Jouer ${esc(HEROES[sel].n.split(' ')[0])}</button></div>
     <div class="hpick-r"><div class="rl-head"><small>Univers · Ninja</small><b>Comment on joue</b></div>
@@ -923,16 +926,16 @@ function heroPickNinjaH(d, me) {
 }
 function heroMedalsH(me) {
   const sel = me.ho.includes(V.heroSel) ? V.heroSel : me.ho[Math.floor((me.ho.length - 1) / 2)];
-  const md = me.ho.map(h => {
+  const md = me.ho.map((h, i) => {
     const x = HEROES[h], on = h === sel, cid = COMPANIONS[h] && C[COMPANIONS[h]] ? COMPANIONS[h] : null, c = cid ? C[cid] : null;
     return `<button class="md${on ? ' on' : ''}" data-act="hsel" data-h="${h}" aria-pressed="${on}">
-      <span class="md-coin"><span class="md-in"></span>${faceH('art-h-' + h)}<span class="md-gem" title="${x.cost ? 'Coût du pouvoir' : 'Pouvoir passif'}">${x.cost || '∞'}</span><span class="md-shine"></span></span>
+      <span class="md-coin">${rollH(me, i)}<span class="md-in"></span>${faceH('art-h-' + h)}<span class="md-gem" title="${x.cost ? 'Coût du pouvoir' : 'Pouvoir passif'}">${x.cost || '∞'}</span><span class="md-shine"></span></span>
       <span class="md-rib">${esc(x.n)}</span>${famChips(heroFam(h))}
       ${c ? `<span class="md-chain"></span><span class="md-comp">${faceH('art-' + cid)}<small><b>${esc(c.n)} ${c.a}/${c.h}</b><br>${esc(fxText((c.fx || [])[0] || {}))}</small></span>` : ''}
       <span class="md-tx"><b>${x.cost ? `Pouvoir · ${x.cost} ${V.pub && (V.pub.laws || []).some(l => l.k === 'chakra') ? 'chakra' : 'or'}` : 'Passif'} ·</b> ${esc(x.tx.replace(/^Passif : /, ''))}</span>
     </button>`;
   }).join('');
-  return `<div class="mds">${md}</div><button class="t-go md-go" data-act="hero" data-h="${sel}">Porter le médaillon de ${esc(HEROES[sel].n.split(' ')[0])}</button>`;
+  return `${rollInfoH(me)}<div class="mds n${me.ho.length}">${md}</div><button class="t-go md-go" data-act="hero" data-h="${sel}">Porter le médaillon de ${esc(HEROES[sel].n.split(' ')[0])}</button>`;
 }
 function overlayH() {
   const d = V.pub, me = V.me;
@@ -1077,6 +1080,7 @@ function doAct(act, btn) {
     case 'leave': leaveGame(); break;
     case 'hero': sendAct({ t:'hero', h:btn.dataset.h }); V.heroSel = null; break;
     case 'hsel': V.heroSel = btn.dataset.h; render(); break;
+    case 'hroll': if ((V.me.hrr || 0) > 0) { if (V.heroSel === V.me.ho[+btn.dataset.i]) V.heroSel = null; sendAct({ t:'hroll', i:+btn.dataset.i }); } break;
     case 'skip': if (V.fight) { clearTimeout(V.fightT); clearTimeout(V.duelT); if (V.fight.dr) { V.di = V.fight.dr.frames.length - 1; V.fight.ddone = true; } if (V.fight.lunge) { try { V.fight.lunge.cancel(); } catch (e) {} V.fight.lunge = null; } V.fi = V.fight.r.frames.length - 1; V.fight.done = true; render(); fxEnd(); } break;
     case 'buy': if (s) { sendAct({ t:'buy', i:s.i }); V.sel = null; } break;
     case 'buysp': sendAct({ t:'buysp' }); V.sel = null; break;
@@ -2448,3 +2452,32 @@ html.lite .awk-go{animation:none}
 @media (max-width:900px){ .hpick{grid-template-columns:1fr;overflow:auto} .hpk-g{grid-template-columns:1fr} }
 @media (orientation:landscape) and (max-height:540px){ .hpick{gap:10px} .hpk{grid-template-columns:48px 1fr;padding:7px} .hpk-face .face{width:48px;height:48px} .hpk-b small{font-size:10.5px} .hpk-c{display:none} .hpick-l .ov-s{display:none} .rl-head b{font-size:18px} .rl-p p,.rl-ul li,.rl-step small{font-size:11px} }
 `; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `
+.h-roll{position:absolute;z-index:3;left:-6px;top:-8px;width:30px;height:30px;display:grid;place-items:center;border-radius:50%;cursor:pointer;color:#120a06;background:radial-gradient(circle at 40% 35%,#ffe9a8,#c88a26);box-shadow:0 0 0 2.5px #120a06,0 3px 8px rgba(0,0,0,.5);transition:transform .15s}
+.h-roll svg{width:17px;height:17px}.h-roll:hover{transform:rotate(-30deg) scale(1.12)}
+.h-roll.off{filter:grayscale(1) brightness(.6);cursor:not-allowed;pointer-events:none}
+.md-coin .h-roll{left:2%;top:2%;width:22%;height:auto;aspect-ratio:1}
+.h-rolls{display:flex;align-items:center;justify-content:center;gap:6px;margin:0 0 6px;font:700 13px var(--f-label),serif;color:#ffe27a}
+.h-rolls svg{width:15px;height:15px}.h-rolls i{width:11px;height:11px;border-radius:50%;background:#3a2a1a;box-shadow:inset 0 0 0 1.5px #c8963e}.h-rolls i.on{background:#ffd86a;box-shadow:0 0 6px #ffd86a}
+.h-rolls small{font:400 11.5px inherit;color:#bfae8a;margin-left:6px;display:inline-flex;align-items:center;gap:3px}.h-rolls small svg{width:12px;height:12px}
+.mds.n5{gap:clamp(6px,1.6cqi,22px)}.mds.n5 .md{flex-basis:220px}.mds.n5 .md-coin{width:min(160px,80%)}.mds.n5 .md-tx{font-size:12.5px}.mds.n5 .md-comp{padding:6px 8px;gap:6px}.mds.n5 .md-comp .face{width:36px;height:36px}.mds.n5 .md-comp small{font-size:11px}
+.mds.n5 .md:nth-child(2){transform:rotateY(8deg) scale(.94)}.mds.n5 .md:nth-child(4){transform:rotateY(-8deg) scale(.94)}.mds.n5 .md.on{transform:scale(1.04)}
+.hpk-g .hpk:last-child:nth-child(odd){grid-column:1 / -1;justify-self:center;width:calc(50% - 6px)}
+@media (max-width:900px){.hpk-g .hpk:last-child:nth-child(odd){width:100%}}
+@media (orientation:landscape) and (max-height:540px){.mds.n5 .md-coin{width:min(92px,74%)}.mds.n5 .md-tx{display:none}.h-roll{width:24px;height:24px}.h-rolls small{display:none}}
+`; document.head.appendChild(st); })();
+(function(){ const st = document.createElement('style'); st.textContent = `
+@media (orientation:landscape) and (max-height:540px){
+  .ov-box:has(.mds.n5){max-height:96vh;overflow:auto;padding-top:8px;padding-bottom:8px}
+  .ov-box:has(.mds.n5) .ov-t{font-size:24px;margin:0}.ov-box:has(.mds.n5) .ov-s{display:none}
+  .ov-box:has(.mds.n5) .law-big{padding:6px 10px;margin:4px auto}
+  .mds.n5 .md-chain,.mds.n5 .md-comp{display:none}.mds.n5 .md-rib{font-size:11px;padding:3px 10px}
+  .h-rolls{margin:2px 0}
+}`; document.head.appendChild(st); })();
+(function(){ const st = document.createElement('style'); st.textContent = `
+.hpk .h-roll{left:4px;top:4px}.hpk-face{margin-top:6px}
+@media (orientation:landscape) and (max-height:540px){
+  .hpick .hpk-g{grid-template-columns:1fr 1fr;gap:6px}.hpick .hpk-g .hpk:last-child:nth-child(odd){width:calc(50% - 3px)}
+  .hpick-l .ov-t{font-size:24px}.hpk .h-roll{width:22px;height:22px}.hpk .h-roll svg{width:13px;height:13px}
+}`; document.head.appendChild(st); })();

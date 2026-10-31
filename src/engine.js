@@ -801,6 +801,14 @@ function univChosen(sel) {
   for (const u of us) for (const t of u.tribes) if (on.includes(t) && !trs.includes(t)) trs.push(t);
   return { us:us.map(u => u.n), trs };
 }
+const HERO_OFFER = 5, HERO_ROLLS = 3;
+// relance d'un héros proposé : d'abord un héros de l'univers que personne ne s'est vu proposer, sinon un autre de l'univers
+function heroReroll(G, p) {
+  const ok = h => heroFam(h).some(t => G.trs.includes(t));
+  const seen = new Set(); G.ps.forEach(q => (q.ho || []).forEach(h => seen.add(h)));
+  const mine = new Set(p.ho);
+  return pickR(Object.keys(HEROES).filter(h => ok(h) && !seen.has(h))) || pickR(Object.keys(HEROES).filter(h => ok(h) && !mine.has(h))) || pickR(Object.keys(HEROES).filter(h => !mine.has(h))) || null;
+}
 function hostStart(humans, opt) {
   const G = { ph:'hero', rd:0, end:Date.now() + 60000, pool:{}, ps:[] };
   const on = SET.tribes.filter(t => t.on !== false).map(t => t.id);
@@ -837,9 +845,16 @@ function hostStart(humans, opt) {
   const ok = h => heroFam(h).some(t => G.trs.includes(t));
   const ids = shuffle(Object.keys(HEROES).filter(ok)), rest = shuffle(Object.keys(HEROES).filter(h => !ok(h)));
   G.ps.forEach(p => { p.ho = []; });
-  for (let k = 0; k < 3; k++) for (const p of G.ps) if (ids.length) p.ho.push(ids.shift());
-  for (let k = 0; k < 3; k++) for (const p of G.ps) if (p.ho.length <= k && rest.length) p.ho.push(rest.shift());
-  for (const p of G.ps) while (p.ho.length < 2) { const h = pickR(Object.keys(HEROES).filter(x => !p.ho.includes(x))); if (!h) break; p.ho.push(h); }
+  // 5 héros par joueur : uniques tant que possible, puis doublons entre joueurs (jamais deux fois le même pour un joueur)
+  const allOk = Object.keys(HEROES).filter(ok);
+  for (let k = 0; k < HERO_OFFER; k++) for (const p of G.ps) {
+    let h = ids.shift();
+    if (!h) h = pickR(allOk.filter(x => !p.ho.includes(x)));
+    if (!h && rest.length) h = rest.shift();
+    if (!h) h = pickR(Object.keys(HEROES).filter(x => !p.ho.includes(x)));
+    if (h) p.ho.push(h);
+  }
+  G.ps.forEach(p => { p.hrr = HERO_ROLLS; });
   G.ps.forEach(p => { if (p.bot) p.hero = pickR(p.ho); });
   H.G = G;
   clearInterval(H.tick); H.tick = setInterval(hostTick, 200);
@@ -1231,6 +1246,7 @@ function hostApply(pid, a) {
   const G = H.G; if (!G) return;
   const p = G.ps[pid]; if (!p || !p.al) return;
   if (a.t === 'hero') { if (G.ph === 'hero' && !p.hero && p.ho.includes(a.h)) { p.hero = a.h; broadcast(); } return; }
+  if (a.t === 'hroll') { const i = +a.i; if (G.ph === 'hero' && !p.hero && (p.hrr || 0) > 0 && p.ho[i]) { const nh = heroReroll(G, p); if (nh) { p.ho[i] = nh; p.hrr--; broadcast(); } } return; }
   if (G.ph !== 'recruit' || !OPS[a.t]) return;
   if (a.t !== 'rdy' && p.rdy) p.rdy = false;
   if (OPS[a.t](G, p, a)) { sendPriv(p); if (a.t === 'rdy') sendPub(); }
@@ -1455,7 +1471,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, mkl:(mkSync(p), p.mkl) || {}, souffle:p.souffle || 0, roche:p.roche || 0, choice:p.choice || null, chFav:p.chFav || 0, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, mkl:(mkSync(p), p.mkl) || {}, souffle:p.souffle || 0, roche:p.roche || 0, choice:p.choice || null, chFav:p.chFav || 0, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, hrr:p.hrr || 0, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;
