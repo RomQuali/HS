@@ -913,6 +913,32 @@ function ruleTabH(k) {
 // relance d'un héros : 3 par partie, sur n'importe lequel des héros proposés
 const rollH = (me, i) => `<span class="h-roll${(me.hrr || 0) > 0 ? '' : ' off'}" role="button" tabindex="0" data-act="hroll" data-i="${i}" aria-label="Relancer ce héros" data-tip="${(me.hrr || 0) > 0 ? 'Relancer ce héros (' + me.hrr + ' restante' + (me.hrr > 1 ? 's' : '') + ')' : 'Plus de relance'}">${icon('roll')}</span>`;
 const rollInfoH = me => `<p class="h-rolls">${icon('roll')} Relances : ${[0, 1, 2].map(k => `<i class="${k < (me.hrr || 0) ? 'on' : ''}"></i>`).join('')}<small>clique sur ${icon('roll')} pour changer un héros</small></p>`;
+// choix du héros façon auto-battler : grands portraits en rangée, pouvoir en médaillon sous chaque héros
+function heroPickRowH(d, me) {
+  const nin = (d.laws || []).some(l => l.k === 'chakra'), sel = me.ho.includes(V.heroSel) ? V.heroSel : null;
+  const card = (h, i) => { const x = HEROES[h], on = h === sel, cid = compOf(h) || COMPANIONS[h], c = cid && C[cid], el = x.clan, col = el && ELS[el] ? ELS[el].col : '#d8a84a';
+    const pw = x.pwn || (x.cost ? 'Pouvoir héroïque' : 'Pouvoir passif');
+    return `<div class="hp-col${on ? ' on' : ''}" style="--c:${col};--k:${i}">
+      <button class="hp-card" data-act="hsel" data-h="${h}" aria-pressed="${on}" aria-label="${esc(x.n)}">
+        ${rollH(me, i)}
+        <span class="hp-port">${faceH('art-h-' + h)}</span>
+        <span class="hp-hp">${+RU().hp || 40}</span>
+        <span class="hp-nm">${esc(x.n)}</span>
+        ${x.stars || x.diff ? `<span class="hp-st">${'★'.repeat(x.stars || x.diff)}</span>` : ''}
+      </button>
+      <div class="hp-pow" data-hov="hero" tabindex="0"><span class="hp-pw-ico">${x.cost ? (nin ? ckMarkH(x.cost) : `<b>${x.cost}</b>`) : '<b>∞</b>'}</span>
+        <div class="hp-pw-tx"><b>${esc(pw)}</b><small>${esc((t => t.charAt(0).toUpperCase() + t.slice(1))((x.tx || '').replace(/^Passif : /, '')))}</small>
+        ${c ? `<span class="hp-cp">${faceH('art-' + cid)}<em>${esc(c.n)}</em></span>` : ''}</div></div>
+      ${on ? `<button class="t-go hp-go" data-act="hero" data-h="${h}">Choisir</button>` : ''}
+    </div>`; };
+  const tab = V.ruleTab || 'tour', rules = nin && V.hpRules;
+  return `<div class="ov hp-ov"><div class="hp-wrap">
+    <h2 class="hp-t">Choisis ton héros</h2>${rollInfoH(me)}
+    <div class="hp-row">${me.ho.map(card).join('')}</div>
+    ${nin ? `<button class="btn sm hp-rb" data-act="hprules">${rules ? 'Masquer les règles' : 'Comment on joue ?'}</button>` : ''}
+    ${rules ? `<div class="hpick-r hp-rules"><div class="rl-tabs" role="tablist">${RULE_TABS.map(([k, n]) => `<button role="tab" class="rl-tab${k === tab ? ' on' : ''}" data-act="rtab" data-k="${k}" aria-selected="${k === tab}">${n}</button>`).join('')}</div><div class="rl-body">${ruleTabH(tab)}</div></div>` : ''}
+  </div></div>`;
+}
 function heroPickNinjaH(d, me) {
   const sel = me.ho.includes(V.heroSel) ? V.heroSel : me.ho[0], tab = V.ruleTab || 'tour';
   const card = (h, i) => { const x = HEROES[h], on = h === sel, cid = COMPANIONS[h], c = cid && C[cid], el = x.clan;
@@ -948,6 +974,7 @@ function overlayH() {
   if (me && me.disc && d.ph === 'recruit') return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Découverte</h2><p class="ov-s">Choisis un serviteur. Les deux autres retournent dans la réserve.</p>
     <div class="disc">${me.disc.map((m, i) => `<button class="disc-b" data-act="pick" data-i="${i}" aria-label="Choisir ${esc(CD(m.c).n)}">${cardH(m, 'disc', i)}</button>`).join('')}</div></div></div>`;
   if (d.ph === 'hero' && me) {
+    if (!me.hero) return heroPickRowH(d, me);
     if (!me.hero && (d.laws || []).some(l => l.k === 'chakra')) return heroPickNinjaH(d, me);
     if (!me.hero) return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Choisis ton héros</h2><p class="ov-s">Son pouvoir et son compagnon t'accompagnent toute la partie.</p>${lawBigH(d)}
       ${heroMedalsH(me)}</div></div>`;
@@ -1086,6 +1113,7 @@ function doAct(act, btn) {
     case 'leave': leaveGame(); break;
     case 'hero': sendAct({ t:'hero', h:btn.dataset.h }); V.heroSel = null; break;
     case 'hsel': V.heroSel = btn.dataset.h; render(); break;
+    case 'hprules': V.hpRules = !V.hpRules; render(); break;
     case 'rwst': rwSet(((V.rw || 0) + (+btn.dataset.d) + 10) % 10); render(); break;
     case 'hroll': if ((V.me.hrr || 0) > 0) { if (V.heroSel === V.me.ho[+btn.dataset.i]) V.heroSel = null; sendAct({ t:'hroll', i:+btn.dataset.i }); } break;
     case 'skip': if (V.fight) { clearTimeout(V.fightT); clearTimeout(V.duelT); if (V.fight.dr) { V.di = V.fight.dr.frames.length - 1; V.fight.ddone = true; } if (V.fight.lunge) { try { V.fight.lunge.cancel(); } catch (e) {} V.fight.lunge = null; } V.fi = V.fight.r.frames.length - 1; V.fight.done = true; render(); fxEnd(); } break;
@@ -2717,4 +2745,54 @@ html.lite body .upc::after,html.lite body .upc::before{animation:none}
 .keeper-zone .mn.pairok::after{color:#0a1a33;background:linear-gradient(180deg,#d8ecff,#5aa0f0);box-shadow:0 0 0 1.5px #e8f4ff,0 0 14px rgba(110,170,255,.9);animation:tripTag 1s ease-in-out infinite}
 .keeper-zone .mn.pairok .mn-svg{filter:drop-shadow(0 0 8px rgba(110,170,255,.95))}
 html.lite .keeper-zone .mn.pairok::after{animation:none}
+`; document.head.appendChild(st); })();
+
+/* choix du héros : rangée de grands portraits */
+(function(){ const st = document.createElement('style'); st.textContent = `
+.hp-ov{align-items:center;background:radial-gradient(ellipse at 50% 40%,rgba(60,30,12,.55),rgba(8,4,2,.92))}
+.hp-wrap{width:min(1600px,96vw);max-height:96vh;overflow:auto;display:grid;justify-items:center;gap:10px;padding:10px}
+.hp-t{margin:0;font:700 clamp(30px,4.6vh,56px) var(--f-disp),serif;color:#ffd86a;text-shadow:0 4px 0 #120a06,0 0 24px rgba(255,170,60,.5)}
+.hp-row{display:flex;justify-content:center;align-items:flex-start;gap:clamp(10px,1.6vw,30px);width:100%;margin-top:6px}
+.hp-col{flex:0 1 clamp(150px,17vw,280px);display:grid;justify-items:center;gap:10px;animation:hpIn .5s cubic-bezier(.2,1.2,.4,1) both;animation-delay:calc(var(--k) * .08s)}
+@keyframes hpIn{from{opacity:0;transform:translateY(40px) scale(.9)}}
+.hp-card{position:relative;width:100%;aspect-ratio:3/4;padding:0;border:0;cursor:pointer;background:none;font:inherit;transition:transform .2s,filter .2s;filter:brightness(.82)}
+.hp-card:hover{filter:brightness(1);transform:translateY(-6px)}
+.hp-col.on .hp-card{filter:brightness(1.06) drop-shadow(0 0 22px var(--c));transform:translateY(-10px) scale(1.04)}
+.hp-port{position:absolute;inset:0;border-radius:50% 50% 14% 14% / 38% 38% 10% 10%;overflow:hidden;background:#1a120c;
+  box-shadow:0 0 0 4px #120a06,0 0 0 9px #c8963e,0 0 0 11px #120a06,0 0 0 13px var(--c),0 16px 30px rgba(0,0,0,.7)}
+.hp-port .face{position:absolute;inset:0;width:100%;height:100%;border-radius:0}
+.hp-port .face svg{width:100%;height:100%}
+.hp-hp{position:absolute;right:-4%;bottom:6%;width:22%;aspect-ratio:1;display:grid;place-items:center;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:radial-gradient(circle at 35% 35%,#ff7a6a,#b01e14);box-shadow:0 0 0 3px #120a06;
+  font:700 clamp(16px,2.4vh,28px) var(--f-disp),serif;color:#fff}
+.hp-hp::first-line{}
+.hp-nm{position:absolute;left:-6%;right:-6%;bottom:-4%;padding:6px 10px;font:700 clamp(14px,2vh,22px) var(--f-label),serif;color:#fff3c0;text-align:center;
+  background:linear-gradient(180deg,#8a1e1a,#5a1010);clip-path:polygon(0 0,100% 0,96% 50%,100% 100%,0 100%,4% 50%);text-shadow:0 2px 0 #120a06}
+.hp-st{position:absolute;left:50%;top:-5%;transform:translateX(-50%);padding:2px 10px;border-radius:99px;background:#120a06;color:#ffd86a;font-size:clamp(12px,1.6vh,18px);box-shadow:0 0 0 2px #c8963e}
+.hp-card .h-roll{left:-2%;top:2%;width:clamp(30px,3.6vh,44px);height:auto;aspect-ratio:1;z-index:3}
+.hp-pow{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;width:100%;margin-top:clamp(14px,2vh,24px);padding:10px 12px;border-radius:14px;
+  background:linear-gradient(180deg,rgba(36,24,14,.95),rgba(16,10,6,.95));box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--c) 55%,transparent),0 8px 18px rgba(0,0,0,.5)}
+.hp-pw-ico{width:clamp(40px,5vh,60px);aspect-ratio:1;display:grid;place-items:center;border-radius:50%;background:radial-gradient(circle at 40% 35%,#4a3420,#1a0e06);box-shadow:0 0 0 3px #120a06,0 0 0 6px #c8963e}
+.hp-pw-ico .ckm{width:80%;height:80%}.hp-pw-ico b{font:700 clamp(18px,2.4vh,28px) var(--f-disp),serif;color:#ffe9a8}
+.hp-pw-tx{display:grid;gap:4px;min-width:0}
+.hp-pw-tx b{font:700 clamp(13px,1.7vh,19px) var(--f-label),serif;color:#ffd86a}
+.hp-pw-tx small{font-size:clamp(12px,1.5vh,16px);line-height:1.35;color:#f1e4c6}
+.hp-cp{display:flex;align-items:center;gap:6px;margin-top:4px;padding-top:6px;border-top:1px solid rgba(242,193,78,.2)}
+.hp-cp .face{width:clamp(26px,3.4vh,40px);height:clamp(26px,3.4vh,40px);border-radius:50%}
+.hp-cp em{font-style:normal;font-size:clamp(11px,1.4vh,15px);color:#bfae8a}
+.hp-go{font-size:clamp(16px,2.2vh,24px);padding:8px 30px;animation:hpIn .3s both}
+.hp-rb{margin-top:6px}
+.hp-rules{width:min(900px,94vw);max-height:42vh;overflow:auto}
+@media (max-width:820px),(max-height:540px){
+  .hp-row{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding-bottom:6px}
+  .hp-col{flex:0 0 clamp(120px,30vw,170px)} .hp-pw-tx small{font-size:11px} .hp-cp{display:none}
+  .hp-t{font-size:24px}
+}
+@media (orientation:landscape) and (max-height:540px){ .hp-col{flex-basis:clamp(110px,17vw,150px)} .hp-card{aspect-ratio:4/4.4} .hp-pow{margin-top:8px;padding:6px 8px} .hp-pw-tx small{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden} }
+html.lite .hp-col{animation:none}
+`; document.head.appendChild(st); })();
+(function(){ const st = document.createElement('style'); st.textContent = `
+.hp-port{background:radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--c) 40%,#2a1a0e),#120a06 75%)}
+.hp-port .face{inset:16% 18% 24% 18%;width:auto;height:auto;border-radius:50%;box-shadow:0 0 0 3px #120a06,0 0 0 6px var(--c),0 0 24px color-mix(in srgb,var(--c) 60%,transparent)}
+.hp-hp{transform:none;border-radius:50%}
+.hp-row{margin-top:clamp(16px,3vh,34px)}
 `; document.head.appendChild(st); })();
