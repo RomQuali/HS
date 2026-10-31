@@ -42,7 +42,7 @@ function onFight(d) {
   clearTimeout(V.fightT); clearTimeout(V.duelT);
   if (d.duel && d.duel.seed != null) { try { V.fight.dr = simulate(d.duel.a, d.duel.b, d.duel.seed, d.ta, d.tb, [0, 0], d.mx); } catch (e) { V.fight.dr = null; } V.di = 0; }
   stepFight();
-  if (V.fight.dr) V.duelT = setTimeout(stepDuel, 1300);
+  if (V.fight.dr) { duelTaunt(V.fight); V.duelT = setTimeout(stepDuel, 2600); }
 }
 function fq(u) { return document.querySelector(`.arena [data-u="${u}"]:not(.dying)`) || document.querySelector(`.arena [data-u="${u}"]`); }
 /* Chaque image du combat montre l'état AVANT l'action qu'elle annonce (at = attaque, fb = boule de feu) :
@@ -302,10 +302,10 @@ function chakraLawH(big) {
   return `<span class="ban-law ck-law njl${big ? ' big' : ''}">
     ${sec('🪙', 'Ressources', `<small><b>Or</b> : serviteurs, techniques et pouvoir du héros.</small><small><b>Chakra</b> : chaque ninja en jeu en donne 1 par tour (10 au plus). Il lance les techniques et pose les récompenses.</small>`)}
     ${sec('📜', 'Techniques et réservoir', `<small>Les techniques ont une <b>nature</b> (Feu, Vent, Eau, Foudre, Terre) et suivent le jeu de leur clan ; celles de l'élément de ton héros coûtent 1 chakra de moins.</small><small>Chaque technique remplit une moitié du <b>réservoir</b> ; la 2e déclenche un <b>combo</b> (effet sur ton plateau + pouvoir hybride au compagnon). Deux fois le même élément : combo pur.</small><span class="njl-combos">${pairs}</span>`)}
-    ${sec('⚔️', 'Compagnon et duel', `<span class="njl-row">${elCycleSvg(['feu', 'vent', 'foudre', 'terre', 'eau'], '#ff6a4a', 'Domination')}<span><small>Ton compagnon est déjà en jeu, <b>triplé</b> et hors plateau. En combat, il affronte <b>seulement le compagnon adverse</b> et ne blesse jamais le héros.</small><small>Il prend l'élément de ta dernière technique, ou celui que tu fixes (2 chakra). S'il domine celui d'en face, il se renforce et l'adversaire s'affaiblit. Gagner le duel donne +2 marqueurs de son élément.</small><small>Il gagne de l'expérience (technique +1, duel gagné +2) ; les niveaux 3 et 5 débloquent un pouvoir propre à son clan.</small></span></span>`)}
+    ${sec('⚔️', 'Compagnon et duel', `<span class="njl-row"><span><small>Ton compagnon est déjà en jeu, <b>triplé</b> et hors plateau. En combat, il affronte <b>seulement le compagnon adverse</b> et ne blesse jamais le héros.</small><small>Il prend l'élément de ta dernière technique, ou celui que tu fixes (2 chakra). <b>Résonance</b> : en duel, +1/+1 par tranche de 3 marqueurs de son élément. Gagner le duel donne +2 marqueurs de son élément.</small><small>Il grandit par les <b>coffres</b> et chaque <b>combo</b> ; l'expérience (technique +1, duel gagné +2) débloque un pouvoir de clan aux niveaux 3 et 5.</small></span></span>`)}
     ${sec('🎁', 'Coffres et entraînement', `<small>Le <b>duel</b> décide du coffre : majeur s'il gagne, mineur sinon. Tu choisis <b>1 récompense sur 3</b> pour une des 5 pièces du compagnon (lame, armure, bandeau, gantelets, talisman).</small><span class="njl-rar">${RARS.map((R, i) => `<i style="--c:${R.col}">${R.n} · ${i + 1} chakra</i>`).join('')}</span><small>Elle se range dans l'entraînement et se pose avec du chakra.</small><small><b>Parchemins de pacte</b> : ils préparent la <b>bête d'invocation</b> du clan de ton compagnon (Salamandre, Loup, Serpent, Tigre, Sanglier). Elle apparaît à l'Éveil, plus forte à chaque parchemin, et combat à ses côtés dans le duel.</small>`)}
     ${sec('🔥', 'Marqueurs de clan', `<small>Chaque clan a son marqueur : <b style="color:#ff8a4a">Braises</b>, <b style="color:#8fe0b0">Souffle</b>, <b style="color:#6fc8ff">Marée</b>, <b style="color:#ffd23a">Charge</b>, <b style="color:#d8c0a0">Roche</b>. Ils tournent autour de ton héros.</small><small><b>Gain</b> : +1 par technique de leur nature, serviteurs du clan, Sceaux de clan des coffres.</small><small><b>Paliers</b> (5, 10, 20 gagnés) : le clan gagne des stats en combat, puis un mot-clé au 3e palier.</small><small><b>Éclat</b> : chaque combo consomme 5 marqueurs de chacun de ses éléments pour un effet en plus.</small><small><b>Pureté</b> : 5 serviteurs d'un même clan donnent +1 chakra par tour et doublent les marqueurs gagnés.</small>`)}
-    ${sec('🌅', 'Éveil (4 joueurs ou moins)', `<small>Les <b>clans</b> libèrent leur pouvoir (Phénix, Ouragan, Raz-de-marée, Orage total, Avalanche), ton <b>compagnon</b> prend sa forme ultime et <b>rejoint la bataille</b> avec sa bête d'invocation (au centre de ta rangée ; coffre majeur s'il est encore debout), le pouvoir de ton <b>héros</b> est renforcé, chaque <b>technique</b> gagne son effet d'Éveil et des techniques interdites apparaissent. Les <b>coffres</b> donnent alors des serviteurs ou techniques puissants ; les joueurs de la moitié basse au classement ont au moins de l'Épique et les reçoivent gratuitement en main. Tes cartes prennent l'aura de ton marqueur dominant.</small>`)}
+    ${sec('🌅', 'Éveil (4 joueurs ou moins)', `<small>Les <b>clans</b> libèrent leur pouvoir (Phénix, Ouragan, Raz-de-marée, Orage total, Avalanche), ton <b>compagnon</b> prend sa forme ultime et <b>rejoint la bataille</b> avec sa bête d'invocation (au centre de ta rangée, en <b>duo lié</b> : quand l'un frappe, l'autre frappe la même cible), le pouvoir de ton <b>héros</b> est renforcé, chaque <b>technique</b> gagne son effet d'Éveil et des techniques interdites apparaissent. Les <b>coffres</b> donnent alors des serviteurs ou techniques puissants ; les joueurs de la moitié basse au classement ont au moins de l'Épique et les reçoivent gratuitement en main. Tes cartes prennent l'aura de ton marqueur dominant.</small>`)}
   </span>`;
 }
 // fiche de l'univers Ninja : quatre règles courtes et le cycle des éléments (le détail complet est sur l'écran du héros)
@@ -423,7 +423,7 @@ function gameH() {
   const players = d.pl.slice().sort((a, b) => (b.al - a.al) || (b.hp - a.hp) || (a.pl - b.pl));
   const fightOpp = V.fight ? V.fight.on : null;
   const opps = players.map(p => `<li class="op${p.pid === myPid ? ' me' : ''}${p.al ? '' : ' dead'}${fightOpp && p.n === fightOpp ? ' vs' : ''}" data-hov="op" data-n="${esc(p.n)}">
-      <span class="op-face">${faceH(playerSym(p))}<b class="op-hp">${p.al ? Math.max(0, p.hp) : p.pl + 'e'}</b><span class="op-t">${p.t}</span>${d.ph === 'recruit' && p.r && p.al ? '<span class="op-r">✓</span>' : ''}</span>
+      <span class="op-face">${faceH(playerSym(p))}<b class="op-hp">${p.al ? Math.max(0, p.hp) : p.pl + 'e'}</b><span class="op-t">${p.t}</span>${d.ph === 'recruit' && p.r && p.al ? '<span class="op-r">✓</span>' : ''}${p.el && ELS[p.el] && p.al ? `<span class="op-el" style="--c:${ELS[p.el].col}" title="${esc('Compagnon ' + ELS[p.el].n + ' · ' + p.mk + ' ' + MK_N[p.el].toLowerCase())}"><svg viewBox="-12 -12 24 24">${EL_ICON[p.el]}</svg></span>` : ''}</span>
       <span class="op-n">${esc(p.n)}</span></li>`).join('');
   const myInfo = d.pl.find(p => p.pid === myPid), alive = !!(myInfo && myInfo.al);
   const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span>${d.ev && d.rd >= d.ev ? '<span class="eveil" data-tip="Éveil : il reste 4 joueurs ou moins. Les clans libèrent leur pouvoir ultime, ton compagnon prend sa forme éveillée, le pouvoir de ton héros est renforcé, chaque technique gagne son effet d\'Éveil et des techniques interdites apparaissent.">Éveil</span>' : ''}${d.laws && d.laws.length && d.ph !== 'end' ? `<span class="hud-laws">${d.laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<span class="hl" data-hov="law" data-tip="${esc(M.n + ' : ' + M.d)}">${icon(M.ic)}</span>`; }).join('')}${V.me && V.me.souls ? `<span class="souls" data-tip="Âmes récoltées : toutes les 3 âmes, tes serviteurs des Ténèbres gagnent +1/+1 au début du tour.">${icon('skull')}<b>${V.me.souls}</b></span>` : ''}</span>` : ''}<span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerTxt()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm" data-act="leave">Quitter</button></div>`;
@@ -569,7 +569,7 @@ function compSheetH(mc, lv, eq) {
   const eqH = eq.length ? eq.map(id => `<div class="peq-i"><svg viewBox="0 0 100 100" aria-hidden="true"><clipPath id="pq-${id}"><circle cx="50" cy="50" r="44"/></clipPath><g clip-path="url(#pq-${id})"><use href="#sp-${id}" width="100" height="100"/></g><circle cx="50" cy="50" r="44" fill="none" stroke="#f2c14e" stroke-width="6"/></svg><span><b>${esc(SPELLS[id].n)}${(lv[id] || 1) > 1 ? ` · niv. ${lv[id]}` : ''}</b><small>${esc(eqBonusTx(id, lv[id] || 1))}</small></span></div>`).join('') : '<small class="peq-e">Aucun équipement : pose-lui des médailles depuis l\'entraînement.</small>';
   return `<div class="peq">
     <div class="pq-row"><span class="pq-lv"><b>Niveau ${L}</b><small>${nx ? `${mc.xp || 0} / ${nx} expérience` : 'Niveau maximum'}</small></span>
-      ${E ? `<span class="pq-el" style="--c:${E.col}"><i></i><span><b>${E.n}${mc.elLock ? ' · fixé' : ''}</b><small>domine ${ELS[EL_DOM[el]].n} : il se renforce, l'adversaire s'affaiblit</small></span></span>` : ''}</div>
+      ${E ? `<span class="pq-el" style="--c:${E.col}"><i></i><span><b>${E.n}${mc.elLock ? ' · fixé' : ''}</b><small>Résonance : +${Math.floor(((V.me && V.me[MK[el]]) || 0) / RES_K)}/+${Math.floor(((V.me && V.me[MK[el]]) || 0) / RES_K)} en duel (1 par ${RES_K} ${MK_N[el].toLowerCase()})</small></span></span>` : ''}</div>
     ${(() => { const A = COMP_AWK[CLAN_EL[CD(mc.c).tr]]; return A ? `<div class="pq-awk${mc.awk ? ' on' : ''}"><b>${mc.awk ? 'Forme éveillée' : 'À l\'Éveil'} · ${esc(A.n)}</b><small>${esc(A.tx)}</small></div>` : ''; })()}
     ${(() => { const n = (mc.pact || []).length, el = CLAN_EL[CD(mc.c).tr], bc = el && C['nb_' + el]; if (!bc) return ''; const b = V.me && V.me.bst; return `<div class="pq-awk pq-bst${b ? ' on' : ''}"><b>${b ? 'Bête invoquée' : 'Invocation à l\'Éveil'} · ${esc(bc.n)}</b><small>${b ? `${b.a}/${b.h} · combat avec lui dans le duel` : n ? `${n} parchemin${n > 1 ? 's' : ''} de pacte : elle apparaîtra à l'Éveil et combattra avec lui dans le duel.` : 'Pose des parchemins de pacte (coffres) pour qu\'elle apparaisse à l\'Éveil.'}</small></div>`; })()}
     ${(() => { const P = COMP_LV[CLAN_EL[CD(mc.c).tr]]; return P ? `<div class="pq-lvp">${[3, 5].map(l => `<span class="${L >= l ? 'on' : ''}"><b>Niv. ${l}</b> ${esc(P[l][0])}</span>`).join('')}</div>` : ''; })()}
@@ -657,6 +657,43 @@ function duelLine0(F) {
 // side 0 : le mien (plateau du bas) · side 1 : celui de l'adversaire (pendant le duel)
 // animation du duel des compagnons : il avance en parallèle du combat des plateaux
 function duelPaint() { const F = V.fight; if (!F || !V.me || !V.me.cp) return; [0, 1].forEach(s => { const el = document.getElementById('cps' + s); if (el) el.outerHTML = cpSideH(V.me, F, s); }); placeDuelCol(); }
+/* répliques des compagnons avant le duel (second degré assumé) */
+const TAUNT = {
+  adv:{
+    'feu>vent':['Du vent ? Souffle tant que tu veux, connard, tu ne fais qu\'attiser mes flammes.', 'Merci pour l\'oxygène, abruti. Je vais te cramer avec.', 'Ah, un ventilateur. Parfait, j\'avais un peu chaud.'],
+    'vent>foudre':['Ta foudre ? Je la disperse comme un pet dans un ouragan.', 'Hé l\'ampoule ! Je vais te souffler comme une bougie d\'anniversaire.', 'T\'as du jus, mais moi j\'ai de l\'air. Et toi, t\'en as plus.'],
+    'foudre>terre':['Un caillou contre la foudre ? Je vais te transformer en gravier, tête de pioche.', 'Toi t\'es terre à terre. Moi je suis à 10 000 volts au-dessus.', 'Sois pas choqué. Enfin si, sois-le, c\'est le principe.'],
+    'terre>eau':['Une flaque ? Je t\'endigue, je t\'absorbe, et je te transforme en boue, petite flaque de merde.', 'Coule, coule, mon grand… droit dans mes sables mouvants.', 'Je suis un barrage. Toi t\'es juste mouillé.'],
+    'eau>feu':['L\'allumette veut jouer ? Pschhht. Fallait rester dans ta boîte.', 'Je vais t\'éteindre si fort que tu vas fumer pendant trois tours.', 'On appelle les pompiers ? Ah non, c\'est moi les pompiers, bordel.'],
+  },
+  dis:{
+    'vent<feu':['Putain, un mec en feu. Et moi qui souffle dessus comme un con.', 'Chaque fois que j\'attaque, il grandit. C\'est quoi ce bordel ?'],
+    'foudre<vent':['Le vent disperse mes éclairs… j\'ai le jus mais pas le courant porteur.', 'Je vais finir en électricité statique. La honte.'],
+    'terre<foudre':['La foudre. Sur moi. Le caillou. Génial, je vais finir en paratonnerre.', 'Quelqu\'un a un tapis en caoutchouc ? Non ? Fait chier.'],
+    'eau<terre':['Un mur de terre… je vais finir en boue. Quelle merde. Littéralement.', 'Je coule, je coule… et lui il m\'absorbe comme une éponge. Dégueulasse.'],
+    'feu<eau':['De l\'eau ?! Bordel, j\'ai oublié mon parapluie ignifugé.', 'Je sens que je vais partir en fumée. Et pas dans le bon sens.'],
+  },
+  same:['Même élément ? C\'est un combat de miroirs, sauf que moi je suis le beau.', 'Deux comme nous, c\'est un de trop. Dégage.', 'On a le même style… mais moi je le porte mieux, abruti.'],
+  even:['Pas d\'avantage, pas de chichis : on règle ça à coups de tatane.', 'Ni chaud ni froid. Juste toi, moi, et beaucoup de baffes.', 'Équilibré ? Parfait, comme ça quand je gagne, c\'est grâce à mon talent.', 'Les éléments s\'en foutent. Moi aussi. Viens là.'],
+  replyAdv:['Cause toujours, tu m\'intéresses.', 'Ouais ouais, on dit tous ça avant de perdre.', 'Ta gueule et frappe.'],
+  replyDis:['…Merde.', 'J\'ai peut-être un rendez-vous chez le dentiste, en fait.', 'Bon, on peut négocier ?'],
+};
+function duelTaunt(F) {
+  if (!F || !F.duel || FX_OFF()) return;
+  const mine = (F.me ? F.duel.b : F.duel.a)[0], th = (F.me ? F.duel.a : F.duel.b)[0]; if (!mine || !th) return;
+  const em = mine.el || CLAN_EL[CD(mine.c).tr], et = th.el || CLAN_EL[CD(th.c).tr]; if (!em || !et) return;
+  const pick = (L, k) => L[Math.abs(((F.seed || 1) >> k) + k) % L.length];
+  let me, them;
+  if (em === et) { me = pick(TAUNT.same, 1); them = pick(TAUNT.replyAdv, 3); }
+  else if (EL_DOM[em] === et) { me = pick(TAUNT.adv[em + '>' + et] || TAUNT.even, 1); them = pick(TAUNT.replyDis, 2); }
+  else if (EL_DOM[et] === em) { me = pick(TAUNT.dis[em + '<' + et] || TAUNT.even, 1); them = pick(TAUNT.replyAdv, 2); }
+  else { me = pick(TAUNT.even, 1); them = pick(TAUNT.even, 4); if (them === me) them = pick(TAUNT.replyAdv, 5); }
+  const tag = EL_DOM[em] === et ? ['adv', 'Avantage ' + ELS[em].n] : EL_DOM[et] === em ? ['dis', 'Désavantage ' + ELS[em].n] : ['eq', ELS[em].n + ' contre ' + ELS[et].n];
+  const say = (side, txt, d, cls, lab) => setTimeout(() => { const host = document.getElementById('cps' + side); if (!host || !V.fight) return; const r = host.getBoundingClientRect(), b = document.createElement('div');
+    b.className = 'taunt ' + (side ? 'th ' : 'me ') + (cls || ''); b.innerHTML = (lab ? `<small>${esc(lab)}</small>` : '') + esc(txt); b.style.left = (r.right + 8) + 'px'; b.style.top = (r.top + r.height * .25) + 'px';
+    document.body.appendChild(b); setTimeout(() => { b.classList.add('out'); setTimeout(() => b.remove(), 300); }, 3000); }, d);
+  say(0, me, 150, tag[0], tag[1]); say(1, them, 1500, '', '');
+}
 function stepDuel() {
   const F = V.fight; if (!F || !F.dr) return;
   clearTimeout(V.duelT);
@@ -730,7 +767,7 @@ function cpSideH(me, F, side) {
   }
   const toks = list.map((m, k) => { const [tc, ex] = fx[m.u] || ['', ''];
     return tokenH(m, side ? 'duelb' : 'cp', k, { cls:'cp-tok' + (k ? ' bst-tok' : '') + (m.awk ? ' awk' : '') + (tc ? ' ' + tc : '') + (V.dHide != null && V.dHide === m.u ? ' dhide' : '') }).replace(/<\/div>$/, ex + '</div>'); }).join('');
-  const elPick = !F && !side && me.cp && V.pub && V.pub.ph === 'recruit' ? `<span class="cp-els" aria-label="Fixer l'élément du compagnon (2 chakra)">${['feu', 'vent', 'foudre', 'terre', 'eau'].map(e => `<button class="cp-el${compEl(me.cp) === e ? ' on' : ''}" style="--c:${ELS[e].col}" data-act="cpel" data-el="${e}" ${compEl(me.cp) === e || (me.ck || 0) < 2 ? 'disabled' : ''} title="${esc('Élément ' + ELS[e].n + ' : domine ' + ELS[EL_DOM[e]].n + '. Fixer coûte 2 chakra.')}"><svg viewBox="-12 -12 24 24">${EL_ICON[e]}</svg></button>`).join('')}</span>` : '';
+  const elPick = !F && !side && me.cp && V.pub && V.pub.ph === 'recruit' ? `<span class="cp-els" aria-label="Fixer l'élément du compagnon (2 chakra)">${['feu', 'vent', 'foudre', 'terre', 'eau'].map(e => `<button class="cp-el${compEl(me.cp) === e ? ' on' : ''}" style="--c:${ELS[e].col}" data-act="cpel" data-el="${e}" ${compEl(me.cp) === e || (me.ck || 0) < 2 ? 'disabled' : ''} title="${esc('Élément ' + ELS[e].n + ' : résonne avec tes ' + MK_N[e].toLowerCase() + ' (' + ((me[MK[e]]) || 0) + '). Fixer coûte 2 chakra.')}"><svg viewBox="-12 -12 24 24">${EL_ICON[e]}</svg></button>`).join('')}</span>` : '';
   return `<div class="cp-side${cls}${list.length > 1 ? ' two' : ''}" id="cps${side}" aria-label="${esc(lab)}"><span class="cp-toks">${toks}</span>${elPick}<small>${esc(lab)}</small></div>`;
 }
 function cpSlotH(me, F) {
@@ -1990,7 +2027,7 @@ svg.ck-gem.aff{box-shadow:none;filter:drop-shadow(0 0 5px rgba(155,227,106,.95))
 .njl-combos i{display:inline-flex;align-items:center;gap:2px;padding:1px 6px 1px 3px;border-radius:99px;font-style:normal;font-size:10.5px;background:rgba(0,0,0,.35);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 60%,transparent)}
 .njl-combos em{width:9px;height:9px;border-radius:50%;box-shadow:0 0 0 1px #120a06}.njl-combos em+em{margin-left:-3px}
 .njl-combos b{margin-left:3px;color:var(--c);font-weight:700}
-.njl-row{display:grid;grid-template-columns:78px 1fr;gap:8px;align-items:center}.njl-row .elc{width:78px;height:78px}
+.njl-row{display:grid;grid-template-columns:1fr;gap:8px;align-items:center}.njl-row .elc{width:78px;height:78px}
 .njl-rar{display:flex;flex-wrap:wrap;gap:4px}.njl-rar i{padding:1px 7px;border-radius:99px;font-style:normal;font-size:10.5px;font-weight:700;color:#120a06;background:var(--c)}
 .njl-ctrs{display:grid;gap:3px}.njl-ctr{font-size:11.5px;line-height:1.3;color:#f1e4c6}.njl-ctr b{color:var(--c)}
 @media (max-width:820px){ .njl.big{grid-template-columns:1fr} }
@@ -2247,4 +2284,19 @@ html.lite .mko.ready{animation:none;box-shadow:0 0 0 2px #120a06,0 0 0 4px var(-
 .awk-go{margin-top:14px;padding:10px 28px;border:0;border-radius:99px;cursor:pointer;font:700 16px var(--f-label),serif;color:#2a1404;background:linear-gradient(180deg,#ffd27a,#e08a2a);box-shadow:0 0 0 2px #120a06,0 0 20px rgba(255,150,60,.7);animation:awkPulse 1.6s ease-in-out infinite}
 @keyframes awkPulse{50%{transform:scale(1.06)}}
 html.lite .awk-go{animation:none}
+`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `
+.op-el{position:absolute;left:-5px;bottom:-4px;width:17px;height:17px;border-radius:50%;display:grid;place-items:center;background:#1b120b;box-shadow:0 0 0 1.5px var(--c);z-index:2}
+.op-el svg{width:12px;height:12px}
+`; document.head.appendChild(st); })();
+
+(function(){ const st = document.createElement('style'); st.textContent = `
+.taunt{position:fixed;z-index:85;max-width:250px;padding:8px 11px;border-radius:14px 14px 14px 4px;font-size:12.5px;line-height:1.3;color:#2a1a0a;background:#fff6dc;box-shadow:0 0 0 2px #120a06,0 6px 14px rgba(0,0,0,.5);pointer-events:none;animation:tauntIn .25s cubic-bezier(.2,1.5,.4,1)}
+.taunt::before{content:'';position:absolute;left:-9px;top:12px;border:7px solid transparent;border-right-color:#120a06}
+.taunt small{display:block;font:700 10px var(--f-label),serif;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+.taunt.adv small{color:#2a8a2a}.taunt.dis small{color:#b02a1a}.taunt.eq small{color:#8a6a2a}
+.taunt.th{background:#e8e2ff}
+.taunt.out{opacity:0;transform:translateY(-6px);transition:.3s}
+@keyframes tauntIn{from{opacity:0;transform:scale(.6)}}
 `; document.head.appendChild(st); })();
