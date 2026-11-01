@@ -10,13 +10,19 @@ const SP_TYPES = {
 };
 const SPELLS = {
   // objets de l'univers Dragon Ball
-  db_senzu:{ db:1, n:'Haricot magique', t:1, c:1, ty:'renf', tg:1, tx:'Soigne et protège : un de tes serviteurs gagne +0/+2 et Renaissance (+2/+2 s\'il l\'a déjà).' },
-  db_capsule:{ db:1, n:'Capsule Hoi-Poi', t:1, c:1, ty:'eco', tx:'Gagne 2 ki.' },
-  db_gravite:{ db:1, n:'Salle de gravité', t:2, c:1, ty:'renf', tg:1, tx:'Entraînement : un de tes serviteurs gagne +2/+2.' },
-  db_radar:{ db:1, n:'Radar du dragon', t:2, c:1, ty:'eco', tx:'Ajoute à ta main un serviteur du niveau au-dessus du tien.' },
-  db_potara:{ db:1, n:'Boucles Potara', t:3, c:2, ty:'renf', tg:1, tx:'Fusion : le serviteur ciblé fusionne avec son voisin de droite (ou de gauche) ; stats additionnées +2/+2, effets cumulés.' },
-  db_eau:{ db:1, n:'Eau ultra divine', t:4, c:2, ty:'renf', tg:1, tx:'Un de tes serviteurs gagne +4/+2 ; s\'il peut se transformer, il passe au palier suivant.' },
-  db_salle:{ db:1, n:'Salle de l\'esprit et du temps', t:5, c:2, ty:'renf', tg:1, tx:'Un an d\'entraînement en un jour : le serviteur gagne +6/+6 et part méditer (il ne combat pas ce tour, mais rapporte du ki).' },
+  // ----- techniques célèbres (Dragon Ball) : achetées en or, lancées avec du ki ; bonus « Signature » sur leur propriétaire -----
+  dt_taiyo:{ db:1, n:'Taiyoken', t:1, c:1, kc:1, ty:'nin', tg:1, fx:[{ k:'chill', a:2, n:1 }], sig:['d_tenshin', 'd_krilin'], sgx:[{ k:'chill', a:2, n:2 }], tx:'Flash solaire : prochain combat, un ennemi aléatoire perd 2 attaque.', stx:'2 ennemis de plus' },
+  dt_kame:{ db:1, n:'Kaméhaméha', t:1, c:1, kc:2, ty:'nin', tg:1, fx:[{ k:'ttmp', a:3, h:0 }], sig:['d_goku', 'd_gohan', 'd_goten', 'd_kame', 'd_krilin'], sgx:[{ k:'tbuff', a:2, h:2 }], tx:'Le serviteur ciblé gagne +3 attaque au prochain combat.', stx:'+2/+2 définitif' },
+  dt_kikoho:{ db:1, n:'Kikoho', t:2, c:1, kc:2, ty:'nin', tg:1, fx:[{ k:'fire', d:4 }], sig:['d_tenshin'], sgx:[{ k:'fire', d:4 }], tx:'Prochain combat : 4 dégâts à l\'ennemi.', stx:'+4 dégâts' },
+  dt_kienzan:{ db:1, n:'Kienzan', t:2, c:1, kc:3, ty:'nin', tg:1, fx:[{ k:'ttmp', a:0, h:0, kw:'v' }], sig:['d_krilin', 'd_cell'], sgx:[{ k:'tbuff', a:2, h:0 }], tx:'Disque tranchant : le serviteur ciblé gagne Toxique au prochain combat.', stx:'+2 attaque définitive' },
+  dt_kaioken:{ db:1, n:'Kaioken', t:2, c:1, kc:2, ty:'nin', tg:1, fx:[{ k:'ttmp', a:4, h:-1 }], sig:['d_goku'], sgx:[{ k:'ttmp', a:0, h:0, kw:'w' }], tx:'Le serviteur ciblé gagne +4/-1 au prochain combat.', stx:'Furie des vents' },
+  dt_masenko:{ db:1, n:'Masenko', t:3, c:2, kc:3, ty:'nin', tg:1, fx:[{ k:'tbuff', a:3, h:2 }], sig:['d_gohan', 'd_piccolo'], sgx:[{ k:'tbuff', a:3, h:3 }], tx:'Le serviteur ciblé gagne +3/+2.', stx:'+3/+3 de plus' },
+  dt_makanko:{ db:1, n:'Makankosappo', t:3, c:2, kc:3, ty:'nin', tg:1, fx:[{ k:'ttmp', a:5, h:0 }], sig:['d_piccolo', 'd_piccolof'], sgx:[{ k:'tbuff', a:3, h:1 }], tx:'Rayon perçant : le serviteur ciblé gagne +5 attaque au prochain combat.', stx:'+3/+1 définitif' },
+  dt_galick:{ db:1, n:'Galick Ho', t:4, c:2, kc:4, ty:'nin', tg:1, fx:[{ k:'fire', d:6 }], sig:['d_vegeta', 'd_vegetto'], sgx:[{ k:'tbuff', a:3, h:3 }], tx:'Prochain combat : 6 dégâts à l\'ennemi.', stx:'+3/+3 définitif' },
+  dt_barriere:{ db:1, n:'Barrière d\'énergie', t:4, c:2, kc:4, ty:'nin', tg:1, fx:[{ k:'tkwp', kw:'s' }], sig:['d_c17', 'd_cell'], sgx:[{ k:'tbuff', a:2, h:3 }], tx:'Le serviteur ciblé gagne Bouclier divin.', stx:'+2/+3' },
+  dt_final:{ db:1, n:'Final Flash', t:5, c:3, kc:5, ty:'nin', tg:1, fx:[{ k:'fire', d:8 }, { k:'tbuff', a:2, h:0 }], sig:['d_vegeta', 'd_roivegeta'], sgx:[{ k:'tbuff', a:4, h:4 }], tx:'Prochain combat : 8 dégâts à l\'ennemi ; le serviteur ciblé gagne +2 attaque.', stx:'+4/+4 de plus' },
+  dt_death:{ db:1, n:'Death Ball', t:5, c:3, kc:5, ty:'nin', tg:1, fx:[{ k:'fire', d:7 }, { k:'buffall', a:1, h:0, tb:'d_fre' }], sig:['d_freezer', 'd_cooler', 'd_cold'], sgx:[{ k:'tbuff', a:4, h:4 }], tx:'Prochain combat : 7 dégâts à l\'ennemi ; tes Freezer gagnent +1/+0.', stx:'+4/+4' },
+  dt_genki:{ db:1, n:'Genkidama', t:6, c:3, kc:6, ty:'nin', tg:1, fx:[{ k:'buffall', a:2, h:2 }], sig:['d_goku', 'd_uub'], sgx:[{ k:'buffall', a:1, h:1 }], tx:'L\'énergie de tous : tes serviteurs gagnent +2/+2.', stx:'+1/+1 de plus pour tous' },
   sp_pinte:{ n:'Pinte offerte', t:1, c:1, ty:'renf', tg:1, tx:'Donne +2/+1 à un de tes serviteurs.' },
   sp_tournee:{ n:'Nouvelle tournée', t:1, c:0, ty:'eco', tx:'Rafraîchit la taverne gratuitement.' },
   sp_placement:{ n:'Placement prudent', t:1, c:1, ty:'eco', tx:'Au début de ton prochain tour, gagne 2 or.' },
@@ -123,6 +129,7 @@ function drawSpell(t, el) { const nin = typeof H !== 'undefined' && H.G && inMec
 function spellBlock(p, id, tgt) {
   const S = SPELLS[id];
   if (S.ck && (p.ck || 0) < ckCost(p, S)) return `Il te faut ${ckCost(p, S)} chakra pour lancer cette technique (tu en as ${p.ck || 0}).`;
+  if (S.kc != null && (p.ki || 0) < kiCost(p, S)) return `Il te faut ${kiCost(p, S)} ki pour lancer cette technique (tu en as ${p.ki || 0}).`;
   if (S.tg && !tgt) return 'Choisis un de tes serviteurs.';
   if (S.hid && p.bd.filter(m => tribeOk(m, 'n_' + S.el)).length < S.hid) return `Hiden : il faut ${S.hid} serviteurs ${ELS[S.el] ? ELS[S.el].n : ''} sur ton plateau.`;
   if (S.hp && p.hp <= S.hp) return `Kinjutsu : il te faut plus de ${S.hp} PV.`;
@@ -221,19 +228,15 @@ function castSpell0(G, p, hi, tg) {
   if (spellBlock(p, id, tgt)) return false;
   const it0 = p.hd.splice(hi, 1)[0];
   const sage0 = S.nin && S.sage ? sageOn(p) : false;
+  if (S.kc != null) { const kc = kiCost(p, S); p.ki = (p.ki || 0) - kc; qAdd(p, 'kiSpent', kc); }
   if (S.ck) { const cc = ckCost(p, S); p.ck = (p.ck || 0) - cc; if (cc > 0) p.ckSpent = 1; p.spd = 0; qAdd(p, 'ckSpell', cc); }
   if (S.hp) p.hp = Math.max(1, p.hp - S.hp);
   if (S.nin && (HX(p) && HX(p).pw && HX(p).pw.k === 'ptechc') && !(p.rsv || []).length) p.g += 1;
   p.lastCast = id;
-  if (S.nin && S.fx) techRun(G, p, S, it0, tgt, tg, sage0);
+  if (S.db && S.fx) { techSteps(G, p, S.fx, tgt, tg, 1); if (tgt && S.sig && S.sig.includes(tgt.c)) withSrc('Signature · ' + S.n, () => techSteps(G, p, S.sgx, tgt, tg, 1)); }
+  else if (S.nin && S.fx) techRun(G, p, S, it0, tgt, tg, sage0);
   else switch (id) {
-    case 'db_senzu': if (has(tgt, 'r')) buff(tgt, 2, 2); else { addF(tgt, 'r'); buff(tgt, 0, 2); } break;
-    case 'db_capsule': kiAdd(p, 2); break;
-    case 'db_gravite': buff(tgt, 2, 2); break;
-    case 'db_radar': if (p.hd.length < 10) { const r = drawOne(G, 6, Math.min(6, p.t + 1)) || drawOne(G, p.t); if (r) p.hd.push(r); } break;
-    case 'db_potara': { const i = p.bd.indexOf(tgt), o = p.bd[i + 1] || p.bd[i - 1]; if (o) { absorbInto(p, tgt, o, 'Fusion Potara'); buff(tgt, 2, 2); tgt.fu = 'Potara'; qAdd(p, 'fusions'); } else buff(tgt, 2, 2); break; }
-    case 'db_eau': buff(tgt, 4, 2); if (tfOf(tgt) && tfOf(tgt).st[tgt.tf || 0]) doTransform(p, tgt); break;
-    case 'db_salle': buff(tgt, 6, 6); tgt.med = 1; break;
+    case '__db': break;
     case 'sp_pinte': buff(tgt, 2, 1); break;
     case 'sp_tournee': p.fz = false; fillShop(G, p); trigBoard(G, p, 'roll'); break;
     case 'sp_placement': p.inc = p.inc || []; p.inc[0] = (p.inc[0] || 0) + 2; break;
@@ -350,6 +353,8 @@ function aiTarget(p, id) {
   const pool = p.bd.map((m, i) => ({ m, i }));
   const by = (f, ok = () => true) => { const c = pool.filter(x => ok(x.m)); if (!c.length) return null; c.sort((a, b) => f(b.m) - f(a.m)); return c[0].i; };
   const S = SPELLS[id] || {}, st = (S.fx || []).map(x => x.k);
+  if (S.sig && p.bd.some(m => S.sig.includes(m.c) && !m.med)) return by(m => m.a + m.h, m => S.sig.includes(m.c) && !m.med);
+  if (S.db) return by(m => m.a + m.h + tierOf(m) * 2, m => !m.med);
   if (st.includes('henge')) return by(m => -tierOf(m) * 10 + m.a + m.h, m => tierOf(m) < 6 && !CD(m.c).tok);
   if (st.includes('tpoing')) return by(m => m.h);
   if (st.includes('ttmp') || id === 'nj_oyoroi') return by(m => m.a + m.h / 2, m => !CD(m.c).tok);
@@ -373,7 +378,8 @@ function aiCanCast(G, p, it) {
   if (S.chg && (it.ch || 0) < 2 && G.rd < 12 && p.hd.length < 9) return false;            // on laisse charger
   if (S.hp && p.hp <= S.hp + 8) return false;                                                // kinjutsu : pas trop risqué
   if (S.hid && p.bd.filter(m => tribeOk(m, 'n_' + S.el)).length < S.hid) return false;       // hiden : attendre le clan
-  if (p.aiSave && S.ck) return false;                                                        // tour d'économie (mode ermite)
+  if (p.aiSave && S.ck) return false;
+  if (S.kc != null && (p.ki || 0) < kiCost(p, S)) return false;                                                        // tour d'économie (mode ermite)
   return true;
 }
 // ordre : mode ermite d'abord (avant de dépenser), techniques combinées en dernier
@@ -448,13 +454,18 @@ const SPART = {
   sp_ascension: () => softGlow(50, 46, 34, '#fff1b8', .45) + ['M50 52 C 36 40, 20 42, 8 30 C 14 50, 24 60, 46 62 Z', 'M50 52 C 64 40, 80 42, 92 30 C 86 50, 76 60, 54 62 Z'].map(d => P(d, '#f6f0e0', so(1.8))).join('') + Ln('M14 36 C 24 46, 34 50, 46 56 M86 36 C 76 46, 66 50, 54 56 M20 44 C 28 50, 36 54, 46 58 M80 44 C 72 50, 64 54, 54 58', '#c8b89a', 1.1) + P(starD(50, 40, 14, 5.6, 5), '#f2c14e', so(1.8) + ' ' + GLOW) + Ln('M50 64 L50 92 M42 72 L50 64 L58 72', '#fff1b8', 3),
 };
 Object.assign(SPART, {
-  db_senzu: () => softGlow(50, 52, 30, '#bfe8a0', .3) + P('M36 64 C 30 50, 40 32, 54 34 C 68 36, 72 54, 62 66 C 54 76, 42 76, 36 64 Z', '#7ac04a', so()) + Ln('M44 44 C 48 40, 54 40, 58 44', '#d8f0b0', 2.4) + Ln('M50 40 C 50 34, 54 30, 58 28', '#4a8a2a', 2.6),
-  db_capsule: () => softGlow(50, 52, 30, '#ffe39a', .25) + P('M26 50 C 26 40, 36 36, 44 36 L56 36 C 64 36, 74 40, 74 50 C 74 60, 64 64, 56 64 L44 64 C 36 64, 26 60, 26 50 Z', '#f2f2f6', so()) + P('M50 36 L56 36 C 64 36, 74 40, 74 50 C 74 60, 64 64, 56 64 L50 64 Z', '#e8701a', so(1.6)) + Ci(41, 50, 3.4, '#4a7ab8', so(1.4)),
-  db_gravite: () => softGlow(50, 52, 32, '#c8a0ff', .25) + P('M24 70 L76 70 L70 78 L30 78 Z', '#5a5a6a', so()) + Ln('M30 30 L30 62 M42 26 L42 62 M58 26 L58 62 M70 30 L70 62', '#8a7ad8', 3) + Ln('M24 22 L50 34 L76 22', '#c8a0ff', 3),
-  db_radar: () => softGlow(50, 52, 32, '#9fe8a0', .25) + Ci(50, 52, 24, '#2a4a2a', so()) + Ci(50, 52, 17, 'none', 'stroke="#6ac06a" stroke-width="1.4"') + Ln('M50 30 L50 74 M28 52 L72 52', '#6ac06a', 1) + Ci(60, 44, 3.4, '#ffcf3a', 'filter="url(#fx-glow)"') + Ci(42, 60, 2.6, '#ffcf3a') + Ci(50, 26, 4.4, '#d8d8e0', so(1.4)),
-  db_potara: () => softGlow(50, 52, 32, '#ffe39a', .3) + [36, 64].map(x => Ln(`M${x} 30 L${x} 44`, '#c8a020', 2.4) + Ci(x, 52, 9, '#3ab070', so()) + Ci(x, 52, 4, '#b0f0c8', '') + Ci(x, 28, 3, '#f2c14e', so(1.2))).join(''),
-  db_eau: () => softGlow(50, 52, 32, '#9fd8ff', .3) + P('M50 22 C 58 36, 70 48, 70 60 A20 20 0 0 1 30 60 C 30 48, 42 36, 50 22 Z', '#5ab8f0', so()) + Ln('M40 58 C 40 52, 44 46, 48 42', '#e0f4ff', 3),
-  db_salle: () => softGlow(50, 52, 32, '#ffffff', .3) + P('M34 24 L66 24 L52 50 L66 76 L34 76 L48 50 Z', '#f2ead8', so()) + P('M38 72 L62 72 L52 58 L48 58 Z', '#e8b44a', '') + Ln('M30 24 L70 24 M30 76 L70 76', '#8a6a3a', 4),
+  dt_taiyo: () => softGlow(50, 52, 36, '#fff6c0', .55) + Ci(50, 52, 14, '#fffbe6', 'filter="url(#fx-glow)"') + Array.from({ length:12 }, (_, i) => { const a = i * Math.PI / 6; return Ln(`M${50 + Math.cos(a) * 18} ${52 + Math.sin(a) * 18} L${50 + Math.cos(a) * 32} ${52 + Math.sin(a) * 32}`, '#ffe36a', 3); }).join(''),
+  dt_kame: () => softGlow(50, 52, 34, '#6ad0ff', .4) + P('M18 70 L50 46 L86 30 L86 74 L50 58 Z', '#9fe4ff', 'opacity=".8"') + Ci(32, 64, 14, '#e8f8ff', 'filter="url(#fx-glow)"') + Ci(32, 64, 8, '#6ad0ff', ''),
+  dt_kikoho: () => softGlow(50, 52, 34, '#ffe36a', .4) + P('M50 26 L76 64 L24 64 Z', 'none', 'stroke="#ffe36a" stroke-width="5" stroke-linejoin="round"') + Ci(50, 52, 8, '#fff6c0', 'filter="url(#fx-glow)"'),
+  dt_kienzan: () => softGlow(50, 52, 34, '#ffd86a', .35) + `<ellipse cx="50" cy="52" rx="30" ry="8" fill="#fff0a0" stroke="#e8a020" stroke-width="2"/>` + Ln('M20 52 L80 52', '#ffffff', 1.4),
+  dt_kaioken: () => softGlow(50, 52, 36, '#ff3a2a', .5) + P('M50 18 C 64 34, 74 46, 70 64 C 66 80, 34 80, 30 64 C 26 46, 36 34, 50 18 Z', '#ff5a3a', 'opacity=".85"') + P('M50 36 C 58 46, 62 54, 58 64 C 54 72, 46 72, 42 64 C 38 54, 42 46, 50 36 Z', '#ffd0a0', ''),
+  dt_masenko: () => softGlow(50, 52, 34, '#ffe36a', .4) + P('M24 30 L76 52 L24 74 Z', '#ffe680', 'opacity=".85"') + Ci(30, 52, 10, '#fffbe6', 'filter="url(#fx-glow)"'),
+  dt_makanko: () => softGlow(50, 52, 32, '#ffe36a', .3) + Ln('M14 52 L86 52', '#fff0a0', 6) + Array.from({ length:5 }, (_, i) => `<path d="M${22 + i * 14} 52 m-6 0 a6 14 0 1 0 12 0 a6 14 0 1 0 -12 0" fill="none" stroke="#c8a0ff" stroke-width="2.2"/>`).join(''),
+  dt_galick: () => softGlow(50, 52, 36, '#b48cff', .45) + P('M16 40 L84 46 L84 58 L16 64 Z', '#c8a0ff', 'opacity=".85"') + Ci(22, 52, 12, '#efe0ff', 'filter="url(#fx-glow)"'),
+  dt_barriere: () => softGlow(50, 52, 34, '#9fe0ff', .35) + Ci(50, 54, 28, 'none', 'stroke="#9fe0ff" stroke-width="3"') + Ci(50, 54, 20, '#9fe0ff', 'opacity=".35"') + Ci(50, 54, 6, '#ffffff', 'filter="url(#fx-glow)"'),
+  dt_final: () => softGlow(50, 52, 38, '#ffe36a', .55) + P('M10 34 L90 26 L90 78 L10 70 Z', '#fff2a0', 'opacity=".8"') + Ci(20, 52, 16, '#ffffff', 'filter="url(#fx-glow)"'),
+  dt_death: () => softGlow(50, 52, 36, '#ff6a3a', .45) + Ci(50, 50, 26, '#ff7a3a', so()) + Ci(50, 50, 18, '#ffb070', '') + Ci(44, 42, 6, '#ffe0c0', ''),
+  dt_genki: () => softGlow(50, 52, 40, '#9fe4ff', .55) + Ci(50, 50, 28, '#bff0ff', 'filter="url(#fx-glow)"') + Ci(50, 50, 20, '#e8fbff', '') + [[-30, 30], [30, 32], [0, 40]].map(([x, y]) => Ln(`M${50 + x} ${50 + y} L50 50`, '#9fe4ff', 1.6)).join(''),
 });
 Object.assign(SPART, { cs_hosenka:SPART.nj_souffle, cs_kibaku:SPART.nj_sceau, cs_gokakyu:SPART.nj_boule, cs_amaterasu:SPART.nj_deluge, cs_kugutsu:SPART.nj_doubles, cs_sunatate:SPART.nj_pierre, cs_kamaitachi:SPART.nj_rafale, cs_sabaku:SPART.nj_porteur,
   cs_kiri:SPART.nj_brume, cs_shosen:SPART.nj_vague, cs_suiro:SPART.nj_x_sceau, cs_suikodan:SPART.nj_vague, cs_raikyu:SPART.nj_decharge, cs_chidori:SPART.nj_foudre, cs_bijuchakra:SPART.nj_x_eveil, cs_bijudama:SPART.nj_x_cinq,
@@ -502,7 +513,7 @@ function spellTokenH(id, z, i, o = {}) {
     <path d="M14 12 Q50 4 86 12 L86 90 Q50 98 14 90 Z" fill="none" ${so(2)}/>
     <rect x="0" y="-2" width="100" height="10" rx="5" fill="#7a4a28" ${so(2)}/><rect x="0" y="94" width="100" height="10" rx="5" fill="#7a4a28" ${so(2)}/>
     <circle cx="14" cy="104" r="12" fill="url(#gr-badge)" stroke="#e2b452" stroke-width="2.2"/><text class="gt" x="14" y="104" dy=".36em" style="fill:${spellCostFor(id, z) < S.c ? '#b8ff8a' : '#ffe39a'}">${spellCostFor(id, z)}</text>
-    <g><title>Niveau ${S.t}</title>${Array.from({ length:S.t }, (_, k) => `<path d="${starD(50 + (k - (S.t - 1) / 2) * 14, 3, 7.4, 3.2, 5)}" fill="#ffd86a" stroke="#120a06" stroke-width="1.4" stroke-linejoin="round"/>`).join('')}</g>${S.el ? elBadgeG(S.el, 50, 102, 13) : ''}${S.ck ? ckMarkG(V.me ? ckCost(V.me, S) : S.ck, 86, 101, 13, V.me && ckCost(V.me, S) < S.ck ? '#b8ff8a' : '#fff') : ''}</svg>
+    <g><title>Niveau ${S.t}</title>${Array.from({ length:S.t }, (_, k) => `<path d="${starD(50 + (k - (S.t - 1) / 2) * 14, 3, 7.4, 3.2, 5)}" fill="#ffd86a" stroke="#120a06" stroke-width="1.4" stroke-linejoin="round"/>`).join('')}</g>${S.el ? elBadgeG(S.el, 50, 102, 13) : ''}${S.kc != null ? ckMarkG(V.me ? kiCost(V.me, S) : S.kc, 86, 101, 13, '#fff') : ''}${S.ck ? ckMarkG(V.me ? ckCost(V.me, S) : S.ck, 86, 101, 13, V.me && ckCost(V.me, S) < S.ck ? '#b8ff8a' : '#fff') : ''}</svg>
     <span class="mn-nm">${esc(S.n)}</span></div>`;
 }
 // coût réel pour le joueur (réductions actives), et coût de base
@@ -514,9 +525,9 @@ function spellCardH(id, z, i, o = {}) {
   return `<div class="cd spc${sel ? ' sel' : ''}${V.aim != null && V.aim === i && z === 'hd' ? ' aiming' : ''}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="Sort ${esc(S.n)}">`
     + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#sp-${id}" y="-4" width="100" height="100"/></svg></div>`
     + `<div class="cd-tier" aria-hidden="true">${'<i></i>'.repeat(S.t)}</div>`
-    + `<div class="cd-nm"><span>${esc(S.n)}</span></div><div class="cd-tx${n + (AWK_TECH[id] ? 30 : 0) > 95 ? ' xlong' : n + (AWK_TECH[id] ? 30 : 0) > 62 ? ' long' : ''}">${badge}${esc(S.tx)}${AWK_TECH[id] ? `<span class="tx-awk${awakeUI() ? ' on' : ''}"><b>Éveil :</b> ${esc(AWK_TECH[id][0])}</span>` : ''}</div>`
+    + `<div class="cd-nm"><span>${esc(S.n)}</span></div><div class="cd-tx${n + (AWK_TECH[id] ? 30 : 0) > 95 ? ' xlong' : n + (AWK_TECH[id] ? 30 : 0) > 62 ? ' long' : ''}">${badge}${esc(S.tx)}${AWK_TECH[id] ? `<span class="tx-awk${awakeUI() ? ' on' : ''}"><b>Éveil :</b> ${esc(AWK_TECH[id][0])}</span>` : ''}${S.sig ? `<span class="tx-awk on tx-sig"><b>Signature</b> (${esc(S.sig.slice(0, 3).map(c => C[c] ? C[c].n : c).join(', '))}) : ${esc(S.stx)}</span>` : ''}</div>`
     + `<div class="cd-tb" style="background:${ty.col}">${esc(ty.n)}</div>`
-    + (S.item ? '' : costGemH(spellCostFor(id, z), S.c)) + (S.ck ? ckMarkH(V.me ? ckCost(V.me, S) : S.ck, 'ck-gem' + (V.me && ckCost(V.me, S) < S.ck ? ' aff' : ''), 'Coût en chakra' + (V.me && ckCost(V.me, S) < S.ck ? ' (affinité de ton héros : 1 de moins)' : '')) : '') + (S.el ? `<span class="el-tag" style="--ec:${ELS[S.el].col}">${elBadgeH(S.el)}${ELS[S.el].n}</span>` : '') + `${z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : ''}</div>`;
+    + (S.item ? '' : costGemH(spellCostFor(id, z), S.c)) + (S.kc != null ? ckMarkH(V.me ? kiCost(V.me, S) : S.kc, 'ck-gem ki-gem' + (V.me && kiCost(V.me, S) < S.kc ? ' aff' : ''), 'Coût en ki') : '') + (S.ck ? ckMarkH(V.me ? ckCost(V.me, S) : S.ck, 'ck-gem' + (V.me && ckCost(V.me, S) < S.ck ? ' aff' : ''), 'Coût en chakra' + (V.me && ckCost(V.me, S) < S.ck ? ' (affinité de ton héros : 1 de moins)' : '')) : '') + (S.el ? `<span class="el-tag" style="--ec:${ELS[S.el].col}">${elBadgeH(S.el)}${ELS[S.el].n}</span>` : '') + `${z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : ''}</div>`;
 }
 
 /* ---------- Réservoir des techniques (univers Ninja) ----------

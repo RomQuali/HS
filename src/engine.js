@@ -33,7 +33,7 @@ const DEFAULT_SETTINGS = {
     { id:'d_ter', n:'Terriens', col:'#e8701a', bg:'colline', on:true },
     { id:'d_nam', n:'Namekiens', col:'#4aa84a', bg:'foret', on:true },
     { id:'d_and', n:'Androïdes', col:'#4a7ab8', bg:'meca', on:true },
-    { id:'d_maj', n:'Majin', col:'#d85a9a', bg:'vortex', on:true },
+    { id:'d_fre', n:'Armée de Freezer', col:'#8a4ac8', bg:'vortex', on:true },
   ],
   univ:[
     { n:'Ténèbres', col:'#6a2a8a', ic:'moon', lore:'Ici, mourir n\'est qu\'un contretemps.', mech:'ames', tribes:['spec', 'vamp', 'garou', 'mort', 'bete'] },
@@ -43,7 +43,7 @@ const DEFAULT_SETTINGS = {
     { n:'Mers et cieux', col:'#1f6a96', ic:'wave', lore:'Chaque victoire a son butin.', mech:'pillage', tribes:['cors', 'drag', 'elem', 'spec', 'meca'] },
     { n:'Arcanes', col:'#5a3a9a', ic:'star', lore:'Un sort, et tout s\'illumine.', mech:'resonance', tribes:['elem', 'elfe', 'meca', 'mort', 'spec'] },
     { n:'Montagnes', col:'#6a5038', ic:'mount', lore:'Ils tombent… et tout s\'effondre.', mech:'eboulement', tribes:['nain', 'ogre', 'gob', 'drag', 'garou'] },
-    { n:'Dragon Ball', col:'#e8701a', ic:'star', lore:'Dépasse tes limites : charge ton ki et transforme-toi.', mech:'ki', tribes:['d_sai', 'd_ter', 'd_nam', 'd_and', 'd_maj'] },
+    { n:'Dragon Ball', col:'#e8701a', ic:'star', lore:'Médite, charge ton ki, transforme tes guerriers.', mech:'ki', tribes:['d_sai', 'd_ter', 'd_nam', 'd_fre', 'd_and'] },
     { n:'Ninja', col:'#a8402a', ic:'sword', lore:'Cinq villages, un chakra : mêle leurs techniques.', mech:'chakra', tribes:['n_feu', 'n_vent', 'n_eau', 'n_foudre', 'n_terre'] },
     { n:'Squishys', col:'#b04a6a', ic:'blob', lore:'Une grosse boule de câlins.', mech:'fusion', tribes:['sq_feu', 'sq_eau', 'sq_terre', 'sq_vent', 'sq_foudre'] },
   ],
@@ -240,57 +240,71 @@ const DEFAULT_CARD_LIST = [
   ['tk_clone', 'Kage bunshin', 0, 'n_feu', 2, 2, '', []],
   ['tk_golem', 'Golem du Doton', 0, 'n_terre', 2, 3, 't', []],
   ['tk_mur', 'Doryūheki', 0, 'n_terre', 0, 4, 't', []],
-  // ----- univers Dragon Ball : 5 familles -----
-  ['d_s1', 'Recrue saiyane', 1, 'd_sai', 2, 1, '', [{ k:'zenkai', a:1, h:1 }]],
-  ['d_s2', 'Guerrier de classe basse', 1, 'd_sai', 1, 2, '', [{ k:'tf', st:[{ c:3, a:2, h:2, nm:'Super Saiyan' }], cond:'colere' }]],
-  ['d_s3', 'Éclaireur saiyan', 2, 'd_sai', 3, 2, '', [{ k:'zenkai', a:1, h:1 }]],
-  ['d_s4', 'Soldat en armure saiyane', 2, 'd_sai', 2, 4, '', [{ k:'zenkai', a:0, h:1 }, { k:'tf', st:[{ c:3, a:2, h:3, nm:'Super Saiyan' }], cond:'defaite' }]],
-  ['d_s5', 'Élite saiyane', 3, 'd_sai', 4, 3, '', [{ k:'zenkai', a:2, h:1 }]],
-  ['d_s6', 'Guerrier en colère', 3, 'd_sai', 3, 4, '', [{ k:'tf', st:[{ c:4, a:3, h:3, nm:'Super Saiyan' }, { c:6, a:4, h:4, kw:'w', nm:'Super Saiyan 2' }], cond:'colere' }]],
-  ['d_s7', 'Prince exilé', 4, 'd_sai', 5, 4, '', [{ k:'zenkai', a:2, h:2 }, { k:'tf', st:[{ c:5, a:4, h:4, nm:'Super Saiyan' }], cond:'defaite' }]],
-  ['d_s8', 'Gardien de la lignée', 4, 'd_sai', 4, 6, 't', [{ k:'zenkai_all', a:1, h:1 }]],
-  ['d_s9', 'Guerrier légendaire', 5, 'd_sai', 6, 6, '', [{ k:'tf', st:[{ c:5, a:5, h:5, nm:'Super Saiyan' }, { c:7, a:6, h:6, nm:'Super Saiyan 2' }, { c:9, a:8, h:8, kw:'w', nm:'Super Saiyan 3' }], cond:'colere' }]],
-  ['d_s10', 'Roi des Saiyans', 6, 'd_sai', 7, 8, '', [{ k:'zenkai_all', a:2, h:2 }, { k:'tf', st:[{ c:6, a:6, h:6, kw:'s', nm:'Super Saiyan divin' }], cond:'victoire' }]],
-  ['d_t1', 'Élève de Kame House', 1, 'd_ter', 2, 1, '', [{ k:'bc_buff_rand', a:1, h:1, tb:'' }]],
-  ['d_t2', 'Moine du temple de l’Orin', 1, 'd_ter', 1, 3, '', [{ k:'eot_ki', n:1 }]],
-  ['d_t3', 'Disciple de l’école de la Grue', 2, 'd_ter', 2, 3, '', [{ k:'eot_buff_rand', a:1, h:1, n:1, tb:'' }]],
-  ['d_t4', 'Pilote de la Capsule Corp', 2, 'd_ter', 3, 2, '', [{ k:'bc_item', it:'db_senzu', n:1 }]],
-  ['d_t5', 'Combattant du Tenkaichi', 3, 'd_ter', 4, 3, '', [{ k:'eot_buff_all', a:1, h:0, tb:'' }]],
-  ['d_t6', 'Ermite de la tour Karin', 3, 'd_ter', 2, 5, '', [{ k:'eot_ki', n:2 }]],
-  ['d_t7', 'Médecin de la Capsule Corp', 4, 'd_ter', 3, 6, '', [{ k:'eot_buff_all', a:0, h:2, tb:'' }]],
-  ['d_t8', 'Maître des arts martiaux', 4, 'd_ter', 5, 5, '', [{ k:'bc_buff_tribe', a:2, h:2, tb:'' }]],
-  ['d_t9', 'Champion du monde', 5, 'd_ter', 6, 6, '', [{ k:'eot_buff_all', a:2, h:1, tb:'' }]],
-  ['d_t10', 'Grand maître de la tortue', 6, 'd_ter', 6, 9, '', [{ k:'eot_ki', n:3 }, { k:'eot_buff_all', a:2, h:2, tb:'' }]],
-  ['d_n1', 'Enfant namek', 1, 'd_nam', 1, 2, '', [{ k:'bc_namek', n:1 }]],
-  ['d_n2', 'Guerrier namek', 1, 'd_nam', 2, 2, '', [{ k:'surv_self', a:1, h:1 }]],
-  ['d_n3', 'Gardien du village namek', 2, 'd_nam', 2, 4, 't', [{ k:'bc_namek', n:1 }]],
-  ['d_n4', 'Guérisseur namek', 2, 'd_nam', 1, 4, '', [{ k:'eot_buff_rand', a:0, h:2, n:2, tb:'' }]],
-  ['d_n5', 'Ancien namek', 3, 'd_nam', 3, 4, '', [{ k:'bc_namek', n:1 }, { k:'eot_self', a:0, h:1 }]],
-  ['d_n6', 'Combattant namek', 3, 'd_nam', 4, 3, '', [{ k:'bc_namek', n:1 }, { k:'surv_self', a:1, h:0 }]],
-  ['d_n7', 'Sage namek', 4, 'd_nam', 3, 6, '', [{ k:'eot_buff_all', a:1, h:1, tb:'d_nam' }]],
-  ['d_n8', 'Guerrier du clan des Dragons', 4, 'd_nam', 5, 5, '', [{ k:'bc_namek', n:1 }, { k:'surv_self', a:1, h:1 }]],
-  ['d_n9', 'Grand Namek', 5, 'd_nam', 6, 7, '', [{ k:'bc_namek', n:2 }]],
-  ['d_n10', 'Gardien de la Terre', 6, 'd_nam', 7, 9, '', [{ k:'bc_namek', n:1 }, { k:'eot_buff_all', a:2, h:2, tb:'d_nam' }]],
-  ['d_a1', 'Drone de reconnaissance', 1, 'd_and', 1, 1, '', [{ k:'dr_dmg', d:2, n:1 }]],
-  ['d_a2', 'Androïde de série', 1, 'd_and', 2, 2, '', [{ k:'atk_drain', n:1 }]],
-  ['d_a3', 'Androïde ouvrier', 2, 'd_and', 3, 3, '', [{ k:'dr_dmg', d:2, n:2 }]],
-  ['d_a4', 'Androïde absorbeur', 2, 'd_and', 2, 4, '', [{ k:'atk_drain', n:2 }]],
-  ['d_a5', 'Androïde de combat', 3, 'd_and', 4, 4, '', [{ k:'atk_drain', n:1 }, { k:'dr_dmg', d:3, n:1 }]],
-  ['d_a6', 'Androïde bombe', 3, 'd_and', 2, 5, 't', [{ k:'dr_dmg', d:4, n:2 }]],
-  ['d_a7', 'Androïde à énergie infinie', 4, 'd_and', 5, 5, '', [{ k:'atk_drain', n:2 }, { k:'eot_ki', n:1 }]],
-  ['d_a8', 'Unité d’élimination', 4, 'd_and', 6, 4, '', [{ k:'dr_dmg', d:3, n:3 }]],
-  ['d_a9', 'Androïde du laboratoire secret', 5, 'd_and', 6, 7, '', [{ k:'atk_drain', n:3 }, { k:'dr_buff_all', a:2, h:2, tb:'d_and' }]],
-  ['d_a10', 'Prototype ultime', 6, 'd_and', 8, 8, '', [{ k:'atk_drain', n:3 }, { k:'dr_dmg', d:6, n:2 }]],
-  ['d_m1', 'Fragment majin', 1, 'd_maj', 1, 1, 'r', []],
-  ['d_m2', 'Pâte majin', 1, 'd_maj', 1, 3, '', [{ k:'bc_absorb', n:1 }]],
-  ['d_m3', 'Soldat majin', 2, 'd_maj', 3, 2, '', [{ k:'kill_absorb', a:1, h:1 }]],
-  ['d_m4', 'Gélatine rose', 2, 'd_maj', 2, 3, 'r', []],
-  ['d_m5', 'Majin glouton', 3, 'd_maj', 3, 4, '', [{ k:'bc_absorb', n:1 }]],
-  ['d_m6', 'Majin régénérant', 3, 'd_maj', 4, 3, 'r', [{ k:'surv_self', a:1, h:1 }]],
-  ['d_m7', 'Majin farceur', 4, 'd_maj', 4, 5, '', [{ k:'kill_absorb', a:2, h:2 }]],
-  ['d_m8', 'Majin dévoreur', 4, 'd_maj', 5, 5, '', [{ k:'bc_absorb', n:1 }, { k:'eot_self', a:1, h:1 }]],
-  ['d_m9', 'Majin colossal', 5, 'd_maj', 7, 7, 'r', [{ k:'kill_absorb', a:3, h:3 }]],
-  ['d_m10', 'Majin originel', 6, 'd_maj', 8, 8, '', [{ k:'bc_absorb', n:2 }, { k:'kill_absorb', a:2, h:2 }]],
+  // ----- univers Dragon Ball (v2) : un personnage = une carte ; 5 familles -----
+  ['tk_saiba', 'Saibaman', 0, 'd_sai', 2, 1, '', [{ k:'dr_dmg', d:1, n:1 }]],
+  ['tk_sold', 'Soldat de Freezer', 0, 'd_fre', 1, 1, '', []],
+  // Saiyans : transformations par paliers (payées en ki)
+  ['d_raditz', 'Raditz', 1, 'd_sai', 2, 2, '', [{ k:'tf_self', a:1, h:1 }]],
+  ['d_goten', 'Goten', 1, 'd_sai', 1, 3, '', [{ k:'tf', st:[{ c:2, a:2, h:1, nm:'Super Saiyan' }] }]],
+  ['d_nappa', 'Nappa', 2, 'd_sai', 3, 3, '', [{ k:'bc_summon', card:'tk_saiba', n:1 }]],
+  ['d_bardock', 'Bardock', 2, 'd_sai', 3, 2, '', [{ k:'tf', st:[{ c:3, a:3, h:2, nm:'Super Saiyan' }], cond:'colere' }]],
+  ['d_trunks', 'Trunks', 3, 'd_sai', 3, 3, '', [{ k:'tf', st:[{ c:3, a:2, h:2, nm:'Super Saiyan' }, { c:4, a:3, h:3, nm:'Super Trunks' }] }]],
+  ['d_gohan', 'Gohan', 3, 'd_sai', 2, 4, '', [{ k:'tf', st:[{ c:3, a:3, h:2, nm:'Super Saiyan' }, { c:5, a:4, h:4, kw:'w', nm:'Gohan ultime' }], cond:'colere' }]],
+  ['d_vegeta', 'Vegeta', 4, 'd_sai', 4, 4, '', [{ k:'tf_self', a:2, h:2 }, { k:'tf', st:[{ c:4, a:3, h:3, nm:'Super Saiyan' }, { c:6, a:4, h:4, nm:'Super Saiyan Blue' }] }]],
+  ['d_roivegeta', 'Roi Vegeta', 4, 'd_sai', 4, 5, '', [{ k:'pas_tfc', n:1 }]],
+  ['d_goku', 'Goku', 5, 'd_sai', 5, 6, '', [{ k:'tf', st:[{ c:4, a:3, h:3, nm:'Super Saiyan' }, { c:6, a:4, h:4, nm:'Super Saiyan 2' }, { c:8, a:6, h:6, kw:'w', nm:'Super Saiyan 3' }] }]],
+  ['d_broly', 'Broly', 5, 'd_sai', 7, 6, '', [{ k:'die_self', tb:'', a:1, h:1 }, { k:'tf', st:[{ c:6, a:6, h:6, nm:'Super Saiyan légendaire' }], cond:'colere' }]],
+  ['d_gogeta', 'Gogeta', 6, 'd_sai', 8, 8, '', [{ k:'eot_tfbuff', a:2, h:2 }]],
+  ['d_vegetto', 'Vegetto', 6, 'd_sai', 8, 7, '', [{ k:'tf_self', a:2, h:2 }, { k:'tf', st:[{ c:6, a:6, h:6, kw:'s', nm:'Vegetto Blue' }] }]],
+  // Terriens : soutien (bonus, ki, techniques) jusqu'au Genkidama
+  ['d_yamcha', 'Yamcha', 1, 'd_ter', 2, 1, '', [{ k:'bc_buff_rand', a:1, h:1, tb:'' }]],
+  ['d_chaozu', 'Chaozu', 1, 'd_ter', 1, 2, '', [{ k:'eot_ki', n:1 }]],
+  ['d_chichi', 'Chi-Chi', 2, 'd_ter', 1, 4, '', [{ k:'eot_buff_rand', a:1, h:2, n:1, tb:'d_sai' }]],
+  ['d_videl', 'Videl', 2, 'd_ter', 3, 2, '', [{ k:'bc_spell', n:1 }]],
+  ['d_krilin', 'Krilin', 3, 'd_ter', 3, 3, '', [{ k:'dr_buff_all', a:2, h:2, tb:'d_sai' }]],
+  ['d_yajirobe', 'Yajirobé', 3, 'd_ter', 2, 5, '', [{ k:'eot_buff_rand', a:0, h:2, n:2, tb:'' }]],
+  ['d_tenshin', 'Tenshinhan', 4, 'd_ter', 5, 4, '', [{ k:'soc_dmg', d:3, n:2 }]],
+  ['d_bulma', 'Bulma', 4, 'd_ter', 2, 6, '', [{ k:'eot_ki', n:2 }, { k:'bc_spell', n:1 }]],
+  ['d_satan', 'Mr Satan', 5, 'd_ter', 4, 6, 't', [{ k:'win_all', a:1, h:1, tb:'' }]],
+  ['d_kame', 'Tortue Géniale', 5, 'd_ter', 3, 7, '', [{ k:'pas_tkc', n:1 }, { k:'eot_buff_all', a:1, h:1, tb:'' }]],
+  ['d_uub', 'Uub', 6, 'd_ter', 6, 8, '', [{ k:'eot_genki', a:1, h:1 }]],
+  // Namekiens : mentors (entraînent leurs voisins)
+  ['d_cargo', 'Cargo', 1, 'd_nam', 2, 1, '', [{ k:'mentor', a:1, h:0, n:1 }]],
+  ['d_dende', 'Dende', 1, 'd_nam', 1, 2, '', [{ k:'mentor', a:0, h:2, n:1 }]],
+  ['d_tambourine', 'Tambourine', 2, 'd_nam', 3, 2, '', [{ k:'atk_self', a:1, h:0 }]],
+  ['d_moori', 'Moori', 2, 'd_nam', 1, 4, '', [{ k:'mentor', a:1, h:1, n:1 }]],
+  ['d_nail', 'Nail', 3, 'd_nam', 3, 4, 't', [{ k:'mentor', a:1, h:2, n:1 }]],
+  ['d_kami', 'Kami-sama', 3, 'd_nam', 2, 5, '', [{ k:'mentor', a:1, h:1, n:2 }]],
+  ['d_slug', 'Slug', 4, 'd_nam', 5, 5, '', [{ k:'eot_self', a:2, h:2 }]],
+  ['d_daimao', 'Roi Piccolo', 4, 'd_nam', 4, 4, '', [{ k:'bc_summon', card:'d_tambourine', n:1 }]],
+  ['d_guru', 'Grand Doyen', 5, 'd_nam', 2, 8, '', [{ k:'mentor', a:2, h:2, n:2 }]],
+  ['d_piccolo', 'Piccolo', 5, 'd_nam', 5, 6, '', [{ k:'mentor', a:2, h:2, n:1 }, { k:'tf', st:[{ c:5, a:4, h:4, nm:'Super Namek' }] }]],
+  ['d_piccolof', 'Piccolo fusionné', 6, 'd_nam', 7, 8, '', [{ k:'eot_mentor_all' }]],
+  // Armée de Freezer : les soldats tombent, les officiers grandissent
+  ['d_appule', 'Appule', 1, 'd_fre', 2, 1, '', [{ k:'dr_summon', card:'tk_sold', n:1 }]],
+  ['d_cui', 'Cui', 1, 'd_fre', 1, 1, '', [{ k:'bc_summon', card:'tk_sold', n:1 }]],
+  ['d_dodoria', 'Dodoria', 2, 'd_fre', 3, 3, '', [{ k:'die_self', tb:'', a:1, h:1 }]],
+  ['d_zarbon', 'Zarbon', 2, 'd_fre', 3, 2, '', [{ k:'tf', st:[{ c:3, a:3, h:2, nm:'Forme monstrueuse' }] }]],
+  ['d_guldo', 'Guldo', 2, 'd_fre', 2, 3, '', [{ k:'soc_chill', a:2, n:1 }]],
+  ['d_recoome', 'Recoome', 3, 'd_fre', 3, 5, 't', [{ k:'dr_summon', card:'tk_sold', n:2 }]],
+  ['d_burter', 'Burter', 3, 'd_fre', 3, 3, 'w', []],
+  ['d_jeice', 'Jeice', 3, 'd_fre', 3, 3, '', [{ k:'dr_buff_all', a:1, h:1, tb:'d_fre' }]],
+  ['d_ginyu', 'Capitaine Ginyu', 4, 'd_fre', 4, 5, '', [{ k:'soc_ginyu', a:2, h:2 }]],
+  ['d_cooler', 'Cooler', 5, 'd_fre', 6, 6, '', [{ k:'die_self', tb:'', a:1, h:1 }, { k:'tf', st:[{ c:5, a:5, h:5, nm:'Métal Cooler' }] }]],
+  ['d_cold', 'Roi Cold', 5, 'd_fre', 5, 7, '', [{ k:'die_others', tb:'', a:1, h:0 }]],
+  ['d_freezer', 'Freezer', 6, 'd_fre', 7, 7, '', [{ k:'die_self', tb:'', a:2, h:1 }, { k:'tf', st:[{ c:5, a:4, h:4, nm:'Forme finale' }, { c:8, a:6, h:6, kw:'s', nm:'Golden Freezer' }] }]],
+  // Androïdes : autodestruction (râles d'agonie)
+  ['d_c8', 'C-8', 1, 'd_and', 1, 3, 't', [{ k:'dr_buff_rand', a:1, h:1, tb:'' }]],
+  ['d_c15', 'C-15', 1, 'd_and', 2, 1, '', [{ k:'dr_dmg', d:2, n:1 }]],
+  ['d_c14', 'C-14', 2, 'd_and', 3, 3, '', [{ k:'dr_dmg', d:2, n:2 }]],
+  ['d_c19', 'C-19', 2, 'd_and', 2, 4, '', [{ k:'atk_drain', n:1 }]],
+  ['d_gero', 'Dr Gero', 3, 'd_and', 3, 4, '', [{ k:'bc_card', n:1, tb:'d_and' }]],
+  ['d_c18', 'C-18', 3, 'd_and', 4, 3, '', [{ k:'dr_buff_rand', a:2, h:2, tb:'d_and' }]],
+  ['d_celljr', 'Cell Junior', 3, 'd_and', 2, 3, '', [{ k:'dr_aoe', d:1 }]],
+  ['d_c17', 'C-17', 4, 'd_and', 5, 4, 's', [{ k:'dr_dmg', d:3, n:2 }]],
+  ['d_c16', 'C-16', 4, 'd_and', 3, 7, 't', [{ k:'dr_aoe', d:3 }]],
+  ['d_c13', 'C-13', 5, 'd_and', 6, 6, '', [{ k:'die_self', tb:'d_and', a:2, h:2 }]],
+  ['d_cell', 'Cell', 6, 'd_and', 6, 7, '', [{ k:'dr_aoe', d:4 }, { k:'tf', st:[{ c:4, a:3, h:3, nm:'Cell semi-parfait' }, { c:6, a:4, h:4, nm:'Cell parfait' }] }]],
   // ----- univers Ninja : les 5 villages (10 serviteurs chacun) + kekkei genkai -----
   ['n_f1', 'Genin de Konoha', 1, 'n_feu', 2, 2, '', [{ k:'soc_dmg', d:1, n:2 }]],
   ['n_f2', 'Apprenti des kibaku fuda', 1, 'n_feu', 1, 2, '', [{ k:'ckm', c:2, m:{ k:'m_fire', d:2 } }]],
@@ -421,10 +435,10 @@ DEFAULT_CARD_LIST.forEach(([id, n, t, tr, a, h, kw, fx]) => { DEFAULT_CARDS[id] 
 // kekkei genkai : seconde nature (compte pour les deux clans)
 const TR2 = { n_k1:'n_terre', n_k2:'n_vent', n_k3:'n_eau', n_k4:'n_foudre', n_k5:'n_vent' };
 for (const id in TR2) DEFAULT_CARDS[id].tr2 = TR2[id];
-const NJ_MC = { tf:['Transformations', '#ffcf3a'], zk:['Zenkai', '#ff7a3a'], fu:['Fusion', '#7ac04a'], ab:['Absorption', '#e86aa8'], kiu:['Ki', '#5ab8f0'], sv:['Soutien', '#f2c14e'], ob:['Objets', '#b48cff'], ad:['Autodestruction', '#ff5a3a'], tok:['Jetons', '#d8b45a'], seal:['Sceaux', '#e8607a'], pact:['Pacte', '#7ac04a'], dr:['Sacrifice', '#a898d0'], eco:['Économie', '#f2c14e'], spl:['Sorts', '#b48cff'], cbt:['Combat', '#ff7a5a'], ckm:['Éveil et chakra', '#5ab8f0'], cmb:['Combos', '#ff9a4a'], kg:['Kekkei genkai', '#6fd08a'] };
+const NJ_MC = { tf:['Transformations', '#ffcf3a'], med:['Méditation', '#7ad8f0'], tk:['Techniques', '#5ab8f0'], mt:['Mentor', '#7ac04a'], sd:['Soldats', '#a86ad8'], ct:['Contrôle', '#8a7ad8'], ds:['Destruction', '#c85a8a'], zk:['Zenkai', '#ff7a3a'], fu:['Fusion', '#7ac04a'], ab:['Absorption', '#e86aa8'], kiu:['Ki', '#5ab8f0'], sv:['Soutien', '#f2c14e'], ob:['Objets', '#b48cff'], ad:['Autodestruction', '#ff5a3a'], tok:['Jetons', '#d8b45a'], seal:['Sceaux', '#e8607a'], pact:['Pacte', '#7ac04a'], dr:['Sacrifice', '#a898d0'], eco:['Économie', '#f2c14e'], spl:['Sorts', '#b48cff'], cbt:['Combat', '#ff7a5a'], ckm:['Éveil et chakra', '#5ab8f0'], cmb:['Combos', '#ff9a4a'], kg:['Kekkei genkai', '#6fd08a'] };
 // trait passif d'un héros : son pouvoir (pw) ou son bonus (tr) de ce type
 function htr(p, k) { const H0 = HX(p); if (!H0) return null; if (H0.pw && H0.pw.k === k) return H0.pw; const t = H0.tr; return t && t.k === k ? t : null; }
-const DBV = ['d_sai', 'd_ter', 'd_nam', 'd_and', 'd_maj'];   // héros Dragon Ball : rattachés à l'univers
+const DBV = ['d_sai', 'd_ter', 'd_nam', 'd_fre', 'd_and'];   // héros Dragon Ball : rattachés à l'univers
 const NJV = ['n_feu', 'n_vent', 'n_eau', 'n_foudre', 'n_terre'];   // héros Ninja : rattachés à l'univers, à aucun village
 const COMPANIONS = { nh_kushina:'c_nj_kurama', nh_jiraiya:'c_nj_gamabunta', nh_sasuke:'c_nj_aigle', nh_mikoto:'c_nj_chatnoir', nh_itachi:'c_nj_corbeau', nh_temari:'c_nj_shukaku', nh_naruto:'c_nj_grenouille', nh_kankuro:'c_nj_sasori', nh_shikamaru:'c_nj_cerfvolant', nh_gaara:'c_nj_tanuki', nh_haku:'c_nj_glaces', nh_zabuza:'c_nj_requin', nh_suigetsu:'c_nj_bulle', nh_mangetsu:'c_nj_hiramekarei', nh_mei:'c_nj_meduse', nh_omoi:'c_nj_lapin', nh_darui:'c_nj_nuage', nh_samui:'c_nj_renardblanc', nh_bee:'c_nj_gyuki', nh_kakashi:'c_nj_ninken', nh_roshi:'c_nj_songoku', nh_akatsuchi:'c_nj_geant', nh_hashirama:'c_nj_dragonbois', nh_deidara:'c_nj_argile', nh_kurotsuchi:'c_nj_dragonpierre', nh_karin:'c_nj_renard1', nh_asuma:'c_nj_katoncrow', nh_madara:'c_nj_zetsu', nh_konohamaru:'c_nj_singe', nh_pakura:'c_nj_espritvent', nh_baki:'c_nj_faucon', nh_chojuro:'c_nj_poissonscie', nh_ao:'c_nj_tortue', nh_kisame:'c_nj_samehada', nh_yugito:'c_nj_matatabi', nh_raikage:'c_nj_puma', nh_c:'c_nj_hibou', nh_kitsuchi:'c_nj_rocher', nh_onoki:'c_nj_golem', nh_yamato:'c_nj_arbre', paul:'c_pouf', leon:'c_caillou', zoe:'c_gloup', jeanne:'c_frisouille', selene:'c_nyx', brok:'c_enclume', sylvara:'c_lys', grumbo:'c_miette', vaskor:'c_osbrise', pyra:'c_etincelle', rivet:'c_bricole', egide:'c_lumen', ondine:'c_fiole', barnabe:'c_sou', maelle:'c_croc', oren:'c_plume', gor:'c_bastion', ilka:'c_truelle', nono:'c_braise' };
 for (const h in COMPANIONS) DEFAULT_CARDS[COMPANIONS[h]].comp = h;
@@ -458,7 +472,7 @@ const HEROES = {
   nh_gaara: {diff:3, stars:4, fam:NJV, pv:'n_vent', mc:'cbt', n:'Gaara', cost:1, pay:'g', pwn:'Bouclier de sable', pw:{ k:'multi', s:[{ k:'tkw', kw:'t', n:1, a:0, h:5 }, { k:'tkw', kw:'s', n:1 }] }, tx:'Prochain combat : un de tes serviteurs gagne +0/+5 et Provocation, un autre Bouclier divin.', q:{ k:'wins', n:4, tx:'Gagner 4 combats.' }, aw:{ nm:'Défense absolue', pwn:'Défense absolue', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'tkw', kw:'t', n:1, a:0, h:8 }, { k:'tkw', kw:'s', n:2 }] }, tx:'Prochain combat : un de tes serviteurs gagne +0/+8 et Provocation, deux autres Bouclier divin.' } },
   nh_kankuro: {diff:3, stars:3, fam:NJV, pv:'n_vent', mc:'tok', n:'Kankuro', cost:2, pay:'g', pwn:'Kugutsu de combat', pw:{ k:'multi', s:[{ k:'summon', card:'tk_puppet', n:2 }] }, tr:{ k:'ptok', card:'tk_puppet', a:1, h:1 }, tx:'Invoque 2 Kugutsu.', trx:'Tes Kugutsu apparaissent avec +1/+1.', q:{ k:'tokSum', card:'tk_puppet', n:6, tx:'Invoquer 6 Kugutsu.' }, aw:{ nm:'Trio de marionnettes', pwn:'Karasu, Kuroari, Sanshōuo', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'summon', card:'tk_puppet', n:2 }, { k:'cardbuff', card:'tk_puppet', a:1, h:1 }] }, tx:'Invoque 2 Kugutsu, puis tes Kugutsu gagnent +1/+1.' } },
   nh_sasori: {diff:3, stars:5, fam:NJV, pv:'n_vent', mc:'dr', n:'Sasori', pwn:'Marionnettes humaines', pw:{ k:'pturn', drp:1, dr:1 }, tx:'Passif : au début de chaque tour, un de tes serviteurs gagne « Râle d\'agonie : invoque une Kugutsu » puis tes serviteurs à Râle d\'agonie gagnent +1/+0.', q:{ k:'drBoard', n:5, tx:'Finir un tour avec 5 serviteurs à Râle d\'agonie.' }, aw:{ nm:'Cent marionnettes', pwn:'Cent marionnettes', pw:{ k:'pturn', drp:2, dr:1 }, tx:'Passif : au début de chaque tour, deux de tes serviteurs gagnent « Râle d\'agonie : invoque une Kugutsu », puis tes serviteurs à Râle d\'agonie gagnent +1/+0.' } },
-  nh_rasa: {diff:3, stars:4, fam:NJV, pv:'n_vent', mc:'eco', n:'Rasa', pwn:'Poussière d\'or', pw:{ k:'pturn', g:2, roll:1, sell:1 }, tx:'Passif : au début de chaque tour, gagne 2 or de plus ; ta première actualisation de chaque tour est gratuite et vendre rapporte 1 or de plus.', q:{ k:'buys', n:8, tx:'Acheter 8 serviteurs.' }, aw:{ nm:'Pluie d\'or', pwn:'Pluie d\'or', pw:{ k:'pturn', g:3, roll:1 }, tx:'Passif : au début de chaque tour, gagne 3 or de plus, et ta première actualisation de chaque tour est gratuite.' } },
+  nh_rasa: {diff:3, stars:4, fam:NJV, pv:'n_vent', mc:'eco', n:'Rasa', pwn:'Poussière d\'or', pw:{ k:'pturn', g:2, roll:1, sell:1 }, tx:'Passif : au début de chaque tour, gagne 2 or de plus ; ta première actualisation de chaque tour est gratuite et vendre rapporte 1 or de plus.', q:{ k:'buys', n:7, tx:'Acheter 7 serviteurs.' }, aw:{ nm:'Pluie d\'or', pwn:'Pluie d\'or', pw:{ k:'pturn', g:3, roll:1 }, tx:'Passif : au début de chaque tour, gagne 3 or de plus, et ta première actualisation de chaque tour est gratuite.' } },
   nh_mei: {diff:3, stars:4, fam:NJV, pv:'n_eau', mc:'kg', n:'Mei Terumi', pwn:'Deux natures', pw:{ k:'pkg', n:1 }, tr:{ k:'pturn', ck:1 }, trx:'Au début de chaque tour, gagne 1 chakra.', tx:'Passif : tes kekkei genkai grandissent deux fois plus à chaque combo. Quand tu améliores ta taverne au niveau 3 ou plus, ajoute un kekkei genkai à ta main.', q:{ k:'kgBoard', n:2, tx:'Avoir 2 kekkei genkai sur ton plateau.' }, aw:{ nm:'Futton et Yōton', pwn:'Futton et Yōton', pw:{ k:'pkg', n:1, x:3 }, tx:'Passif : tes kekkei genkai grandissent trois fois plus à chaque combo. Quand tu améliores ta taverne au niveau 3 ou plus, ajoute un kekkei genkai à ta main.' } },
   nh_haku: {diff:3, stars:4, fam:NJV, pv:'n_eau', mc:'kg', n:'Haku', cost:4, pay:'g', pwn:'Hyōton', pw:{ k:'multi', s:[{ k:'kgcard' }, { k:'ck', n:1 }] }, tr:{ k:'pkgs' }, tx:'Ajoute à ta main un serviteur kekkei genkai et gagne 1 chakra.', trx:'Tes kekkei genkai gagnent Bouclier divin quand tu les joues.', q:{ k:'kgPlay', n:2, tx:'Jouer 2 kekkei genkai.' }, aw:{ nm:'Miroirs démoniaques', pwn:'Miroirs démoniaques', cost:3, pay:'g', pw:{ k:'multi', s:[{ k:'kgcard' }, { k:'kgbuff', a:2, h:2 }] }, tx:'Ajoute un kekkei genkai à ta main ; tes kekkei genkai gagnent +2/+2.' } },
   nh_bee: {diff:3, stars:5, fam:NJV, pv:'n_foudre', mc:'cbt', n:'Killer Bee', pwn:'Huit queues', pw:{ k:'pjin' }, tr:{ k:'pturn', ck:1 }, tx:'Passif : tes jinchūriki grandissent deux fois plus après chaque victoire, et un allié aléatoire gagne alors +2/+2.', trx:'Au début de chaque tour, gagne 1 chakra.', q:{ k:'streak', n:4, tx:'Gagner 4 combats d\'affilée.' }, aw:{ nm:'Mode Bijū', pwn:'Gyūki libéré', pw:{ k:'pjin', x:3, b:3 }, tx:'Passif : tes jinchūriki grandissent trois fois plus après chaque victoire, et un allié aléatoire gagne alors +3/+3.' } },
@@ -474,26 +488,17 @@ const HEROES = {
   jeanne:  {fam:['sq_vent'], n:'Jeanne', cost:2, el:'sq_vent', tx:'Amie du vent · Prochain combat seulement : vos Zéphys gagnent +1/+1 pour chaque Zéphy sur votre plateau.' },
   nono:    {fam:['drag', 'elem'], n:'NonoJose', cost:1, minRound:3, tx:'Dès la manche 3 : lance une boule de feu de 3 dégâts sur un serviteur ennemi aléatoire au début du prochain combat ; les dégâts en trop touchent d\'autres ennemis. Chaque manche où le pouvoir n\'est pas utilisé, ses dégâts augmentent de 1 pour toute la partie.' },
   // ----- univers Dragon Ball : 10 héros et 10 méchants -----
-  dh_goku: {diff:3, stars:5, fam:DBV, pv:'d_sai', mc:'tf', n:'Goku', cost:1, pay:'g', pwn:'Kaioken', pw:{ k:'multi', s:[{ k:'tffree', n:1 }] }, tx:'Un de tes serviteurs passe gratuitement au palier de transformation suivant (sinon il gagne +2/+2).', q:{ k:'tfs', n:3, tx:'Réaliser 3 transformations.' }, aw:{ nm:'Super Saiyan 3', pwn:'Super Saiyan 3', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'tffree', n:2 }] }, tx:'Deux de tes serviteurs passent gratuitement au palier de transformation suivant (sinon +2/+2).' } },
-  dh_vegeta: {diff:3, stars:5, fam:DBV, pv:'d_sai', mc:'zk', n:'Vegeta', pwn:'Fierté saiyane', pw:{ k:'pzk', x:2 }, tr:{ k:'pturn', ki:1 }, tx:'Passif : tes effets Zenkai se déclenchent deux fois.', trx:'Au début de chaque tour, gagne 1 ki.', q:{ k:'losses', n:3, tx:'Perdre 3 combats.' }, aw:{ nm:'Super Saiyan Blue Évolution', pwn:'Orgueil du prince', pw:{ k:'pzk', x:3 }, tx:'Passif : tes effets Zenkai se déclenchent trois fois.' } },
-  dh_gohan: {diff:3, stars:4, fam:DBV, pv:'d_sai', mc:'tf', n:'Gohan', cost:1, pay:'g', pwn:'Colère cachée', pw:{ k:'multi', s:[{ k:'rage', a:2, h:2, a2:1, h2:1 }] }, tx:'Un de tes serviteurs gagne +2/+2 si un allié est mort au dernier combat, sinon +1/+1.', q:{ k:'allyDeaths', n:8, tx:'Voir 8 de tes serviteurs mourir en combat.' }, aw:{ nm:'Gohan ultime', pwn:'Potentiel libéré', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'rage', a:4, h:4, a2:2, h2:2 }] }, tx:'Un de tes serviteurs gagne +4/+4 si un allié est mort au dernier combat, sinon +2/+2.' } },
-  dh_piccolo: {diff:3, stars:4, fam:DBV, pv:'d_nam', mc:'fu', n:'Piccolo', cost:2, pay:'g', pwn:'Appel du clan', pw:{ k:'multi', s:[{ k:'card', tb:'d_nam' }] }, tr:{ k:'pab', n:1 }, tx:'Ajoute un Namekien de ton niveau à ta main.', trx:'Chaque fusion ou absorption donne +1/+1 de plus.', q:{ k:'fusions', n:3, tx:'Réaliser 3 fusions.' }, aw:{ nm:'Super Namek', pwn:'Namek ancestral', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'card', tb:'d_nam' }, { k:'buffall', tb:'d_nam', a:1, h:1 }] }, tx:'Ajoute un Namekien à ta main ; tes Namekiens gagnent +1/+1.' } },
-  dh_krilin: {diff:2, stars:3, fam:DBV, pv:'d_ter', mc:'ob', n:'Krilin', cost:1, pay:'g', pwn:'Haricots de Karin', pw:{ k:'multi', s:[{ k:'item', it:'db_senzu' }] }, tx:'Ajoute un Haricot magique à ta main.', q:{ k:'items', n:5, tx:'Utiliser 5 objets.' }, aw:{ nm:'Kienzan', pwn:'Kienzan', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'item', it:'db_senzu' }, { k:'fire', d:3 }] }, tx:'Ajoute un Haricot magique à ta main ; prochain combat, 3 dégâts à l\'ennemi.' } },
-  dh_trunks: {diff:2, stars:4, fam:DBV, pv:'d_sai', mc:'kiu', n:'Trunks', cost:1, pay:'g', pwn:'Charge du futur', pw:{ k:'multi', s:[{ k:'ki', n:2 }] }, tr:{ k:'pmed', n:1 }, tx:'Gagne 2 ki.', trx:'Chaque serviteur en méditation rapporte 1 ki de plus.', q:{ k:'kiSpent', n:10, tx:'Dépenser 10 ki.' }, aw:{ nm:'Super Trunks', pwn:'Épée du futur', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'ki', n:3 }, { k:'buffr', a:2, h:2, n:1 }] }, tx:'Gagne 3 ki ; un de tes serviteurs gagne +2/+2.' } },
-  dh_goten: {diff:2, stars:3, fam:DBV, pv:'d_sai', mc:'fu', n:'Goten', cost:3, pay:'g', pwn:'Danse de fusion', pw:{ k:'multi', s:[{ k:'item', it:'db_potara' }] }, tx:'Ajoute des Boucles Potara à ta main.', q:{ k:'fusions', n:2, tx:'Réaliser 2 fusions.' }, aw:{ nm:'Gotenks', pwn:'Fusion Gotenks', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'item', it:'db_potara' }] }, tx:'Ajoute des Boucles Potara à ta main.' } },
-  dh_tenshin: {diff:2, stars:3, fam:DBV, pv:'d_ter', mc:'sv', n:'Tenshinhan', cost:1, pay:'g', pwn:'Kikoho', pw:{ k:'multi', s:[{ k:'fire', d:5 }] }, tx:'Prochain combat : 5 dégâts à l\'ennemi.', q:{ k:'wins', n:4, tx:'Gagner 4 combats.' }, aw:{ nm:'Kikoho total', pwn:'Kikoho total', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'fire', d:9 }] }, tx:'Prochain combat : 9 dégâts à l\'ennemi.' } },
-  dh_bulma: {diff:2, stars:3, fam:DBV, pv:'d_ter', mc:'ob', n:'Bulma', cost:2, pay:'g', pwn:'Invention', pw:{ k:'multi', s:[{ k:'itemr' }] }, tx:'Ajoute un objet aléatoire de ton niveau à ta main.', q:{ k:'buys', n:8, tx:'Acheter 8 serviteurs.' }, aw:{ nm:'Capsule Corp', pwn:'Capsule Corp', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'itemr' }, { k:'g', n:1 }] }, tx:'Ajoute un objet aléatoire à ta main et gagne 1 or.' } },
-  dh_satan: {diff:1, stars:3, fam:DBV, pv:'d_ter', mc:'sv', n:'Mr Satan', pwn:'Champion du peuple', pw:{ k:'pturn', a:1, h:1 }, tx:'Passif : au début de chaque tour, un de tes serviteurs aléatoires gagne +1/+1.', q:{ k:'streak', n:4, tx:'Gagner 4 combats d\'affilée.' }, aw:{ nm:'Champion du monde', pwn:'Héros de la Terre', pw:{ k:'pturn', all:1, a:1, h:0 }, tx:'Passif : au début de chaque tour, tous tes serviteurs gagnent +1/+0.' } },
-  dh_freezer: {diff:3, stars:5, fam:DBV, pv:'d_and', mc:'tf', n:'Freezer', cost:2, pay:'ki', pwn:'Forme finale', pw:{ k:'multi', s:[{ k:'tffree', n:1 }, { k:'buffr', a:1, h:1, n:1 }] }, tr:{ k:'ptf', n:1 }, tx:'Un de tes serviteurs passe gratuitement au palier de transformation suivant (sinon +2/+2), puis un serviteur gagne +1/+1.', trx:'Tes transformations coûtent 1 ki de moins.', q:{ k:'tfs', n:3, tx:'Réaliser 3 transformations.' }, aw:{ nm:'Golden Freezer', pwn:'Golden Freezer', cost:2, pay:'ki', pw:{ k:'multi', s:[{ k:'tffree', n:2 }] }, tx:'Deux de tes serviteurs passent gratuitement au palier de transformation suivant (sinon +2/+2).' } },
-  dh_cell: {diff:3, stars:5, fam:DBV, pv:'d_and', mc:'ab', n:'Cell', cost:2, pay:'g', pwn:'Absorption', pw:{ k:'multi', s:[{ k:'absorbw' }] }, tx:'Ton serviteur le plus fort absorbe ton plus faible (stats et effets).', q:{ k:'absorbs', n:4, tx:'Réaliser 4 absorptions.' }, aw:{ nm:'Cell parfait', pwn:'Perfection', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'absorbw' }, { k:'buffhi', a:2, h:2 }] }, tx:'Ton serviteur le plus fort absorbe ton plus faible, puis gagne +2/+2.' } },
-  dh_buu: {diff:2, stars:4, fam:DBV, pv:'d_maj', mc:'ab', n:'Majin Buu', pwn:'Appétit sans fin', pw:{ k:'pab', n:2 }, tx:'Passif : chaque fusion ou absorption donne +2/+2 de plus.', q:{ k:'absorbs', n:3, tx:'Réaliser 3 absorptions.' }, aw:{ nm:'Super Buu', pwn:'Super Buu', pw:{ k:'pab', n:4 }, tx:'Passif : chaque fusion ou absorption donne +4/+4 de plus.' } },
-  dh_kidbuu: {diff:3, stars:4, fam:DBV, pv:'d_maj', mc:'ab', n:'Kid Buu', cost:2, pay:'g', pwn:'Régénération', pw:{ k:'multi', s:[{ k:'kw', kw:'r', n:1 }] }, tx:'Un de tes serviteurs gagne Renaissance.', q:{ k:'allyDeaths', n:10, tx:'Voir 10 de tes serviteurs mourir en combat.' }, aw:{ nm:'Destruction pure', pwn:'Destruction pure', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'kw', kw:'r', n:2, a:1, h:1 }] }, tx:'Deux de tes serviteurs gagnent Renaissance et +1/+1.' } },
-  dh_broly: {diff:2, stars:5, fam:DBV, pv:'d_sai', mc:'zk', n:'Broly', pwn:'Rage berserk', pw:{ k:'pzkall', a:1, h:1 }, tx:'Passif : après chaque combat perdu, tous tes serviteurs gagnent +1/+1.', q:{ k:'losses', n:3, tx:'Perdre 3 combats.' }, aw:{ nm:'Super Saiyan légendaire', pwn:'Légende', pw:{ k:'pzkall', a:2, h:1 }, tx:'Passif : après chaque combat perdu, tous tes serviteurs gagnent +2/+1.' } },
-  dh_c17: {diff:2, stars:4, fam:DBV, pv:'d_and', mc:'ad', n:'C-17', cost:2, pay:'g', pwn:'Charge explosive', pw:{ k:'multi', s:[{ k:'drgive', n:1, fx:{ k:'dr_dmg', d:3, n:1 } }] }, tx:'Un de tes serviteurs gagne « Râle d\'agonie : 3 dégâts à un ennemi ».', q:{ k:'drDie', n:10, tx:'Voir 10 de tes serviteurs mourir en combat.' }, aw:{ nm:'Barrière d\'énergie', pwn:'Barrière d\'énergie', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'drgive', n:2, fx:{ k:'dr_dmg', d:4, n:1 } }] }, tx:'Deux de tes serviteurs gagnent « Râle d\'agonie : 4 dégâts à un ennemi ».' } },
-  dh_gero: {diff:2, stars:3, fam:DBV, pv:'d_and', mc:'ad', n:'Dr Gero', cost:1, pay:'g', pwn:'Laboratoire', pw:{ k:'multi', s:[{ k:'card', tb:'d_and' }] }, tx:'Ajoute un Androïde de ton niveau à ta main.', q:{ k:'play', card:'d_and', n:5, tx:'Jouer 5 Androïdes.' }, aw:{ nm:'Laboratoire secret', pwn:'Laboratoire secret', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'card', tb:'d_and' }, { k:'buffall', tb:'d_and', a:1, h:1 }] }, tx:'Ajoute un Androïde à ta main ; tes Androïdes gagnent +1/+1.' } },
-  dh_babidi: {diff:3, stars:3, fam:DBV, pv:'d_maj', mc:'ab', n:'Babidi', cost:2, pay:'g', pwn:'Marque majin', pw:{ k:'multi', s:[{ k:'drgive', n:1, fx:{ k:'kill_absorb', a:2, h:2 } }] }, tx:'Un de tes serviteurs gagne « Absorption : quand il tue un ennemi en attaquant, +2/+2 pour ce combat ».', q:{ k:'play', card:'d_maj', n:4, tx:'Jouer 4 Majin.' }, aw:{ nm:'Réveil de Majin Buu', pwn:'Réveil de Buu', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'card', tb:'d_maj' }, { k:'drgive', n:1, fx:{ k:'kill_absorb', a:2, h:2 } }] }, tx:'Ajoute un Majin à ta main ; un de tes serviteurs gagne la marque majin.' } },
-  dh_raditz: {diff:1, stars:3, fam:DBV, pv:'d_sai', mc:'zk', n:'Raditz', cost:1, pay:'g', pwn:'Fierté du guerrier', pw:{ k:'multi', s:[{ k:'buffall', tb:'d_sai', a:1, h:0 }] }, tx:'Tes Saiyans gagnent +1/+0.', q:{ k:'play', card:'d_sai', n:4, tx:'Jouer 4 Saiyans.' }, aw:{ nm:'Assaut saiyan', pwn:'Assaut saiyan', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'buffall', tb:'d_sai', a:2, h:1 }] }, tx:'Tes Saiyans gagnent +2/+1.' } },
-  dh_cooler: {diff:3, stars:4, fam:DBV, pv:'d_and', mc:'tf', n:'Cooler', cost:1, pay:'g', pwn:'Quatrième forme', pw:{ k:'multi', s:[{ k:'tfbest', a:3, h:3 }] }, tx:'Ton serviteur le plus transformé gagne +3/+3.', q:{ k:'tfs', n:4, tx:'Réaliser 4 transformations.' }, aw:{ nm:'Méta-Cooler', pwn:'Méta-Cooler', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'tfbest', a:5, h:5 }] }, tx:'Ton serviteur le plus transformé gagne +5/+5.' } },
+  // ----- héros Dragon Ball (v2) : 10 archétypes originaux -----
+  dh_maitre: {diff:2, stars:4, fam:DBV, pv:'d_sai', mc:'tf', n:'Maître d\'arts martiaux', cost:1, pay:'g', pwn:'Dépasser ses limites', pw:{ k:'multi', s:[{ k:'tffree', n:1 }] }, tx:'Un de tes serviteurs passe gratuitement au palier de transformation suivant (sinon il gagne +2/+2).', q:{ k:'tfs', n:3, tx:'Réaliser 3 transformations.' }, aw:{ nm:'Ultra instinct', pwn:'Ultra instinct', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'tffree', n:2 }] }, tx:'Deux de tes serviteurs passent gratuitement au palier de transformation suivant (sinon +2/+2).' } },
+  dh_ange: {diff:1, stars:3, fam:DBV, pv:'d_ter', mc:'med', n:'Ange instructeur', pwn:'Entraînement divin', pw:{ k:'pmed', n:2, a:2, h:1 }, tx:'Passif : chaque serviteur qui médite rapporte 2 ki de plus et gagne +2/+1.', q:{ k:'kiSpent', n:12, tx:'Dépenser 12 ki.' }, aw:{ nm:'Instinct angélique', pwn:'Instinct angélique', pw:{ k:'pmed', n:3, a:3, h:3 }, tx:'Passif : chaque serviteur qui médite rapporte 3 ki de plus et gagne +3/+3.' } },
+  dh_ermite: {diff:2, stars:3, fam:DBV, pv:'d_ter', mc:'tk', n:'Ermite des arts', cost:1, pay:'g', pwn:'Enseignement', pw:{ k:'multi', s:[{ k:'tech', n:1 }, { k:'ki', n:1 }] }, tr:{ k:'ptkc', n:2 }, tx:'Ajoute une technique aléatoire à ta main et gagne 1 ki.', trx:'Tes techniques coûtent 2 ki de moins.', q:{ k:'casts', n:5, tx:'Lancer 5 techniques.' }, aw:{ nm:'Grand maître', pwn:'Technique secrète', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'tech', n:1 }, { k:'ki', n:2 }] }, tx:'Ajoute une technique aléatoire à ta main et gagne 2 ki.' } },
+  dh_gardien: {diff:2, stars:3, fam:DBV, pv:'d_nam', mc:'mt', n:'Gardien de la Terre', cost:1, pay:'g', pwn:'Disciple', pw:{ k:'multi', s:[{ k:'drgive', n:1, fx:{ k:'mentor', a:1, h:1, n:1 } }] }, tx:'Un de tes serviteurs gagne « Mentor : fin de tour, donne +1/+1 au serviteur à sa droite ».', q:{ k:'mentor', n:10, tx:'Entraîner 10 fois un serviteur.' }, aw:{ nm:'Palais céleste', pwn:'Palais céleste', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'drgive', n:1, fx:{ k:'mentor', a:2, h:2, n:2 } }] }, tx:'Un de tes serviteurs gagne « Mentor : fin de tour, donne +2/+2 aux serviteurs à côté de lui ».' } },
+  dh_commandant: {diff:2, stars:3, fam:DBV, pv:'d_fre', mc:'sd', n:'Commandant d\'armée', cost:2, pay:'g', pwn:'Renforts', pw:{ k:'multi', s:[{ k:'summon', card:'tk_sold', n:1 }, { k:'cardbuff', card:'tk_sold', a:1, h:1 }] }, tx:'Invoque un Soldat de Freezer, puis tes soldats gagnent +1/+1.', q:{ k:'allyDeaths', n:8, tx:'Voir 8 de tes serviteurs mourir en combat.' }, aw:{ nm:'Armée galactique', pwn:'Armée galactique', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'summon', card:'tk_sold', n:2 }, { k:'cardbuff', card:'tk_sold', a:1, h:1 }] }, tx:'Invoque 2 Soldats de Freezer, puis tes soldats gagnent +1/+1.' } },
+  dh_tyran: {diff:2, stars:4, fam:DBV, pv:'d_fre', mc:'dr', n:'Tyran de l\'espace', pwn:'Chair à canon', pw:{ k:'pdie', n:2 }, tx:'Passif : après chaque combat, gagne 1 or au prochain tour par serviteur allié mort (2 au plus).', q:{ k:'allyDeaths', n:10, tx:'Voir 10 de tes serviteurs mourir en combat.' }, aw:{ nm:'Empereur de l\'univers', pwn:'Empereur de l\'univers', pw:{ k:'pdie', n:4 }, tx:'Passif : après chaque combat, gagne 1 or au prochain tour par serviteur allié mort (4 au plus).' } },
+  dh_savant: {diff:2, stars:3, fam:DBV, pv:'d_and', mc:'ad', n:'Savant fou', cost:1, pay:'g', pwn:'Bombe intégrée', pw:{ k:'multi', s:[{ k:'drgive', n:1, fx:{ k:'dr_dmg', d:3, n:1 } }] }, tx:'Un de tes serviteurs gagne « Râle d\'agonie : 3 dégâts à un ennemi aléatoire ».', q:{ k:'drDie', n:10, tx:'Voir 10 de tes serviteurs mourir en combat.' }, aw:{ nm:'Laboratoire secret', pwn:'Autodestruction', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'drgive', n:2, fx:{ k:'dr_dmg', d:4, n:1 } }] }, tx:'Deux de tes serviteurs gagnent « Râle d\'agonie : 4 dégâts à un ennemi aléatoire ».' } },
+  dh_sorcier: {diff:3, stars:3, fam:DBV, pv:'d_and', mc:'ct', n:'Sorcier', cost:1, pay:'g', pwn:'Maléfice', pw:{ k:'multi', s:[{ k:'buffr', a:2, h:2, n:1 }, { k:'foechill', a:2, n:2 }] }, tx:'Un de tes serviteurs gagne +2/+2 ; prochain combat, 2 ennemis aléatoires perdent 2 attaque.', q:{ k:'wins', n:3, tx:'Gagner 3 combats.' }, aw:{ nm:'Grand sorcier', pwn:'Possession', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'buffr', a:3, h:3, n:1 }, { k:'foechill', a:3, n:3 }, { k:'foeseal', n:1 }] }, tx:'Un de tes serviteurs gagne +3/+3 ; prochain combat, 3 ennemis perdent 3 attaque et un ennemi perd ses mots-clés.' } },
+  dh_chasseur: {diff:1, stars:3, fam:DBV, pv:'d_ter', mc:'eco', n:'Chasseur de primes', cost:2, pay:'g', pwn:'Prime', pw:{ k:'multi', s:[{ k:'disc' }] }, tx:'Découvre un serviteur d\'un niveau au-dessus de ta taverne (un parmi trois).', q:{ k:'buys', n:7, tx:'Acheter 7 serviteurs.' }, aw:{ nm:'Chasseur légendaire', pwn:'Grosse prime', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'disc' }, { k:'g', n:1 }] }, tx:'Découvre un serviteur d\'un niveau au-dessus de ta taverne et récupère 1 or.' } },
+  dh_dieu: {diff:3, stars:4, fam:DBV, pv:'d_sai', mc:'ds', n:'Dieu de la destruction', cost:1, pay:'g', pwn:'Destruction', pw:{ k:'multi', s:[{ k:'sacr' }, { k:'buffhi', a:1, h:1 }] }, tx:'Détruis ton serviteur le plus faible : ton plus fort gagne son attaque, sa vie et +1/+1.', q:{ k:'hakai', n:4, tx:'Détruire 4 serviteurs.' }, aw:{ nm:'Hakai', pwn:'Hakai', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'sacr' }, { k:'buffhi', a:2, h:2 }, { k:'g', n:1 }] }, tx:'Détruis ton serviteur le plus faible : ton plus fort gagne ses stats et +2/+2, et tu récupères 1 or.' } },
 };
 // héros Ninja : le bonus (trx) s'ajoute au texte du pouvoir
 for (const h in HEROES) if (HEROES[h].trx && !HEROES[h].tx.includes(HEROES[h].trx)) HEROES[h].tx += ' Bonus : ' + HEROES[h].trx;
@@ -722,6 +727,15 @@ const ET = {
   rank:{ tr:'rank', l:'Rang (Genin → Jônin)', ps:['a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Rang : monte en grade à chaque victoire, ${sign(e.a * k, e.h * k)} (Chûnin, Jônin).` },
   soc_team:{ tr:'soc', l:'Équipe de 3', ps:['a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Équipe de 3 : entouré de son clan, l'équipe gagne ${sign(e.a * k, e.h * k)}.` },
   combo_kg:{ tr:'combo', l:'Kekkei genkai', ps:['a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k, id) => `Kekkei genkai : à chaque combo, ${sign(e.a * k, e.h * k)} par élément qui est une de ses natures.` },
+  tf_self:{ tr:'tfo', l:'Rivalité : grandir quand un allié se transforme', ps:['a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Rivalité : quand un autre de tes serviteurs se transforme, gagne ${sign(e.a * k, e.h * k)}.` },
+  pas_tfc:{ tr:'pas', l:'Transformations moins chères', ps:['n'], w:1.5, mag:e => e.n * 4, txt:(e, k) => `Tes transformations coûtent ${e.n * k} ki de moins.` },
+  pas_tkc:{ tr:'pas', l:'Techniques moins chères', ps:['n'], w:1.5, mag:e => e.n * 4, txt:(e, k) => `Tes techniques coûtent ${e.n * k} ki de moins.` },
+  eot_tfbuff:{ tr:'eot', l:'Renforcer les transformés', ps:['a', 'h'], w:1.2, mag:e => (e.a + e.h) * 3, txt:(e, k) => `Fin de tour : tes autres serviteurs transformés gagnent ${sign(e.a * k, e.h * k)}.` },
+  eot_genki:{ tr:'eot', l:'Genkidama', ps:['a', 'h'], w:1.2, mag:e => (e.a + e.h) * 4, txt:(e, k) => `Genkidama : fin de tour, gagne ${sign(e.a * k, e.h * k)} par autre serviteur sur ton plateau.` },
+  mentor:{ tr:'eot', l:'Mentor', ps:['a', 'h', 'n'], w:1.4, mag:e => (e.a + e.h) * (e.n || 1), txt:(e, k) => `Mentor : fin de tour, donne ${sign(e.a * k, e.h * k)} ${(e.n || 1) > 1 ? 'aux serviteurs à côté de lui' : 'au serviteur à sa droite'}.` },
+  eot_mentor_all:{ tr:'eot', l:'Maître des mentors', ps:[], w:1, mag:() => 10, txt:() => 'Fin de tour : tes autres Mentors entraînent une fois de plus.' },
+  soc_ginyu:{ tr:'soc', l:'Commando Ginyu', ps:['a', 'h'], w:1, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Commando Ginyu : début du combat, gagne ${sign(e.a * k, e.h * k)} par membre du commando allié (Guldo, Recoome, Burter, Jeice).` },
+  dr_aoe:{ tr:'dr', l:'Autodestruction : dégâts à tous', ps:['d'], w:0.9, mag:e => e.d * 4, txt:(e, k) => `Autodestruction : en mourant, inflige ${e.d * k} dégât${e.d * k > 1 ? 's' : ''} à tous les ennemis.` },
   zenkai:{ tr:'zk', l:'Zenkai', ps:['a', 'h'], w:1.3, mag:e => (e.a + e.h) * 3, txt:(e, k) => `Zenkai : après chaque combat perdu, et s'il est mort au combat, gagne ${sign(e.a * k, e.h * k)}.` },
   zenkai_all:{ tr:'zk', l:'Zenkai des Saiyans', ps:['a', 'h'], w:1, mag:e => (e.a + e.h) * 6, txt:(e, k) => `Zenkai : après chaque combat perdu, tes autres Saiyans gagnent ${sign(e.a * k, e.h * k)}.` },
   tf:{ tr:'tf', l:'Transformation', ps:[], w:1.2, mag:() => 6, txt:(e, k) => 'Transformation : ' + e.st.map(t => `${t.nm} (${t.c} ki) +${t.a * k}/+${t.h * k}${t.kw ? ', ' + ((SET.kw[t.kw] || {}).n || '') : ''}`).join(' → ') + '. ' + ({ colere:'Coûte 2 ki de moins si un allié est mort au dernier combat.', defaite:'Coûte 2 ki de moins après une défaite.', victoire:'Coûte 2 ki de moins après une victoire.' }[e.cond] || '') },
@@ -845,6 +859,11 @@ function runRecruit0(G, p, m, e, ctx) {
     case 'up_buff_all': p.bd.forEach(x => { if (tribeOk(x, e.tb)) buff(x, A, Hh); }); break;
     case 'eot_fireball': p.fb = (p.fb || 3) + e.n * k; break;
     case 'eot_ki': kiAdd(p, e.n * k); break;
+    case 'mentor': { const i = p.bd.indexOf(m), ts = (e.n || 1) > 1 ? [p.bd[i - 1], p.bd[i + 1]] : [p.bd[i + 1]]; ts.forEach(x => { if (x) { buff(x, A, Hh); qAdd(p, 'mentor'); } }); break; }
+    case 'eot_mentor_all': p.bd.forEach(o => { if (o !== m) fxOf(o, 'eot').filter(f => f.k === 'mentor').forEach(f => runRecruit(G, p, o, f)); }); break;
+    case 'eot_tfbuff': p.bd.forEach(o => { if (o !== m && o.tf) buff(o, A, Hh); }); break;
+    case 'eot_genki': { const n = p.bd.filter(o => o !== m).length; if (n) buff(m, A * n, Hh * n); break; }
+    case 'tf_self': buff(m, A, Hh); break;
     case 'bc_item': for (let i = 0; i < e.n * k; i++) if (p.hd.length < 10) p.hd.push({ sp:e.it, u:UID++ }); break;
     case 'bc_namek': for (let i = 0; i < e.n; i++) { const o = p.bd.filter(x => x !== m && tribeOk(x, 'd_nam')); if (!o.length) break; absorbInto(p, m, o.reduce((b, x) => x.a + x.h < b.a + b.h ? x : b), 'Fusion namek'); qAdd(p, 'fusions'); } break;
     case 'bc_absorb': for (let i = 0; i < e.n; i++) { const o = p.bd.filter(x => x !== m); if (!o.length) break; absorbInto(p, m, o.reduce((b, x) => x.a + x.h < b.a + b.h ? x : b), 'Absorption'); qAdd(p, 'absorbs'); } break;
@@ -856,6 +875,9 @@ function runRecruit0(G, p, m, e, ctx) {
 }
 // ----- univers Dragon Ball : ki, absorption, transformations, zenkai -----
 const KI_MAX = 15;
+const GINYU = ['d_guldo', 'd_recoome', 'd_burter', 'd_jeice'];
+const pasN = (p, k) => (p.bd || []).reduce((s, m) => s + fxOf(m, 'pas').filter(e => e.k === k).reduce((a, e) => a + e.n * mult(m), 0), 0);
+const kiCost = (p, S) => Math.max(0, (S.kc || 0) - pasN(p, 'pas_tkc') - ((htr(p, 'ptkc') || {}).n || 0));
 function kiAdd(p, n) { p.ki = Math.min(KI_MAX, (p.ki || 0) + n); }
 // absorber un serviteur : on récupère ses stats, ses mots-clés et ses effets (sauf ses absorptions, pour ne pas boucler)
 function absorbInto(p, m, v, src) {
@@ -869,12 +891,14 @@ function absorbInto(p, m, v, src) {
   m.abs = (m.abs || 0) + 1;
 }
 const tfOf = m => (CD(m.c).fxAll || []).find(e => e.k === 'tf');
-function tfCost(p, m) { const T = tfOf(m); if (!T) return null; const st = T.st[m.tf || 0]; if (!st) return null; const ok = T.cond === 'colere' ? (p.dbDied || 0) > 0 : T.cond === 'defaite' ? p.dbRes === 'loss' : T.cond === 'victoire' ? p.dbRes === 'win' : false; const pt = htr(p, 'ptf'); return Math.max(0, st.c - (ok ? 2 : 0) - (pt ? pt.n || 1 : 0)); }
+function tfCost(p, m) { const T = tfOf(m); if (!T) return null; const st = T.st[m.tf || 0]; if (!st) return null; const ok = T.cond === 'colere' ? (p.dbDied || 0) > 0 : T.cond === 'defaite' ? p.dbRes === 'loss' : T.cond === 'victoire' ? p.dbRes === 'win' : false; const pt = htr(p, 'ptf'); return Math.max(0, st.c - (ok ? 2 : 0) - (pt ? pt.n || 1 : 0) - pasN(p, 'pas_tfc')); }
 function doTransform(p, m) {
   const T = tfOf(m); if (!T) return false; const st = T.st[m.tf || 0]; if (!st) return false;
   const k = mult(m); m.tf = (m.tf || 0) + 1; m.tfn = st.nm;
   withSrc('Transformation · ' + st.nm, () => { buff(m, st.a * k, st.h * k); if (st.kw) addF(m, st.kw); });
-  qAdd(p, 'tfs'); return true;
+  qAdd(p, 'tfs');
+  p.bd.forEach(o => { if (o !== m) fxOf(o, 'tfo').forEach(e => runRecruit(H.G, p, o, e)); });
+  return true;
 }
 // après chaque combat : Zenkai des Saiyans
 function zenkaiAfter(p, lost, deadIds) {
@@ -959,7 +983,8 @@ function runCombat(S, s, m, e, pos, ctx) {
       for (let i = 0; i < n && o.length; i++) { const j = R(o.length); simDamage(S, o[j], e.d * k, null); o.splice(j, 1); } break;
     }
     case 'soc_self_el': { const n = elems(al); buff(m, A * n, Hh * n); break; }
-    case 'soc_aoe': en.filter(x => x.h > 0).forEach(x => simDamage(S, x, e.d * k, null)); break;
+    case 'soc_aoe': case 'dr_aoe': en.filter(x => x.h > 0).forEach(x => simDamage(S, x, e.d * k, null)); break;
+    case 'soc_ginyu': { const n = al.filter(x => x !== m && (S.pre || x.h > 0) && GINYU.includes(x.c)).length; if (n) buff(m, A * n, Hh * n); break; }
     case 'soc_fire_tb': { const n = al.filter(x => (S.pre || x.h > 0) && tribeOk(x, 'n_feu')).length * (e.d || 1) * k; for (let i = 0; i < n; i++) { const o = en.filter(x => x.h > 0); if (!o.length) break; simDamage(S, o[R(o.length)], 1, m); } break; }
     case 'soc_avalanche': { const o = en.filter(x => x.h > 0); if (o.length) simDamage(S, o[R(o.length)], Math.max(1, Math.floor((S.pre && m.h0 != null ? m.h0 : m.h) / 4)), m); break; }
     case 'soc_gate': { const d = Math.min(m.h - 1, (e.d || 0) * k); if (d > 0) m.h -= d; m.a += (e.a || 0) * k; break; }
@@ -1527,7 +1552,7 @@ function powStepCan(p, s) {
     case 'tffree': case 'rage': return (p.bd || []).length > 0;
     case 'absorbw': return (p.bd || []).length > 1;
     case 'tfbest': return (p.bd || []).length > 0;
-    case 'item': case 'itemr': return (p.hd || []).length < 10;
+    case 'item': case 'itemr': case 'disc': return (p.hd || []).length < 10 && !p.disc;
     case 'seal': case 'sealhi': case 'drgive': case 'kggive': case 'sacr': return (p.bd || []).length > (s.k === 'sacr' ? 1 : 0);
     case 'pact': return (p.bd || []).length < 7;
     case 'cardset': case 'kgcard': return (p.hd || []).length < 10;
@@ -1572,7 +1597,10 @@ function powStep(G, p, s) {
     case 'pactbuff': p.bd.filter(isPact).forEach(m => buff(m, s.a || 0, s.h || 0)); break;
     case 'cardset': if (p.hd.length < 10) { const ids = (s.set === 'pact' ? NJ_PACTM : NJ_KG).filter(id => C[id] && C[id].t <= Math.max(p.t, 2)); const c = ids.filter(id => G.pool[id] > 0); const id = pickR(c.length ? c : ids); if (id) { if (G.pool[id] > 0) G.pool[id]--; p.hd.push(mk(id, 0)); } } break;
     case 'drgive': shuffle(p.bd.slice()).slice(0, N).forEach(m => { (m.x = m.x || []).push(Object.assign({ src:'Pouvoir de ' + HEROES[p.hero].n.split(' ')[0] }, s.fx)); }); break;
-    case 'sacr': { if (p.bd.length < 2) break; const v = x => x.a + x.h, lo = p.bd.reduce((b, x) => v(x) < v(b) ? x : b), hi = p.bd.filter(x => x !== lo).reduce((b, x) => v(x) > v(b) ? x : b); p.bd.splice(p.bd.indexOf(lo), 1); toPool(G, lo); buff(hi, lo.a, lo.h); break; }
+    case 'foechill': p.foe = p.foe || {}; p.foe.chill = (p.foe.chill || []).concat(Array(s.n || 1).fill(s.a || 1)); break;
+    case 'foeseal': p.foe = p.foe || {}; p.foe.seal = (p.foe.seal || 0) + (s.n || 1); break;
+    case 'disc': { const tt = Math.min(6, p.t + 1), opts = []; for (let i = 0; i < 3; i++) { const m = drawOne(G, 6, tt) || drawAny(tt); if (m) opts.push(m); } if (opts.length) p.disc = opts; break; }
+    case 'sacr': { qAdd(p, 'hakai'); if (p.bd.length < 2) break; const v = x => x.a + x.h, lo = p.bd.reduce((b, x) => v(x) < v(b) ? x : b), hi = p.bd.filter(x => x !== lo).reduce((b, x) => v(x) > v(b) ? x : b); p.bd.splice(p.bd.indexOf(lo), 1); toPool(G, lo); buff(hi, lo.a, lo.h); break; }
     case 'upd': p.uc = Math.max(0, p.uc - N); break;
     case 'spd': p.spd = (p.spd || 0) + N; break;
     case 'awkall': p.bd.forEach(m => { if (m.awk) { const md = (CD(m.c).fxAll || []).find(f => f.k === 'ckm'); if (md) withSrc('Éveil · ' + CD(m.c).n, () => runMode(G, p, m, md.m)); } }); break;
@@ -1687,7 +1715,7 @@ function aiTurn(G, p) {
     if (p.t < 6 && p.g >= c && (G.rd >= targetRound[p.t] || p.g - c >= 3)) { OPS.up(G, p); acted = true; continue; }
     const hc = HX(p) && HX(p).cost;
     const nonoWait = p.hero === 'nono' && (G.rd < 3 || ((p.fb || 1) < 4 && G.rd < 9));
-    if (hc && !nonoWait && !p.pu && !p.aiSave && (heroKi(p) ? (p.ki || 0) >= hc : heroCk(G, p) ? (p.ck || 0) >= hc : p.g >= hc && p.g - hc >= 3) && (p.bd.length || p.hero === 'oren' || p.hero === 'nono')) { if (OPS.pow(G, p)) { acted = true; continue; } }
+    if (hc && !nonoWait && !p.pu && !p.aiSave && (heroKi(p) ? (p.ki || 0) >= hc : heroCk(G, p) ? (p.ck || 0) >= hc : p.g >= hc && p.g - hc >= 3) && (p.bd.length || p.hero === 'oren' || p.hero === 'nono')) { if (OPS.pow(G, p)) { if (p.disc) OPS.pick(G, p, { i:aiBestIndex(p, p.disc) }); acted = true; continue; } }
     aiPlayAll(G, p);
     if (p.g >= 3 && p.sh.length) {
       let bi = 0; p.sh.forEach((m, i) => { if (aiScore(p, m) > aiScore(p, p.sh[bi])) bi = i; });
@@ -1709,7 +1737,7 @@ function aiTurn(G, p) {
   aiPlayAll(G, p); aiSpells(G, p);
   if (inMechAny(G, 'ki')) {
     for (let g = 0; g < 7; g++) { const i = p.bd.findIndex(m => { const c = tfCost(p, m); return c != null && (p.ki || 0) >= c; }); if (i < 0) break; OPS.tf(G, p, { i }); }
-    const want = p.bd.some(m => tfOf(m) && tfCost(p, m) != null) && p.bd.length >= 4;
+    const want = (p.bd.some(m => tfOf(m) && tfCost(p, m) != null) || p.hd.some(x => x.sp && SPELLS[x.sp] && SPELLS[x.sp].kc > (p.ki || 0)) || htr(p, 'pmed')) && p.bd.length >= 4;
     p.bd.forEach(m => { m.med = 0; });
     if (want) { const c = p.bd.filter(m => !tfOf(m) || tfCost(p, m) == null).sort((x, y) => (x.a + x.h) - (y.a + y.h))[0]; if (c) c.med = 1; }
   }
@@ -1734,7 +1762,7 @@ function startRecruit() {
     if (p.inc && p.inc.length) p.g += p.inc.shift() || 0;
     { const w = /^(nh|dh)_/.test(p.hero || '') ? htr(p, 'pturn') : (pwOf(p) && pwOf(p).k === 'pturn' ? null : null); if (w) { if (w.g) p.g += w.g; if (w.ki) kiAdd(p, w.ki); if (w.ck) p.ck = Math.min(ckMax(p), (p.ck || 0) + w.ck); if ((w.h || w.a) && p.bd.length) { if (w.all) p.bd.forEach(m => buff(m, w.a || 0, w.h || 0)); else buff(pickR(p.bd), w.a || 0, w.h || 0); } if (w.el) mkAdd(p, w.el, w.n); const src = 'Pouvoir de ' + HEROES[p.hero].n.split(' ')[0]; if (w.sl) shuffle(p.bd.slice()).slice(0, w.sl).forEach(m => sealAdd(p, m, 1)); if (w.drp) withSrc(src, () => { const o = p.bd.filter(m => !(m.x || []).some(e => e.drp)); shuffle(o).slice(0, w.drp).forEach(t => (t.x = t.x || []).push({ k:'dr_summon', card:'tk_puppet', n:1, drp:1, src:'Sasori' })); }); if (w.pa) withSrc(src, () => { const a = p.bd.filter(isPact); if (a.length) a.forEach(m => buff(m, 1, 1)); else pactSummon(p, 'tk_toad', p.bd[p.bd.length - 1]); }); if (w.dr) withSrc(src, () => p.bd.forEach(m => { if (fxOf(m, 'dr').length) buff(m, w.dr, 0); })); } p.spd = 0; }
     trigBoard(G, p, 'sot'); checkTriple(G, p);
-    if (inMechAny(G, 'ki')) { let n = 0; const pm = htr(p, 'pmed'); p.bd.forEach(m => { if (m.med) { n += tierOf(m) * (m.g ? 2 : 1) + (pm ? pm.n || 1 : 0); m.med = 0; } }); if (n) { kiAdd(p, n); p.kiGain = n; } else p.kiGain = 0; }
+    if (inMechAny(G, 'ki')) { let n = 0; const pm = htr(p, 'pmed'); p.bd.forEach(m => { if (m.med) { n += tierOf(m) * (m.g ? 2 : 1) + (pm ? pm.n || 1 : 0); if (pm && (pm.a || pm.h)) withSrc('Entraînement divin', () => buff(m, pm.a || 0, pm.h || 0)); m.med = 0; } }); if (n) { kiAdd(p, n); p.kiGain = n; } else p.kiGain = 0; }
     p.mkt = 0; p.cdbl = 0; p.hruse = 0;
     if (inMechAny(G, 'ames') && (p.souls || 0) >= 3) { const k = Math.floor(p.souls / 3); p.souls -= k * 3; withSrc('Moisson d\'âmes', () => p.bd.forEach(m => { if (inMech(G, 'ames', m)) buff(m, k, k); })); }
     if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; p.ck = Math.min(ckMax(p), (p.ck || 0) + n); mkSync(p); if ((p.ck || 0) >= 10) qAdd(p, 'ckFull'); }
@@ -1857,7 +1885,7 @@ function chakraSteal(p, q, pb, qb, r) {
   return [a, b];
 }
 function lawsAfterFight(G, p, r, side) {
-  if (inMechAny(G, 'ki')) { const lost = r.w === 1 - side; p.dbRes = r.w === side ? 'win' : lost ? 'loss' : 'draw'; p.dbDied = (r.dead[side] || []).length; qAdd(p, 'allyDeaths', p.dbDied); if (lost) qAdd(p, 'losses'); zenkaiAfter(p, lost || r.w === -1, r.dead[side] || []); }
+  if (inMechAny(G, 'ki')) { const lost = r.w === 1 - side; p.dbRes = r.w === side ? 'win' : lost ? 'loss' : 'draw'; p.dbDied = (r.dead[side] || []).length; qAdd(p, 'allyDeaths', p.dbDied); if (lost) qAdd(p, 'losses'); zenkaiAfter(p, lost || r.w === -1, r.dead[side] || []); const pd = htr(p, 'pdie'); if (pd && p.dbDied) { p.inc = p.inc || []; p.inc[0] = (p.inc[0] || 0) + Math.min(pd.n || 2, p.dbDied); } }
   qAdd(p, 'drDie', (r.dead[side] || []).length); if (r.w === side) { p.wst = (p.wst || 0) + 1; qAdd(p, 'wins'); qSet(p, 'streak', p.wst); } else p.wst = 0;
   if (inMechAny(G, 'ames')) { const n = r.dead[side].filter(c => C[c] && G.mx.ames.includes(C[c].tr)).length; if (n) p.souls = (p.souls || 0) + n; }
   if (G.mx && G.mx.pillage && r.w === side && r.alive[side].some(c => C[c] && G.mx.pillage.includes(C[c].tr)) && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) { p.hd.push(sp); p.loot = (p.loot || 0) + 1; } }

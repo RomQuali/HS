@@ -134,7 +134,7 @@ function tokenH(m, z, i, o = {}) {
   const up = (v, base) => v > base * (g ? 3 : 1) ? ' up' : '';
   const svg = `<svg class="mn-svg" viewBox="-4 -6 108 132" aria-hidden="true">`
     + (f.includes('t') ? '<use href="#tk-taunt"/>' : '')
-    + `<use href="#tk-frame${g ? '-g' : ''}"/><g clip-path="url(#tk-clip)"><use href="#art-${m.c}" x="12" y="9.5" width="76" height="91.5"/></g><use href="#tk-rim"/>`
+    + `<use href="#tk-frame${g ? '-g' : ''}"/><g clip-path="url(#tk-clip)"><use href="#art-${artOf(m)}" x="12" y="9.5" width="76" height="91.5"/></g><use href="#tk-rim"/>`
     + (f.includes('s') ? `<g class="bubg"><use class="bub" href="#tk-shield"/><path class="bub-run" pathLength="100" d="${SHIELD_D}"/></g>` : '')
     + (b.t && z === 'sh' ? `<g class="tflag"><path d="M37 -6 H63 V17 L50 12 L37 17 Z" fill="#4a4044" stroke="#0c0808" stroke-width="2"/><path d="M39.5 -4 H60.5 V14 L50 10 L39.5 14 Z" fill="none" stroke="#ffb050" stroke-width="1.2"/>${Array.from({ length:b.t }, (_, k) => { const row = k < 3 ? 0 : 1, n = row ? b.t - 3 : Math.min(3, b.t), j = row ? k - 3 : k; return `<text x="${f1(50 + (j - (n - 1) / 2) * 6.4)}" y="${row ? 9 : 2.6}" font-size="7" text-anchor="middle" fill="#ffd27a">★</text>`; }).join('')}</g>` : '')
     + ics.map(([ic, col, nm], k) => { const a = KW_ANG[k] * Math.PI / 180; return `<g class="kwi" transform="translate(${f1(50 + 51 * Math.sin(a))} ${f1(55 - 58 * Math.cos(a))})"><title>${nm}</title><circle r="8.4" fill="#1b120b" stroke="${col}" stroke-width="1.8"/><use href="#ic-${ic}" x="-5.6" y="-5.6" width="11.2" height="11.2" style="color:${col}"/></g>`; }).join('')
@@ -165,7 +165,7 @@ function cardH(m, z, i, o = {}) {
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
   const up = (v, base) => v > base * (g ? 3 : 1) ? ' up' : '';
   return `<div class="cd${g ? ' g' : ''}${sel ? ' sel' : ''}${m.tr ? ' newgold' : ''}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">`
-    + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-${m.c}" y="-4" width="100" height="100"/></svg></div>`
+    + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-${artOf(m)}" y="-4" width="100" height="100"/></svg></div>`
     + (b.t ? `<div class="cd-tier" aria-label="Niveau ${b.t}">${'<i></i>'.repeat(b.t)}</div>` : '')
     + `<div class="cd-nm"><span>${esc(b.n)}</span></div>${(() => { const t = cardTextH(m.c, g), n = t.replace(/<[^>]+>/g, '').length; return `<div class="cd-tx${n > 95 ? ' xlong' : n > 62 ? ' long' : ''}">${t}</div>`; })()}`
     + (b.tr !== 'neu' && trName(b.tr) ? `<div class="cd-tb">${esc(b.tr2 && trName(b.tr2) ? trName(b.tr).replace(/^Clan /, '') + ' + ' + trName(b.tr2).replace(/^Clan /, '') : trName(b.tr))}</div>` : b.tok ? '<div class="cd-tb">Jeton</div>' : '')
@@ -326,10 +326,9 @@ const NJ_VIC = { n_feu:'🔥', n_vent:'🏜️', n_eau:'🌫️', n_foudre:'⚡'
 function dbCardH() {
   const row = (ic, col, t, x) => `<span class="nj-r"><i class="nj-i" style="--c:${col}"><span class="nj-tx">${ic}</span></i><span><b>${t}</b><small>${x}</small></span></span>`;
   return `<span class="ban-law nj-law"><b>Les nouvelles mécaniques</b>
-    ${row('☯', '#1e4a6a', 'Le ki', 'Clique sur ☯ pour mettre un serviteur en méditation : il ne combat pas au prochain combat, mais te rapporte autant de ki que son niveau.')}
-    ${row('⚡', '#6a4a12', 'Les transformations', 'Certains serviteurs se transforment par paliers (Super Saiyan, puis 2, puis 3…) en payant du ki : gros bonus de stats et parfois un mot-clé. Moins cher si leur condition est remplie (colère, défaite, victoire).')}
-    ${row('✦', '#3a2a5a', 'Les objets', 'L\'étagère de la taverne vend des objets : Haricot magique, Boucles Potara (fusion), Radar du dragon, Salle de gravité…')}
-    ${row('♛', '#5a2a2a', 'Les familles', 'Saiyans (Zenkai), Terriens (soutien), Namekiens (fusion namek), Androïdes (absorption d\'énergie, autodestruction), Majin (absorption).')}
+    ${row('☯', '#1e4a6a', 'Le ki', 'Clique sur ☯ pour faire méditer un serviteur : il ne combat pas au prochain combat, mais te rapporte autant de ki que son niveau.')}
+    ${row('⚡', '#6a4a12', 'Les transformations', 'Goku, Vegeta, Cell, Freezer… se transforment par paliers en payant du ki : Super Saiyan, puis 2, puis 3. Gros bonus de stats, parfois un mot-clé.')}
+    ${row('✦', '#3a2a5a', 'Les techniques', 'Kaméhaméha, Final Flash, Death Ball… s\'achètent en or et se lancent avec du ki. Signature : bonus en plus si tu la lances sur son propriétaire.')}
   </span>`;
 }
 function ninjaCardH() {

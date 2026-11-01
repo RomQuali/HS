@@ -801,6 +801,7 @@ function rebuildArt() {
   const keys = {}; for (const id in C) keys[id] = JSON.stringify([C[id].tr, C[id].art || null]);
   if (bg !== DYN_BG || !DYN.firstChild) {
     let s = bg; for (const id in C) s += artSymbol('art-' + id, C[id].tr, C[id].art, id);
+    for (const id in ART) { const b = id.replace(/_tf\d$/, ''); if (b !== id && C[b]) s += artSymbol('art-' + id, C[b].tr, { f:'base', id }, id); }
     DYN.innerHTML = `<svg width="0" height="0" focusable="false"><defs>${s}${Object.values(SOFT).join('')}</defs></svg>`;
     DYN_BG = bg; DYN_KEYS = keys; return;
   }

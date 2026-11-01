@@ -418,6 +418,7 @@ const AN_VIL = {
   d_nam:{ vest:'#5a3a8a', band:'#2a2a34', shirt:'#2a2a3a', g:'' },
   d_and:{ vest:'#3a5a8a', band:'#2a2a34', shirt:'#d8d6cc', g:'' },
   d_maj:{ vest:'#2a2a34', band:'#2a2a34', shirt:'#e8d8a8', g:'' },
+  d_fre:{ vest:'#4a3a6a', band:'#2a2a34', shirt:'#2a2a3a', g:'' },
 };
 function animeNinja(o) {
   const V = AN_VIL[o.tr] || AN_VIL.n_feu, sk = o.skin, skS = shade(sk, -0.2), hr = o.hair, hrS = shade(hr, -0.32), hrL = shade(hr, 0.4);
@@ -560,10 +561,24 @@ function dbFor(id) {
 }
 (function () {
   for (const id in (typeof DEFAULT_CARDS !== 'undefined' ? DEFAULT_CARDS : {})) if (/^d_[a-z][0-9]+$/.test(id)) { const f = dbFor(id); if (f) ART[id] = f; }
-  // portraits provisoires des héros Dragon Ball (en attendant les images)
-  if (typeof HEROES !== 'undefined') for (const id in HEROES) if (/^dh_/.test(id) && !HART[id]) {
-    const H0 = HEROES[id], tr = H0.pv || 'd_ter'; let h = 7; for (const c of id) h = (h * 31 + c.charCodeAt(0)) >>> 0;
-    const o = { tr, seed:h, noband:1, skin:tr === 'd_nam' ? '#7ac04a' : tr === 'd_maj' ? '#f0a0c0' : AN_SK[h % 5], hair:tr === 'd_sai' ? '#1e1a22' : AN_HR[h % AN_HR.length], iris:'#3a2a1a', hs:tr === 'd_sai' ? 'wild' : 'short', eyes:'round', brow:'stern', mouth:'smirk', rank:3, armor:tr === 'd_sai', antenna:tr === 'd_nam', bald:tr === 'd_nam' || tr === 'd_maj', pinkcurl:tr === 'd_maj', cyber:tr === 'd_and' };
-    HART[id] = () => `<rect width="100" height="100" fill="#2a1a10"/>` + animeNinja(o);
+  // héros Dragon Ball : archétypes originaux (aucun personnage connu)
+  const ARCH = {
+    dh_maitre:{ tr:'d_ter', skin:'#a8714f', hair:'#1e1a22', hs:'short', brow:'stern', mouth:'neutral', rank:3, scar:1, aura:'#ffcf3a' },
+    dh_ange:{ tr:'d_nam', skin:'#f6d7bc', hair:'#e8e4d8', hs:'long', brow:'soft', mouth:'smirk', rank:4, aura:'#ffffff', eyes:'glow', glow:'#fff6c0' },
+    dh_ermite:{ tr:'d_ter', skin:'#e2b089', hair:'#c8ccd4', hs:'bun', brow:'soft', mouth:'grin', rank:2, beard:1 },
+    dh_gardien:{ tr:'d_nam', skin:'#c98e66', hair:'#3a2416', hs:'short', brow:'norm', mouth:'neutral', rank:4, turban:'#f0ece0' },
+    dh_commandant:{ tr:'d_fre', skin:'#f0c8a6', hair:'#6a3a1e', hs:'short', brow:'stern', mouth:'frown', rank:2, armor:1, scar:1 },
+    dh_tyran:{ tr:'d_fre', skin:'#f6d7bc', hair:'#a8361e', hs:'swept', brow:'stern', mouth:'smirk', rank:4, armor:1, eyes:'glow', glow:'#ff5a3a' },
+    dh_savant:{ tr:'d_and', skin:'#f0c8a6', hair:'#3a2416', hs:'wild', brow:'norm', mouth:'grin', rank:2, cyber:1 },
+    dh_sorcier:{ tr:'d_and', skin:'#e2b089', hair:'#2a3a5a', hs:'long', brow:'stern', mouth:'smirk', rank:4, hood:'#3a1a4a', eyes:'glow', glow:'#c88aff' },
+    dh_chasseur:{ tr:'d_ter', skin:'#c98e66', hair:'#4a2a1a', hs:'pony', brow:'stern', mouth:'neutral', rank:2, scar:1 },
+    dh_dieu:{ tr:'d_sai', skin:'#8a5a3c', hair:'#1e1a22', hs:'short', bald:1, brow:'stern', mouth:'neutral', rank:4, aura:'#b48cff', eyes:'glow', glow:'#d8b8ff' },
+  };
+  for (const id in ARCH) { let h = 7; for (const c of id) h = (h * 31 + c.charCodeAt(0)) >>> 0; const o = Object.assign({ seed:h, noband:1, iris:'#3a2a1a', eyes:'round' }, ARCH[id]); HART[id] = () => `<rect width="100" height="100" fill="#2a1a10"/>` + animeNinja(o); }
+  // cartes Dragon Ball : en attendant tes images, un médaillon neutre (couleur de la famille, étoiles du niveau)
+  for (const id in (typeof DEFAULT_CARDS !== 'undefined' ? DEFAULT_CARDS : {})) if (/^(d_[a-z]+[0-9]*|tk_saiba|tk_sold)$/.test(id) && !/^d_[a-z][0-9]+$/.test(id)) {
+    const b = DEFAULT_CARDS[id], col = (SET.tribes.find(x => x.id === b.tr) || {}).col || '#e8701a', nT = Math.max(1, b.t || 1);
+    const stars = Array.from({ length:nT }, (_, k) => { const a = -Math.PI / 2 + k * 2 * Math.PI / nT, r = nT > 1 ? 9 : 0; return `<path d="${starD(50 + Math.cos(a) * r, 52 + Math.sin(a) * r, 4.6, 2, 5)}" fill="#c8301a"/>`; }).join('');
+    ART[id] = () => `<rect width="100" height="100" fill="${col}"/><circle cx="50" cy="52" r="26" fill="#ffb02a" stroke="#7a3a08" stroke-width="2.4"/><circle cx="42" cy="44" r="7" fill="#ffe6a0" opacity=".7"/>${stars}`;
   }
 })();
