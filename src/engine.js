@@ -1234,6 +1234,7 @@ const OPS = {
   pow0(G, p) {
     const h = HEROES[p.hero]; if (!h || !h.cost || p.pu || powPurse(G, p) < h.cost) return false;
     if (h.pw && !powRun(G, p, h.pw)) return false;
+    { const el = inMechAny(G, 'chakra') && h.fam && CLAN_EL[h.fam[0]]; if (el && typeof rsvFill === 'function') withSrc('Réservoir', () => rsvFill(G, p, el)); }
     if (heroCk(G, p)) p.ckSpent = 1;
     if (p.hero === 'egide') { const c = p.bd.filter(m => !has(m, 's')); if (!c.length) return false; addF(pickR(c), 's'); }
     if (p.hero === 'ondine') { if (!p.bd.length) return false; buff(pickR(p.bd), 1, 2); }

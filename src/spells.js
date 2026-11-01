@@ -520,31 +520,37 @@ const AWK_TECH = {};
 for (const id in AWK_TECH0) if (!(SPELLS[id] && SPELLS[id].awk)) AWK_TECH[id] = AWK_TECH0[id];
 for (const id in SPELLS) if (SPELLS[id].awk) AWK_TECH[id] = [SPELLS[id].awk.tx, (G, p, t, tg) => techSteps(G, p, SPELLS[id].awk.fx, t, tg, 1)];
 const PURES = {
-  feu:{ n:'Brasier', col:'#ff5a1a', fx:{ k:'soc_dmg', d:4, n:2 } },
-  vent:{ n:'Typhon', col:'#6fd8a0', fx:{ k:'atk_self', a:2, h:2 } },
-  eau:{ n:'Marée haute', col:'#4ab0e8', fx:{ k:'surv_self', a:3, h:3 } },
-  foudre:{ n:'Surcharge', col:'#ffd23a', fx:{ k:'atk_zap', d:3, n:2 } },
-  terre:{ n:'Rempart', col:'#c8a878', fx:{ k:'eot_self', a:1, h:3 } },
+  feu:{ n:'Grande explosion', col:'#ff5a1a', fx:{ k:'soc_dmg', d:4, n:2 } },
+  vent:{ n:'Bouclier de sable géant', col:'#d8b878', fx:{ k:'atk_self', a:2, h:2 } },
+  eau:{ n:'Renaissance de la Brume', col:'#4ab0e8', fx:{ k:'surv_self', a:3, h:3 } },
+  foudre:{ n:'Libération de la bête', col:'#8a7ad8', fx:{ k:'atk_zap', d:3, n:2 } },
+  terre:{ n:'Avalanche', col:'#c8a878', fx:{ k:'eot_self', a:1, h:3 } },
 };
 const tmaAdd = (p, a, h) => { p.tma = { a:((p.tma && p.tma.a) || 0) + a, h:((p.tma && p.tma.h) || 0) + h }; };
 const ctrAdd = (p, k, n) => { p[k] = (p[k] || 0) + n; };
 // effet immédiat de chaque combo (texte + action)
+// combos du réservoir (univers Ninja) : ils renforcent les deux villages concernés ; ×1 / ×2 / ×3 selon le niveau de taverne
+const cmx = p => (p.t || 1) <= 2 ? 1 : (p.t || 1) <= 4 ? 2 : 3;
+const cSum = (p, card, n) => { for (let i = 0; i < n; i++) if (p.bd.length < 7) recruitSummon(p, card, 0, p.bd[p.bd.length - 1]); };
+const cTmp = (m, kw) => { m.tmp = { a:(m.tmp && m.tmp.a) || 0, h:(m.tmp && m.tmp.h) || 0, f:((m.tmp && m.tmp.f) || '') + kw, s:BSRC || 'Combo' }; };
+const cVil = (p, tb, a, h) => p.bd.filter(m => tribeOk(m, tb)).forEach(m => buff(m, a, h));
+const cPup = (p, a, h) => p.bd.filter(m => m.c === 'tk_puppet').forEach(m => buff(m, a, h));
 const COMBO_BD = {
-  'Glace':        ['Tes serviteurs gagnent +0/+2 ; l\'un d\'eux gagne Bouclier divin.', (G, p) => { p.bd.forEach(m => buff(m, 0, 2)); const c = p.bd.filter(m => !has(m, 's')); if (c.length) addF(pickR(c), 's'); }],
-  'Bois':         ['Tes serviteurs gagnent +1/+2.', (G, p) => p.bd.forEach(m => buff(m, 1, 2))],
-  'Lave':         ['Prochain combat : 7 dégâts frappent l\'ennemi.', (G, p) => { p.njf = (p.njf || 0) + 7; }],
-  'Vapeur':       ['Prochain combat : tes serviteurs gagnent +2/+2.', (G, p) => tmaAdd(p, 2, 2)],
-  'Explosion':    ['Prochain combat : 8 dégâts frappent l\'ennemi.', (G, p) => { p.njf = (p.njf || 0) + 8; }],
-  'Fournaise':    ['Gagne 3 or ; prochain combat, 2 dégâts frappent l\'ennemi.', (G, p) => { p.g += 3; p.njf = (p.njf || 0) + 2; }],
-  'Tempête':      ['Tes serviteurs gagnent +2/+0 ; gagne 1 or.', (G, p) => { p.bd.forEach(m => buff(m, 2, 0)); p.g += 1; }],
-  'Pluie d\'orage':['Récupère 3 chakra ; tes serviteurs gagnent +0/+1.', (G, p) => { p.ck = Math.min(ckMax(p), (p.ck || 0) + 3); p.bd.forEach(m => buff(m, 0, 1)); }],
-  'Plasma':       ['Ton serviteur le plus fort gagne +4 attaque et Toxique.', (G, p) => { const t = p.bd.slice().sort((a, b) => b.a - a.a)[0]; if (t) { buff(t, 4, 0); addF(t, 'v'); } }],
-  'Sable':        ['Un serviteur gagne Provocation et Bouclier divin ; gagne 1 or.', (G, p) => { if (p.bd.length) { const t = pickR(p.bd); addF(t, 't'); addF(t, 's'); } p.g += 1; }],
-  'Brasier':      ['Prochain combat : 8 dégâts frappent l\'ennemi.', (G, p) => { p.njf = (p.njf || 0) + 8; }],
-  'Typhon':       ['Gagne 3 or et rafraîchis gratuitement la taverne.', (G, p) => { p.g += 3; p.fz = false; fillShop(G, p); }],
-  'Marée haute':  ['Tes serviteurs gagnent +1/+2.', (G, p) => { p.bd.forEach(m => buff(m, 1, 2)); }],
-  'Surcharge':    ['Récupère 4 chakra ; tes serviteurs gagnent +1/+0.', (G, p) => { p.ck = Math.min(ckMax(p), (p.ck || 0) + 4); p.bd.forEach(m => buff(m, 1, 0)); }],
-  'Rempart':      ['Tes serviteurs gagnent +0/+4, puis +1 attaque par tranche de 5 points de vie.', (G, p) => p.bd.forEach(m => { buff(m, 0, 4); const x = Math.floor(m.h / 5); if (x) buff(m, x, 0); })],
+  'Glace':        ['Brume + Sable : invoque 1 Marionnette (×niveau) ; tes Marionnettes gagnent Bouclier divin au prochain combat.', (G, p) => { cSum(p, 'tk_puppet', cmx(p)); p.bd.filter(m => m.c === 'tk_puppet').forEach(m => cTmp(m, 's')); }],
+  'Bois':         ['Brume + Roche : invoque 1 Mur de terre ; tes serviteurs de la Brume et de la Roche gagnent +0/+2 (×niveau).', (G, p) => { const x = cmx(p); cSum(p, 'tk_mur', 1); cVil(p, 'n_eau', 0, 2 * x); cVil(p, 'n_terre', 0, 2 * x); }],
+  'Lave':         ['Feuille + Roche : prochain combat, 3 dégâts (×niveau) à l\'ennemi ; tes serviteurs de la Roche gagnent +1/+0 (×niveau).', (G, p) => { const x = cmx(p); p.njf = (p.njf || 0) + 3 * x; cVil(p, 'n_terre', x, 0); }],
+  'Vapeur':       ['Feuille + Brume : tes serviteurs de la Feuille et de la Brume gagnent +1/+1 (×niveau).', (G, p) => { const x = cmx(p); cVil(p, 'n_feu', x, x); cVil(p, 'n_eau', x, x); }],
+  'Explosion':    ['Nuage + Roche : tes jinchūriki grandissent comme après une victoire ; prochain combat, 2 dégâts (×niveau) à l\'ennemi.', (G, p) => { winUp(p); p.njf = (p.njf || 0) + 2 * cmx(p); }],
+  'Fournaise':    ['Feuille + Sable : invoque 1 Marionnette ; tes Marionnettes deviennent explosives (Râle d\'agonie : 1 dégât ×niveau).', (G, p) => { const x = cmx(p); cSum(p, 'tk_puppet', 1); p.bd.filter(m => m.c === 'tk_puppet').forEach(m => { (m.x = m.x || []).push({ k:'dr_dmg', d:x, n:1, src:'Fournaise' }); }); }],
+  'Tempête':      ['Nuage + Sable : tes Marionnettes gagnent +1/+1 (×niveau) ; tes jinchūriki grandissent comme après une victoire.', (G, p) => { const x = cmx(p); cPup(p, x, x); winUp(p); }],
+  'Pluie d\'orage':['Nuage + Brume : tes jinchūriki grandissent comme après une victoire ; tes serviteurs de la Brume gagnent +0/+2 (×niveau).', (G, p) => { winUp(p); cVil(p, 'n_eau', 0, 2 * cmx(p)); }],
+  'Plasma':       ['Feuille + Nuage : prochain combat, 2 dégâts (×niveau) à l\'ennemi ; tes serviteurs du Nuage gagnent +1/+0 (×niveau).', (G, p) => { const x = cmx(p); p.njf = (p.njf || 0) + 2 * x; cVil(p, 'n_foudre', x, 0); }],
+  'Sable':        ['Roche + Sable : invoque 1 Marionnette (×niveau) ; tes Marionnettes gagnent +0/+2 et Provocation.', (G, p) => { cSum(p, 'tk_puppet', cmx(p)); p.bd.filter(m => m.c === 'tk_puppet').forEach(m => { buff(m, 0, 2); addF(m, 't'); }); }],
+  'Grande explosion':['Ultime de la Feuille : prochain combat, 5 dégâts (×niveau) répartis sur l\'ennemi.', (G, p) => { p.njf = (p.njf || 0) + 5 * cmx(p); }],
+  'Bouclier de sable géant':['Ultime du Sable : tes serviteurs gagnent +0/+2 (×niveau) ; invoque 1 Marionnette.', (G, p) => { cSum(p, 'tk_puppet', 1); p.bd.forEach(m => buff(m, 0, 2 * cmx(p))); }],
+  'Renaissance de la Brume':['Ultime de la Brume : prochain combat, Renaissance pour 1 serviteur (+1 par niveau), la Brume d\'abord.', (G, p) => { const n = 1 + cmx(p), o = p.bd.slice().sort((a, b) => (tribeOk(b, 'n_eau') ? 1 : 0) - (tribeOk(a, 'n_eau') ? 1 : 0)).filter(m => !has(m, 'r')); o.slice(0, n).forEach(m => cTmp(m, 'r')); }],
+  'Libération de la bête':['Ultime du Nuage : invoque une Bête à queues (6/6) ; tes jinchūriki grandissent (×niveau).', (G, p) => { cSum(p, 'tk_bijuu', 1); for (let i = 0; i < cmx(p); i++) winUp(p); }],
+  'Avalanche':    ['Ultime de la Roche : invoque 1 Mur de terre ; tes serviteurs de la Roche gagnent +1/+2 (×niveau).', (G, p) => { const x = cmx(p); cSum(p, 'tk_mur', 1); cVil(p, 'n_terre', x, 2 * x); }],
 };
 const comboOf = (a, b) => !a || !b ? null : a === b ? PURES[a] || null : FUSIONS[[a, b].sort().join('+')] || null;
 const comboTx = F => F ? (COMBO_BD[F.n] || [''])[0] : '';
