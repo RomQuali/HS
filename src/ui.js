@@ -144,7 +144,7 @@ function tokenH(m, z, i, o = {}) {
     + (m.eq && m.eq.length ? `<g><title>Équipements : ${m.eq.map(e => SPELLS[e] ? SPELLS[e].n : e).join(', ')}</title><rect x="72" y="4" width="22" height="14" rx="7" fill="#8a6a3a" stroke="#120a06" stroke-width="2"/><text x="83" y="11" dy=".36em" text-anchor="middle" font-size="9" font-weight="700" fill="#fff3c0">⚒${m.eq.length}</text></g>` : '')
     + `<use href="#gem-a" x="-1" y="90" width="34" height="34"/><text class="gt${up(m.a, b.a)}" x="16" y="107" dy=".36em">${m.a}</text>`
     + `<use href="#gem-h" x="67" y="88" width="34" height="34"/><text class="gt${up(m.h, b.h)}" x="84" y="108.6" dy=".36em">${m.h}</text></svg>`;
-  const md = z === 'bd' && !m.awk && (b.fxAll || []).find(e => e.k === 'ckm'), mdC = md ? (V.me && HEROES[V.me.hero] && HEROES[V.me.hero].pw && HEROES[V.me.hero].pw.k === 'pawk' ? Math.max(0, md.c - HEROES[V.me.hero].pw.n) : md.c) : 0, mdOk = md && V.me && (V.me.ck || 0) >= mdC && V.pub && V.pub.ph === 'recruit';
+  const md = z === 'bd' && !m.awk && (b.fxAll || []).find(e => e.k === 'ckm'), mdC = md ? (V.me ? Math.max(0, md.c - ((htr(V.me, 'pawk') || {}).n || 0)) : md.c) : 0, mdOk = md && V.me && (V.me.ck || 0) >= mdC && V.pub && V.pub.ph === 'recruit';
   const mdH = md ? `<span class="ckm-b${mdOk ? ' ok' : ''}" role="button" tabindex="0" data-act="ckm" data-i="${i}" data-tip="${esc('Éveil (' + mdC + ' chakra, une seule fois) : +' + md.c * mult(m) + '/+' + md.c * mult(m) + ', puis chaque tour : ' + mTx(md.m, mult(m)))}" aria-label="Éveiller ce serviteur">${ckMarkH(mdC)}</span>` : '';
   return `<div class="${cls}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.dmg ? ` data-dmg="${o.dmg}"` : ''}${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">${svg}${mdH}${o.name === false ? '' : `<span class="mn-nm">${esc(b.n)}</span>`}${m.tr ? '<span class="tri">Triple !</span>' : o.trip ? '<span class="tri pulse">Triple !</span>' : ''}${o.extra || ''}</div>`;
 }
@@ -936,7 +936,7 @@ function ruleTabH(k) {
 }
 // relance d'un héros : 3 par partie, sur n'importe lequel des héros proposés
 const rollH = (me, i) => `<span class="h-roll${(me.hrr || 0) > 0 ? '' : ' off'}" role="button" tabindex="0" data-act="hroll" data-i="${i}" aria-label="Relancer ce héros" data-tip="${(me.hrr || 0) > 0 ? 'Relancer ce héros (' + me.hrr + ' restante' + (me.hrr > 1 ? 's' : '') + ')' : 'Plus de relance'}">${icon('roll')}</span>`;
-const rollInfoH = me => `<p class="h-rolls">${icon('roll')} Relances : ${[0, 1, 2].map(k => `<i class="${k < (me.hrr || 0) ? 'on' : ''}"></i>`).join('')}<small>clique sur ${icon('roll')} pour changer un héros</small></p>`;
+const rollInfoH = me => `<p class="h-rolls">${icon('roll')} Relances : ${Array.from({ length:me.hrm || 3 }, (_, k) => `<i class="${k < (me.hrr || 0) ? 'on' : ''}"></i>`).join('')}<small>clique sur ${icon('roll')} pour changer un héros</small></p>`;
 // choix du héros façon auto-battler : grands portraits en rangée, pouvoir en médaillon sous chaque héros
 function heroPickRowH(d, me) {
   const nin = (d.laws || []).some(l => l.k === 'chakra'), sel = me.ho.includes(V.heroSel) ? V.heroSel : null;
