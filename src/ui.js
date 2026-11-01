@@ -432,7 +432,7 @@ function gameH() {
   const players = d.pl.slice().sort((a, b) => (b.al - a.al) || (b.hp - a.hp) || (a.pl - b.pl));
   const fightOpp = V.fight ? V.fight.on : null;
   const opps = players.map(p => `<li class="op${p.pid === myPid ? ' me' : ''}${p.al ? '' : ' dead'}${fightOpp && p.n === fightOpp ? ' vs' : ''}" data-hov="op" data-n="${esc(p.n)}">
-      <span class="op-face">${faceH(playerSym(p))}<b class="op-hp">${p.al ? Math.max(0, p.hp) : p.pl + 'e'}</b><span class="op-t">${p.t}</span>${d.ph === 'recruit' && p.r && p.al ? '<span class="op-r">✓</span>' : ''}${p.el && ELS[p.el] && p.al ? `<span class="op-el" style="--c:${ELS[p.el].col}" title="${esc('Compagnon ' + ELS[p.el].n + ' · ' + p.mk + ' ' + MK_N[p.el].toLowerCase())}"><svg viewBox="-12 -12 24 24">${EL_ICON[p.el]}</svg></span>` : ''}</span>
+      <span class="op-face${p.haw ? ' haw' : ''}">${faceH(playerSym(p))}<b class="op-hp">${p.al ? Math.max(0, p.hp) : p.pl + 'e'}</b><span class="op-t">${p.t}</span>${d.ph === 'recruit' && p.r && p.al ? '<span class="op-r">✓</span>' : ''}${p.el && ELS[p.el] && p.al ? `<span class="op-el" style="--c:${ELS[p.el].col}" title="${esc('Compagnon ' + ELS[p.el].n + ' · ' + p.mk + ' ' + MK_N[p.el].toLowerCase())}"><svg viewBox="-12 -12 24 24">${EL_ICON[p.el]}</svg></span>` : ''}</span>
       <span class="op-n">${esc(p.n)}</span></li>`).join('');
   const myInfo = d.pl.find(p => p.pid === myPid), alive = !!(myInfo && myInfo.al);
   const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span>${d.ev && d.rd >= d.ev ? '<span class="eveil" data-tip="Éveil : la moitié des ninjas sont tombés à 20 PV ou moins. Les clans libèrent leur pouvoir ultime, ton compagnon prend sa forme éveillée, le pouvoir de ton héros est renforcé, chaque technique gagne son effet d\'Éveil et des techniques interdites apparaissent.">Éveil</span>' : ''}${d.laws && d.laws.length && d.ph !== 'end' ? `<span class="hud-laws">${d.laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<span class="hl" data-hov="law" data-tip="${esc(M.n + ' : ' + M.d)}">${icon(M.ic)}</span>`; }).join('')}${V.me && V.me.souls ? `<span class="souls" data-tip="Âmes récoltées : toutes les 3 âmes, tes serviteurs des Ténèbres gagnent +1/+1 au début du tour.">${icon('skull')}<b>${V.me.souls}</b></span>` : ''}</span>` : ''}<span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerTxt()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm" data-act="leave">Quitter</button></div>`;
@@ -442,7 +442,8 @@ function gameH() {
     const fighting = !!(V.fight && (d.ph === 'combat' || !V.fight.done));
     const own = {}; me.hd.concat(me.bd).forEach(m => { if (!m.sp && !m.g && m.c) own[m.c] = (own[m.c] || 0) + 1; });
     const freeRoll = me.hero === 'rivet' && me.rr === 0;
-    const hero = HEROES[me.hero];
+    const hero = HX(me), HQ = HEROES[me.hero] && HEROES[me.hero].q;
+    if (me.haw && hero && V.hawToast !== me.hawId) { V.hawToast = me.hawId; const id = me.hawId; setTimeout(() => toast('Éveil de ' + hero.n.split(' ')[0] + ' : ' + (hero.awn || '') + ' ! Ton héros a un nouveau pouvoir.'), 60); setTimeout(() => { V.hawSeen = id; }, 1700); }
     let topZone, boardRow, banner = '';
     if (fighting) {
       const F = V.fight, last = F.r.frames.length - 1, fr = F.r.frames[Math.min(V.fi, last)];
@@ -478,7 +479,7 @@ function gameH() {
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
       <div class="hz-left">${trainH(d, me, canAct)}${me.cp || (!NJ_COMP && (d.laws || []).some(l => l.k === 'chakra')) ? '' : `<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span>`}</div>
-      <div class="hz-hero" data-hov="hero"><span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? 'art-h-' + me.hero : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}${mkOrbsH(d, me)}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span></div>
+      <div class="hz-hero${me.haw ? ' haw' : ''}${me.haw && V.hawSeen !== me.hawId ? ' haw-new' : ''}" data-hov="hero">${me.haw ? hawFrameH(hero) : ''}<span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? 'art-h-' + me.hero : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}${mkOrbsH(d, me)}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span>${HQ ? (me.haw ? `<span class="hq done">${esc(hero.awn || 'Éveillé')}</span>` : `<span class="hq" data-tip="${esc('Quête d\'éveil : ' + HQ.tx + ' Récompense : ' + HEROES[me.hero].aw.nm + ' (nouveau pouvoir).')}"><i style="--p:${Math.min(1, (me.qp || 0) / HQ.n)}"></i>${Math.min(me.qp || 0, HQ.n)}/${HQ.n}</span>`) : ''}</div>
       <div class="hz-right"><span class="hov" data-hov="pow">${power}</span><span class="purses">${coins}${canAct ? ckGauge(d, me) : ''}</span>${rsvH(d, me)}</div>
       <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}"><span class="bell-shine" aria-hidden="true"></span>${icon('bell')}<span class="bell-t">${me.rdy ? 'Prêt !' : 'Prêt'}</span><small class="bell-s">${me.rdy ? 'en attente' : 'fin du tour'}</small></button></div></section>`;
     const n = me.hd.length;
@@ -951,7 +952,7 @@ function heroPickRowH(d, me) {
         ${x.stars || x.diff ? `<span class="hp-st">${'★'.repeat(x.stars || x.diff)}</span>` : ''}
       </button>
       <div class="hp-pow" data-hov="hero" tabindex="0"><span class="hp-pw-ico">${x.cost ? (nin && x.pay !== 'g' ? ckMarkH(x.cost) : `<b class="hp-gold">${x.cost}</b>`) : '<b>∞</b>'}</span>
-        <div class="hp-pw-tx"><b>${esc(pw)}</b>${nin && x.mc && NJ_MC[x.mc] ? `<em class="hp-vil">Mécanique · ${esc(NJ_MC[x.mc][0])}</em>` : ''}<small>${esc((t => t.charAt(0).toUpperCase() + t.slice(1))((x.tx || '').replace(/^Passif : /, '')))}</small>
+        <div class="hp-pw-tx"><b>${esc(pw)}</b>${x.q ? `<span class="hp-q" data-tip="${esc(x.aw.nm + ' : ' + x.aw.tx)}">Éveil · ${esc(x.q.tx)} → <b>${esc(x.aw.nm)}</b></span>` : ''}${nin && x.mc && NJ_MC[x.mc] ? `<em class="hp-vil">Mécanique · ${esc(NJ_MC[x.mc][0])}</em>` : ''}<small>${esc((t => t.charAt(0).toUpperCase() + t.slice(1))((x.tx || '').replace(/^Passif : /, '')))}</small>
         ${c && (!nin || NJ_COMP) ? `<span class="hp-cp">${faceH('art-' + cid)}<em>${esc(c.n)}</em></span>` : ''}</div></div>
       ${on ? `<button class="t-go hp-go" data-act="hero" data-h="${h}">Choisir</button>` : ''}
     </div>`; };
@@ -1360,7 +1361,7 @@ function showPeek(t, touch) {
   if (hv && hv !== 'law' && (V.me || hv === 'op')) {
     let html = '';
     if (hv === 'op' && V.pub) { const p = V.pub.pl.find(x => x.n === t.dataset.n); if (p && HEROES[p.h]) html = heroCardH(p.h, { who:p.n, foot:`${p.al ? Math.max(0, p.hp) + ' PV · taverne ' + p.t : 'Éliminé · ' + p.pl + 'e'}` }); }
-    else if ((hv === 'pow' || hv === 'hero') && HEROES[V.me.hero]) { const h = HEROES[V.me.hero]; html = heroCardH(V.me.hero, { foot:h.cost ? (V.me.pu ? 'Déjà utilisé ce tour' : h.minRound && (V.me.rd || 0) < h.minRound ? `Disponible dès la manche ${h.minRound}` : 'Disponible') : 'Toujours actif' }); }
+    else if ((hv === 'pow' || hv === 'hero') && HEROES[V.me.hero]) { const h = HX(V.me); html = heroCardH(V.me.hero, { aw:V.me.haw, qp:V.me.qp, foot:h.cost ? (V.me.pu ? 'Déjà utilisé ce tour' : h.minRound && (V.me.rd || 0) < h.minRound ? `Disponible dès la manche ${h.minRound}` : 'Disponible') : 'Toujours actif' }); }
     else if (hv === 'comp' && compOf(V.me.hero) && C[compOf(V.me.hero)]) html = compCardH(V.me.hero, compOf(V.me.hero), V.me);
     else if (hv === 'rsv') html = rsvPeekH(V.me);
     else if (hv === 'mk') html = mkPeekH(V.me);
@@ -1628,8 +1629,16 @@ function powerTitle(h) {
   if (c > 0 && c < 26 && !/^(Passif|Dès|Prochain|Après|Quand|Au début|À la fin)/.test(body)) return [body.slice(0, c), body.slice(c + 3), dot > 0 ? tx.slice(0, dot) : ''];
   return [null, body.replace(/^Passif : /, ''), dot > 0 ? tx.slice(0, dot) : ''];
 }
+// cadre du héros éveillé : anneau doré gravé de marques (sceaux, éclairs…) selon sa mécanique
+const HAW_MK = { tok:'✦', seal:'卍', pact:'☯', dr:'✸', eco:'◈', spl:'✧', cbt:'⚔', ckm:'◉', cmb:'✺', kg:'❖' };
+function hawFrameH(h) {
+  const col = h && h.mc && NJ_MC[h.mc] ? NJ_MC[h.mc][1] : '#ffd86a', mk = HAW_MK[h && h.mc] || '✦';
+  const marks = Array.from({ length:8 }, (_, k) => { const a = (k * 45 - 90) * Math.PI / 180; return `<text x="${(50 + Math.cos(a) * 47).toFixed(1)}" y="${(50 + Math.sin(a) * 47).toFixed(1)}" dy=".35em" text-anchor="middle" font-size="9" fill="${col}" stroke="#120a06" stroke-width=".6">${mk}</text>`; }).join('');
+  return `<svg class="haw-fr" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="hawg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff2b0"/><stop offset=".5" stop-color="#e0a83a"/><stop offset="1" stop-color="#8a5a12"/></linearGradient></defs>
+    <circle cx="50" cy="50" r="47" fill="none" stroke="url(#hawg)" stroke-width="7"/><circle cx="50" cy="50" r="47" fill="none" stroke="${col}" stroke-width="1.6" stroke-dasharray="4 5" opacity=".9"/>${marks}</svg>`;
+}
 function heroCardH(hid, o = {}) {
-  const h = HEROES[hid]; if (!h) return '';
+  const h0 = HEROES[hid]; if (!h0) return ''; const h = o.aw && h0.awd ? h0.awd : h0;
   const th = HTHEME[hid] || 'spark', col = THC[th];
   const [ptitle, body, aff] = powerTitle(h);
   return `<div class="hcard th-${th}" style="--hc:${col}">
@@ -1637,11 +1646,12 @@ function heroCardH(hid, o = {}) {
     <div class="hc-port">${faceH('art-h-' + hid, 'face')}${h.cost ? `<span class="hc-cost">${h.cost}</span>` : ''}</div>
     <div class="hc-nm">${esc(h.n)}</div>${h.stars ? `<div class="hc-diff d${h.diff}" title="Rang">${'★'.repeat(h.stars)}</div>` : h.diff ? `<div class="hc-diff d${h.diff}" title="Difficulté">${'★'.repeat(h.diff)}${'☆'.repeat(3 - h.diff)} <small>${['', 'Simple', 'Intermédiaire', 'Expert'][h.diff]}</small></div>` : ''}
     ${o.who && o.who !== h.n ? `<div class="hc-who">joué par ${esc(o.who)}</div>` : ''}
-    <div class="hc-kind">${h.cost ? 'Pouvoir héroïque' : 'Pouvoir passif'} · ${aff ? esc(aff) : THN[th]}</div>
+    <div class="hc-kind">${h.cost ? 'Pouvoir héroïque' : 'Pouvoir passif'}${h.mc ? '' : ' · ' + (aff ? esc(aff) : THN[th])}</div>
     ${HEROES[hid] && HEROES[hid].mc && NJ_MC[HEROES[hid].mc] ? `<span class="famc"><i style="--c:${NJ_MC[HEROES[hid].mc][1]}">${esc(NJ_MC[HEROES[hid].mc][0])}</i></span>` : famChips(heroFam(hid))}
     ${ptitle ? `<div class="hc-pt">${esc(ptitle)}</div>` : ''}
     <p class="hc-tx">${esc(body)}</p>
-    ${h.pw && /^nh_/.test(hid) ? `<p class="hc-awk${awakeUI() ? ' on' : ''}"><b>Éveil :</b> ${esc(heroAwkTx(h))}</p>` : ''}
+    ${h0.q ? `<div class="hc-q${o.aw ? ' done' : ''}"><b>${o.aw ? 'Éveillé · ' + esc(h0.aw.nm) : 'Quête d\'éveil' + (o.qp != null ? ' · ' + Math.min(o.qp || 0, h0.q.n) + '/' + h0.q.n : '')}</b><small>${o.aw ? 'Nouveau pouvoir actif.' : esc(h0.q.tx) + ' → <b>' + esc(h0.aw.nm) + '</b> : ' + esc(h0.aw.tx)}</small></div>` : ''}
+    ${h.pw && /^nh_/.test(hid) && NJ_AWK ? `<p class="hc-awk${awakeUI() ? ' on' : ''}"><b>Éveil :</b> ${esc(heroAwkTx(h))}</p>` : ''}
     ${o.foot ? `<div class="hc-foot">${esc(o.foot)}</div>` : ''}
   </div>`;
 }
@@ -2475,6 +2485,21 @@ html.lite .awk-go{animation:none}
 .rl-cb{display:flex;gap:7px;align-items:flex-start;padding:5px 7px;border-radius:8px;background:rgba(0,0,0,.3);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 55%,transparent)}
 .rl-cbe{display:flex;flex:0 0 auto}.rl-cbe .rl-el+.rl-el{margin-left:-6px}
 .rl-cb b{display:block;color:var(--c)!important;font-size:13px}.rl-cb small{display:block;font-size:12px;line-height:1.35;color:#f1e4c6}
+.hz-hero{position:relative}
+.haw-fr{position:absolute;left:50%;top:0;width:118%;aspect-ratio:1;transform:translate(-50%,-9%);pointer-events:none;z-index:3;filter:drop-shadow(0 0 6px rgba(255,210,110,.75));animation:hawspin 24s linear infinite}
+.hz-hero.haw .hf{box-shadow:0 0 0 3px #ffd86a,0 0 22px 6px rgba(255,200,90,.65)!important}
+.hz-hero.haw-new .haw-fr{animation:hawburst 1.6s cubic-bezier(.2,.9,.3,1) 1,hawspin 24s linear 1.6s infinite}
+.hz-hero.haw-new .hf{animation:hawflash 1.6s ease-out 1}
+@keyframes hawspin{to{transform:translate(-50%,-9%) rotate(360deg)}}
+@keyframes hawburst{0%{transform:translate(-50%,-9%) scale(.4) rotate(-90deg);opacity:0}60%{transform:translate(-50%,-9%) scale(1.25);opacity:1}100%{transform:translate(-50%,-9%) scale(1)}}
+@keyframes hawflash{0%{filter:brightness(1)}25%{filter:brightness(2.4) saturate(1.6)}100%{filter:brightness(1)}}
+.hq{position:absolute;left:50%;bottom:-20px;transform:translateX(-50%);display:inline-flex;align-items:center;gap:5px;padding:1px 8px 1px 4px;border-radius:99px;background:rgba(12,6,3,.85);box-shadow:inset 0 0 0 1.5px #a8743a;font:700 11px var(--f-label),serif;color:#ffd86a;white-space:nowrap;z-index:4}
+.hq i{width:26px;height:6px;border-radius:3px;background:linear-gradient(90deg,#ffd86a calc(var(--p)*100%),rgba(255,255,255,.15) 0)}
+.hq.done{padding:1px 9px;background:linear-gradient(180deg,#ffe28a,#c88a26);color:#2a1606;box-shadow:0 0 10px rgba(255,200,90,.7)}
+.op-face.haw{box-shadow:0 0 0 2px #ffd86a,0 0 10px rgba(255,200,90,.7);border-radius:10px}
+.hc-q{margin-top:6px;padding:6px 8px;border-radius:8px;background:rgba(0,0,0,.35);box-shadow:inset 0 0 0 1px #a8743a;display:grid;gap:2px}
+.hc-q b{color:#ffd86a;font-size:12.5px}.hc-q small{font-size:12px;line-height:1.35;color:#f1e4c6}.hc-q.done{box-shadow:inset 0 0 0 1.5px #ffd86a,0 0 10px rgba(255,200,90,.4)}
+.hp-q{display:block;font-size:clamp(11px,1.3vh,13.5px);line-height:1.3;color:#cfe4ff;font-style:normal}.hp-q b{color:#ffd86a}
 .rl-body{overflow:auto;min-height:0;padding-right:4px;text-align:left}
 .rl-p p,.rl-ul li{font-size:13px;line-height:1.45;color:#f1e4c6;margin:0 0 8px}.rl-p b,.rl-ul b,.rl-step b{color:#ffd86a}
 .rl-ul{margin:0 0 8px;padding-left:18px}

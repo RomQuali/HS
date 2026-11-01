@@ -366,7 +366,7 @@ const TR2 = { n_k1:'n_terre', n_k2:'n_vent', n_k3:'n_eau', n_k4:'n_foudre', n_k5
 for (const id in TR2) DEFAULT_CARDS[id].tr2 = TR2[id];
 const NJ_MC = { tok:['Jetons', '#d8b45a'], seal:['Sceaux', '#e8607a'], pact:['Pacte', '#7ac04a'], dr:['Sacrifice', '#a898d0'], eco:['Économie', '#f2c14e'], spl:['Sorts', '#b48cff'], cbt:['Combat', '#ff7a5a'], ckm:['Éveil et chakra', '#5ab8f0'], cmb:['Combos', '#ff9a4a'], kg:['Kekkei genkai', '#6fd08a'] };
 // trait passif d'un héros : son pouvoir (pw) ou son bonus (tr) de ce type
-function htr(p, k) { const H0 = p && HEROES[p.hero]; if (!H0) return null; if (H0.pw && H0.pw.k === k) return H0.pw; const t = H0.tr; return t && t.k === k ? t : null; }
+function htr(p, k) { const H0 = HX(p); if (!H0) return null; if (H0.pw && H0.pw.k === k) return H0.pw; const t = H0.tr; return t && t.k === k ? t : null; }
 const NJV = ['n_feu', 'n_vent', 'n_eau', 'n_foudre', 'n_terre'];   // héros Ninja : rattachés à l'univers, à aucun village
 const COMPANIONS = { nh_kushina:'c_nj_kurama', nh_jiraiya:'c_nj_gamabunta', nh_sasuke:'c_nj_aigle', nh_mikoto:'c_nj_chatnoir', nh_itachi:'c_nj_corbeau', nh_temari:'c_nj_shukaku', nh_naruto:'c_nj_grenouille', nh_kankuro:'c_nj_sasori', nh_shikamaru:'c_nj_cerfvolant', nh_gaara:'c_nj_tanuki', nh_haku:'c_nj_glaces', nh_zabuza:'c_nj_requin', nh_suigetsu:'c_nj_bulle', nh_mangetsu:'c_nj_hiramekarei', nh_mei:'c_nj_meduse', nh_omoi:'c_nj_lapin', nh_darui:'c_nj_nuage', nh_samui:'c_nj_renardblanc', nh_bee:'c_nj_gyuki', nh_kakashi:'c_nj_ninken', nh_roshi:'c_nj_songoku', nh_akatsuchi:'c_nj_geant', nh_hashirama:'c_nj_dragonbois', nh_deidara:'c_nj_argile', nh_kurotsuchi:'c_nj_dragonpierre', nh_karin:'c_nj_renard1', nh_asuma:'c_nj_katoncrow', nh_madara:'c_nj_zetsu', nh_konohamaru:'c_nj_singe', nh_pakura:'c_nj_espritvent', nh_baki:'c_nj_faucon', nh_chojuro:'c_nj_poissonscie', nh_ao:'c_nj_tortue', nh_kisame:'c_nj_samehada', nh_yugito:'c_nj_matatabi', nh_raikage:'c_nj_puma', nh_c:'c_nj_hibou', nh_kitsuchi:'c_nj_rocher', nh_onoki:'c_nj_golem', nh_yamato:'c_nj_arbre', paul:'c_pouf', leon:'c_caillou', zoe:'c_gloup', jeanne:'c_frisouille', selene:'c_nyx', brok:'c_enclume', sylvara:'c_lys', grumbo:'c_miette', vaskor:'c_osbrise', pyra:'c_etincelle', rivet:'c_bricole', egide:'c_lumen', ondine:'c_fiole', barnabe:'c_sou', maelle:'c_croc', oren:'c_plume', gor:'c_bastion', ilka:'c_truelle', nono:'c_braise' };
 for (const h in COMPANIONS) DEFAULT_CARDS[COMPANIONS[h]].comp = h;
@@ -389,26 +389,26 @@ const HEROES = {
   grumbo:  {fam:['ogre', 'gob'], n:'Grumbo le glouton', cost:2, tx:'Donne +3/+3 à votre serviteur qui a le plus d\'attaque.' },
   vaskor:  {fam:['mort', 'spec'], n:'Vaskor le nécromancien', cost:1, tx:'Invoque un Squelette 1/1 avec Renaissance sur votre plateau.' },
   // ----- univers Ninja : 8 héros par village (sans élément) -----
-  nh_naruto: {diff:3, stars:4, fam:NJV, pv:'n_feu', mc:'tok', n:'Naruto Uzumaki', cost:3, pay:'ck', pwn:'Multi-clonage', pw:{ k:'multi', s:[{ k:'summon', card:'tk_clone', n:2 }, { k:'clones', a:1, h:1 }] }, tr:{ k:'ptrip', ck:2 }, tx:'Invoque 2 Clones de l\'ombre (2/2), puis tes clones gagnent +1/+1.', trx:'Quand tu formes un triple de jetons, gagne 2 chakra.' },
-  nh_kakashi: {diff:3, stars:4, fam:NJV, pv:'n_feu', mc:'pact', n:'Kakashi Hatake', cost:1, pay:'g', pwn:'Ninken', pw:{ k:'multi', s:[{ k:'cardset', set:'pact' }] }, tr:{ k:'ppactx' }, tx:'Ajoute à ta main un invocateur de pacte.', trx:'Tes invocateurs de pacte invoquent un animal de plus.' },
-  nh_jiraiya: {diff:3, stars:4, fam:NJV, pv:'n_feu', mc:'pact', n:'Jiraiya', cost:2, pay:'g', pwn:'Ermite des crapauds', pw:{ k:'multi', s:[{ k:'pact', card:'tk_toad', n:1 }, { k:'pactbuff', a:1, h:1 }] }, tr:{ k:'ppact', a:1, h:1 }, tx:'Invoque un Crapaud du pacte, puis tes animaux de pacte gagnent +1/+1.', trx:'Tes animaux de pacte apparaissent avec +1/+1.' },
-  nh_itachi: {diff:3, stars:5, fam:NJV, pv:'n_feu', mc:'spl', n:'Itachi Uchiha', cost:2, pay:'g', pwn:'Tsukuyomi', pw:{ k:'multi', s:[{ k:'tech', n:1 }, { k:'spd', n:1 }] }, tx:'Ajoute un sort aléatoire à ta main ; ton prochain sort coûte 1 chakra de moins.' },
-  nh_sasuke: {diff:3, stars:4, fam:NJV, pv:'n_feu', mc:'cmb', n:'Sasuke Uchiha', cost:1, pay:'g', pwn:'Sharingan', pw:{ k:'multi', s:[{ k:'rsvsame' }, { k:'ck', n:1 }] }, tr:{ k:'pult', a:1, h:1 }, tx:'Remplit une moitié du réservoir avec le même village que l\'autre (ou ton village le plus présent) et gagne 1 chakra.', trx:'Tes ultimes donnent aussi +1/+1 à tous tes serviteurs.', norsv:1 },
-  nh_shikamaru: {diff:2, stars:3, fam:NJV, pv:'n_feu', mc:'ckm', n:'Shikamaru Nara', pwn:'Stratège', pw:{ k:'pturn', ck:2, h:3 }, tr:{ k:'pawk', n:1 }, tx:'Passif : au début de chaque tour, gagne 2 chakra de plus et un allié aléatoire gagne +0/+3.', trx:'Éveiller un serviteur coûte 1 chakra de moins.' },
-  nh_hashirama: {diff:3, stars:5, fam:NJV, pv:'n_feu', mc:'seal', n:'Hashirama Senju', cost:2, pay:'g', pwn:'Sceau du bois', pw:{ k:'multi', s:[{ k:'sealhi', n:1 }] }, tr:{ k:'pseal' }, tx:'Pose 1 sceau sur ton serviteur qui en a le plus.', trx:'Tes sceaux donnent +2/+2 au lieu de +1/+1.' },
-  nh_kushina: {diff:3, stars:5, fam:NJV, pv:'n_feu', mc:'seal', n:'Kushina Uzumaki', cost:5, pay:'ck', pwn:'Chaînes de scellement', pw:{ k:'multi', s:[{ k:'seal', n:1, m:4 }] }, tr:{ k:'pseal5', a:3, h:3 }, tx:'Pose 1 sceau sur quatre de tes serviteurs aléatoires.', trx:'Un serviteur qui atteint 5 sceaux gagne aussi +3/+3.' },
-  nh_gaara: {diff:3, stars:4, fam:NJV, pv:'n_vent', mc:'cbt', n:'Gaara', cost:1, pay:'g', pwn:'Bouclier de sable', pw:{ k:'multi', s:[{ k:'tkw', kw:'t', n:1, a:0, h:5 }, { k:'tkw', kw:'s', n:1 }] }, tx:'Prochain combat : un de tes serviteurs gagne +0/+5 et Provocation, un autre Bouclier divin.' },
-  nh_kankuro: {diff:3, stars:3, fam:NJV, pv:'n_vent', mc:'tok', n:'Kankuro', cost:2, pay:'g', pwn:'Marionnettes de combat', pw:{ k:'multi', s:[{ k:'summon', card:'tk_puppet', n:2 }] }, tr:{ k:'ptok', card:'tk_puppet', a:1, h:1 }, tx:'Invoque 2 Marionnettes.', trx:'Tes Marionnettes apparaissent avec +1/+1.' },
-  nh_sasori: {diff:3, stars:5, fam:NJV, pv:'n_vent', mc:'dr', n:'Sasori', pwn:'Marionnettes humaines', pw:{ k:'pturn', drp:1, dr:1 }, tx:'Passif : au début de chaque tour, un de tes serviteurs gagne « Râle d\'agonie : invoque une Marionnette » puis tes serviteurs à Râle d\'agonie gagnent +1/+0.' },
-  nh_rasa: {diff:3, stars:4, fam:NJV, pv:'n_vent', mc:'eco', n:'Rasa', pwn:'Poussière d\'or', pw:{ k:'pturn', g:2, roll:1 }, tx:'Passif : au début de chaque tour, gagne 2 or de plus, et ta première actualisation de chaque tour est gratuite.' },
-  nh_mei: {diff:3, stars:4, fam:NJV, pv:'n_eau', mc:'kg', n:'Mei Terumi', pwn:'Deux natures', pw:{ k:'pkg', n:1 }, tr:{ k:'pturn', ck:1 }, trx:'Au début de chaque tour, gagne 1 chakra.', tx:'Passif : tes kekkei genkai grandissent deux fois plus à chaque combo. Quand tu améliores ta taverne au niveau 3 ou plus, ajoute un kekkei genkai à ta main.' },
-  nh_haku: {diff:3, stars:4, fam:NJV, pv:'n_eau', mc:'kg', n:'Haku', cost:4, pay:'g', pwn:'Hyōton', pw:{ k:'multi', s:[{ k:'kgcard' }, { k:'ck', n:1 }] }, tr:{ k:'pkgs' }, tx:'Ajoute à ta main un serviteur kekkei genkai et gagne 1 chakra.', trx:'Tes kekkei genkai gagnent Bouclier divin quand tu les joues.' },
-  nh_bee: {diff:3, stars:5, fam:NJV, pv:'n_foudre', mc:'cbt', n:'Killer Bee', pwn:'Huit queues', pw:{ k:'pjin' }, tr:{ k:'pturn', ck:1 }, tx:'Passif : tes jinchūriki grandissent deux fois plus après chaque victoire, et un allié aléatoire gagne alors +2/+2.', trx:'Au début de chaque tour, gagne 1 chakra.' },
-  nh_c: {diff:2, stars:3, fam:NJV, pv:'n_foudre', mc:'eco', n:'C', cost:1, pay:'g', pwn:'Analyse', pw:{ k:'multi', s:[{ k:'roll' }, { k:'ck', n:1 }, { k:'upd', n:1 }] }, tx:'Actualise la taverne gratuitement, gagne 1 chakra, et l\'amélioration coûte 1 or de moins.' },
-  nh_yugito: {diff:3, stars:4, fam:NJV, pv:'n_foudre', mc:'spl', n:'Yugito Nii', cost:1, pay:'g', pwn:'Deux queues', pw:{ k:'multi', s:[{ k:'spd', n:2 }] }, tr:{ k:'pcast', a:1, h:1 }, tx:'Ton prochain sort coûte 2 chakra de moins.', trx:'Quand tu lances un sort, un allié aléatoire gagne +1/+1.' },
-  nh_omoi: {diff:2, stars:3, fam:NJV, pv:'n_foudre', mc:'cmb', n:'Omoi', cost:3, pay:'g', pwn:'Prudence', pw:{ k:'multi', s:[{ k:'cdbl' }] }, tr:{ k:'pcmb', nb:1 }, tx:'Ton prochain combo se déclenche deux fois.', trx:'Tes combos sont un palier plus forts.' },
-  nh_deidara: {diff:3, stars:5, fam:NJV, pv:'n_terre', mc:'dr', n:'Deidara', cost:3, pay:'ck', pwn:'Art explosif', pw:{ k:'multi', s:[{ k:'drgive', n:1, fx:{ k:'dr_dmg', d:4, n:1 } }, { k:'fire', d:3 }] }, tx:'Un de tes serviteurs gagne « Râle d\'agonie : 4 dégâts à un ennemi », et 3 dégâts frappent l\'ennemi au prochain combat.' },
-  nh_roshi: {diff:3, stars:4, fam:NJV, pv:'n_terre', mc:'ckm', n:'Roshi', cost:3, pay:'ck', pwn:'Lave enragée', pw:{ k:'multi', s:[{ k:'awkfree' }, { k:'awkall' }] }, tx:'Éveille gratuitement un de tes serviteurs, puis tes serviteurs éveillés déclenchent une fois de plus leur effet d\'Éveil.' },
+  nh_naruto: {diff:3, stars:4, fam:NJV, pv:'n_feu', mc:'tok', n:'Naruto Uzumaki', cost:3, pay:'ck', pwn:'Multi-clonage', pw:{ k:'multi', s:[{ k:'summon', card:'tk_clone', n:2 }, { k:'clones', a:1, h:1 }] }, tr:{ k:'ptrip', ck:2 }, tx:'Invoque 2 Clones de l\'ombre (2/2), puis tes clones gagnent +1/+1.', trx:'Quand tu formes un triple de jetons, gagne 2 chakra.', q:{ k:'tripTok', n:1, tx:'Former un triple de jetons.' }, aw:{ nm:'Mode Ermite', pwn:'Multi-clonage ermite', cost:3, pay:'ck', pw:{ k:'multi', s:[{ k:'summon', card:'tk_clone', n:3 }, { k:'clones', a:2, h:2 }] }, tx:'Invoque 3 Clones de l\'ombre, puis tes clones gagnent +2/+2.' } },
+  nh_kakashi: {diff:3, stars:4, fam:NJV, pv:'n_feu', mc:'pact', n:'Kakashi Hatake', cost:1, pay:'g', pwn:'Ninken', pw:{ k:'multi', s:[{ k:'cardset', set:'pact' }] }, tr:{ k:'ppactx' }, tx:'Ajoute à ta main un invocateur de pacte.', trx:'Tes invocateurs de pacte invoquent un animal de plus.', q:{ k:'pactPlay', n:4, tx:'Jouer 4 invocateurs de pacte.' }, aw:{ nm:'Kamui', pwn:'Kamui', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'cardset', set:'pact' }, { k:'pactbuff', a:2, h:1 }] }, tx:'Ajoute à ta main un invocateur de pacte ; tes animaux de pacte gagnent +2/+1.' } },
+  nh_jiraiya: {diff:3, stars:4, fam:NJV, pv:'n_feu', mc:'pact', n:'Jiraiya', cost:2, pay:'g', pwn:'Ermite des crapauds', pw:{ k:'multi', s:[{ k:'pact', card:'tk_toad', n:1 }, { k:'pactbuff', a:1, h:1 }] }, tr:{ k:'ppact', a:1, h:1 }, tx:'Invoque un Crapaud du pacte, puis tes animaux de pacte gagnent +1/+1.', trx:'Tes animaux de pacte apparaissent avec +1/+1.', q:{ k:'pactSum', n:3, tx:'Invoquer 3 animaux de pacte.' }, aw:{ nm:'Mode Ermite des crapauds', pwn:'Fukasaku et Shima', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'pact', card:'tk_toad', n:2 }, { k:'pactbuff', a:1, h:1 }] }, tx:'Invoque 2 Crapauds du pacte, puis tes animaux de pacte gagnent +1/+1.' } },
+  nh_itachi: {diff:3, stars:5, fam:NJV, pv:'n_feu', mc:'spl', n:'Itachi Uchiha', cost:2, pay:'g', pwn:'Tsukuyomi', pw:{ k:'multi', s:[{ k:'tech', n:1 }, { k:'spd', n:1 }] }, tx:'Ajoute un sort aléatoire à ta main ; ton prochain sort coûte 1 chakra de moins.', q:{ k:'casts', n:6, tx:'Lancer 6 sorts.' }, aw:{ nm:'Mangekyō Sharingan', pwn:'Susanoo', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'tech', n:2 }, { k:'spd', n:2 }] }, tx:'Ajoute 2 sorts aléatoires à ta main ; ton prochain sort coûte 2 chakra de moins.' } },
+  nh_sasuke: {diff:3, stars:4, fam:NJV, pv:'n_feu', mc:'cmb', n:'Sasuke Uchiha', cost:1, pay:'g', pwn:'Sharingan', pw:{ k:'multi', s:[{ k:'rsvsame' }, { k:'ck', n:1 }] }, tr:{ k:'pult', a:1, h:1 }, tx:'Remplit une moitié du réservoir avec le même village que l\'autre (ou ton village le plus présent) et gagne 1 chakra.', trx:'Tes ultimes donnent aussi +1/+1 à tous tes serviteurs.', norsv:1, q:{ k:'ult', n:2, tx:'Déclencher 2 ultimes.' }, aw:{ nm:'Mangekyō éternel', pwn:'Amaterasu', cost:3, pay:'g', pw:{ k:'multi', s:[{ k:'rsvsame' }, { k:'rsvsame' }, { k:'ck', n:1 }] }, tx:'Remplit deux moitiés du réservoir avec le même village (ultime) et gagne 1 chakra.', norsv:1 } },
+  nh_shikamaru: {diff:2, stars:3, fam:NJV, pv:'n_feu', mc:'ckm', n:'Shikamaru Nara', pwn:'Stratège', pw:{ k:'pturn', ck:2, h:3 }, tr:{ k:'pawk', n:1 }, tx:'Passif : au début de chaque tour, gagne 2 chakra de plus et un allié aléatoire gagne +0/+3.', trx:'Éveiller un serviteur coûte 1 chakra de moins.', q:{ k:'ckFull', n:3, tx:'Commencer 3 tours avec 10 chakra.' }, aw:{ nm:'Ombre étrangleuse', pwn:'Ombre étrangleuse', pw:{ k:'pturn', ck:3, h:3, a:1 }, tr:{ k:'pawk', n:2 }, trx:'Éveiller un serviteur coûte 2 chakra de moins.', tx:'Passif : au début de chaque tour, gagne 3 chakra de plus et un allié aléatoire gagne +1/+3.' } },
+  nh_hashirama: {diff:3, stars:5, fam:NJV, pv:'n_feu', mc:'seal', n:'Hashirama Senju', cost:2, pay:'g', pwn:'Sceau du bois', pw:{ k:'multi', s:[{ k:'sealhi', n:1 }] }, tr:{ k:'pseal' }, tx:'Pose 1 sceau sur ton serviteur qui en a le plus.', trx:'Tes sceaux donnent +2/+2 au lieu de +1/+1.', q:{ k:'seals', n:5, tx:'Poser 5 sceaux.' }, aw:{ nm:'Mode Sage du bois', pwn:'Mille mains', cost:3, pay:'g', pw:{ k:'multi', s:[{ k:'sealhi', n:2 }, { k:'seal', n:1, m:2 }] }, tx:'Pose 2 sceaux sur ton serviteur qui en a le plus, puis 1 sceau sur deux autres serviteurs.' } },
+  nh_kushina: {diff:3, stars:5, fam:NJV, pv:'n_feu', mc:'seal', n:'Kushina Uzumaki', cost:5, pay:'ck', pwn:'Chaînes de scellement', pw:{ k:'multi', s:[{ k:'seal', n:1, m:4 }] }, tr:{ k:'pseal5', a:3, h:3 }, tx:'Pose 1 sceau sur quatre de tes serviteurs aléatoires.', trx:'Un serviteur qui atteint 5 sceaux gagne aussi +3/+3.', q:{ k:'seal5', n:1, tx:'Amener un serviteur à 5 sceaux.' }, aw:{ nm:'Chaînes adamantines', pwn:'Chaînes adamantines', cost:4, pay:'ck', pw:{ k:'multi', s:[{ k:'seal', n:1, m:7 }] }, tx:'Pose 1 sceau sur chacun de tes serviteurs.' } },
+  nh_gaara: {diff:3, stars:4, fam:NJV, pv:'n_vent', mc:'cbt', n:'Gaara', cost:1, pay:'g', pwn:'Bouclier de sable', pw:{ k:'multi', s:[{ k:'tkw', kw:'t', n:1, a:0, h:5 }, { k:'tkw', kw:'s', n:1 }] }, tx:'Prochain combat : un de tes serviteurs gagne +0/+5 et Provocation, un autre Bouclier divin.', q:{ k:'wins', n:4, tx:'Gagner 4 combats.' }, aw:{ nm:'Défense absolue', pwn:'Défense absolue', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'tkw', kw:'t', n:1, a:0, h:8 }, { k:'tkw', kw:'s', n:2 }] }, tx:'Prochain combat : un de tes serviteurs gagne +0/+8 et Provocation, deux autres Bouclier divin.' } },
+  nh_kankuro: {diff:3, stars:3, fam:NJV, pv:'n_vent', mc:'tok', n:'Kankuro', cost:2, pay:'g', pwn:'Marionnettes de combat', pw:{ k:'multi', s:[{ k:'summon', card:'tk_puppet', n:2 }] }, tr:{ k:'ptok', card:'tk_puppet', a:1, h:1 }, tx:'Invoque 2 Marionnettes.', trx:'Tes Marionnettes apparaissent avec +1/+1.', q:{ k:'tokSum', card:'tk_puppet', n:6, tx:'Invoquer 6 Marionnettes.' }, aw:{ nm:'Trio de marionnettes', pwn:'Karasu, Kuroari, Sanshōuo', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'summon', card:'tk_puppet', n:2 }, { k:'cardbuff', card:'tk_puppet', a:1, h:1 }] }, tx:'Invoque 2 Marionnettes, puis tes Marionnettes gagnent +1/+1.' } },
+  nh_sasori: {diff:3, stars:5, fam:NJV, pv:'n_vent', mc:'dr', n:'Sasori', pwn:'Marionnettes humaines', pw:{ k:'pturn', drp:1, dr:1 }, tx:'Passif : au début de chaque tour, un de tes serviteurs gagne « Râle d\'agonie : invoque une Marionnette » puis tes serviteurs à Râle d\'agonie gagnent +1/+0.', q:{ k:'drBoard', n:5, tx:'Finir un tour avec 5 serviteurs à Râle d\'agonie.' }, aw:{ nm:'Cent marionnettes', pwn:'Cent marionnettes', pw:{ k:'pturn', drp:2, dr:1 }, tx:'Passif : au début de chaque tour, deux de tes serviteurs gagnent « Râle d\'agonie : invoque une Marionnette », puis tes serviteurs à Râle d\'agonie gagnent +1/+0.' } },
+  nh_rasa: {diff:3, stars:4, fam:NJV, pv:'n_vent', mc:'eco', n:'Rasa', pwn:'Poussière d\'or', pw:{ k:'pturn', g:2, roll:1, sell:1 }, tx:'Passif : au début de chaque tour, gagne 2 or de plus ; ta première actualisation de chaque tour est gratuite et vendre rapporte 1 or de plus.', q:{ k:'buys', n:8, tx:'Acheter 8 serviteurs.' }, aw:{ nm:'Pluie d\'or', pwn:'Pluie d\'or', pw:{ k:'pturn', g:3, roll:1 }, tx:'Passif : au début de chaque tour, gagne 3 or de plus, et ta première actualisation de chaque tour est gratuite.' } },
+  nh_mei: {diff:3, stars:4, fam:NJV, pv:'n_eau', mc:'kg', n:'Mei Terumi', pwn:'Deux natures', pw:{ k:'pkg', n:1 }, tr:{ k:'pturn', ck:1 }, trx:'Au début de chaque tour, gagne 1 chakra.', tx:'Passif : tes kekkei genkai grandissent deux fois plus à chaque combo. Quand tu améliores ta taverne au niveau 3 ou plus, ajoute un kekkei genkai à ta main.', q:{ k:'kgBoard', n:2, tx:'Avoir 2 kekkei genkai sur ton plateau.' }, aw:{ nm:'Futton et Yōton', pwn:'Futton et Yōton', pw:{ k:'pkg', n:1, x:3 }, tx:'Passif : tes kekkei genkai grandissent trois fois plus à chaque combo. Quand tu améliores ta taverne au niveau 3 ou plus, ajoute un kekkei genkai à ta main.' } },
+  nh_haku: {diff:3, stars:4, fam:NJV, pv:'n_eau', mc:'kg', n:'Haku', cost:4, pay:'g', pwn:'Hyōton', pw:{ k:'multi', s:[{ k:'kgcard' }, { k:'ck', n:1 }] }, tr:{ k:'pkgs' }, tx:'Ajoute à ta main un serviteur kekkei genkai et gagne 1 chakra.', trx:'Tes kekkei genkai gagnent Bouclier divin quand tu les joues.', q:{ k:'kgPlay', n:2, tx:'Jouer 2 kekkei genkai.' }, aw:{ nm:'Miroirs démoniaques', pwn:'Miroirs démoniaques', cost:3, pay:'g', pw:{ k:'multi', s:[{ k:'kgcard' }, { k:'kgbuff', a:2, h:2 }] }, tx:'Ajoute un kekkei genkai à ta main ; tes kekkei genkai gagnent +2/+2.' } },
+  nh_bee: {diff:3, stars:5, fam:NJV, pv:'n_foudre', mc:'cbt', n:'Killer Bee', pwn:'Huit queues', pw:{ k:'pjin' }, tr:{ k:'pturn', ck:1 }, tx:'Passif : tes jinchūriki grandissent deux fois plus après chaque victoire, et un allié aléatoire gagne alors +2/+2.', trx:'Au début de chaque tour, gagne 1 chakra.', q:{ k:'streak', n:4, tx:'Gagner 4 combats d\'affilée.' }, aw:{ nm:'Mode Bijū', pwn:'Gyūki libéré', pw:{ k:'pjin', x:3, b:3 }, tx:'Passif : tes jinchūriki grandissent trois fois plus après chaque victoire, et un allié aléatoire gagne alors +3/+3.' } },
+  nh_c: {diff:2, stars:3, fam:NJV, pv:'n_foudre', mc:'eco', n:'C', cost:1, pay:'g', pwn:'Analyse', pw:{ k:'multi', s:[{ k:'roll' }, { k:'ck', n:1 }, { k:'upd', n:1 }] }, tx:'Actualise la taverne gratuitement, gagne 1 chakra, et l\'amélioration coûte 1 or de moins.', q:{ k:'rolls', n:7, tx:'Actualiser la taverne 7 fois.' }, aw:{ nm:'Genjutsu brisé', pwn:'Genjutsu brisé', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'roll' }, { k:'ck', n:2 }, { k:'upd', n:2 }] }, tx:'Actualise la taverne gratuitement, gagne 2 chakra, et l\'amélioration coûte 2 or de moins.' } },
+  nh_yugito: {diff:3, stars:4, fam:NJV, pv:'n_foudre', mc:'spl', n:'Yugito Nii', cost:1, pay:'g', pwn:'Deux queues', pw:{ k:'multi', s:[{ k:'spd', n:2 }] }, tr:{ k:'pcast', a:1, h:1 }, tx:'Ton prochain sort coûte 2 chakra de moins.', trx:'Quand tu lances un sort, un allié aléatoire gagne +1/+1.', q:{ k:'ckSpell', n:10, tx:'Dépenser 10 chakra en sorts.' }, aw:{ nm:'Nibi libéré', pwn:'Flammes de Matatabi', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'spd', n:3 }, { k:'ck', n:1 }] }, tr:{ k:'pcast', a:2, h:2 }, trx:'Quand tu lances un sort, un allié aléatoire gagne +2/+2.', tx:'Ton prochain sort coûte 3 chakra de moins ; gagne 1 chakra.' } },
+  nh_omoi: {diff:2, stars:3, fam:NJV, pv:'n_foudre', mc:'cmb', n:'Omoi', cost:3, pay:'g', pwn:'Prudence', pw:{ k:'multi', s:[{ k:'cdbl' }] }, tr:{ k:'pcmb', nb:1 }, tx:'Ton prochain combo se déclenche deux fois.', trx:'Tes combos sont un palier plus forts.', q:{ k:'combos', n:4, tx:'Déclencher 4 combos.' }, aw:{ nm:'Lame du Nuage', pwn:'Lame du Nuage', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'cdbl' }, { k:'ck', n:2 }] }, tx:'Ton prochain combo se déclenche deux fois ; gagne 2 chakra.' } },
+  nh_deidara: {diff:3, stars:5, fam:NJV, pv:'n_terre', mc:'dr', n:'Deidara', cost:3, pay:'ck', pwn:'Art explosif', pw:{ k:'multi', s:[{ k:'drgive', n:1, fx:{ k:'dr_dmg', d:4, n:1 } }, { k:'fire', d:3 }] }, tx:'Un de tes serviteurs gagne « Râle d\'agonie : 4 dégâts à un ennemi », et 3 dégâts frappent l\'ennemi au prochain combat.', q:{ k:'drDie', n:14, tx:'Voir 14 de tes serviteurs mourir en combat.' }, aw:{ nm:'C4 Karura', pwn:'C4 Karura', cost:4, pay:'ck', pw:{ k:'multi', s:[{ k:'drgive', n:2, fx:{ k:'dr_dmg', d:4, n:1 } }, { k:'fire', d:6 }] }, tx:'Deux de tes serviteurs gagnent « Râle d\'agonie : 4 dégâts à un ennemi », et 6 dégâts frappent l\'ennemi au prochain combat.' } },
+  nh_roshi: {diff:3, stars:4, fam:NJV, pv:'n_terre', mc:'ckm', n:'Roshi', cost:3, pay:'ck', pwn:'Lave enragée', pw:{ k:'multi', s:[{ k:'awkfree' }, { k:'awkall' }] }, tx:'Éveille gratuitement un de tes serviteurs, puis tes serviteurs éveillés déclenchent une fois de plus leur effet d\'Éveil.', q:{ k:'awk', n:2, tx:'Éveiller 2 serviteurs.' }, aw:{ nm:'Mode Lave', pwn:'Mode Lave', cost:2, pay:'ck', pw:{ k:'multi', s:[{ k:'awkfree' }, { k:'awkall' }, { k:'awkall' }] }, tx:'Éveille gratuitement un de tes serviteurs, puis tes serviteurs éveillés déclenchent deux fois de plus leur effet d\'Éveil.' } },
   pyra:    {fam:['drag'], n:'Pyra la chevaucheuse', tx:'Passif : au début de chaque combat, votre dragon souffle 2 dégâts sur un ennemi aléatoire (le surplus touche d\'autres ennemis).' },
   paul:    {fam:['sq_feu'], n:'Paul', cost:2, el:'sq_feu', tx:'Ami du feu · Attise : un Flammou aléatoire gagne +2/+1 et vos autres Flammous gagnent +1 attaque.' },
   leon:    {fam:['sq_terre'], n:'Léon', el:'sq_terre', tx:'Ami de la terre · Passif : quand vous jouez un Mottu, il gagne Provocation et +1/+2.' },
@@ -418,6 +418,13 @@ const HEROES = {
 };
 // héros Ninja : le bonus (trx) s'ajoute au texte du pouvoir
 for (const h in HEROES) if (HEROES[h].trx && !HEROES[h].tx.includes(HEROES[h].trx)) HEROES[h].tx += ' Bonus : ' + HEROES[h].trx;
+// éveil des héros (quête) : version du héros avec son nouveau pouvoir (le bonus reste, sauf s'il est remplacé)
+for (const h in HEROES) { const B = HEROES[h], A = B.aw; if (!A) continue; const trx = A.trx || B.trx; B.awd = Object.assign({}, B, { pw:A.pw, pwn:A.pwn, cost:A.cost || 0, pay:A.pay, tr:A.tr || B.tr, trx, norsv:A.norsv, tx:A.tx + (trx ? ' Bonus : ' + trx : ''), aw:null, awn:A.nm }); if (!A.cost) delete B.awd.cost; }
+const HX = p => { const B = p && HEROES[p.hero]; return B ? (p.haw && B.awd ? B.awd : B) : null; };
+// progression de la quête du héros ; à la fin, il s'éveille
+function qAdd(p, k, n = 1, card) { const B = p && HEROES[p.hero], Q = B && B.q; if (!Q || p.haw || Q.k !== k || (Q.card && card && Q.card !== card)) return; p.qp = (p.qp || 0) + n; if (p.qp >= Q.n) heroAwaken(p); }
+function qSet(p, k, v) { const B = p && HEROES[p.hero], Q = B && B.q; if (!Q || p.haw || Q.k !== k) return; p.qp = Math.max(p.qp || 0, v); if (p.qp >= Q.n) heroAwaken(p); }
+function heroAwaken(p) { if (p.haw) return; p.qp = HEROES[p.hero].q.n; p.haw = 1; p.hawRd = H.G ? H.G.rd : 0; p.hawId = UID++; p.pu = false; }
 // familles d'un héros (modifiables dans l'atelier)
 const heroFam = h => (SET.heroFam && Array.isArray(SET.heroFam[h]) && SET.heroFam[h].length ? SET.heroFam[h] : (HEROES[h] && HEROES[h].fam) || []);
 
@@ -687,6 +694,7 @@ function recruitSummon(p, id, g, after) {
   if (p.bd.length >= 7 || !C[id]) return;
   const i = p.bd.indexOf(after), nm = mk(id, g);
   p.bd.splice(i < 0 ? p.bd.length : i + 1, 0, nm);
+  if (C[id].t === 0) qAdd(p, 'tokSum', 1, id);
   const w = htr(p, 'ptok'); if (w && C[id].t === 0 && (!w.card || w.card === id)) withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => buff(nm, w.a || 0, w.h || 0));
 }
 function runRecruit(G, p, m, e, ctx) { return withSrc(e && e.src ? e.src : m && m.c && C[m.c] ? CD(m.c).n : BSRC, () => runRecruit0(G, p, m, e, ctx)); }
@@ -725,7 +733,7 @@ function runRecruit0(G, p, m, e, ctx) {
     case 'eot_clones': p.bd.filter(x => x.c === 'tk_clone').forEach(x => buff(x, A, Hh)); break;
     case 'cast_chain': if ((p.castN || 0) >= e.n) buff(m, A, Hh); break;
     case 'cast_chain_ck': if ((p.castN || 0) >= e.n) p.ck = Math.min(ckMax(p), (p.ck || 0) + e.c * k); break;
-    case 'combo_kg': { const b = CD(m.c), els = [CLAN_EL[b.tr], CLAN_EL[b.tr2]], x = (p.lastCombo || []).filter(el => els.includes(el)).length * (htr(p, 'pkg') ? 2 : 1); if (x) buff(m, A * x, Hh * x); break; }
+    case 'combo_kg': { const b = CD(m.c), els = [CLAN_EL[b.tr], CLAN_EL[b.tr2]], x = (p.lastCombo || []).filter(el => els.includes(el)).length * (htr(p, 'pkg') ? (htr(p, 'pkg').x || 2) : 1); if (x) buff(m, A * x, Hh * x); break; }
     case 'eot_souffle': mkAdd(p, 'vent', e.n * k * pureX(p, 'n_vent')); break;
     case 'eot_roche': mkAdd(p, 'terre', e.n * k * pureX(p, 'n_terre')); break;
     case 'eot_braise_self': { const x = Math.min(e.n * k, Math.floor((p.braise || 0) / 2)); if (x) buff(m, x, 0); break; }
@@ -763,10 +771,10 @@ const hpw = p => (HEROES[p.hero] && HEROES[p.hero].pw) || {};
 // un sceau : +1/+1 (+2/+2 avec Han) ; au 5e, le serviteur gagne Bouclier divin
 function sealAdd(p, m, n) {
   if (!m) return; const v = htr(p, 'pseal') ? 2 : 1, s5 = htr(p, 'pseal5');
-  for (let i = 0; i < n; i++) { m.sl = (m.sl || 0) + 1; withSrc('Sceau', () => buff(m, v, v)); if (m.sl >= 5 && !m.slf) { m.slf = 1; addF(m, 's'); if (s5) withSrc('Sceau complet', () => buff(m, s5.a || 0, s5.h || 0)); } }
+  for (let i = 0; i < n; i++) { m.sl = (m.sl || 0) + 1; qAdd(p, 'seals'); if (m.sl === 5) qAdd(p, 'seal5'); withSrc('Sceau', () => buff(m, v, v)); if (m.sl >= 5 && !m.slf) { m.slf = 1; addF(m, 's'); if (s5) withSrc('Sceau complet', () => buff(m, s5.a || 0, s5.h || 0)); } }
 }
 function pactSummon(p, id, after) {
-  if (p.bd.length >= 7) return null; recruitSummon(p, id, 0, after);
+  if (p.bd.length >= 7) return null; recruitSummon(p, id, 0, after); qAdd(p, 'pactSum');
   const nm = p.bd[after && p.bd.includes(after) ? p.bd.indexOf(after) + 1 : p.bd.length - 1];
   const w = htr(p, 'ppact') || {}; if (nm && nm.c === id && w.k) withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => buff(nm, w.a || 0, w.h || 0));
   return nm;
@@ -958,8 +966,8 @@ function heroReroll(G, p) {
 }
 const RANKS = ['Genin', 'Chûnin', 'Jônin'];
 function winUp(p) {
-  const x2 = htr(p, 'pjin') ? 2 : 1;
-  if (x2 > 1 && p.bd && p.bd.length) withSrc('Huit queues', () => buff(pickR(p.bd), 2, 2));
+  const J = htr(p, 'pjin'), x2 = J ? (J.x || 2) : 1;
+  if (J && p.bd && p.bd.length) withSrc('Huit queues', () => buff(pickR(p.bd), J.b || 2, J.b || 2));
   (p.bd || []).forEach(m => (CD(m.c).fxAll || []).forEach(e => { const k = mult(m) * x2;
     if (e.k === 'win_self') withSrc('Jinchūriki', () => buff(m, e.a * k, e.h * k));
     if (e.k === 'win_all') withSrc(CD(m.c).n, () => p.bd.forEach(o => { if (o !== m && tribeOk(o, e.tb)) buff(o, e.a * mult(m), e.h * mult(m)); })); }));
@@ -1043,6 +1051,7 @@ function checkTriple(G, p) {
     const gm = { c:id, a:copies.reduce((t, m) => t + m.a, 0), h:copies.reduce((t, m) => t + m.h, 0), g:1, f:b.f, u:UID++, tr:1 }; { const sl = copies.reduce((t, m) => t + (m.sl || 0), 0); if (sl) { gm.sl = sl; if (copies.some(m => m.slf) || sl >= 5) gm.slf = 1; } }
     copies.forEach(m => { for (const k of m.f || '') addF(gm, k); if (m.x) gm.x = (gm.x || []).concat(m.x); (m.bn || []).forEach(e => { const L = gm.bn || (gm.bn = []); const f = L.find(x => x.s === e.s); if (f) { f.a += e.a; f.h += e.h; f.n += e.n; for (const k of e.k || '') if (!(f.k || '').includes(k)) f.k = (f.k || '') + k; } else L.push({ ...e }); }); });
     p.hd.push(gm);
+    if (C[id].t === 0) qAdd(p, 'tripTok');
     { const t = htr(p, 'ptrip'); if (t && C[id].t === 0) withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => { p.ck = Math.min(ckMax(p), (p.ck || 0) + (t.ck || 0)); }); }
     if (inMech(G, 'serment', gm)) withSrc('Serment des anciens', () => p.bd.concat(p.hd).forEach(x => { if (x !== gm && !x.sp && inMech(G, 'serment', x)) buff(x, 2, 2); }));
     return checkTriple(G, p);
@@ -1091,7 +1100,7 @@ function awkPw(w) {
   ['n', 'd', 'a', 'h', 'g', 'n2', 'a2', 'h2', 'm', 'max'].forEach(k => { if (typeof o[k] === 'number' && !keep.includes(k)) o[k] *= 2; });
   return o;
 }
-const pwOf = p => { const w = HEROES[p.hero] && HEROES[p.hero].pw; return w && typeof H !== 'undefined' && awake(H.G) ? awkPw(w) : w; };
+const pwOf = p => { const w = HX(p) && HX(p).pw; return w && typeof H !== 'undefined' && awake(H.G) ? awkPw(w) : w; };
 const PW_AWK_TX = { rfill:'remplit la moitié et récupère 2 chakra', techel:'ajoute 2 techniques', rpure:'déclenche le combo pur et gagne 2 or', pdouble:'les deux premiers combos du tour s\'appliquent deux fois', ptechc:'tes techniques coûtent 2 or de moins', rcycle:'gagne 2 or', rdump:'gagne 6 or' };
 const heroAwkTx = h => !h || !h.pw ? '' : PW_AWK_TX[h.pw.k] || 'effet doublé';
 // forme éveillée du compagnon : pouvoir ultime de son clan (sans doublement des stats)
@@ -1106,7 +1115,7 @@ function awakenComp(c) { if (!c || c.awk) return; const el = CLAN_EL[CD(c.c).tr]
 const hasFx = (m, k) => (CD(m.c).fxAll || []).some(e => e.k === k);
 // dans l'univers du chakra, les pouvoirs héroïques se paient en chakra
 const powPaid = G => !!(G && inMechAny(G, 'chakra'));   // Ninja : le pouvoir du héros se paie en chakra
-const heroCk = (G, p) => { const h = p && HEROES[p.hero]; return h && h.pay ? h.pay === 'ck' : powPaid(G); };
+const heroCk = (G, p) => { const h = HX(p); return h && h.pay ? h.pay === 'ck' : powPaid(G); };
 const powPurse = (G, p) => heroCk(G, p) ? (p.ck || 0) : p.g;
 // coffres : un par combat, rangés hors de la main ; mineur (égalité ou défaite) ou majeur (victoire), du niveau de la taverne
 const CHEST_COMMON = ['eq_lame', 'eq_armure', 'eq_gants'];
@@ -1257,7 +1266,7 @@ const elems = list => new Set(list.filter(x => x.h > 0 && isSq(x)).map(tribe)).s
 const sellValue = m => 1 + fxOf(m, 'sell').reduce((t, e) => t + e.n * mult(m), 0);
 
 const OPS = {
-  buy(G, p, a) { const i = a.i; if (p.g < 3 || p.hd.length >= 10 || !p.sh[i]) return false; p.g -= 3; p.hd.push(p.sh.splice(i, 1)[0]); checkTriple(G, p); return true; },
+  buy(G, p, a) { const i = a.i; if (p.g < 3 || p.hd.length >= 10 || !p.sh[i]) return false; p.g -= 3; qAdd(p, 'buys'); p.hd.push(p.sh.splice(i, 1)[0]); checkTriple(G, p); return true; },
   sell(G, p, a) { const m = p.bd[a.i]; if (!m) return false; p.bd.splice(a.i, 1); if (p.ck) p.ck = Math.min(p.ck, ckMax(p)); p.g += 1; if (inMech(G, 'marche', m) && (p.mkt || 0) < 2) { p.g += 1; p.mkt = (p.mkt || 0) + 1; } fxOf(m, 'sell').forEach(e => runRecruit(G, p, m, e)); { const t = htr(p, 'pturn'); if (t && t.sell) p.g += t.sell; } toPool(G, m); return true; },
   play(G, p, a) {
     const m = p.hd[a.i]; if (!m || m.sp || p.bd.length >= 7) return false;
@@ -1265,6 +1274,7 @@ const OPS = {
     const pos = Math.max(0, Math.min(a.pos == null ? p.bd.length : a.pos, p.bd.length));
     p.bd.splice(pos, 0, m);
     if (p.hero === 'leon' && tribe(m) === 'sq_terre') withSrc('Passif de Léon', () => { addF(m, 't'); buff(m, 1, 2); });
+    if (NJ_PACTM.includes(m.c)) qAdd(p, 'pactPlay'); if (NJ_KG.includes(m.c)) { qAdd(p, 'kgPlay'); qSet(p, 'kgBoard', p.bd.filter(x => NJ_KG.includes(x.c)).length); }
     if (htr(p, 'pkgs') && NJ_KG.includes(m.c)) withSrc('Pouvoir de Haku', () => addF(m, 's'));
     const nbc = auraTimes(p.bd, 'aura_bc');
     for (let r = 0; r < nbc; r++) fxOf(m, 'bc').forEach(e => runRecruit(G, p, m, e));
@@ -1273,13 +1283,13 @@ const OPS = {
     checkTriple(G, p); return true;
   },
   move(G, p, a) { const m = p.bd[a.i]; if (!m) return false; p.bd.splice(a.i, 1); p.bd.splice(Math.max(0, Math.min(a.to, p.bd.length)), 0, m); return true; },
-  roll(G, p) { const free = (p.hero === 'rivet' || (htr(p, 'pturn') || {}).roll) && p.rr === 0; if (!free && p.g < 1) return false; if (!free) p.g -= 1; p.rr++; p.fz = false; fillShop(G, p); trigBoard(G, p, 'roll'); return true; },
+  roll(G, p) { const free = (p.hero === 'rivet' || (htr(p, 'pturn') || {}).roll) && p.rr === 0; if (!free && p.g < 1) return false; if (!free) p.g -= 1; p.rr++; qAdd(p, 'rolls'); p.fz = false; fillShop(G, p); trigBoard(G, p, 'roll'); return true; },
   frz(G, p) { p.fz = !p.fz; return true; },
   up(G, p) { const c = upCost(p); if (p.t >= 6 || p.g < c) return false; p.g -= c; p.t++; p.uc = (+RU().up[p.t] || 0) + (inMechAny(G, 'chakra') && p.t < 6 ? 1 : 0); trigBoard(G, p, 'up'); if (htr(p, 'pkg') && p.t >= 3) withSrc('Pouvoir de Mei', () => kgCard(G, p)); return true; },
   comp(G, p) { const id = compOf(p.hero); if (inMechAny(G, 'chakra') || !id || !C[id] || (p.cb || 0) >= compLimit(G.rd) || p.g < 3 || p.hd.length >= 10) return false; p.g -= 3; p.cb = (p.cb || 0) + 1; p.hd.push(mk(id, 0)); checkTriple(G, p); return true; },
   pow(G, p) { const r = withSrc(HEROES[p.hero] ? 'Pouvoir de ' + HEROES[p.hero].n.split(' ')[0] : null, () => OPS.pow0(G, p)); if (r) checkTriple(G, p); return r; },   // jetons invoqués par le pouvoir : triple possible
   pow0(G, p) {
-    const h = HEROES[p.hero]; if (!h || !h.cost || p.pu || powPurse(G, p) < h.cost) return false;
+    const h = HX(p); if (!h || !h.cost || p.pu || powPurse(G, p) < h.cost) return false;
     if (h.pw && !powRun(G, p, h.pw)) return false;
     { const el = inMechAny(G, 'chakra') && /^nh_/.test(p.hero) && !h.norsv && CLAN_EL[domVils(p)[0]]; if (el && typeof rsvFill === 'function') withSrc('Réservoir', () => rsvFill(G, p, el)); }
     if (heroCk(G, p)) p.ckSpent = 1;
@@ -1340,7 +1350,7 @@ const OPS = {
   },
   buysp(G, p, a) { const k = a && +a.k === 1 ? 'sp2' : 'sp', it = p[k], S = it && SPELLS[it.sp]; const c = S ? spCost(p, S) : 0; if (!S || p.g < c || p.hd.length >= 10) return false; p.g -= c; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(it); p[k] = null; return true; },
   ckm(G, p, a) { const m = p.bd[a.i]; if (!m || m.awk) return false; const md = (CD(m.c).fxAll || []).find(x => x.k === 'ckm'); if (!md || (p.ck || 0) < ckmCost(p, md)) return false;
-    p.ck -= ckmCost(p, md); m.awk = 1; withSrc('Éveil · ' + CD(m.c).n, () => { buff(m, md.c * mult(m), md.c * mult(m)); runMode(G, p, m, md.m); }); checkTriple(G, p); return true; },
+    p.ck -= ckmCost(p, md); m.awk = 1; qAdd(p, 'awk'); withSrc('Éveil · ' + CD(m.c).n, () => { buff(m, md.c * mult(m), md.c * mult(m)); runMode(G, p, m, md.m); }); checkTriple(G, p); return true; },
   cast(G, p, a) { const it = p.hd[a.i]; if (!it || !it.sp || p.disc) return false; return castSpell(G, p, a.i, a.tg); },
   pick(G, p, a) { if (!p.disc || !p.disc[a.i]) return false; const m = p.disc.splice(a.i, 1)[0]; p.disc.forEach(x => toPool(G, x)); p.disc = null; if (p.hd.length < 10) p.hd.push(m); else toPool(G, m); checkTriple(G, p); return true; },
 };
@@ -1409,7 +1419,7 @@ function powStep(G, p, s) {
     case 'card': for (let i = 0; i < N; i++) if (p.hd.length < 10) { const c = drawOne(G, p.t, null, s.tb) || drawOne(G, p.t, null, null); if (c) p.hd.push(c); } break;
     case 'tech': for (let i = 0; i < N; i++) if (p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); } break;
     case 'techel': { const lo = SPELL_IDS.filter(id => SPELLS[id].nin && !SPELLS[id].forb && SPELLS[id].el === s.el).reduce((m, id) => Math.min(m, SPELLS[id].t), 9); for (let i = 0; i < N; i++) if (p.hd.length < 10) { const sp = drawSpell(Math.max(p.t, lo), s.el); if (sp) p.hd.push(sp); } break; }
-    case 'roll': p.fz = false; fillShop(G, p); trigBoard(G, p, 'roll'); break;
+    case 'roll': p.fz = false; fillShop(G, p); trigBoard(G, p, 'roll'); qAdd(p, 'rolls'); break;
     case 'summon': for (let i = 0; i < N; i++) if (p.bd.length < 7) recruitSummon(p, s.card, 0, p.bd[p.bd.length - 1]); break;
     case 'cardbuff': p.bd.filter(m => m.c === s.card).forEach(m => buff(m, s.a || 0, s.h || 0)); break;
     case 'clones': p.bd.filter(m => m.c === 'tk_clone').forEach(m => buff(m, s.a || 0, s.h || 0)); break;
@@ -1424,7 +1434,7 @@ function powStep(G, p, s) {
     case 'upd': p.uc = Math.max(0, p.uc - N); break;
     case 'spd': p.spd = (p.spd || 0) + N; break;
     case 'awkall': p.bd.forEach(m => { if (m.awk) { const md = (CD(m.c).fxAll || []).find(f => f.k === 'ckm'); if (md) withSrc('Éveil · ' + CD(m.c).n, () => runMode(G, p, m, md.m)); } }); break;
-    case 'awkfree': { const o = p.bd.filter(m => !m.awk && (CD(m.c).fxAll || []).some(x => x.k === 'ckm')); if (!o.length) { if (s.ck) p.ck = Math.min(ckMax(p), (p.ck || 0) + s.ck); break; } const m = pickR(o), md = CD(m.c).fxAll.find(x => x.k === 'ckm'); m.awk = 1; withSrc('Éveil · ' + CD(m.c).n, () => { buff(m, md.c * mult(m), md.c * mult(m)); runMode(G, p, m, md.m); }); break; }
+    case 'awkfree': { const o = p.bd.filter(m => !m.awk && (CD(m.c).fxAll || []).some(x => x.k === 'ckm')); if (!o.length) { if (s.ck) p.ck = Math.min(ckMax(p), (p.ck || 0) + s.ck); break; } const m = pickR(o), md = CD(m.c).fxAll.find(x => x.k === 'ckm'); m.awk = 1; qAdd(p, 'awk'); withSrc('Éveil · ' + CD(m.c).n, () => { buff(m, md.c * mult(m), md.c * mult(m)); runMode(G, p, m, md.m); }); break; }
     case 'rsvsame': { const r = p.rsv || []; const el = r[0] || CLAN_EL[domVils(p)[0]]; rsvFill(G, p, el); break; }
     case 'rsv2': { const d = domVils(p); p.rsv = []; rsvFill(G, p, CLAN_EL[d[0]]); rsvFill(G, p, CLAN_EL[d[1]]); break; }
     case 'cdbl': p.cnext = (p.cnext || 0) + 1; break;
@@ -1466,7 +1476,7 @@ function powRun(G, p, w0) {
 }
 // le pouvoir a-t-il un effet possible maintenant ? (même règles que pow0, sans rien modifier)
 function powCan(p, rd) {
-  const h = HEROES[p.hero]; if (!h || !h.cost || p.pu || (p.ckPay ? (p.ck || 0) : p.g) < h.cost) return false;
+  const h = HX(p); if (!h || !h.cost || p.pu || (p.ckPay ? (p.ck || 0) : p.g) < h.cost) return false;
   if (h.pw) return powCanW(p, h.pw);
   const bd = p.bd || [], hd = p.hd || [], tr = t => bd.some(m => tribe(m) === t);
   switch (p.hero) {
@@ -1532,7 +1542,7 @@ function aiTurn(G, p) {
     let acted = false;
     const c = upCost(p);
     if (p.t < 6 && p.g >= c && (G.rd >= targetRound[p.t] || p.g - c >= 3)) { OPS.up(G, p); acted = true; continue; }
-    const hc = HEROES[p.hero] && HEROES[p.hero].cost;
+    const hc = HX(p) && HX(p).cost;
     const nonoWait = p.hero === 'nono' && (G.rd < 3 || ((p.fb || 1) < 4 && G.rd < 9));
     if (hc && !nonoWait && !p.pu && !p.aiSave && (heroCk(G, p) ? (p.ck || 0) >= hc : p.g >= hc && p.g - hc >= 3) && (p.bd.length || p.hero === 'oren' || p.hero === 'nono')) { if (OPS.pow(G, p)) { acted = true; continue; } }
     aiPlayAll(G, p);
@@ -1573,11 +1583,11 @@ function startRecruit() {
     if (p.fz) { p.fz = false; topUpShop(G, p); } else fillShop(G, p);
     p.pu = false; p.bd.forEach(x => { if (x.awk && !C[x.c].comp) { const md = (CD(x.c).fxAll || []).find(f => f.k === 'ckm'); if (md) withSrc('Éveil · ' + CD(x.c).n, () => runMode(G, p, x, md.m)); } }); checkTriple(G, p); p.castN = 0; p.castEls = []; p.ckSpentLast = p.ckSpent || 0; p.ckSpent = 0; p.hd.forEach(x => { if (x.sp && SPELLS[x.sp] && SPELLS[x.sp].chg) x.ch = Math.min(2, (x.ch || 0) + 1); }); p.fbq = false; p.njf = 0; p.sylv = false; p.rr = 0; p.rdy = false; p.lastRes = p.res ? (p.res.cr || p.res.r) : null; p.res = null;
     if (p.inc && p.inc.length) p.g += p.inc.shift() || 0;
-    { const w = /^nh_/.test(p.hero || '') ? htr(p, 'pturn') : (pwOf(p) && pwOf(p).k === 'pturn' ? null : null); if (w) { if (w.g) p.g += w.g; if (w.ck) p.ck = Math.min(ckMax(p), (p.ck || 0) + w.ck); if (w.h && p.bd.length) buff(pickR(p.bd), 0, w.h); if (w.el) mkAdd(p, w.el, w.n); const src = 'Pouvoir de ' + HEROES[p.hero].n.split(' ')[0]; if (w.sl) shuffle(p.bd.slice()).slice(0, w.sl).forEach(m => sealAdd(p, m, 1)); if (w.drp) withSrc(src, () => { const o = p.bd.filter(m => !(m.x || []).some(e => e.drp)); const t = o.length ? pickR(o) : null; if (t) (t.x = t.x || []).push({ k:'dr_summon', card:'tk_puppet', n:1, drp:1, src:'Sasori' }); }); if (w.pa) withSrc(src, () => { const a = p.bd.filter(isPact); if (a.length) a.forEach(m => buff(m, 1, 1)); else pactSummon(p, 'tk_toad', p.bd[p.bd.length - 1]); }); if (w.dr) withSrc(src, () => p.bd.forEach(m => { if (fxOf(m, 'dr').length) buff(m, w.dr, 0); })); } p.spd = 0; }
+    { const w = /^nh_/.test(p.hero || '') ? htr(p, 'pturn') : (pwOf(p) && pwOf(p).k === 'pturn' ? null : null); if (w) { if (w.g) p.g += w.g; if (w.ck) p.ck = Math.min(ckMax(p), (p.ck || 0) + w.ck); if ((w.h || w.a) && p.bd.length) buff(pickR(p.bd), w.a || 0, w.h || 0); if (w.el) mkAdd(p, w.el, w.n); const src = 'Pouvoir de ' + HEROES[p.hero].n.split(' ')[0]; if (w.sl) shuffle(p.bd.slice()).slice(0, w.sl).forEach(m => sealAdd(p, m, 1)); if (w.drp) withSrc(src, () => { const o = p.bd.filter(m => !(m.x || []).some(e => e.drp)); shuffle(o).slice(0, w.drp).forEach(t => (t.x = t.x || []).push({ k:'dr_summon', card:'tk_puppet', n:1, drp:1, src:'Sasori' })); }); if (w.pa) withSrc(src, () => { const a = p.bd.filter(isPact); if (a.length) a.forEach(m => buff(m, 1, 1)); else pactSummon(p, 'tk_toad', p.bd[p.bd.length - 1]); }); if (w.dr) withSrc(src, () => p.bd.forEach(m => { if (fxOf(m, 'dr').length) buff(m, w.dr, 0); })); } p.spd = 0; }
     trigBoard(G, p, 'sot'); checkTriple(G, p);
     p.mkt = 0; p.cdbl = 0; p.hruse = 0;
     if (inMechAny(G, 'ames') && (p.souls || 0) >= 3) { const k = Math.floor(p.souls / 3); p.souls -= k * 3; withSrc('Moisson d\'âmes', () => p.bd.forEach(m => { if (inMech(G, 'ames', m)) buff(m, k, k); })); }
-    if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; p.ck = Math.min(ckMax(p), (p.ck || 0) + n); mkSync(p); }
+    if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; p.ck = Math.min(ckMax(p), (p.ck || 0) + n); mkSync(p); if ((p.ck || 0) >= 10) qAdd(p, 'ckFull'); }
     // un coffre après chaque combat : majeur si le compagnon gagne son duel, mineur sinon
     if (NJ_COMP && inMechAny(G, 'chakra') && p.lastRes) p.pendChest = (p.lastRes === 'win' ? 'maj' : 'min') + (p.t || 1);
     // Éveil : le coffre favorise les plus bas au classement (moitié inférieure en points de vie)
@@ -1600,6 +1610,7 @@ function startRecruit() {
 function endRecruit() {
   const G = H.G;
   for (const p of G.ps) if (p.al) {
+    qSet(p, 'drBoard', p.bd.filter(m => fxOf(m, 'dr').length).length);
     if (p.pendChest) OPS.chest(G, p);
     if (p.choice) { const b = p.choice.reduce((bi, o, i) => o.r > p.choice[bi].r ? i : bi, 0); OPS.upick(G, p, { i:b }); }
     if (p.bot && p.cp) for (let g = 0; g < 8 && (p.ups || []).length && (p.ck || 0) >= upgCost(p.ups[0]); g++) OPS.uapply(G, p, { i:0 });
@@ -1695,6 +1706,7 @@ function chakraSteal(p, q, pb, qb, r) {
   return [a, b];
 }
 function lawsAfterFight(G, p, r, side) {
+  qAdd(p, 'drDie', (r.dead[side] || []).length); if (r.w === side) { p.wst = (p.wst || 0) + 1; qAdd(p, 'wins'); qSet(p, 'streak', p.wst); } else p.wst = 0;
   if (inMechAny(G, 'ames')) { const n = r.dead[side].filter(c => C[c] && G.mx.ames.includes(C[c].tr)).length; if (n) p.souls = (p.souls || 0) + n; }
   if (G.mx && G.mx.pillage && r.w === side && r.alive[side].some(c => C[c] && G.mx.pillage.includes(C[c].tr)) && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) { p.hd.push(sp); p.loot = (p.loot || 0) + 1; } }
 }
@@ -1736,11 +1748,11 @@ function pubData() {
   const G = H.G;
   if (!G) return { ph:'lobby', code:H.code, cv:CAT_REV, us:(V.univSel || []).slice(), pl:H.roster.map(r => ({ n:r.n, pe:r.peer })), last:H.last || null };
   return { ph:G.ph, rd:G.rd, rem:Math.max(0, G.end - Date.now()), code:H.code, cv:CAT_REV, trs:G.trs, ban:G.ban, univ:G.univ, laws:G.laws || [], ev:G.eveil || 0, mhp:(+RU().hp || 40) + 10,
-    pl:G.ps.map(p => ({ pid:p.pid, n:p.n, hp:p.hp, t:p.t, ai:!p.human, bot:p.bot, al:p.al, pl:p.place, r:p.rdy, h:p.hero, pe:p.peer, nb:p.bd.length, el:p.cp ? compEl(p.cp) : null, mk:p.cp ? p[MK[compEl(p.cp)]] || 0 : 0 })) };
+    pl:G.ps.map(p => ({ pid:p.pid, haw:p.haw || 0, n:p.n, hp:p.hp, t:p.t, ai:!p.human, bot:p.bot, al:p.al, pl:p.place, r:p.rdy, h:p.hero, pe:p.peer, nb:p.bd.length, el:p.cp ? compEl(p.cp) : null, mk:p.cp ? p[MK[compEl(p.cp)]] || 0 : 0 })) };
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, sp2:p.sp2 ? p.sp2.sp : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, spd:p.spd || 0, castN:p.castN || 0, ckm:ckMax(p), ckPay:heroCk(H.G, p) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, mkl:(mkSync(p), p.mkl) || {}, souffle:p.souffle || 0, roche:p.roche || 0, choice:p.choice || null, chFav:p.chFav || 0, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, hrr:p.hrr || 0, hrm:p.hrm || HERO_ROLLS, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, sp2:p.sp2 ? p.sp2.sp : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, spd:p.spd || 0, castN:p.castN || 0, ckm:ckMax(p), ckPay:heroCk(H.G, p) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, mkl:(mkSync(p), p.mkl) || {}, souffle:p.souffle || 0, roche:p.roche || 0, choice:p.choice || null, chFav:p.chFav || 0, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, hrr:p.hrr || 0, hrm:p.hrm || HERO_ROLLS, haw:p.haw || 0, hawId:p.hawId || 0, qp:p.qp || 0, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;
