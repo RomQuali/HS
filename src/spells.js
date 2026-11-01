@@ -58,6 +58,38 @@ const SPELLS = {
   nj_thenge:{ el:'terre', n:'Henge : Iwa', t:3, c:2, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'henge' }], sage:[{ k:'tbuff', a:2, h:2 }], awk:{ tx:'+2/+2 après la transformation', fx:[{ k:'tbuff', a:2, h:2 }] }, tx:'Métamorphose de pierre : transforme le serviteur ciblé en un serviteur de son clan d\'un niveau plus haut, en gardant ses bonus. Mode ermite : +2/+2.' },
   nj_invoc:{ el:'terre', n:'Iwa Gōremu', t:4, c:3, ck:4, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_golem', n:2 }], sage:[{ k:'buffcard', card:'tk_golem', a:2, h:2 }], awk:{ tx:'+1/+2 à tes Golems', fx:[{ k:'buffcard', card:'tk_golem', a:1, h:2 }] }, tx:'Golems de roche : invoque 2 Golems de terre. Mode ermite : tes Golems gagnent +2/+2.' },
   nj_thiden:{ el:'terre', n:'Hiden : Senpō', t:6, c:5, ck:6, hid:3, nin:1, ty:'nin', fx:[{ k:'buffall', a:2, h:3 }], sage:[{ k:'buffall', a:2, h:3 }], awk:{ tx:'+1/+1 de plus pour tous', fx:[{ k:'buffall', a:1, h:1 }] }, tx:'Hiden : il faut 3 serviteurs Doton. Art ermite : tes serviteurs gagnent +2/+3. Mode ermite : encore +2/+3.' },
+  // ----- sorts au chakra (univers Ninja) : 1 or à l'achat, lancés au chakra -----
+  // Feuille
+  cs_hosenka:{ cs:1, bg:'feu', n:'Hōsenka no jutsu', t:1, c:1, ck:2, nin:1, ty:'nin', fx:[{ k:'fire', d:4 }], tx:'Fleurs de phénix : prochain combat, 4 dégâts à l\'ennemi.' },
+  cs_kibaku:{ cs:1, bg:'feu', n:'Kibaku fuda', t:2, c:1, ck:2, nin:1, ty:'nin', tg:1, fx:[{ k:'tbuff', a:2, h:0 }, { k:'fire', d:2 }], tx:'Parchemin explosif : le serviteur ciblé gagne +2/+0 et 2 dégâts frappent l\'ennemi au prochain combat.' },
+  cs_gokakyu:{ cs:1, bg:'feu', n:'Gōkakyū no jutsu', t:3, c:1, ck:4, nin:1, ty:'nin', fx:[{ k:'fire', d:8 }], tx:'Grande boule de feu : prochain combat, 8 dégâts répartis sur l\'ennemi.' },
+  cs_amaterasu:{ cs:1, rare:1, bg:'feu', n:'Amaterasu', t:6, c:1, ck:6, nin:1, ty:'nin', fx:[{ k:'fire', d:14 }], tx:'Rare. Flammes noires : prochain combat, 14 dégâts répartis sur l\'ennemi.' },
+  // Sable
+  cs_kugutsu:{ cs:1, bg:'vent', n:'Kugutsu no jutsu', t:1, c:1, ck:2, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_puppet', n:2 }], tx:'Invocation des marionnettes : invoque 2 Marionnettes.' },
+  cs_sunatate:{ cs:1, bg:'vent', n:'Suna no tate', t:2, c:1, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'tbuff', a:0, h:4 }, { k:'tkwp', kw:'t' }], tx:'Bouclier de sable : le serviteur ciblé gagne +0/+4 et Provocation.' },
+  cs_kamaitachi:{ cs:1, bg:'vent', n:'Kamaitachi', t:3, c:1, ck:3, nin:1, ty:'nin', fx:[{ k:'tma', a:2, h:0 }], tx:'Faux du vent : prochain combat, tes serviteurs gagnent +2/+0.' },
+  cs_sabaku:{ cs:1, rare:1, bg:'vent', n:'Sabaku taisō', t:6, c:1, ck:6, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_puppet', n:2 }, { k:'buffall', a:2, h:4 }], tx:'Rare. Funérailles du désert : invoque 2 Marionnettes, puis tes serviteurs gagnent +2/+4.' },
+  // Brume
+  cs_kiri:{ cs:1, bg:'eau', n:'Kirigakure no jutsu', t:1, c:1, ck:2, nin:1, ty:'nin', fx:[{ k:'tma', a:0, h:2 }], tx:'Brume cachée : prochain combat, tes serviteurs gagnent +0/+2.' },
+  cs_shosen:{ cs:1, bg:'eau', n:'Shōsen jutsu', t:2, c:1, ck:2, nin:1, ty:'nin', tg:1, fx:[{ k:'tbuff', a:1, h:4 }], tx:'Paume mystique : le serviteur ciblé gagne +1/+4.' },
+  cs_suiro:{ cs:1, bg:'eau', n:'Suirō no jutsu', t:3, c:1, ck:3, nin:1, ty:'nin', fx:[{ k:'seal', n:1 }, { k:'chill', a:2, n:2 }], tx:'Prison aqueuse : prochain combat, un ennemi perd ses mots-clés et deux ennemis perdent 2 attaque.' },
+  cs_suikodan:{ cs:1, rare:1, bg:'eau', n:'Suikōdan', t:6, c:1, ck:6, nin:1, ty:'nin', fx:[{ k:'tma', a:2, h:3 }, { k:'tkwn', kw:'s', n:3 }], tx:'Rare. Requins d\'eau : prochain combat, tes serviteurs gagnent +2/+3 et trois d\'entre eux Bouclier divin.' },
+  // Nuage
+  cs_raikyu:{ cs:1, bg:'foudre', n:'Raikyū', t:1, c:1, ck:1, nin:1, ty:'nin', fx:[{ k:'g', n:2 }], tx:'Sphère de foudre : gagne 2 or.' },
+  cs_chidori:{ cs:1, bg:'foudre', n:'Chidori', t:2, c:1, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'ttmp', a:4, h:0, kw:'v' }], tx:'Mille oiseaux : prochain combat, le serviteur ciblé gagne +4/+0 et Toxique.' },
+  cs_bijuchakra:{ cs:1, bg:'foudre', n:'Bijū no chakra', t:3, c:1, ck:4, nin:1, ty:'nin', fx:[{ k:'winup' }], tx:'Chakra de la bête : tes jinchūriki grandissent comme après une victoire.' },
+  cs_bijudama:{ cs:1, rare:1, bg:'foudre', n:'Bijūdama', t:6, c:1, ck:6, nin:1, ty:'nin', fx:[{ k:'winup' }, { k:'winup' }, { k:'fire', d:6 }], tx:'Rare. Orbe de la bête : tes jinchūriki grandissent deux fois comme après une victoire, et 6 dégâts frappent l\'ennemi.' },
+  // Roche
+  cs_doryu:{ cs:1, bg:'terre', n:'Doryūheki', t:1, c:1, ck:2, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_mur', n:1 }], tx:'Mur de terre : invoque un Mur de terre (0/4, Provocation).' },
+  cs_kengan:{ cs:1, bg:'terre', n:'Kengan no jutsu', t:2, c:1, ck:2, nin:1, ty:'nin', tg:1, fx:[{ k:'tpoing' }], tx:'Poing de roc : le serviteur ciblé gagne +1 attaque par tranche de 3 PV (+6 au plus).' },
+  cs_iwa:{ cs:1, bg:'terre', n:'Iwa gōremu', t:3, c:1, ck:4, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_golem', n:2 }], tx:'Golems de roche : invoque 2 Golems de terre (2/3, Provocation).' },
+  cs_chokei:{ cs:1, rare:1, bg:'terre', n:'Chōkeijūgan', t:6, c:1, ck:6, nin:1, ty:'nin', fx:[{ k:'buffall', a:1, h:6 }, { k:'summon', card:'tk_mur', n:2 }], tx:'Rare. Roche ultra-lourde : tes serviteurs gagnent +1/+6, puis invoque 2 Murs de terre.' },
+  // Neutres
+  cs_shunshin:{ cs:1, n:'Shunshin no jutsu', t:1, c:1, ck:1, nin:1, ty:'nin', fx:[{ k:'roll' }], tx:'Déplacement éclair : rafraîchis gratuitement la taverne.' },
+  cs_kawarimi:{ cs:1, n:'Kawarimi no jutsu', t:1, c:1, ck:2, nin:1, ty:'nin', fx:[{ k:'uc', n:2 }], tx:'Permutation : améliorer la taverne coûte 2 or de moins.' },
+  cs_kuchiyose:{ cs:1, n:'Kuchiyose no jutsu', t:2, c:1, ck:3, nin:1, ty:'nin', fx:[{ k:'disc' }], tx:'Invocation : découvre un serviteur d\'un niveau au-dessus de ta taverne.' },
+  cs_henge:{ cs:1, n:'Henge no jutsu', t:3, c:1, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'henge' }], tx:'Métamorphose : transforme le serviteur ciblé en un serviteur de son village d\'un niveau plus haut, bonus gardés.' },
+  cs_kagebunshin:{ cs:1, n:'Kage bunshin no jutsu', t:4, c:1, ck:4, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_clone', n:2 }, { k:'clones', a:1, h:1 }], tx:'Multi-clonage : invoque 2 Clones de l\'ombre, puis tes clones gagnent +1/+1.' },
   // ----- techniques interdites : seulement après l'Éveil des clans -----
   nj_x_cinq:{ el:'feu', n:'Hachimon Tonkō', t:5, c:5, ck:9, nin:1, forb:1, ty:'nin', tx:'Technique interdite, les huit portes. Prochain combat : tous tes serviteurs gagnent +6/+6 et 6 dégâts frappent l\'ennemi au début du combat.' },
   nj_x_sceau:{ el:'terre', n:'Shiki Fūjin', t:5, c:4, ck:8, nin:1, forb:1, ty:'nin', tg:1, tx:'Technique interdite. Le serviteur ciblé gagne +10/+10 ; un autre de tes serviteurs aléatoire est détruit.' },
@@ -75,7 +107,8 @@ const SPELLS = {
   cf_or:{ n:'Coffre d\'or', t:1, c:0, ck:6, item:1, ty:'cof', tx:'Reçu après une victoire avec une taverne de niveau 4 ou plus. Ouvre-le avec 6 chakra : deux équipements rares.' },
 };
 const SPELL_IDS = Object.keys(SPELLS);
-function drawSpell(t, el) { const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra'); if (nin && !NJ_TECH) return null; const ev = typeof H !== 'undefined' && H.G && H.G.eveil; const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !!SPELLS[id].nin === !!nin && (!SPELLS[id].forb || ev) && (!el || SPELLS[id].el === el)); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
+function drawSpell(t, el) { const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra');
+  if (nin && !NJ_TECH) { const ids = SPELL_IDS.filter(id => SPELLS[id].cs && SPELLS[id].t <= t); const w = ids.map(id => SPELLS[id].rare ? 0.35 : 1), tot = w.reduce((a, b) => a + b, 0); let r = Math.random() * tot; for (let i = 0; i < ids.length; i++) { r -= w[i]; if (r <= 0) return { sp:ids[i], u:UID++ }; } return ids.length ? { sp:ids[0], u:UID++ } : null; } const ev = typeof H !== 'undefined' && H.G && H.G.eveil; const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !!SPELLS[id].nin === !!nin && (!SPELLS[id].forb || ev) && (!el || SPELLS[id].el === el)); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
 
 // pourquoi un sort ne peut pas être lancé (null = il peut)
 function spellBlock(p, id, tgt) {
@@ -159,6 +192,9 @@ function techSteps(G, p, steps, tgt, tg, x) {
       case 'chill': p.foe = p.foe || {}; p.foe.chill = (p.foe.chill || []).concat(Array(s.n * x).fill(s.a)); break;
       case 'henge': if (tgt) { const i = p.bd.indexOf(tgt), t = Math.min(6, tierOf(tgt) + 1), tb = tribe(tgt); const nm = drawOne(G, 6, t, tb) || drawOne(G, 6, t) || drawAny(t); if (nm && i >= 0) { const b0 = CD(tgt.c); nm.a += Math.max(0, tgt.a - b0.a * (tgt.g ? 3 : 1)); nm.h += Math.max(0, tgt.h - b0.h * (tgt.g ? 3 : 1)); if (tgt.g) { nm.g = 1; nm.a += CD(nm.c).a * 2; nm.h += CD(nm.c).h * 2; } toPool(G, tgt); p.bd[i] = nm; tgt = nm; } } break;
       case 'comp': comps(p).forEach(c => buff(c, a, h)); break;
+      case 'winup': winUp(p); break;
+      case 'uc': p.uc = Math.max(0, (p.uc || 0) - s.n); break;
+      case 'disc': { const t = Math.min(6, p.t + 1), opts = []; for (let i = 0; i < 3; i++) { const m = drawOne(G, 6, t) || drawAny(t); if (m) opts.push(m); } if (opts.length) p.disc = opts; break; }
     }
   }
 }
@@ -332,6 +368,7 @@ function aiSpells(G, p) {
   for (let guard = 0; guard < 8; guard++) {
     const S = p.sp && SPELLS[p.sp.sp];
     if (S && !AI_SKIP.includes(p.sp.sp) && p.g >= S.c && p.hd.length < 10 && !(S.tg && !p.bd.length) && aiWantSpell(p, S)) OPS.buysp(G, p);
+    { const S2 = p.sp2 && SPELLS[p.sp2.sp]; if (S2 && p.g >= S2.c && p.hd.length < 10 && !(S2.tg && !p.bd.length) && aiWantSpell(p, S2)) OPS.buysp(G, p, { k:1 }); }
     let hi = -1, best = -1e9;
     p.hd.forEach((m, i) => { if (!m.sp || bad.has(m.u) || !aiCanCast(G, p, m)) return; const v = aiCastPrio(G, p, m); if (v > best) { best = v; hi = i; } });
     if (hi < 0) break;
@@ -393,6 +430,9 @@ const SPART = {
   sp_reflet: () => ['#c8963e', '#3f6fb0'].map((col, k) => `<g transform="translate(${k ? 60 : 40} 50) rotate(${k ? 10 : -10})">` + E(0, -6, 17, 22, col, so()) + E(0, -6, 13, 18, '#cfe9f2', so(1.6)) + E(-4, -14, 4, 7, '#fff', 'opacity=".6"') + `<rect x="-3.6" y="16" width="7.2" height="22" rx="2" fill="${col}" ${so(1.6)}/>` + P(starD(0, -6, 6, 2.6, 5), k ? '#7fb8ff' : '#f2c14e', GLOW) + '</g>').join(''),
   sp_ascension: () => softGlow(50, 46, 34, '#fff1b8', .45) + ['M50 52 C 36 40, 20 42, 8 30 C 14 50, 24 60, 46 62 Z', 'M50 52 C 64 40, 80 42, 92 30 C 86 50, 76 60, 54 62 Z'].map(d => P(d, '#f6f0e0', so(1.8))).join('') + Ln('M14 36 C 24 46, 34 50, 46 56 M86 36 C 76 46, 66 50, 54 56 M20 44 C 28 50, 36 54, 46 58 M80 44 C 72 50, 64 54, 54 58', '#c8b89a', 1.1) + P(starD(50, 40, 14, 5.6, 5), '#f2c14e', so(1.8) + ' ' + GLOW) + Ln('M50 64 L50 92 M42 72 L50 64 L58 72', '#fff1b8', 3),
 };
+Object.assign(SPART, { cs_hosenka:SPART.nj_souffle, cs_kibaku:SPART.nj_sceau, cs_gokakyu:SPART.nj_boule, cs_amaterasu:SPART.nj_deluge, cs_kugutsu:SPART.nj_doubles, cs_sunatate:SPART.nj_pierre, cs_kamaitachi:SPART.nj_rafale, cs_sabaku:SPART.nj_porteur,
+  cs_kiri:SPART.nj_brume, cs_shosen:SPART.nj_vague, cs_suiro:SPART.nj_x_sceau, cs_suikodan:SPART.nj_vague, cs_raikyu:SPART.nj_decharge, cs_chidori:SPART.nj_foudre, cs_bijuchakra:SPART.nj_x_eveil, cs_bijudama:SPART.nj_x_cinq,
+  cs_doryu:SPART.nj_pierre, cs_kengan:SPART.nj_poing, cs_iwa:SPART.nj_invoc, cs_chokei:SPART.nj_poing, cs_shunshin:SPART.nj_rafale, cs_kawarimi:SPART.nj_permut, cs_kuchiyose:SPART.nj_invoc, cs_henge:SPART.nj_doubles, cs_kagebunshin:SPART.nj_doubles });
 Object.assign(SPART, { nj_kporte:SPART.nj_souffle, nj_kbaku:SPART.nj_deluge, nj_vbun:SPART.nj_doubles, nj_vhiden:SPART.nj_rafale, nj_ehenge:SPART.nj_doubles, nj_ehiden:SPART.nj_vague, nj_oyoroi:SPART.nj_foudre, nj_ohiden:SPART.nj_decharge, nj_thenge:SPART.nj_pierre, nj_thiden:SPART.nj_invoc });
 function spellBg(ty) {
   const col = SP_TYPES[ty].col;
@@ -402,9 +442,9 @@ function buildSpellDefs() {
   let s = Object.keys(SP_TYPES).map(spellBg).join('');
   const runes = [[12, 14], [88, 18], [10, 86], [90, 84]].map(([x, y]) => Ci(x, y, 3.4, 'none', 'stroke="#fff" stroke-width=".8" opacity=".35"') + P(starD(x, y, 2, 0.6, 4), '#fff', 'opacity=".45"')).join('');
   // techniques ninja : le fond prend la couleur de leur nature
-  const ELBG = { feu:'#c8401a', vent:'#2a9a5a', eau:'#1e6ab0', foudre:'#c89a10', terre:'#7a5a32' };
+  const ELBG = { feu:'#c8401a', vent:'#b8862a', eau:'#1e6ab0', foudre:'#6a4ab8', terre:'#7a5a32' };
   for (const e in ELBG) s += `<radialGradient id="spbg-el-${e}" cx="50%" cy="42%" r="70%"><stop offset="0" stop-color="${shade(ELBG[e], 0.5)}"/><stop offset=".6" stop-color="${ELBG[e]}"/><stop offset="1" stop-color="${shade(ELBG[e], -0.6)}"/></radialGradient>`;
-  for (const id in SPELLS) s += `<symbol id="sp-${id}" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><rect width="100" height="100" fill="url(#spbg-${SPELLS[id].el && ELBG[SPELLS[id].el] && !SPELLS[id].item ? 'el-' + SPELLS[id].el : SPELLS[id].ty})"/>${Ci(50, 50, 40, 'none', 'stroke="#fff" stroke-width=".8" stroke-dasharray="2 3" opacity=".35"')}${runes}${SPART[id]()}</symbol>`;
+  for (const id in SPELLS) s += `<symbol id="sp-${id}" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><rect width="100" height="100" fill="url(#spbg-${SPELLS[id].bg && ELBG[SPELLS[id].bg] ? 'el-' + SPELLS[id].bg : SPELLS[id].el && ELBG[SPELLS[id].el] && !SPELLS[id].item ? 'el-' + SPELLS[id].el : SPELLS[id].ty})"/>${Ci(50, 50, 40, 'none', 'stroke="#fff" stroke-width=".8" stroke-dasharray="2 3" opacity=".35"')}${runes}${SPART[id]()}</symbol>`;
   document.body.insertAdjacentHTML('afterbegin', `<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>${s}${Object.values(SOFT).join('')}</defs></svg>`);
 }
 

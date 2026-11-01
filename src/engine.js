@@ -239,7 +239,7 @@ const DEFAULT_CARD_LIST = [
   ['n_f2', 'Apprenti artificier', 1, 'n_feu', 1, 2, '', [{ k:'ckm', c:2, m:{ k:'m_fire', d:2 } }]],
   ['n_f3', 'Chūnin des flammes', 2, 'n_feu', 3, 3, '', [{ k:'soc_dmg', d:2, n:2 }]],
   ['n_f4', 'Lanceur de kunais explosifs', 2, 'n_feu', 3, 3, '', [{ k:'dr_dmg', d:3, n:1 }]],
-  ['n_f5', 'Jōnin pyromane', 3, 'n_feu', 4, 4, '', [{ k:'soc_fire_tb', d:2 }]],
+  ['n_f5', 'Jōnin pyromane', 3, 'n_feu', 4, 4, '', [{ k:'soc_fire_tb', d:1 }, { k:'cast_fire', d:1 }]],
   ['n_f6', 'Sentinelle de la Feuille', 3, 'n_feu', 2, 5, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'ckm', c:3, m:{ k:'m_fire', d:3 } }]],
   ['n_f7', 'Maître des sceaux explosifs', 4, 'n_feu', 5, 5, '', [{ k:'soc_fire_tb', d:2 }, { k:'dr_dmg', d:3, n:1 }]],
   ['n_f8', 'ANBU de la Feuille', 4, 'n_feu', 5, 5, '', [{ k:'soc_dmg', d:3, n:3 }]],
@@ -249,7 +249,7 @@ const DEFAULT_CARD_LIST = [
   ['n_v2', 'Garde du désert', 1, 'n_vent', 2, 2, '', [{ k:'ckm', c:2, m:{ k:'m_summon', card:'tk_puppet' } }]],
   ['n_v3', 'Chūnin marionnettiste', 2, 'n_vent', 3, 3, '', [{ k:'eot_card_buff', card:'tk_puppet', a:1, h:1 }]],
   ['n_v4', 'Éclaireur des dunes', 2, 'n_vent', 3, 2, '', [{ k:'dr_summon', card:'tk_puppet', n:2 }]],
-  ['n_v5', 'Maître des fils', 3, 'n_vent', 3, 4, '', [{ k:'bc_summon', card:'tk_puppet', n:2 }, { k:'eot_card_buff', card:'tk_puppet', a:1, h:1 }]],
+  ['n_v5', 'Maître des fils', 3, 'n_vent', 3, 4, '', [{ k:'bc_summon', card:'tk_puppet', n:2 }, { k:'cast_buff_tribe', a:1, h:1, tb:'n_vent' }]],
   ['n_v6', 'Gardien de sable', 3, 'n_vent', 2, 6, 't', [{ k:'ckm', c:3, m:{ k:'m_buffall', a:0, h:2, tb:'n_vent' } }]],
   ['n_v7', 'Marionnettiste d\'élite', 4, 'n_vent', 4, 5, '', [{ k:'die_self', tb:'n_vent', a:2, h:1 }]],
   ['n_v8', 'Ninja de la tempête de sable', 4, 'n_vent', 5, 4, '', [{ k:'soc_buff', a:0, h:2, tb:'n_vent' }]],
@@ -259,7 +259,7 @@ const DEFAULT_CARD_LIST = [
   ['n_e2', 'Infirmier de la Brume', 1, 'n_eau', 1, 2, '', [{ k:'ckm', c:2, m:{ k:'m_shield' } }]],
   ['n_e3', 'Chūnin des brumes', 2, 'n_eau', 2, 4, '', [{ k:'eot_buff_rand', a:0, h:2, n:1 }]],
   ['n_e4', 'Garde des vapeurs', 2, 'n_eau', 2, 3, 's', []],
-  ['n_e5', 'Médecin-ninja', 3, 'n_eau', 2, 5, '', [{ k:'eot_buff_all', a:0, h:1, tb:'n_eau' }]],
+  ['n_e5', 'Médecin-ninja', 3, 'n_eau', 2, 5, '', [{ k:'eot_buff_all', a:0, h:1, tb:'n_eau' }, { k:'cast_buff_rand', a:0, h:2 }]],
   ['n_e6', 'Bretteur de la Brume', 3, 'n_eau', 4, 5, '', [{ k:'surv_self', a:2, h:0 }]],
   ['n_e7', 'Gardien des brumes', 4, 'n_eau', 3, 7, 's', [{ k:'ckm', c:3, m:{ k:'m_buffall', a:1, h:2, tb:'n_eau' } }]],
   ['n_e8', 'Maître médecin', 4, 'n_eau', 4, 6, '', [{ k:'soc_kw', kw:'s', tb:'n_eau' }]],
@@ -269,7 +269,7 @@ const DEFAULT_CARD_LIST = [
   ['n_o2', 'Porteur de chakra', 1, 'n_foudre', 1, 2, '', [{ k:'ckm', c:2, m:{ k:'m_self', a:1, h:1 } }]],
   ['n_o3', 'Chūnin de la foudre', 2, 'n_foudre', 3, 2, '', [{ k:'win_self', a:1, h:1 }]],
   ['n_o4', 'Élève jinchūriki', 2, 'n_foudre', 2, 2, '', [{ k:'win_self', a:0, h:2 }]],
-  ['n_o5', 'Garde du Raikage', 3, 'n_foudre', 3, 4, '', [{ k:'win_self', a:1, h:1 }, { k:'ckm', c:3, m:{ k:'m_self', a:2, h:2 } }]],
+  ['n_o5', 'Garde du Raikage', 3, 'n_foudre', 3, 4, '', [{ k:'win_self', a:1, h:1 }, { k:'cast_ck', n:1 }]],
   ['n_o6', 'Coureur éclair', 3, 'n_foudre', 4, 3, 'w', [{ k:'win_self', a:1, h:1 }]],
   ['n_o7', 'Jinchūriki instable', 4, 'n_foudre', 4, 5, '', [{ k:'win_self', a:1, h:1 }, { k:'dr_summon', card:'tk_bijuu', n:1 }]],
   ['n_o8', 'Escouade de la foudre', 4, 'n_foudre', 5, 5, '', [{ k:'win_all', a:1, h:0, tb:'n_foudre' }]],
@@ -279,7 +279,7 @@ const DEFAULT_CARD_LIST = [
   ['n_t2', 'Bâtisseur', 1, 'n_terre', 1, 2, '', [{ k:'ckm', c:2, m:{ k:'m_wall', h:3 } }]],
   ['n_t3', 'Chūnin rempart', 2, 'n_terre', 2, 4, 't', [{ k:'dr_summon', card:'tk_mur', n:1 }]],
   ['n_t4', 'Garde des falaises', 2, 'n_terre', 2, 3, '', [{ k:'eot_buff_taunt', a:0, h:1 }]],
-  ['n_t5', 'Invocateur de murs', 3, 'n_terre', 2, 5, '', [{ k:'soc_summon', card:'tk_mur', n:1 }]],
+  ['n_t5', 'Invocateur de murs', 3, 'n_terre', 2, 5, '', [{ k:'soc_summon', card:'tk_mur', n:1 }, { k:'cast_self', a:0, h:2 }]],
   ['n_t6', 'Colosse de granit', 3, 'n_terre', 3, 6, 't', [{ k:'eot_anchor' }]],
   ['n_t7', 'Maître de la forteresse', 4, 'n_terre', 3, 8, 't', [{ k:'eot_buff_taunt', a:1, h:2 }]],
   ['n_t8', 'Lanceur de rochers', 4, 'n_terre', 5, 5, '', [{ k:'soc_avalanche' }]],
@@ -614,6 +614,7 @@ const ET = {
   aura_soc:{ tr:'aura', l:'Doubler les effets de Début du combat', ps:[], w:8, mag:() => 1, txt:(e, k) => `Vos effets de Début du combat se déclenchent ${k > 1 ? 'trois' : 'deux'} fois.` },
   // ----- mécaniques ninja des serviteurs -----
   soc_fire_tb:{ tr:'soc', l:'Explosions de la Feuille', ps:['d'], w:1.2, mag:e => e.d * 6, txt:(e, k) => `Début du combat : ${e.d * k} dégât${e.d * k > 1 ? 's' : ''} à un ennemi aléatoire par allié de la Feuille.` },
+  cast_fire:{ tr:'cast', l:'Sort : dégâts au prochain combat', ps:['d'], w:1.2, mag:e => e.d * 3, txt:(e, k) => `Quand vous lancez un sort : +${e.d * k} dégât${e.d * k > 1 ? 's' : ''} à l'ennemi au prochain combat.` },
   eot_card_buff:{ tr:'eot', l:'Renforcer les marionnettes', ps:['card', 'a', 'h'], w:1, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Fin de tour : tes ${CD(e.card).n}s gagnent ${sign(e.a * k, e.h * k)}.` },
   win_self:{ tr:'win', l:'Jinchūriki : grandir à chaque victoire', ps:['a', 'h'], w:1.3, mag:e => (e.a + e.h) * 3, txt:(e, k) => `Jinchūriki : après chaque combat gagné, gagne ${sign(e.a * k, e.h * k)}.` },
   win_all:{ tr:'win', l:'Victoire du Nuage', ps:['a', 'h', 'tb'], w:1, mag:e => (e.a + e.h) * 6, txt:(e, k) => `Après chaque combat gagné, tes autres ${one(e.tb)} gagnent ${sign(e.a * k, e.h * k)}.` },
@@ -708,6 +709,7 @@ function runRecruit0(G, p, m, e, ctx) {
     case 'sell_gold': p.g += e.n * k; break;
     case 'roll_self': case 'cast_self': case 'combo_self': buff(m, A, Hh); break;
     case 'combo_gold': p.g += e.n * k; break;
+    case 'cast_fire': p.njf = (p.njf || 0) + e.d * k; break;
     case 'eot_card_buff': p.bd.filter(x => x.c === e.card).forEach(x => buff(x, A, Hh)); break;
     case 'bc_gate': p.hp = Math.max(1, p.hp - e.d); buff(m, A, Hh); break;
     case 'eot_clones': p.bd.filter(x => x.c === 'tk_clone').forEach(x => buff(x, A, Hh)); break;
@@ -983,8 +985,9 @@ function drawOne(G, maxT, exactT, tb) {
 }
 function toPool(G, m) { if (G.pool[m.c] != null) G.pool[m.c] += m.g ? 3 : 1; }
 // taverne gelée : on garde ce qui reste et on complète les places vides (et l'étagère à sorts si elle est vide)
-function topUpShop(G, p) { if (!p.sp) p.sp = drawSpell(p.t); for (let k = p.sh.length; k < SLOTS[p.t]; k++) { const m = drawOne(G, p.t); if (m) p.sh.push(m); else break; } }
-function fillShop(G, p) { p.sp = drawSpell(p.t); p.sh.forEach(m => toPool(G, m)); p.sh = []; for (let k = 0; k < SLOTS[p.t]; k++) { const m = drawOne(G, p.t); if (m) p.sh.push(m); } }
+const sp2On = (G, p) => !!(G && inMechAny(G, 'chakra') && !NJ_TECH && p.t >= 4);
+function topUpShop(G, p) { if (!p.sp) p.sp = drawSpell(p.t); if (sp2On(G, p) && !p.sp2) p.sp2 = drawSpell(p.t); for (let k = p.sh.length; k < SLOTS[p.t]; k++) { const m = drawOne(G, p.t); if (m) p.sh.push(m); else break; } }
+function fillShop(G, p) { p.sp = drawSpell(p.t); p.sp2 = sp2On(G, p) ? drawSpell(p.t) : null; p.sh.forEach(m => toPool(G, m)); p.sh = []; for (let k = 0; k < SLOTS[p.t]; k++) { const m = drawOne(G, p.t); if (m) p.sh.push(m); } }
 
 function checkTriple(G, p) {
   const all = p.hd.concat(p.bd).filter(m => !m.sp && !m.g && !CD(m.c).tok);
@@ -1287,7 +1290,7 @@ const OPS = {
     withSrc('Inventaire · ' + SPELLS[id].n, () => { applyEquip(comp, id); for (let l = 1; l < ((p.eqlv || {})[id] || 1); l++) eqUpgrade(comp, id); });
     return true;
   },
-  buysp(G, p) { const S = p.sp && SPELLS[p.sp.sp]; const c = S ? spCost(p, S) : 0; if (!S || p.g < c || p.hd.length >= 10) return false; p.g -= c; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(p.sp); p.sp = null; return true; },
+  buysp(G, p, a) { const k = a && +a.k === 1 ? 'sp2' : 'sp', it = p[k], S = it && SPELLS[it.sp]; const c = S ? spCost(p, S) : 0; if (!S || p.g < c || p.hd.length >= 10) return false; p.g -= c; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(it); p[k] = null; return true; },
   ckm(G, p, a) { const m = p.bd[a.i]; if (!m || m.ckUsed) return false; const md = (CD(m.c).fxAll || []).find(x => x.k === 'ckm'); if (!md || (p.ck || 0) < md.c) return false;
     p.ck -= md.c; m.ckUsed = 1; withSrc('Mode chakra · ' + CD(m.c).n, () => runMode(G, p, m, md.m)); checkTriple(G, p); return true; },
   cast(G, p, a) { const it = p.hd[a.i]; if (!it || !it.sp || p.disc) return false; return castSpell(G, p, a.i, a.tg); },
@@ -1663,7 +1666,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:heroCk(H.G, p) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, mkl:(mkSync(p), p.mkl) || {}, souffle:p.souffle || 0, roche:p.roche || 0, choice:p.choice || null, chFav:p.chFav || 0, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, hrr:p.hrr || 0, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, sp2:p.sp2 ? p.sp2.sp : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:heroCk(H.G, p) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, mkl:(mkSync(p), p.mkl) || {}, souffle:p.souffle || 0, roche:p.roche || 0, choice:p.choice || null, chFav:p.chFav || 0, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, hrr:p.hrr || 0, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;

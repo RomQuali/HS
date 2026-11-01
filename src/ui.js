@@ -30,7 +30,7 @@ function onPriv(d) {
   V.privKey = key; V.me = d;
   if (V.chestRev && d.choice) { const R = V.chestRev; V.chestRev = null; V.choiceAt = R.at + 950; setTimeout(render, Math.max(0, V.choiceAt - Date.now()) + 20); }
   else if (V.chestRev && d.loot) { const R = V.chestRev; V.chestRev = null; const got = d.loot.slice(); if (got.length) setTimeout(() => chestReveal(got), Math.max(0, 950 - (Date.now() - R.at))); }
-  if (V.sel) { const z = V.sel.z === 'ss' ? (d.sp ? [d.sp] : []) : V.sel.z === 'sh' ? d.sh : V.sel.z === 'bd' ? d.bd : d.hd; if (!z || !z[V.sel.i]) V.sel = null; }
+  if (V.sel) { const z = V.sel.z === 'ss' ? [d.sp, d.sp2] : V.sel.z === 'sh' ? d.sh : V.sel.z === 'bd' ? d.bd : d.hd; if (!z || !z[V.sel.i]) V.sel = null; }
   if (V.aim != null && !(d.hd[V.aim] && d.hd[V.aim].sp)) V.aim = null;
   render();
 }
@@ -455,7 +455,7 @@ function gameH() {
         <div class="keeper">${medal('up', 'up', me.t >= 6 ? 'Niveau max' : 'Améliorer', me.t >= 6 ? null : me.uc, !canAct || me.t >= 6 || me.g < me.uc)}
           <div class="kc"><span class="face kf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-h-keeper" width="100" height="100"/></svg></span><div class="kname"><b>Bastien, tavernier</b><span class="lv">${tierStars(me.t)}</span></div></div>
           <div class="kr">${medal('roll', 'roll', 'Actualiser', freeRoll ? 0 : 1, !canAct || (me.g < 1 && !freeRoll))}${medal('frz', 'frz', me.fz ? 'Gelée' : 'Geler', null, !canAct, me.fz)}</div></div>
-        <div class="line counter-line">${me.sh.length ? me.sh.map((m, i) => tokenH(m, 'sh', i, { drag:canAct, trip:(own[m.c] || 0) >= 2 && !CD(m.c).tok, pair:(own[m.c] || 0) === 1 && !CD(m.c).tok })).join('') : '<p class="hint">La taverne est vide. Actualise pour faire entrer du monde.</p>'}${me.sp ? `<div class="shelf" title="Étagère à sorts"><span class="shelf-l">Sort</span>${spellTokenH(me.sp, 'ss', 0, { drag:canAct })}</div>` : ''}</div>
+        <div class="line counter-line">${me.sh.length ? me.sh.map((m, i) => tokenH(m, 'sh', i, { drag:canAct, trip:(own[m.c] || 0) >= 2 && !CD(m.c).tok, pair:(own[m.c] || 0) === 1 && !CD(m.c).tok })).join('') : '<p class="hint">La taverne est vide. Actualise pour faire entrer du monde.</p>'}${me.sp || me.sp2 ? `<div class="shelf" title="Étagère à sorts"><span class="shelf-l">Sort${me.sp2 ? 's' : ''}</span>${me.sp ? spellTokenH(me.sp, 'ss', 0, { drag:canAct }) : ''}${me.sp2 ? spellTokenH(me.sp2, 'ss', 1, { drag:canAct }) : ''}</div>` : ''}</div>
         ${d.trs ? `<span class="trs ktrs">${d.trs.map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span>` : ''}</section>`;
       boardRow = me.bd.length ? me.bd.map((m, i) => tokenH(m, 'bd', i, { drag:canAct })).join('') : '<p class="hint">Joue tes serviteurs ici. Ils attaquent de gauche à droite.</p>';
     }
@@ -848,11 +848,11 @@ function detailH(canAct) {
     return '<p class="tip">Touche un serviteur ou un sort pour l\'acheter, le jouer ou le vendre. Sur ordinateur, glisse-le : <b>taverne → main</b> pour acheter, <b>main → plateau</b> pour jouer, <b>plateau → taverne</b> pour vendre.</p>';
   }
   if (s.z === 'ss' || (s.z === 'hd' && me.hd[s.i] && me.hd[s.i].sp)) {
-    const id = s.z === 'ss' ? me.sp : me.hd[s.i].sp; if (!id) return '';
+    const id = s.z === 'ss' ? (s.i === 1 ? me.sp2 : me.sp) : me.hd[s.i].sp; if (!id) return '';
     const S = SPELLS[id];
     let acts = '';
     if (canAct && s.z === 'ss') { const c = me.spc != null ? me.spc : S.c;
-      acts = `<button class="btn pri" data-act="buysp" ${me.g < c || me.hd.length >= 10 ? 'disabled' : ''}>Acheter · ${c} or</button>`; }
+      acts = `<button class="btn pri" data-act="buysp" data-k="${s.i || 0}" ${me.g < c || me.hd.length >= 10 ? 'disabled' : ''}>Acheter · ${c} or</button>`; }
     if (canAct && s.z === 'hd') acts = S.tg ? `<button class="btn pri" data-act="aim" ${me.bd.length ? '' : 'disabled'}>Lancer sur un serviteur</button>` : `<button class="btn pri" data-act="cast">Lancer le sort</button>`;
     return `<div class="det">${spellCardH(id, 'd', 0)}<div class="det-s"><b>${esc(S.n)}</b><span class="meta">Sort · ${esc(SP_TYPES[S.ty].n)} · ${s.z === 'ss' ? 'sur l\'étagère de la taverne' : 'dans ta main'}</span><div class="acts">${acts}</div></div></div>`;
   }
@@ -1074,7 +1074,7 @@ document.addEventListener('click', e => {
 document.addEventListener('dblclick', e => {
   const card = e.target.closest('.mn,.cd,.spt'); if (!card || !V.me || !V.pub || V.pub.ph !== 'recruit') return;
   const z = card.dataset.z, i = +card.dataset.i;
-  if (z === 'sh') sendAct({ t:'buy', i }); else if (z === 'ss') sendAct({ t:'buysp' }); else if (z === 'hd' && !card.dataset.sp) sendAct({ t:'play', i });
+  if (z === 'sh') sendAct({ t:'buy', i }); else if (z === 'ss') sendAct({ t:'buysp', k:i }); else if (z === 'hd' && !card.dataset.sp) sendAct({ t:'play', i });
   V.sel = null;
 });
 document.addEventListener('keydown', e => {
@@ -1123,7 +1123,7 @@ function doAct(act, btn) {
     case 'hroll': if ((V.me.hrr || 0) > 0) { if (V.heroSel === V.me.ho[+btn.dataset.i]) V.heroSel = null; sendAct({ t:'hroll', i:+btn.dataset.i }); } break;
     case 'skip': if (V.fight) { clearTimeout(V.fightT); clearTimeout(V.duelT); if (V.fight.dr) { V.di = V.fight.dr.frames.length - 1; V.fight.ddone = true; } if (V.fight.lunge) { try { V.fight.lunge.cancel(); } catch (e) {} V.fight.lunge = null; } V.fi = V.fight.r.frames.length - 1; V.fight.done = true; render(); fxEnd(); } break;
     case 'buy': if (s) { sendAct({ t:'buy', i:s.i }); V.sel = null; } break;
-    case 'buysp': sendAct({ t:'buysp' }); V.sel = null; break;
+    case 'buysp': sendAct({ t:'buysp', k:+(btn.dataset.k || 0) }); V.sel = null; break;
     case 'cpel': sendAct({ t:'cpel', el:btn.dataset.el }); break;
     case 'uapply': { const o = V.me && (V.me.ups || [])[+btn.dataset.i]; if (o && (V.me.ck || 0) < upgCost(o)) { toast(`Il te faut ${upgCost(o)} chakra pour poser cette amélioration.`); break; } sendAct({ t:'uapply', i:+btn.dataset.i }); hidePeek(); break; }
     case 'lawtog': { const n = btn.dataset.u; V.lawOpen = V.lawOpen || {}; V.lawOpen[n] = !V.lawOpen[n]; render(); break; }
@@ -1284,7 +1284,7 @@ function dragEnd(x, y, cancel) {
 }
 function doDrop(to, D, t, x, z) {
   const from = D.z, i = D.i, dsp = D.sp; V.sel = null;
-  if (from === 'ss') { sendAct({ t:'buysp' }); return true; }
+  if (from === 'ss') { sendAct({ t:'buysp', k:+(D.i || 0) }); return true; }
   if (from === 'hd' && dsp) {
     const tgEl = t && t.closest('.mn');
     if (!SPELLS[dsp].tg) { sendAct({ t:'cast', i }); return true; }
