@@ -1906,6 +1906,7 @@ function sceneMode() {
   const m = V.screen === 'menu' ? 'sc-menu' : V.screen === 'lobby' || V.waitTable ? 'sc-lobby' : V.screen === 'atelier' ? 'sc-atl' : 'sc-game';
   if (!document.body.classList.contains(m)) { document.body.classList.remove('sc-menu', 'sc-lobby', 'sc-atl', 'sc-game'); document.body.classList.add(m); }
   if (V.screen === 'menu' && !V.mp && typeof csLeave === 'function') csLeave();
+  document.body.classList.toggle('u-nj', V.screen === 'game' && !!(V.pub && (V.pub.laws || []).some(l => l.k === 'chakra')));
   document.body.classList.toggle('cs-still', (V.screen === 'menu' && !!V.mp) || V.screen === 'lobby' || !!V.waitTable);
 }
 

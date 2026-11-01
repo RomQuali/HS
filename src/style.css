@@ -1946,3 +1946,8 @@ body.cs-entering #scene *{animation-play-state:running!important}
 .cd:not(.spc) .cd-tier{left:4%;top:-1.5%;width:20cqi;min-height:22cqi;
   background:linear-gradient(180deg,#9a3aa8,#5a1a70);box-shadow:inset 0 0 0 1px #2a0c3a,inset 0 0 0 2.4px #e0b8f0,inset 0 0 0 3.4px #2a0c3a;
   clip-path:polygon(0 0,100% 0,100% 70%,50% 100%,0 70%)}
+
+/* univers Naruto : plateau de la Vallée de la Fin */
+:root body.u-nj .table{background:linear-gradient(180deg,rgba(6,10,14,.35),rgba(6,10,14,0) 16%,rgba(6,10,14,0) 70%,rgba(6,10,14,.55)),var(--board-nj,none) center 18%/cover no-repeat,#16202a!important}
+body.u-nj .counter-line,body.u-nj .board-zone{border-radius:18px;background:rgba(8,14,20,.38);box-shadow:inset 0 0 0 1.5px rgba(180,210,230,.22),0 8px 24px rgba(0,0,0,.35);backdrop-filter:blur(1.5px)}
+body.u-nj .hand{background:linear-gradient(180deg,rgba(6,10,14,0),rgba(6,10,14,.55))}
