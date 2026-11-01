@@ -212,7 +212,7 @@ function castSpell0(G, p, hi, tg) {
   if (spellBlock(p, id, tgt)) return false;
   const it0 = p.hd.splice(hi, 1)[0];
   const sage0 = S.nin && S.sage ? sageOn(p) : false;
-  if (S.ck) { p.ck = (p.ck || 0) - ckCost(p, S); if (ckCost(p, S) > 0) p.ckSpent = 1; }
+  if (S.ck) { p.ck = (p.ck || 0) - ckCost(p, S); if (ckCost(p, S) > 0) p.ckSpent = 1; p.spd = 0; }
   if (S.hp) p.hp = Math.max(1, p.hp - S.hp);
   if (S.nin && (HEROES[p.hero] && HEROES[p.hero].pw && HEROES[p.hero].pw.k === 'ptechc') && !(p.rsv || []).length) p.g += 1;
   p.lastCast = id;
@@ -289,7 +289,7 @@ function castSpell0(G, p, hi, tg) {
   if (S.nin) comps(p).forEach(c => giveXp(c, 1));
   if (S.nin && S.el && !S.item) mkAdd(p, S.el, 1);   // chaque technique donne 1 marqueur de sa nature
   if (S.el) comps(p).forEach(c => { const e = compEl(c); if (e && EL_GEN[e] === S.el) { const x = (c.eq || []).includes('eq_talisman') ? 2 : 1; p.ck = Math.min(CK_MAX, (p.ck || 0) + 2 * x); buff(c, 2 * x, 2 * x); } });
-  if (!S.item) { p.castN = (p.castN || 0) + 1; trigBoard(G, p, 'cast'); }
+  if (!S.item) { p.castN = (p.castN || 0) + 1; trigBoard(G, p, 'cast'); const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'pcast' && p.bd.length) withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => buff(pickR(p.bd), w.a || 0, w.h || 0)); }
   checkTriple(G, p);
   return true;
 }
@@ -530,7 +530,7 @@ const tmaAdd = (p, a, h) => { p.tma = { a:((p.tma && p.tma.a) || 0) + a, h:((p.t
 const ctrAdd = (p, k, n) => { p[k] = (p[k] || 0) + n; };
 // effet immédiat de chaque combo (texte + action)
 // combos du réservoir (univers Ninja) : ils renforcent les deux villages concernés ; ×1 / ×2 / ×3 selon le niveau de taverne
-const cmx = p => (p.t || 1) <= 2 ? 1 : (p.t || 1) <= 4 ? 2 : 3;
+const cmx = p => ((p.t || 1) <= 2 ? 1 : (p.t || 1) <= 4 ? 2 : 3) + (HEROES[p.hero] && HEROES[p.hero].pw && HEROES[p.hero].pw.k === 'pcmb' ? 1 : 0);
 const cSum = (p, card, n) => { for (let i = 0; i < n; i++) if (p.bd.length < 7) recruitSummon(p, card, 0, p.bd[p.bd.length - 1]); };
 const cTmp = (m, kw) => { m.tmp = { a:(m.tmp && m.tmp.a) || 0, h:(m.tmp && m.tmp.h) || 0, f:((m.tmp && m.tmp.f) || '') + kw, s:BSRC || 'Combo' }; };
 const cVil = (p, tb, a, h) => p.bd.filter(m => tribeOk(m, tb)).forEach(m => buff(m, a, h));
@@ -562,7 +562,7 @@ function rsvFill(G, p, el) {
   const [a, b] = p.rsv, F = comboOf(a, b); p.rsv = [];
   if (!F) return;
   const bd = COMBO_BD[F.n], w = pwOf(p);
-  if (bd) withSrc('Combo · ' + F.n, () => { bd[1](G, p); if (w && w.k === 'pdouble' && (p.cdbl || 0) < (awake(G) ? 2 : 1)) { p.cdbl = (p.cdbl || 0) + 1; bd[1](G, p); } });
+  if (bd) withSrc('Combo · ' + F.n, () => { bd[1](G, p); if (p.cnext) { p.cnext--; bd[1](G, p); } if (HEROES[p.hero] && HEROES[p.hero].pw && HEROES[p.hero].pw.k === 'pcmb') p.bd.forEach(m => buff(m, 1, 1)); if (w && w.k === 'pdouble' && (p.cdbl || 0) < (awake(G) ? 2 : 1)) { p.cdbl = (p.cdbl || 0) + 1; bd[1](G, p); } });
   if (w && w.k === 'pcombo') withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => { if (w.d && (a === w.el || b === w.el)) { p.njf = (p.njf || 0) + w.d; if (w.b) mkAdd(p, 'feu', w.b); } if (w.h) p.bd.forEach(m => buff(m, 0, w.h)); });
   p.lastCombo = [a, b]; trigBoard(G, p, 'combo');
   comps(p).forEach(c => { c.x = (c.x || []).filter(e => !e.fusion); c.x.push(Object.assign({ src:'Combo · ' + F.n, fusion:1 }, F.fx)); c.fu = F.n; });

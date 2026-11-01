@@ -382,7 +382,12 @@ Object.assign(ART, {
   const tribeOf = id => (typeof DEFAULT_CARDS !== 'undefined' && DEFAULT_CARDS[id] && DEFAULT_CARDS[id].tr) || null;
   for (let k = 1; k <= 10; k++) for (const p of ['f', 'v', 'e', 'o', 't']) { const id = `n_${p}${k}`, tr = tribeOf(id); if (tr) { const f = gen(id, tr, false); if (f) ART[id] = f; } }
   for (let k = 1; k <= 5; k++) { const id = 'n_k' + k, tr = tribeOf(id); if (tr) { const f = gen(id, tr, false); if (f) ART[id] = f; } }
+  for (const id of ['n_p1', 'n_p2', 'n_p3', 'n_s1', 'n_s2', 'n_s3', 'n_x1', 'n_x2', 'n_x3', 'n_g1', 'n_g2', 'n_g3', 'n_c1', 'n_c2']) { const tr = tribeOf(id); if (tr) { const f = gen(id, tr, false); if (f) ART[id] = f; } }
+  if (ART.c_nj_gamabunta) ART.tk_toad = ART.c_nj_gamabunta;
+  ART.tk_slug = () => squishy({ col:'#9ad8c8', eye:'happy' });
+  ART.tk_snake = () => beast({ sp:'snake', col:'#7a5ab8', belly:'#d8c8ff', eye:'#ffe14a' });
+  ART.tk_shark = () => beast({ sp:'wolf', col:'#3a6a9a', belly:'#cfe4f4', eye:'#e8f4ff', angry:1, fangs:1 });
   ART.tk_puppet = () => robot({ col:'#a8744a', head:'round', eye:'duo', mouth:'line' });
   ART.tk_bijuu = () => beast({ sp:'wolf', col:'#6a4ab8', belly:'#c8b8ff', eye:'#ffe14a', glow:'#ffe14a', angry:1, fangs:1 });
-  for (const h of ['chiyo', 'sasori', 'rasa', 'karui', 'han', 'mu']) { const id = 'nh_' + h, H0 = typeof HEROES !== 'undefined' && HEROES[id]; if (H0 && !HART[id]) { const f = gen(id, H0.fam[0], true); if (f) HART[id] = f; } }
+  for (const h of ['chiyo', 'sasori', 'rasa', 'karui', 'han', 'mu']) { const id = 'nh_' + h, H0 = typeof HEROES !== 'undefined' && HEROES[id]; if (H0 && !HART[id]) { const f = gen(id, H0.pv || H0.fam[0], true); if (f) HART[id] = f; } }
 })();
