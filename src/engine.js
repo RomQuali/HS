@@ -44,7 +44,7 @@ const DEFAULT_SETTINGS = {
     { n:'Arcanes', col:'#5a3a9a', ic:'star', lore:'Un sort, et tout s\'illumine.', mech:'resonance', tribes:['elem', 'elfe', 'meca', 'mort', 'spec'] },
     { n:'Montagnes', col:'#6a5038', ic:'mount', lore:'Ils tombent… et tout s\'effondre.', mech:'eboulement', tribes:['nain', 'ogre', 'gob', 'drag', 'garou'] },
     { n:'Dragon Ball', col:'#e8701a', ic:'star', lore:'Médite, charge ton ki, transforme tes guerriers.', mech:'ki', tribes:['d_sai', 'd_ter', 'd_nam', 'd_fre', 'd_and'] },
-    { n:'Ninja', col:'#a8402a', ic:'sword', lore:'Cinq villages, un chakra : mêle leurs techniques.', mech:'chakra', tribes:['n_feu', 'n_vent', 'n_eau', 'n_foudre', 'n_terre'] },
+    { n:'Naruto', col:'#a8402a', ic:'sword', lore:'Cinq villages, un chakra : mêle leurs techniques.', mech:'chakra', tribes:['n_feu', 'n_vent', 'n_eau', 'n_foudre', 'n_terre'] },
     { n:'Squishys', col:'#b04a6a', ic:'blob', lore:'Une grosse boule de câlins.', mech:'fusion', tribes:['sq_feu', 'sq_eau', 'sq_terre', 'sq_vent', 'sq_foudre'] },
   ],
   heroFam:{},

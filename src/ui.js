@@ -4,7 +4,7 @@ if (LITE) document.documentElement.classList.add('lite');
 /* =====================================================================
    INTERFACE
    ===================================================================== */
-let savedUniv = []; try { savedUniv = JSON.parse(localStorage.getItem('tav-univ') || '[]'); savedUniv = Array.isArray(savedUniv) ? savedUniv.slice(0, 1).map(n => n === 'Les Cinq Nations' ? 'Ninja' : n) : []; } catch (e) { savedUniv = []; }
+let savedUniv = []; try { savedUniv = JSON.parse(localStorage.getItem('tav-univ') || '[]'); savedUniv = Array.isArray(savedUniv) ? savedUniv.slice(0, 1).map(n => n === 'Les Cinq Nations' || n === 'Ninja' ? 'Naruto' : n) : []; } catch (e) { savedUniv = []; }
 let savedName = ''; try { savedName = localStorage.getItem('tav-name') || ''; } catch (e) {}
 const V = { screen:'menu', name:savedName || 'Aventurier', nameRaw:savedName, pub:null, pubAt:0, me:null, sel:null, fight:null, fi:0, hostGone:false, univSel:savedUniv };
 
@@ -204,7 +204,7 @@ function morphChildren(oldP, newP) {
 }
 function render() {
   if (DRAG) { V.pendingRender = true; return; }
-  V.pendingRender = false; hidePeek();
+  V.pendingRender = false; const hadPeek = !peekEl.hidden && peekFor && peekFor.matches('.mn,.cd,.spt'); hidePeek();
   const act = document.activeElement, fid = act && act !== document.body ? act.id : '';
   let keep = null; try { if (fid && typeof act.selectionStart === 'number') keep = [act.selectionStart, act.selectionEnd]; } catch (e) {}
   const ks = {}; document.querySelectorAll('[data-ks]').forEach(el => { if (el.id) ks[el.id] = el.scrollTop; });
@@ -228,6 +228,8 @@ function render() {
   placeDuelCol(); awkWatch();
   for (const id in ks) { const el = document.getElementById(id); if (el) el.scrollTop = ks[id]; }
   if (fid) { const n = document.getElementById(fid); if (n) { try { n.focus({ preventScroll:true }); if (keep) n.setSelectionRange(keep[0], keep[1]); } catch (e) {} } }
+  // le survol reste ouvert quand l'écran se redessine (combat animé) : on le recalcule sous la souris
+  if (hadPeek && PTR.x != null && !DRAG) { const el = document.elementFromPoint(PTR.x, PTR.y), n = el && el.closest ? el.closest('.mn,.cd,.spt') : null; if (n && !n.closest('#peek')) showPeek(n, false); }
 }
 
 const STEPS = [
@@ -1017,7 +1019,7 @@ function heroPickNinjaH(d, me) {
     <div class="hpick-l"><h2 class="ov-t">Choisis ton héros</h2><p class="ov-s">Son pouvoir et son compagnon t'accompagnent toute la partie.</p>${rollInfoH(me)}
       <div class="hpk-g">${me.ho.map(card).join('')}</div>
       <button class="t-go md-go" data-act="hero" data-h="${sel}">Jouer ${esc(HEROES[sel].n.split(' ')[0])}</button></div>
-    <div class="hpick-r"><div class="rl-head"><small>Univers · Ninja</small><b>Comment on joue</b></div>
+    <div class="hpick-r"><div class="rl-head"><small>Univers · Naruto</small><b>Comment on joue</b></div>
       <div class="rl-tabs" role="tablist">${RULE_TABS.map(([k, n]) => `<button role="tab" class="rl-tab${k === tab ? ' on' : ''}" data-act="rtab" data-k="${k}" aria-selected="${k === tab}">${n}</button>`).join('')}</div>
       <div class="rl-body">${ruleTabH(tab)}</div></div>
   </div></div>`;
@@ -1419,6 +1421,8 @@ function showPeek(t, touch) {
   peekFor = t; peekEl.innerHTML = `<div class="tip">${i > 0 && i < 40 ? `<b>${esc(tt.slice(0, i))}</b>${esc(tt.slice(i + 3))}` : esc(tt)}</div>`; peekEl.hidden = false;
   const tr = peekEl.firstChild.getBoundingClientRect(); placePeek(r, tr.width, tr.height, touch); return true;
 }
+var PTR = { x:null, y:null };
+document.addEventListener('pointermove', e => { if (!e.pointerType || e.pointerType === 'mouse') { PTR.x = e.clientX; PTR.y = e.clientY; } }, { passive:true });
 document.addEventListener('pointerover', e => {
   if (e.pointerType && e.pointerType !== 'mouse') return;
   const t = e.target.closest ? e.target.closest('.mn,.cd,.spt,.eqm,[data-hov]') : null;
