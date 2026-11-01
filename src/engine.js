@@ -285,11 +285,11 @@ const DEFAULT_CARD_LIST = [
   ['n_t8', 'Lanceur de rochers', 4, 'n_terre', 5, 5, '', [{ k:'soc_avalanche' }]],
   ['n_t9', 'Gardien de la montagne', 5, 'n_terre', 4, 9, 't', [{ k:'soc_avalanche' }, { k:'ckm', c:3, m:{ k:'m_wall', h:5 } }]],
   ['n_t10', 'Tsuchikage d\'Avalanche', 6, 'n_terre', 6, 10, 't', [{ k:'soc_avalanche' }, { k:'eot_buff_taunt', a:2, h:2 }]],
-  ['n_k1', 'Gardien du Mokuton', 4, 'n_feu', 3, 6, 't', [{ k:'soc_dmg', d:2, n:1 }, { k:'soc_summon', card:'tk_mur', n:1 }]],
-  ['n_k2', 'Disciple du Hyōton', 3, 'n_eau', 3, 4, '', [{ k:'surv_self', a:1, h:1 }, { k:'bc_summon', card:'tk_puppet', n:1 }]],
-  ['n_k3', 'Dragon du Ranton', 5, 'n_foudre', 5, 6, '', [{ k:'win_self', a:2, h:2 }, { k:'surv_self', a:0, h:2 }]],
-  ['n_k4', 'Sculpteur explosif', 4, 'n_terre', 4, 5, '', [{ k:'dr_dmg', d:4, n:1 }, { k:'win_self', a:1, h:1 }]],
-  ['n_k5', 'Ninja du Shakuton', 5, 'n_feu', 5, 5, '', [{ k:'soc_fire_tb', d:1 }, { k:'bc_summon', card:'tk_puppet', n:1 }]],
+  ['n_k1', 'Gardien du Yōton', 4, 'n_feu', 3, 6, 't', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_kg', a:1, h:2 }]],
+  ['n_k2', 'Disciple du Hyōton', 3, 'n_eau', 3, 4, '', [{ k:'bc_summon', card:'tk_puppet', n:1 }, { k:'combo_kg', a:1, h:1 }]],
+  ['n_k3', 'Dragon du Ranton', 5, 'n_foudre', 5, 6, '', [{ k:'win_self', a:1, h:1 }, { k:'combo_kg', a:2, h:2 }]],
+  ['n_k4', 'Sculpteur explosif', 4, 'n_terre', 4, 5, '', [{ k:'dr_dmg', d:4, n:1 }, { k:'combo_kg', a:2, h:1 }]],
+  ['n_k5', 'Ninja du Shakuton', 5, 'n_feu', 5, 5, '', [{ k:'soc_fire_tb', d:1 }, { k:'combo_kg', a:2, h:2 }]],
   ['tk_puppet', 'Marionnette', 0, 'n_vent', 1, 1, '', []],
   ['tk_bijuu', 'Bête à queues', 0, 'n_foudre', 6, 6, '', []],
   // bêtes d'invocation (apparaissent à l'Éveil grâce au pacte)
@@ -619,7 +619,7 @@ const ET = {
   win_self:{ tr:'win', l:'Jinchūriki : grandir à chaque victoire', ps:['a', 'h'], w:1.3, mag:e => (e.a + e.h) * 3, txt:(e, k) => `Jinchūriki : après chaque combat gagné, gagne ${sign(e.a * k, e.h * k)}.` },
   win_all:{ tr:'win', l:'Victoire du Nuage', ps:['a', 'h', 'tb'], w:1, mag:e => (e.a + e.h) * 6, txt:(e, k) => `Après chaque combat gagné, tes autres ${one(e.tb)} gagnent ${sign(e.a * k, e.h * k)}.` },
   soc_avalanche:{ tr:'soc', l:'Avalanche', ps:[], w:1.2, mag:() => 6, txt:() => 'Avalanche : au début du combat, inflige un quart de sa vie à un ennemi aléatoire.' },
-  ckm:{ tr:'ckm', l:'Mode chakra', ps:['c'], w:1, mag:e => 4, txt:(e, k) => `Mode chakra (${e.c}) : ${mTx(e.m, k)}` },
+  ckm:{ tr:'ckm', l:'Éveil du serviteur', ps:['c'], w:1.2, mag:e => 6, txt:(e, k) => `Éveil (${e.c} chakra, une seule fois) : gagne +${e.c * k}/+${e.c * k}, puis au début de chaque tour : ${mTx(e.m, k)}` },
   bc_gate:{ tr:'bc', l:'Porte interdite (cri de guerre)', ps:['d', 'a', 'h'], w:1.1, mag:e => Math.max(0, e.a + e.h - e.d / 2), txt:(e, k) => `Cri de guerre · Porte interdite : ton héros perd ${e.d} PV, gagne ${sign(e.a * k, e.h * k)}.` },
   soc_gate:{ tr:'soc', l:'Porte interdite (combat)', ps:['a', 'd'], w:1, mag:e => e.a - e.d / 2, txt:(e, k) => `Début du combat · Porte interdite : perd ${e.d * k} PV, +${e.a * k} attaque.` },
   eot_clones:{ tr:'eot', l:'Renforcer les clones', ps:['a', 'h'], w:1, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Fin de tour : tes clones gagnent ${sign(e.a * k, e.h * k)}.` },
@@ -1291,8 +1291,8 @@ const OPS = {
     return true;
   },
   buysp(G, p, a) { const k = a && +a.k === 1 ? 'sp2' : 'sp', it = p[k], S = it && SPELLS[it.sp]; const c = S ? spCost(p, S) : 0; if (!S || p.g < c || p.hd.length >= 10) return false; p.g -= c; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(it); p[k] = null; return true; },
-  ckm(G, p, a) { const m = p.bd[a.i]; if (!m || m.ckUsed) return false; const md = (CD(m.c).fxAll || []).find(x => x.k === 'ckm'); if (!md || (p.ck || 0) < md.c) return false;
-    p.ck -= md.c; m.ckUsed = 1; withSrc('Mode chakra · ' + CD(m.c).n, () => runMode(G, p, m, md.m)); checkTriple(G, p); return true; },
+  ckm(G, p, a) { const m = p.bd[a.i]; if (!m || m.awk) return false; const md = (CD(m.c).fxAll || []).find(x => x.k === 'ckm'); if (!md || (p.ck || 0) < md.c) return false;
+    p.ck -= md.c; m.awk = 1; withSrc('Éveil · ' + CD(m.c).n, () => { buff(m, md.c * mult(m), md.c * mult(m)); runMode(G, p, m, md.m); }); checkTriple(G, p); return true; },
   cast(G, p, a) { const it = p.hd[a.i]; if (!it || !it.sp || p.disc) return false; return castSpell(G, p, a.i, a.tg); },
   pick(G, p, a) { if (!p.disc || !p.disc[a.i]) return false; const m = p.disc.splice(a.i, 1)[0]; p.disc.forEach(x => toPool(G, x)); p.disc = null; if (p.hd.length < 10) p.hd.push(m); else toPool(G, m); checkTriple(G, p); return true; },
 };
@@ -1480,7 +1480,7 @@ function aiTurn(G, p) {
   const front = m => fxOf(m, 'dr').length || has(m, 'r') ? 0 : 1;
   p.bd.sort((x, y) => front(x) - front(y) || y.a - x.a);
   aiPlayAll(G, p); aiSpells(G, p);
-  if (inMechAny(G, 'chakra')) for (let g = 0; g < 7; g++) { const i = p.bd.findIndex(m => !m.ckUsed && (CD(m.c).fxAll || []).some(x => x.k === 'ckm' && (p.ck || 0) >= x.c)); if (i < 0) break; OPS.ckm(G, p, { i }); }
+  if (inMechAny(G, 'chakra')) for (let g = 0; g < 7; g++) { const i = p.bd.findIndex(m => !m.awk && (CD(m.c).fxAll || []).some(x => x.k === 'ckm' && (p.ck || 0) >= x.c)); if (i < 0) break; OPS.ckm(G, p, { i }); }
   aiTeams(p);
   p.rdy = true;
 }
@@ -1497,7 +1497,7 @@ function startRecruit() {
     if (p.hero === 'barnabe' && G.rd % 2 === 0) p.g += 1;
     p.uc = Math.max(0, p.uc - 1);
     if (p.fz) { p.fz = false; topUpShop(G, p); } else fillShop(G, p);
-    p.pu = false; p.bd.forEach(x => { delete x.ckUsed; }); p.castN = 0; p.castEls = []; p.ckSpentLast = p.ckSpent || 0; p.ckSpent = 0; p.hd.forEach(x => { if (x.sp && SPELLS[x.sp] && SPELLS[x.sp].chg) x.ch = Math.min(2, (x.ch || 0) + 1); }); p.fbq = false; p.njf = 0; p.sylv = false; p.rr = 0; p.rdy = false; p.lastRes = p.res ? (p.res.cr || p.res.r) : null; p.res = null;
+    p.pu = false; p.bd.forEach(x => { if (x.awk && !C[x.c].comp) { const md = (CD(x.c).fxAll || []).find(f => f.k === 'ckm'); if (md) withSrc('Éveil · ' + CD(x.c).n, () => runMode(G, p, x, md.m)); } }); p.castN = 0; p.castEls = []; p.ckSpentLast = p.ckSpent || 0; p.ckSpent = 0; p.hd.forEach(x => { if (x.sp && SPELLS[x.sp] && SPELLS[x.sp].chg) x.ch = Math.min(2, (x.ch || 0) + 1); }); p.fbq = false; p.njf = 0; p.sylv = false; p.rr = 0; p.rdy = false; p.lastRes = p.res ? (p.res.cr || p.res.r) : null; p.res = null;
     if (p.inc && p.inc.length) p.g += p.inc.shift() || 0;
     { const w = pwOf(p); if (w && w.k === 'pturn' && p.hero && /^nh_/.test(p.hero)) { if (w.g) p.g += w.g; if (w.ck) p.ck = Math.min(ckMax(p), (p.ck || 0) + w.ck); if (w.h && p.bd.length) buff(pickR(p.bd), 0, w.h); if (w.el) mkAdd(p, w.el, w.n); } }
     trigBoard(G, p, 'sot');
@@ -1656,7 +1656,7 @@ function hostTick() {
 }
 
 /* ---------- diffusion ---------- */
-const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u, ch:m.ch || 0, us:m.us || 0 }; const o = { c:m.c, a:m.a, h:m.h }; if (m.ckUsed) o.cku = 1; if (m.rk) o.rk = m.rk; if (m.memo) o.memo = m.memo; if (m.el) o.el = m.el; if (m.fu) o.fu = m.fu; if (m.xp) o.xp = m.xp; if (m.eq && m.eq.length) o.eq = m.eq; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; if (m.bn) o.bn = m.bn; return o; };
+const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u, ch:m.ch || 0, us:m.us || 0 }; const o = { c:m.c, a:m.a, h:m.h }; if (m.awk) o.awk = 1; if (m.rk) o.rk = m.rk; if (m.memo) o.memo = m.memo; if (m.el) o.el = m.el; if (m.fu) o.fu = m.fu; if (m.xp) o.xp = m.xp; if (m.eq && m.eq.length) o.eq = m.eq; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; if (m.bn) o.bn = m.bn; return o; };
 const fullM = m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g || 0, f:m.f || '', u:m.u }; if (m.x) o.x = m.x; if (m.domb) o.domb = m.domb; if (m.awk) o.awk = m.awk; if (m.duo) o.duo = 1; if (m.el) o.el = m.el; return o; };
 function pubData() {
   const G = H.G;

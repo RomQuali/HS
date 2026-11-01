@@ -129,7 +129,7 @@ const SHIELD_D = 'M50 -4 C 85 -4, 102 28, 102 60 C 102 93, 79 115, 50 115 C 21 1
 function tokenH(m, z, i, o = {}) {
   const b = CD(m.c), f = (m.f || '') + (m.tmp && m.tmp.f ? m.tmp.f : ''), g = !!m.g;   // mots-clés permanents + ceux du prochain combat
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
-  const cls = ['mn', z === 'f' && C[m.c] && (C[m.c].comp || /^nb_/.test(m.c)) && 'cp-join', ...['s', 't', 'r', 'w', 'v'].filter(k => f.includes(k)).map(k => 'kw-' + k), o.trip && 'tripok', o.pair && 'pairok', g && 'g', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
+  const cls = ['mn', z === 'f' && C[m.c] && (C[m.c].comp || /^nb_/.test(m.c)) && 'cp-join', ...['s', 't', 'r', 'w', 'v'].filter(k => f.includes(k)).map(k => 'kw-' + k), o.trip && 'tripok', o.pair && 'pairok', m.awk && !isComp(m) && 'mn-awk', g && 'g', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
   const ics = kwIcons(m);
   const up = (v, base) => v > base * (g ? 3 : 1) ? ' up' : '';
   const svg = `<svg class="mn-svg" viewBox="-4 -6 108 132" aria-hidden="true">`
@@ -143,8 +143,8 @@ function tokenH(m, z, i, o = {}) {
     + (m.eq && m.eq.length ? `<g><title>Équipements : ${m.eq.map(e => SPELLS[e] ? SPELLS[e].n : e).join(', ')}</title><rect x="72" y="4" width="22" height="14" rx="7" fill="#8a6a3a" stroke="#120a06" stroke-width="2"/><text x="83" y="11" dy=".36em" text-anchor="middle" font-size="9" font-weight="700" fill="#fff3c0">⚒${m.eq.length}</text></g>` : '')
     + `<use href="#gem-a" x="-1" y="90" width="34" height="34"/><text class="gt${up(m.a, b.a)}" x="16" y="107" dy=".36em">${m.a}</text>`
     + `<use href="#gem-h" x="67" y="88" width="34" height="34"/><text class="gt${up(m.h, b.h)}" x="84" y="108.6" dy=".36em">${m.h}</text></svg>`;
-  const md = z === 'bd' && (b.fxAll || []).find(e => e.k === 'ckm'), mdOk = md && V.me && !m.cku && (V.me.ck || 0) >= md.c && V.pub && V.pub.ph === 'recruit';
-  const mdH = md ? `<span class="ckm-b${m.cku ? ' used' : mdOk ? ' ok' : ''}" role="button" tabindex="0" data-act="ckm" data-i="${i}" data-tip="${esc('Mode chakra (' + md.c + ') : ' + mTx(md.m, mult(m)) + (m.cku ? ' Déjà utilisé ce tour.' : ''))}" aria-label="Activer le mode chakra">${ckMarkH(md.c)}</span>` : '';
+  const md = z === 'bd' && !m.awk && (b.fxAll || []).find(e => e.k === 'ckm'), mdOk = md && V.me && (V.me.ck || 0) >= md.c && V.pub && V.pub.ph === 'recruit';
+  const mdH = md ? `<span class="ckm-b${mdOk ? ' ok' : ''}" role="button" tabindex="0" data-act="ckm" data-i="${i}" data-tip="${esc('Éveil (' + md.c + ' chakra, une seule fois) : +' + md.c * mult(m) + '/+' + md.c * mult(m) + ', puis chaque tour : ' + mTx(md.m, mult(m)))}" aria-label="Éveiller ce serviteur">${ckMarkH(md.c)}</span>` : '';
   return `<div class="${cls}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.dmg ? ` data-dmg="${o.dmg}"` : ''}${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">${svg}${mdH}${o.name === false ? '' : `<span class="mn-nm">${esc(b.n)}</span>`}${m.tr ? '<span class="tri">Triple !</span>' : o.trip ? '<span class="tri pulse">Triple !</span>' : ''}${o.extra || ''}</div>`;
 }
 // pièce de coût en haut à gauche ; en vert avec l'ancien prix barré quand une réduction est active
@@ -303,13 +303,13 @@ function chakraLawH(big) {
   const ctr = (n, col, tx) => `<span class="njl-ctr" style="--c:${col}"><b>${n}</b> ${tx}</span>`;
   const vil = (tb, ic, t, d, m, f) => sec(ic, esc((TRIBES[tb] || {}).n || t), `<small><b>Début</b> : ${d}</small><small><b>Milieu</b> : ${m}</small><small><b>Fin</b> : ${f}</small>`);
   return `<span class="ban-law ck-law njl${big ? ' big' : ''}">
-    ${sec('🪙', 'Ressources', `<small><b>Or</b> : acheter les serviteurs, monter la taverne et certains pouvoirs de héros.</small><small><b>Chakra</b> : chaque ninja en jeu en donne 1 par tour (10 au plus). Il active le <b>mode chakra</b> des serviteurs (une fois par tour, la goutte bleue au-dessus d'eux) et certains pouvoirs de héros.</small>`)}
+    ${sec('🪙', 'Ressources', `<small><b>Or</b> : acheter les serviteurs, monter la taverne et certains pouvoirs de héros.</small><small><b>Chakra</b> : chaque ninja en jeu en donne 1 par tour (10 au plus). Il lance les <b>sorts</b>, <b>éveille</b> les serviteurs (une seule fois : la goutte bleue au-dessus d'eux) et paie certains pouvoirs de héros.</small>`)}
     ${vil('n_feu', '🔥', 'Feuille', 'petits dégâts au début du combat.', 'ils s\'additionnent : 1 dégât par allié de la Feuille.', 'grandes explosions qui touchent tous les ennemis.')}
     ${vil('n_vent', '🏜️', 'Sable', 'invoque des marionnettes 1/1.', 'les marionnettes se renforcent chaque tour.', 'bouclier de sable sur tout le plateau.')}
     ${vil('n_eau', '🌫️', 'Brume', 'beaucoup de PV, ils grandissent en survivant.', 'Bouclier divin et soins de fin de tour.', 'Renaissance pour toute la Brume.')}
     ${vil('n_foudre', '⚡', 'Nuage', 'des jinchūriki faibles.', 'ils grandissent à chaque combat gagné.', 'en mourant, ils libèrent une Bête à queues 8/8.')}
     ${vil('n_terre', '⛰️', 'Roche', 'Provocation et gros PV.', 'ils invoquent des Murs de terre.', 'Avalanche : un quart de leur vie en dégâts au début du combat.')}
-    ${sec('🧬', 'Kekkei genkai', `<small>Quelques serviteurs appartiennent à <b>deux villages</b> à la fois et profitent des bonus des deux.</small>`)}
+    ${sec('🧬', 'Kekkei genkai', `<small>Quelques serviteurs appartiennent à <b>deux villages</b> : ils profitent des bonus des deux et grandissent quand un combo du réservoir contient une de leurs natures.</small>`)}
   </span>`;
 }
 // fiche de l'univers Ninja : quatre règles courtes et le cycle des éléments (le détail complet est sur l'écran du héros)
@@ -878,7 +878,7 @@ function ruleTabH(k) {
   switch (k) {
     case 'tour': return `<ol class="rl-steps">
       ${step(1, 'Recrute', `Achète des ninjas avec ${coin} l'or. Chacun te rapportera 1 ${ck} chakra par tour (10 au plus).`, faceH('art-n_f1'))}
-      ${step(2, 'Mode chakra', 'Clique sur la goutte bleue au-dessus d\'un serviteur pour dépenser du chakra et activer son effet, une fois par tour.', ck)}
+      ${step(2, 'Sorts et Éveil', 'Les sorts se lancent au chakra ; deux sorts de village remplissent le réservoir et déclenchent un combo. La goutte bleue au-dessus d\'un serviteur l\'éveille pour de bon.', ck)}
       ${step(3, 'Utilise ton pouvoir', 'Selon ton héros : payé en or, en chakra, ou passif.', '<span class="rl-pow">✦</span>')}
       ${step(4, 'Combat', 'Tes serviteurs affrontent ceux d\'en face ; le perdant subit des dégâts à son héros.', '<span class="rl-vs">VS</span>')}
     </ol>`;
@@ -2811,4 +2811,9 @@ html.lite .hp-col{animation:none}
 .hp-gold{color:#ffd86a!important}
 .hp-vil{font-style:normal;font-size:clamp(11px,1.3vh,14px);color:var(--c);font-weight:700}
 html.lite .ckm-b.ok{animation:none}
+`; document.head.appendChild(st); })();
+(function(){ const st = document.createElement('style'); st.textContent = `
+.mn.mn-awk .mn-svg{filter:drop-shadow(0 0 6px #6fd0ff) drop-shadow(0 0 14px rgba(80,170,255,.75));animation:mnAwk 2.2s ease-in-out infinite}
+@keyframes mnAwk{50%{filter:drop-shadow(0 0 10px #bfe8ff) drop-shadow(0 0 22px rgba(80,170,255,.95))}}
+html.lite .mn.mn-awk .mn-svg{animation:none}
 `; document.head.appendChild(st); })();
