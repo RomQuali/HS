@@ -380,12 +380,12 @@ const HEROES = {
   nh_samui: {diff:2, stars:3, fam:['n_foudre'], n:'Samui', cost:3, clan:'foudre', pwn:'Foudre froide', pw:{ k:'multi', s:[{ k:'tma', a:0, h:3 }] }, tx:'Prochain combat : tes serviteurs gagnent +0/+3.' },
   nh_bee: {diff:3, stars:4, fam:['n_foudre'], n:'Killer Bee', cost:5, clan:'foudre', pwn:'Raiton déchaîné', pw:{ k:'multi', s:[{ k:'mk', el:'foudre', n:3 }, { k:'tma', a:2, h:0 }] }, tx:'Gagne 3 charges. Prochain combat : tes serviteurs gagnent +2/+0.' },
   nh_kakashi: {diff:3, stars:4, fam:['n_foudre'], n:'Kakashi Hatake', cost:5, clan:'foudre', pwn:'Chidori / Raiton', pw:{ k:'multi', s:[{ k:'buffhi', a:3, h:0, kw:'w' }] }, tx:'Chidori : ton serviteur le plus puissant gagne +3/+0 et Furie des vents.' },
-  nh_roshi: {diff:3, stars:4, fam:['n_terre'], n:'Roshi', cost:4, clan:'terre', pwn:'Son Goku enragé', pw:{ k:'multi', s:[{ k:'comp', a:3, h:5 }, { k:'mk', el:'terre', n:1 }] }, tx:'Ton compagnon gagne +3/+5. Gagne 1 roche.' },
+  nh_roshi: {diff:3, stars:4, fam:['n_terre'], n:'Roshi', cost:4, clan:'terre', pwn:'Son Goku enragé', pw:{ k:'multi', s:[{ k:'buffhi', a:2, h:4 }, { k:'mk', el:'terre', n:1 }] }, tx:'Ton serviteur le plus puissant gagne +2/+4. Gagne 1 roche.' },
   nh_akatsuchi: {diff:2, stars:3, fam:['n_terre'], n:'Akatsuchi', cost:3, clan:'terre', pwn:'Force brute terrestre', pw:{ k:'multi', s:[{ k:'buffr', a:2, h:2, n:1 }] }, tx:'Un de tes serviteurs aléatoires gagne +2/+2.' },
   nh_hashirama: {diff:3, stars:4, fam:['n_terre'], n:'Hashirama Senju', cost:6, clan:'terre', pwn:'Forêt primordiale', pw:{ k:'multi', s:[{ k:'buffall', a:1, h:2 }] }, tx:'Tes serviteurs gagnent +1/+2.' },
   nh_deidara: {diff:3, stars:4, fam:['n_terre'], n:'Deidara', cost:5, clan:'terre', pwn:'Art explosif (C2)', pw:{ k:'multi', s:[{ k:'fire', d:7 }] }, tx:'Prochain combat : un dragon d\'argile explose et inflige 7 dégâts répartis sur l\'ennemi.' },
   nh_kurotsuchi: {diff:3, stars:4, fam:['n_terre'], n:'Kurotsuchi', cost:4, clan:'terre', pwn:'Bouclier de lave', pw:{ k:'multi', s:[{ k:'tkw', kw:'s', n:1 }, { k:'fire', d:2 }] }, tx:'Prochain combat : un de tes serviteurs gagne Bouclier divin et la lave inflige 2 dégâts à l\'ennemi.' },
-  nh_karin: {diff:3, stars:4, fam:['n_feu'], n:'Karin Uzumaki', cost:4, clan:'feu', pwn:'Détection et absorption de chakra', pw:{ k:'multi', s:[{ k:'ck', n:3 }, { k:'comp', a:4, h:4 }] }, tx:'Absorbe le chakra : gagne 3 chakra et ton compagnon gagne +4/+4.' },
+  nh_karin: {diff:3, stars:4, fam:['n_feu'], n:'Karin Uzumaki', cost:4, clan:'feu', pwn:'Détection et absorption de chakra', pw:{ k:'multi', s:[{ k:'ck', n:3 }, { k:'buffr', a:3, h:3, n:1 }] }, tx:'Absorbe le chakra : gagne 3 chakra et un de tes serviteurs aléatoires gagne +3/+3.' },
   nh_asuma: {diff:3, stars:4, fam:['n_feu'], n:'Asuma Sarutobi', cost:4, clan:'feu', pwn:'Ash Pile, lame de chakra', pw:{ k:'multi', s:[{ k:'fire', d:4 }, { k:'tma', a:1, h:0 }] }, tx:'Prochain combat : un nuage de cendres inflige 4 dégâts à l\'ennemi et tes serviteurs gagnent +1/+0.' },
   nh_madara: {diff:3, stars:4, fam:['n_feu'], n:'Madara Uchiha', cost:6, clan:'feu', pwn:'Meteor Impact', pw:{ k:'multi', s:[{ k:'fire', d:12 }] }, tx:'Prochain combat : une météorite inflige 12 dégâts répartis sur l\'ennemi.' },
   nh_konohamaru: {diff:2, stars:3, fam:['n_vent'], n:'Konohamaru', cost:3, clan:'vent', pwn:'Rafale de vent rapide', pw:{ k:'multi', s:[{ k:'roll' }, { k:'g', n:2 }] }, tx:'Rafraîchis la taverne gratuitement et gagne 2 or.' },
@@ -394,7 +394,7 @@ const HEROES = {
   nh_chojuro: {diff:2, stars:3, fam:['n_eau'], n:'Chojuro', cost:3, clan:'eau', pwn:'Fendre les vagues', pw:{ k:'multi', s:[{ k:'buffr', tb:'n_eau', a:2, h:1, n:1 }, { k:'mk', el:'eau', n:1 }] }, tx:'Un serviteur du Clan Suiton gagne +2/+1 et la marée monte de 1.' },
   nh_ao: {diff:2, stars:3, fam:['n_eau'], n:'Ao', cost:3, clan:'eau', pwn:'Clairvoyance d’eau', pw:{ k:'multi', s:[{ k:'techel', el:'eau' }, { k:'ck', n:1 }] }, tx:'Ajoute à ta main une technique Suiton de ton niveau et gagne 1 chakra.' },
   nh_kisame: {diff:3, stars:4, fam:['n_eau'], n:'Kisame Hoshigaki', cost:5, clan:'eau', pwn:'Grande vague dévorante', pw:{ k:'multi', s:[{ k:'mk', el:'eau', n:2 }, { k:'buffall', tb:'n_eau', a:1, h:1 }] }, tx:'La marée monte de 2 et tes serviteurs du Clan Suiton gagnent +1/+1.' },
-  nh_yugito: {diff:3, stars:4, fam:['n_foudre'], n:'Yugito Nii', cost:4, clan:'foudre', pwn:'Matatabi rugissant', pw:{ k:'multi', s:[{ k:'comp', a:3, h:2 }, { k:'mk', el:'foudre', n:1 }] }, tx:'Ton compagnon gagne +3/+2. Gagne 1 charge.' },
+  nh_yugito: {diff:3, stars:4, fam:['n_foudre'], n:'Yugito Nii', cost:4, clan:'foudre', pwn:'Matatabi rugissant', pw:{ k:'multi', s:[{ k:'buffr', tb:'n_foudre', a:3, h:2, n:1 }, { k:'mk', el:'foudre', n:1 }] }, tx:'Un serviteur du Clan Raiton gagne +3/+2. Gagne 1 charge.' },
   nh_raikage: {diff:3, stars:4, fam:['n_foudre'], n:'A (Raikage)', cost:6, clan:'foudre', pwn:'Vitesse éclair', pw:{ k:'multi', s:[{ k:'tkw', kw:'w', n:3 }, { k:'tma', a:2, h:1 }] }, tx:'Prochain combat : trois de tes serviteurs gagnent Furie des vents et tous gagnent +2/+1.' },
   nh_c: {diff:2, stars:3, fam:['n_foudre'], n:'C', cost:3, clan:'foudre', pwn:'Analyse & soutien', pw:{ k:'multi', s:[{ k:'roll' }, { k:'ck', n:2 }] }, tx:'Rafraîchis la taverne gratuitement et gagne 2 chakra.' },
   nh_kitsuchi: {diff:3, stars:4, fam:['n_terre'], n:'Kitsuchi', cost:4, clan:'terre', pwn:'Poing rocheux massif', pw:{ k:'multi', s:[{ k:'buffhi', a:2, h:3 }] }, tx:'Ton serviteur le plus puissant gagne +2/+3.' },
@@ -979,6 +979,8 @@ function checkTriple(G, p) {
     return checkTriple(G, p);
   }
 }
+// univers Ninja : compagnons, duels, coffres et inventaire désactivés
+const NJ_COMP = false;
 const CK_MAX = 10;
 const ckMax = p => CK_MAX + ((p && p.bd) || []).reduce((t, m) => t + ((CD(m.c).fxAll || []).filter(e => e.k === 'pas_ckx').reduce((u, e) => u + e.n, 0)) * (m.g ? 2 : 1), 0);
 const pureX = (p, tr) => p && p.pure === tr ? 2 : 1;
@@ -1452,7 +1454,7 @@ const humansLive = G => G.ps.filter(p => p.al && p.human && !p.bot);
 function startRecruit() {
   const G = H.G; G.rd++;
   for (const p of G.ps) if (p.al) {
-    if (inMechAny(G, 'chakra') && !p.cp && p.hero && compOf(p.hero)) { p.cp = mk(compOf(p.hero), 1); p.cb = 3; }
+    if (NJ_COMP && inMechAny(G, 'chakra') && !p.cp && p.hero && compOf(p.hero)) { p.cp = mk(compOf(p.hero), 1); p.cb = 3; }
     if (p.cp && awake(G) && !p.cp.awk) awakenComp(p.cp);
     if (p.cp && awake(G)) summonBeast(p);
     p.mg = Math.min(10, 2 + G.rd); p.g = p.mg;
@@ -1467,10 +1469,10 @@ function startRecruit() {
     if (inMechAny(G, 'ames') && (p.souls || 0) >= 3) { const k = Math.floor(p.souls / 3); p.souls -= k * 3; withSrc('Moisson d\'âmes', () => p.bd.forEach(m => { if (inMech(G, 'ames', m)) buff(m, k, k); })); }
     if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; p.ck = Math.min(ckMax(p), (p.ck || 0) + n); mkSync(p); }
     // un coffre après chaque combat : majeur si le compagnon gagne son duel, mineur sinon
-    if (inMechAny(G, 'chakra') && p.lastRes) p.pendChest = (p.lastRes === 'win' ? 'maj' : 'min') + (p.t || 1);
+    if (NJ_COMP && inMechAny(G, 'chakra') && p.lastRes) p.pendChest = (p.lastRes === 'win' ? 'maj' : 'min') + (p.t || 1);
     // Éveil : le coffre favorise les plus bas au classement (moitié inférieure en points de vie)
     p.chFav = 0;
-    if (inMechAny(G, 'chakra') && awake(G) && p.lastRes) { const al = G.ps.filter(x => x.al).sort((x, y) => x.hp - y.hp), k = al.indexOf(p); p.chFav = k < Math.ceil(al.length / 2) ? 1 : 0; p.pendChest = (p.chFav ? 'maj' : 'min') + (p.t || 1); }
+    if (NJ_COMP && inMechAny(G, 'chakra') && awake(G) && p.lastRes) { const al = G.ps.filter(x => x.al).sort((x, y) => x.hp - y.hp), k = al.indexOf(p); p.chFav = k < Math.ceil(al.length / 2) ? 1 : 0; p.pendChest = (p.chFav ? 'maj' : 'min') + (p.t || 1); }
     // pureté : 5 serviteurs ou plus d'un même clan → +1 chakra
     if (inMechAny(G, 'chakra')) { const n = {}; p.bd.forEach(m => { const t = CD(m.c).tr; if (CLAN_EL[t]) n[t] = (n[t] || 0) + 1; }); const pure = Object.keys(n).find(t => n[t] >= 5) || null; p.pure = pure; if (pure) p.ck = Math.min(ckMax(p), (p.ck || 0) + 1); }
     { const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'pck') p.ck = Math.min(ckMax(p), (p.ck || 0) + w.n); if (w && w.k === 'ptech' && G.rd % 2 === 0 && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); } }

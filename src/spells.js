@@ -61,7 +61,7 @@ const SPELLS = {
   // ----- techniques interdites : seulement après l'Éveil des clans -----
   nj_x_cinq:{ el:'feu', n:'Hachimon Tonkō', t:5, c:5, ck:9, nin:1, forb:1, ty:'nin', tx:'Technique interdite, les huit portes. Prochain combat : tous tes serviteurs gagnent +6/+6 et 6 dégâts frappent l\'ennemi au début du combat.' },
   nj_x_sceau:{ el:'terre', n:'Shiki Fūjin', t:5, c:4, ck:8, nin:1, forb:1, ty:'nin', tg:1, tx:'Technique interdite. Le serviteur ciblé gagne +10/+10 ; un autre de tes serviteurs aléatoire est détruit.' },
-  nj_x_eveil:{ el:'eau', n:'Senpō : mode ermite', t:5, c:4, ck:7, nin:1, forb:1, ty:'nin', tx:'Technique interdite. Ton compagnon gagne 2 niveaux d\'entraînement.' },
+  nj_x_eveil:{ el:'eau', n:'Senpō : mode ermite', t:5, c:4, ck:7, nin:1, forb:1, ty:'nin', fx:[{ k:'buffall', a:3, h:3 }, { k:'ck', n:3 }], tx:'Technique interdite. Tes serviteurs gagnent +3/+3 et tu récupères 3 chakra.' },
   // ----- équipements (pour le compagnon) et coffres (ouverts au chakra) -----
   eq_lame:{ n:'Lame de chakra', t:1, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : +4 attaque.' },
   eq_armure:{ n:'Armure de mailles', t:1, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : +6 vie et Provocation.' },
@@ -86,7 +86,6 @@ function spellBlock(p, id, tgt) {
   if (S.hp && p.hp <= S.hp) return `Kinjutsu : il te faut plus de ${S.hp} PV.`;
   if (S.nin && S.fx && S.fx.some(s => s.k === 'summon') && p.bd.length >= 7) return 'Ton plateau est plein.';
   if ((id === 'nj_doubles' || id === 'nj_invoc') && p.bd.length >= 7) return 'Ton plateau est plein.';
-  if (id === 'nj_x_eveil' && !comps(p).length) return 'Tu n\'as pas de compagnon.';
   if (S.eq && !(C[tgt.c] && C[tgt.c].comp)) return 'Un équipement se pose sur ton compagnon.';
 
   if (S.eq && (tgt.eq || []).includes(id)) return 'Ton compagnon porte déjà cet équipement.';
