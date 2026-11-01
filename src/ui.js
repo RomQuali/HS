@@ -588,7 +588,7 @@ function compSheetH(mc, lv, eq) {
   </div>`;
 }
 function rsvH(d, me) {
-  if (!NJ_TECH && (d.laws || []).some(l => l.k === 'chakra')) return '';
+
   if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
   const r = me.rsv || [], a = r[0], col = e => ELS[e] ? ELS[e].col : 'transparent';
   const next = a ? Object.keys(ELS).map(e => { const F = comboOf(a, e); return F ? `${ELS[e].n} → ${F.n}` : ''; }).filter(Boolean).join(' · ') : '';
