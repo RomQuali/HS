@@ -965,20 +965,17 @@ function heroPickRowH(d, me) {
     const gem = x.cost ? (nin && x.pay !== 'g' ? `<span class="hpc-gem ck">${ckMarkH(x.cost)}</span>` : `<span class="hpc-gem g"><b>${x.cost}</b></span>`) : '<span class="hpc-gem p"><b>∞</b></span>';
     const A = x.aw;
     pcs[i] = `<div class="hp-pc k${i}${on ? ' on' : ''}" style="--c:${col}">
-        ${gem}<div class="hpc-art">${powArtH(h)}</div>
-        ${x.mc && NJ_MC[x.mc] ? `<span class="hpc-mc" style="--c:${NJ_MC[x.mc][1]}">${esc(NJ_MC[x.mc][0])}</span>` : ''}
-        <b class="hpc-nm">${esc(pw)}</b><small class="hpc-kind">${x.cost ? (nin && x.pay !== 'g' ? 'Pouvoir · ' + x.cost + ' chakra' : 'Pouvoir · ' + x.cost + ' or') : 'Pouvoir passif'}</small>
-        <p class="hpc-tx">${esc(cap(main))}</p>
+        ${powBannerH(x, h, nin)}
+        <div class="hpc-side">${x.mc && NJ_MC[x.mc] ? `<span class="hpc-mc" style="--c:${NJ_MC[x.mc][1]}">Mécanique · ${esc(NJ_MC[x.mc][0])}</span>` : ''}
         ${x.trx ? `<p class="hpc-bonus"><b>Bonus</b> ${esc(x.trx)}</p>` : ''}
         ${x.q && A ? `<div class="hpc-q"><span class="hpc-qh"><b>Quête d'éveil</b> ${esc(x.q.tx)}</span>
           <div class="hpc-aw">${HART[h + '_aw'] ? faceH('art-h-' + h + '_aw', 'face hpc-awf') : ''}<span><b>Éveil · ${esc(A.nm)}</b><small>${esc(A.tx)}</small></span></div></div>` : ''}
-        ${c && (!nin || NJ_COMP) ? `<span class="hp-cp">${faceH('art-' + cid)}<em>${esc(c.n)}</em></span>` : ''}
+        ${c && (!nin || NJ_COMP) ? `<span class="hp-cp">${faceH('art-' + cid)}<em>${esc(c.n)}</em></span>` : ''}</div>
       </div>`;
     return `<div class="hp-col${on ? ' on' : ''}" style="--c:${col};--k:${i}">
       <button class="hp-card" data-act="hsel" data-h="${h}" aria-pressed="${on}" aria-label="${esc(x.n + ' : ' + pw + '. ' + main)}">
         ${rollH(me, i)}
-        <span class="hp-port">${faceH('art-h-' + h)}</span>
-        <span class="hp-hp">${+RU().hp || 40}</span>
+        ${heroArchH('art-h-' + h, +RU().hp || 40, 'hp-arch')}
         <span class="hp-nm">${esc(x.n)}</span>
         ${x.stars || x.diff ? `<span class="hp-st">${'★'.repeat(x.stars || x.diff)}</span>` : ''}
       </button>
@@ -1699,6 +1696,24 @@ function hawFrameH(h) {
   return `<svg class="haw-fr" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="hawg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff2b0"/><stop offset=".5" stop-color="#e0a83a"/><stop offset="1" stop-color="#8a5a12"/></linearGradient></defs>
     <circle cx="50" cy="50" r="47" fill="none" stroke="url(#hawg)" stroke-width="7"/><circle cx="50" cy="50" r="47" fill="none" stroke="${col}" stroke-width="1.6" stroke-dasharray="4 5" opacity=".9"/>${marks}</svg>`;
 }
+// style commun des héros et des pouvoirs : portrait en arche dorée pointue + bannière bleue du pouvoir
+let ARCH_N = 0;
+function heroArchH(art, hp, cls = '') {
+  const id = 'hac' + (++ARCH_N);
+  return `<span class="harch ${cls}"><svg viewBox="0 0 100 122" aria-hidden="true"><defs><clipPath id="${id}"><path d="M11 115 V52 C11 30 29 15 50 10 C71 15 89 30 89 52 V115 Z"/></clipPath>
+    <linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff0b0"/><stop offset=".35" stop-color="#d8a640"/><stop offset=".7" stop-color="#9a6a1e"/><stop offset="1" stop-color="#e8c060"/></linearGradient></defs>
+    <rect x="0" y="0" width="100" height="122" fill="#1a1008" clip-path="url(#${id})"/>
+    <g clip-path="url(#${id})"><svg x="2" y="8" width="96" height="112" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><use href="#${art}" width="100" height="100"/></svg></g>
+    <path fill-rule="evenodd" d="M3 121 V50 C3 24 25 6 50 1 C75 6 97 24 97 50 V121 Z M11 115 V52 C11 30 29 15 50 10 C71 15 89 30 89 52 V115 Z" fill="url(#${id}g)" stroke="#2a1806" stroke-width="1.6"/>
+    <path d="M11 115 V52 C11 30 29 15 50 10 C71 15 89 30 89 52 V115 Z" fill="none" stroke="#3a2408" stroke-width="1.4"/>
+    <path d="M6.5 118 V51 C6.5 27 27 10 50 5.5" fill="none" stroke="#fff6c8" stroke-width=".9" opacity=".7"/></svg>${hp != null ? `<span class="harch-hp"><svg viewBox="0 0 100 110"><defs><radialGradient id="${id}d" cx=".42" cy=".62" r=".6"><stop offset="0" stop-color="#ff7a5a"/><stop offset=".7" stop-color="#c0180e"/><stop offset="1" stop-color="#7a0a06"/></radialGradient></defs><path d="M50 3 C60 26 92 46 92 70 A42 40 0 0 1 8 70 C8 46 40 26 50 3 Z" fill="url(#${id}d)" stroke="#2a1806" stroke-width="4"/><path d="M30 56 C34 46 40 40 44 34" stroke="#ffd0c0" stroke-width="5" fill="none" stroke-linecap="round" opacity=".7"/></svg><b>${hp}</b></span>` : ''}</span>`;
+}
+function powBannerH(x, hid, nin) {
+  const cost = x.cost ? (nin && x.pay !== 'g' ? `<span class="pwb-cost ck">${ckMarkH(x.cost)}</span>` : `<span class="pwb-cost g"><b>${x.cost}</b></span>`) : '<span class="pwb-cost p"><b>∞</b></span>';
+  const main = (x.trx ? x.tx.replace(' Bonus : ' + x.trx, '') : x.tx || '').replace(/^Passif : /, '');
+  return `<div class="pwb">${cost}<span class="pwb-med">${powArtH(hid)}</span><b class="pwb-nm">${esc(x.pwn || (x.cost ? 'Pouvoir héroïque' : 'Pouvoir passif'))}</b>
+    <p class="pwb-tx"><small>${x.cost ? 'Pouvoir héroïque' : 'Pouvoir passif'}</small>${esc(main.charAt(0).toUpperCase() + main.slice(1))}</p></div>`;
+}
 // survol d'un joueur du classement (façon Champs de bataille) : héros, pouvoir, et parchemin des statistiques
 function oppPeekH(p) {
   const B = HEROES[p.h], x = p.haw && B.awd ? B.awd : B, nin = !!B.mc, col = B.mc && NJ_MC[B.mc] ? NJ_MC[B.mc][1] : '#c8963e';
@@ -1710,8 +1725,8 @@ function oppPeekH(p) {
   const stat = (ic, v, tip) => `<span class="op-st" title="${tip}">${ic}<b>${v}</b></span>`;
   const rows = (p.hs || []).map(h => `<div class="op-row"><span class="op-sw">⚔</span><span class="op-burst${h.d > 0 ? ' w' : h.d < 0 ? ' l' : ''}"><b>${h.d > 0 ? '+' + h.d : h.d}</b></span>${h.h && HART[h.h] ? faceH('art-h-' + h.h, 'face op-of') : `<span class="op-of face">${esc((h.n || '?').slice(0, 1))}</span>`}</div>`).join('') || '<p class="op-none">Aucun combat pour l\'instant.</p>';
   return `<div class="oph" style="--c:${col}">
-    <div class="oph-hero"><span class="oph-port">${faceH(heroArt(p.h, p.haw), 'face')}</span><b class="oph-nm">${esc(B.n)}</b><span class="oph-hp" data-x="${p.al ? Math.max(0, p.hp) : p.pl + 'e'}"></span><small class="oph-who">${esc(p.n)}${p.haw ? ' · éveillé' : ''}</small></div>
-    <div class="oph-pw">${gem}<div class="hpc-art">${powArtH(p.h)}</div><b class="hpc-nm">${esc(x.pwn || 'Pouvoir')}</b><p class="hpc-tx">${esc(main.charAt(0).toUpperCase() + main.slice(1))}</p>${x.trx ? `<p class="hpc-bonus"><b>Bonus</b> ${esc(x.trx)}</p>` : ''}</div>
+    <div class="oph-hero">${heroArchH(heroArt(p.h, p.haw), p.al ? Math.max(0, p.hp) : p.pl + 'e', 'oph-arch')}<b class="oph-nm">${esc(B.n)}</b><small class="oph-who">${esc(p.n)}${p.haw ? ' · éveillé' : ''}</small></div>
+    ${powBannerH(x, p.h, nin)}
     <div class="oph-parch"><div class="op-stats">${shield(p.t || 1)}${stat('<svg class="op-tri" viewBox="0 0 44 44"><rect x="4" y="10" width="20" height="28" rx="3" fill="#8a96a8" stroke="#120a06" stroke-width="2" transform="rotate(-14 14 24)"/><rect x="10" y="8" width="20" height="28" rx="3" fill="#a8b4c4" stroke="#120a06" stroke-width="2"/><path d="M33 30 V14 L28 19 M33 14 L38 19" stroke="#2a7ad8" stroke-width="4" fill="none" stroke-linecap="round"/></svg>', p.tc || 0, 'Triples')}${stat('<span class="op-ic fire">🔥</span>', p.ws || 0, 'Victoires d\'affilée')}</div><div class="op-rows">${rows}</div></div>
   </div>`;
 }
@@ -2663,6 +2678,42 @@ html.lite .awk-go{animation:none}
 .op-of svg{width:100%;height:100%}
 .op-none{margin:6px 0 0;font-size:12.5px;font-style:italic;color:#5a4428;text-align:center}
 @media (max-width:820px){ .oph{flex-wrap:wrap;justify-content:center;gap:10px;max-width:92vw} .oph-hero,.oph-port{width:130px} .oph-pw{width:160px} .oph-parch{width:220px} }
+.harch{position:relative;display:block;width:100%;aspect-ratio:100/122}
+.harch > svg{display:block;width:100%;height:100%;filter:drop-shadow(0 6px 10px rgba(0,0,0,.6))}
+.harch-hp{position:absolute;right:-6%;bottom:-3%;width:30%;aspect-ratio:.85;display:grid;place-items:center;padding-top:8%;box-sizing:border-box;font:700 clamp(18px,2.6vh,30px) var(--f-disp),serif;color:#fff;text-shadow:0 0 3px #000,0 2px 0 #000;
+  background:radial-gradient(circle at 40% 62%,#ff6a52,#b0140c 70%);clip-path:path('M50 0 C62 22 92 46 92 70 A42 42 0 0 1 8 70 C8 46 38 22 50 0 Z');}
+.harch-hp{clip-path:none!important;background:none!important;padding:0!important}.harch-hp svg{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 3px 3px rgba(0,0,0,.6))}.harch-hp b{position:relative;margin-top:22%;font:inherit}
+.hp-card .hp-arch{position:absolute;inset:0;width:100%;height:auto}
+.hp-card{aspect-ratio:100/122!important}
+.hp-card .hp-nm{bottom:6%!important}
+.hp-col.on .hp-card .harch > svg{filter:drop-shadow(0 0 16px var(--c)) drop-shadow(0 6px 10px rgba(0,0,0,.6))}
+.pwb{position:relative;width:clamp(170px,14vw,210px);display:grid;justify-items:center;gap:6px;padding:52px 14px 30px;text-align:center;box-sizing:border-box;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.04) 0 3px,transparent 3px 9px),linear-gradient(180deg,#4a5cae,#2c3a7a 70%,#253066);
+  box-shadow:inset 7px 0 0 #c8a04a,inset -7px 0 0 #c8a04a,inset 9px 0 0 #3a2408,inset -9px 0 0 #3a2408,inset 0 3px 0 #c8a04a;
+  clip-path:polygon(0 0,100% 0,100% 90%,50% 100%,0 90%);filter:drop-shadow(0 8px 12px rgba(0,0,0,.55))}
+.pwb-cost{position:absolute;top:-2px;left:50%;transform:translateX(-50%);width:38px;height:38px;border-radius:50%;display:grid;place-items:center;z-index:2;box-shadow:0 0 0 3px #3a2408,0 0 0 5px #e2b04e,0 0 0 6.5px #3a2408}
+.pwb-cost.g{background:radial-gradient(circle at 40% 35%,#fff0b0,#d8a640 60%,#9a6a1e)}.pwb-cost.g b{font:700 20px var(--f-disp),serif;color:#2a1606}
+.pwb-cost.ck{background:radial-gradient(circle at 35% 30%,#bfe6ff,#2a7ad8)}.pwb-cost.ck .ckm{width:30px;height:30px}
+.pwb-cost.p{background:radial-gradient(circle at 40% 35%,#6a4a2a,#2a1a0e)}.pwb-cost.p b{color:#ffd86a;font-size:18px}
+.pwb-med{width:76px;height:76px;margin-top:-12px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 40% 35%,#6a4a2a,#1a0e06);box-shadow:inset 0 0 0 3px #2a1806,0 0 0 5px #5a3a1a,0 0 0 8px #c8a04a,0 0 0 10px #2a1806}
+.pwb-med .pwart{width:48px;height:48px}
+.pwb-nm{width:calc(100% + 30px);margin-top:8px;padding:5px 0 6px;font:700 15px var(--f-label),serif;color:#2a1c10;background:linear-gradient(180deg,#f6eed8,#d8c89e 60%,#b8a478);box-shadow:inset 0 0 0 1px #5a4a30;
+  clip-path:polygon(0 0,100% 0,94% 50%,100% 100%,0 100%,6% 50%);filter:drop-shadow(0 2px 2px rgba(0,0,0,.5))}
+.pwb-tx{margin:2px 0 0;width:100%;padding:8px 8px 10px;box-sizing:border-box;font-size:12.5px;line-height:1.35;color:#2a2018;background:linear-gradient(180deg,#e6dfcf,#c9bfa8);box-shadow:inset 0 0 0 1.5px #6a5a40,inset 0 0 0 3px #e9e1cf}
+.pwb-tx small{display:block;font-weight:700;color:#4a3a28;margin-bottom:2px}
+.hp-pc{grid-template-columns:auto 1fr!important;grid-template-areas:none!important;align-items:center!important;padding:16px 20px!important;column-gap:22px!important}
+.hp-pc > *{grid-area:auto!important}
+.hpc-side{display:grid;gap:10px;align-content:center;min-width:0}
+.hpc-side .hpc-q{border:0;border-top:1px solid rgba(242,193,78,.25);padding:8px 0 0}
+.oph-arch{width:200px}
+.oph-nm{bottom:40px}
+@media (max-width:820px){ .hp-pc{grid-template-columns:1fr!important;justify-items:center} .hpc-side{width:100%} .oph-arch{width:130px} .pwb{width:170px} }
+.hpc-side > *{grid-area:auto!important;margin:0!important;align-self:auto!important}
+.hp-infos{min-height:clamp(290px,36vh,350px)!important}
+.hp-col{flex-basis:clamp(150px,14vw,236px)!important}
+.hp-card .hp-nm{position:absolute!important;top:100%!important;bottom:auto!important;left:-4%!important;right:-4%!important;margin-top:6px}
+.hp-card{margin-bottom:46px}
+.hp-card .harch-hp{right:-8%;bottom:-4%}
 .rl-body{overflow:auto;min-height:0;padding-right:4px;text-align:left}
 .rl-p p,.rl-ul li{font-size:13px;line-height:1.45;color:#f1e4c6;margin:0 0 8px}.rl-p b,.rl-ul b,.rl-step b{color:#ffd86a}
 .rl-ul{margin:0 0 8px;padding-left:18px}
