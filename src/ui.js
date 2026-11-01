@@ -319,14 +319,10 @@ const NJ_VIC = { n_feu:'🔥', n_vent:'🏜️', n_eau:'🌫️', n_foudre:'⚡'
 // fiche de l'univers Ninja : cinq règles courtes (le détail est sur l'écran du héros)
 function ninjaCardH() {
   const row = (ic, col, t, x) => `<span class="nj-r"><i class="nj-i" style="--c:${col}">${ic}</i><span><b>${t}</b><small>${x}</small></span></span>`;
-  const vils = Object.keys(NJ_STYLE).map(t => `<i class="nj-v" style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${NJ_VIC[t]} <b>${esc((TRIBES[t] || {}).n || t)}</b> ${NJ_STYLE[t]}</i>`).join('');
-  return `<span class="ban-law nj-law"><b>Loi · Chakra, réservoir et éveil</b>
-    ${row(ckMarkH('', 'nj-ck'), '#1e3a5a', 'Chakra et éveil', 'Chaque ninja de ton plateau donne 1 chakra par tour (10 au plus). Paie une fois la goutte bleue d\'un serviteur : il s\'éveille et son effet revient à chaque tour.')}
-    ${row('<span class="rl-scroll"><i style="background:#ff7a2a"></i><i style="background:#4ab0e8"></i></span>', '#2a3a5a', 'Sorts et réservoir', 'Achète des sorts (1 or) et lance-les au chakra. Deux sorts de village remplissent le réservoir : combo des deux villages, ou ultime si c\'est le même.')}
-    ${row('<span class="nj-tx">⚔</span>', '#5a2a3a', 'Héros', 'Aucun héros n\'a de village : chacun renforce une mécanique (jetons, sceaux, pacte…) et a une quête. Accomplie, elle éveille le héros : nouveau pouvoir.')}
-    ${row('<span class="nj-tx">✦</span>', '#4a3a12', 'Triples', 'Trois exemplaires d\'une créature, jetons compris, fusionnent : stats additionnées et récompense.')}
-    ${row('<span class="nj-tx">⛩️</span>', '#5a3a12', 'Cinq villages', 'Chacun a son style, du début à la fin de partie.')}
-    <span class="nj-vs">${vils}</span>
+  return `<span class="ban-law nj-law"><b>Les nouvelles mécaniques</b>
+    ${row(ckMarkH('', 'nj-ck'), '#1e3a5a', 'Le chakra', 'Une 2e ressource à côté de l\'or. Chaque ninja de ton plateau te donne 1 chakra au début du tour (10 au plus) ; il se garde d\'un tour à l\'autre. Il sert à lancer les sorts et à éveiller.')}
+    ${row('<span class="rl-scroll"><i style="background:#ff7a2a"></i><i style="background:#4ab0e8"></i></span>', '#2a3a5a', 'Le combo de sorts', 'Les sorts s\'achètent 1 or et se lancent au chakra. Chaque sort de village remplit une moitié du réservoir ; le 2e déclenche un combo des deux villages, ou leur ultime si c\'est le même village. Plus ta taverne est haute, plus le combo est fort.')}
+    ${row('<span class="nj-tx">💧</span>', '#1e4a5a', 'L\'éveil', 'Serviteurs : paie une fois leur goutte bleue, ils gagnent des stats et leur effet revient gratuitement à chaque tour. Héros : accomplis leur quête, ils s\'éveillent avec un nouveau pouvoir.')}
   </span>`;
 }
 function univPickH(sel, edit, actions) {
