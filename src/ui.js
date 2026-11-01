@@ -449,7 +449,7 @@ function gameH() {
       const F = V.fight, last = F.r.frames.length - 1, fr = F.r.frames[Math.min(V.fi, last)];
       const mine = F.me;
       const enHero = mine ? F.ha : F.hb;
-      topZone = `<section class="keeper-zone enemy${F.duel ? ' has-cp' : ''}"><div class="keeper">${faceH(enHero && HART[enHero] ? 'art-h-' + enHero : avatarSym(F.on), 'face kf')}<div class="kname"><b>${esc(F.on)}</b><span>Taverne niveau ${mine ? F.ta : F.tb}</span></div></div>
+      topZone = `<section class="keeper-zone enemy${F.duel ? ' has-cp' : ''}"><div class="keeper">${faceH(enHero && HART[enHero] ? 'art-h-' + enHero : avatarSym(F.on), 'face kf')}<div class="kname kn-en"><b>${esc(F.on)}</b>${tierStars(mine ? F.ta : F.tb, true)}</div></div>
         <div class="line counter-line">${fightRow(F, 1 - mine)}</div></section>`;
       boardRow = fightRow(F, mine);
       if (F.done) {
@@ -2593,6 +2593,12 @@ html.lite .awk-go{animation:none}
 @media (max-width:820px){ .hp-pc,.hp-col:last-child .hp-pc{position:fixed;left:12px;right:12px;bottom:74px;top:auto;width:auto;max-height:44vh;overflow:auto;transform:none;display:none;opacity:1;padding-top:16px;pointer-events:auto;z-index:60} .hp-col.on .hp-pc{display:grid} .hp-row:hover .hp-col.on:not(:hover) .hp-pc{opacity:1} .hp-pc .hpc-art{display:none} .hp-pc .hpc-gem{top:8px;left:8px} .hp-go{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:61} }
 .rl-mcs{display:flex;flex-wrap:wrap;gap:4px;margin:2px 0 10px}.rl-mcs i{font-style:normal;font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px;background:rgba(0,0,0,.35);color:var(--c);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 60%,transparent)}
 .rl-tabs{flex-wrap:wrap}
+.keeper-zone.enemy .keeper{position:relative}
+.keeper-zone.enemy .kn-en{position:absolute;left:calc(100% + 14px);top:50%;margin:0;transform:translateY(-50%);display:grid;gap:4px;justify-items:start;text-align:left;pointer-events:none}
+.keeper-zone.enemy .kn-en b{display:block!important;font:700 clamp(18px,2.6vh,28px) var(--f-disp),serif;color:#ffd86a;text-shadow:0 2px 0 #120a06,0 0 12px rgba(0,0,0,.8);white-space:nowrap}
+.keeper-zone.enemy .kn-en .ts{display:flex;gap:3px}
+.keeper-zone.enemy .kn-en .ts i{display:block;width:clamp(14px,2vh,20px);height:clamp(14px,2vh,20px);background:linear-gradient(#fff1b8,#f2c14e 60%,#b7802a);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);filter:drop-shadow(0 1px 1px #000)}
+@media (max-width:820px){ .keeper-zone.enemy .kn-en{left:calc(100% + 8px)} .keeper-zone.enemy .kn-en b{font-size:16px} }
 .rl-body{overflow:auto;min-height:0;padding-right:4px;text-align:left}
 .rl-p p,.rl-ul li{font-size:13px;line-height:1.45;color:#f1e4c6;margin:0 0 8px}.rl-p b,.rl-ul b,.rl-step b{color:#ffd86a}
 .rl-ul{margin:0 0 8px;padding-left:18px}
