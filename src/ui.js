@@ -305,16 +305,16 @@ function chakraLawH(big) {
   const vil = (tb, ic, t, d, m, f) => sec(ic, esc((TRIBES[tb] || {}).n || t), `<small><b>Début</b> : ${d}</small><small><b>Milieu</b> : ${m}</small><small><b>Fin</b> : ${f}</small>`);
   return `<span class="ban-law ck-law njl${big ? ' big' : ''}">
     ${sec('🪙', 'Ressources', `<small><b>Or</b> : acheter les serviteurs, monter la taverne et certains pouvoirs de héros.</small><small><b>Chakra</b> : chaque ninja en jeu en donne 1 par tour (10 au plus). Il lance les <b>sorts</b>, <b>éveille</b> les serviteurs (une seule fois : la goutte bleue au-dessus d'eux) et paie certains pouvoirs de héros.</small>`)}
-    ${vil('n_feu', '🔥', 'Feuille', 'petits dégâts au début du combat.', 'ils s\'additionnent : 1 dégât par allié de la Feuille.', 'grandes explosions qui touchent tous les ennemis.')}
-    ${vil('n_vent', '🏜️', 'Sable', 'invoque des marionnettes 1/1.', 'les marionnettes se renforcent chaque tour.', 'bouclier de sable sur tout le plateau.')}
-    ${vil('n_eau', '🌫️', 'Brume', 'beaucoup de PV, ils grandissent en survivant.', 'Bouclier divin et soins de fin de tour.', 'Renaissance pour toute la Brume.')}
-    ${vil('n_foudre', '⚡', 'Nuage', 'des jinchūriki faibles.', 'ils grandissent à chaque combat gagné.', 'en mourant, ils libèrent une Bête à queues 8/8.')}
-    ${vil('n_terre', '⛰️', 'Roche', 'Provocation et gros PV.', 'ils invoquent des Murs de terre.', 'Avalanche : un quart de leur vie en dégâts au début du combat.')}
+    ${vil('n_feu', '🔥', 'Konoha', 'petits dégâts au début du combat.', 'ils s\'additionnent : 1 dégât par allié de Konoha.', 'grandes explosions qui touchent tous les ennemis.')}
+    ${vil('n_vent', '🏜️', 'Suna', 'invoque des marionnettes 1/1.', 'les marionnettes se renforcent chaque tour.', 'bouclier de sable sur tout le plateau.')}
+    ${vil('n_eau', '🌫️', 'Kiri', 'beaucoup de PV, ils grandissent en survivant.', 'Bouclier divin et soins de fin de tour.', 'Renaissance pour toute Kiri.')}
+    ${vil('n_foudre', '⚡', 'Kumo', 'des jinchūriki faibles.', 'ils grandissent à chaque combat gagné.', 'en mourant, ils libèrent une Bijū 8/8.')}
+    ${vil('n_terre', '⛰️', 'Iwa', 'Provocation et gros PV.', 'ils invoquent des Doryūheki.', 'Avalanche : un quart de leur vie en dégâts au début du combat.')}
     ${sec('🧬', 'Kekkei genkai', `<small>Quelques serviteurs appartiennent à <b>deux villages</b> : ils profitent des bonus des deux et grandissent quand un combo du réservoir contient une de leurs natures.</small>`)}
   </span>`;
 }
 // style de jeu de chaque village (étendard, cartes de héros)
-const NJ_STYLE = { n_feu:'Explosions', n_vent:'Marionnettes et sable', n_eau:'Survie et soins', n_foudre:'Jinchūriki', n_terre:'Forteresse' };
+const NJ_STYLE = { n_feu:'Explosions', n_vent:'Kugutsu et sable', n_eau:'Survie et soins', n_foudre:'Jinchūriki', n_terre:'Forteresse' };
 const NJ_VIC = { n_feu:'🔥', n_vent:'🏜️', n_eau:'🌫️', n_foudre:'⚡', n_terre:'⛰️' };
 // fiche de l'univers Ninja : cinq règles courtes (le détail est sur l'écran du héros)
 function ninjaCardH() {

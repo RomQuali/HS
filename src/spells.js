@@ -65,12 +65,12 @@ const SPELLS = {
   cs_gokakyu:{ cs:1, bg:'feu', el:'feu', n:'Gōkakyū no jutsu', t:3, c:1, ck:4, nin:1, ty:'nin', fx:[{ k:'fire', d:8 }], tx:'Grande boule de feu : prochain combat, 8 dégâts répartis sur l\'ennemi.' },
   cs_amaterasu:{ cs:1, rare:1, bg:'feu', el:'feu', n:'Amaterasu', t:6, c:1, ck:6, nin:1, ty:'nin', fx:[{ k:'fire', d:14 }], tx:'Rare. Flammes noires : prochain combat, 14 dégâts répartis sur l\'ennemi.' },
   // Sable
-  cs_kugutsu:{ cs:1, bg:'vent', el:'vent', n:'Kugutsu no jutsu', t:1, c:1, ck:2, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_puppet', n:2 }], tx:'Invocation des marionnettes : invoque 2 Marionnettes.' },
+  cs_kugutsu:{ cs:1, bg:'vent', el:'vent', n:'Kugutsu no jutsu', t:1, c:1, ck:2, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_puppet', n:2 }], tx:'Invocation des marionnettes : invoque 2 Kugutsu.' },
   cs_sunatate:{ cs:1, bg:'vent', el:'vent', n:'Suna no tate', t:2, c:1, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'tbuff', a:0, h:4 }, { k:'tkwp', kw:'t' }], tx:'Bouclier de sable : le serviteur ciblé gagne +0/+4 et Provocation.' },
   cs_kamaitachi:{ cs:1, bg:'vent', el:'vent', n:'Kamaitachi', t:3, c:1, ck:3, nin:1, ty:'nin', fx:[{ k:'tma', a:2, h:0 }], tx:'Faux du vent : prochain combat, tes serviteurs gagnent +2/+0.' },
-  cs_sabaku:{ cs:1, rare:1, bg:'vent', el:'vent', n:'Sabaku taisō', t:6, c:1, ck:6, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_puppet', n:2 }, { k:'buffall', a:2, h:4 }], tx:'Rare. Funérailles du désert : invoque 2 Marionnettes, puis tes serviteurs gagnent +2/+4.' },
+  cs_sabaku:{ cs:1, rare:1, bg:'vent', el:'vent', n:'Sabaku taisō', t:6, c:1, ck:6, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_puppet', n:2 }, { k:'buffall', a:2, h:4 }], tx:'Rare. Funérailles du désert : invoque 2 Kugutsu, puis tes serviteurs gagnent +2/+4.' },
   // Brume
-  cs_kiri:{ cs:1, bg:'eau', el:'eau', n:'Kirigakure no jutsu', t:1, c:1, ck:2, nin:1, ty:'nin', fx:[{ k:'tma', a:0, h:2 }], tx:'Brume cachée : prochain combat, tes serviteurs gagnent +0/+2.' },
+  cs_kiri:{ cs:1, bg:'eau', el:'eau', n:'Kirigakure no jutsu', t:1, c:1, ck:2, nin:1, ty:'nin', fx:[{ k:'tma', a:0, h:2 }], tx:'Kiri cachée : prochain combat, tes serviteurs gagnent +0/+2.' },
   cs_shosen:{ cs:1, bg:'eau', el:'eau', n:'Shōsen jutsu', t:2, c:1, ck:2, nin:1, ty:'nin', tg:1, fx:[{ k:'tbuff', a:1, h:4 }], tx:'Paume mystique : le serviteur ciblé gagne +1/+4.' },
   cs_suiro:{ cs:1, bg:'eau', el:'eau', n:'Suirō no jutsu', t:3, c:1, ck:3, nin:1, ty:'nin', fx:[{ k:'seal', n:1 }, { k:'chill', a:2, n:2 }], tx:'Prison aqueuse : prochain combat, un ennemi perd ses mots-clés et deux ennemis perdent 2 attaque.' },
   cs_suikodan:{ cs:1, rare:1, bg:'eau', el:'eau', n:'Suikōdan', t:6, c:1, ck:6, nin:1, ty:'nin', fx:[{ k:'tma', a:2, h:3 }, { k:'tkwn', kw:'s', n:3 }], tx:'Rare. Requins d\'eau : prochain combat, tes serviteurs gagnent +2/+3 et trois d\'entre eux Bouclier divin.' },
@@ -80,16 +80,16 @@ const SPELLS = {
   cs_bijuchakra:{ cs:1, bg:'foudre', el:'foudre', n:'Bijū no chakra', t:3, c:1, ck:4, nin:1, ty:'nin', fx:[{ k:'winup' }], tx:'Chakra de la bête : tes jinchūriki grandissent comme après une victoire.' },
   cs_bijudama:{ cs:1, rare:1, bg:'foudre', el:'foudre', n:'Bijūdama', t:6, c:1, ck:6, nin:1, ty:'nin', fx:[{ k:'winup' }, { k:'winup' }, { k:'fire', d:6 }], tx:'Rare. Orbe de la bête : tes jinchūriki grandissent deux fois comme après une victoire, et 6 dégâts frappent l\'ennemi.' },
   // Roche
-  cs_doryu:{ cs:1, bg:'terre', el:'terre', n:'Doryūheki', t:1, c:1, ck:2, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_mur', n:1 }], tx:'Mur de terre : invoque un Mur de terre (0/4, Provocation).' },
+  cs_doryu:{ cs:1, bg:'terre', el:'terre', n:'Doryūheki', t:1, c:1, ck:2, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_mur', n:1 }], tx:'Doryūheki : invoque un Doryūheki (0/4, Provocation).' },
   cs_kengan:{ cs:1, bg:'terre', el:'terre', n:'Kengan no jutsu', t:2, c:1, ck:2, nin:1, ty:'nin', tg:1, fx:[{ k:'tpoing' }], tx:'Poing de roc : le serviteur ciblé gagne +1 attaque par tranche de 3 PV (+6 au plus).' },
   cs_iwa:{ cs:1, bg:'terre', el:'terre', n:'Iwa gōremu', t:3, c:1, ck:4, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_golem', n:2 }], tx:'Golems de roche : invoque 2 Golems de terre (2/3, Provocation).' },
-  cs_chokei:{ cs:1, rare:1, bg:'terre', el:'terre', n:'Chōkeijūgan', t:6, c:1, ck:6, nin:1, ty:'nin', fx:[{ k:'buffall', a:1, h:6 }, { k:'summon', card:'tk_mur', n:2 }], tx:'Rare. Roche ultra-lourde : tes serviteurs gagnent +1/+6, puis invoque 2 Murs de terre.' },
+  cs_chokei:{ cs:1, rare:1, bg:'terre', el:'terre', n:'Chōkeijūgan', t:6, c:1, ck:6, nin:1, ty:'nin', fx:[{ k:'buffall', a:1, h:6 }, { k:'summon', card:'tk_mur', n:2 }], tx:'Rare. Iwa ultra-lourde : tes serviteurs gagnent +1/+6, puis invoque 2 Doryūheki.' },
   // Neutres
   cs_shunshin:{ cs:1, n:'Shunshin no jutsu', t:1, c:1, ck:1, nin:1, ty:'nin', fx:[{ k:'roll' }], tx:'Déplacement éclair : rafraîchis gratuitement la taverne.' },
   cs_kawarimi:{ cs:1, n:'Kawarimi no jutsu', t:1, c:1, ck:2, nin:1, ty:'nin', fx:[{ k:'uc', n:2 }], tx:'Permutation : améliorer la taverne coûte 2 or de moins.' },
   cs_kuchiyose:{ cs:1, n:'Kuchiyose no jutsu', t:2, c:1, ck:3, nin:1, ty:'nin', fx:[{ k:'disc' }], tx:'Invocation : découvre un serviteur d\'un niveau au-dessus de ta taverne.' },
   cs_henge:{ cs:1, n:'Henge no jutsu', t:3, c:1, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'henge' }], tx:'Métamorphose : transforme le serviteur ciblé en un serviteur de son village d\'un niveau plus haut, bonus gardés.' },
-  cs_kagebunshin:{ cs:1, n:'Kage bunshin no jutsu', t:4, c:1, ck:4, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_clone', n:2 }, { k:'clones', a:1, h:1 }], tx:'Multi-clonage : invoque 2 Clones de l\'ombre, puis tes clones gagnent +1/+1.' },
+  cs_kagebunshin:{ cs:1, n:'Kage bunshin no jutsu', t:4, c:1, ck:4, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_clone', n:2 }, { k:'clones', a:1, h:1 }], tx:'Multi-clonage : invoque 2 Kage bunshin, puis tes clones gagnent +1/+1.' },
   // ----- techniques interdites : seulement après l'Éveil des clans -----
   nj_x_cinq:{ el:'feu', n:'Hachimon Tonkō', t:5, c:5, ck:9, nin:1, forb:1, ty:'nin', tx:'Technique interdite, les huit portes. Prochain combat : tous tes serviteurs gagnent +6/+6 et 6 dégâts frappent l\'ennemi au début du combat.' },
   nj_x_sceau:{ el:'terre', n:'Shiki Fūjin', t:5, c:4, ck:8, nin:1, forb:1, ty:'nin', tg:1, tx:'Technique interdite. Le serviteur ciblé gagne +10/+10 ; un autre de tes serviteurs aléatoire est détruit.' },
@@ -521,9 +521,9 @@ for (const id in AWK_TECH0) if (!(SPELLS[id] && SPELLS[id].awk)) AWK_TECH[id] = 
 for (const id in SPELLS) if (SPELLS[id].awk) AWK_TECH[id] = [SPELLS[id].awk.tx, (G, p, t, tg) => techSteps(G, p, SPELLS[id].awk.fx, t, tg, 1)];
 const PURES = {
   feu:{ n:'Grande explosion', col:'#ff5a1a', fx:{ k:'soc_dmg', d:4, n:2 } },
-  vent:{ n:'Bouclier de sable géant', col:'#d8b878', fx:{ k:'atk_self', a:2, h:2 } },
-  eau:{ n:'Renaissance de la Brume', col:'#4ab0e8', fx:{ k:'surv_self', a:3, h:3 } },
-  foudre:{ n:'Libération de la bête', col:'#8a7ad8', fx:{ k:'atk_zap', d:3, n:2 } },
+  vent:{ n:'Suna no tate géant', col:'#d8b878', fx:{ k:'atk_self', a:2, h:2 } },
+  eau:{ n:'Renaissance de Kiri', col:'#4ab0e8', fx:{ k:'surv_self', a:3, h:3 } },
+  foudre:{ n:'Libération du Bijū', col:'#8a7ad8', fx:{ k:'atk_zap', d:3, n:2 } },
   terre:{ n:'Avalanche', col:'#c8a878', fx:{ k:'eot_self', a:1, h:3 } },
 };
 const tmaAdd = (p, a, h) => { p.tma = { a:((p.tma && p.tma.a) || 0) + a, h:((p.tma && p.tma.h) || 0) + h }; };
@@ -536,21 +536,21 @@ const cTmp = (m, kw) => { m.tmp = { a:(m.tmp && m.tmp.a) || 0, h:(m.tmp && m.tmp
 const cVil = (p, tb, a, h) => p.bd.filter(m => tribeOk(m, tb)).forEach(m => buff(m, a, h));
 const cPup = (p, a, h) => p.bd.filter(m => m.c === 'tk_puppet').forEach(m => buff(m, a, h));
 const COMBO_BD = {
-  'Glace':        ['Brume + Sable : invoque 1 Marionnette (×niveau) ; tes Marionnettes gagnent Bouclier divin au prochain combat.', (G, p) => { cSum(p, 'tk_puppet', cmx(p)); p.bd.filter(m => m.c === 'tk_puppet').forEach(m => cTmp(m, 's')); }],
-  'Bois':         ['Brume + Roche : invoque 1 Mur de terre ; tes serviteurs de la Brume et de la Roche gagnent +0/+2 (×niveau).', (G, p) => { const x = cmx(p); cSum(p, 'tk_mur', 1); cVil(p, 'n_eau', 0, 2 * x); cVil(p, 'n_terre', 0, 2 * x); }],
-  'Lave':         ['Feuille + Roche : prochain combat, 3 dégâts (×niveau) à l\'ennemi ; tes serviteurs de la Roche gagnent +1/+0 (×niveau).', (G, p) => { const x = cmx(p); p.njf = (p.njf || 0) + 3 * x; cVil(p, 'n_terre', x, 0); }],
-  'Vapeur':       ['Feuille + Brume : tes serviteurs de la Feuille et de la Brume gagnent +1/+1 (×niveau).', (G, p) => { const x = cmx(p); cVil(p, 'n_feu', x, x); cVil(p, 'n_eau', x, x); }],
-  'Explosion':    ['Nuage + Roche : tes jinchūriki grandissent comme après une victoire ; prochain combat, 2 dégâts (×niveau) à l\'ennemi.', (G, p) => { winUp(p); p.njf = (p.njf || 0) + 2 * cmx(p); }],
-  'Fournaise':    ['Feuille + Sable : invoque 1 Marionnette ; tes Marionnettes deviennent explosives (Râle d\'agonie : 1 dégât ×niveau).', (G, p) => { const x = cmx(p); cSum(p, 'tk_puppet', 1); p.bd.filter(m => m.c === 'tk_puppet').forEach(m => { (m.x = m.x || []).push({ k:'dr_dmg', d:x, n:1, src:'Fournaise' }); }); }],
-  'Tempête':      ['Nuage + Sable : tes Marionnettes gagnent +1/+1 (×niveau) ; tes jinchūriki grandissent comme après une victoire.', (G, p) => { const x = cmx(p); cPup(p, x, x); winUp(p); }],
-  'Pluie d\'orage':['Nuage + Brume : tes jinchūriki grandissent comme après une victoire ; tes serviteurs de la Brume gagnent +0/+2 (×niveau).', (G, p) => { winUp(p); cVil(p, 'n_eau', 0, 2 * cmx(p)); }],
-  'Plasma':       ['Feuille + Nuage : prochain combat, 2 dégâts (×niveau) à l\'ennemi ; tes serviteurs du Nuage gagnent +1/+0 (×niveau).', (G, p) => { const x = cmx(p); p.njf = (p.njf || 0) + 2 * x; cVil(p, 'n_foudre', x, 0); }],
-  'Sable':        ['Roche + Sable : invoque 1 Marionnette (×niveau) ; tes Marionnettes gagnent +0/+2 et Provocation.', (G, p) => { cSum(p, 'tk_puppet', cmx(p)); p.bd.filter(m => m.c === 'tk_puppet').forEach(m => { buff(m, 0, 2); addF(m, 't'); }); }],
-  'Grande explosion':['Ultime de la Feuille : prochain combat, 5 dégâts (×niveau) répartis sur l\'ennemi.', (G, p) => { p.njf = (p.njf || 0) + 5 * cmx(p); }],
-  'Bouclier de sable géant':['Ultime du Sable : tes serviteurs gagnent +0/+2 (×niveau) ; invoque 1 Marionnette.', (G, p) => { cSum(p, 'tk_puppet', 1); p.bd.forEach(m => buff(m, 0, 2 * cmx(p))); }],
-  'Renaissance de la Brume':['Ultime de la Brume : prochain combat, Renaissance pour 1 serviteur (+1 par niveau), la Brume d\'abord.', (G, p) => { const n = 1 + cmx(p), o = p.bd.slice().sort((a, b) => (tribeOk(b, 'n_eau') ? 1 : 0) - (tribeOk(a, 'n_eau') ? 1 : 0)).filter(m => !has(m, 'r')); o.slice(0, n).forEach(m => cTmp(m, 'r')); }],
-  'Libération de la bête':['Ultime du Nuage : invoque une Bête à queues (6/6) ; tes jinchūriki grandissent (×niveau).', (G, p) => { cSum(p, 'tk_bijuu', 1); for (let i = 0; i < cmx(p); i++) winUp(p); }],
-  'Avalanche':    ['Ultime de la Roche : invoque 1 Mur de terre ; tes serviteurs de la Roche gagnent +1/+2 (×niveau).', (G, p) => { const x = cmx(p); cSum(p, 'tk_mur', 1); cVil(p, 'n_terre', x, 2 * x); }],
+  'Hyōton':        ['Kiri + Suna : invoque 1 Kugutsu (×niveau) ; tes Kugutsu gagnent Bouclier divin au prochain combat.', (G, p) => { cSum(p, 'tk_puppet', cmx(p)); p.bd.filter(m => m.c === 'tk_puppet').forEach(m => cTmp(m, 's')); }],
+  'Mokuton':         ['Kiri + Iwa : invoque 1 Doryūheki ; tes serviteurs de Kiri et d’Iwa gagnent +0/+2 (×niveau).', (G, p) => { const x = cmx(p); cSum(p, 'tk_mur', 1); cVil(p, 'n_eau', 0, 2 * x); cVil(p, 'n_terre', 0, 2 * x); }],
+  'Yōton':         ['Konoha + Iwa : prochain combat, 3 dégâts (×niveau) à l\'ennemi ; tes serviteurs d’Iwa gagnent +1/+0 (×niveau).', (G, p) => { const x = cmx(p); p.njf = (p.njf || 0) + 3 * x; cVil(p, 'n_terre', x, 0); }],
+  'Futton':       ['Konoha + Kiri : tes serviteurs de Konoha et de Kiri gagnent +1/+1 (×niveau).', (G, p) => { const x = cmx(p); cVil(p, 'n_feu', x, x); cVil(p, 'n_eau', x, x); }],
+  'Bakuton':    ['Kumo + Iwa : tes jinchūriki grandissent comme après une victoire ; prochain combat, 2 dégâts (×niveau) à l\'ennemi.', (G, p) => { winUp(p); p.njf = (p.njf || 0) + 2 * cmx(p); }],
+  'Shakuton':    ['Konoha + Suna : invoque 1 Kugutsu ; tes Kugutsu deviennent explosives (Râle d\'agonie : 1 dégât ×niveau).', (G, p) => { const x = cmx(p); cSum(p, 'tk_puppet', 1); p.bd.filter(m => m.c === 'tk_puppet').forEach(m => { (m.x = m.x || []).push({ k:'dr_dmg', d:x, n:1, src:'Fournaise' }); }); }],
+  'Tempête du Fūton':      ['Kumo + Suna : tes Kugutsu gagnent +1/+1 (×niveau) ; tes jinchūriki grandissent comme après une victoire.', (G, p) => { const x = cmx(p); cPup(p, x, x); winUp(p); }],
+  'Ranton':['Kumo + Kiri : tes jinchūriki grandissent comme après une victoire ; tes serviteurs de Kiri gagnent +0/+2 (×niveau).', (G, p) => { winUp(p); cVil(p, 'n_eau', 0, 2 * cmx(p)); }],
+  'Éclair ardent':       ['Konoha + Kumo : prochain combat, 2 dégâts (×niveau) à l\'ennemi ; tes serviteurs de Kumo gagnent +1/+0 (×niveau).', (G, p) => { const x = cmx(p); p.njf = (p.njf || 0) + 2 * x; cVil(p, 'n_foudre', x, 0); }],
+  'Jiton':        ['Iwa + Suna : invoque 1 Kugutsu (×niveau) ; tes Kugutsu gagnent +0/+2 et Provocation.', (G, p) => { cSum(p, 'tk_puppet', cmx(p)); p.bd.filter(m => m.c === 'tk_puppet').forEach(m => { buff(m, 0, 2); addF(m, 't'); }); }],
+  'Grande explosion':['Ultime de Konoha : prochain combat, 5 dégâts (×niveau) répartis sur l\'ennemi.', (G, p) => { p.njf = (p.njf || 0) + 5 * cmx(p); }],
+  'Suna no tate géant':['Ultime de Suna : tes serviteurs gagnent +0/+2 (×niveau) ; invoque 1 Kugutsu.', (G, p) => { cSum(p, 'tk_puppet', 1); p.bd.forEach(m => buff(m, 0, 2 * cmx(p))); }],
+  'Renaissance de Kiri':['Ultime de Kiri : prochain combat, Renaissance pour 1 serviteur (+1 par niveau), Kiri d\'abord.', (G, p) => { const n = 1 + cmx(p), o = p.bd.slice().sort((a, b) => (tribeOk(b, 'n_eau') ? 1 : 0) - (tribeOk(a, 'n_eau') ? 1 : 0)).filter(m => !has(m, 'r')); o.slice(0, n).forEach(m => cTmp(m, 'r')); }],
+  'Libération du Bijū':['Ultime de Kumo : invoque une Bijū (6/6) ; tes jinchūriki grandissent (×niveau).', (G, p) => { cSum(p, 'tk_bijuu', 1); for (let i = 0; i < cmx(p); i++) winUp(p); }],
+  'Avalanche':    ['Ultime d’Iwa : invoque 1 Doryūheki ; tes serviteurs d’Iwa gagnent +1/+2 (×niveau).', (G, p) => { const x = cmx(p); cSum(p, 'tk_mur', 1); cVil(p, 'n_terre', x, 2 * x); }],
 };
 const comboOf = (a, b) => !a || !b ? null : a === b ? PURES[a] || null : FUSIONS[[a, b].sort().join('+')] || null;
 const comboTx = F => F ? (COMBO_BD[F.n] || [''])[0] : '';
