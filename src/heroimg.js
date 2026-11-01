@@ -87,7 +87,7 @@ const DBIMG2 = {
 for (const id in DBIMG2) HART[id] = () => `<rect width="100" height="100" fill="#fff"/><image href="${DBIMG2[id]}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`;
 
 // cartes Dragon Ball : portraits fournis (et formes transformées : _tf<palier>)
-const DB_CARD_IMG = { d_goku:'dh_goku', d_goku_tf3:'dh_goku_aw', d_vegeta:'dh_vegeta', d_vegeta_tf2:'dh_vegeta_aw', d_gohan:'dh_gohan', d_gohan_tf2:'dh_gohan_aw', d_trunks:'dh_trunks', d_trunks_tf1:'dh_trunks_aw', d_goten:'dh_goten',
+const DB_CARD_IMG = { d_goku:'dh_goku', d_goku_tf3:'dh_goku_aw', d_vegeta:'dh_vegeta', d_vegeta_tf2:'dh_vegeta_aw', d_gohan:'dh_gohan', d_gohan_tf2:'dh_gohan_aw', d_trunks:'dh_trunks', d_trunks_tf1:'dh_trunks_aw', d_goten:'dh_goten', d_gotenks:'dh_goten_aw',
   d_piccolo:'dh_piccolo', d_piccolo_tf1:'dh_piccolo_aw', d_krilin:'dh_krilin', d_tenshin:'dh_tenshin', d_bulma:'dh_bulma', d_satan:'dh_satan', d_raditz:'dh_raditz', d_broly:'dh_broly', d_broly_tf1:'dh_broly_aw' };
 for (const id in DB_CARD_IMG) { const src = DBIMG[DB_CARD_IMG[id]] || DBIMG2[DB_CARD_IMG[id]]; if (src) ART[id] = () => `<rect width="100" height="100" fill="#fff"/><image href="${src}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`; }
 // illustration d'un serviteur : forme transformée si une image existe pour ce palier (ou un palier inférieur)

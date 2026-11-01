@@ -147,9 +147,10 @@ function tokenH(m, z, i, o = {}) {
   const md = z === 'bd' && !m.awk && (b.fxAll || []).find(e => e.k === 'ckm'), mdC = md ? (V.me ? Math.max(0, md.c - ((htr(V.me, 'pawk') || {}).n || 0)) : md.c) : 0, mdOk = md && V.me && (V.me.ck || 0) >= mdC && V.pub && V.pub.ph === 'recruit';
   const kiU = z === 'bd' && V.me && V.pub && (V.pub.laws || []).some(l => l.k === 'ki'), recr = V.pub && V.pub.ph === 'recruit';
   const T = kiU && (b.fxAll || []).find(e => e.k === 'tf'), st = T && T.st[m.tf || 0];
-  const tfC = st ? Math.max(0, st.c - ((T.cond === 'colere' && (V.me.dbDied || 0) > 0) || (T.cond === 'defaite' && V.me.dbRes === 'loss') || (T.cond === 'victoire' && V.me.dbRes === 'win') ? 2 : 0) - (V.me && HEROES[V.me.hero] && (htr(V.me, 'ptf') || {}).n || 0)) : 0;
+  const tfC = st ? (tfCost(V.me, m) || 0) : 0, fus = kiU ? fusOpts(V.me, m).filter(F => { const o = fusPartner(V.me, m, F); return o && V.me.bd.indexOf(o) > i; }) : [];
   const kiH = kiU ? `<span class="med-b${m.med ? ' on' : ''}" role="button" tabindex="0" data-act="med" data-i="${i}" data-tip="${esc(m.med ? 'En méditation : ne combat pas au prochain combat, rapporte ' + tierOf(m) * (m.g ? 2 : 1) + ' ki. Clique pour annuler.' : 'Méditer : ce serviteur ne combattra pas, mais te rapportera ' + tierOf(m) * (m.g ? 2 : 1) + ' ki au début du prochain tour.')}" aria-label="Méditer">☯</span>`
     + (st ? `<span class="tf-b${recr && (V.me.ki || 0) >= tfC ? ' ok' : ''}" role="button" tabindex="0" data-act="tf" data-i="${i}" data-tip="${esc('Transformation · ' + st.nm + ' (' + tfC + ' ki) : +' + st.a * mult(m) + '/+' + st.h * mult(m) + (st.kw ? ', ' + ((SET.kw[st.kw] || {}).n || '') : ''))}" aria-label="Transformer"><b>${tfC}</b></span>` : '')
+    + fus.map((F, k) => `<span class="fus-b${recr && (V.me.ki || 0) >= F.c ? ' ok' : ''}" style="--k:${k}" role="button" tabindex="0" data-act="fuse" data-i="${i}" data-f="${F.id}" data-tip="${esc(F.nm + ' (' + F.c + ' ki) : ' + CD(F.a).n + ' + ' + CD(F.b).n + ' → ' + CD(F.r).n + '. Stats additionnées +' + F.bo + '/+' + F.bo + ', effets conservés.')}" aria-label="${esc('Fusion en ' + CD(F.r).n)}"><i>✚</i><b>${esc(CD(F.r).n)}</b><em>${F.c}</em></span>`).join('')
     + (m.tfn ? `<span class="tf-n">${esc(m.tfn)}</span>` : '') + (m.med ? '<span class="med-n">Méditation</span>' : '') : '';
   const mdH = md ? `<span class="ckm-b${mdOk ? ' ok' : ''}" role="button" tabindex="0" data-act="ckm" data-i="${i}" data-tip="${esc('Éveil (' + mdC + ' chakra, une seule fois) : +' + md.c * mult(m) + '/+' + md.c * mult(m) + ', puis chaque tour : ' + mTx(md.m, mult(m)))}" aria-label="Éveiller ce serviteur">${ckMarkH(mdC)}</span>` : '';
   return `<div class="${cls}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.dmg ? ` data-dmg="${o.dmg}"` : ''}${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">${svg}${mdH}${kiH}${o.name === false ? '' : `<span class="mn-nm">${esc(b.n)}</span>`}${m.tr ? '<span class="tri">Triple !</span>' : o.trip ? '<span class="tri pulse">Triple !</span>' : ''}${o.extra || ''}</div>`;
@@ -1184,6 +1185,7 @@ function doAct(act, btn) {
     case 'ckm': sendAct({ t:'ckm', i:+btn.dataset.i }); break;
     case 'med': sendAct({ t:'med', i:+btn.dataset.i }); break;
     case 'tf': sendAct({ t:'tf', i:+btn.dataset.i }); break;
+    case 'fuse': if (btn.classList.contains('ok')) sendAct({ t:'fuse', i:+btn.dataset.i, f:btn.dataset.f }); else toast(btn.dataset.tip || ''); break;
     case 'hprules': V.hpRules = !V.hpRules; render(); if (V.hpRules) requestAnimationFrame(() => { const r = document.querySelector('.hp-rules'); if (r) r.scrollIntoView({ block:'end', behavior:'smooth' }); }); break;
     case 'rwst': rwSet(((V.rw || 0) + (+btn.dataset.d) + 10) % 10); render(); break;
     case 'hroll': if ((V.me.hrr || 0) > 0) { if (V.heroSel === V.me.ho[+btn.dataset.i]) V.heroSel = null; sendAct({ t:'hroll', i:+btn.dataset.i }); } break;
@@ -2759,6 +2761,11 @@ html.lite .awk-go{animation:none}
 .tf-b{position:absolute;right:-6%;top:6%;z-index:7;width:clamp(22px,28%,38px);aspect-ratio:1;display:grid;place-items:center;cursor:pointer;clip-path:polygon(50% 0,62% 32%,98% 36%,70% 58%,80% 96%,50% 76%,20% 96%,30% 58%,2% 36%,38% 32%);background:radial-gradient(circle at 45% 40%,#fff6b0,#e0a020);filter:grayscale(.7) brightness(.75);transition:transform .15s}
 .tf-b b{font:700 clamp(11px,1.5vh,16px) var(--f-disp),serif;color:#2a1606;margin-top:12%}
 .tf-b.ok{filter:drop-shadow(0 0 6px #ffd84a);animation:tfpulse 1.2s ease-in-out infinite alternate}.tf-b:hover{transform:scale(1.15)}
+/* fusion Dragon Ball : pastille sous le serviteur */
+.fus-b{position:absolute;left:50%;bottom:calc(44% + var(--k) * 15%);transform:translateX(-50%);z-index:8;display:flex;align-items:center;gap:3px;padding:1px 6px 1px 4px;border-radius:99px;cursor:pointer;white-space:nowrap;font:700 clamp(9px,1.15vh,12px) var(--f-label),serif;color:#2a1606;background:linear-gradient(180deg,#bfe8ff,#5aa8e0);box-shadow:0 0 0 1.5px #120a06;filter:grayscale(.6) brightness(.8);transition:transform .15s}
+.fus-b i{font-style:normal;font-size:1.2em}.fus-b em{font-style:normal;min-width:1.3em;text-align:center;border-radius:99px;background:#0a2a4a;color:#cfeaff}
+.fus-b.ok{filter:drop-shadow(0 0 6px #7fd0ff);animation:fuspulse 1.2s ease-in-out infinite alternate}.fus-b:hover{transform:translateX(-50%) scale(1.1)}
+@keyframes fuspulse{from{box-shadow:0 0 0 1.5px #120a06}to{box-shadow:0 0 0 1.5px #120a06,0 0 12px 2px #7fd0ff}}
 @keyframes tfpulse{from{transform:scale(1)}to{transform:scale(1.12)}}
 .kip b small{font-size:.6em;color:#9fd8ff}.kip .kic{display:block;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e0f6ff,#2a8ad8);box-shadow:0 0 0 1px #0a1a2a}.kip .kic.off{opacity:.2}
 .pwb-cost.kic{background:radial-gradient(circle at 35% 30%,#e0f6ff,#2a8ad8)}.pwb-cost.kic b{font:700 18px var(--f-disp),serif;color:#0a1a2a}

@@ -245,17 +245,18 @@ const DEFAULT_CARD_LIST = [
   ['tk_sold', 'Soldat de Freezer', 0, 'd_fre', 1, 1, '', []],
   // Saiyans : transformations par paliers (payées en ki)
   ['d_raditz', 'Raditz', 1, 'd_sai', 2, 2, '', [{ k:'tf_self', a:1, h:1 }]],
-  ['d_goten', 'Goten', 1, 'd_sai', 1, 3, '', [{ k:'tf', st:[{ c:2, a:2, h:1, nm:'Super Saiyan' }] }]],
+  ['d_goten', 'Goten', 1, 'd_sai', 1, 3, '', [{ k:'tf', st:[{ c:2, a:2, h:1, nm:'Super Saiyan' }] }, { k:'fus', p:'d_trunks', r:'d_gotenks' }]],
   ['d_nappa', 'Nappa', 2, 'd_sai', 3, 3, '', [{ k:'bc_summon', card:'tk_saiba', n:1 }]],
   ['d_bardock', 'Bardock', 2, 'd_sai', 3, 2, '', [{ k:'tf', st:[{ c:3, a:3, h:2, nm:'Super Saiyan' }], cond:'colere' }]],
-  ['d_trunks', 'Trunks', 3, 'd_sai', 3, 3, '', [{ k:'tf', st:[{ c:3, a:2, h:2, nm:'Super Saiyan' }, { c:4, a:3, h:3, nm:'Super Trunks' }] }]],
+  ['d_trunks', 'Trunks', 3, 'd_sai', 3, 3, '', [{ k:'tf', st:[{ c:3, a:2, h:2, nm:'Super Saiyan' }, { c:4, a:3, h:3, nm:'Super Trunks' }] }, { k:'fus', p:'d_goten', r:'d_gotenks' }]],
   ['d_gohan', 'Gohan', 3, 'd_sai', 2, 4, '', [{ k:'tf', st:[{ c:3, a:3, h:2, nm:'Super Saiyan' }, { c:5, a:4, h:4, kw:'w', nm:'Gohan ultime' }], cond:'colere' }]],
-  ['d_vegeta', 'Vegeta', 4, 'd_sai', 4, 4, '', [{ k:'tf_self', a:2, h:2 }, { k:'tf', st:[{ c:4, a:3, h:3, nm:'Super Saiyan' }, { c:6, a:4, h:4, nm:'Super Saiyan Blue' }] }]],
+  ['d_vegeta', 'Vegeta', 4, 'd_sai', 4, 4, '', [{ k:'tf_self', a:2, h:2 }, { k:'tf', st:[{ c:4, a:3, h:3, nm:'Super Saiyan' }, { c:6, a:4, h:4, nm:'Super Saiyan Blue' }] }, { k:'fus', p:'d_goku', r:'d_gogeta', r2:'d_vegetto' }]],
   ['d_roivegeta', 'Roi Vegeta', 4, 'd_sai', 4, 5, '', [{ k:'pas_tfc', n:1 }]],
-  ['d_goku', 'Goku', 5, 'd_sai', 5, 6, '', [{ k:'tf', st:[{ c:4, a:3, h:3, nm:'Super Saiyan' }, { c:6, a:4, h:4, nm:'Super Saiyan 2' }, { c:8, a:6, h:6, kw:'w', nm:'Super Saiyan 3' }] }]],
-  ['d_broly', 'Broly', 5, 'd_sai', 7, 6, '', [{ k:'die_self', tb:'', a:1, h:1 }, { k:'tf', st:[{ c:6, a:6, h:6, nm:'Super Saiyan légendaire' }], cond:'colere' }]],
-  ['d_gogeta', 'Gogeta', 6, 'd_sai', 8, 8, '', [{ k:'eot_tfbuff', a:2, h:2 }]],
-  ['d_vegetto', 'Vegetto', 6, 'd_sai', 8, 7, '', [{ k:'tf_self', a:2, h:2 }, { k:'tf', st:[{ c:6, a:6, h:6, kw:'s', nm:'Vegetto Blue' }] }]],
+  ['d_goku', 'Goku', 5, 'd_sai', 5, 6, '', [{ k:'tf', st:[{ c:4, a:3, h:3, nm:'Super Saiyan' }, { c:6, a:4, h:4, nm:'Super Saiyan 2' }, { c:8, a:6, h:6, kw:'w', nm:'Super Saiyan 3' }] }, { k:'fus', p:'d_vegeta', r:'d_gogeta', r2:'d_vegetto' }]],
+  ['d_broly', 'Broly', 6, 'd_sai', 8, 7, '', [{ k:'die_self', tb:'', a:1, h:1 }, { k:'tf', st:[{ c:6, a:6, h:6, nm:'Super Saiyan légendaire' }], cond:'colere' }]],
+  ['d_gogeta', 'Gogeta', 6, 'd_sai', 8, 8, '', [{ k:'fusres', a:'d_goku', b:'d_vegeta', how:'Danse de fusion' }, { k:'eot_tfbuff', a:2, h:2 }]],
+  ['d_gotenks', 'Gotenks', 4, 'd_sai', 4, 6, '', [{ k:'fusres', a:'d_goten', b:'d_trunks', how:'Danse de fusion' }, { k:'tf', st:[{ c:4, a:4, h:4, nm:'Super Saiyan 3' }] }]],
+  ['d_vegetto', 'Vegetto', 6, 'd_sai', 8, 7, '', [{ k:'fusres', a:'d_goku', b:'d_vegeta', how:'Boucles Potara' }, { k:'tf_self', a:2, h:2 }, { k:'tf', st:[{ c:6, a:6, h:6, kw:'s', nm:'Vegetto Blue' }] }]],
   // Terriens : soutien (bonus, ki, techniques) jusqu'au Genkidama
   ['d_yamcha', 'Yamcha', 1, 'd_ter', 2, 1, '', [{ k:'bc_buff_rand', a:1, h:1, tb:'' }]],
   ['d_chaozu', 'Chaozu', 1, 'd_ter', 1, 2, '', [{ k:'eot_ki', n:1 }]],
@@ -273,13 +274,13 @@ const DEFAULT_CARD_LIST = [
   ['d_dende', 'Dende', 1, 'd_nam', 1, 2, '', [{ k:'mentor', a:0, h:2, n:1 }]],
   ['d_tambourine', 'Tambourine', 2, 'd_nam', 3, 2, '', [{ k:'atk_self', a:1, h:0 }]],
   ['d_moori', 'Moori', 2, 'd_nam', 1, 4, '', [{ k:'mentor', a:1, h:1, n:1 }]],
-  ['d_nail', 'Nail', 3, 'd_nam', 3, 4, 't', [{ k:'mentor', a:1, h:2, n:1 }]],
-  ['d_kami', 'Kami-sama', 3, 'd_nam', 2, 5, '', [{ k:'mentor', a:1, h:1, n:2 }]],
+  ['d_nail', 'Nail', 3, 'd_nam', 3, 4, 't', [{ k:'mentor', a:1, h:2, n:1 }, { k:'fus', p:'d_piccolo', r:'d_piccolof' }]],
+  ['d_kami', 'Kami-sama', 3, 'd_nam', 2, 5, '', [{ k:'mentor', a:1, h:1, n:2 }, { k:'fus', p:'d_piccolo', r:'d_piccolof' }]],
   ['d_slug', 'Slug', 4, 'd_nam', 5, 5, '', [{ k:'eot_self', a:2, h:2 }]],
   ['d_daimao', 'Roi Piccolo', 4, 'd_nam', 4, 4, '', [{ k:'bc_summon', card:'d_tambourine', n:1 }]],
   ['d_guru', 'Grand Doyen', 5, 'd_nam', 2, 8, '', [{ k:'mentor', a:2, h:2, n:2 }]],
-  ['d_piccolo', 'Piccolo', 5, 'd_nam', 5, 6, '', [{ k:'mentor', a:2, h:2, n:1 }, { k:'tf', st:[{ c:5, a:4, h:4, nm:'Super Namek' }] }]],
-  ['d_piccolof', 'Piccolo fusionné', 6, 'd_nam', 7, 8, '', [{ k:'eot_mentor_all' }]],
+  ['d_piccolo', 'Piccolo', 5, 'd_nam', 5, 6, '', [{ k:'mentor', a:2, h:2, n:1 }, { k:'tf', st:[{ c:5, a:4, h:4, nm:'Super Namek' }] }, { k:'fus', p:'d_nail', r:'d_piccolof', p2:'d_kami' }]],
+  ['d_piccolof', 'Piccolo fusionné', 6, 'd_nam', 7, 8, '', [{ k:'fusres', a:'d_piccolo', b:'d_nail', b2:'d_kami', how:'Fusion namek' }, { k:'eot_mentor_all' }]],
   // Armée de Freezer : les soldats tombent, les officiers grandissent
   ['d_appule', 'Appule', 1, 'd_fre', 2, 1, '', [{ k:'dr_summon', card:'tk_sold', n:1 }]],
   ['d_cui', 'Cui', 1, 'd_fre', 1, 1, '', [{ k:'bc_summon', card:'tk_sold', n:1 }]],
@@ -587,7 +588,7 @@ function rebuildCatalog() {
   for (const k in C) delete C[k];
   Object.keys(CARDS).sort().forEach(id => C[id] = deriveCard(CARDS[id]));
   for (const id in C) C[id].val = cardValue(C[id]).total;
-  POOL_IDS = Object.keys(C).filter(id => C[id].t > 0 && !C[id].off && !C[id].comp && (C[id].tr === 'neu' || TRIBES[C[id].tr].on !== false));
+  POOL_IDS = Object.keys(C).filter(id => C[id].t > 0 && !FUS_ONLY.includes(id) && !C[id].off && !C[id].comp && (C[id].tr === 'neu' || TRIBES[C[id].tr].on !== false));
   CAT_REV = hashStr(JSON.stringify([SET, CARDS]));
   if (typeof rebuildArt === 'function') rebuildArt();
 }
@@ -727,6 +728,8 @@ const ET = {
   rank:{ tr:'rank', l:'Rang (Genin → Jônin)', ps:['a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Rang : monte en grade à chaque victoire, ${sign(e.a * k, e.h * k)} (Chûnin, Jônin).` },
   soc_team:{ tr:'soc', l:'Équipe de 3', ps:['a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Équipe de 3 : entouré de son clan, l'équipe gagne ${sign(e.a * k, e.h * k)}.` },
   combo_kg:{ tr:'combo', l:'Kekkei genkai', ps:['a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k, id) => `Kekkei genkai : à chaque combo, ${sign(e.a * k, e.h * k)} par élément qui est une de ses natures.` },
+  fus:{ tr:'fus', l:'Fusion', ps:[], w:0, mag:() => 0, txt:e => `Fusion : avec ${[e.p, e.p2].filter(Boolean).map(x => CD(x).n).join(' ou ')} → ${[e.r, e.r2].filter(Boolean).map(x => CD(x).n).join(' ou ')} (bouton ✚, ki).` },
+  fusres:{ tr:'fus', l:'Né d\'une fusion', ps:[], w:0, mag:() => 0, txt:e => `${e.how} : naît de ${CD(e.a).n} + ${[e.b, e.b2].filter(Boolean).map(x => CD(x).n).join(' ou ')} (stats additionnées). Pas en vente.` },
   tf_self:{ tr:'tfo', l:'Rivalité : grandir quand un allié se transforme', ps:['a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Rivalité : quand un autre de tes serviteurs se transforme, gagne ${sign(e.a * k, e.h * k)}.` },
   pas_tfc:{ tr:'pas', l:'Transformations moins chères', ps:['n'], w:1.5, mag:e => e.n * 4, txt:(e, k) => `Tes transformations coûtent ${e.n * k} ki de moins.` },
   pas_tkc:{ tr:'pas', l:'Techniques moins chères', ps:['n'], w:1.5, mag:e => e.n * 4, txt:(e, k) => `Tes techniques coûtent ${e.n * k} ki de moins.` },
@@ -875,6 +878,29 @@ function runRecruit0(G, p, m, e, ctx) {
 }
 // ----- univers Dragon Ball : ki, absorption, transformations, zenkai -----
 const KI_MAX = 15;
+// fusions Dragon Ball : deux personnages sur le plateau + du ki → une seule carte (stats additionnées + bonus)
+const DB_FUS = [
+  { id:'gogeta', a:'d_goku', b:'d_vegeta', r:'d_gogeta', c:5, bo:3, nm:'Danse de fusion' },
+  { id:'vegetto', a:'d_goku', b:'d_vegeta', r:'d_vegetto', c:5, bo:3, nm:'Boucles Potara' },
+  { id:'gotenks', a:'d_goten', b:'d_trunks', r:'d_gotenks', c:3, bo:2, nm:'Danse de fusion' },
+  { id:'picnail', a:'d_piccolo', b:'d_nail', r:'d_piccolof', c:3, bo:2, nm:'Fusion namek' },
+  { id:'pickami', a:'d_piccolo', b:'d_kami', r:'d_piccolof', c:3, bo:2, nm:'Fusion namek' },
+];
+const FUS_ONLY = ['d_gogeta', 'd_vegetto', 'd_gotenks'];
+// partenaire de fusion d'un serviteur sur le plateau (le plus proche)
+function fusPartner(p, m, F) { const o = F.a === m.c ? F.b : F.b === m.c ? F.a : null; if (!o) return null; const i = p.bd.indexOf(m); return p.bd.filter(x => x !== m && x.c === o).sort((x, y) => Math.abs(p.bd.indexOf(x) - i) - Math.abs(p.bd.indexOf(y) - i))[0] || null; }
+const fusOpts = (p, m) => m ? DB_FUS.filter(F => fusPartner(p, m, F)) : [];
+function doFusion(G, p, m, F) {
+  const o = fusPartner(p, m, F); if (!o) return false;
+  const i = Math.min(p.bd.indexOf(m), p.bd.indexOf(o)), g = m.g || o.g ? 1 : 0, nm = mk(F.r, g), k = g ? 2 : 1;
+  nm.a = m.a + o.a; nm.h = m.h + o.h; nm.bn = (m.bn || []).concat(o.bn || []);
+  for (const f of (m.f || '') + (o.f || '')) addF(nm, f);
+  const x = (m.x || []).concat(o.x || []); if (x.length) nm.x = x;
+  [m, o].forEach(v => { p.bd.splice(p.bd.indexOf(v), 1); toPool(G, v); });
+  p.bd.splice(i, 0, nm);
+  withSrc(F.nm + ' · ' + CD(F.r).n, () => buff(nm, F.bo * k, F.bo * k));
+  qAdd(p, 'fusions'); checkTriple(G, p); return true;
+}
 const GINYU = ['d_guldo', 'd_recoome', 'd_burter', 'd_jeice'];
 const pasN = (p, k) => (p.bd || []).reduce((s, m) => s + fxOf(m, 'pas').filter(e => e.k === k).reduce((a, e) => a + e.n * mult(m), 0), 0);
 const kiCost = (p, S) => Math.max(0, (S.kc || 0) - pasN(p, 'pas_tkc') - ((htr(p, 'ptkc') || {}).n || 0));
@@ -1504,6 +1530,7 @@ const OPS = {
   },
   buysp(G, p, a) { const k = a && +a.k === 1 ? 'sp2' : 'sp', it = p[k], S = it && SPELLS[it.sp]; const c = S ? spCost(p, S) : 0; if (!S || p.g < c || p.hd.length >= 10) return false; p.g -= c; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(it); p[k] = null; return true; },
   med(G, p, a) { const m = p.bd[a.i]; if (!m || !inMechAny(G, 'ki')) return false; m.med = m.med ? 0 : 1; return true; },
+  fuse(G, p, a) { const m = p.bd[a.i], F = DB_FUS.find(f => f.id === a.f); if (!m || !F || !inMechAny(G, 'ki') || (p.ki || 0) < F.c || !fusPartner(p, m, F)) return false; p.ki -= F.c; qAdd(p, 'kiSpent', F.c); return doFusion(G, p, m, F); },
   tf(G, p, a) { const m = p.bd[a.i]; if (!m) return false; const c = tfCost(p, m); if (c == null || (p.ki || 0) < c) return false; p.ki -= c; qAdd(p, 'kiSpent', c); doTransform(p, m); checkTriple(G, p); return true; },
   ckm(G, p, a) { const m = p.bd[a.i]; if (!m || m.awk) return false; const md = (CD(m.c).fxAll || []).find(x => x.k === 'ckm'); if (!md || (p.ck || 0) < ckmCost(p, md)) return false;
     p.ck -= ckmCost(p, md); m.awk = 1; qAdd(p, 'awk'); withSrc('Éveil · ' + CD(m.c).n, () => { buff(m, md.c * mult(m), md.c * mult(m)); runMode(G, p, m, md.m); }); checkTriple(G, p); return true; },
@@ -1666,7 +1693,7 @@ function hostApply(pid, a) {
   const p = G.ps[pid]; if (!p || !p.al) return;
   if (a.t === 'hero') { if (G.ph === 'hero' && !p.hero && p.ho.includes(a.h)) { p.hero = a.h; broadcast(); } return; }
   if (a.t === 'ckm') { if (G.ph === 'recruit' && OPS.ckm(G, p, a)) broadcast(); return; }
-  if (a.t === 'med' || a.t === 'tf') { if (G.ph === 'recruit' && OPS[a.t](G, p, a)) broadcast(); return; }
+  if (a.t === 'med' || a.t === 'tf' || a.t === 'fuse') { if (G.ph === 'recruit' && OPS[a.t](G, p, a)) broadcast(); return; }
   if (a.t === 'hroll') { const i = +a.i; if (G.ph === 'hero' && !p.hero && (p.hrr || 0) > 0 && p.ho[i]) { const nh = heroReroll(G, p); if (nh) { p.ho[i] = nh; p.hrr--; broadcast(); } } return; }
   if (G.ph !== 'recruit' || !OPS[a.t]) return;
   if (a.t !== 'rdy' && p.rdy) p.rdy = false;
@@ -1736,6 +1763,7 @@ function aiTurn(G, p) {
   p.bd.sort((x, y) => front(x) - front(y) || y.a - x.a);
   aiPlayAll(G, p); aiSpells(G, p);
   if (inMechAny(G, 'ki')) {
+    for (let g = 0; g < 3; g++) { let done = false; for (let i = 0; i < p.bd.length && !done; i++) { const F = fusOpts(p, p.bd[i]).find(F => (p.ki || 0) >= F.c); if (F) done = OPS.fuse(G, p, { i, f:F.id }); } if (!done) break; }
     for (let g = 0; g < 7; g++) { const i = p.bd.findIndex(m => { const c = tfCost(p, m); return c != null && (p.ki || 0) >= c; }); if (i < 0) break; OPS.tf(G, p, { i }); }
     const want = (p.bd.some(m => tfOf(m) && tfCost(p, m) != null) || p.hd.some(x => x.sp && SPELLS[x.sp] && SPELLS[x.sp].kc > (p.ki || 0)) || htr(p, 'pmed')) && p.bd.length >= 4;
     p.bd.forEach(m => { m.med = 0; });
