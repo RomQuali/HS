@@ -455,7 +455,7 @@ function gameH() {
         <div class="keeper">${medal('up', 'up', me.t >= 6 ? 'Niveau max' : 'Améliorer', me.t >= 6 ? null : me.uc, !canAct || me.t >= 6 || me.g < me.uc)}
           <div class="kc"><span class="face kf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-h-keeper" width="100" height="100"/></svg></span><div class="kname"><b>Bastien, tavernier</b><span class="lv">${tierStars(me.t)}</span></div></div>
           <div class="kr">${medal('roll', 'roll', 'Actualiser', freeRoll ? 0 : 1, !canAct || (me.g < 1 && !freeRoll))}${medal('frz', 'frz', me.fz ? 'Gelée' : 'Geler', null, !canAct, me.fz)}</div></div>
-        <div class="line counter-line">${me.sh.length ? me.sh.map((m, i) => tokenH(m, 'sh', i, { drag:canAct, trip:(own[m.c] || 0) >= 2, pair:(own[m.c] || 0) === 1 })).join('') : '<p class="hint">La taverne est vide. Actualise pour faire entrer du monde.</p>'}${me.sp || me.sp2 ? `<div class="shelf" title="Étagère à sorts"><span class="shelf-l">Sort${me.sp2 ? 's' : ''}</span>${me.sp ? spellTokenH(me.sp, 'ss', 0, { drag:canAct }) : ''}${me.sp2 ? spellTokenH(me.sp2, 'ss', 1, { drag:canAct }) : ''}</div>` : ''}</div>
+        <div class="line counter-line">${me.sh.length ? me.sh.map((m, i) => tokenH(m, 'sh', i, { drag:canAct, trip:(own[m.c] || 0) >= 2, pair:(own[m.c] || 0) === 1 })).join('') : '<p class="hint">La taverne est vide. Actualise pour faire entrer du monde.</p>'}${me.sp || me.sp2 ? `<div class="shelf${me.sp2 ? ' two' : ''}" title="Étagère à sorts"><span class="shelf-l">Sort${me.sp2 ? 's' : ''}</span><span class="shelf-row">${me.sp ? spellTokenH(me.sp, 'ss', 0, { drag:canAct }) : ''}${me.sp2 ? spellTokenH(me.sp2, 'ss', 1, { drag:canAct }) : ''}</span></div>` : ''}</div>
         ${d.trs ? `<span class="trs ktrs">${d.trs.map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span>` : ''}</section>`;
       boardRow = me.bd.length ? me.bd.map((m, i) => tokenH(m, 'bd', i, { drag:canAct })).join('') : '<p class="hint">Joue tes serviteurs ici. Ils attaquent de gauche à droite.</p>';
     }
@@ -2817,3 +2817,4 @@ html.lite .ckm-b.ok{animation:none}
 @keyframes mnAwk{50%{filter:drop-shadow(0 0 10px #bfe8ff) drop-shadow(0 0 22px rgba(80,170,255,.95))}}
 html.lite .mn.mn-awk .mn-svg{animation:none}
 `; document.head.appendChild(st); })();
+(function(){ const st = document.createElement('style'); st.textContent = `.shelf-row{display:flex;gap:clamp(6px,1cqi,14px);align-items:flex-start}.shelf-l{justify-self:center}`; document.head.appendChild(st); })();
