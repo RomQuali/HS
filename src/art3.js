@@ -389,5 +389,5 @@ Object.assign(ART, {
   ART.tk_shark = () => beast({ sp:'wolf', col:'#3a6a9a', belly:'#cfe4f4', eye:'#e8f4ff', angry:1, fangs:1 });
   ART.tk_puppet = () => robot({ col:'#a8744a', head:'round', eye:'duo', mouth:'line' });
   ART.tk_bijuu = () => beast({ sp:'wolf', col:'#6a4ab8', belly:'#c8b8ff', eye:'#ffe14a', glow:'#ffe14a', angry:1, fangs:1 });
-  for (const h of ['chiyo', 'sasori', 'rasa', 'karui', 'han', 'mu']) { const id = 'nh_' + h, H0 = typeof HEROES !== 'undefined' && HEROES[id]; if (H0 && !HART[id]) { const f = gen(id, H0.pv || H0.fam[0], true); if (f) HART[id] = f; } }
+  for (const h of ['chiyo', 'sasori', 'rasa', 'karui', 'han', 'mu', 'kakuzu']) { const id = 'nh_' + h, H0 = typeof HEROES !== 'undefined' && HEROES[id]; if (H0 && !HART[id]) { const f = gen(id, H0.pv || H0.fam[0], true); if (f) HART[id] = f; } }
 })();
