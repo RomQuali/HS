@@ -319,13 +319,13 @@ const NJ_VIC = { n_feu:'🔥', n_vent:'🏜️', n_eau:'🌫️', n_foudre:'⚡'
 // fiche de l'univers Ninja : cinq règles courtes (le détail est sur l'écran du héros)
 function ninjaCardH() {
   const row = (ic, col, t, x) => `<span class="nj-r"><i class="nj-i" style="--c:${col}">${ic}</i><span><b>${t}</b><small>${x}</small></span></span>`;
-  const vils = Object.keys(NJ_STYLE).map(t => `<i class="nj-v" style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${NJ_VIC[t]} <b>${esc(((TRIBES[t] || {}).n || t).replace(/^Village (de la |du |de l')/, ''))}</b> ${NJ_STYLE[t]}</i>`).join('');
-  return `<span class="ban-law nj-law"><b>Loi · Chakra et réservoir</b>
-    ${row(ckMarkH('', 'nj-ck'), '#1e3a5a', 'Chakra', 'Chaque ninja sur ton plateau te donne 1 chakra par tour (10 au plus).')}
-    ${row('<span class="nj-tx">✦</span>', '#3a2a5a', 'Sorts', 'Achetés 1 or à la taverne, lancés avec du chakra. Un 2e emplacement de sort s\'ouvre au niveau 4.')}
-    ${row('<span class="rl-scroll"><i style="background:#ff7a2a"></i><i style="background:#4ab0e8"></i></span>', '#2a3a5a', 'Réservoir et combos', 'Deux sorts de village ou pouvoirs de héros remplissent le réservoir : leur mélange déclenche un combo, plus fort à chaque palier de taverne.')}
-    ${row('<span class="nj-tx">💧</span>', '#1e4a5a', 'Éveil', 'Paie une fois le chakra d\'un serviteur : il gagne des stats et son effet se répète gratuitement à chaque tour.')}
-    ${row('<span class="nj-tx">⛩️</span>', '#5a3a12', 'Cinq villages', 'Chacun a son style, du début à la fin de partie. Les héros ne sont d\'aucun village : chacun renforce une mécanique (jetons, sceaux, pacte, sacrifice…).')}
+  const vils = Object.keys(NJ_STYLE).map(t => `<i class="nj-v" style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${NJ_VIC[t]} <b>${esc((TRIBES[t] || {}).n || t)}</b> ${NJ_STYLE[t]}</i>`).join('');
+  return `<span class="ban-law nj-law"><b>Loi · Chakra, réservoir et éveil</b>
+    ${row(ckMarkH('', 'nj-ck'), '#1e3a5a', 'Chakra et éveil', 'Chaque ninja de ton plateau donne 1 chakra par tour (10 au plus). Paie une fois la goutte bleue d\'un serviteur : il s\'éveille et son effet revient à chaque tour.')}
+    ${row('<span class="rl-scroll"><i style="background:#ff7a2a"></i><i style="background:#4ab0e8"></i></span>', '#2a3a5a', 'Sorts et réservoir', 'Achète des sorts (1 or) et lance-les au chakra. Deux sorts de village remplissent le réservoir : combo des deux villages, ou ultime si c\'est le même.')}
+    ${row('<span class="nj-tx">⚔</span>', '#5a2a3a', 'Héros', 'Aucun héros n\'a de village : chacun renforce une mécanique (jetons, sceaux, pacte…) et a une quête. Accomplie, elle éveille le héros : nouveau pouvoir.')}
+    ${row('<span class="nj-tx">✦</span>', '#4a3a12', 'Triples', 'Trois exemplaires d\'une créature, jetons compris, fusionnent : stats additionnées et récompense.')}
+    ${row('<span class="nj-tx">⛩️</span>', '#5a3a12', 'Cinq villages', 'Chacun a son style, du début à la fin de partie.')}
     <span class="nj-vs">${vils}</span>
   </span>`;
 }
@@ -337,7 +337,7 @@ function univPickH(sel, edit, actions) {
     const k = (SET.univ || []).indexOf(u), a = ch.us.includes(u.n), L = univLook(u), M = u.mech && u.mech !== 'none' ? MECHS[u.mech] : null;
     const heroes = Object.keys(HEROES).filter(h => heroFam(h).some(t => u.tribes.includes(t)));
     const fams = u.tribes.filter(t => on.includes(t));
-    return `<button type="button" class="ban${a ? ' on' : ''}" style="--uc:${esc(L.col)}" ${edit ? `data-act="univ" data-u="${k}"` : 'disabled'} aria-pressed="${a}">
+    return `<button type="button" class="ban${a ? ' on' : ''}${u.mech === 'chakra' ? ' ban-nj' : ''}" style="--uc:${esc(L.col)}" ${edit ? `data-act="univ" data-u="${k}"` : 'disabled'} aria-pressed="${a}">
       ${a ? '<span class="ban-rib">Levé</span>' : ''}
       <span class="ban-hd"><span class="ban-em">${icon(L.ic)}</span><span class="ban-t"><b>${esc(u.n)}</b>${L.lore ? `<i>${esc(L.lore)}</i>` : ''}</span></span>
       ${u.mech === 'chakra' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${ninjaCardH()}</span></span>` : M ? `<span class="ban-law"><b>Loi · ${esc(M.n)}</b><small>${esc(M.d)}</small></span>` : ''}
@@ -877,19 +877,36 @@ function detailH(canAct) {
 
 // choix du héros : trois médaillons, on en met un en avant puis on le porte
 /* ===== choix du héros (univers Ninja) : héros à gauche, règles illustrées en onglets à droite ===== */
-const RULE_TABS = [['tour', 'Le tour et le chakra'], ['sort', 'Sorts et réservoir']];
+const RULE_TABS = [['tour', 'Le tour'], ['ck', 'Chakra et éveil'], ['sort', 'Sorts et réservoir'], ['hero', 'Héros et quêtes'], ['vil', 'Villages']];
 function ruleTabH(k) {
   const el = e => `<i class="rl-el" style="--c:${ELS[e].col}"><svg viewBox="-12 -12 24 24">${EL_ICON[e]}</svg></i>`;
   const step = (n, t, x, vis) => `<li class="rl-step"><span class="rl-n">${n}</span><span class="rl-v">${vis || ''}</span><span><b>${t}</b><small>${x}</small></span></li>`;
   const coin = '<i class="rl-coin"></i>', ck = ckMarkH('', 'rl-ck');
   switch (k) {
     case 'tour': return `<ol class="rl-steps">
-      ${step(1, 'Recrute', `Achète des ninjas avec ${coin} l'or, monte ta taverne pour en trouver de plus forts. Trois exemplaires d'une même créature (jetons compris) forment un <b>triple</b> : stats additionnées et récompense.`, faceH('art-n_f1'))}
-      ${step(2, 'Gagne du chakra', `Au début de chaque tour, chaque ninja de ton plateau te donne 1 ${ck} chakra, jusqu'à 10. Le chakra non dépensé reste d'un tour à l'autre.`, ck)}
-      ${step(3, 'Éveille tes serviteurs', 'La goutte bleue au-dessus d\'un serviteur indique son coût. Paie-le une seule fois : il gagne autant d\'attaque et de vie, puis son effet se déclenche gratuitement au début de chaque tour (une aura brille autour de lui).', '<span class="rl-pow">💧</span>')}
-      ${step(4, 'Lance sorts et pouvoir', 'Les sorts se paient au chakra ; le pouvoir du héros en or, en chakra, ou il est passif. Voir l\'onglet « Sorts et réservoir ».', '<span class="rl-pow">✦</span>')}
-      ${step(5, 'Combat', 'Les effets de Début du combat des deux camps (et les dégâts préparés par ton héros) se déclenchent tous avant qu\'une créature ne meure. Puis tes serviteurs affrontent ceux d\'en face : chaque attaquant subit aussi l\'attaque du défenseur. Le perdant prend des dégâts à son héros.', '<span class="rl-vs">VS</span>')}
+      ${step(1, 'Recrute', `Achète des ninjas à la taverne (3 ${coin}), place-les sur ton plateau, monte de niveau pour en trouver de plus forts. Tu gagnes un peu plus d'or à chaque manche.`, faceH('art-n_f1'))}
+      ${step(2, 'Triples', 'Trois exemplaires d\'une même créature (jetons compris) fusionnent en une version dorée : stats additionnées, et une carte de niveau supérieur en récompense.', '<span class="rl-pow">✦</span>')}
+      ${step(3, 'Chakra, sorts, pouvoir', 'Dépense ton chakra : éveille tes serviteurs, lance tes sorts. Utilise le pouvoir de ton héros (en or, en chakra, ou passif).', ck)}
+      ${step(4, 'Début du combat', 'Les effets de Début du combat des deux camps et les dégâts préparés se déclenchent tous avant qu\'une créature ne meure.', '<span class="rl-pow">⚡</span>')}
+      ${step(5, 'Combat', 'Tes serviteurs attaquent de gauche à droite ; chaque attaquant subit aussi l\'attaque du défenseur. Le perdant prend des dégâts à son héros. Le dernier héros debout gagne.', '<span class="rl-vs">VS</span>')}
     </ol>`;
+    case 'ck': return `<div class="rl-p">
+      <p><b>Chakra</b> : au début de chaque tour, chaque ninja de ton plateau te donne 1 ${ck}, jusqu'à 10. Le chakra non dépensé reste d'un tour à l'autre.</p>
+      <p><b>Éveil d'un serviteur</b> : la goutte bleue au-dessus de certains serviteurs indique un coût. Paie-le <b>une seule fois</b> : le serviteur gagne autant d'attaque et de vie, puis son effet d'éveil se déclenche <b>gratuitement au début de chaque tour</b>. Une aura brille autour de lui.</p>
+      <ul class="rl-ul"><li>Konoha : dégâts au prochain combat.</li><li>Suna : invoque un Kugutsu.</li><li>Kiri : Bouclier divin à un allié.</li><li>Kumo : se renforce.</li><li>Iwa : renforce la vie d'un allié.</li></ul>
+      <p>Le chakra paie aussi les <b>sorts</b> et le pouvoir de certains héros.</p></div>`;
+    case 'hero': {
+      const mcs = Object.entries(NJ_MC).map(([k, [n, c]]) => `<i style="--c:${c}">${esc(n)}</i>`).join('');
+      return `<div class="rl-p">
+      <p>Les héros n'appartiennent à <b>aucun village</b> : chacun renforce une <b>mécanique</b>, quel que soit le village de tes serviteurs.</p>
+      <div class="rl-mcs">${mcs}</div>
+      <ul class="rl-ul"><li><b>Pouvoir</b> : payé en or, en chakra (goutte bleue), ou passif. Un pouvoir actif remplit aussi une moitié du réservoir avec ton village le plus présent.</li>
+      <li><b>Bonus</b> : beaucoup de héros ont un petit effet passif en plus, qui distingue les deux héros d'une même mécanique.</li>
+      <li><b>Quête d'éveil</b> : une barre sous ton portrait suit ta progression (ex. « Former un triple de jetons », « Lancer 6 sorts »).</li>
+      <li><b>Éveil du héros</b> : quête accomplie, le héros prend sa forme éveillée, son pouvoir est <b>remplacé par un nouveau</b> (utilisable aussitôt) et son portrait se pare d'un cadre doré.</li></ul>
+      <p class="rl-hint">Survole un héros pour voir son pouvoir, sa quête et son éveil.</p></div>`; }
+    case 'vil': return `<div class="rl-p">${chakraLawH(true)}
+      <ul class="rl-ul"><li><b>Pacte</b> : des invocateurs font apparaître des animaux (crapaud, limace, serpent, requin).</li><li><b>Sceaux</b> : +1/+1 par sceau ; à 5 sceaux, Bouclier divin.</li><li><b>Sacrifice</b> : des Râles d'agonie qui renforcent ou blessent.</li><li><b>Économie</b> : or au début du tour ou à la vente.</li><li><b>Sorts</b> : serviteurs qui grandissent quand tu lances un sort.</li></ul></div>`;
     case 'sort': {
       const chip = (a, b, F) => `<li class="rl-cb" style="--c:${F.col}"><span class="rl-cbe">${el(a)}${el(b)}</span><span><b>${esc(F.n)}</b><small>${esc(((COMBO_BD[F.n] || [''])[0]).replace(/^[^:]+ : /, ''))}</small></span></li>`;
       const vn = e => { const t = Object.keys(CLAN_EL).find(k => CLAN_EL[k] === e); return t && TRIBES[t] ? TRIBES[t].n : ELS[e].n; };
@@ -904,7 +921,6 @@ function ruleTabH(k) {
         <h4 class="rl-h4">Ultimes</h4><ul class="rl-cbs">${pur}</ul>
         <h4 class="rl-h4">Combos de deux villages</h4><ul class="rl-cbs">${fus}</ul>
       </div>`; }
-    case 'vil': return `<div class="rl-p">${chakraLawH(true)}</div>`;
     case 'tech': {
       const pairs = Object.entries(FUSIONS).map(([kk, F]) => { const [a, b] = kk.split('+'); return `<i style="--c:${F.col}">${el(a)}${el(b)}<b>${esc(F.n)}</b></i>`; }).join('') + Object.entries(PURES).map(([e, F]) => `<i style="--c:${F.col}">${el(e)}${el(e)}<b>${esc(F.n)}</b></i>`).join('');
       return `<div class="rl-p"><p>Chaque technique a une <b>nature</b> : ${['feu', 'vent', 'eau', 'foudre', 'terre'].map(el).join('')}. Celles de l'élément de ton héros coûtent <b>1 chakra de moins</b>.</p>
@@ -943,23 +959,34 @@ const rollInfoH = me => `<p class="h-rolls">${icon('roll')} Relances : ${Array.f
 function heroPickRowH(d, me) {
   const nin = (d.laws || []).some(l => l.k === 'chakra'), sel = me.ho.includes(V.heroSel) ? V.heroSel : null;
   const card = (h, i) => { const x = HEROES[h], on = h === sel, cid = compOf(h) || COMPANIONS[h], c = cid && C[cid], el = x.clan, vt = (x.fam || [])[0], col = x.mc && NJ_MC[x.mc] ? NJ_MC[x.mc][1] : el && ELS[el] ? ELS[el].col : TRIBES[vt] && TRIBES[vt].col || '#d8a84a';
-    const pw = x.pwn || (x.cost ? 'Pouvoir héroïque' : 'Pouvoir passif');
+    const pw = x.pwn || (x.cost ? 'Pouvoir héroïque' : 'Pouvoir passif'), cap = t => (t || '').charAt(0).toUpperCase() + (t || '').slice(1);
+    const main = (x.trx ? x.tx.replace(' Bonus : ' + x.trx, '') : x.tx || '').replace(/^Passif : /, '');
+    const gem = x.cost ? (nin && x.pay !== 'g' ? `<span class="hpc-gem ck">${ckMarkH(x.cost)}</span>` : `<span class="hpc-gem g"><b>${x.cost}</b></span>`) : '<span class="hpc-gem p"><b>∞</b></span>';
+    const A = x.aw;
+    const pcard = `<div class="hp-pc" role="tooltip">
+        ${gem}<div class="hpc-art">${powArtH(h)}</div>
+        ${x.mc && NJ_MC[x.mc] ? `<span class="hpc-mc" style="--c:${NJ_MC[x.mc][1]}">${esc(NJ_MC[x.mc][0])}</span>` : ''}
+        <b class="hpc-nm">${esc(pw)}</b><small class="hpc-kind">${x.cost ? (nin && x.pay !== 'g' ? 'Pouvoir · ' + x.cost + ' chakra' : 'Pouvoir · ' + x.cost + ' or') : 'Pouvoir passif'}</small>
+        <p class="hpc-tx">${esc(cap(main))}</p>
+        ${x.trx ? `<p class="hpc-bonus"><b>Bonus</b> ${esc(x.trx)}</p>` : ''}
+        ${x.q && A ? `<div class="hpc-q"><span class="hpc-qh"><b>Quête d'éveil</b> ${esc(x.q.tx)}</span>
+          <div class="hpc-aw">${HART[h + '_aw'] ? faceH('art-h-' + h + '_aw', 'face hpc-awf') : ''}<span><b>Éveil · ${esc(A.nm)}</b><small>${esc(A.tx)}</small></span></div></div>` : ''}
+        ${c && (!nin || NJ_COMP) ? `<span class="hp-cp">${faceH('art-' + cid)}<em>${esc(c.n)}</em></span>` : ''}
+      </div>`;
     return `<div class="hp-col${on ? ' on' : ''}" style="--c:${col};--k:${i}">
-      <button class="hp-card" data-act="hsel" data-h="${h}" aria-pressed="${on}" aria-label="${esc(x.n)}">
+      <button class="hp-card" data-act="hsel" data-h="${h}" aria-pressed="${on}" aria-label="${esc(x.n + ' : ' + pw + '. ' + main)}">
         ${rollH(me, i)}
         <span class="hp-port">${faceH('art-h-' + h)}</span>
         <span class="hp-hp">${+RU().hp || 40}</span>
         <span class="hp-nm">${esc(x.n)}</span>
         ${x.stars || x.diff ? `<span class="hp-st">${'★'.repeat(x.stars || x.diff)}</span>` : ''}
       </button>
-      <div class="hp-pow" data-hov="hero" tabindex="0"><span class="hp-pw-ico">${x.cost ? (nin && x.pay !== 'g' ? ckMarkH(x.cost) : `<b class="hp-gold">${x.cost}</b>`) : '<b>∞</b>'}</span>
-        <div class="hp-pw-tx"><b>${esc(pw)}</b>${x.q ? `<span class="hp-q" data-tip="${esc(x.aw.nm + ' : ' + x.aw.tx)}">Éveil · ${esc(x.q.tx)} → <b>${esc(x.aw.nm)}</b></span>` : ''}${nin && x.mc && NJ_MC[x.mc] ? `<em class="hp-vil">Mécanique · ${esc(NJ_MC[x.mc][0])}</em>` : ''}<small>${esc((t => t.charAt(0).toUpperCase() + t.slice(1))((x.tx || '').replace(/^Passif : /, '')))}</small>
-        ${c && (!nin || NJ_COMP) ? `<span class="hp-cp">${faceH('art-' + cid)}<em>${esc(c.n)}</em></span>` : ''}</div></div>
+      ${pcard}
       ${on ? `<button class="t-go hp-go" data-act="hero" data-h="${h}">Choisir</button>` : ''}
     </div>`; };
   const tab = V.ruleTab || 'tour', rules = nin && V.hpRules;
   return `<div class="ov hp-ov"><div class="hp-wrap">
-    <h2 class="hp-t">Choisis ton héros</h2>${rollInfoH(me)}
+    <h2 class="hp-t">Choisis ton héros</h2><p class="hp-sub">Survole un héros pour voir son pouvoir, clique pour le choisir.</p>${rollInfoH(me)}
     <div class="hp-row">${me.ho.map(card).join('')}</div>
     ${nin ? `<button class="btn sm hp-rb" data-act="hprules">${rules ? 'Masquer les règles' : 'Comment on joue ?'}</button>` : ''}
     ${rules ? `<div class="hpick-r hp-rules"><div class="rl-tabs" role="tablist">${RULE_TABS.map(([k, n]) => `<button role="tab" class="rl-tab${k === tab ? ' on' : ''}" data-act="rtab" data-k="${k}" aria-selected="${k === tab}">${n}</button>`).join('')}</div><div class="rl-body">${ruleTabH(tab)}</div></div>` : ''}
@@ -2539,6 +2566,33 @@ html.lite .awk-go{animation:none}
 .mn.cbhit{animation:cbhit 1.4s ease-out 1}
 @keyframes cbhit{0%{filter:brightness(1)}15%{filter:brightness(2) drop-shadow(0 0 14px var(--c1)) drop-shadow(0 0 22px var(--c2));transform:scale(1.12)}100%{filter:none;transform:none}}
 .fxtxt.cbinfo{box-shadow:0 0 0 1.5px currentColor,0 4px 14px rgba(0,0,0,.6)}
+.hp-sub{margin:-4px 0 0;font-size:clamp(12px,1.5vh,16px);color:#e8d6b0}
+.hp-col{position:relative}
+.hp-pc{position:absolute;left:calc(100% - 14px);top:6%;width:clamp(230px,17vw,330px);z-index:20;display:grid;justify-items:center;gap:6px;padding:46px 16px 16px;border-radius:18px;
+  background:linear-gradient(180deg,#3a2414,#1a0e07);box-shadow:0 0 0 3px #120a06,0 0 0 6px #c8963e,0 0 0 8px #120a06,0 18px 40px rgba(0,0,0,.7),0 0 30px color-mix(in srgb,var(--c) 45%,transparent);
+  opacity:0;transform:translateX(-14px) scale(.96);pointer-events:none;transition:opacity .18s,transform .18s;text-align:center}
+.hp-col:last-child .hp-pc{left:auto;right:calc(100% - 14px);transform:translateX(14px) scale(.96)}
+.hp-col:hover .hp-pc,.hp-col.on .hp-pc,.hp-col:focus-within .hp-pc{opacity:1;transform:none}
+.hp-row:hover .hp-col.on:not(:hover) .hp-pc{opacity:0}
+.hpc-art{position:absolute;top:-34px;left:50%;transform:translateX(-50%);width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 40% 35%,#5a3a20,#1a0e06);box-shadow:0 0 0 3px #120a06,0 0 0 6px #c8963e,0 0 18px color-mix(in srgb,var(--c) 60%,transparent)}
+.hpc-art .pwart{width:46px;height:46px}
+.hpc-gem{position:absolute;top:-14px;left:-10px;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;box-shadow:0 0 0 3px #120a06}
+.hpc-gem.g{background:radial-gradient(circle at 35% 30%,#ffe9a0,#c8901e)}.hpc-gem.g b{font:700 22px var(--f-disp),serif;color:#2a1606}
+.hpc-gem.ck{background:radial-gradient(circle at 35% 30%,#bfe6ff,#2a7ad8)}.hpc-gem.ck .ckm{width:34px;height:34px}
+.hpc-gem.p{background:#2a1a0e;box-shadow:0 0 0 3px #120a06,0 0 0 5px #c8963e}.hpc-gem.p b{color:#ffd86a;font-size:20px}
+.hpc-mc{font:700 11px var(--f-label),serif;text-transform:uppercase;letter-spacing:.08em;color:var(--c)}
+.hpc-nm{font:700 clamp(17px,2.1vh,22px) var(--f-disp),serif;color:#ffd86a;line-height:1.1}
+.hpc-kind{font-size:11.5px;color:#bfae8a;margin-top:-4px}
+.hpc-tx{margin:2px 0 0;font-size:clamp(13px,1.6vh,15.5px);line-height:1.4;color:#f6ead0}
+.hpc-bonus{margin:0;padding:6px 8px;border-radius:8px;background:rgba(255,216,106,.08);font-size:12.5px;line-height:1.35;color:#f1e4c6}.hpc-bonus b{color:#ffd86a;margin-right:4px}
+.hpc-q{width:100%;display:grid;gap:6px;padding-top:8px;border-top:1px solid rgba(242,193,78,.25);text-align:left}
+.hpc-qh{font-size:12.5px;line-height:1.35;color:#cfe4ff}.hpc-qh b{display:block;color:#9fd8ff;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.hpc-aw{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center;padding:6px;border-radius:10px;background:linear-gradient(90deg,rgba(255,200,90,.16),rgba(255,200,90,.04));box-shadow:inset 0 0 0 1px #c8963e}
+.hpc-aw .hpc-awf{width:46px;height:46px;border-radius:50%;box-shadow:0 0 0 2px #ffd86a,0 0 10px rgba(255,200,90,.6)}
+.hpc-aw b{display:block;color:#ffd86a;font-size:12.5px}.hpc-aw small{font-size:12px;line-height:1.3;color:#f1e4c6}
+@media (max-width:820px){ .hp-pc,.hp-col:last-child .hp-pc{position:fixed;left:12px;right:12px;bottom:74px;top:auto;width:auto;max-height:44vh;overflow:auto;transform:none;display:none;opacity:1;padding-top:16px;pointer-events:auto;z-index:60} .hp-col.on .hp-pc{display:grid} .hp-row:hover .hp-col.on:not(:hover) .hp-pc{opacity:1} .hp-pc .hpc-art{display:none} .hp-pc .hpc-gem{top:8px;left:8px} .hp-go{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:61} }
+.rl-mcs{display:flex;flex-wrap:wrap;gap:4px;margin:2px 0 10px}.rl-mcs i{font-style:normal;font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px;background:rgba(0,0,0,.35);color:var(--c);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 60%,transparent)}
+.rl-tabs{flex-wrap:wrap}
 .rl-body{overflow:auto;min-height:0;padding-right:4px;text-align:left}
 .rl-p p,.rl-ul li{font-size:13px;line-height:1.45;color:#f1e4c6;margin:0 0 8px}.rl-p b,.rl-ul b,.rl-step b{color:#ffd86a}
 .rl-ul{margin:0 0 8px;padding-left:18px}
