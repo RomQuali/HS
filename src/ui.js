@@ -1570,20 +1570,21 @@ function comboHitFx(e, cb, k, dv, born) {
   setTimeout(go, 750 + k * 140);
 }
 function buffFx(e, p, c) {
-  const da = c[0] - p[0], dh = c[1] - p[1], kwNew = (c[2] || '').split('').filter(k => !(p[2] || '').includes(k)), tmpNew = c[3] && c[3] !== p[3];
-  if (!(da > 0 || dh > 0 || kwNew.length || tmpNew)) return;
+  const da = c[0] - p[0], dh = c[1] - p[1], kwNew = (c[2] || '').split('').filter(k => !(p[2] || '').includes(k)), tmpNew = c[3] && c[3] !== p[3], fxNew = (c[6] || 0) > (p[6] || 0) && c[7];
+  if (!(da > 0 || dh > 0 || kwNew.length || tmpNew || fxNew)) return;
   // sources : ce qui a augmenté dans le journal des bonus
   const src = Object.keys(c[4] || {}).filter(k => { const a = c[4][k], b = (p[4] || {})[k] || [0, 0, '']; return a[0] > b[0] || a[1] > b[1] || a[2].length > b[2].length; });
-  const srcTx = src.length ? src.slice(0, 2).join(' · ') : (tmpNew && c[5] ? c[5] : '');
+  const srcTx = src.length ? src.slice(0, 2).join(' · ') : (tmpNew && c[5] ? c[5] : fxNew && c[7].src ? c[7].src : '');
   const [x, y] = fxCenter(e, .42);
   e.classList.remove('buffup'); void e.offsetWidth; e.classList.add('buffed', 'buffup'); setTimeout(() => e.classList.remove('buffup'), 1500);
   if (e.classList.contains('cp-tok') && (da > 0 || dh > 0 || kwNew.length)) cpBoostFx(e, da, dh);
   if (da > 0 || dh > 0) { fxRing(x, y, '#ffe39a', 1.2); fxBurst(x, y, 'buff', 16, 1.1); }
-  if (kwNew.length) { fxRing(x, y, '#cfe8ff', 1.4); fxBurst(x, y, 'magic', 14, 1); }
+  if (kwNew.length || fxNew) { fxRing(x, y, '#cfe8ff', 1.4); fxBurst(x, y, 'magic', 14, 1); }
   if (tmpNew) { e.classList.add('tmpup'); setTimeout(() => e.classList.remove('tmpup'), 1400); }
   const parts = [];
   if (da > 0 || dh > 0) parts.push(`<b class="bl-st">${da >= 0 ? '+' + da : da}/${dh >= 0 ? '+' + dh : dh}</b>`);
   if (kwNew.length) parts.push(`<b class="bl-kw">${esc(kwNames(kwNew.join('')))}</b>`);
+  if (fxNew) { const tx = ET[c[7].k] ? fxText(c[7]) : ''; const i = tx.indexOf(' : '); parts.push(`<b class="bl-kw">${esc(i > 0 && i < 30 ? tx.slice(0, i) : 'Nouvel effet')}</b>`); }
   if (tmpNew) parts.push(`<b class="bl-tmp">Prochain combat ${c[3].replace(/[a-z]+$/, '').split('/').map(v => '+' + v).join('/')}</b>`);
   fxLabel(x, y - 34, parts.join(' ') + (srcTx ? `<small class="bl-src">${esc(srcTx)}</small>` : ''), 'buffinfo');
 }
@@ -1592,11 +1593,21 @@ function fxAfter(rects) {
   if (V.screen !== 'game' || !me || !d) { V.fxPrev = null; return; }
   const fighting = !!(V.fight && (d.ph === 'combat' || !V.fight.done));
   const cur = { bd:{}, hd:new Set(me.hd.map(m => m.u)), sh:new Set(me.sh.map(m => m.u)), t:me.t, g:me.g, rd:d.rd };
-  me.bd.concat(me.cp ? [me.cp] : []).forEach(m => cur.bd[m.u] = [m.a, m.h, m.f || '', m.tmp ? (m.tmp.a || 0) + '/' + (m.tmp.h || 0) + (m.tmp.f || '') : '', Object.fromEntries((m.bn || []).map(e => [e.s, [e.a, e.h, e.k || '']])), m.tmp && m.tmp.s || '']); cur.tma = me.tma ? me.tma.a + '/' + me.tma.h : '';
+  me.bd.concat(me.cp ? [me.cp] : []).forEach(m => cur.bd[m.u] = [m.a, m.h, m.f || '', m.tmp ? (m.tmp.a || 0) + '/' + (m.tmp.h || 0) + (m.tmp.f || '') : '', Object.fromEntries((m.bn || []).map(e => [e.s, [e.a, e.h, e.k || '']])), m.tmp && m.tmp.s || '', (m.x || []).length, m.x && m.x.length ? m.x[m.x.length - 1] : null]); cur.tma = me.tma ? me.tma.a + '/' + me.tma.h : '';
   if (me.cp) { cur.cpLv = compLv(me.cp); cur.cpEl = compEl(me.cp); }
   cur.cmb = me.combo ? me.combo.id : 0; cur.njf = me.njf || 0;
-  const P = V.fxPrev; V.fxPrev = cur;
-  if (fighting || !P || P.rd !== cur.rd || FX_OFF()) return;
+  const P = V.fxPrev; V.fxPrev = cur; cur.fighting = fighting;
+  // fin du tour : les effets de fin de tour s'affichent sur le plateau de combat, avant la première attaque
+  // fin du tour : les effets de fin de tour s'affichent sur le plateau de combat, avant la première attaque
+  if (!fighting) V.fxPre = cur;
+  else if (V.fxPre && V.fxPre.rd === cur.rd && V.fxPreShown !== cur.rd && !FX_OFF()) {
+    const B = V.fxPre, ch = Object.keys(cur.bd).filter(u => B.bd[u] && (cur.bd[u][0] > B.bd[u][0] || cur.bd[u][1] > B.bd[u][1] || cur.bd[u][2] !== B.bd[u][2] || (cur.bd[u][6] || 0) > (B.bd[u][6] || 0)));
+    if (ch.length) { V.fxPreShown = cur.rd; let tries = 0; const go = () => { if (!document.querySelector('.arena [data-u]')) { if (tries++ < 30) setTimeout(go, 100); return; } ch.forEach(u => { const e = document.querySelector(`.arena [data-u="${u}"]`); if (e) buffFx(e, B.bd[u], cur.bd[u]); }); }; setTimeout(go, 120); }
+    return;
+  }
+  const newRd = P && cur.rd === P.rd + 1;   // début de tour : on montre aussi les bonus reçus pendant la nuit (début de tour, méditation…)
+  if (fighting || !P || (P.rd !== cur.rd && !newRd) || FX_OFF()) return;
+  if (newRd) { for (const u in cur.bd) { const p = P.bd[u], c = cur.bd[u], e = document.querySelector(`.table [data-u="${u}"]`); if (p && e) buffFx(e, p.slice(0, 3).concat([c[3]], p.slice(4)), c); } return; }
   const el = u => document.querySelector(`.table [data-u="${u}"]`);
   if (rects) for (const u in rects) {
     const e = el(u); if (!e || !e.animate) continue;
