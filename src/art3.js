@@ -386,7 +386,21 @@ Object.assign(ART, {
   if (ART.c_nj_gamabunta) ART.tk_toad = ART.c_nj_gamabunta;
   ART.tk_slug = () => squishy({ col:'#9ad8c8', eye:'happy' });
   ART.tk_snake = () => beast({ sp:'snake', col:'#7a5ab8', belly:'#d8c8ff', eye:'#ffe14a' });
-  ART.tk_shark = () => beast({ sp:'wolf', col:'#3a6a9a', belly:'#cfe4f4', eye:'#e8f4ff', angry:1, fangs:1 });
+  // requin d'eau : dessin original (corps fuselé, aileron, mâchoire dentée)
+  ART.tk_shark = () => {
+    const W = `stroke="${OUT}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"`;
+    return `<circle cx="22" cy="80" r="3" fill="#cfeaff" opacity=".7"/><circle cx="30" cy="88" r="2" fill="#cfeaff" opacity=".6"/><circle cx="80" cy="22" r="2.4" fill="#cfeaff" opacity=".6"/>`
+      + `<path d="M84 46 L97 30 L94 52 L98 72 L83 60 Z" fill="#2f5f8f" ${W}/>`
+      + `<path d="M46 34 L56 12 C 60 18, 63 26, 64 36 Z" fill="#2f5f8f" ${W}/>`
+      + `<path d="M8 58 C 10 42, 30 32, 52 32 C 70 32, 82 40, 86 52 C 82 64, 70 72, 52 74 C 32 76, 12 70, 8 58 Z" fill="#3f78ae" ${W}/>`
+      + `<path d="M10 60 C 20 66, 40 70, 60 68 C 72 67, 80 62, 85 54 C 80 66, 68 73, 52 74.4 C 32 76, 14 70, 10 60 Z" fill="#e6f2fb" ${W}/>`
+      + `<path d="M40 68 L46 84 L54 70 Z" fill="#2f5f8f" ${W}/>`
+      + `<path d="M11 56 C 18 60, 30 62, 40 58 C 34 64, 22 66, 13 62 Z" fill="#7a1e22" ${W}/>`
+      + `<path d="M15 57.6 L17 61 L19 58.4 L21.4 61.8 L23.6 59 L26 62.2 L28.6 59.2 L31 62 L33.6 59 L36 61 L38 58.6" fill="#fff" stroke="#fff" stroke-width=".8"/>`
+      + `<path d="M48 42 L48 54 M52 41 L52 55 M56 41.6 L56 54" fill="none" stroke="#24486a" stroke-width="1.8" stroke-linecap="round"/>`
+      + `<ellipse cx="27" cy="46" rx="3.4" ry="3" fill="#fff" ${W}/><circle cx="27.6" cy="46.2" r="1.6" fill="#120a06"/><path d="M22 42 L31 44" stroke="${OUT}" stroke-width="2" stroke-linecap="round"/>`
+      + `<path d="M30 36 C 40 33, 54 33, 66 36" fill="none" stroke="#8fc0e8" stroke-width="1.4" opacity=".7"/>`;
+  };
   ART.tk_puppet = () => robot({ col:'#a8744a', head:'round', eye:'duo', mouth:'line' });
   ART.tk_bijuu = () => beast({ sp:'wolf', col:'#6a4ab8', belly:'#c8b8ff', eye:'#ffe14a', glow:'#ffe14a', angry:1, fangs:1 });
   for (const h of ['chiyo', 'sasori', 'rasa', 'karui', 'han', 'mu', 'kakuzu']) { const id = 'nh_' + h, H0 = typeof HEROES !== 'undefined' && HEROES[id]; if (H0 && !HART[id]) { const f = gen(id, H0.pv || H0.fam[0], true); if (f) HART[id] = f; } }
