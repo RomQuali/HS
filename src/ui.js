@@ -641,11 +641,12 @@ function mkPeekH(me) {
   return `<div class="mkpeek"><b class="mkp-t">Marqueurs de clan</b><small class="mkp-s">Gagnés par les techniques de leur nature (+1), les serviteurs du clan et les Sceaux de clan des coffres. Les paliers comptent tout ce que tu as gagné ; chaque combo consomme 5 marqueurs de ses éléments pour leur éclat.</small><div class="mkp-g">${['feu', 'vent', 'eau', 'foudre', 'terre'].map(row).join('')}</div></div>`;
 }
 // combo déclenché : grande annonce au centre de l'écran
+const vilN = el => { const t = Object.keys(CLAN_EL).find(k => CLAN_EL[k] === el); return t && TRIBES[t] ? TRIBES[t].n.replace(/^Village (de la |du |de l')/, '') : ((ELS[el] || {}).n || ''); };
 function comboWatch() {
   if (!V.me) return; const c = V.me.combo; if (!c) { if (V.comboSeen === undefined) V.comboSeen = null; return; } if (V.comboSeen === c.id) return;
   const first = V.comboSeen === undefined; V.comboSeen = c.id; if (first) return;
   const el = document.createElement('div'); el.className = 'combo-fx';
-  el.innerHTML = `<div class="cbx" style="--c1:${ELS[c.a] ? ELS[c.a].col : c.col};--c2:${ELS[c.b] ? ELS[c.b].col : c.col};--cc:${c.col}"><span class="cbx-orb"></span><small>${c.pure ? 'Combo pur' : 'Combo'} · ${esc((ELS[c.a] || {}).n || '')} + ${esc((ELS[c.b] || {}).n || '')}</small><b>${esc(c.n)}</b><p>${esc(comboTx({ n:c.n }))}</p>${(c.bursts || []).map(e => `<p class="cbx-b" style="color:${MK_COL[e]}">Éclat · ${MK_N[e]} : ${esc(MK_BURST[e][0])}</p>`).join('')}</div>`;
+  el.innerHTML = `<div class="cbx" style="--c1:${ELS[c.a] ? ELS[c.a].col : c.col};--c2:${ELS[c.b] ? ELS[c.b].col : c.col};--cc:${c.col}"><span class="cbx-orb"></span><small>${c.pure ? 'Ultime · ' + esc(vilN(c.a)) : 'Combo · ' + esc(vilN(c.a)) + ' + ' + esc(vilN(c.b))}</small><b>${esc(c.n)}</b><p>${esc(comboTx({ n:c.n }))}</p>${(c.bursts || []).map(e => `<p class="cbx-b" style="color:${MK_COL[e]}">Éclat · ${MK_N[e]} : ${esc(MK_BURST[e][0])}</p>`).join('')}</div>`;
   document.body.appendChild(el); setTimeout(() => el.remove(), 2600);
 }
 function ckGauge(d, me) {
@@ -1493,6 +1494,35 @@ function cpBoostFx(e, da, dh) {
   const big = da + dh >= 6; if (big) setTimeout(() => fxRing(x, y, col, 2.6), 320);
   const side = e.closest('.cp-side'); if (side) { side.style.setProperty('--cpc', col); side.classList.remove('cpflash'); void side.offsetWidth; side.classList.add('cpflash'); setTimeout(() => side.classList.remove('cpflash'), 1600); }
 }
+function comboGain(p, c) {
+  const L = c[4] || {}, B = p[4] || {};
+  return Object.keys(L).some(k => /^Combo/.test(k) && (L[k][0] > (B[k] || [0])[0] || L[k][1] > (B[k] || [0, 0])[1] || L[k][2].length > ((B[k] || [0, 0, ''])[2] || '').length)) || (c[3] && c[3] !== p[3] && /Combo/.test(c[5] || ''));
+}
+// bonus d'un combo : un orbe aux deux couleurs part du réservoir et frappe le serviteur
+function comboHitFx(e, cb, k, dv, born) {
+  if (FX_OFF()) return;
+  const c1 = ELS[cb.a] ? ELS[cb.a].col : cb.col, c2 = ELS[cb.b] ? ELS[cb.b].col : cb.col;
+  const src = document.querySelector('.rsv') || document.querySelector('.hz-hero');
+  const go = () => {
+    if (!e.isConnected) return; const [tx, ty] = fxCenter(e, .42);
+    const [sx, sy] = src ? fxCenter(src) : [tx, ty + 200];
+    const o = document.createElement('i'); o.className = 'cb-shot'; o.style.cssText = `left:${f1(sx)}px;top:${f1(sy)}px;--c1:${c1};--c2:${c2};--cc:${cb.col}`; fxLayer.appendChild(o);
+    const mx = (sx + tx) / 2 + (k % 2 ? 60 : -60), my = Math.min(sy, ty) - 90;
+    const a = o.animate([{ transform:'translate(-50%,-50%) scale(.5)' }, { transform:`translate(calc(-50% + ${f1(mx - sx)}px),calc(-50% + ${f1(my - sy)}px)) scale(1.1)`, offset:.5 }, { transform:`translate(calc(-50% + ${f1(tx - sx)}px),calc(-50% + ${f1(ty - sy)}px)) scale(.8)` }], { duration:520, easing:'cubic-bezier(.4,0,.6,1)', fill:'forwards' });
+    a.onfinish = () => {
+      o.remove();
+      e.classList.remove('cbhit'); void e.offsetWidth; e.classList.add('cbhit', 'buffed'); e.style.setProperty('--c1', c1); e.style.setProperty('--c2', c2); setTimeout(() => e.classList.remove('cbhit'), 1500);
+      fxRing(tx, ty, c1, 1.5); setTimeout(() => fxRing(tx, ty, c2, 1.1), 140); fxBurst(tx, ty, 'magic', 16, 1.2); fxBurst(tx, ty, 'buff', 10, 1);
+      const parts = [];
+      if (born) parts.push('<b class="bl-st">Invoqué !</b>');
+      if (dv && (dv[0] > 0 || dv[1] > 0)) parts.push(`<b class="bl-st">${dv[0] >= 0 ? '+' + dv[0] : dv[0]}/${dv[1] >= 0 ? '+' + dv[1] : dv[1]}</b>`);
+      if (dv && dv[2]) parts.push(`<b class="bl-kw">${esc(kwNames(dv[2]))}</b>`);
+      if (dv && dv[3]) { const m = dv[3].match(/^(-?\d+)\/(-?\d+)(.*)$/) || [0, 0, 0, '']; const st = +m[1] || +m[2] ? '+' + m[1] + '/+' + m[2] + ' ' : ''; parts.push(`<b class="bl-tmp">Prochain combat : ${esc(st + (m[3] ? kwNames(m[3]) : ''))}</b>`); }
+      fxLabel(tx, ty - 34, parts.join(' ') + `<small class="bl-src" style="color:${cb.col}">Combo · ${esc(cb.n)}</small>`, 'buffinfo cbinfo');
+    };
+  };
+  setTimeout(go, 750 + k * 140);
+}
 function buffFx(e, p, c) {
   const da = c[0] - p[0], dh = c[1] - p[1], kwNew = (c[2] || '').split('').filter(k => !(p[2] || '').includes(k)), tmpNew = c[3] && c[3] !== p[3];
   if (!(da > 0 || dh > 0 || kwNew.length || tmpNew)) return;
@@ -1518,6 +1548,7 @@ function fxAfter(rects) {
   const cur = { bd:{}, hd:new Set(me.hd.map(m => m.u)), sh:new Set(me.sh.map(m => m.u)), t:me.t, g:me.g, rd:d.rd };
   me.bd.concat(me.cp ? [me.cp] : []).forEach(m => cur.bd[m.u] = [m.a, m.h, m.f || '', m.tmp ? (m.tmp.a || 0) + '/' + (m.tmp.h || 0) + (m.tmp.f || '') : '', Object.fromEntries((m.bn || []).map(e => [e.s, [e.a, e.h, e.k || '']])), m.tmp && m.tmp.s || '']); cur.tma = me.tma ? me.tma.a + '/' + me.tma.h : '';
   if (me.cp) { cur.cpLv = compLv(me.cp); cur.cpEl = compEl(me.cp); }
+  cur.cmb = me.combo ? me.combo.id : 0; cur.njf = me.njf || 0;
   const P = V.fxPrev; V.fxPrev = cur;
   if (fighting || !P || P.rd !== cur.rd || FX_OFF()) return;
   const el = u => document.querySelector(`.table [data-u="${u}"]`);
@@ -1534,11 +1565,14 @@ function fxAfter(rects) {
       { duration:toBoard ? 430 : 300, easing:toBoard ? 'cubic-bezier(.3,.7,.4,1)' : 'cubic-bezier(.2,.8,.3,1)' });
     if (toBoard) setTimeout(() => { const [x, y] = fxCenter(e, .92); fxBurst(x, y, 'dust', 14, 1); fxRing(x, y - 10, '#f6e2b0', .9); if ((CD(e.dataset.c).by || {}).bc) fxBurst(x, y - 30, 'magic', 14, 1); fxShake(e, 3); }, 300);
   }
+  const cmb = cur.cmb && cur.cmb !== P.cmb ? me.combo : null; let ck = 0;
   for (const u in cur.bd) {
     const p = P.bd[u], c = cur.bd[u]; const e = el(u); if (!e) continue;
-    if (!p) { if (!P.hd.has(+u) && !(rects && rects[u])) { e.classList.add('born'); const [x, y] = fxCenter(e); fxRing(x, y, '#cfe8ff', 1); } continue; }
-    buffFx(e, p, c);
+    if (!p) { if (!P.hd.has(+u) && !(rects && rects[u])) { if (cmb) comboHitFx(e, cmb, ck++, null, true); else { e.classList.add('born'); const [x, y] = fxCenter(e); fxRing(x, y, '#cfe8ff', 1); } } continue; }
+    if (cmb && comboGain(p, c)) comboHitFx(e, cmb, ck++, [c[0] - p[0], c[1] - p[1], (c[2] || '').split('').filter(k => !(p[2] || '').includes(k)).join(''), c[3] && c[3] !== p[3] ? c[3] : '']);
+    else buffFx(e, p, c);
   }
+  if (cmb && cur.njf > (P.njf || 0)) { const r0 = document.querySelector('.rsv'); if (r0) { const [x, y] = fxCenter(r0, .2); setTimeout(() => fxLabel(x, y - 20, `<b>Prochain combat : +${cur.njf - (P.njf || 0)} dégâts</b><small class="bl-src">Combo · ${esc(cmb.n)}</small>`, 'buffinfo cbinfo'), 900); } }
   if (cur.tma && cur.tma !== P.tma) document.querySelectorAll('#bdrow .mn').forEach((e, k) => setTimeout(() => { const [x, y] = fxCenter(e, .4); fxRing(x, y, '#9fd8ff', 1); e.classList.add('tmpup'); setTimeout(() => e.classList.remove('tmpup'), 1400); }, k * 60));
   if (cur.tma && cur.tma !== P.tma) { const r0 = document.querySelector('#bdrow'); if (r0) { const [x, y] = fxCenter(r0, .1); fxLabel(x, y, `<b>Prochain combat : ${cur.tma.split('/').map(v => '+' + v).join('/')} pour tous</b>`, 'bufftmp'); } }
   const purse = document.querySelector('.purse');
@@ -1974,7 +2008,7 @@ function arenaCleanup() {
 .cbx small{font-size:12px;color:#e8d6b0;letter-spacing:.08em;text-transform:uppercase}
 .cbx b{font:700 34px/1 Grenze,serif;color:var(--cc);text-shadow:0 2px 0 #000}
 .cbx p{margin:0;font-size:13px;color:#f1e4c6}
-@keyframes cbo{0%{transform:scale(.6) rotate(0)}60%{transform:scale(1.1) rotate(200deg);background:var(--cc)}100%{transform:scale(1) rotate(360deg);background:var(--cc)}}
+@keyframes cbo{0%{transform:scale(.6) rotate(0)}60%{transform:scale(1.1) rotate(200deg)}100%{transform:scale(1) rotate(360deg)}}
 @keyframes cbf{0%{opacity:0;transform:scale(.85)}12%{opacity:1;transform:scale(1)}80%{opacity:1}100%{opacity:0}}
 `; document.head.appendChild(st); })();
 
@@ -2500,6 +2534,11 @@ html.lite .awk-go{animation:none}
 .hc-q{margin-top:6px;padding:6px 8px;border-radius:8px;background:rgba(0,0,0,.35);box-shadow:inset 0 0 0 1px #a8743a;display:grid;gap:2px}
 .hc-q b{color:#ffd86a;font-size:12.5px}.hc-q small{font-size:12px;line-height:1.35;color:#f1e4c6}.hc-q.done{box-shadow:inset 0 0 0 1.5px #ffd86a,0 0 10px rgba(255,200,90,.4)}
 .hp-q{display:block;font-size:clamp(11px,1.3vh,13.5px);line-height:1.3;color:#cfe4ff;font-style:normal}.hp-q b{color:#ffd86a}
+.cb-shot{position:fixed;width:26px;height:26px;border-radius:50%;z-index:95;pointer-events:none;background:linear-gradient(90deg,var(--c1) 0 50%,var(--c2) 50% 100%);box-shadow:0 0 0 2px #120a06,0 0 18px 6px var(--cc),0 0 40px 10px color-mix(in srgb,var(--cc) 50%,transparent);animation:cbspin .5s linear infinite}
+@keyframes cbspin{to{rotate:360deg}}
+.mn.cbhit{animation:cbhit 1.4s ease-out 1}
+@keyframes cbhit{0%{filter:brightness(1)}15%{filter:brightness(2) drop-shadow(0 0 14px var(--c1)) drop-shadow(0 0 22px var(--c2));transform:scale(1.12)}100%{filter:none;transform:none}}
+.fxtxt.cbinfo{box-shadow:0 0 0 1.5px currentColor,0 4px 14px rgba(0,0,0,.6)}
 .rl-body{overflow:auto;min-height:0;padding-right:4px;text-align:left}
 .rl-p p,.rl-ul li{font-size:13px;line-height:1.45;color:#f1e4c6;margin:0 0 8px}.rl-p b,.rl-ul b,.rl-step b{color:#ffd86a}
 .rl-ul{margin:0 0 8px;padding-left:18px}
