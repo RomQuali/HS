@@ -129,7 +129,7 @@ function spellBlock(p, id, tgt) {
   if (id === 'sp_rabot' && p.t >= 6) return 'Ta taverne est déjà au niveau maximum.';
   if (id === 'sp_meta' && tierOf(tgt) >= 6) return 'Ce serviteur est déjà au niveau maximum.';
   if (id === 'sp_rituel' && p.bd.length < 2) return 'Il faut un autre serviteur pour recevoir ses stats.';
-  if (id === 'sp_alchimie' && (tgt.g || CD(tgt.c).tok)) return 'Ce serviteur ne peut pas devenir doré.';
+  if (id === 'sp_alchimie' && (tgt.g)) return 'Ce serviteur ne peut pas devenir doré.';
   if (id === 'sp_reflet' && p.hd.length > 10) return 'Ta main est pleine.';
   if ((id === 'sp_tempete' || id === 'sp_ascension') && !p.bd.length) return 'Tu n\'as aucun serviteur.';
   return null;
