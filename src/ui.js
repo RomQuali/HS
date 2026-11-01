@@ -312,16 +312,20 @@ function chakraLawH(big) {
     ${sec('🧬', 'Kekkei genkai', `<small>Quelques serviteurs appartiennent à <b>deux villages</b> : ils profitent des bonus des deux et grandissent quand un combo du réservoir contient une de leurs natures.</small>`)}
   </span>`;
 }
-// fiche de l'univers Ninja : quatre règles courtes et le cycle des éléments (le détail complet est sur l'écran du héros)
+// style de jeu de chaque village (étendard, cartes de héros)
+const NJ_STYLE = { n_feu:'Explosions', n_vent:'Marionnettes et sable', n_eau:'Survie et soins', n_foudre:'Jinchūriki', n_terre:'Forteresse' };
+const NJ_VIC = { n_feu:'🔥', n_vent:'🏜️', n_eau:'🌫️', n_foudre:'⚡', n_terre:'⛰️' };
+// fiche de l'univers Ninja : cinq règles courtes (le détail est sur l'écran du héros)
 function ninjaCardH() {
   const row = (ic, col, t, x) => `<span class="nj-r"><i class="nj-i" style="--c:${col}">${ic}</i><span><b>${t}</b><small>${x}</small></span></span>`;
-  const svg = (inner) => `<svg viewBox="-10 -10 20 20">${inner}</svg>`;
+  const vils = Object.keys(NJ_STYLE).map(t => `<i class="nj-v" style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${NJ_VIC[t]} <b>${esc(((TRIBES[t] || {}).n || t).replace(/^Village (de la |du |de l')/, ''))}</b> ${NJ_STYLE[t]}</i>`).join('');
   return `<span class="ban-law nj-law"><b>Loi · Chakra et réservoir</b>
-    ${row(svg(EL_ICON.feu), '#5a1e0c', 'Techniques ninja', 'Achetées en or, lancées au chakra (1 par ninja en jeu et par tour). Chacune a une nature et suit le jeu de son clan.')}
-    ${row(svg('<rect x="-7" y="-6" width="14" height="12" rx="1.5" fill="#f1e2bd" stroke="#120a06" stroke-width="1.4"/><rect x="-7" y="-6" width="7" height="12" fill="#4ab0e8" opacity=".8"/><rect x="-9.5" y="-7.5" width="3" height="15" rx="1.5" fill="#a8744a" stroke="#120a06" stroke-width="1.2"/><rect x="6.5" y="-7.5" width="3" height="15" rx="1.5" fill="#a8744a" stroke="#120a06" stroke-width="1.2"/>'), '#2a3a5a', 'Réservoir et combos', 'Deux techniques remplissent le réservoir : leur mélange déclenche l\'un des 15 combos, sur ton plateau et ton compagnon.')}
-    ${row(svg('<path d="M-6 6 L6 -6 M-6 -6 L6 6" stroke="#e8e2da" stroke-width="2.6" stroke-linecap="round"/><circle r="2.4" fill="#f2c14e" stroke="#120a06"/>'), '#5a3a12', 'Duel des compagnons', 'Ton compagnon, déjà triplé et hors plateau, affronte seulement celui d\'en face. S\'il gagne : coffre majeur.')}
-    ${row(svg('<rect x="-7" y="-2" width="14" height="8" rx="1.5" fill="#e2b04e" stroke="#120a06" stroke-width="1.3"/><path d="M-7 -2 Q0 -9 7 -2 Z" fill="#c88a26" stroke="#120a06" stroke-width="1.3"/>'), '#4a2a5a', 'Récompenses', 'Choisis 1 amélioration sur 3, de Normal à Légendaire, et pose-la avec du chakra. Les parchemins de pacte préparent une bête d\'invocation qui arrive à l\'Éveil.')}
-    ${row(svg('<path d="M0 -8 L2 -2 L8 -2 L3 2 L5 8 L0 4 L-5 8 L-3 2 L-8 -2 L-2 -2 Z" fill="#ffb050" stroke="#120a06" stroke-width="1.2"/>'), '#6a2a0c', 'Éveil', 'Quand la moitié des ninjas en vie sont à 20 PV ou moins (ou qu\'il n\'en reste que 3) : clans, compagnon, héros et techniques s\'éveillent.')}
+    ${row(ckMarkH('', 'nj-ck'), '#1e3a5a', 'Chakra', 'Chaque ninja sur ton plateau te donne 1 chakra par tour (10 au plus).')}
+    ${row('<span class="nj-tx">✦</span>', '#3a2a5a', 'Sorts', 'Achetés 1 or à la taverne, lancés avec du chakra. Un 2e emplacement de sort s\'ouvre au niveau 4.')}
+    ${row('<span class="rl-scroll"><i style="background:#ff7a2a"></i><i style="background:#4ab0e8"></i></span>', '#2a3a5a', 'Réservoir et combos', 'Deux sorts de village ou pouvoirs de héros remplissent le réservoir : leur mélange déclenche un combo, plus fort à chaque palier de taverne.')}
+    ${row('<span class="nj-tx">💧</span>', '#1e4a5a', 'Éveil', 'Paie une fois le chakra d\'un serviteur : il gagne des stats et son effet se répète gratuitement à chaque tour.')}
+    ${row('<span class="nj-tx">⛩️</span>', '#5a3a12', 'Cinq villages', 'Chacun a son style, du début à la fin de partie. Les héros n\'ont pas d\'élément : leur pouvoir suit leur village.')}
+    <span class="nj-vs">${vils}</span>
   </span>`;
 }
 function univPickH(sel, edit, actions) {
@@ -870,18 +874,33 @@ function detailH(canAct) {
 
 // choix du héros : trois médaillons, on en met un en avant puis on le porte
 /* ===== choix du héros (univers Ninja) : héros à gauche, règles illustrées en onglets à droite ===== */
-const RULE_TABS = [['tour', 'Le tour'], ['vil', 'Les villages']];
+const RULE_TABS = [['tour', 'Le tour et le chakra'], ['sort', 'Sorts et réservoir']];
 function ruleTabH(k) {
   const el = e => `<i class="rl-el" style="--c:${ELS[e].col}"><svg viewBox="-12 -12 24 24">${EL_ICON[e]}</svg></i>`;
   const step = (n, t, x, vis) => `<li class="rl-step"><span class="rl-n">${n}</span><span class="rl-v">${vis || ''}</span><span><b>${t}</b><small>${x}</small></span></li>`;
   const coin = '<i class="rl-coin"></i>', ck = ckMarkH('', 'rl-ck');
   switch (k) {
     case 'tour': return `<ol class="rl-steps">
-      ${step(1, 'Recrute', `Achète des ninjas avec ${coin} l'or. Chacun te rapportera 1 ${ck} chakra par tour (10 au plus).`, faceH('art-n_f1'))}
-      ${step(2, 'Sorts et Éveil', 'Les sorts se lancent au chakra ; deux sorts de village remplissent le réservoir et déclenchent un combo. La goutte bleue au-dessus d\'un serviteur l\'éveille pour de bon.', ck)}
-      ${step(3, 'Utilise ton pouvoir', 'Selon ton héros : payé en or, en chakra, ou passif.', '<span class="rl-pow">✦</span>')}
-      ${step(4, 'Combat', 'Tes serviteurs affrontent ceux d\'en face ; le perdant subit des dégâts à son héros.', '<span class="rl-vs">VS</span>')}
+      ${step(1, 'Recrute', `Achète des ninjas avec ${coin} l'or, monte ta taverne pour en trouver de plus forts. Trois exemplaires d'une même créature (jetons compris) forment un <b>triple</b> : stats additionnées et récompense.`, faceH('art-n_f1'))}
+      ${step(2, 'Gagne du chakra', `Au début de chaque tour, chaque ninja de ton plateau te donne 1 ${ck} chakra, jusqu'à 10. Le chakra non dépensé reste d'un tour à l'autre.`, ck)}
+      ${step(3, 'Éveille tes serviteurs', 'La goutte bleue au-dessus d\'un serviteur indique son coût. Paie-le une seule fois : il gagne autant d\'attaque et de vie, puis son effet se déclenche gratuitement au début de chaque tour (une aura brille autour de lui).', '<span class="rl-pow">💧</span>')}
+      ${step(4, 'Lance sorts et pouvoir', 'Les sorts se paient au chakra ; le pouvoir du héros en or, en chakra, ou il est passif. Voir l\'onglet « Sorts et réservoir ».', '<span class="rl-pow">✦</span>')}
+      ${step(5, 'Combat', 'Tes serviteurs affrontent ceux d\'en face : chaque attaquant subit aussi l\'attaque du défenseur. Le perdant prend des dégâts à son héros.', '<span class="rl-vs">VS</span>')}
     </ol>`;
+    case 'sort': {
+      const chip = (a, b, F) => `<li class="rl-cb" style="--c:${F.col}"><span class="rl-cbe">${el(a)}${el(b)}</span><span><b>${esc(F.n)}</b><small>${esc(((COMBO_BD[F.n] || [''])[0]).replace(/^[^:]+ : /, ''))}</small></span></li>`;
+      const vn = e => { const t = Object.keys(CLAN_EL).find(k => CLAN_EL[k] === e); return t && TRIBES[t] ? TRIBES[t].n : ELS[e].n; };
+      const fus = Object.entries(FUSIONS).map(([kk, F]) => { const [a, b] = kk.split('+'); return chip(a, b, F); }).join('');
+      const pur = Object.entries(PURES).map(([e, F]) => chip(e, e, F)).join('');
+      return `<div class="rl-p">
+        <ul class="rl-ul"><li><b>Acheter</b> : chaque sort coûte <b>1 or</b> à la taverne. Un 2e emplacement de sort, à droite du premier, s'ouvre au <b>niveau 4</b>.</li>
+        <li><b>Lancer</b> : de 1 à 6 ${ck} chakra selon le sort. Chaque village a 4 sorts, dont un <b>rare</b> au niveau 6 ; les 5 sorts <b>neutres</b> n'ont pas de village.</li></ul>
+        <div class="rl-rsv"><span class="rl-scroll big"><i style="background:#ff7a2a"></i><i></i></span><span>→</span><span class="rl-scroll big"><i style="background:#ff7a2a"></i><i style="background:#c8a878"></i></span><span>→</span><b class="rl-boom">Combo !</b></div>
+        <p>Un <b>sort de village</b> ou un <b>pouvoir de héros actif</b> remplit une moitié du <b>réservoir</b> avec son village (les sorts neutres non). La 2e moitié remplie déclenche un <b>combo</b> qui renforce les deux villages concernés, puis le réservoir se vide. La moitié remplie reste d'un tour à l'autre.</p>
+        <p>Deux fois le même village : son <b>ultime</b>. Les combos sont <b>×1</b> aux niveaux 1–2, <b>×2</b> aux niveaux 3–4, <b>×3</b> aux niveaux 5–6. Les serviteurs <b>kekkei genkai</b> (deux villages) grandissent quand un combo touche l'un de leurs villages.</p>
+        <h4 class="rl-h4">Ultimes</h4><ul class="rl-cbs">${pur}</ul>
+        <h4 class="rl-h4">Combos de deux villages</h4><ul class="rl-cbs">${fus}</ul>
+      </div>`; }
     case 'vil': return `<div class="rl-p">${chakraLawH(true)}</div>`;
     case 'tech': {
       const pairs = Object.entries(FUSIONS).map(([kk, F]) => { const [a, b] = kk.split('+'); return `<i style="--c:${F.col}">${el(a)}${el(b)}<b>${esc(F.n)}</b></i>`; }).join('') + Object.entries(PURES).map(([e, F]) => `<i style="--c:${F.col}">${el(e)}${el(e)}<b>${esc(F.n)}</b></i>`).join('');
@@ -931,7 +950,7 @@ function heroPickRowH(d, me) {
         ${x.stars || x.diff ? `<span class="hp-st">${'★'.repeat(x.stars || x.diff)}</span>` : ''}
       </button>
       <div class="hp-pow" data-hov="hero" tabindex="0"><span class="hp-pw-ico">${x.cost ? (nin && x.pay !== 'g' ? ckMarkH(x.cost) : `<b class="hp-gold">${x.cost}</b>`) : '<b>∞</b>'}</span>
-        <div class="hp-pw-tx"><b>${esc(pw)}</b>${nin && (x.fam || [])[0] && TRIBES[x.fam[0]] ? `<em class="hp-vil">${esc(TRIBES[x.fam[0]].n)}</em>` : ''}<small>${esc((t => t.charAt(0).toUpperCase() + t.slice(1))((x.tx || '').replace(/^Passif : /, '')))}</small>
+        <div class="hp-pw-tx"><b>${esc(pw)}</b>${nin && (x.fam || [])[0] && TRIBES[x.fam[0]] ? `<em class="hp-vil">${esc(TRIBES[x.fam[0]].n)}${NJ_STYLE[x.fam[0]] ? ' · ' + NJ_STYLE[x.fam[0]] : ''}</em>` : ''}<small>${esc((t => t.charAt(0).toUpperCase() + t.slice(1))((x.tx || '').replace(/^Passif : /, '')))}</small>
         ${c && (!nin || NJ_COMP) ? `<span class="hp-cp">${faceH('art-' + cid)}<em>${esc(c.n)}</em></span>` : ''}</div></div>
       ${on ? `<button class="t-go hp-go" data-act="hero" data-h="${h}">Choisir</button>` : ''}
     </div>`; };
@@ -1118,7 +1137,7 @@ function doAct(act, btn) {
     case 'hero': sendAct({ t:'hero', h:btn.dataset.h }); V.heroSel = null; break;
     case 'hsel': V.heroSel = btn.dataset.h; render(); break;
     case 'ckm': sendAct({ t:'ckm', i:+btn.dataset.i }); break;
-    case 'hprules': V.hpRules = !V.hpRules; render(); break;
+    case 'hprules': V.hpRules = !V.hpRules; render(); if (V.hpRules) requestAnimationFrame(() => { const r = document.querySelector('.hp-rules'); if (r) r.scrollIntoView({ block:'end', behavior:'smooth' }); }); break;
     case 'rwst': rwSet(((V.rw || 0) + (+btn.dataset.d) + 10) % 10); render(); break;
     case 'hroll': if ((V.me.hrr || 0) > 0) { if (V.heroSel === V.me.ho[+btn.dataset.i]) V.heroSel = null; sendAct({ t:'hroll', i:+btn.dataset.i }); } break;
     case 'skip': if (V.fight) { clearTimeout(V.fightT); clearTimeout(V.duelT); if (V.fight.dr) { V.di = V.fight.dr.frames.length - 1; V.fight.ddone = true; } if (V.fight.lunge) { try { V.fight.lunge.cancel(); } catch (e) {} V.fight.lunge = null; } V.fi = V.fight.r.frames.length - 1; V.fight.done = true; render(); fxEnd(); } break;
@@ -2445,6 +2464,16 @@ html.lite .awk-go{animation:none}
 .rl-tabs{display:flex;flex-wrap:wrap;gap:5px;margin:8px 0 10px}
 .rl-tab{padding:5px 11px;border:0;border-radius:99px;cursor:pointer;font:700 12px var(--f-label),serif;color:#e8d6b0;background:rgba(0,0,0,.35);box-shadow:inset 0 0 0 1px rgba(242,193,78,.3)}
 .rl-tab.on{color:#2a1404;background:linear-gradient(180deg,#ffd27a,#e0a03a)}
+.nj-vs{display:flex;flex-wrap:wrap;gap:3px 4px;margin-top:3px}
+.nj-v{font-style:normal;font-size:11px;padding:1px 7px;border-radius:99px;background:rgba(0,0,0,.35);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 65%,transparent);color:#f1e4c6}
+.nj-v b{display:inline!important;color:var(--c)!important;font-size:11px!important}
+.nj-tx{font-size:14px;line-height:1}.nj-i .rl-scroll{width:20px;height:13px;box-shadow:0 0 0 1px #7a4a28}.nj-i .nj-ck{transform:scale(.8)}
+.rl-h4{margin:10px 0 5px;font:700 14px var(--f-label),serif;color:#ffd86a}
+.rl-cbs{list-style:none;margin:0 0 6px;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:5px}
+.rl-v .ckm.rl-ck{width:34px;height:34px}
+.rl-cb{display:flex;gap:7px;align-items:flex-start;padding:5px 7px;border-radius:8px;background:rgba(0,0,0,.3);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 55%,transparent)}
+.rl-cbe{display:flex;flex:0 0 auto}.rl-cbe .rl-el+.rl-el{margin-left:-6px}
+.rl-cb b{display:block;color:var(--c)!important;font-size:13px}.rl-cb small{display:block;font-size:12px;line-height:1.35;color:#f1e4c6}
 .rl-body{overflow:auto;min-height:0;padding-right:4px;text-align:left}
 .rl-p p,.rl-ul li{font-size:13px;line-height:1.45;color:#f1e4c6;margin:0 0 8px}.rl-p b,.rl-ul b,.rl-step b{color:#ffd86a}
 .rl-ul{margin:0 0 8px;padding-left:18px}
@@ -2786,7 +2815,7 @@ html.lite .keeper-zone .mn.pairok::after{animation:none}
 .hp-cp em{font-style:normal;font-size:clamp(11px,1.4vh,15px);color:#bfae8a}
 .hp-go{font-size:clamp(16px,2.2vh,24px);padding:8px 30px;animation:hpIn .3s both}
 .hp-rb{margin-top:6px}
-.hp-rules{width:min(900px,94vw);max-height:42vh;overflow:auto}
+.hp-rules{width:min(1100px,94vw);max-height:62vh;overflow:auto}
 @media (max-width:820px),(max-height:540px){
   .hp-row{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;padding-bottom:6px}
   .hp-col{flex:0 0 clamp(120px,30vw,170px)} .hp-pw-tx small{font-size:11px} .hp-cp{display:none}
