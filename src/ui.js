@@ -958,12 +958,13 @@ const rollInfoH = me => `<p class="h-rolls">${icon('roll')} Relances : ${Array.f
 // choix du héros façon auto-battler : grands portraits en rangée, pouvoir en médaillon sous chaque héros
 function heroPickRowH(d, me) {
   const nin = (d.laws || []).some(l => l.k === 'chakra'), sel = me.ho.includes(V.heroSel) ? V.heroSel : null;
+  const pcs = [];
   const card = (h, i) => { const x = HEROES[h], on = h === sel, cid = compOf(h) || COMPANIONS[h], c = cid && C[cid], el = x.clan, vt = (x.fam || [])[0], col = x.mc && NJ_MC[x.mc] ? NJ_MC[x.mc][1] : el && ELS[el] ? ELS[el].col : TRIBES[vt] && TRIBES[vt].col || '#d8a84a';
     const pw = x.pwn || (x.cost ? 'Pouvoir héroïque' : 'Pouvoir passif'), cap = t => (t || '').charAt(0).toUpperCase() + (t || '').slice(1);
     const main = (x.trx ? x.tx.replace(' Bonus : ' + x.trx, '') : x.tx || '').replace(/^Passif : /, '');
     const gem = x.cost ? (nin && x.pay !== 'g' ? `<span class="hpc-gem ck">${ckMarkH(x.cost)}</span>` : `<span class="hpc-gem g"><b>${x.cost}</b></span>`) : '<span class="hpc-gem p"><b>∞</b></span>';
     const A = x.aw;
-    const pcard = `<div class="hp-pc" role="tooltip">
+    pcs[i] = `<div class="hp-pc k${i}${on ? ' on' : ''}" style="--c:${col}">
         ${gem}<div class="hpc-art">${powArtH(h)}</div>
         ${x.mc && NJ_MC[x.mc] ? `<span class="hpc-mc" style="--c:${NJ_MC[x.mc][1]}">${esc(NJ_MC[x.mc][0])}</span>` : ''}
         <b class="hpc-nm">${esc(pw)}</b><small class="hpc-kind">${x.cost ? (nin && x.pay !== 'g' ? 'Pouvoir · ' + x.cost + ' chakra' : 'Pouvoir · ' + x.cost + ' or') : 'Pouvoir passif'}</small>
@@ -981,13 +982,13 @@ function heroPickRowH(d, me) {
         <span class="hp-nm">${esc(x.n)}</span>
         ${x.stars || x.diff ? `<span class="hp-st">${'★'.repeat(x.stars || x.diff)}</span>` : ''}
       </button>
-      ${pcard}
       ${on ? `<button class="t-go hp-go" data-act="hero" data-h="${h}">Choisir</button>` : ''}
     </div>`; };
   const tab = V.ruleTab || 'tour', rules = nin && V.hpRules;
   return `<div class="ov hp-ov"><div class="hp-wrap">
     <h2 class="hp-t">Choisis ton héros</h2><p class="hp-sub">Survole un héros pour voir son pouvoir, clique pour le choisir.</p>${rollInfoH(me)}
     <div class="hp-row">${me.ho.map(card).join('')}</div>
+    <div class="hp-infos">${pcs.join('')}<p class="hp-ph">Survole un héros pour voir son pouvoir.</p></div>
     ${nin ? `<button class="btn sm hp-rb" data-act="hprules">${rules ? 'Masquer les règles' : 'Comment on joue ?'}</button>` : ''}
     ${rules ? `<div class="hpick-r hp-rules"><div class="rl-tabs" role="tablist">${RULE_TABS.map(([k, n]) => `<button role="tab" class="rl-tab${k === tab ? ' on' : ''}" data-act="rtab" data-k="${k}" aria-selected="${k === tab}">${n}</button>`).join('')}</div><div class="rl-body">${ruleTabH(tab)}</div></div>` : ''}
   </div></div>`;
@@ -1388,7 +1389,7 @@ function showPeek(t, touch) {
   const hv = t.dataset.hov;
   if (hv && hv !== 'law' && (V.me || hv === 'op')) {
     let html = '';
-    if (hv === 'op' && V.pub) { const p = V.pub.pl.find(x => x.n === t.dataset.n); if (p && HEROES[p.h]) html = heroCardH(p.h, { who:p.n, foot:`${p.al ? Math.max(0, p.hp) + ' PV · taverne ' + p.t : 'Éliminé · ' + p.pl + 'e'}` }); }
+    if (hv === 'op' && V.pub) { const p = V.pub.pl.find(x => x.n === t.dataset.n); if (p && HEROES[p.h]) html = oppPeekH(p); }
     else if ((hv === 'pow' || hv === 'hero') && HEROES[V.me.hero]) { const h = HX(V.me); html = heroCardH(V.me.hero, { aw:V.me.haw, qp:V.me.qp, foot:h.cost ? (V.me.pu ? 'Déjà utilisé ce tour' : h.minRound && (V.me.rd || 0) < h.minRound ? `Disponible dès la manche ${h.minRound}` : 'Disponible') : 'Toujours actif' }); }
     else if (hv === 'comp' && compOf(V.me.hero) && C[compOf(V.me.hero)]) html = compCardH(V.me.hero, compOf(V.me.hero), V.me);
     else if (hv === 'rsv') html = rsvPeekH(V.me);
@@ -1697,6 +1698,22 @@ function hawFrameH(h) {
   const marks = Array.from({ length:8 }, (_, k) => { const a = (k * 45 - 90) * Math.PI / 180; return `<text x="${(50 + Math.cos(a) * 47).toFixed(1)}" y="${(50 + Math.sin(a) * 47).toFixed(1)}" dy=".35em" text-anchor="middle" font-size="9" fill="${col}" stroke="#120a06" stroke-width=".6">${mk}</text>`; }).join('');
   return `<svg class="haw-fr" viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="hawg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff2b0"/><stop offset=".5" stop-color="#e0a83a"/><stop offset="1" stop-color="#8a5a12"/></linearGradient></defs>
     <circle cx="50" cy="50" r="47" fill="none" stroke="url(#hawg)" stroke-width="7"/><circle cx="50" cy="50" r="47" fill="none" stroke="${col}" stroke-width="1.6" stroke-dasharray="4 5" opacity=".9"/>${marks}</svg>`;
+}
+// survol d'un joueur du classement (façon Champs de bataille) : héros, pouvoir, et parchemin des statistiques
+function oppPeekH(p) {
+  const B = HEROES[p.h], x = p.haw && B.awd ? B.awd : B, nin = !!B.mc, col = B.mc && NJ_MC[B.mc] ? NJ_MC[B.mc][1] : '#c8963e';
+  const main = (x.trx ? x.tx.replace(' Bonus : ' + x.trx, '') : x.tx || '').replace(/^Passif : /, '');
+  const gem = x.cost ? (nin && x.pay !== 'g' ? `<span class="hpc-gem ck">${ckMarkH(x.cost)}</span>` : `<span class="hpc-gem g"><b>${x.cost}</b></span>`) : '<span class="hpc-gem p"><b>∞</b></span>';
+  const shield = t => `<span class="op-sh"><svg viewBox="0 0 40 46"><path d="M3 3 H37 V28 L20 43 L3 28 Z" fill="url(#opsh)" stroke="#120a06" stroke-width="2.4"/><path d="M6.5 6.5 H33.5 V26.6 L20 38.6 L6.5 26.6 Z" fill="none" stroke="#e0b8f0" stroke-width="1.2"/>
+      <defs><linearGradient id="opsh" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9a3aa8"/><stop offset="1" stop-color="#4a1260"/></linearGradient></defs>
+      ${Array.from({ length:t }, (_, k) => { const cols = t > 3 ? 3 : t, r = Math.floor(k / 3), c = k % 3, n = Math.min(3, t - r * 3); return `<path transform="translate(${(20 + (c - (n - 1) / 2) * 9).toFixed(1)} ${(14 + r * 9).toFixed(1)}) scale(.36)" d="M0 -10 L2.9 -3.1 L10 -3.1 L4.3 1.2 L6.2 8.1 L0 4 L-6.2 8.1 L-4.3 1.2 L-10 -3.1 L-2.9 -3.1 Z" fill="#ffd86a" stroke="#5a3a10" stroke-width="1.4"/>`; }).join('')}</svg></span>`;
+  const stat = (ic, v, tip) => `<span class="op-st" title="${tip}">${ic}<b>${v}</b></span>`;
+  const rows = (p.hs || []).map(h => `<div class="op-row"><span class="op-sw">⚔</span><span class="op-burst${h.d > 0 ? ' w' : h.d < 0 ? ' l' : ''}"><b>${h.d > 0 ? '+' + h.d : h.d}</b></span>${h.h && HART[h.h] ? faceH('art-h-' + h.h, 'face op-of') : `<span class="op-of face">${esc((h.n || '?').slice(0, 1))}</span>`}</div>`).join('') || '<p class="op-none">Aucun combat pour l\'instant.</p>';
+  return `<div class="oph" style="--c:${col}">
+    <div class="oph-hero"><span class="oph-port">${faceH(heroArt(p.h, p.haw), 'face')}</span><b class="oph-nm">${esc(B.n)}</b><span class="oph-hp" data-x="${p.al ? Math.max(0, p.hp) : p.pl + 'e'}"></span><small class="oph-who">${esc(p.n)}${p.haw ? ' · éveillé' : ''}</small></div>
+    <div class="oph-pw">${gem}<div class="hpc-art">${powArtH(p.h)}</div><b class="hpc-nm">${esc(x.pwn || 'Pouvoir')}</b><p class="hpc-tx">${esc(main.charAt(0).toUpperCase() + main.slice(1))}</p>${x.trx ? `<p class="hpc-bonus"><b>Bonus</b> ${esc(x.trx)}</p>` : ''}</div>
+    <div class="oph-parch"><div class="op-stats">${shield(p.t || 1)}${stat('<svg class="op-tri" viewBox="0 0 44 44"><rect x="4" y="10" width="20" height="28" rx="3" fill="#8a96a8" stroke="#120a06" stroke-width="2" transform="rotate(-14 14 24)"/><rect x="10" y="8" width="20" height="28" rx="3" fill="#a8b4c4" stroke="#120a06" stroke-width="2"/><path d="M33 30 V14 L28 19 M33 14 L38 19" stroke="#2a7ad8" stroke-width="4" fill="none" stroke-linecap="round"/></svg>', p.tc || 0, 'Triples')}${stat('<span class="op-ic fire">🔥</span>', p.ws || 0, 'Victoires d\'affilée')}</div><div class="op-rows">${rows}</div></div>
+  </div>`;
 }
 function heroCardH(hid, o = {}) {
   const h0 = HEROES[hid]; if (!h0) return ''; const h = o.aw && h0.awd ? h0.awd : h0;
@@ -2568,12 +2585,25 @@ html.lite .awk-go{animation:none}
 .fxtxt.cbinfo{box-shadow:0 0 0 1.5px currentColor,0 4px 14px rgba(0,0,0,.6)}
 .hp-sub{margin:-4px 0 0;font-size:clamp(12px,1.5vh,16px);color:#e8d6b0}
 .hp-col{position:relative}
-.hp-pc{position:absolute;left:calc(100% - 14px);top:6%;width:clamp(230px,17vw,330px);z-index:20;display:grid;justify-items:center;gap:6px;padding:46px 16px 16px;border-radius:18px;
-  background:linear-gradient(180deg,#3a2414,#1a0e07);box-shadow:0 0 0 3px #120a06,0 0 0 6px #c8963e,0 0 0 8px #120a06,0 18px 40px rgba(0,0,0,.7),0 0 30px color-mix(in srgb,var(--c) 45%,transparent);
-  opacity:0;transform:translateX(-14px) scale(.96);pointer-events:none;transition:opacity .18s,transform .18s;text-align:center}
-.hp-col:last-child .hp-pc{left:auto;right:calc(100% - 14px);transform:translateX(14px) scale(.96)}
-.hp-col:hover .hp-pc,.hp-col.on .hp-pc,.hp-col:focus-within .hp-pc{opacity:1;transform:none}
-.hp-row:hover .hp-col.on:not(:hover) .hp-pc{opacity:0}
+.hp-infos{position:relative;width:min(760px,94vw);min-height:clamp(150px,19vh,210px);margin-top:4px}
+.hp-ph{position:absolute;inset:0;display:grid;place-items:center;margin:0;color:#bfae8a;font-style:italic;transition:opacity .15s}
+.hp-pc{position:absolute;left:0;right:0;top:0;display:grid;grid-template-columns:auto 1fr 1fr;grid-template-areas:"art nm aw" "art tx aw" "art bn aw";column-gap:16px;row-gap:4px;align-items:start;padding:14px 18px 14px 14px;border-radius:16px;
+  background:linear-gradient(180deg,#3a2414,#1a0e07);box-shadow:0 0 0 3px #120a06,0 0 0 5px #c8963e,0 0 0 7px #120a06,0 12px 30px rgba(0,0,0,.6),0 0 24px color-mix(in srgb,var(--c) 40%,transparent);
+  opacity:0;visibility:hidden;transition:opacity .15s;text-align:left}
+.hp-wrap:has(.hp-col:nth-child(1):hover) .hp-pc.k0,.hp-wrap:has(.hp-col:nth-child(2):hover) .hp-pc.k1,.hp-wrap:has(.hp-col:nth-child(3):hover) .hp-pc.k2,.hp-wrap:has(.hp-col:nth-child(4):hover) .hp-pc.k3,.hp-wrap:has(.hp-col:nth-child(5):hover) .hp-pc.k4,
+.hp-wrap:not(:has(.hp-col:hover)) .hp-pc.on{opacity:1;visibility:visible}
+.hp-wrap:has(.hp-col:hover) .hp-ph,.hp-wrap:has(.hp-pc.on) .hp-ph{opacity:0}
+.hp-pc > *{min-width:0}
+.hp-pc .hpc-art{grid-area:art;position:relative!important;top:auto!important;left:auto!important;transform:none!important;margin:6px 0 0 6px}
+.hp-pc .hpc-gem{top:-12px;left:-12px}
+.hp-pc .hpc-mc{grid-area:nm;align-self:start;margin-top:0}
+.hp-pc .hpc-nm{grid-area:nm;margin-top:14px}
+.hp-pc .hpc-kind{grid-area:nm;margin-top:42px}
+.hp-pc .hpc-tx{grid-area:tx;margin-top:6px}
+.hp-pc .hpc-bonus{grid-area:bn}
+.hp-pc .hpc-q{grid-area:aw;border-top:0;border-left:1px solid rgba(242,193,78,.25);padding:0 0 0 14px}
+.hp-col .hp-card:hover{filter:brightness(1.08);transform:translateY(-8px)}
+@media (max-width:820px){ .hp-infos{min-height:0} .hp-ph{display:none} .hp-pc{position:relative;display:none;grid-template-columns:1fr;grid-template-areas:"nm" "tx" "bn" "aw";padding:16px} .hp-pc.on{display:grid;opacity:1;visibility:visible} .hp-pc .hpc-art{display:none} .hp-pc .hpc-q{border-left:0;padding:8px 0 0;border-top:1px solid rgba(242,193,78,.25)} .hp-pc > *{grid-area:auto!important} .hp-pc{grid-template-areas:none} .hp-pc .hpc-nm,.hp-pc .hpc-kind,.hp-pc .hpc-mc{margin-top:0} .hp-pc .hpc-gem{top:8px;left:auto;right:8px} }
 .hpc-art{position:absolute;top:-34px;left:50%;transform:translateX(-50%);width:72px;height:72px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 40% 35%,#5a3a20,#1a0e06);box-shadow:0 0 0 3px #120a06,0 0 0 6px #c8963e,0 0 18px color-mix(in srgb,var(--c) 60%,transparent)}
 .hpc-art .pwart{width:46px;height:46px}
 .hpc-gem{position:absolute;top:-14px;left:-10px;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;box-shadow:0 0 0 3px #120a06}
@@ -2590,7 +2620,6 @@ html.lite .awk-go{animation:none}
 .hpc-aw{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center;padding:6px;border-radius:10px;background:linear-gradient(90deg,rgba(255,200,90,.16),rgba(255,200,90,.04));box-shadow:inset 0 0 0 1px #c8963e}
 .hpc-aw .hpc-awf{width:46px;height:46px;border-radius:50%;box-shadow:0 0 0 2px #ffd86a,0 0 10px rgba(255,200,90,.6)}
 .hpc-aw b{display:block;color:#ffd86a;font-size:12.5px}.hpc-aw small{font-size:12px;line-height:1.3;color:#f1e4c6}
-@media (max-width:820px){ .hp-pc,.hp-col:last-child .hp-pc{position:fixed;left:12px;right:12px;bottom:74px;top:auto;width:auto;max-height:44vh;overflow:auto;transform:none;display:none;opacity:1;padding-top:16px;pointer-events:auto;z-index:60} .hp-col.on .hp-pc{display:grid} .hp-row:hover .hp-col.on:not(:hover) .hp-pc{opacity:1} .hp-pc .hpc-art{display:none} .hp-pc .hpc-gem{top:8px;left:8px} .hp-go{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:61} }
 .rl-mcs{display:flex;flex-wrap:wrap;gap:4px;margin:2px 0 10px}.rl-mcs i{font-style:normal;font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px;background:rgba(0,0,0,.35);color:var(--c);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 60%,transparent)}
 .rl-tabs{flex-wrap:wrap}
 .keeper-zone.enemy .keeper{position:relative}
@@ -2599,6 +2628,41 @@ html.lite .awk-go{animation:none}
 .keeper-zone.enemy .kn-en .ts{display:flex;gap:3px}
 .keeper-zone.enemy .kn-en .ts i{display:block;width:clamp(14px,2vh,20px);height:clamp(14px,2vh,20px);background:linear-gradient(#fff1b8,#f2c14e 60%,#b7802a);clip-path:polygon(50% 0,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);filter:drop-shadow(0 1px 1px #000)}
 @media (max-width:820px){ .keeper-zone.enemy .kn-en{left:calc(100% + 8px)} .keeper-zone.enemy .kn-en b{font-size:16px} }
+#peek:has(.oph){background:none!important;box-shadow:none!important;padding:0!important;max-width:none!important;width:auto!important}
+.oph{display:flex;align-items:center;gap:18px;padding:6px;filter:drop-shadow(0 14px 24px rgba(0,0,0,.6))}
+.oph-hero{position:relative;width:200px;display:grid;justify-items:center}
+.oph-port{display:block;width:200px;aspect-ratio:.82;border-radius:50% 50% 8px 8px/40% 40% 8px 8px;overflow:hidden;background:#1a1008;box-shadow:inset 0 0 0 2px #1a1008,0 0 0 5px #e2b04e,0 0 0 7px #6a4410,0 0 0 10px #c8963e,0 0 0 12px #2a1806}
+.oph-port .face{width:100%;height:100%;border-radius:0}.oph-port .face svg{width:100%;height:100%}
+.oph-nm{position:absolute;left:0;right:0;bottom:30px;text-align:center;font:700 22px var(--f-disp),serif;color:#fff6dc;text-shadow:0 2px 0 #000,0 0 8px #000}
+.oph-hp{position:absolute;right:-14px;bottom:18px;width:52px;height:52px;display:grid;place-items:center;border-radius:50% 50% 50% 50%/60% 60% 42% 42%;background:radial-gradient(circle at 35% 35%,#ff7a6a,#b01e14);box-shadow:0 0 0 3px #120a06;font:700 22px var(--f-disp),serif;color:#fff;text-shadow:0 2px 0 #000}
+.oph-hp::after{content:attr(data-x)}
+.oph-who{margin-top:10px;font-size:12px;color:#e8d6b0}
+.oph-pw{position:relative;width:190px;display:grid;justify-items:center;gap:5px;padding:46px 12px 14px;border-radius:8px 8px 40px 40px;text-align:center;
+  background:linear-gradient(180deg,#4a5aa8,#2c376e);box-shadow:inset 0 0 0 1.5px #10142a,inset 0 0 0 3.5px #c8b07a,inset 0 0 0 5px #10142a}
+.oph-pw .hpc-art{position:absolute;top:-30px;left:50%;transform:translateX(-50%);width:66px;height:66px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 40% 35%,#5a3a20,#1a0e06);box-shadow:0 0 0 3px #120a06,0 0 0 6px #c8963e}
+.oph-pw .hpc-art .pwart{width:42px;height:42px}
+.oph-pw .hpc-gem{position:absolute;top:-40px;left:50%;transform:translateX(-50%);width:34px;height:34px;border-radius:50%;display:grid;place-items:center;box-shadow:0 0 0 3px #120a06;z-index:2}
+.oph-pw .hpc-gem.g{background:radial-gradient(circle at 35% 30%,#ffe9a0,#c8901e)}.oph-pw .hpc-gem.g b{font:700 18px var(--f-disp),serif;color:#2a1606}
+.oph-pw .hpc-gem.ck{background:radial-gradient(circle at 35% 30%,#bfe6ff,#2a7ad8)}.oph-pw .hpc-gem.ck .ckm{width:28px;height:28px}
+.oph-pw .hpc-gem.p{background:#2a1a0e;box-shadow:0 0 0 3px #120a06,0 0 0 5px #c8963e}.oph-pw .hpc-gem.p b{color:#ffd86a;font-size:16px}
+.oph-pw .hpc-nm{width:calc(100% + 26px);padding:4px 0;font:700 15px var(--f-label),serif;color:#2a1c10;background:linear-gradient(180deg,#f3ead2,#c9b88e);clip-path:polygon(0 0,100% 0,95% 50%,100% 100%,0 100%,5% 50%)}
+.oph-pw .hpc-tx{margin:0;padding:8px;border-radius:6px;font-size:12.5px;line-height:1.35;color:#2a2018;background:linear-gradient(180deg,#ece2ca,#d6c8a8)}
+.oph-pw .hpc-bonus{margin:0;font-size:11.5px;line-height:1.3;color:#f1e4c6}.oph-pw .hpc-bonus b{color:#ffd86a;margin-right:3px}
+.oph-parch{width:250px;padding:18px 18px 16px;border-radius:6px;background:linear-gradient(180deg,#e2cfa2,#c8b080);box-shadow:inset 0 0 0 2px #8a6a40,inset 0 0 0 5px #e9d9b2,inset 0 0 0 6.5px #9a5aa8,0 0 0 2px #3a2a14}
+.op-stats{display:flex;justify-content:space-around;align-items:center;padding-bottom:12px;border-bottom:2px solid rgba(90,60,30,.3)}
+.op-sh svg{width:42px;height:48px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.4))}
+.op-st{position:relative;display:grid;place-items:center;width:46px;height:46px}.op-st .op-ic{font-size:34px;line-height:1;color:#7a8aa0;filter:drop-shadow(0 2px 1px rgba(0,0,0,.4))}
+.op-tri{width:44px;height:44px;filter:drop-shadow(0 2px 1px rgba(0,0,0,.4))}
+.op-st b{position:absolute;inset:0;display:grid;place-items:center;font:700 22px var(--f-disp),serif;color:#fff;text-shadow:0 0 3px #000,0 2px 0 #000}
+.op-rows{display:grid;gap:8px;margin-top:12px}
+.op-row{display:grid;grid-template-columns:30px 54px 1fr;align-items:center;gap:6px;padding:6px 8px;border-radius:6px;background:rgba(90,60,30,.12);box-shadow:inset 0 0 0 1px rgba(90,60,30,.25)}
+.op-sw{font-size:22px;color:#6a6a74}
+.op-burst{display:grid;place-items:center;width:50px;height:46px;clip-path:polygon(50% 0,61% 22%,85% 10%,78% 35%,100% 45%,79% 58%,90% 84%,63% 76%,50% 100%,37% 76%,10% 84%,21% 58%,0 45%,22% 35%,15% 10%,39% 22%);background:radial-gradient(circle,#fff3a0,#e8b020)}
+.op-burst b{font:700 15px var(--f-disp),serif;color:#2a1606}.op-burst.l{background:radial-gradient(circle,#ffd0c0,#d84a2a)}.op-burst.l b{color:#fff;text-shadow:0 1px 0 #000}
+.op-of{justify-self:end;width:46px;height:46px;border-radius:8px;overflow:hidden;box-shadow:0 0 0 2px #120a06,0 0 0 4px #b01e14;display:grid;place-items:center;background:#3a2a1a;color:#fff;font-weight:700}
+.op-of svg{width:100%;height:100%}
+.op-none{margin:6px 0 0;font-size:12.5px;font-style:italic;color:#5a4428;text-align:center}
+@media (max-width:820px){ .oph{flex-wrap:wrap;justify-content:center;gap:10px;max-width:92vw} .oph-hero,.oph-port{width:130px} .oph-pw{width:160px} .oph-parch{width:220px} }
 .rl-body{overflow:auto;min-height:0;padding-right:4px;text-align:left}
 .rl-p p,.rl-ul li{font-size:13px;line-height:1.45;color:#f1e4c6;margin:0 0 8px}.rl-p b,.rl-ul b,.rl-step b{color:#ffd86a}
 .rl-ul{margin:0 0 8px;padding-left:18px}
@@ -2908,7 +2972,7 @@ html.lite .keeper-zone .mn.pairok::after{animation:none}
 
 /* choix du héros : rangée de grands portraits */
 (function(){ const st = document.createElement('style'); st.textContent = `
-.hp-ov{align-items:center;background:radial-gradient(ellipse at 50% 40%,rgba(60,30,12,.55),rgba(8,4,2,.92))}
+.hp-ov{align-items:center;background:radial-gradient(ellipse at 50% 40%,rgba(60,30,12,.9),rgba(8,4,2,.97))}
 .hp-wrap{width:min(1600px,96vw);max-height:96vh;overflow:auto;display:grid;justify-items:center;gap:10px;padding:10px}
 .hp-t{margin:0;font:700 clamp(30px,4.6vh,56px) var(--f-disp),serif;color:#ffd86a;text-shadow:0 4px 0 #120a06,0 0 24px rgba(255,170,60,.5)}
 .hp-row{display:flex;justify-content:center;align-items:flex-start;gap:clamp(10px,1.6vw,30px);width:100%;margin-top:6px}

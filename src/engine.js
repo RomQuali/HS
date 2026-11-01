@@ -1050,7 +1050,7 @@ function checkTriple(G, p) {
     const b = CD(id);
     const gm = { c:id, a:copies.reduce((t, m) => t + m.a, 0), h:copies.reduce((t, m) => t + m.h, 0), g:1, f:b.f, u:UID++, tr:1 }; { const sl = copies.reduce((t, m) => t + (m.sl || 0), 0); if (sl) { gm.sl = sl; if (copies.some(m => m.slf) || sl >= 5) gm.slf = 1; } }
     copies.forEach(m => { for (const k of m.f || '') addF(gm, k); if (m.x) gm.x = (gm.x || []).concat(m.x); (m.bn || []).forEach(e => { const L = gm.bn || (gm.bn = []); const f = L.find(x => x.s === e.s); if (f) { f.a += e.a; f.h += e.h; f.n += e.n; for (const k of e.k || '') if (!(f.k || '').includes(k)) f.k = (f.k || '') + k; } else L.push({ ...e }); }); });
-    p.hd.push(gm);
+    p.hd.push(gm); p.trc = (p.trc || 0) + 1;
     if (C[id].t === 0) qAdd(p, 'tripTok');
     { const t = htr(p, 'ptrip'); if (t && C[id].t === 0) withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => { p.ck = Math.min(ckMax(p), (p.ck || 0) + (t.ck || 0)); }); }
     if (inMech(G, 'serment', gm)) withSrc('Serment des anciens', () => p.bd.concat(p.hd).forEach(x => { if (x !== gm && !x.sp && inMech(G, 'serment', x)) buff(x, 2, 2); }));
@@ -1668,6 +1668,7 @@ function endRecruit() {
     if (r.w === 0) rankUp(p); if (!ghost && r.w === 1) rankUp(q);
     if (r.w === 0) winUp(p); if (!ghost && r.w === 1) winUp(q);
     if (!ghost) q.res = { o:p.n, r:X(r.w), d, cr:duel ? X(duel.w) : join && q.cp ? stand(q, 1) : null };
+    { const hist = (x, oh, on, w) => { x.hist = [{ h:oh || '', n:on, d:w === 'win' ? d : w === 'loss' ? -d : 0 }].concat(x.hist || []).slice(0, 3); }; hist(p, ghost ? ghost.hero : q.hero, qn, W(r.w)); if (!ghost) hist(q, p.hero, p.n, X(r.w)); }
     const base = { duel, stl, rd:G.rd, a:pb.map(fullM), b:qcb.map(fullM), seed, ta:p.t, tb:qt, cap, ha:p.hero, hb:ghost ? ghost.hero : q.hero, fire, mx:G.mx || {} };
     if (p.human && !p.bot) { deliverFight(p, Object.assign({ me:0, on:qn }, base)); maxFrames = Math.max(maxFrames, r.frames.length); }
     if (!ghost && q.human && !q.bot) { deliverFight(q, Object.assign({ me:1, on:p.n }, base)); maxFrames = Math.max(maxFrames, r.frames.length); }
@@ -1748,7 +1749,7 @@ function pubData() {
   const G = H.G;
   if (!G) return { ph:'lobby', code:H.code, cv:CAT_REV, us:(V.univSel || []).slice(), pl:H.roster.map(r => ({ n:r.n, pe:r.peer })), last:H.last || null };
   return { ph:G.ph, rd:G.rd, rem:Math.max(0, G.end - Date.now()), code:H.code, cv:CAT_REV, trs:G.trs, ban:G.ban, univ:G.univ, laws:G.laws || [], ev:G.eveil || 0, mhp:(+RU().hp || 40) + 10,
-    pl:G.ps.map(p => ({ pid:p.pid, haw:p.haw || 0, n:p.n, hp:p.hp, t:p.t, ai:!p.human, bot:p.bot, al:p.al, pl:p.place, r:p.rdy, h:p.hero, pe:p.peer, nb:p.bd.length, el:p.cp ? compEl(p.cp) : null, mk:p.cp ? p[MK[compEl(p.cp)]] || 0 : 0 })) };
+    pl:G.ps.map(p => ({ pid:p.pid, haw:p.haw || 0, hs:p.hist || [], tc:p.trc || 0, ws:p.wst || 0, n:p.n, hp:p.hp, t:p.t, ai:!p.human, bot:p.bot, al:p.al, pl:p.place, r:p.rdy, h:p.hero, pe:p.peer, nb:p.bd.length, el:p.cp ? compEl(p.cp) : null, mk:p.cp ? p[MK[compEl(p.cp)]] || 0 : 0 })) };
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
