@@ -24,11 +24,11 @@ const DEFAULT_SETTINGS = {
     { id:'sq_vent', n:'Zéphy', col:'#6fd0c0', bg:'sqvent', on:true },
     { id:'sq_glace', n:'Givrou', col:'#9fd8ff', bg:'sqglace', on:true },
     { id:'sq_foudre', n:'Zapou', col:'#ffd23a', bg:'sqfoudre', on:true },
-    { id:'n_feu', n:'Clan Katon', col:'#d8502a', bg:'volcan', on:true },
-    { id:'n_vent', n:'Clan Fûton', col:'#3aa86a', bg:'sqvent', on:true },
-    { id:'n_eau', n:'Clan Suiton', col:'#2f7ab8', bg:'sqeau', on:true },
-    { id:'n_foudre', n:'Clan Raiton', col:'#c8a020', bg:'sqfoudre', on:true },
-    { id:'n_terre', n:'Clan Doton', col:'#7a5a3a', bg:'mine', on:true },
+    { id:'n_feu', n:'Village de la Feuille', col:'#d8502a', bg:'volcan', on:true },
+    { id:'n_vent', n:'Village du Sable', col:'#c8a050', bg:'sqvent', on:true },
+    { id:'n_eau', n:'Village de la Brume', col:'#2f7ab8', bg:'sqeau', on:true },
+    { id:'n_foudre', n:'Village du Nuage', col:'#8a7ad8', bg:'sqfoudre', on:true },
+    { id:'n_terre', n:'Village de la Roche', col:'#7a5a3a', bg:'mine', on:true },
   ],
   univ:[
     { n:'Ténèbres', col:'#6a2a8a', ic:'moon', lore:'Ici, mourir n\'est qu\'un contretemps.', mech:'ames', tribes:['spec', 'vamp', 'garou', 'mort', 'bete'] },
@@ -63,40 +63,30 @@ const DEFAULT_CARD_LIST = [
   ['b_chiot', 'Chiot des cendres', 1, 'bete', 2, 1, '', [{ k:'dr_summon', card:'tk_chiot', n:1 }]],
   ['p_pilleur', 'Pilleur de quai', 1, 'cors', 3, 2, '', []],
   ['s_lueur', 'Lueur errante', 1, 'spec', 2, 1, 'r', []],
-  ['n_garde', 'Garde-barrière', 1, 'neu', 1, 4, 't', []],
   ['r_ferr', 'Ferrailleur', 1, 'meca', 2, 2, '', [{ k:'sell_gold', n:1 }]],
   ['b_chat', 'Chat de gouttière', 1, 'bete', 1, 1, '', [{ k:'bc_summon', card:'tk_chaton', n:1 }]],
   ['r_piston', 'Pistonneur', 2, 'meca', 2, 3, '', [{ k:'play_self', tb:'meca', a:1, h:1 }]],
   ['b_meute', 'Loup affamé', 2, 'bete', 3, 2, '', [{ k:'dr_buff_rand', tb:'bete', a:2, h:1 }]],
   ['p_second', 'Second du capitaine', 2, 'cors', 3, 3, '', [{ k:'bc_buff_tribe', tb:'cors', a:1, h:1 }]],
   ['s_murmure', 'Murmure glacé', 2, 'spec', 2, 4, '', [{ k:'die_self', tb:'', a:1, h:1 }]],
-  ['n_bricol', 'Bricoleur', 2, 'neu', 2, 3, '', [{ k:'eot_buff_rand', a:1, h:1, n:1, tb:'' }]],
   ['b_venin', 'Cracheur de venin', 2, 'bete', 1, 2, 'v', []],
   ['r_bombe', 'Bombe ambulante', 2, 'meca', 2, 2, '', [{ k:'dr_dmg', d:4, n:1 }]],
   ['r_meca', 'Mécanicienne', 3, 'meca', 3, 3, '', [{ k:'dr_summon', card:'tk_robot', n:2 }]],
   ['b_louve', 'Mère louve', 3, 'bete', 3, 3, '', [{ k:'dr_summon', card:'tk_louv', n:2 }]],
   ['p_canon', 'Canonnier', 3, 'cors', 2, 3, '', [{ k:'soc_dmg', d:3, n:1 }]],
   ['s_ame', 'Âme en peine', 3, 'spec', 3, 2, 'tr', []],
-  ['n_aube', 'Paladin de l\'aube', 3, 'neu', 3, 3, 's', []],
-  ['n_taver', 'Tavernier jovial', 3, 'neu', 2, 3, '', [{ k:'eot_buff_rand', a:1, h:1, n:2, tb:'' }]],
   ['r_forge', 'Forge vivante', 4, 'meca', 3, 5, '', [{ k:'play_other', tb:'meca', a:2, h:2 }]],
   ['b_cerf', 'Grand cerf', 4, 'bete', 4, 4, '', [{ k:'bc_buff_tribe', tb:'bete', a:2, h:2 }]],
   ['p_bouc', 'Boucanier sanglant', 4, 'cors', 4, 4, 'w', []],
   ['s_hurl', 'Hurleur du voile', 4, 'spec', 3, 5, '', [{ k:'dr_buff_all', tb:'spec', a:2, h:2 }]],
-  ['n_champ', 'Champion de l\'arène', 4, 'neu', 3, 6, 't', [{ k:'surv_self', a:2, h:0 }]],
   ['r_titan', 'Titan de ferraille', 5, 'meca', 6, 6, '', [{ k:'dr_summon', card:'r_rouage', n:2 }]],
   ['b_roi', 'Roi des fauves', 5, 'bete', 5, 6, '', [{ k:'die_others', tb:'bete', a:1, h:1 }]],
   ['p_amiral', 'Amirale fantôme', 5, 'cors', 6, 5, '', [{ k:'bc_buff_tribe', tb:'cors', a:2, h:2 }]],
   ['s_liche', 'Liche du gouffre', 5, 'spec', 4, 6, '', [{ k:'soc_kw', kw:'r', tb:'spec' }]],
-  ['n_sage', 'Sage des runes', 5, 'neu', 4, 5, '', [{ k:'eot_buff_all', a:1, h:1, tb:'' }]],
   ['r_colosse', 'Colosse primordial', 6, 'meca', 7, 7, 's', [{ k:'dr_kw', kw:'s', tb:'meca' }]],
   ['b_fleau', 'Fléau des plaines', 6, 'bete', 7, 7, '', [{ k:'dr_summon_rand', tb:'bete', tier:4, n:2 }]],
   ['p_kraken', 'Kraken des abysses', 6, 'cors', 6, 7, '', [{ k:'soc_dmg', d:4, n:2 }]],
   ['s_seign', 'Seigneur des âmes', 6, 'spec', 6, 6, '', [{ k:'dr_summon', card:'s_ame', n:2 }]],
-  ['n_gardien', 'Gardien éternel', 6, 'neu', 6, 10, 'ts', []],
-  ['n_tambour', 'Tambour des deux fronts', 4, 'neu', 2, 5, '', [{ k:'aura_soc' }]],
-  ['n_heraut', 'Héraut des échos', 5, 'neu', 2, 4, '', [{ k:'aura_bc' }]],
-  ['n_fossoy', 'Fossoyeur aux lanternes', 5, 'neu', 1, 7, '', [{ k:'aura_dr' }]],
   ['c_bricole', 'Bricole l\'apprentie', 3, 'neu', 2, 3, '', [{ k:'roll_self', a:1, h:1 }]],
   ['c_lumen', 'Lumen', 3, 'neu', 2, 3, 's', [{ k:'shield_buff', a:2 }]],
   ['c_fiole', 'Fiole l\'homoncule', 3, 'neu', 2, 4, '', [{ k:'pow_buff_rand', a:1, h:1 }]],
@@ -234,77 +224,80 @@ const DEFAULT_CARD_LIST = [
   ['c_caillou', 'Caillou mou', 3, 'neu', 2, 4, 't', [{ k:'eot_buff_taunt', a:0, h:1 }]],
   ['c_gloup', 'Gloup', 3, 'neu', 2, 4, '', [{ k:'play_other', tb:'sq_eau', a:1, h:1 }]],
   ['c_frisouille', 'Frisouille', 3, 'neu', 2, 3, '', [{ k:'soc_buff', tb:'sq_vent', a:1, h:1 }]],
-  ['n_sablier', 'Maître des sabliers', 5, 'neu', 3, 5, '', [{ k:'aura_eot' }]],
   ['tk_chiot', 'Chiot fumant', 0, 'bete', 1, 1, '', []],
   ['tk_chaton', 'Chaton', 0, 'bete', 1, 1, '', []],
   ['tk_robot', 'Micro-robot', 0, 'meca', 1, 1, '', []],
   ['tk_louv', 'Louveteau', 0, 'bete', 2, 1, '', []],
   // ----- Les Cinq Nations (univers ninja original) -----
-  ['n_f1', 'Genin de la flamme', 1, 'n_feu', 2, 1, '', [{ k:'cast_self', a:1, h:0 }, { k:'rank', a:1, h:1 }]],
-  ['n_f2', 'Porteur de la 1re porte', 2, 'n_feu', 2, 3, '', [{ k:'soc_gate', a:3, d:1 }]],
-  ['n_f3', 'Gardienne du foyer', 3, 'n_feu', 3, 4, '', [{ k:'cast_buff_tribe', a:1, h:1, tb:'n_feu' }]],
-  ['n_f4', 'ANBU des flammes', 4, 'n_feu', 4, 4, '', [{ k:'soc_dmg', d:2, n:2 }, { k:'cast_self', a:1, h:0 }]],
-  ['n_f5', 'Sensei Katon', 5, 'n_feu', 5, 5, '', [{ k:'bc_spell', n:1 }, { k:'cast_buff_tribe', a:2, h:1, tb:'n_feu' }]],
-  ['n_f6', 'Grand Sage Katon', 6, 'n_feu', 7, 6, '', [{ k:'awk_phoenix' }, { k:'bc_gate', d:3, a:4, h:4 }, { k:'cast_buff_tribe', a:1, h:1, tb:'n_feu' }]],
-  ['n_v1', 'Genin aux clones', 1, 'n_vent', 1, 2, '', [{ k:'bc_summon', card:'tk_clone', n:1 }]],
-  ['n_v2', 'Chûnin de l\'ombre', 2, 'n_vent', 2, 3, '', [{ k:'dr_summon', card:'tk_clone', n:2 }]],
-  ['n_v3', 'Maître des clones', 3, 'n_vent', 3, 4, '', [{ k:'eot_clones', a:1, h:1 }, { k:'eot_self', a:1, h:0 }]],
-  ['n_v4', 'Faucheuse du vent', 4, 'n_vent', 4, 4, 'w', [{ k:'awk_hurricane', d:1 }, { k:'bc_summon', card:'tk_clone', n:2 }]],
-  ['n_v5', 'Jônin de la tempête de sable', 5, 'n_vent', 5, 6, '', [{ k:'die_self', tb:'n_vent', a:2, h:1 }, { k:'eot_inc', n:2 }]],
-  ['n_v6', 'Seigneur des dunes', 6, 'n_vent', 7, 8, 't', [{ k:'awk_hurricane', d:2 }, { k:'eot_buff_all', a:1, h:2, tb:'n_vent' }]],
-  ['n_e1', 'Genin des brumes', 1, 'n_eau', 1, 3, '', [{ k:'eot_self', a:0, h:1 }]],
-  ['n_e2', 'Chûnin scelleur', 2, 'n_eau', 2, 3, '', [{ k:'soc_chill', a:1, n:1 }, { k:'rank', a:1, h:1 }]],
-  ['n_e3', 'Porteuse de marée', 3, 'n_eau', 3, 3, '', [{ k:'eot_wave', a:1, h:2 }]],
-  ['n_e4', 'Duelliste des brumes', 4, 'n_eau', 4, 4, '', [{ k:'soc_chill', a:2, n:2 }, { k:'pas_ckx', n:2 }]],
-  ['n_e5', 'Maître des sceaux', 5, 'n_eau', 5, 5, '', [{ k:'soc_seal', n:2 }, { k:'eot_buff_all', a:0, h:1, tb:'n_eau' }]],
-  ['n_e6', 'Gardien des abysses', 6, 'n_eau', 6, 8, 's', [{ k:'awk_tsunami' }, { k:'soc_chill', a:2, n:7 }]],
-  ['n_o1', 'Genin étincelle', 1, 'n_foudre', 2, 3, '', [{ k:'cast_self', a:1, h:0 }]],
-  ['n_o2', 'Messager de l\'orage', 2, 'n_foudre', 2, 3, '', [{ k:'cast_chain', n:2, a:2, h:1 }]],
-  ['n_o3', 'Lame crépitante', 3, 'n_foudre', 4, 3, '', [{ k:'awk_surge', a:3, h:0 }, { k:'atk_zap', d:2, n:1 }]],
-  ['n_o4', 'Hurleur du tonnerre', 4, 'n_foudre', 4, 6, '', [{ k:'eot_chakra', n:1 }, { k:'cast_chain', n:3, a:3, h:3 }]],
-  ['n_o5', 'Cuirasse d\'éclairs', 5, 'n_foudre', 6, 6, 'w', [{ k:'awk_surge', a:3, h:3 }, { k:'atk_zap', d:2, n:2 }]],
-  ['n_o6', 'Seigneur de l\'orage', 6, 'n_foudre', 8, 8, '', [{ k:'awk_storm' }, { k:'eot_chakra', n:2 }]],
-  ['n_t1', 'Petit golem de pierre', 1, 'n_terre', 1, 2, 't', [{ k:'eot_anchor' }]],
-  ['n_t2', 'Genin bâtisseur', 2, 'n_terre', 2, 3, '', [{ k:'dr_summon', card:'tk_mur', n:1 }]],
-  ['n_t3', 'Garde des roches', 3, 'n_terre', 2, 5, 't', [{ k:'eot_buff_taunt', a:1, h:1 }, { k:'rank', a:1, h:2 }]],
-  ['n_t4', 'Lanceur de rochers', 4, 'n_terre', 5, 4, '', [{ k:'soc_dmg', d:3, n:1 }, { k:'soc_team', a:1, h:2 }]],
-  ['n_t5', 'Colosse de granit', 5, 'n_terre', 4, 8, 't', [{ k:'eot_anchor' }, { k:'soc_summon', card:'tk_mur', n:1 }]],
   // ----- kekkei genkai : serviteurs à double nature -----
-  ['n_k1', 'Pousse de Mokuton', 3, 'n_terre', 2, 5, 't', [{ k:'combo_kg', a:1, h:2 }]],
-  ['n_k2', 'Gardien de la forêt', 5, 'n_terre', 4, 8, 't', [{ k:'combo_kg', a:2, h:3 }, { k:'dr_summon', card:'tk_mur', n:1 }]],
-  ['n_k3', 'Disciple de la glace', 3, 'n_eau', 3, 3, '', [{ k:'soc_chill', a:1, n:2 }, { k:'combo_kg', a:1, h:1 }]],
-  ['n_k4', 'Miroir de glace', 5, 'n_eau', 5, 5, '', [{ k:'soc_seal', n:1 }, { k:'combo_kg', a:2, h:2 }]],
-  ['n_k5', 'Golem de lave', 4, 'n_feu', 4, 6, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_kg', a:2, h:1 }]],
-  ['n_k6', 'Volcan vivant', 6, 'n_feu', 7, 8, '', [{ k:'soc_dmg', d:3, n:3 }, { k:'combo_kg', a:3, h:3 }]],
-  ['n_k7', 'Lanceur de tempête', 4, 'n_foudre', 5, 4, '', [{ k:'atk_zap', d:2, n:1 }, { k:'combo_kg', a:2, h:1 }]],
-  ['n_k8', 'Dragon de la tempête', 6, 'n_foudre', 7, 7, 'w', [{ k:'atk_zap', d:3, n:2 }, { k:'combo_kg', a:3, h:2 }]],
-  ['n_k9', 'Artificier d\'argile', 3, 'n_terre', 3, 3, '', [{ k:'dr_dmg', d:3, n:1 }, { k:'combo_kg', a:1, h:1 }]],
-  ['n_k10', 'Sculpteur explosif', 5, 'n_terre', 5, 5, '', [{ k:'dr_dmg', d:4, n:2 }, { k:'combo_kg', a:2, h:2 }]],
   // jetons ninja
-  ['tk_clone', 'Clone de l\'ombre', 0, 'n_vent', 1, 1, '', []],
+  ['tk_clone', 'Clone de l\'ombre', 0, 'n_feu', 2, 2, '', []],
   ['tk_golem', 'Golem de terre', 0, 'n_terre', 2, 3, 't', []],
   ['tk_mur', 'Mur de terre', 0, 'n_terre', 0, 4, 't', []],
+  // ----- univers Ninja : les 5 villages (10 serviteurs chacun) + kekkei genkai -----
+  ['n_f1', 'Genin de la Feuille', 1, 'n_feu', 2, 2, '', [{ k:'soc_dmg', d:1, n:2 }]],
+  ['n_f2', 'Apprenti artificier', 1, 'n_feu', 1, 2, '', [{ k:'ckm', c:2, m:{ k:'m_fire', d:2 } }]],
+  ['n_f3', 'Chūnin des flammes', 2, 'n_feu', 3, 3, '', [{ k:'soc_dmg', d:2, n:2 }]],
+  ['n_f4', 'Lanceur de kunais explosifs', 2, 'n_feu', 3, 3, '', [{ k:'dr_dmg', d:3, n:1 }]],
+  ['n_f5', 'Jōnin pyromane', 3, 'n_feu', 4, 4, '', [{ k:'soc_fire_tb', d:2 }]],
+  ['n_f6', 'Sentinelle de la Feuille', 3, 'n_feu', 2, 5, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'ckm', c:3, m:{ k:'m_fire', d:3 } }]],
+  ['n_f7', 'Maître des sceaux explosifs', 4, 'n_feu', 5, 5, '', [{ k:'soc_fire_tb', d:2 }, { k:'dr_dmg', d:3, n:1 }]],
+  ['n_f8', 'ANBU de la Feuille', 4, 'n_feu', 5, 5, '', [{ k:'soc_dmg', d:3, n:3 }]],
+  ['n_f9', 'Grand artificier', 5, 'n_feu', 6, 7, '', [{ k:'soc_aoe', d:2 }, { k:'ckm', c:4, m:{ k:'m_fire', d:5 } }]],
+  ['n_f10', 'Hokage des flammes', 6, 'n_feu', 8, 8, '', [{ k:'soc_aoe', d:3 }, { k:'soc_fire_tb', d:2 }]],
+  ['n_v1', 'Apprenti marionnettiste', 1, 'n_vent', 1, 2, '', [{ k:'bc_summon', card:'tk_puppet', n:1 }]],
+  ['n_v2', 'Garde du désert', 1, 'n_vent', 2, 2, '', [{ k:'ckm', c:2, m:{ k:'m_summon', card:'tk_puppet' } }]],
+  ['n_v3', 'Chūnin marionnettiste', 2, 'n_vent', 3, 3, '', [{ k:'eot_card_buff', card:'tk_puppet', a:1, h:1 }]],
+  ['n_v4', 'Éclaireur des dunes', 2, 'n_vent', 3, 2, '', [{ k:'dr_summon', card:'tk_puppet', n:2 }]],
+  ['n_v5', 'Maître des fils', 3, 'n_vent', 3, 4, '', [{ k:'bc_summon', card:'tk_puppet', n:2 }, { k:'eot_card_buff', card:'tk_puppet', a:1, h:1 }]],
+  ['n_v6', 'Gardien de sable', 3, 'n_vent', 2, 6, 't', [{ k:'ckm', c:3, m:{ k:'m_buffall', a:0, h:2, tb:'n_vent' } }]],
+  ['n_v7', 'Marionnettiste d\'élite', 4, 'n_vent', 4, 5, '', [{ k:'die_self', tb:'n_vent', a:2, h:1 }]],
+  ['n_v8', 'Ninja de la tempête de sable', 4, 'n_vent', 5, 4, '', [{ k:'soc_buff', a:0, h:2, tb:'n_vent' }]],
+  ['n_v9', 'Kazekage des marionnettes', 5, 'n_vent', 5, 6, '', [{ k:'eot_card_buff', card:'tk_puppet', a:2, h:2 }, { k:'ckm', c:4, m:{ k:'m_summon', card:'tk_puppet' } }]],
+  ['n_v10', 'Bouclier de sable absolu', 6, 'n_vent', 6, 9, '', [{ k:'soc_buff', a:1, h:4, tb:'n_vent' }]],
+  ['n_e1', 'Genin de la Brume', 1, 'n_eau', 2, 3, '', [{ k:'surv_self', a:1, h:1 }]],
+  ['n_e2', 'Infirmier de la Brume', 1, 'n_eau', 1, 2, '', [{ k:'ckm', c:2, m:{ k:'m_shield' } }]],
+  ['n_e3', 'Chūnin des brumes', 2, 'n_eau', 2, 4, '', [{ k:'eot_buff_rand', a:0, h:2, n:1 }]],
+  ['n_e4', 'Garde des vapeurs', 2, 'n_eau', 2, 3, 's', []],
+  ['n_e5', 'Médecin-ninja', 3, 'n_eau', 2, 5, '', [{ k:'eot_buff_all', a:0, h:1, tb:'n_eau' }]],
+  ['n_e6', 'Bretteur de la Brume', 3, 'n_eau', 4, 5, '', [{ k:'surv_self', a:2, h:0 }]],
+  ['n_e7', 'Gardien des brumes', 4, 'n_eau', 3, 7, 's', [{ k:'ckm', c:3, m:{ k:'m_buffall', a:1, h:2, tb:'n_eau' } }]],
+  ['n_e8', 'Maître médecin', 4, 'n_eau', 4, 6, '', [{ k:'soc_kw', kw:'s', tb:'n_eau' }]],
+  ['n_e9', 'Épéiste de la Brume', 5, 'n_eau', 6, 6, '', [{ k:'dr_buff_all', a:2, h:2, tb:'n_eau' }]],
+  ['n_e10', 'Mizukage des brumes', 6, 'n_eau', 6, 9, '', [{ k:'soc_kw', kw:'r', tb:'n_eau' }]],
+  ['n_o1', 'Genin du Nuage', 1, 'n_foudre', 1, 1, '', [{ k:'win_self', a:1, h:0 }]],
+  ['n_o2', 'Porteur de chakra', 1, 'n_foudre', 1, 2, '', [{ k:'ckm', c:2, m:{ k:'m_self', a:1, h:1 } }]],
+  ['n_o3', 'Chūnin de la foudre', 2, 'n_foudre', 3, 2, '', [{ k:'win_self', a:1, h:1 }]],
+  ['n_o4', 'Élève jinchūriki', 2, 'n_foudre', 2, 2, '', [{ k:'win_self', a:0, h:2 }]],
+  ['n_o5', 'Garde du Raikage', 3, 'n_foudre', 3, 4, '', [{ k:'win_self', a:1, h:1 }, { k:'ckm', c:3, m:{ k:'m_self', a:2, h:2 } }]],
+  ['n_o6', 'Coureur éclair', 3, 'n_foudre', 4, 3, 'w', [{ k:'win_self', a:1, h:1 }]],
+  ['n_o7', 'Jinchūriki instable', 4, 'n_foudre', 4, 5, '', [{ k:'win_self', a:1, h:1 }, { k:'dr_summon', card:'tk_bijuu', n:1 }]],
+  ['n_o8', 'Escouade de la foudre', 4, 'n_foudre', 5, 5, '', [{ k:'win_all', a:1, h:0, tb:'n_foudre' }]],
+  ['n_o9', 'Hôte d\'une bête à queues', 5, 'n_foudre', 5, 7, '', [{ k:'win_self', a:2, h:2 }, { k:'dr_summon', card:'tk_bijuu', n:1 }]],
+  ['n_o10', 'Raikage de la tempête', 6, 'n_foudre', 7, 8, '', [{ k:'win_all', a:1, h:1, tb:'n_foudre' }, { k:'ckm', c:4, m:{ k:'m_self', a:3, h:3 } }]],
+  ['n_t1', 'Genin de la Roche', 1, 'n_terre', 1, 3, 't', []],
+  ['n_t2', 'Bâtisseur', 1, 'n_terre', 1, 2, '', [{ k:'ckm', c:2, m:{ k:'m_wall', h:3 } }]],
+  ['n_t3', 'Chūnin rempart', 2, 'n_terre', 2, 4, 't', [{ k:'dr_summon', card:'tk_mur', n:1 }]],
+  ['n_t4', 'Garde des falaises', 2, 'n_terre', 2, 3, '', [{ k:'eot_buff_taunt', a:0, h:1 }]],
+  ['n_t5', 'Invocateur de murs', 3, 'n_terre', 2, 5, '', [{ k:'soc_summon', card:'tk_mur', n:1 }]],
+  ['n_t6', 'Colosse de granit', 3, 'n_terre', 3, 6, 't', [{ k:'eot_anchor' }]],
+  ['n_t7', 'Maître de la forteresse', 4, 'n_terre', 3, 8, 't', [{ k:'eot_buff_taunt', a:1, h:2 }]],
+  ['n_t8', 'Lanceur de rochers', 4, 'n_terre', 5, 5, '', [{ k:'soc_avalanche' }]],
+  ['n_t9', 'Gardien de la montagne', 5, 'n_terre', 4, 9, 't', [{ k:'soc_avalanche' }, { k:'ckm', c:3, m:{ k:'m_wall', h:5 } }]],
+  ['n_t10', 'Tsuchikage d\'Avalanche', 6, 'n_terre', 6, 10, 't', [{ k:'soc_avalanche' }, { k:'eot_buff_taunt', a:2, h:2 }]],
+  ['n_k1', 'Gardien du Mokuton', 4, 'n_feu', 3, 6, 't', [{ k:'soc_dmg', d:2, n:1 }, { k:'soc_summon', card:'tk_mur', n:1 }]],
+  ['n_k2', 'Disciple du Hyōton', 3, 'n_eau', 3, 4, '', [{ k:'surv_self', a:1, h:1 }, { k:'bc_summon', card:'tk_puppet', n:1 }]],
+  ['n_k3', 'Dragon du Ranton', 5, 'n_foudre', 5, 6, '', [{ k:'win_self', a:2, h:2 }, { k:'surv_self', a:0, h:2 }]],
+  ['n_k4', 'Sculpteur explosif', 4, 'n_terre', 4, 5, '', [{ k:'dr_dmg', d:4, n:1 }, { k:'win_self', a:1, h:1 }]],
+  ['n_k5', 'Ninja du Shakuton', 5, 'n_feu', 5, 5, '', [{ k:'soc_fire_tb', d:1 }, { k:'bc_summon', card:'tk_puppet', n:1 }]],
+  ['tk_puppet', 'Marionnette', 0, 'n_vent', 1, 1, '', []],
+  ['tk_bijuu', 'Bête à queues', 0, 'n_foudre', 6, 6, '', []],
   // bêtes d'invocation (apparaissent à l'Éveil grâce au pacte)
   ['nb_feu', 'Salamandre de braise', 0, 'n_feu', 6, 6, '', []],
   ['nb_vent', 'Loup des vents', 0, 'n_vent', 6, 5, '', []],
   ['nb_eau', 'Serpent des marées', 0, 'n_eau', 5, 7, '', []],
   ['nb_foudre', 'Tigre de foudre', 0, 'n_foudre', 7, 5, '', []],
   ['nb_terre', 'Sanglier de roc', 0, 'n_terre', 4, 9, '', []],
-  ['n_f9', 'Jônin à la volonté du feu', 3, 'n_feu', 3, 4, '', [{ k:'eot_blood', d:1, a:2, h:1 }, { k:'soc_team', a:1, h:1 }]],
-  ['n_v9', 'Courrier des vents', 2, 'n_vent', 3, 3, '', [{ k:'combo_gold', n:1 }, { k:'rank', a:1, h:1 }]],
-  ['n_e9', 'Puits sans fond', 4, 'n_eau', 3, 6, '', [{ k:'rsv_bc' }, { k:'combo_tribe', a:1, h:1, tb:'n_eau' }]],
-  ['n_o9', 'Condensateur vivant', 3, 'n_foudre', 3, 4, '', [{ k:'cast_chain_ck', n:2, c:1 }, { k:'rank', a:1, h:2 }]],
-  ['n_t9', 'Colosse d\'argile', 5, 'n_terre', 4, 7, 't', [{ k:'rsv_bc' }, { k:'combo_self', a:1, h:3 }]],
-  ['n_f7', 'Chûnin à la porte ouverte', 2, 'n_feu', 3, 2, '', [{ k:'bc_gate', d:2, a:2, h:2 }]],
-  ['n_f8', 'Ninja des huit portes', 4, 'n_feu', 3, 5, '', [{ k:'soc_gate', a:5, d:2 }, { k:'rank', a:2, h:1 }]],
-  ['n_v7', 'Coursier des sables', 1, 'n_vent', 2, 2, '', [{ k:'bc_gold', n:1 }]],
-  ['n_v8', 'Danseur d\'éventail', 3, 'n_vent', 3, 4, '', [{ k:'cast_ck', n:1 }, { k:'soc_team', a:1, h:1 }]],
-  ['n_e7', 'Ninja des sceaux', 3, 'n_eau', 2, 5, '', [{ k:'soc_seal', n:1 }, { k:'soc_team', a:0, h:2 }]],
-  ['n_e8', 'Méditant des cascades', 5, 'n_eau', 4, 6, '', [{ k:'eot_ck_spend', n:2, a:2, h:2 }, { k:'pas_ckx', n:2 }]],
-  ['n_o7', 'Parasite de foudre', 2, 'n_foudre', 3, 3, '', [{ k:'dr_steal', n:2 }]],
-  ['n_o8', 'Jônin de la foudre noire', 5, 'n_foudre', 5, 5, '', [{ k:'cast_chain', n:2, a:2, h:2 }, { k:'soc_team', a:2, h:0 }]],
-  ['n_t7', 'Invocateur de golems', 3, 'n_terre', 3, 3, '', [{ k:'bc_summon', card:'tk_golem', n:1 }]],
-  ['n_t8', 'Maître du pacte de pierre', 4, 'n_terre', 3, 5, '', [{ k:'dr_summon', card:'tk_golem', n:2 }]],
   ['c_nj_kurama', 'Mini Kurama', 3, 'n_feu', 6, 5, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:2, h:1 }]],
   ['c_nj_shukaku', 'Shukaku (tanuki)', 3, 'n_vent', 5, 4, 'w', [{ k:'atk_self', a:2, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
   ['c_nj_glaces', 'Esprit des glaces', 3, 'n_eau', 3, 8, '', [{ k:'surv_self', a:1, h:1 }, { k:'combo_self', a:1, h:2 }]],
@@ -346,12 +339,11 @@ const DEFAULT_CARD_LIST = [
   ['c_nj_rocher', 'Rocher animé', 3, 'n_terre', 2, 11, '', [{ k:'surv_self', a:1, h:0 }, { k:'combo_self', a:1, h:2 }]],
   ['c_nj_golem', 'Golem de pierre', 3, 'n_terre', 2, 11, '', [{ k:'atk_self', a:2, h:1 }, { k:'combo_self', a:1, h:2 }]],
   ['c_nj_arbre', 'Arbre gardien', 3, 'n_terre', 2, 11, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:1, h:2 }]],
-  ['n_t6', 'Seigneur des roches', 6, 'n_terre', 6, 10, 't', [{ k:'awk_quake' }, { k:'eot_buff_taunt', a:2, h:2 }]],
 ];
 const DEFAULT_CARDS = {};
 DEFAULT_CARD_LIST.forEach(([id, n, t, tr, a, h, kw, fx]) => { DEFAULT_CARDS[id] = { id, n, t, tr, a, h, kw:kw.split(''), fx, art:{ f:'base', id } }; });
 // kekkei genkai : seconde nature (compte pour les deux clans)
-const TR2 = { n_k1:'n_eau', n_k2:'n_eau', n_k3:'n_vent', n_k4:'n_vent', n_k5:'n_terre', n_k6:'n_terre', n_k7:'n_eau', n_k8:'n_eau', n_k9:'n_foudre', n_k10:'n_foudre' };
+const TR2 = { n_k1:'n_terre', n_k2:'n_vent', n_k3:'n_eau', n_k4:'n_foudre', n_k5:'n_vent' };
 for (const id in TR2) DEFAULT_CARDS[id].tr2 = TR2[id];
 const COMPANIONS = { nh_kushina:'c_nj_kurama', nh_jiraiya:'c_nj_gamabunta', nh_sasuke:'c_nj_aigle', nh_mikoto:'c_nj_chatnoir', nh_itachi:'c_nj_corbeau', nh_temari:'c_nj_shukaku', nh_naruto:'c_nj_grenouille', nh_kankuro:'c_nj_sasori', nh_shikamaru:'c_nj_cerfvolant', nh_gaara:'c_nj_tanuki', nh_haku:'c_nj_glaces', nh_zabuza:'c_nj_requin', nh_suigetsu:'c_nj_bulle', nh_mangetsu:'c_nj_hiramekarei', nh_mei:'c_nj_meduse', nh_omoi:'c_nj_lapin', nh_darui:'c_nj_nuage', nh_samui:'c_nj_renardblanc', nh_bee:'c_nj_gyuki', nh_kakashi:'c_nj_ninken', nh_roshi:'c_nj_songoku', nh_akatsuchi:'c_nj_geant', nh_hashirama:'c_nj_dragonbois', nh_deidara:'c_nj_argile', nh_kurotsuchi:'c_nj_dragonpierre', nh_karin:'c_nj_renard1', nh_asuma:'c_nj_katoncrow', nh_madara:'c_nj_zetsu', nh_konohamaru:'c_nj_singe', nh_pakura:'c_nj_espritvent', nh_baki:'c_nj_faucon', nh_chojuro:'c_nj_poissonscie', nh_ao:'c_nj_tortue', nh_kisame:'c_nj_samehada', nh_yugito:'c_nj_matatabi', nh_raikage:'c_nj_puma', nh_c:'c_nj_hibou', nh_kitsuchi:'c_nj_rocher', nh_onoki:'c_nj_golem', nh_yamato:'c_nj_arbre', paul:'c_pouf', leon:'c_caillou', zoe:'c_gloup', jeanne:'c_frisouille', selene:'c_nyx', brok:'c_enclume', sylvara:'c_lys', grumbo:'c_miette', vaskor:'c_osbrise', pyra:'c_etincelle', rivet:'c_bricole', egide:'c_lumen', ondine:'c_fiole', barnabe:'c_sou', maelle:'c_croc', oren:'c_plume', gor:'c_bastion', ilka:'c_truelle', nono:'c_braise' };
 for (const h in COMPANIONS) DEFAULT_CARDS[COMPANIONS[h]].comp = h;
@@ -360,46 +352,6 @@ const compLimit = rd => rd >= 6 ? 3 : rd >= 5 ? 2 : rd >= 3 ? 1 : 0;
 
 const SLOTS = { 1:3, 2:4, 3:4, 4:5, 5:5, 6:6 };
 const HEROES = {
-  nh_kushina: {diff:3, stars:4, fam:['n_feu'], n:'Kushina Uzumaki', cost:5, clan:'feu', pwn:'Explosions de chakra en série', pw:{ k:'multi', s:[{ k:'fire', d:10 }] }, tx:'Prochain combat : une série d\'explosions inflige 10 dégâts répartis sur l\'ennemi.' },
-  nh_jiraiya: {diff:3, stars:4, fam:['n_feu'], n:'Jiraiya', cost:4, clan:'feu', pwn:'Sagesse & invocation', pw:{ k:'multi', s:[{ k:'card', tb:'n_feu' }] }, tx:'Invocation : ajoute à ta main un serviteur du Clan Katon de ton niveau.' },
-  nh_sasuke: {diff:3, stars:4, fam:['n_feu'], n:'Sasuke Uchiha', cost:5, clan:'feu', pwn:'Katon : Gōkakyū no Jutsu', pw:{ k:'multi', s:[{ k:'fire', d:6 }, { k:'buffr', tb:'n_feu', a:2, h:1, n:2 }] }, tx:'Grande boule de feu : 6 dégâts à l\'ennemi au prochain combat, et deux serviteurs du Clan Katon gagnent +2/+1.' },
-  nh_mikoto: {diff:2, stars:3, fam:['n_feu'], n:'Mikoto Uchiha', cost:3, clan:'feu', pwn:'Protection de clan', pw:{ k:'multi', s:[{ k:'tkw', kw:'s', n:1 }, { k:'buffall', tb:'n_feu', a:0, h:1 }] }, tx:'Prochain combat : un de tes serviteurs gagne Bouclier divin. Tes serviteurs du Clan Katon gagnent +0/+1.' },
-  nh_itachi: {diff:3, stars:4, fam:['n_feu'], n:'Itachi Uchiha', cost:5, clan:'feu', pwn:'Amaterasu éternel', pw:{ k:'multi', s:[{ k:'fire', d:5 }, { k:'tkw', kw:'v', n:1 }] }, tx:'Prochain combat : les flammes noires infligent 5 dégâts à l\'ennemi et un de tes serviteurs gagne Toxique.' },
-  nh_temari: {diff:3, stars:4, fam:['n_vent'], n:'Temari', cost:4, clan:'vent', pwn:'Vent tranchant en éventail', pw:{ k:'multi', s:[{ k:'tma', a:2, h:1 }] }, tx:'Prochain combat : tes serviteurs gagnent +2/+1.' },
-  nh_naruto: {diff:3, stars:4, fam:['n_vent'], n:'Naruto Uzumaki', cost:5, clan:'vent', pwn:'Rasengan Fûton', pw:{ k:'multi', s:[{ k:'buffr', a:4, h:4, n:1 }] }, tx:'Un de tes serviteurs aléatoires gagne +4/+4.' },
-  nh_kankuro: {diff:3, stars:4, fam:['n_vent'], n:'Kankuro', cost:4, clan:'vent', pwn:'Marionnettes dans le vent', pw:{ k:'multi', s:[{ k:'card' }] }, tx:'Ajoute à ta main un serviteur aléatoire de ton niveau de taverne.' },
-  nh_shikamaru: {diff:3, stars:4, fam:['n_vent'], n:'Shikamaru Nara', cost:4, clan:'vent', pwn:'Stratégie & pièges aériens', pw:{ k:'multi', s:[{ k:'tech', n:1 }, { k:'g', n:1 }] }, tx:'Ajoute à ta main une technique de ton niveau et gagne 1 or.' },
-  nh_gaara: {diff:3, stars:4, fam:['n_vent'], n:'Gaara', cost:5, clan:'vent', pwn:'Sable mouvant absolu', pw:{ k:'multi', s:[{ k:'buffall', a:1, h:2 }, { k:'tkw', kw:'t', n:1 }] }, tx:'Tes serviteurs gagnent +1/+2. Prochain combat : l\'un d\'eux gagne Provocation.' },
-  nh_haku: {diff:3, stars:4, fam:['n_eau'], n:'Haku', cost:4, clan:'eau', pwn:'Miroir de glace', pw:{ k:'multi', s:[{ k:'tkw', kw:'s', n:2 }] }, tx:'Prochain combat : deux de tes serviteurs gagnent Bouclier divin.' },
-  nh_zabuza: {diff:3, stars:4, fam:['n_eau'], n:'Zabuza Momochi', cost:4, clan:'eau', pwn:'Brume assassine', pw:{ k:'multi', s:[{ k:'tkw', kw:'s', n:2, a:3 }, { k:'fire', d:3 }] }, tx:'Prochain combat : dans la brume, deux de tes serviteurs gagnent Bouclier divin et +3/+0, et 3 dégâts frappent l\'ennemi.' },
-  nh_suigetsu: {diff:3, stars:4, fam:['n_eau'], n:'Suigetsu Hozuki', cost:4, clan:'eau', pwn:'Corps liquide', pw:{ k:'multi', s:[{ k:'buffr', a:1, h:3, n:2 }] }, tx:'Deux de tes serviteurs aléatoires gagnent +1/+3.' },
-  nh_mangetsu: {diff:3, stars:4, fam:['n_eau'], n:'Mangetsu Hozuki', cost:4, clan:'eau', pwn:'Épée fondante', pw:{ k:'multi', s:[{ k:'buffhi', a:4, h:3 }] }, tx:'Ton serviteur le plus puissant gagne +4/+3.' },
-  nh_mei: {diff:3, stars:4, fam:['n_eau'], n:'Mei Terumi', cost:5, clan:'eau', pwn:'Vapeur corrosive', pw:{ k:'multi', s:[{ k:'fire', d:4 }, { k:'tma', a:1, h:1 }] }, tx:'Prochain combat : la vapeur inflige 4 dégâts à l\'ennemi et tes serviteurs gagnent +1/+1.' },
-  nh_omoi: {diff:2, stars:3, fam:['n_foudre'], n:'Omoi', cost:3, clan:'foudre', pwn:'Éclair prudent', pw:{ k:'multi', s:[{ k:'buffall', tb:'n_foudre', a:1, h:1 }, { k:'ck', n:1 }] }, tx:'Tes serviteurs du Clan Raiton gagnent +1/+1 et tu gagnes 1 chakra.' },
-  nh_darui: {diff:2, stars:3, fam:['n_foudre'], n:'Darui', cost:4, clan:'foudre', pwn:'Éclair noir', pw:{ k:'multi', s:[{ k:'fire', d:4 }] }, tx:'Prochain combat : l\'éclair noir inflige 4 dégâts à l\'ennemi.' },
-  nh_samui: {diff:2, stars:3, fam:['n_foudre'], n:'Samui', cost:3, clan:'foudre', pwn:'Foudre froide', pw:{ k:'multi', s:[{ k:'tma', a:0, h:3 }] }, tx:'Prochain combat : tes serviteurs gagnent +0/+3.' },
-  nh_bee: {diff:3, stars:4, fam:['n_foudre'], n:'Killer Bee', cost:5, clan:'foudre', pwn:'Raiton déchaîné', pw:{ k:'multi', s:[{ k:'tma', a:2, h:1 }] }, tx:'Prochain combat : tes serviteurs gagnent +2/+1.' },
-  nh_kakashi: {diff:3, stars:4, fam:['n_foudre'], n:'Kakashi Hatake', cost:5, clan:'foudre', pwn:'Chidori / Raiton', pw:{ k:'multi', s:[{ k:'buffhi', a:3, h:0, kw:'w' }] }, tx:'Chidori : ton serviteur le plus puissant gagne +3/+0 et Furie des vents.' },
-  nh_roshi: {diff:3, stars:4, fam:['n_terre'], n:'Roshi', cost:4, clan:'terre', pwn:'Son Goku enragé', pw:{ k:'multi', s:[{ k:'buffhi', a:2, h:4 }] }, tx:'Ton serviteur le plus puissant gagne +2/+4.' },
-  nh_akatsuchi: {diff:2, stars:3, fam:['n_terre'], n:'Akatsuchi', cost:3, clan:'terre', pwn:'Force brute terrestre', pw:{ k:'multi', s:[{ k:'buffr', a:2, h:2, n:1 }] }, tx:'Un de tes serviteurs aléatoires gagne +2/+2.' },
-  nh_hashirama: {diff:3, stars:4, fam:['n_terre'], n:'Hashirama Senju', cost:6, clan:'terre', pwn:'Forêt primordiale', pw:{ k:'multi', s:[{ k:'buffall', a:1, h:2 }] }, tx:'Tes serviteurs gagnent +1/+2.' },
-  nh_deidara: {diff:3, stars:4, fam:['n_terre'], n:'Deidara', cost:5, clan:'terre', pwn:'Art explosif (C2)', pw:{ k:'multi', s:[{ k:'fire', d:7 }] }, tx:'Prochain combat : un dragon d\'argile explose et inflige 7 dégâts répartis sur l\'ennemi.' },
-  nh_kurotsuchi: {diff:3, stars:4, fam:['n_terre'], n:'Kurotsuchi', cost:4, clan:'terre', pwn:'Bouclier de lave', pw:{ k:'multi', s:[{ k:'tkw', kw:'s', n:1 }, { k:'fire', d:2 }] }, tx:'Prochain combat : un de tes serviteurs gagne Bouclier divin et la lave inflige 2 dégâts à l\'ennemi.' },
-  nh_karin: {diff:3, stars:4, fam:['n_feu'], n:'Karin Uzumaki', cost:4, clan:'feu', pwn:'Détection et absorption de chakra', pw:{ k:'multi', s:[{ k:'ck', n:3 }, { k:'buffr', a:3, h:3, n:1 }] }, tx:'Absorbe le chakra : gagne 3 chakra et un de tes serviteurs aléatoires gagne +3/+3.' },
-  nh_asuma: {diff:3, stars:4, fam:['n_feu'], n:'Asuma Sarutobi', cost:4, clan:'feu', pwn:'Ash Pile, lame de chakra', pw:{ k:'multi', s:[{ k:'fire', d:4 }, { k:'tma', a:1, h:0 }] }, tx:'Prochain combat : un nuage de cendres inflige 4 dégâts à l\'ennemi et tes serviteurs gagnent +1/+0.' },
-  nh_madara: {diff:3, stars:4, fam:['n_feu'], n:'Madara Uchiha', cost:6, clan:'feu', pwn:'Meteor Impact', pw:{ k:'multi', s:[{ k:'fire', d:12 }] }, tx:'Prochain combat : une météorite inflige 12 dégâts répartis sur l\'ennemi.' },
-  nh_konohamaru: {diff:2, stars:3, fam:['n_vent'], n:'Konohamaru', cost:3, clan:'vent', pwn:'Rafale de vent rapide', pw:{ k:'multi', s:[{ k:'roll' }, { k:'g', n:2 }] }, tx:'Rafraîchis la taverne gratuitement et gagne 2 or.' },
-  nh_pakura: {diff:2, stars:3, fam:['n_vent'], n:'Pakura', cost:3, clan:'vent', pwn:'Scorch explosif', pw:{ k:'multi', s:[{ k:'fire', d:4 }, { k:'g', n:1 }] }, tx:'Prochain combat : 4 dégâts brûlants à l\'ennemi. Gagne 1 or.' },
-  nh_baki: {diff:2, stars:3, fam:['n_vent'], n:'Baki', cost:3, clan:'vent', pwn:'Lame du vent silencieuse', pw:{ k:'multi', s:[{ k:'kw', kw:'w', n:1, tb:'n_vent' }] }, tx:'Un de tes serviteurs du Clan Fûton gagne Furie des vents.' },
-  nh_chojuro: {diff:2, stars:3, fam:['n_eau'], n:'Chojuro', cost:3, clan:'eau', pwn:'Fendre les vagues', pw:{ k:'multi', s:[{ k:'buffr', tb:'n_eau', a:2, h:1, n:1 }] }, tx:'Un serviteur du Clan Suiton gagne +2/+1.' },
-  nh_ao: {diff:2, stars:3, fam:['n_eau'], n:'Ao', cost:3, clan:'eau', pwn:'Clairvoyance d’eau', pw:{ k:'multi', s:[{ k:'techel', el:'eau' }, { k:'ck', n:1 }] }, tx:'Ajoute à ta main une technique Suiton de ton niveau et gagne 1 chakra.' },
-  nh_kisame: {diff:3, stars:4, fam:['n_eau'], n:'Kisame Hoshigaki', cost:5, clan:'eau', pwn:'Grande vague dévorante', pw:{ k:'multi', s:[{ k:'buffall', tb:'n_eau', a:1, h:1 }] }, tx:'Tes serviteurs du Clan Suiton gagnent +1/+1.' },
-  nh_yugito: {diff:3, stars:4, fam:['n_foudre'], n:'Yugito Nii', cost:4, clan:'foudre', pwn:'Matatabi rugissant', pw:{ k:'multi', s:[{ k:'buffr', tb:'n_foudre', a:3, h:2, n:1 }] }, tx:'Un serviteur du Clan Raiton gagne +3/+2.' },
-  nh_raikage: {diff:3, stars:4, fam:['n_foudre'], n:'A (Raikage)', cost:6, clan:'foudre', pwn:'Vitesse éclair', pw:{ k:'multi', s:[{ k:'tkw', kw:'w', n:3 }, { k:'tma', a:2, h:1 }] }, tx:'Prochain combat : trois de tes serviteurs gagnent Furie des vents et tous gagnent +2/+1.' },
-  nh_c: {diff:2, stars:3, fam:['n_foudre'], n:'C', cost:3, clan:'foudre', pwn:'Analyse & soutien', pw:{ k:'multi', s:[{ k:'roll' }, { k:'ck', n:2 }] }, tx:'Rafraîchis la taverne gratuitement et gagne 2 chakra.' },
-  nh_kitsuchi: {diff:3, stars:4, fam:['n_terre'], n:'Kitsuchi', cost:4, clan:'terre', pwn:'Poing rocheux massif', pw:{ k:'multi', s:[{ k:'buffhi', a:2, h:3 }] }, tx:'Ton serviteur le plus puissant gagne +2/+3.' },
-  nh_onoki: {diff:3, stars:4, fam:['n_terre'], n:'Onoki', cost:5, clan:'terre', pwn:'Gravité terrestre', pw:{ k:'multi', s:[{ k:'buffall', tb:'n_terre', a:1, h:2 }] }, tx:'Tes serviteurs du Clan Doton gagnent +1/+2.' },
-  nh_yamato: {diff:2, stars:3, fam:['n_terre'], n:'Yamato', cost:4, clan:'terre', pwn:'Mokuton (bois)', pw:{ k:'multi', s:[{ k:'kw', kw:'t', n:2, a:1, h:3 }] }, tx:'Deux de tes serviteurs gagnent Provocation et +1/+3.' },
   rivet:   {fam:['meca', 'gob'], n:'Rivet', tx:'Passif : votre première actualisation de chaque tour est gratuite.' },
   egide:   {fam:['nain', 'elfe'], n:'Égide', cost:2, tx:'Donne Bouclier divin à un de vos serviteurs aléatoire.' },
   ondine:  {fam:['elem', 'cors'], n:'Ondine l\'alchimiste', cost:1, tx:'Donne +1/+2 à un de vos serviteurs aléatoire.' },
@@ -413,6 +365,47 @@ const HEROES = {
   sylvara: {fam:['elfe', 'elem'], n:'Sylvara l\'archimage', tx:'Passif : le premier sort que vous achetez chaque tour coûte 1 or de moins.' },
   grumbo:  {fam:['ogre', 'gob'], n:'Grumbo le glouton', cost:2, tx:'Donne +3/+3 à votre serviteur qui a le plus d\'attaque.' },
   vaskor:  {fam:['mort', 'spec'], n:'Vaskor le nécromancien', cost:1, tx:'Invoque un Squelette 1/1 avec Renaissance sur votre plateau.' },
+  // ----- univers Ninja : 8 héros par village (sans élément) -----
+  nh_naruto: {diff:3, stars:4, fam:['n_feu'], n:'Naruto Uzumaki', cost:3, pay:'ck', pwn:'Multi-clonage', pw:{ k:'multi', s:[{ k:'summon', card:'tk_clone', n:2 }] }, tx:'Invoque 2 Clones de l\'ombre (2/2).' },
+  nh_kakashi: {diff:3, stars:4, fam:['n_feu'], n:'Kakashi Hatake', cost:2, pay:'g', pwn:'Raikiri', pw:{ k:'multi', s:[{ k:'fire', d:4 }] }, tx:'Prochain combat : 4 dégâts frappent l\'ennemi.' },
+  nh_jiraiya: {diff:3, stars:4, fam:['n_feu'], n:'Jiraiya', cost:2, pay:'g', pwn:'Ermite des crapauds', pw:{ k:'multi', s:[{ k:'card', tb:'n_feu' }] }, tx:'Ajoute à ta main un serviteur de la Feuille de ton niveau.' },
+  nh_itachi: {diff:3, stars:5, fam:['n_feu'], n:'Itachi Uchiha', cost:4, pay:'ck', pwn:'Amaterasu', pw:{ k:'multi', s:[{ k:'fire', d:6 }] }, tx:'Prochain combat : les flammes noires infligent 6 dégâts à l\'ennemi.' },
+  nh_sasuke: {diff:3, stars:4, fam:['n_feu'], n:'Sasuke Uchiha', cost:2, pay:'g', pwn:'Gōkakyū', pw:{ k:'multi', s:[{ k:'fire', d:3 }, { k:'buffr', tb:'n_feu', a:2, h:0, n:1 }] }, tx:'Prochain combat : 3 dégâts à l\'ennemi. Un serviteur de la Feuille gagne +2/+0.' },
+  nh_shikamaru: {diff:2, stars:3, fam:['n_feu'], n:'Shikamaru Nara', pwn:'Stratège', pw:{ k:'pturn', ck:2 }, tx:'Passif : au début de chaque tour, gagne 2 chakra de plus.' },
+  nh_hashirama: {diff:3, stars:5, fam:['n_feu'], n:'Hashirama Senju', cost:5, pay:'ck', pwn:'Forêt primordiale', pw:{ k:'multi', s:[{ k:'buffall', a:1, h:2 }] }, tx:'Tes serviteurs gagnent +1/+2.' },
+  nh_kushina: {diff:3, stars:5, fam:['n_feu'], n:'Kushina Uzumaki', cost:5, pay:'ck', pwn:'Chaînes explosives', pw:{ k:'multi', s:[{ k:'fire', d:9 }] }, tx:'Prochain combat : 9 dégâts répartis sur l\'ennemi.' },
+  nh_gaara: {diff:3, stars:4, fam:['n_vent'], n:'Gaara', cost:2, pay:'g', pwn:'Bouclier de sable', pw:{ k:'multi', s:[{ k:'tkw', kw:'t', n:1, a:0, h:5 }] }, tx:'Prochain combat : un de tes serviteurs gagne +0/+5 et Provocation.' },
+  nh_temari: {diff:2, stars:3, fam:['n_vent'], n:'Temari', cost:1, pay:'g', pwn:'Grand éventail', pw:{ k:'multi', s:[{ k:'tma', a:1, h:0 }] }, tx:'Prochain combat : tes serviteurs gagnent +1/+0.' },
+  nh_kankuro: {diff:3, stars:4, fam:['n_vent'], n:'Kankuro', cost:2, pay:'g', pwn:'Marionnettes de combat', pw:{ k:'multi', s:[{ k:'summon', card:'tk_puppet', n:2 }] }, tx:'Invoque 2 Marionnettes.' },
+  nh_baki: {diff:2, stars:3, fam:['n_vent'], n:'Baki', pwn:'Vent du désert', pw:{ k:'pturn', g:1 }, tx:'Passif : au début de chaque tour, gagne 1 or de plus.' },
+  nh_pakura: {diff:3, stars:4, fam:['n_vent'], n:'Pakura', cost:3, pay:'ck', pwn:'Chaleur brûlante', pw:{ k:'multi', s:[{ k:'fire', d:4 }] }, tx:'Prochain combat : 4 dégâts à l\'ennemi.' },
+  nh_chiyo: {diff:3, stars:4, fam:['n_vent'], n:'Chiyo', cost:3, pay:'ck', pwn:'Fils de chakra', pw:{ k:'multi', s:[{ k:'cardbuff', card:'tk_puppet', a:2, h:2 }] }, tx:'Tes Marionnettes gagnent +2/+2.' },
+  nh_sasori: {diff:3, stars:5, fam:['n_vent'], n:'Sasori', cost:4, pay:'ck', pwn:'Armée de marionnettes', pw:{ k:'multi', s:[{ k:'summon', card:'tk_puppet', n:2 }, { k:'cardbuff', card:'tk_puppet', a:1, h:1 }] }, tx:'Invoque 2 Marionnettes, puis tes Marionnettes gagnent +1/+1.' },
+  nh_rasa: {diff:3, stars:4, fam:['n_vent'], n:'Rasa', cost:2, pay:'g', pwn:'Sable doré', pw:{ k:'multi', s:[{ k:'buffall', tb:'n_vent', a:1, h:1 }] }, tx:'Tes serviteurs du Sable gagnent +1/+1.' },
+  nh_kisame: {diff:3, stars:5, fam:['n_eau'], n:'Kisame Hoshigaki', cost:4, pay:'ck', pwn:'Grande vague', pw:{ k:'multi', s:[{ k:'buffall', tb:'n_eau', a:1, h:2 }] }, tx:'Tes serviteurs de la Brume gagnent +1/+2.' },
+  nh_zabuza: {diff:3, stars:4, fam:['n_eau'], n:'Zabuza Momochi', cost:2, pay:'g', pwn:'Brume assassine', pw:{ k:'multi', s:[{ k:'tkw', kw:'s', n:1, a:3 }] }, tx:'Prochain combat : un de tes serviteurs gagne Bouclier divin et +3/+0.' },
+  nh_mei: {diff:3, stars:4, fam:['n_eau'], n:'Mei Terumi', cost:4, pay:'ck', pwn:'Vapeur corrosive', pw:{ k:'multi', s:[{ k:'fire', d:4 }, { k:'tma', a:0, h:2 }] }, tx:'Prochain combat : 4 dégâts à l\'ennemi et tes serviteurs gagnent +0/+2.' },
+  nh_haku: {diff:3, stars:4, fam:['n_eau'], n:'Haku', cost:2, pay:'g', pwn:'Miroirs de glace', pw:{ k:'multi', s:[{ k:'tkw', kw:'s', n:2 }] }, tx:'Prochain combat : deux de tes serviteurs gagnent Bouclier divin.' },
+  nh_suigetsu: {diff:2, stars:3, fam:['n_eau'], n:'Suigetsu Hozuki', cost:1, pay:'g', pwn:'Corps liquide', pw:{ k:'multi', s:[{ k:'buffr', a:1, h:3, n:1 }] }, tx:'Un de tes serviteurs aléatoires gagne +1/+3.' },
+  nh_mangetsu: {diff:3, stars:4, fam:['n_eau'], n:'Mangetsu Hozuki', cost:3, pay:'ck', pwn:'Épée fondante', pw:{ k:'multi', s:[{ k:'buffhi', a:3, h:3 }] }, tx:'Ton serviteur le plus puissant gagne +3/+3.' },
+  nh_ao: {diff:2, stars:3, fam:['n_eau'], n:'Ao', pwn:'Clairvoyance', pw:{ k:'pturn', ck:1, h:2 }, tx:'Passif : au début de chaque tour, gagne 1 chakra et un allié aléatoire gagne +0/+2.' },
+  nh_chojuro: {diff:2, stars:3, fam:['n_eau'], n:'Chojuro', cost:1, pay:'g', pwn:'Fendre les vagues', pw:{ k:'multi', s:[{ k:'buffr', tb:'n_eau', a:2, h:1, n:1 }] }, tx:'Un serviteur de la Brume gagne +2/+1.' },
+  nh_bee: {diff:3, stars:5, fam:['n_foudre'], n:'Killer Bee', pwn:'Huit queues', pw:{ k:'pjin' }, tx:'Passif : tes jinchūriki grandissent deux fois plus après chaque victoire.' },
+  nh_raikage: {diff:3, stars:5, fam:['n_foudre'], n:'A (Raikage)', cost:3, pay:'g', pwn:'Vitesse éclair', pw:{ k:'multi', s:[{ k:'tkw', kw:'w', n:2 }] }, tx:'Prochain combat : deux de tes serviteurs gagnent Furie des vents.' },
+  nh_darui: {diff:3, stars:4, fam:['n_foudre'], n:'Darui', cost:3, pay:'ck', pwn:'Éclair noir', pw:{ k:'multi', s:[{ k:'fire', d:5 }] }, tx:'Prochain combat : 5 dégâts à l\'ennemi.' },
+  nh_samui: {diff:2, stars:3, fam:['n_foudre'], n:'Samui', cost:1, pay:'g', pwn:'Foudre froide', pw:{ k:'multi', s:[{ k:'tma', a:0, h:2 }] }, tx:'Prochain combat : tes serviteurs gagnent +0/+2.' },
+  nh_c: {diff:2, stars:3, fam:['n_foudre'], n:'C', cost:1, pay:'g', pwn:'Analyse', pw:{ k:'multi', s:[{ k:'roll' }, { k:'ck', n:2 }] }, tx:'Rafraîchis la taverne gratuitement et gagne 2 chakra.' },
+  nh_yugito: {diff:3, stars:4, fam:['n_foudre'], n:'Yugito Nii', cost:3, pay:'ck', pwn:'Deux queues', pw:{ k:'multi', s:[{ k:'buffr', tb:'n_foudre', a:3, h:2, n:1 }] }, tx:'Un serviteur du Nuage gagne +3/+2.' },
+  nh_omoi: {diff:2, stars:3, fam:['n_foudre'], n:'Omoi', cost:1, pay:'g', pwn:'Prudence', pw:{ k:'multi', s:[{ k:'buffall', tb:'n_foudre', a:0, h:1 }] }, tx:'Tes serviteurs du Nuage gagnent +0/+1.' },
+  nh_karui: {diff:3, stars:4, fam:['n_foudre'], n:'Karui', cost:2, pay:'g', pwn:'Lame de foudre', pw:{ k:'multi', s:[{ k:'buffhi', a:3, h:1 }] }, tx:'Ton serviteur le plus puissant gagne +3/+1.' },
+  nh_onoki: {diff:3, stars:5, fam:['n_terre'], n:'Onoki', cost:5, pay:'ck', pwn:'Gravité', pw:{ k:'multi', s:[{ k:'buffall', tb:'n_terre', a:1, h:2 }] }, tx:'Tes serviteurs de la Roche gagnent +1/+2.' },
+  nh_kitsuchi: {diff:3, stars:4, fam:['n_terre'], n:'Kitsuchi', cost:2, pay:'g', pwn:'Poing rocheux', pw:{ k:'multi', s:[{ k:'buffhi', a:1, h:4 }] }, tx:'Ton serviteur le plus puissant gagne +1/+4.' },
+  nh_kurotsuchi: {diff:3, stars:4, fam:['n_terre'], n:'Kurotsuchi', cost:2, pay:'g', pwn:'Bouclier de lave', pw:{ k:'multi', s:[{ k:'tkw', kw:'s', n:1 }, { k:'fire', d:2 }] }, tx:'Prochain combat : un de tes serviteurs gagne Bouclier divin, et 2 dégâts frappent l\'ennemi.' },
+  nh_deidara: {diff:3, stars:5, fam:['n_terre'], n:'Deidara', cost:4, pay:'ck', pwn:'Art explosif', pw:{ k:'multi', s:[{ k:'fire', d:7 }] }, tx:'Prochain combat : 7 dégâts répartis sur l\'ennemi.' },
+  nh_roshi: {diff:3, stars:4, fam:['n_terre'], n:'Roshi', cost:4, pay:'ck', pwn:'Lave enragée', pw:{ k:'multi', s:[{ k:'buffhi', a:2, h:4 }] }, tx:'Ton serviteur le plus puissant gagne +2/+4.' },
+  nh_akatsuchi: {diff:2, stars:3, fam:['n_terre'], n:'Akatsuchi', cost:1, pay:'g', pwn:'Force brute', pw:{ k:'multi', s:[{ k:'buffr', a:1, h:2, n:1 }] }, tx:'Un de tes serviteurs aléatoires gagne +1/+2.' },
+  nh_han: {diff:3, stars:4, fam:['n_terre'], n:'Han', pwn:'Vapeur blindée', pw:{ k:'pturn', h:3 }, tx:'Passif : au début de chaque tour, un allié aléatoire gagne +0/+3.' },
+  nh_mu: {diff:3, stars:4, fam:['n_terre'], n:'Mū', cost:3, pay:'ck', pwn:'Murs de pierre', pw:{ k:'multi', s:[{ k:'summon', card:'tk_mur', n:2 }] }, tx:'Invoque 2 Murs de terre.' },
   pyra:    {fam:['drag'], n:'Pyra la chevaucheuse', tx:'Passif : au début de chaque combat, votre dragon souffle 2 dégâts sur un ennemi aléatoire (le surplus touche d\'autres ennemis).' },
   paul:    {fam:['sq_feu'], n:'Paul', cost:2, el:'sq_feu', tx:'Ami du feu · Attise : un Flammou aléatoire gagne +2/+1 et vos autres Flammous gagnent +1 attaque.' },
   leon:    {fam:['sq_terre'], n:'Léon', el:'sq_terre', tx:'Ami de la terre · Passif : quand vous jouez un Mottu, il gagne Provocation et +1/+2.' },
@@ -620,6 +613,12 @@ const ET = {
   aura_eot:{ tr:'aura', l:'Doubler les effets de Fin de tour', ps:[], w:10, mag:() => 1, txt:(e, k) => `Vos effets de Fin de tour se déclenchent ${k > 1 ? 'trois' : 'deux'} fois.` },
   aura_soc:{ tr:'aura', l:'Doubler les effets de Début du combat', ps:[], w:8, mag:() => 1, txt:(e, k) => `Vos effets de Début du combat se déclenchent ${k > 1 ? 'trois' : 'deux'} fois.` },
   // ----- mécaniques ninja des serviteurs -----
+  soc_fire_tb:{ tr:'soc', l:'Explosions de la Feuille', ps:['d'], w:1.2, mag:e => e.d * 6, txt:(e, k) => `Début du combat : ${e.d * k} dégât${e.d * k > 1 ? 's' : ''} à un ennemi aléatoire par allié de la Feuille.` },
+  eot_card_buff:{ tr:'eot', l:'Renforcer les marionnettes', ps:['card', 'a', 'h'], w:1, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Fin de tour : tes ${CD(e.card).n}s gagnent ${sign(e.a * k, e.h * k)}.` },
+  win_self:{ tr:'win', l:'Jinchūriki : grandir à chaque victoire', ps:['a', 'h'], w:1.3, mag:e => (e.a + e.h) * 3, txt:(e, k) => `Jinchūriki : après chaque combat gagné, gagne ${sign(e.a * k, e.h * k)}.` },
+  win_all:{ tr:'win', l:'Victoire du Nuage', ps:['a', 'h', 'tb'], w:1, mag:e => (e.a + e.h) * 6, txt:(e, k) => `Après chaque combat gagné, tes autres ${one(e.tb)} gagnent ${sign(e.a * k, e.h * k)}.` },
+  soc_avalanche:{ tr:'soc', l:'Avalanche', ps:[], w:1.2, mag:() => 6, txt:() => 'Avalanche : au début du combat, inflige un quart de sa vie à un ennemi aléatoire.' },
+  ckm:{ tr:'ckm', l:'Mode chakra', ps:['c'], w:1, mag:e => 4, txt:(e, k) => `Mode chakra (${e.c}) : ${mTx(e.m, k)}` },
   bc_gate:{ tr:'bc', l:'Porte interdite (cri de guerre)', ps:['d', 'a', 'h'], w:1.1, mag:e => Math.max(0, e.a + e.h - e.d / 2), txt:(e, k) => `Cri de guerre · Porte interdite : ton héros perd ${e.d} PV, gagne ${sign(e.a * k, e.h * k)}.` },
   soc_gate:{ tr:'soc', l:'Porte interdite (combat)', ps:['a', 'd'], w:1, mag:e => e.a - e.d / 2, txt:(e, k) => `Début du combat · Porte interdite : perd ${e.d * k} PV, +${e.a * k} attaque.` },
   eot_clones:{ tr:'eot', l:'Renforcer les clones', ps:['a', 'h'], w:1, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Fin de tour : tes clones gagnent ${sign(e.a * k, e.h * k)}.` },
@@ -634,6 +633,19 @@ const ET = {
 };
 const fxW = k => { const o = SET.fxw[k] || {}; return { b:o.b != null ? +o.b : 0, w:o.w != null ? +o.w : ET[k].w }; };
 function newEffect(k) { const e = { k }; ET[k].ps.forEach(p => { const P = PARAMS[p]; e[p] = P.sel === 'tribe' ? '' : P.sel === 'card' ? (Object.keys(CARDS).find(id => CARDS[id].t === 0) || Object.keys(CARDS)[0] || '') : P.sel === 'kw' ? 's' : P.def; }); return e; }
+// effets du « mode chakra » (activés en payant du chakra, une fois par tour)
+const mTx = (m, k = 1) => !m ? '' : m.k === 'm_fire' ? `prochain combat, ${m.d * k} dégâts à l'ennemi.` : m.k === 'm_summon' ? `invoque ${CD(m.card).n}.` : m.k === 'm_shield' ? 'un allié aléatoire gagne Bouclier divin au prochain combat.' : m.k === 'm_buffall' ? `tes ${one(m.tb)} gagnent ${sign(m.a * k, m.h * k)}.` : m.k === 'm_self' ? `gagne ${sign(m.a * k, m.h * k)}.` : m.k === 'm_wall' ? `un allié aléatoire gagne +0/+${m.h * k}.` : '';
+function runMode(G, p, m, md) {
+  const k = mult(m), others = p.bd.filter(x => x !== m);
+  switch (md.k) {
+    case 'm_fire': p.njf = (p.njf || 0) + md.d * k; break;
+    case 'm_summon': for (let i = 0; i < k; i++) recruitSummon(p, md.card, 0, m); break;
+    case 'm_shield': { const o = p.bd.filter(x => !has(x, 's') && !(x.tmp && (x.tmp.f || '').includes('s'))); if (o.length) { const t = pickR(o); t.tmp = { a:(t.tmp && t.tmp.a) || 0, h:(t.tmp && t.tmp.h) || 0, f:((t.tmp && t.tmp.f) || '') + 's', s:'Mode chakra' }; } break; }
+    case 'm_buffall': p.bd.filter(x => tribeOk(x, md.tb)).forEach(x => buff(x, md.a * k, md.h * k)); break;
+    case 'm_self': buff(m, md.a * k, md.h * k); break;
+    case 'm_wall': { const o = p.bd.length ? pickR(p.bd) : null; if (o) buff(o, 0, md.h * k); break; }
+  }
+}
 const fxText = (e, k = 1) => ET[e.k] ? ET[e.k].txt(e, k) : '';
 function fxCost(e, depth = 0) { const T = ET[e.k]; if (!T) return 0; const W = fxW(e.k); return W.b + W.w * T.mag(e, depth); }
 const r1 = x => Math.round(x * 10) / 10;
@@ -696,6 +708,7 @@ function runRecruit0(G, p, m, e, ctx) {
     case 'sell_gold': p.g += e.n * k; break;
     case 'roll_self': case 'cast_self': case 'combo_self': buff(m, A, Hh); break;
     case 'combo_gold': p.g += e.n * k; break;
+    case 'eot_card_buff': p.bd.filter(x => x.c === e.card).forEach(x => buff(x, A, Hh)); break;
     case 'bc_gate': p.hp = Math.max(1, p.hp - e.d); buff(m, A, Hh); break;
     case 'eot_clones': p.bd.filter(x => x.c === 'tk_clone').forEach(x => buff(x, A, Hh)); break;
     case 'cast_chain': if ((p.castN || 0) >= e.n) buff(m, A, Hh); break;
@@ -769,6 +782,8 @@ function runCombat(S, s, m, e, pos, ctx) {
     }
     case 'soc_self_el': { const n = elems(al); buff(m, A * n, Hh * n); break; }
     case 'soc_aoe': en.filter(x => x.h > 0).forEach(x => simDamage(S, x, e.d * k, null)); break;
+    case 'soc_fire_tb': { const n = al.filter(x => x.h > 0 && tribeOk(x, 'n_feu')).length * (e.d || 1) * k; for (let i = 0; i < n; i++) { const o = en.filter(x => x.h > 0); if (!o.length) break; simDamage(S, o[R(o.length)], 1, m); } break; }
+    case 'soc_avalanche': { const o = en.filter(x => x.h > 0); if (o.length) simDamage(S, o[R(o.length)], Math.max(1, Math.floor(m.h / 4)), m); break; }
     case 'soc_gate': { const d = Math.min(m.h - 1, (e.d || 0) * k); if (d > 0) m.h -= d; m.a += (e.a || 0) * k; break; }
     case 'soc_seal': { const o = en.filter(x => x.h > 0 && (x.f || '').length); for (let i = 0; i < (e.n || 1) * k && o.length; i++) { const t = o.splice(R(o.length), 1)[0]; t.f = ''; } break; }
     case 'soc_summon': for (let i = 0; i < (e.n || 1); i++) simSummon(S, s, pos + 1, e.card, m.g); break;
@@ -898,6 +913,12 @@ function heroReroll(G, p) {
   return pickR(Object.keys(HEROES).filter(h => ok(h) && !seen.has(h))) || pickR(Object.keys(HEROES).filter(h => !seen.has(h) && !/^nh_/.test(h))) || null;
 }
 const RANKS = ['Genin', 'Chûnin', 'Jônin'];
+function winUp(p) {
+  const x2 = HEROES[p.hero] && HEROES[p.hero].pw && HEROES[p.hero].pw.k === 'pjin' ? 2 : 1;
+  (p.bd || []).forEach(m => (CD(m.c).fxAll || []).forEach(e => { const k = mult(m) * x2;
+    if (e.k === 'win_self') withSrc('Jinchūriki', () => buff(m, e.a * k, e.h * k));
+    if (e.k === 'win_all') withSrc(CD(m.c).n, () => p.bd.forEach(o => { if (o !== m && tribeOk(o, e.tb)) buff(o, e.a * mult(m), e.h * mult(m)); })); }));
+}
 function rankUp(p) {
   (p.bd || []).forEach(m => { const e = (CD(m.c).fxAll || []).find(x => x.k === 'rank'); if (!e || (m.rk || 0) >= 2) return; m.rk = (m.rk || 0) + 1; const k = mult(m); withSrc('Rang : ' + RANKS[m.rk], () => buff(m, e.a * k, e.h * k)); });
 }
@@ -981,6 +1002,8 @@ function checkTriple(G, p) {
 }
 // univers Ninja : compagnons, duels, coffres et inventaire désactivés
 const NJ_COMP = false;
+const NJ_AWK = false;    // pas d'Éveil
+const NJ_TECH = false;   // pas de techniques
 const CK_MAX = 10;
 const ckMax = p => CK_MAX + ((p && p.bd) || []).reduce((t, m) => t + ((CD(m.c).fxAll || []).filter(e => e.k === 'pas_ckx').reduce((u, e) => u + e.n, 0)) * (m.g ? 2 : 1), 0);
 const pureX = (p, tr) => p && p.pure === tr ? 2 : 1;
@@ -1035,7 +1058,8 @@ function awakenComp(c) { if (!c || c.awk) return; const el = CLAN_EL[CD(c.c).tr]
 const hasFx = (m, k) => (CD(m.c).fxAll || []).some(e => e.k === k);
 // dans l'univers du chakra, les pouvoirs héroïques se paient en chakra
 const powPaid = G => !!(G && inMechAny(G, 'chakra'));   // Ninja : le pouvoir du héros se paie en chakra
-const powPurse = (G, p) => powPaid(G) ? (p.ck || 0) : p.g;
+const heroCk = (G, p) => { const h = p && HEROES[p.hero]; return h && h.pay ? h.pay === 'ck' : powPaid(G); };
+const powPurse = (G, p) => heroCk(G, p) ? (p.ck || 0) : p.g;
 // coffres : un par combat, rangés hors de la main ; mineur (égalité ou défaite) ou majeur (victoire), du niveau de la taverne
 const CHEST_COMMON = ['eq_lame', 'eq_armure', 'eq_gants'];
 /* ---------- Améliorations du compagnon (univers Ninja) ----------
@@ -1207,7 +1231,7 @@ const OPS = {
   pow0(G, p) {
     const h = HEROES[p.hero]; if (!h || !h.cost || p.pu || powPurse(G, p) < h.cost) return false;
     if (h.pw && !powRun(G, p, h.pw)) return false;
-    if (powPaid(G)) p.ckSpent = 1;
+    if (heroCk(G, p)) p.ckSpent = 1;
     if (p.hero === 'egide') { const c = p.bd.filter(m => !has(m, 's')); if (!c.length) return false; addF(pickR(c), 's'); }
     if (p.hero === 'ondine') { if (!p.bd.length) return false; buff(pickR(p.bd), 1, 2); }
     if (p.hero === 'paul') { const f = p.bd.filter(m => tribe(m) === 'sq_feu'); if (!f.length) return false; const t = pickR(f); buff(t, 2, 1); f.forEach(m => { if (m !== t) buff(m, 1, 0); }); }
@@ -1219,7 +1243,7 @@ const OPS = {
     if (p.hero === 'grumbo') { if (!p.bd.length) return false; const t = p.bd.slice().sort((a, b) => b.a - a.a)[0]; buff(t, 3, 3); }
     if (p.hero === 'vaskor') { if (p.bd.length >= 7 || !C.m_squelette) return false; const t = mk('m_squelette', 0); addF(t, 'r'); p.bd.push(t); }
     if (p.hero === 'oren') { if (p.hd.length >= 10) return false; const m = drawOne(G, 6, p.t); if (!m) return false; p.hd.push(m); checkTriple(G, p); }
-    if (powPaid(G)) p.ck -= h.cost; else p.g -= h.cost; p.pu = true; trigBoard(G, p, 'pow'); return true;
+    if (heroCk(G, p)) p.ck -= h.cost; else p.g -= h.cost; p.pu = true; trigBoard(G, p, 'pow'); return true;
   },
   rdy(G, p) { p.rdy = !p.rdy; return true; },
   // entraînement : les coffres s'ouvrent gratuitement, les équipements se rangent comme des médailles
@@ -1264,6 +1288,8 @@ const OPS = {
     return true;
   },
   buysp(G, p) { const S = p.sp && SPELLS[p.sp.sp]; const c = S ? spCost(p, S) : 0; if (!S || p.g < c || p.hd.length >= 10) return false; p.g -= c; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(p.sp); p.sp = null; return true; },
+  ckm(G, p, a) { const m = p.bd[a.i]; if (!m || m.ckUsed) return false; const md = (CD(m.c).fxAll || []).find(x => x.k === 'ckm'); if (!md || (p.ck || 0) < md.c) return false;
+    p.ck -= md.c; m.ckUsed = 1; withSrc('Mode chakra · ' + CD(m.c).n, () => runMode(G, p, m, md.m)); checkTriple(G, p); return true; },
   cast(G, p, a) { const it = p.hd[a.i]; if (!it || !it.sp || p.disc) return false; return castSpell(G, p, a.i, a.tg); },
   pick(G, p, a) { if (!p.disc || !p.disc[a.i]) return false; const m = p.disc.splice(a.i, 1)[0]; p.disc.forEach(x => toPool(G, x)); p.disc = null; if (p.hd.length < 10) p.hd.push(m); else toPool(G, m); checkTriple(G, p); return true; },
 };
@@ -1303,6 +1329,8 @@ function powStepCan(p, s) {
     case 'comp': return comps(p).length > 0;
     case 'card': case 'tech': case 'techel': return (p.hd || []).length < 10;
     case 'ck': return (p.ck || 0) < ckMax(p);
+    case 'summon': return (p.bd || []).length < 7;
+    case 'cardbuff': return (p.bd || []).some(m => m.c === s.card);
   }
   return true;
 }
@@ -1324,6 +1352,8 @@ function powStep(G, p, s) {
     case 'tech': for (let i = 0; i < N; i++) if (p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); } break;
     case 'techel': { const lo = SPELL_IDS.filter(id => SPELLS[id].nin && !SPELLS[id].forb && SPELLS[id].el === s.el).reduce((m, id) => Math.min(m, SPELLS[id].t), 9); for (let i = 0; i < N; i++) if (p.hd.length < 10) { const sp = drawSpell(Math.max(p.t, lo), s.el); if (sp) p.hd.push(sp); } break; }
     case 'roll': p.fz = false; fillShop(G, p); trigBoard(G, p, 'roll'); break;
+    case 'summon': for (let i = 0; i < N; i++) if (p.bd.length < 7) recruitSummon(p, s.card, 0, p.bd[p.bd.length - 1]); break;
+    case 'cardbuff': p.bd.filter(m => m.c === s.card).forEach(m => buff(m, s.a || 0, s.h || 0)); break;
   }
 }
 function powRun(G, p, w0) {
@@ -1378,6 +1408,7 @@ function hostApply(pid, a) {
   const G = H.G; if (!G) return;
   const p = G.ps[pid]; if (!p || !p.al) return;
   if (a.t === 'hero') { if (G.ph === 'hero' && !p.hero && p.ho.includes(a.h)) { p.hero = a.h; broadcast(); } return; }
+  if (a.t === 'ckm') { if (G.ph === 'recruit' && OPS.ckm(G, p, a)) broadcast(); return; }
   if (a.t === 'hroll') { const i = +a.i; if (G.ph === 'hero' && !p.hero && (p.hrr || 0) > 0 && p.ho[i]) { const nh = heroReroll(G, p); if (nh) { p.ho[i] = nh; p.hrr--; broadcast(); } } return; }
   if (G.ph !== 'recruit' || !OPS[a.t]) return;
   if (a.t !== 'rdy' && p.rdy) p.rdy = false;
@@ -1426,7 +1457,7 @@ function aiTurn(G, p) {
     if (p.t < 6 && p.g >= c && (G.rd >= targetRound[p.t] || p.g - c >= 3)) { OPS.up(G, p); acted = true; continue; }
     const hc = HEROES[p.hero] && HEROES[p.hero].cost;
     const nonoWait = p.hero === 'nono' && (G.rd < 3 || ((p.fb || 1) < 4 && G.rd < 9));
-    if (hc && !nonoWait && !p.pu && !p.aiSave && (powPaid(G) ? (p.ck || 0) >= hc : p.g >= hc && p.g - hc >= 3) && (p.bd.length || p.hero === 'oren' || p.hero === 'nono')) { if (OPS.pow(G, p)) { acted = true; continue; } }
+    if (hc && !nonoWait && !p.pu && !p.aiSave && (heroCk(G, p) ? (p.ck || 0) >= hc : p.g >= hc && p.g - hc >= 3) && (p.bd.length || p.hero === 'oren' || p.hero === 'nono')) { if (OPS.pow(G, p)) { acted = true; continue; } }
     aiPlayAll(G, p);
     if (p.g >= 3 && p.sh.length) {
       let bi = 0; p.sh.forEach((m, i) => { if (aiScore(p, m) > aiScore(p, p.sh[bi])) bi = i; });
@@ -1446,6 +1477,7 @@ function aiTurn(G, p) {
   const front = m => fxOf(m, 'dr').length || has(m, 'r') ? 0 : 1;
   p.bd.sort((x, y) => front(x) - front(y) || y.a - x.a);
   aiPlayAll(G, p); aiSpells(G, p);
+  if (inMechAny(G, 'chakra')) for (let g = 0; g < 7; g++) { const i = p.bd.findIndex(m => !m.ckUsed && (CD(m.c).fxAll || []).some(x => x.k === 'ckm' && (p.ck || 0) >= x.c)); if (i < 0) break; OPS.ckm(G, p, { i }); }
   aiTeams(p);
   p.rdy = true;
 }
@@ -1462,9 +1494,9 @@ function startRecruit() {
     if (p.hero === 'barnabe' && G.rd % 2 === 0) p.g += 1;
     p.uc = Math.max(0, p.uc - 1);
     if (p.fz) { p.fz = false; topUpShop(G, p); } else fillShop(G, p);
-    p.pu = false; p.castN = 0; p.castEls = []; p.ckSpentLast = p.ckSpent || 0; p.ckSpent = 0; p.hd.forEach(x => { if (x.sp && SPELLS[x.sp] && SPELLS[x.sp].chg) x.ch = Math.min(2, (x.ch || 0) + 1); }); p.fbq = false; p.njf = 0; p.sylv = false; p.rr = 0; p.rdy = false; p.lastRes = p.res ? (p.res.cr || p.res.r) : null; p.res = null;
+    p.pu = false; p.bd.forEach(x => { delete x.ckUsed; }); p.castN = 0; p.castEls = []; p.ckSpentLast = p.ckSpent || 0; p.ckSpent = 0; p.hd.forEach(x => { if (x.sp && SPELLS[x.sp] && SPELLS[x.sp].chg) x.ch = Math.min(2, (x.ch || 0) + 1); }); p.fbq = false; p.njf = 0; p.sylv = false; p.rr = 0; p.rdy = false; p.lastRes = p.res ? (p.res.cr || p.res.r) : null; p.res = null;
     if (p.inc && p.inc.length) p.g += p.inc.shift() || 0;
-    { const w = pwOf(p); if (w && w.k === 'pturn' && p.hero && /^nh_/.test(p.hero)) { if (w.g) p.g += w.g; if (w.el) mkAdd(p, w.el, w.n); } }
+    { const w = pwOf(p); if (w && w.k === 'pturn' && p.hero && /^nh_/.test(p.hero)) { if (w.g) p.g += w.g; if (w.ck) p.ck = Math.min(ckMax(p), (p.ck || 0) + w.ck); if (w.h && p.bd.length) buff(pickR(p.bd), 0, w.h); if (w.el) mkAdd(p, w.el, w.n); } }
     trigBoard(G, p, 'sot');
     p.mkt = 0; p.cdbl = 0; p.hruse = 0;
     if (inMechAny(G, 'ames') && (p.souls || 0) >= 3) { const k = Math.floor(p.souls / 3); p.souls -= k * 3; withSrc('Moisson d\'âmes', () => p.bd.forEach(m => { if (inMech(G, 'ames', m)) buff(m, k, k); })); }
@@ -1546,6 +1578,7 @@ function endRecruit() {
     if (join) { if (r.w === 0 && p.cp) giveXp(p.cp, 2); if (!ghost && r.w === 1 && q.cp) giveXp(q.cp, 2); }
     if (r.w === 0) p.bd.filter(isComp).forEach(m => giveXp(m, 2)); if (!ghost && r.w === 1) q.bd.filter(isComp).forEach(m => giveXp(m, 2));
     if (r.w === 0) rankUp(p); if (!ghost && r.w === 1) rankUp(q);
+    if (r.w === 0) winUp(p); if (!ghost && r.w === 1) winUp(q);
     if (!ghost) q.res = { o:p.n, r:X(r.w), d, cr:duel ? X(duel.w) : join && q.cp ? stand(q, 1) : null };
     const base = { duel, stl, rd:G.rd, a:pb.map(fullM), b:qcb.map(fullM), seed, ta:p.t, tb:qt, cap, ha:p.hero, hb:ghost ? ghost.hero : q.hero, fire, mx:G.mx || {} };
     if (p.human && !p.bot) { deliverFight(p, Object.assign({ me:0, on:qn }, base)); maxFrames = Math.max(maxFrames, r.frames.length); }
@@ -1595,7 +1628,7 @@ function endCombat() {
   const dead = G.ps.filter(p => p.al && p.hp <= 0).sort((a, b) => b.hp - a.hp);
   let alive = G.ps.filter(p => p.al && p.hp > 0).length;
   dead.forEach((p, k) => { p.al = false; p.place = alive + 1 + k; p.sh.forEach(m => toPool(G, m)); p.bd.forEach(m => toPool(G, m)); p.sh = []; });
-  if (inMechAny(G, 'chakra') && !G.eveil) { const al = G.ps.filter(p => p.al), low = al.filter(p => p.hp <= ((+RU().hp || 40) / 2)).length; if (low * 2 >= al.length || alive <= 3) G.eveil = G.rd + 1; }
+  if (NJ_AWK && inMechAny(G, 'chakra') && !G.eveil) { const al = G.ps.filter(p => p.al), low = al.filter(p => p.hp <= ((+RU().hp || 40) / 2)).length; if (low * 2 >= al.length || alive <= 3) G.eveil = G.rd + 1; }
   if (alive <= 1) {
     const w = G.ps.find(p => p.al); if (w) w.place = 1;
     if (!w && dead[0]) dead[0].place = 1;
@@ -1620,7 +1653,7 @@ function hostTick() {
 }
 
 /* ---------- diffusion ---------- */
-const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u, ch:m.ch || 0, us:m.us || 0 }; const o = { c:m.c, a:m.a, h:m.h }; if (m.rk) o.rk = m.rk; if (m.memo) o.memo = m.memo; if (m.el) o.el = m.el; if (m.fu) o.fu = m.fu; if (m.xp) o.xp = m.xp; if (m.eq && m.eq.length) o.eq = m.eq; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; if (m.bn) o.bn = m.bn; return o; };
+const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u, ch:m.ch || 0, us:m.us || 0 }; const o = { c:m.c, a:m.a, h:m.h }; if (m.ckUsed) o.cku = 1; if (m.rk) o.rk = m.rk; if (m.memo) o.memo = m.memo; if (m.el) o.el = m.el; if (m.fu) o.fu = m.fu; if (m.xp) o.xp = m.xp; if (m.eq && m.eq.length) o.eq = m.eq; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; if (m.bn) o.bn = m.bn; return o; };
 const fullM = m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g || 0, f:m.f || '', u:m.u }; if (m.x) o.x = m.x; if (m.domb) o.domb = m.domb; if (m.awk) o.awk = m.awk; if (m.duo) o.duo = 1; if (m.el) o.el = m.el; return o; };
 function pubData() {
   const G = H.G;
@@ -1630,7 +1663,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:powPaid(H.G) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, mkl:(mkSync(p), p.mkl) || {}, souffle:p.souffle || 0, roche:p.roche || 0, choice:p.choice || null, chFav:p.chFav || 0, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, hrr:p.hrr || 0, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ckm:ckMax(p), ckPay:heroCk(H.G, p) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, mkl:(mkSync(p), p.mkl) || {}, souffle:p.souffle || 0, roche:p.roche || 0, choice:p.choice || null, chFav:p.chFav || 0, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, hrr:p.hrr || 0, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;

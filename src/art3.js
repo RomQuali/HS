@@ -368,3 +368,21 @@ Object.assign(ART, {
   tk_golem: () => golem(),
   tk_mur: () => elemental({ kind:'stone' }),
 });
+
+// univers Ninja : portraits des nouveaux serviteurs, jetons et héros (générés à partir d'un modèle original)
+(function () {
+  const VIL = { n_feu:['feu', '#d8502a'], n_vent:['vent', '#c8a050'], n_eau:['eau', '#2f7ab8'], n_foudre:['foudre', '#8a7ad8'], n_terre:['terre', '#7a5a3a'] };
+  const SK = ['#f3d0b0', '#e8b894', '#d9a27a', '#c98e66', '#a8714f', '#8a5a3c'], HR = ['#2a1d14', '#4a2f1d', '#7a4a2a', '#c8392f', '#e0b25a', '#e8e2da', '#5a3d7a', '#2e8a8a'];
+  const HS = ['short', 'long', 'bun', 'braids', 'mohawk', 'curly', 'side', 'part', 'bald'], EY = ['dot', 'happy', 'glow'], MO = ['smile', 'grin', 'smirk', 'flat', 'o'];
+  const hsh = s => { let h = 7; for (const c of s) h = (h * 31 + c.charCodeAt(0)) >>> 0; return h; };
+  const gen = (id, tr, hero) => { const v = VIL[tr]; if (!v) return null; const r = hsh(id), pk = (a, k) => a[(r >>> k) % a.length], masked = (r >> 3) % 3 === 0;
+    const o = { skin:pk(SK, 1), hair:pk(HR, 5), hs:pk(HS, 9), eyes:pk(EY, 13), shirt:'#2a2a34', mask:masked ? undefined : false, mouth:pk(MO, 17), glow:v[1] };
+    if (masked) o.maskc = v[1]; if ((r >> 21) % 4 === 0) o.hood = 1, o.hoodc = v[1]; if (hero && (r >> 23) % 3 === 0) o.beard = 'goatee';
+    return (hero ? NH : NJ)(v[0], v[1], o); };
+  const tribeOf = id => (typeof DEFAULT_CARDS !== 'undefined' && DEFAULT_CARDS[id] && DEFAULT_CARDS[id].tr) || null;
+  for (let k = 1; k <= 10; k++) for (const p of ['f', 'v', 'e', 'o', 't']) { const id = `n_${p}${k}`, tr = tribeOf(id); if (tr) { const f = gen(id, tr, false); if (f) ART[id] = f; } }
+  for (let k = 1; k <= 5; k++) { const id = 'n_k' + k, tr = tribeOf(id); if (tr) { const f = gen(id, tr, false); if (f) ART[id] = f; } }
+  ART.tk_puppet = () => robot({ col:'#a8744a', head:'round', eye:'duo', mouth:'line' });
+  ART.tk_bijuu = () => beast({ sp:'wolf', col:'#6a4ab8', belly:'#c8b8ff', eye:'#ffe14a', glow:'#ffe14a', angry:1, fangs:1 });
+  for (const h of ['chiyo', 'sasori', 'rasa', 'karui', 'han', 'mu']) { const id = 'nh_' + h, H0 = typeof HEROES !== 'undefined' && HEROES[id]; if (H0 && !HART[id]) { const f = gen(id, H0.fam[0], true); if (f) HART[id] = f; } }
+})();

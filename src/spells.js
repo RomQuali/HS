@@ -75,7 +75,7 @@ const SPELLS = {
   cf_or:{ n:'Coffre d\'or', t:1, c:0, ck:6, item:1, ty:'cof', tx:'Reçu après une victoire avec une taverne de niveau 4 ou plus. Ouvre-le avec 6 chakra : deux équipements rares.' },
 };
 const SPELL_IDS = Object.keys(SPELLS);
-function drawSpell(t, el) { const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra'); const ev = typeof H !== 'undefined' && H.G && H.G.eveil; const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !!SPELLS[id].nin === !!nin && (!SPELLS[id].forb || ev) && (!el || SPELLS[id].el === el)); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
+function drawSpell(t, el) { const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra'); if (nin && !NJ_TECH) return null; const ev = typeof H !== 'undefined' && H.G && H.G.eveil; const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !!SPELLS[id].nin === !!nin && (!SPELLS[id].forb || ev) && (!el || SPELLS[id].el === el)); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
 
 // pourquoi un sort ne peut pas être lancé (null = il peut)
 function spellBlock(p, id, tgt) {
