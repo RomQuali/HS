@@ -9,6 +9,14 @@ const SP_TYPES = {
   ombre:{ n:'Ombre', col:'#5a3d7a' }, comb:{ n:'Combat', col:'#a8322a' }, nat:{ n:'Nature', col:'#3f8a6a' }, nin:{ n:'Technique', col:'#2a5a9a' }, eq:{ n:'Équipement', col:'#8a6a3a' }, cof:{ n:'Coffre', col:'#a8742a' },
 };
 const SPELLS = {
+  // objets de l'univers Dragon Ball
+  db_senzu:{ db:1, n:'Haricot magique', t:1, c:1, ty:'renf', tg:1, tx:'Soigne et protège : un de tes serviteurs gagne +0/+2 et Renaissance (+2/+2 s\'il l\'a déjà).' },
+  db_capsule:{ db:1, n:'Capsule Hoi-Poi', t:1, c:1, ty:'eco', tx:'Gagne 2 ki.' },
+  db_gravite:{ db:1, n:'Salle de gravité', t:2, c:1, ty:'renf', tg:1, tx:'Entraînement : un de tes serviteurs gagne +2/+2.' },
+  db_radar:{ db:1, n:'Radar du dragon', t:2, c:1, ty:'eco', tx:'Ajoute à ta main un serviteur du niveau au-dessus du tien.' },
+  db_potara:{ db:1, n:'Boucles Potara', t:3, c:2, ty:'renf', tg:1, tx:'Fusion : le serviteur ciblé fusionne avec son voisin de droite (ou de gauche) ; stats additionnées +2/+2, effets cumulés.' },
+  db_eau:{ db:1, n:'Eau ultra divine', t:4, c:2, ty:'renf', tg:1, tx:'Un de tes serviteurs gagne +4/+2 ; s\'il peut se transformer, il passe au palier suivant.' },
+  db_salle:{ db:1, n:'Salle de l\'esprit et du temps', t:5, c:2, ty:'renf', tg:1, tx:'Un an d\'entraînement en un jour : le serviteur gagne +6/+6 et part méditer (il ne combat pas ce tour, mais rapporte du ki).' },
   sp_pinte:{ n:'Pinte offerte', t:1, c:1, ty:'renf', tg:1, tx:'Donne +2/+1 à un de tes serviteurs.' },
   sp_tournee:{ n:'Nouvelle tournée', t:1, c:0, ty:'eco', tx:'Rafraîchit la taverne gratuitement.' },
   sp_placement:{ n:'Placement prudent', t:1, c:1, ty:'eco', tx:'Au début de ton prochain tour, gagne 2 or.' },
@@ -108,7 +116,8 @@ const SPELLS = {
 };
 const SPELL_IDS = Object.keys(SPELLS);
 function drawSpell(t, el) { const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra');
-  if (nin && !NJ_TECH) { const ids = SPELL_IDS.filter(id => SPELLS[id].cs && SPELLS[id].t <= t); const w = ids.map(id => SPELLS[id].rare ? 0.35 : 1), tot = w.reduce((a, b) => a + b, 0); let r = Math.random() * tot; for (let i = 0; i < ids.length; i++) { r -= w[i]; if (r <= 0) return { sp:ids[i], u:UID++ }; } return ids.length ? { sp:ids[0], u:UID++ } : null; } const ev = typeof H !== 'undefined' && H.G && H.G.eveil; const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !!SPELLS[id].nin === !!nin && (!SPELLS[id].forb || ev) && (!el || SPELLS[id].el === el)); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
+  if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'ki')) { const ids = SPELL_IDS.filter(id => SPELLS[id].db && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
+  if (nin && !NJ_TECH) { const ids = SPELL_IDS.filter(id => SPELLS[id].cs && SPELLS[id].t <= t); const w = ids.map(id => SPELLS[id].rare ? 0.35 : 1), tot = w.reduce((a, b) => a + b, 0); let r = Math.random() * tot; for (let i = 0; i < ids.length; i++) { r -= w[i]; if (r <= 0) return { sp:ids[i], u:UID++ }; } return ids.length ? { sp:ids[0], u:UID++ } : null; } const ev = typeof H !== 'undefined' && H.G && H.G.eveil; const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !SPELLS[id].db && !!SPELLS[id].nin === !!nin && (!SPELLS[id].forb || ev) && (!el || SPELLS[id].el === el)); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
 
 // pourquoi un sort ne peut pas être lancé (null = il peut)
 function spellBlock(p, id, tgt) {
@@ -218,6 +227,13 @@ function castSpell0(G, p, hi, tg) {
   p.lastCast = id;
   if (S.nin && S.fx) techRun(G, p, S, it0, tgt, tg, sage0);
   else switch (id) {
+    case 'db_senzu': if (has(tgt, 'r')) buff(tgt, 2, 2); else { addF(tgt, 'r'); buff(tgt, 0, 2); } break;
+    case 'db_capsule': kiAdd(p, 2); break;
+    case 'db_gravite': buff(tgt, 2, 2); break;
+    case 'db_radar': if (p.hd.length < 10) { const r = drawOne(G, 6, Math.min(6, p.t + 1)) || drawOne(G, p.t); if (r) p.hd.push(r); } break;
+    case 'db_potara': { const i = p.bd.indexOf(tgt), o = p.bd[i + 1] || p.bd[i - 1]; if (o) { absorbInto(p, tgt, o, 'Fusion Potara'); buff(tgt, 2, 2); tgt.fu = 'Potara'; qAdd(p, 'fusions'); } else buff(tgt, 2, 2); break; }
+    case 'db_eau': buff(tgt, 4, 2); if (tfOf(tgt) && tfOf(tgt).st[tgt.tf || 0]) doTransform(p, tgt); break;
+    case 'db_salle': buff(tgt, 6, 6); tgt.med = 1; break;
     case 'sp_pinte': buff(tgt, 2, 1); break;
     case 'sp_tournee': p.fz = false; fillShop(G, p); trigBoard(G, p, 'roll'); break;
     case 'sp_placement': p.inc = p.inc || []; p.inc[0] = (p.inc[0] || 0) + 2; break;
@@ -289,6 +305,7 @@ function castSpell0(G, p, hi, tg) {
   if (S.nin) comps(p).forEach(c => giveXp(c, 1));
   if (S.nin && S.el && !S.item) mkAdd(p, S.el, 1);   // chaque technique donne 1 marqueur de sa nature
   if (S.el) comps(p).forEach(c => { const e = compEl(c); if (e && EL_GEN[e] === S.el) { const x = (c.eq || []).includes('eq_talisman') ? 2 : 1; p.ck = Math.min(CK_MAX, (p.ck || 0) + 2 * x); buff(c, 2 * x, 2 * x); } });
+  if (S.db) qAdd(p, 'items');
   if (!S.item) { qAdd(p, 'casts'); p.castN = (p.castN || 0) + 1; trigBoard(G, p, 'cast'); const w = htr(p, 'pcast'); if (w && p.bd.length) withSrc('Pouvoir de ' + HX(p).n.split(' ')[0], () => buff(pickR(p.bd), w.a || 0, w.h || 0)); }
   checkTriple(G, p);
   return true;
@@ -300,7 +317,7 @@ function combatBoard(p) {
   const G = typeof H !== 'undefined' ? H.G : null, aw = awake(G), ninja = G && inMechAny(G, 'chakra');
   const bd = p.bd || [], anyFx = k => bd.some(m => hasFx(m, k));
   const phx = 2 * (anyFx('awk_phoenix') ? 2 : 1), tide = 2 * (anyFx('awk_tsunami') ? 2 : 1);
-  return bd.map(m => {
+  return bd.filter(m => !m.med).map(m => {
     const c = { ...m }; delete c.tmp;
     if (m.tmp) { c.a += m.tmp.a || 0; c.h += m.tmp.h || 0; if (m.tmp.f) addF(c, m.tmp.f); }
     if (p.tma) { c.a += p.tma.a; c.h += p.tma.h; }
@@ -430,6 +447,15 @@ const SPART = {
   sp_reflet: () => ['#c8963e', '#3f6fb0'].map((col, k) => `<g transform="translate(${k ? 60 : 40} 50) rotate(${k ? 10 : -10})">` + E(0, -6, 17, 22, col, so()) + E(0, -6, 13, 18, '#cfe9f2', so(1.6)) + E(-4, -14, 4, 7, '#fff', 'opacity=".6"') + `<rect x="-3.6" y="16" width="7.2" height="22" rx="2" fill="${col}" ${so(1.6)}/>` + P(starD(0, -6, 6, 2.6, 5), k ? '#7fb8ff' : '#f2c14e', GLOW) + '</g>').join(''),
   sp_ascension: () => softGlow(50, 46, 34, '#fff1b8', .45) + ['M50 52 C 36 40, 20 42, 8 30 C 14 50, 24 60, 46 62 Z', 'M50 52 C 64 40, 80 42, 92 30 C 86 50, 76 60, 54 62 Z'].map(d => P(d, '#f6f0e0', so(1.8))).join('') + Ln('M14 36 C 24 46, 34 50, 46 56 M86 36 C 76 46, 66 50, 54 56 M20 44 C 28 50, 36 54, 46 58 M80 44 C 72 50, 64 54, 54 58', '#c8b89a', 1.1) + P(starD(50, 40, 14, 5.6, 5), '#f2c14e', so(1.8) + ' ' + GLOW) + Ln('M50 64 L50 92 M42 72 L50 64 L58 72', '#fff1b8', 3),
 };
+Object.assign(SPART, {
+  db_senzu: () => softGlow(50, 52, 30, '#bfe8a0', .3) + P('M36 64 C 30 50, 40 32, 54 34 C 68 36, 72 54, 62 66 C 54 76, 42 76, 36 64 Z', '#7ac04a', so()) + Ln('M44 44 C 48 40, 54 40, 58 44', '#d8f0b0', 2.4) + Ln('M50 40 C 50 34, 54 30, 58 28', '#4a8a2a', 2.6),
+  db_capsule: () => softGlow(50, 52, 30, '#ffe39a', .25) + P('M26 50 C 26 40, 36 36, 44 36 L56 36 C 64 36, 74 40, 74 50 C 74 60, 64 64, 56 64 L44 64 C 36 64, 26 60, 26 50 Z', '#f2f2f6', so()) + P('M50 36 L56 36 C 64 36, 74 40, 74 50 C 74 60, 64 64, 56 64 L50 64 Z', '#e8701a', so(1.6)) + Ci(41, 50, 3.4, '#4a7ab8', so(1.4)),
+  db_gravite: () => softGlow(50, 52, 32, '#c8a0ff', .25) + P('M24 70 L76 70 L70 78 L30 78 Z', '#5a5a6a', so()) + Ln('M30 30 L30 62 M42 26 L42 62 M58 26 L58 62 M70 30 L70 62', '#8a7ad8', 3) + Ln('M24 22 L50 34 L76 22', '#c8a0ff', 3),
+  db_radar: () => softGlow(50, 52, 32, '#9fe8a0', .25) + Ci(50, 52, 24, '#2a4a2a', so()) + Ci(50, 52, 17, 'none', 'stroke="#6ac06a" stroke-width="1.4"') + Ln('M50 30 L50 74 M28 52 L72 52', '#6ac06a', 1) + Ci(60, 44, 3.4, '#ffcf3a', 'filter="url(#fx-glow)"') + Ci(42, 60, 2.6, '#ffcf3a') + Ci(50, 26, 4.4, '#d8d8e0', so(1.4)),
+  db_potara: () => softGlow(50, 52, 32, '#ffe39a', .3) + [36, 64].map(x => Ln(`M${x} 30 L${x} 44`, '#c8a020', 2.4) + Ci(x, 52, 9, '#3ab070', so()) + Ci(x, 52, 4, '#b0f0c8', '') + Ci(x, 28, 3, '#f2c14e', so(1.2))).join(''),
+  db_eau: () => softGlow(50, 52, 32, '#9fd8ff', .3) + P('M50 22 C 58 36, 70 48, 70 60 A20 20 0 0 1 30 60 C 30 48, 42 36, 50 22 Z', '#5ab8f0', so()) + Ln('M40 58 C 40 52, 44 46, 48 42', '#e0f4ff', 3),
+  db_salle: () => softGlow(50, 52, 32, '#ffffff', .3) + P('M34 24 L66 24 L52 50 L66 76 L34 76 L48 50 Z', '#f2ead8', so()) + P('M38 72 L62 72 L52 58 L48 58 Z', '#e8b44a', '') + Ln('M30 24 L70 24 M30 76 L70 76', '#8a6a3a', 4),
+});
 Object.assign(SPART, { cs_hosenka:SPART.nj_souffle, cs_kibaku:SPART.nj_sceau, cs_gokakyu:SPART.nj_boule, cs_amaterasu:SPART.nj_deluge, cs_kugutsu:SPART.nj_doubles, cs_sunatate:SPART.nj_pierre, cs_kamaitachi:SPART.nj_rafale, cs_sabaku:SPART.nj_porteur,
   cs_kiri:SPART.nj_brume, cs_shosen:SPART.nj_vague, cs_suiro:SPART.nj_x_sceau, cs_suikodan:SPART.nj_vague, cs_raikyu:SPART.nj_decharge, cs_chidori:SPART.nj_foudre, cs_bijuchakra:SPART.nj_x_eveil, cs_bijudama:SPART.nj_x_cinq,
   cs_doryu:SPART.nj_pierre, cs_kengan:SPART.nj_poing, cs_iwa:SPART.nj_invoc, cs_chokei:SPART.nj_poing, cs_shunshin:SPART.nj_rafale, cs_kawarimi:SPART.nj_permut, cs_kuchiyose:SPART.nj_invoc, cs_henge:SPART.nj_doubles, cs_kagebunshin:SPART.nj_doubles });

@@ -145,8 +145,14 @@ function tokenH(m, z, i, o = {}) {
     + `<use href="#gem-a" x="-1" y="90" width="34" height="34"/><text class="gt${up(m.a, b.a)}" x="16" y="107" dy=".36em">${m.a}</text>`
     + `<use href="#gem-h" x="67" y="88" width="34" height="34"/><text class="gt${up(m.h, b.h)}" x="84" y="108.6" dy=".36em">${m.h}</text></svg>`;
   const md = z === 'bd' && !m.awk && (b.fxAll || []).find(e => e.k === 'ckm'), mdC = md ? (V.me ? Math.max(0, md.c - ((htr(V.me, 'pawk') || {}).n || 0)) : md.c) : 0, mdOk = md && V.me && (V.me.ck || 0) >= mdC && V.pub && V.pub.ph === 'recruit';
+  const kiU = z === 'bd' && V.me && V.pub && (V.pub.laws || []).some(l => l.k === 'ki'), recr = V.pub && V.pub.ph === 'recruit';
+  const T = kiU && (b.fxAll || []).find(e => e.k === 'tf'), st = T && T.st[m.tf || 0];
+  const tfC = st ? Math.max(0, st.c - ((T.cond === 'colere' && (V.me.dbDied || 0) > 0) || (T.cond === 'defaite' && V.me.dbRes === 'loss') || (T.cond === 'victoire' && V.me.dbRes === 'win') ? 2 : 0) - (V.me && HEROES[V.me.hero] && (htr(V.me, 'ptf') || {}).n || 0)) : 0;
+  const kiH = kiU ? `<span class="med-b${m.med ? ' on' : ''}" role="button" tabindex="0" data-act="med" data-i="${i}" data-tip="${esc(m.med ? 'En méditation : ne combat pas au prochain combat, rapporte ' + tierOf(m) * (m.g ? 2 : 1) + ' ki. Clique pour annuler.' : 'Méditer : ce serviteur ne combattra pas, mais te rapportera ' + tierOf(m) * (m.g ? 2 : 1) + ' ki au début du prochain tour.')}" aria-label="Méditer">☯</span>`
+    + (st ? `<span class="tf-b${recr && (V.me.ki || 0) >= tfC ? ' ok' : ''}" role="button" tabindex="0" data-act="tf" data-i="${i}" data-tip="${esc('Transformation · ' + st.nm + ' (' + tfC + ' ki) : +' + st.a * mult(m) + '/+' + st.h * mult(m) + (st.kw ? ', ' + ((SET.kw[st.kw] || {}).n || '') : ''))}" aria-label="Transformer"><b>${tfC}</b></span>` : '')
+    + (m.tfn ? `<span class="tf-n">${esc(m.tfn)}</span>` : '') + (m.med ? '<span class="med-n">Méditation</span>' : '') : '';
   const mdH = md ? `<span class="ckm-b${mdOk ? ' ok' : ''}" role="button" tabindex="0" data-act="ckm" data-i="${i}" data-tip="${esc('Éveil (' + mdC + ' chakra, une seule fois) : +' + md.c * mult(m) + '/+' + md.c * mult(m) + ', puis chaque tour : ' + mTx(md.m, mult(m)))}" aria-label="Éveiller ce serviteur">${ckMarkH(mdC)}</span>` : '';
-  return `<div class="${cls}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.dmg ? ` data-dmg="${o.dmg}"` : ''}${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">${svg}${mdH}${o.name === false ? '' : `<span class="mn-nm">${esc(b.n)}</span>`}${m.tr ? '<span class="tri">Triple !</span>' : o.trip ? '<span class="tri pulse">Triple !</span>' : ''}${o.extra || ''}</div>`;
+  return `<div class="${cls}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.dmg ? ` data-dmg="${o.dmg}"` : ''}${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">${svg}${mdH}${kiH}${o.name === false ? '' : `<span class="mn-nm">${esc(b.n)}</span>`}${m.tr ? '<span class="tri">Triple !</span>' : o.trip ? '<span class="tri pulse">Triple !</span>' : ''}${o.extra || ''}</div>`;
 }
 // pièce de coût en haut à gauche ; en vert avec l'ancien prix barré quand une réduction est active
 function costGemH(c, base) {
@@ -317,6 +323,15 @@ function chakraLawH(big) {
 const NJ_STYLE = { n_feu:'Explosions', n_vent:'Kugutsu et sable', n_eau:'Survie et soins', n_foudre:'Jinchūriki', n_terre:'Forteresse' };
 const NJ_VIC = { n_feu:'🔥', n_vent:'🏜️', n_eau:'🌫️', n_foudre:'⚡', n_terre:'⛰️' };
 // fiche de l'univers Ninja : cinq règles courtes (le détail est sur l'écran du héros)
+function dbCardH() {
+  const row = (ic, col, t, x) => `<span class="nj-r"><i class="nj-i" style="--c:${col}"><span class="nj-tx">${ic}</span></i><span><b>${t}</b><small>${x}</small></span></span>`;
+  return `<span class="ban-law nj-law"><b>Les nouvelles mécaniques</b>
+    ${row('☯', '#1e4a6a', 'Le ki', 'Clique sur ☯ pour mettre un serviteur en méditation : il ne combat pas au prochain combat, mais te rapporte autant de ki que son niveau.')}
+    ${row('⚡', '#6a4a12', 'Les transformations', 'Certains serviteurs se transforment par paliers (Super Saiyan, puis 2, puis 3…) en payant du ki : gros bonus de stats et parfois un mot-clé. Moins cher si leur condition est remplie (colère, défaite, victoire).')}
+    ${row('✦', '#3a2a5a', 'Les objets', 'L\'étagère de la taverne vend des objets : Haricot magique, Boucles Potara (fusion), Radar du dragon, Salle de gravité…')}
+    ${row('♛', '#5a2a2a', 'Les familles', 'Saiyans (Zenkai), Terriens (soutien), Namekiens (fusion namek), Androïdes (absorption d\'énergie, autodestruction), Majin (absorption).')}
+  </span>`;
+}
 function ninjaCardH() {
   const row = (ic, col, t, x) => `<span class="nj-r"><i class="nj-i" style="--c:${col}">${ic}</i><span><b>${t}</b><small>${x}</small></span></span>`;
   return `<span class="ban-law nj-law"><b>Les nouvelles mécaniques</b>
@@ -336,7 +351,7 @@ function univPickH(sel, edit, actions) {
     return `<button type="button" class="ban${a ? ' on' : ''}${u.mech === 'chakra' ? ' ban-nj' : ''}" style="--uc:${esc(L.col)}" ${edit ? `data-act="univ" data-u="${k}"` : 'disabled'} aria-pressed="${a}">
       ${a ? '<span class="ban-rib">Levé</span>' : ''}
       <span class="ban-hd"><span class="ban-em">${icon(L.ic)}</span><span class="ban-t"><b>${esc(u.n)}</b>${L.lore ? `<i>${esc(L.lore)}</i>` : ''}</span></span>
-      ${u.mech === 'chakra' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${ninjaCardH()}</span></span>` : M ? `<span class="ban-law"><b>Loi · ${esc(M.n)}</b><small>${esc(M.d)}</small></span>` : ''}
+      ${u.mech === 'ki' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${dbCardH()}</span></span>` : u.mech === 'chakra' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${ninjaCardH()}</span></span>` : M ? `<span class="ban-law"><b>Loi · ${esc(M.n)}</b><small>${esc(M.d)}</small></span>` : ''}
       <span class="ban-fam">${fams.map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span>
       <span class="ban-her">${heroes.slice(0, 6).map(h => `<span class="ban-h" title="${esc(HEROES[h].n)}">${faceH('art-h-' + h)}</span>`).join('')}<small>${heroes.length} héros</small></span>
     </button>`;
@@ -476,7 +491,7 @@ function gameH() {
     const heroZone = `<section class="hero-zone">
       <div class="hz-left">${trainH(d, me, canAct)}${me.cp || (!NJ_COMP && (d.laws || []).some(l => l.k === 'chakra')) ? '' : `<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span>`}</div>
       <div class="hz-hero${me.haw ? ' haw' : ''}${me.haw && V.hawSeen !== me.hawId ? ' haw-new' : ''}" data-hov="hero">${me.haw ? hawFrameH(hero) : ''}<span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? heroArt(me.hero, me.haw) : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}${mkOrbsH(d, me)}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span>${HQ ? (me.haw ? `<span class="hq done">${esc(hero.awn || 'Éveillé')}</span>` : `<span class="hq" data-tip="${esc('Quête d\'éveil : ' + HQ.tx + ' Récompense : ' + HEROES[me.hero].aw.nm + ' (nouveau pouvoir).')}"><i style="--p:${Math.min(1, (me.qp || 0) / HQ.n)}"></i>${Math.min(me.qp || 0, HQ.n)}/${HQ.n}</span>`) : ''}</div>
-      <div class="hz-right"><span class="hov" data-hov="pow">${power}</span><span class="purses">${coins}${canAct ? ckGauge(d, me) : ''}</span>${rsvH(d, me)}</div>
+      <div class="hz-right"><span class="hov" data-hov="pow">${power}</span><span class="purses">${coins}${canAct ? ckGauge(d, me) + kiGauge(d, me) : ''}</span>${rsvH(d, me)}</div>
       <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}"><span class="bell-shine" aria-hidden="true"></span>${icon('bell')}<span class="bell-t">${me.rdy ? 'Prêt !' : 'Prêt'}</span><small class="bell-s">${me.rdy ? 'en attente' : 'fin du tour'}</small></button></div></section>`;
     const n = me.hd.length;
     const hand = fighting ? '' : `<section class="hand" data-drop="hd" aria-label="Ta main · ${n}/10"><div class="fan${n > 7 ? ' many' : n > 4 ? ' some' : ''}" style="--n:${n}">${n ? me.hd.map((m, i) => { const o = i - (n - 1) / 2, op = { drag:canAct, style:`--o:${f1(o)};--o2:${f1(o * o)}` }; return m.sp ? spellCardH(m.sp, 'hd', i, op) : cardH(m, 'hd', i, op); }).join('') : ''}</div></section>`;
@@ -644,6 +659,11 @@ function comboWatch() {
   const el = document.createElement('div'); el.className = 'combo-fx';
   el.innerHTML = `<div class="cbx" style="--c1:${ELS[c.a] ? ELS[c.a].col : c.col};--c2:${ELS[c.b] ? ELS[c.b].col : c.col};--cc:${c.col}"><span class="cbx-orb"></span><small>${c.pure ? 'Ultime · ' + esc(vilN(c.a)) : 'Combo · ' + esc(vilN(c.a)) + ' + ' + esc(vilN(c.b))}</small><b>${esc(c.n)}</b><p>${esc(comboTx({ n:c.n }))}</p>${(c.bursts || []).map(e => `<p class="cbx-b" style="color:${MK_COL[e]}">Éclat · ${MK_N[e]} : ${esc(MK_BURST[e][0])}</p>`).join('')}</div>`;
   document.body.appendChild(el); setTimeout(() => el.remove(), 2600);
+}
+function kiGauge(d, me) {
+  if (!(d.laws || []).some(l => l.k === 'ki')) return '';
+  const ki = me.ki || 0, inc = (me.bd || []).filter(m => m.med).reduce((t, m) => t + tierOf(m) * (m.g ? 2 : 1), 0);
+  return `<div class="purse kip" aria-label="${ki} ki" data-tip="Ki : mets un serviteur en méditation (☯) pour en gagner autant que son niveau ; il ne combattra pas. Le ki paie les transformations et certains pouvoirs.${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ki}<small> ki</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:15 }, (_, k) => `<i class="kic${k < ki ? '' : ' off'}"></i>`).join('')}</span>${inc ? `<span class="inc">+${inc} ki au prochain tour</span>` : ''}</div>`;
 }
 function ckGauge(d, me) {
   const law = (d.laws || []).find(l => l.k === 'chakra'); if (!law) return '';
@@ -953,7 +973,7 @@ const rollH = (me, i) => `<span class="h-roll${(me.hrr || 0) > 0 ? '' : ' off'}"
 const rollInfoH = me => `<p class="h-rolls">${icon('roll')} Relances : ${Array.from({ length:me.hrm || 3 }, (_, k) => `<i class="${k < (me.hrr || 0) ? 'on' : ''}"></i>`).join('')}<small>clique sur ${icon('roll')} pour changer un héros</small></p>`;
 // choix du héros façon auto-battler : grands portraits en rangée, pouvoir en médaillon sous chaque héros
 function heroPickRowH(d, me) {
-  const nin = (d.laws || []).some(l => l.k === 'chakra'), sel = me.ho.includes(V.heroSel) ? V.heroSel : null;
+  const nin = (d.laws || []).some(l => l.k === 'chakra' || l.k === 'ki'), sel = me.ho.includes(V.heroSel) ? V.heroSel : null;
   const pcs = [];
   const card = (h, i) => { const x = HEROES[h], on = h === sel, cid = compOf(h) || COMPANIONS[h], c = cid && C[cid], el = x.clan, vt = (x.fam || [])[0], col = x.mc && NJ_MC[x.mc] ? NJ_MC[x.mc][1] : el && ELS[el] ? ELS[el].col : TRIBES[vt] && TRIBES[vt].col || '#d8a84a';
     const pw = x.pwn || (x.cost ? 'Pouvoir héroïque' : 'Pouvoir passif'), cap = t => (t || '').charAt(0).toUpperCase() + (t || '').slice(1);
@@ -977,12 +997,12 @@ function heroPickRowH(d, me) {
       </button>
       ${on ? `<button class="t-go hp-go" data-act="hero" data-h="${h}">Choisir</button>` : ''}
     </div>`; };
-  const tab = V.ruleTab || 'tour', rules = nin && V.hpRules;
+  const tab = V.ruleTab || 'tour', rules = nin && (d.laws || []).some(l => l.k === 'chakra') && V.hpRules;
   return `<div class="ov hp-ov"><div class="hp-wrap">
     <h2 class="hp-t">Choisis ton héros</h2><p class="hp-sub">Survole un héros pour voir son pouvoir, clique pour le choisir.</p>${rollInfoH(me)}
     <div class="hp-row">${me.ho.map(card).join('')}</div>
     <div class="hp-infos">${pcs.join('')}<p class="hp-ph">Survole un héros pour voir son pouvoir.</p></div>
-    ${nin ? `<button class="btn sm hp-rb" data-act="hprules">${rules ? 'Masquer les règles' : 'Comment on joue ?'}</button>` : ''}
+    ${nin && (d.laws || []).some(l => l.k === 'chakra') ? `<button class="btn sm hp-rb" data-act="hprules">${rules ? 'Masquer les règles' : 'Comment on joue ?'}</button>` : ''}
     ${rules ? `<div class="hpick-r hp-rules"><div class="rl-tabs" role="tablist">${RULE_TABS.map(([k, n]) => `<button role="tab" class="rl-tab${k === tab ? ' on' : ''}" data-act="rtab" data-k="${k}" aria-selected="${k === tab}">${n}</button>`).join('')}</div><div class="rl-body">${ruleTabH(tab)}</div></div>` : ''}
   </div></div>`;
 }
@@ -1161,6 +1181,8 @@ function doAct(act, btn) {
     case 'hero': sendAct({ t:'hero', h:btn.dataset.h }); V.heroSel = null; break;
     case 'hsel': V.heroSel = btn.dataset.h; render(); break;
     case 'ckm': sendAct({ t:'ckm', i:+btn.dataset.i }); break;
+    case 'med': sendAct({ t:'med', i:+btn.dataset.i }); break;
+    case 'tf': sendAct({ t:'tf', i:+btn.dataset.i }); break;
     case 'hprules': V.hpRules = !V.hpRules; render(); if (V.hpRules) requestAnimationFrame(() => { const r = document.querySelector('.hp-rules'); if (r) r.scrollIntoView({ block:'end', behavior:'smooth' }); }); break;
     case 'rwst': rwSet(((V.rw || 0) + (+btn.dataset.d) + 10) % 10); render(); break;
     case 'hroll': if ((V.me.hrr || 0) > 0) { if (V.heroSel === V.me.ho[+btn.dataset.i]) V.heroSel = null; sendAct({ t:'hroll', i:+btn.dataset.i }); } break;
@@ -1705,10 +1727,10 @@ function heroArchH(art, hp, cls = '') {
     <path d="M6.5 118 V51 C6.5 27 27 10 50 5.5" fill="none" stroke="#fff6c8" stroke-width=".9" opacity=".7"/></svg>${hp != null ? `<span class="harch-hp"><svg viewBox="0 0 100 110"><defs><radialGradient id="${id}d" cx=".42" cy=".62" r=".6"><stop offset="0" stop-color="#ff7a5a"/><stop offset=".7" stop-color="#c0180e"/><stop offset="1" stop-color="#7a0a06"/></radialGradient></defs><path d="M50 3 C60 26 92 46 92 70 A42 40 0 0 1 8 70 C8 46 40 26 50 3 Z" fill="url(#${id}d)" stroke="#2a1806" stroke-width="4"/><path d="M30 56 C34 46 40 40 44 34" stroke="#ffd0c0" stroke-width="5" fill="none" stroke-linecap="round" opacity=".7"/></svg><b>${hp}</b></span>` : ''}</span>`;
 }
 function powBannerH(x, hid, nin) {
-  const cost = x.cost ? (nin && x.pay !== 'g' ? `<span class="pwb-cost ck">${ckMarkH(x.cost)}</span>` : `<span class="pwb-cost g"><b>${x.cost}</b></span>`) : '<span class="pwb-cost p"><b>∞</b></span>';
+  const cost = x.cost ? (x.pay === 'ki' ? `<span class="pwb-cost kic"><b>${x.cost}</b></span>` : nin && x.pay !== 'g' ? `<span class="pwb-cost ck">${ckMarkH(x.cost)}</span>` : `<span class="pwb-cost g"><b>${x.cost}</b></span>`) : '<span class="pwb-cost p"><b>∞</b></span>';
   const main = (x.trx ? x.tx.replace(' Bonus : ' + x.trx, '') : x.tx || '').replace(/^Passif : /, '');
   return `<div class="pwb">${cost}<span class="pwb-med">${powArtH(hid)}</span><b class="pwb-nm">${esc(x.pwn || (x.cost ? 'Pouvoir héroïque' : 'Pouvoir passif'))}</b>
-    <p class="pwb-tx"><small>${x.cost ? 'Pouvoir héroïque' : 'Pouvoir passif'}</small>${esc(main.charAt(0).toUpperCase() + main.slice(1))}</p></div>`;
+    <p class="pwb-tx"><small>${x.cost ? 'Pouvoir héroïque' + (x.pay === 'ki' ? ' · ' + x.cost + ' ki' : '') : 'Pouvoir passif'}</small>${esc(main.charAt(0).toUpperCase() + main.slice(1))}</p></div>`;
 }
 // survol d'un joueur du classement (façon Champs de bataille) : héros, pouvoir, et parchemin des statistiques
 function oppPeekH(p) {
@@ -2710,6 +2732,21 @@ html.lite .awk-go{animation:none}
 .hp-card .hp-nm{position:absolute!important;top:100%!important;bottom:auto!important;left:-4%!important;right:-4%!important;margin-top:6px}
 .hp-card{margin-bottom:46px}
 .hp-card .harch-hp{right:-8%;bottom:-4%}
+.med-b{position:absolute;left:-6%;top:4%;z-index:7;width:clamp(20px,26%,36px);aspect-ratio:1;display:grid;place-items:center;border-radius:50%;cursor:pointer;font-size:clamp(12px,1.8vh,20px);color:#e8f4ff;background:radial-gradient(circle at 40% 35%,#4a7ab8,#1a2a4a);box-shadow:0 0 0 2px #120a06,0 0 0 3.5px #9fd8ff;opacity:.8;transition:transform .15s}
+.med-b:hover{transform:scale(1.12);opacity:1}.med-b.on{opacity:1;background:radial-gradient(circle at 40% 35%,#9fe8ff,#2a7ad8);box-shadow:0 0 0 2px #120a06,0 0 0 3.5px #fff,0 0 14px #6fd0ff}
+.mn:has(.med-b.on){filter:saturate(.6) brightness(.9)}
+.mn:has(.med-b.on)::after{content:"";position:absolute;inset:-6%;border-radius:50%;pointer-events:none;box-shadow:0 0 18px 4px rgba(111,208,255,.65);animation:medglow 2s ease-in-out infinite alternate}
+@keyframes medglow{from{opacity:.5}to{opacity:1}}
+.med-n,.tf-n{position:absolute;left:50%;top:-6%;transform:translateX(-50%);z-index:6;padding:1px 6px;border-radius:99px;font:700 clamp(9px,1.2vh,12px) var(--f-label),serif;white-space:nowrap;pointer-events:none}
+.med-n{background:#1a3a6a;color:#cfeaff;box-shadow:0 0 0 1px #9fd8ff}
+.tf-n{top:auto;bottom:22%;background:linear-gradient(180deg,#ffe28a,#c88a26);color:#2a1606;box-shadow:0 0 8px rgba(255,200,60,.8)}
+.mn:has(.tf-n)::before{content:"";position:absolute;inset:-4%;border-radius:50%;pointer-events:none;box-shadow:0 0 16px 4px rgba(255,210,60,.6);z-index:0}
+.tf-b{position:absolute;right:-6%;top:6%;z-index:7;width:clamp(22px,28%,38px);aspect-ratio:1;display:grid;place-items:center;cursor:pointer;clip-path:polygon(50% 0,62% 32%,98% 36%,70% 58%,80% 96%,50% 76%,20% 96%,30% 58%,2% 36%,38% 32%);background:radial-gradient(circle at 45% 40%,#fff6b0,#e0a020);filter:grayscale(.7) brightness(.75);transition:transform .15s}
+.tf-b b{font:700 clamp(11px,1.5vh,16px) var(--f-disp),serif;color:#2a1606;margin-top:12%}
+.tf-b.ok{filter:drop-shadow(0 0 6px #ffd84a);animation:tfpulse 1.2s ease-in-out infinite alternate}.tf-b:hover{transform:scale(1.15)}
+@keyframes tfpulse{from{transform:scale(1)}to{transform:scale(1.12)}}
+.kip b small{font-size:.6em;color:#9fd8ff}.kip .kic{display:block;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e0f6ff,#2a8ad8);box-shadow:0 0 0 1px #0a1a2a}.kip .kic.off{opacity:.2}
+.pwb-cost.kic{background:radial-gradient(circle at 35% 30%,#e0f6ff,#2a8ad8)}.pwb-cost.kic b{font:700 18px var(--f-disp),serif;color:#0a1a2a}
 .rl-body{overflow:auto;min-height:0;padding-right:4px;text-align:left}
 .rl-p p,.rl-ul li{font-size:13px;line-height:1.45;color:#f1e4c6;margin:0 0 8px}.rl-p b,.rl-ul b,.rl-step b{color:#ffd86a}
 .rl-ul{margin:0 0 8px;padding-left:18px}

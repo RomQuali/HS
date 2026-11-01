@@ -413,6 +413,11 @@ const AN_VIL = {
   n_eau:{ vest:'#5a6e7a', band:'#26323e', shirt:'#3a4a58', g:'M50 33.4 C 52.8 36.6, 53.6 38.2, 50 40.4 C 46.4 38.2, 47.2 36.6, 50 33.4 Z' },
   n_foudre:{ vest:'#e6e1d4', band:'#2a2a34', shirt:'#3a3a44', g:'M51.6 33.4 L47.4 37.4 L50.6 37.4 L48.4 40.6 L53 36.2 L49.8 36.2 Z' },
   n_terre:{ vest:'#8a3a28', band:'#3a2a22', shirt:'#5a4a3a', g:'M44 40 L48.4 34 L50.6 36.8 L52.4 35 L56 40 Z' },
+  d_sai:{ vest:'#ece6d4', band:'#2a2a34', shirt:'#2a3a7a', g:'' },
+  d_ter:{ vest:'#e8701a', band:'#2a2a34', shirt:'#2a4aa8', g:'' },
+  d_nam:{ vest:'#5a3a8a', band:'#2a2a34', shirt:'#2a2a3a', g:'' },
+  d_and:{ vest:'#3a5a8a', band:'#2a2a34', shirt:'#d8d6cc', g:'' },
+  d_maj:{ vest:'#2a2a34', band:'#2a2a34', shirt:'#e8d8a8', g:'' },
 };
 function animeNinja(o) {
   const V = AN_VIL[o.tr] || AN_VIL.n_feu, sk = o.skin, skS = shade(sk, -0.2), hr = o.hair, hrS = shade(hr, -0.32), hrL = shade(hr, 0.4);
@@ -476,23 +481,29 @@ function animeNinja(o) {
     }
     return d + ' L68.6 46 C 60 40, 40 40, 31.4 46 Z';
   };
-  if (o.hood) s += P('M23 56 C 20 22, 80 22, 77 56 L74 78 C 72 60, 68 44, 50 42.6 C 32 44, 28 60, 26 78 Z', o.hood, w()) + Ln('M30 34 Q50 22 70 34', shade(o.hood, 0.3), 1, 'opacity=".6"');
+  if (o.armor) { const pad = P('M10 86 C 10 76, 20 72, 32 74 L36 84 C 26 86, 18 90, 12 96 Z', '#ece6d4', w()) + P('M14 88 C 18 82, 26 79, 33 80', 'none', 'stroke="#b8b098" stroke-width="1.2"'); s += pad + mir(pad); }
+  if (o.antenna) s += Ln('M44 33 C 42 24, 38 20, 35 16', '#4a8a3a', 2.2) + Ln('M56 33 C 58 24, 62 20, 65 16', '#4a8a3a', 2.2) + Ci(35, 15.4, 2.2, '#6ab04a', w(1)) + Ci(65, 15.4, 2.2, '#6ab04a', w(1));
+  if (o.cyber) s += P('M58 47 L67.6 47 L67.4 58 L60 60 Z', '#9aa4b0', w(1)) + Ci(63.4, 53, 2.2, '#ff3a3a', 'filter="url(#fx-glow)"') + Ln('M60 49.4 L66 49.4', '#dfe6ee', 0.8);
+  if (o.pinkcurl) s += P('M48 30 C 44 22, 52 16, 56 20 C 58 23, 55 26, 52 25', 'none', `stroke="${o.skin}" stroke-width="5" stroke-linecap="round"`) + P('M48 30 C 44 22, 52 16, 56 20 C 58 23, 55 26, 52 25', 'none', `stroke="${OUT}" stroke-width="1" fill="none" opacity=".5"`);
+  if (o.bald) { /* pas de cheveux */ }
+  else if (o.hood) s += P('M23 56 C 20 22, 80 22, 77 56 L74 78 C 72 60, 68 44, 50 42.6 C 32 44, 28 60, 26 78 Z', o.hood, w()) + Ln('M30 34 Q50 22 70 34', shade(o.hood, 0.3), 1, 'opacity=".6"');
   else {
     const H = { spiky:[9, 9, 0], swept:[8, 8, 6], short:[12, 3.4, 0], long:[6, 2, 0], pony:[10, 3, 0], bun:[6, 1.6, 0], wild:[7, 13, -3] }[o.hs] || [9, 8, 0];
     s += P(spikes(H[0], H[1], H[2]), hr, w()) + Ln('M38 30 Q44 25 50 26', hrL, 1.2, 'opacity=".55"') + Ln('M56 27 Q61 28 64 32', hrL, 1, 'opacity=".45"');
   }
   // bandeau frontal et plaque gravée
-  if (!o.noband) {
+  if (!o.noband && V.g) {
     s += P('M29.6 34.6 C 40 32.4, 60 32.4, 70.4 34.6 L70 40.6 C 60 38.8, 40 38.8, 30 40.6 Z', V.band, w());
     s += `<rect x="40.6" y="32.4" width="18.8" height="8.8" rx="1.6" fill="#c3cbd3" ${w(1.2)}/>` + Ln('M42.2 33.8 L57.6 33.8', '#fff', 0.8, 'opacity=".7"') + `<path d="${V.g}" fill="none" stroke="#3a4048" stroke-width="1.2" stroke-linejoin="round"/>`;
     if (o.tails) s += P('M70 36 C 78 39, 82 46, 84 54 L80.4 52.6 C 78.6 47, 75 42, 69.6 40.4 Z', V.band, w(1.2));
   }
   // mèches de côté
-  if (!o.hood) {
+  if (!o.hood && !o.bald) {
     if (o.hs === 'long') s += P('M31 40 C 27 52, 28 66, 30 76 L35 70 C 33 60, 33 50, 35.6 42 Z', hr, w()) + mir(P('M31 40 C 27 52, 28 66, 30 76 L35 70 C 33 60, 33 50, 35.6 42 Z', hr, w()));
     else s += P('M30.6 40 L28.4 56 L32 50 L33.4 58 L35.4 42 Z', hr, w(1.2)) + mir(P('M30.6 40 L28.4 56 L32 50 L33.4 58 L35.4 42 Z', hr, w(1.2)));
     if (o.hs === 'swept') s += P('M38 39.6 C 44 41, 48 46, 47 55 C 44 49, 40 45, 35 43 Z', hr, w(1.2));
   }
+  if (o.turban) s += P('M28 40 C 28 22, 72 22, 72 40 C 62 36, 38 36, 28 40 Z', o.turban, w()) + Ln('M30 38 C 42 34, 58 34, 70 38', shade(o.turban, -0.25), 1.2);
   if (o.clone) s += [[16, 90, 9], [84, 90, 9], [28, 98, 8], [72, 98, 8], [50, 100, 7]].map(([x, y, r]) => Ci(x, y, r, '#f2f2f6', `opacity=".85" ${w(1.2)}`)).join('');
   return s;
 }
@@ -530,4 +541,29 @@ function animeFor(id) {
 (function () {
   for (const id in (typeof DEFAULT_CARDS !== 'undefined' ? DEFAULT_CARDS : {})) if (/^n_[a-z][0-9]+$/.test(id)) { const f = animeFor(id); if (f) ART[id] = f; }
   ART.tk_clone = () => animeNinja({ tr:'n_feu', seed:12345, skin:'#f2cfae', hair:'#6a3a1e', iris:'#3a6a3a', hs:'short', eyes:'round', brow:'stern', mouth:'grin', rank:1, clone:1 });
+})();
+
+// univers Dragon Ball : combattants originaux de style anime (familles Saiyans, Terriens, Namekiens, Androïdes, Majin)
+function dbFor(id) {
+  const b = typeof DEFAULT_CARDS !== 'undefined' && DEFAULT_CARDS[id]; if (!b) return null;
+  let h = 2166136261; for (const c of id) h = Math.imul(h ^ c.charCodeAt(0), 16777619) >>> 0; h ^= h >>> 15; h = Math.imul(h, 0x85ebca6b) >>> 0; h ^= h >>> 13; h >>>= 0;
+  const pk = (a, k) => a[(h >>> k) % a.length], t = b.t || 1, tr = b.tr;
+  const o = { tr, seed:h, noband:1, skin:pk(AN_SK, 1), hair:pk(['#1e1a22', '#3a2416', '#6a3a1e', '#a8361e', '#2a3a5a', '#4a2a1a'], 5), iris:pk(AN_IR, 9), hs:pk(['short', 'swept', 'long', 'pony', 'bun'], 13),
+    eyes:'round', brow:pk(['stern', 'soft', 'norm'], 17), mouth:pk(['neutral', 'smirk', 'grin', 'frown'], 19), rank:t <= 2 ? 1 : t <= 4 ? 2 : t <= 5 ? 3 : 4 };
+  if (tr === 'd_sai') { o.hair = '#1e1a22'; o.hs = pk(['wild', 'spiky', 'long'], 13); o.armor = t >= 2; o.brow = 'stern'; o.rank = Math.min(o.rank, 2); if (t >= 6) o.rank = 4; }
+  if (tr === 'd_ter') { o.hs = pk(['short', 'swept', 'pony', 'bun', 'long'], 13); o.rank = t >= 6 ? 4 : t >= 4 ? 2 : 1; if (t <= 1 && (h >> 5) % 2) o.bald = 1; }
+  if (tr === 'd_nam') { o.skin = pk(['#7ac04a', '#6ab04a', '#8ac85a'], 3); o.bald = 1; o.antenna = 1; o.iris = '#2a2a1a'; o.brow = 'stern'; if (t >= 3 && (h >> 6) % 2) o.turban = '#f0ece0'; if (t >= 5) o.rank = 4; }
+  if (tr === 'd_and') { o.skin = pk(['#f6d7bc', '#e8d2c0', '#d8c8b8'], 3); o.cyber = (h >> 4) % 2 === 0 || t >= 4; o.iris = pk(['#4a7ab8', '#3a3a4a', '#6a8aa8'], 7); o.mouth = 'neutral'; }
+  if (tr === 'd_maj') { o.skin = pk(['#f0a0c0', '#e890b8', '#f4b0c8'], 3); o.bald = 1; o.pinkcurl = 1; o.eyes = t >= 4 ? 'glow' : 'round'; o.glow = '#3a1a2a'; o.iris = '#2a1a22'; o.mouth = pk(['grin', 'smirk', 'open'], 7); }
+  if (/légendaire|Roi/.test(b.n || '')) o.aura = '#ffcf3a';
+  return () => animeNinja(o);
+}
+(function () {
+  for (const id in (typeof DEFAULT_CARDS !== 'undefined' ? DEFAULT_CARDS : {})) if (/^d_[a-z][0-9]+$/.test(id)) { const f = dbFor(id); if (f) ART[id] = f; }
+  // portraits provisoires des héros Dragon Ball (en attendant les images)
+  if (typeof HEROES !== 'undefined') for (const id in HEROES) if (/^dh_/.test(id) && !HART[id]) {
+    const H0 = HEROES[id], tr = H0.pv || 'd_ter'; let h = 7; for (const c of id) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    const o = { tr, seed:h, noband:1, skin:tr === 'd_nam' ? '#7ac04a' : tr === 'd_maj' ? '#f0a0c0' : AN_SK[h % 5], hair:tr === 'd_sai' ? '#1e1a22' : AN_HR[h % AN_HR.length], iris:'#3a2a1a', hs:tr === 'd_sai' ? 'wild' : 'short', eyes:'round', brow:'stern', mouth:'smirk', rank:3, armor:tr === 'd_sai', antenna:tr === 'd_nam', bald:tr === 'd_nam' || tr === 'd_maj', pinkcurl:tr === 'd_maj', cyber:tr === 'd_and' };
+    HART[id] = () => `<rect width="100" height="100" fill="#2a1a10"/>` + animeNinja(o);
+  }
 })();
