@@ -29,28 +29,28 @@ const SPELLS = {
   sp_ascension:{ n:'Ascension', t:6, c:6, ty:'renf', tx:'Donne +2/+2 et Bouclier divin à tous tes serviteurs.' },
   // ----- techniques ninja : achetées en or, lancées avec du chakra (fx = étapes ; awk = bonus après l'Éveil) -----
   // Katon : kinjutsu (payés en PV) et explosions
-  nj_souffle:{ el:'feu', n:'Hōsenka no jutsu', t:1, c:1, ck:2, nin:1, ty:'nin', fx:[{ k:'fire', d:3 }, { k:'mk', el:'feu', n:1 }], awk:{ tx:'+3 dégâts', fx:[{ k:'fire', d:3 }] }, tx:'Fleurs de phénix : prochain combat, 3 dégâts à l\'ennemi. Gagne 1 braise.' },
-  nj_boule:{ el:'feu', n:'Gōkakyū no jutsu', t:2, c:2, ck:3, nin:1, ty:'nin', fx:[{ k:'firebraise' }], awk:{ tx:'+1 dégât par braise', fx:[{ k:'firebraise1' }] }, tx:'Grande boule de feu : consume tes braises, prochain combat 2 dégâts par braise à l\'ennemi (au moins 2).' },
-  nj_kporte:{ el:'feu', n:'Kinjutsu : Kaimon', t:3, c:2, ck:0, hp:3, nin:1, ty:'nin', tg:1, fx:[{ k:'tbuff', a:4, h:2 }, { k:'mk', el:'feu', n:1 }], awk:{ tx:'+2/+2 de plus', fx:[{ k:'tbuff', a:2, h:2 }] }, tx:'Kinjutsu, coûte 3 PV au lieu du chakra. Porte de l\'ouverture : le serviteur ciblé gagne +4/+2.' },
+  nj_souffle:{ el:'feu', n:'Hōsenka no jutsu', t:1, c:1, ck:2, nin:1, ty:'nin', fx:[{ k:'fire', d:3 }], awk:{ tx:'+3 dégâts', fx:[{ k:'fire', d:3 }] }, tx:'Fleurs de phénix : prochain combat, 3 dégâts à l\'ennemi.' },
+  nj_boule:{ el:'feu', n:'Gōkakyū no jutsu', t:2, c:2, ck:3, nin:1, ty:'nin', fx:[{ k:'fire', d:5 }], awk:{ tx:'+3 dégâts', fx:[{ k:'fire', d:3 }] }, tx:'Grande boule de feu : prochain combat, 5 dégâts à l\'ennemi.' },
+  nj_kporte:{ el:'feu', n:'Kinjutsu : Kaimon', t:3, c:2, ck:0, hp:3, nin:1, ty:'nin', tg:1, fx:[{ k:'tbuff', a:4, h:2 }], awk:{ tx:'+2/+2 de plus', fx:[{ k:'tbuff', a:2, h:2 }] }, tx:'Kinjutsu, coûte 3 PV au lieu du chakra. Porte de l\'ouverture : le serviteur ciblé gagne +4/+2.' },
   nj_kbaku:{ el:'feu', n:'Kinjutsu : Bakuretsu', t:4, c:3, ck:0, hp:4, nin:1, ty:'nin', fx:[{ k:'fire', d:8 }, { k:'tma', a:2, h:0 }], awk:{ tx:'+4 dégâts', fx:[{ k:'fire', d:4 }] }, tx:'Kinjutsu, coûte 4 PV au lieu du chakra. Explosion de chakra : prochain combat, 8 dégâts à l\'ennemi et +2/+0 à tes serviteurs.' },
-  nj_deluge:{ el:'feu', n:'Hiden : Amaterasu', t:6, c:5, ck:6, hid:3, nin:1, ty:'nin', fx:[{ k:'fire', d:8 }, { k:'tma', a:3, h:3 }, { k:'mk', el:'feu', n:3 }], awk:{ tx:'+2/+2 de plus pour tous', fx:[{ k:'tma', a:2, h:2 }] }, tx:'Hiden : il faut 3 serviteurs Katon. Flammes noires : prochain combat, 8 dégâts à l\'ennemi et +3/+3 à tes serviteurs. Gagne 3 braises.' },
+  nj_deluge:{ el:'feu', n:'Hiden : Amaterasu', t:6, c:5, ck:6, hid:3, nin:1, ty:'nin', fx:[{ k:'fire', d:8 }, { k:'tma', a:3, h:3 }], awk:{ tx:'+2/+2 de plus pour tous', fx:[{ k:'tma', a:2, h:2 }] }, tx:'Hiden : il faut 3 serviteurs Katon. Flammes noires : prochain combat, 8 dégâts à l\'ennemi et +3/+3 à tes serviteurs.' },
   // Fûton : techniques à charger (plus fortes à chaque tour gardées en main)
-  nj_permut:{ el:'vent', n:'Kaze no yaiba', t:1, c:1, ck:1, chg:1, nin:1, ty:'nin', tg:1, fx:[{ k:'tbuff', a:2, h:1 }], awk:{ tx:'+1/+1 de plus', fx:[{ k:'tbuff', a:1, h:1 }] }, tx:'Lame de vent, à charger : le serviteur ciblé gagne +2/+1.' },
-  nj_porteur:{ el:'vent', n:'Daitoppa', t:2, c:1, ck:2, chg:1, nin:1, ty:'nin', fx:[{ k:'g', n:2 }, { k:'roll' }], awk:{ tx:'+2 or', fx:[{ k:'g', n:2 }] }, tx:'Grande percée, à charger : gagne 2 or et rafraîchis gratuitement la taverne.' },
-  nj_rafale:{ el:'vent', n:'Rasengan', t:3, c:2, ck:3, chg:1, nin:1, ty:'nin', tg:1, fx:[{ k:'tbuff', a:3, h:3 }], awk:{ tx:'+2/+2 de plus', fx:[{ k:'tbuff', a:2, h:2 }] }, tx:'Sphère tourbillonnante, à charger : le serviteur ciblé gagne +3/+3.' },
-  nj_vbun:{ el:'vent', n:'Kage bunshin no jutsu', t:4, c:3, ck:4, chg:1, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_clone', n:2 }, { k:'clones', a:1, h:1 }], awk:{ tx:'tes clones gagnent +1/+1 de plus', fx:[{ k:'clones', a:1, h:1 }] }, tx:'Multi-clonage, à charger : invoque 2 Clones de l\'ombre, puis tes clones gagnent +1/+1.' },
-  nj_vhiden:{ el:'vent', n:'Hiden : Fūton Rasenshuriken', t:6, c:5, ck:6, chg:1, hid:3, nin:1, ty:'nin', fx:[{ k:'buffall', a:2, h:1 }, { k:'fire', d:4 }], awk:{ tx:'+1/+1 de plus pour tous', fx:[{ k:'buffall', a:1, h:1 }] }, tx:'Hiden : il faut 3 serviteurs Fûton. À charger : tes serviteurs gagnent +2/+1 et 4 dégâts frappent l\'ennemi au prochain combat.' },
+  nj_permut:{ el:'vent', n:'Kaze no yaiba', t:1, c:1, ck:1, nin:1, ty:'nin', tg:1, fx:[{ k:'tbuff', a:3, h:2 }], awk:{ tx:'+1/+1 de plus', fx:[{ k:'tbuff', a:1, h:1 }] }, tx:'Lame de vent : le serviteur ciblé gagne +3/+2.' },
+  nj_porteur:{ el:'vent', n:'Daitoppa', t:2, c:1, ck:2, nin:1, ty:'nin', fx:[{ k:'g', n:2 }, { k:'roll' }], awk:{ tx:'+2 or', fx:[{ k:'g', n:2 }] }, tx:'Grande percée : gagne 2 or et rafraîchis gratuitement la taverne.' },
+  nj_rafale:{ el:'vent', n:'Rasengan', t:3, c:2, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'tbuff', a:5, h:5 }], awk:{ tx:'+2/+2 de plus', fx:[{ k:'tbuff', a:2, h:2 }] }, tx:'Sphère tourbillonnante : le serviteur ciblé gagne +5/+5.' },
+  nj_vbun:{ el:'vent', n:'Kage bunshin no jutsu', t:4, c:3, ck:4, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_clone', n:2 }, { k:'clones', a:2, h:2 }], awk:{ tx:'tes clones gagnent +1/+1 de plus', fx:[{ k:'clones', a:1, h:1 }] }, tx:'Multi-clonage : invoque 2 Clones de l\'ombre, puis tes clones gagnent +2/+2.' },
+  nj_vhiden:{ el:'vent', n:'Hiden : Fūton Rasenshuriken', t:6, c:5, ck:6, hid:3, nin:1, ty:'nin', fx:[{ k:'buffall', a:3, h:2 }, { k:'fire', d:5 }], awk:{ tx:'+1/+1 de plus pour tous', fx:[{ k:'buffall', a:1, h:1 }] }, tx:'Hiden : il faut 3 serviteurs Fûton. Tes serviteurs gagnent +3/+2 et 5 dégâts frappent l\'ennemi au prochain combat.' },
   // Suiton : rouleaux à charges (utilisables plusieurs fois)
-  nj_brume:{ el:'eau', n:'Kirigakure no jutsu', t:1, c:1, ck:2, uses:2, nin:1, ty:'nin', fx:[{ k:'tma', a:0, h:2 }, { k:'mk', el:'eau', n:1 }], awk:{ tx:'+0/+2 de plus', fx:[{ k:'tma', a:0, h:2 }] }, tx:'Brume cachée, rouleau à 2 usages : prochain combat, tes serviteurs gagnent +0/+2. La marée monte de 1.' },
+  nj_brume:{ el:'eau', n:'Kirigakure no jutsu', t:1, c:1, ck:2, uses:2, nin:1, ty:'nin', fx:[{ k:'tma', a:0, h:2 }], awk:{ tx:'+0/+2 de plus', fx:[{ k:'tma', a:0, h:2 }] }, tx:'Brume cachée, rouleau à 2 usages : prochain combat, tes serviteurs gagnent +0/+2.' },
   nj_doubles:{ el:'eau', n:'Suirō no jutsu', t:2, c:2, ck:2, uses:2, nin:1, ty:'nin', fx:[{ k:'seal', n:1 }, { k:'chill', a:2, n:1 }], awk:{ tx:'scelle un ennemi de plus', fx:[{ k:'seal', n:1 }] }, tx:'Prison aqueuse, rouleau à 2 usages : prochain combat, un ennemi est scellé (perd ses mots-clés) et un ennemi perd 2 attaque.' },
   nj_ehenge:{ el:'eau', n:'Henge no jutsu', t:3, c:2, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'henge' }], awk:{ tx:'+2/+2 après la transformation', fx:[{ k:'tbuff', a:2, h:2 }] }, tx:'Métamorphose : transforme le serviteur ciblé en un serviteur de son clan d\'un niveau plus haut, en gardant ses bonus.' },
-  nj_vague:{ el:'eau', n:'Suiryūdan no jutsu', t:4, c:3, ck:4, uses:2, nin:1, ty:'nin', fx:[{ k:'mk', el:'eau', n:2 }, { k:'marx' }], awk:{ tx:'+1/+1 de plus aux Suiton', fx:[{ k:'buffall', a:1, h:1, tb:'n_eau' }] }, tx:'Dragon aqueux, rouleau à 2 usages : la marée monte de 2, puis tes serviteurs Suiton gagnent +1/+1 par tranche de 3 marée (+3/+3 au plus).' },
+  nj_vague:{ el:'eau', n:'Suiryūdan no jutsu', t:4, c:3, ck:4, uses:2, nin:1, ty:'nin', fx:[{ k:'buffall', a:1, h:2, tb:'n_eau' }], awk:{ tx:'+1/+1 de plus aux Suiton', fx:[{ k:'buffall', a:1, h:1, tb:'n_eau' }] }, tx:'Dragon aqueux, rouleau à 2 usages : tes serviteurs Suiton gagnent +1/+2.' },
   nj_ehiden:{ el:'eau', n:'Hiden : Suikōdan', t:6, c:5, ck:6, uses:2, hid:3, nin:1, ty:'nin', fx:[{ k:'fire', d:5 }, { k:'buffall', a:2, h:2, tb:'n_eau' }], awk:{ tx:'+3 dégâts', fx:[{ k:'fire', d:3 }] }, tx:'Hiden : il faut 3 serviteurs Suiton. Rouleau à 2 usages : requins d\'eau, 5 dégâts à l\'ennemi au prochain combat et +2/+2 à tes Suiton.' },
   // Raiton : jutsu combinés (bonus si une technique d'une autre nature a été lancée ce tour)
-  nj_decharge:{ el:'foudre', n:'Raikyū', t:1, c:1, ck:1, nin:1, ty:'nin', fx:[{ k:'mk', el:'foudre', n:1 }, { k:'ck', n:2 }], comb:[{ k:'g', n:1 }], awk:{ tx:'+1 chakra', fx:[{ k:'ck', n:1 }] }, tx:'Sphère de foudre : gagne 1 charge et 2 chakra. Combiné : +1 or.' },
+  nj_decharge:{ el:'foudre', n:'Raikyū', t:1, c:1, ck:1, nin:1, ty:'nin', fx:[{ k:'ck', n:2 }], comb:[{ k:'g', n:1 }], awk:{ tx:'+1 chakra', fx:[{ k:'ck', n:1 }] }, tx:'Sphère de foudre : gagne 2 chakra. Combiné : +1 or.' },
   nj_foudre:{ el:'foudre', n:'Chidori', t:2, c:2, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'ttmp', a:3, h:0, kw:'v' }], comb:[{ k:'tbuff', a:2, h:0 }], awk:{ tx:'+2 attaque définitive', fx:[{ k:'tbuff', a:2, h:0 }] }, tx:'Mille oiseaux : prochain combat, le serviteur ciblé gagne +3 attaque et Toxique. Combiné : +2 attaque définitive.' },
   nj_oyoroi:{ el:'foudre', n:'Raiton no yoroi', t:3, c:2, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'tbuff', a:2, h:2 }, { k:'ttmp', a:0, h:0, kw:'w' }], comb:[{ k:'tkwp', kw:'w' }], awk:{ tx:'+2/+2 de plus', fx:[{ k:'tbuff', a:2, h:2 }] }, tx:'Armure de foudre : le serviteur ciblé gagne +2/+2 et Furie des vents au prochain combat. Combiné : Furie définitive.' },
-  nj_sceau:{ el:'foudre', n:'Kirin', t:5, c:4, ck:5, nin:1, ty:'nin', fx:[{ k:'fire', d:6 }, { k:'mk', el:'foudre', n:2 }], comb:[{ k:'fire', d:4 }], awk:{ tx:'+3 dégâts', fx:[{ k:'fire', d:3 }] }, tx:'Dragon de foudre : prochain combat, 6 dégâts à l\'ennemi. Gagne 2 charges. Combiné : +4 dégâts.' },
+  nj_sceau:{ el:'foudre', n:'Kirin', t:5, c:4, ck:5, nin:1, ty:'nin', fx:[{ k:'fire', d:6 }], comb:[{ k:'fire', d:4 }], awk:{ tx:'+3 dégâts', fx:[{ k:'fire', d:3 }] }, tx:'Dragon de foudre : prochain combat, 6 dégâts à l\'ennemi. Combiné : +4 dégâts.' },
   nj_ohiden:{ el:'foudre', n:'Hiden : Kuropansā', t:6, c:5, ck:6, hid:3, nin:1, ty:'nin', fx:[{ k:'buffall', a:3, h:1, tb:'n_foudre' }, { k:'tkwn', kw:'w', n:2 }], comb:[{ k:'fire', d:4 }], awk:{ tx:'+1/+1 de plus aux Raiton', fx:[{ k:'buffall', a:1, h:1, tb:'n_foudre' }] }, tx:'Hiden : il faut 3 serviteurs Raiton. Panthère noire : tes Raiton gagnent +3/+1, deux de tes serviteurs ont Furie des vents au prochain combat. Combiné : 4 dégâts à l\'ennemi.' },
   // Doton : mode ermite (bonus si ton chakra est plein ou si tu n'as rien dépensé au tour précédent)
   nj_pierre:{ el:'terre', n:'Doryūheki', t:1, c:1, ck:2, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_mur', n:1 }], sage:[{ k:'summon', card:'tk_mur', n:1 }], awk:{ tx:'+0/+2 à tes Murs', fx:[{ k:'buffcard', card:'tk_mur', a:0, h:2 }] }, tx:'Mur de terre : invoque un Mur de terre. Mode ermite : en invoque un second.' },
@@ -263,20 +263,20 @@ function drawAny(t) { const ids = POOL_IDS.filter(id => C[id].t === t); return i
 function combatBoard(p) {
   const G = typeof H !== 'undefined' ? H.G : null, aw = awake(G), ninja = G && inMechAny(G, 'chakra');
   const bd = p.bd || [], anyFx = k => bd.some(m => hasFx(m, k));
-  const phx = Math.floor((p.braise || 0) / 2) * (anyFx('awk_phoenix') ? 2 : 1), tide = Math.floor((p.maree || 0) / 4) * (anyFx('awk_tsunami') ? 2 : 1);
+  const phx = 2 * (anyFx('awk_phoenix') ? 2 : 1), tide = 2 * (anyFx('awk_tsunami') ? 2 : 1);
   return bd.map(m => {
     const c = { ...m }; delete c.tmp;
     if (m.tmp) { c.a += m.tmp.a || 0; c.h += m.tmp.h || 0; if (m.tmp.f) addF(c, m.tmp.f); }
     if (p.tma) { c.a += p.tma.a; c.h += p.tma.h; }
     if (ninja) {
-      { const el = CLAN_EL[CD(m.c).tr], t = el ? mkTier(p, el) : 0; if (t && !(C[m.c] && C[m.c].comp)) { const B = MK_TIER[el][t - 1]; c.a += B[0]; c.h += B[1]; if (B[2]) addF(c, B[2]); } }
+      { const el = CLAN_EL[CD(m.c).tr], t = el && NJ_MK ? mkTier(p, el) : 0; if (t && !(C[m.c] && C[m.c].comp)) { const B = MK_TIER[el][t - 1]; c.a += B[0]; c.h += B[1]; if (B[2]) addF(c, B[2]); } }
       const tr = CD(m.c).tr, k = m.g ? 2 : 1, x = c.x = (c.x || []).slice();
       (CD(m.c).fxAll || []).filter(e => e.k === 'awk_surge').forEach(e => { if ((p.ck || 0) >= 7) { c.a += e.a * k; c.h += e.h * k; } });
       if (aw) {
         if (tr === 'n_feu') { c.a += phx; c.h += phx; addF(c, 'r'); }                       // Phénix
         if (tr === 'n_vent') x.push({ k:'atk_zap', d:1, n:3, src:'Ouragan' });                 // Ouragan
         (CD(m.c).fxAll || []).filter(e => e.k === 'awk_hurricane').forEach(e => x.push({ k:'atk_zap', d:e.d * k, n:3, src:'Ouragan' }));
-        if (tide) { c.a += tide; c.h += tide; }                                                 // Raz-de-marée
+        if (tide && tr === 'n_eau') { c.a += tide; c.h += tide; }                                                 // Raz-de-marée
         if (tr === 'n_terre') x.push({ k:'soc_dmg', d:Math.max(1, Math.floor(c.h / 4)), n:1, src:'Avalanche' });   // Avalanche
         if (hasFx(m, 'awk_quake')) x.push({ k:'soc_aoe', d:Math.max(1, Math.floor(c.h / 6)), src:'Séisme' });
       }
@@ -492,18 +492,18 @@ const ctrAdd = (p, k, n) => { p[k] = (p[k] || 0) + n; };
 const COMBO_BD = {
   'Glace':        ['Tes serviteurs gagnent +0/+2 ; l\'un d\'eux gagne Bouclier divin.', (G, p) => { p.bd.forEach(m => buff(m, 0, 2)); const c = p.bd.filter(m => !has(m, 's')); if (c.length) addF(pickR(c), 's'); }],
   'Bois':         ['Tes serviteurs gagnent +1/+2.', (G, p) => p.bd.forEach(m => buff(m, 1, 2))],
-  'Lave':         ['Prochain combat : 6 dégâts frappent l\'ennemi. +2 braises.', (G, p) => { p.njf = (p.njf || 0) + 6; ctrAdd(p, 'braise', 2); }],
+  'Lave':         ['Prochain combat : 7 dégâts frappent l\'ennemi.', (G, p) => { p.njf = (p.njf || 0) + 7; }],
   'Vapeur':       ['Prochain combat : tes serviteurs gagnent +2/+2.', (G, p) => tmaAdd(p, 2, 2)],
   'Explosion':    ['Prochain combat : 8 dégâts frappent l\'ennemi.', (G, p) => { p.njf = (p.njf || 0) + 8; }],
-  'Fournaise':    ['+3 braises et gagne 2 or.', (G, p) => { ctrAdd(p, 'braise', 3); p.g += 2; }],
+  'Fournaise':    ['Gagne 3 or ; prochain combat, 2 dégâts frappent l\'ennemi.', (G, p) => { p.g += 3; p.njf = (p.njf || 0) + 2; }],
   'Tempête':      ['Tes serviteurs gagnent +2/+0 ; gagne 1 or.', (G, p) => { p.bd.forEach(m => buff(m, 2, 0)); p.g += 1; }],
-  'Pluie d\'orage':['Récupère 3 chakra ; la marée monte de 2.', (G, p) => { p.ck = Math.min(ckMax(p), (p.ck || 0) + 3); ctrAdd(p, 'maree', 2); }],
+  'Pluie d\'orage':['Récupère 3 chakra ; tes serviteurs gagnent +0/+1.', (G, p) => { p.ck = Math.min(ckMax(p), (p.ck || 0) + 3); p.bd.forEach(m => buff(m, 0, 1)); }],
   'Plasma':       ['Ton serviteur le plus fort gagne +4 attaque et Toxique.', (G, p) => { const t = p.bd.slice().sort((a, b) => b.a - a.a)[0]; if (t) { buff(t, 4, 0); addF(t, 'v'); } }],
   'Sable':        ['Un serviteur gagne Provocation et Bouclier divin ; gagne 1 or.', (G, p) => { if (p.bd.length) { const t = pickR(p.bd); addF(t, 't'); addF(t, 's'); } p.g += 1; }],
-  'Brasier':      ['+4 braises ; prochain combat, 5 dégâts frappent l\'ennemi.', (G, p) => { ctrAdd(p, 'braise', 4); p.njf = (p.njf || 0) + 5; }],
+  'Brasier':      ['Prochain combat : 8 dégâts frappent l\'ennemi.', (G, p) => { p.njf = (p.njf || 0) + 8; }],
   'Typhon':       ['Gagne 3 or et rafraîchis gratuitement la taverne.', (G, p) => { p.g += 3; p.fz = false; fillShop(G, p); }],
-  'Marée haute':  ['La marée monte de 4 ; tes serviteurs gagnent +1/+1.', (G, p) => { ctrAdd(p, 'maree', 4); p.bd.forEach(m => buff(m, 1, 1)); }],
-  'Surcharge':    ['+4 charges et récupère 4 chakra.', (G, p) => { ctrAdd(p, 'charge', 4); p.ck = Math.min(ckMax(p), (p.ck || 0) + 4); }],
+  'Marée haute':  ['Tes serviteurs gagnent +1/+2.', (G, p) => { p.bd.forEach(m => buff(m, 1, 2)); }],
+  'Surcharge':    ['Récupère 4 chakra ; tes serviteurs gagnent +1/+0.', (G, p) => { p.ck = Math.min(ckMax(p), (p.ck || 0) + 4); p.bd.forEach(m => buff(m, 1, 0)); }],
   'Rempart':      ['Tes serviteurs gagnent +0/+4, puis +1 attaque par tranche de 5 points de vie.', (G, p) => p.bd.forEach(m => { buff(m, 0, 4); const x = Math.floor(m.h / 5); if (x) buff(m, x, 0); })],
 };
 const comboOf = (a, b) => !a || !b ? null : a === b ? PURES[a] || null : FUSIONS[[a, b].sort().join('+')] || null;

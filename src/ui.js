@@ -302,8 +302,7 @@ function chakraLawH(big) {
   return `<span class="ban-law ck-law njl${big ? ' big' : ''}">
     ${sec('🪙', 'Ressources', `<small><b>Or</b> : serviteurs et techniques.</small><small><b>Chakra</b> : chaque ninja en jeu en donne 1 par tour (10 au plus). Il lance les techniques, le pouvoir du héros (3 à 6) </small>`)}
     ${sec('📜', 'Techniques et réservoir', `<small>Les techniques ont une <b>nature</b> (Katon, Fûton, Suiton, Raiton, Doton) et suivent le jeu de leur clan ; celles de l'élément de ton héros coûtent 1 chakra de moins.</small><small>Chaque technique remplit une moitié du <b>réservoir</b> ; la 2e déclenche un <b>combo</b> (effet sur ton plateau). Deux fois le même élément : combo pur.</small><span class="njl-combos">${pairs}</span>`)}
-    ${sec('🔥', 'Marqueurs de clan', `<small>Chaque clan a son marqueur : <b style="color:#ff8a4a">Braises</b>, <b style="color:#8fe0b0">Souffle</b>, <b style="color:#6fc8ff">Marée</b>, <b style="color:#ffd23a">Charge</b>, <b style="color:#d8c0a0">Roche</b>. Ils tournent autour de ton héros.</small><small><b>Gain</b> : +1 par technique de leur nature, serviteurs du clan.</small><small><b>Paliers</b> (5, 10, 20 gagnés) : le clan gagne des stats en combat, puis un mot-clé au 3e palier.</small><small><b>Éclat</b> : chaque combo consomme 5 marqueurs de chacun de ses éléments pour un effet en plus.</small><small><b>Pureté</b> : 5 serviteurs d'un même clan donnent +1 chakra par tour et doublent les marqueurs gagnés.</small>`)}
-    ${sec('🌅', 'Éveil (la moitié des ninjas à 20 PV ou moins)', `<small>Les <b>clans</b> libèrent leur pouvoir (Phénix, Ouragan, Raz-de-marée, Orage total, Avalanche), le pouvoir de ton <b>héros</b> est renforcé, chaque <b>technique</b> gagne son effet d'Éveil et des techniques interdites apparaissent. Tes cartes prennent l'aura de ton marqueur dominant.</small>`)}
+    ${sec('🌅', 'Éveil (la moitié des ninjas à 20 PV ou moins)', `<small>Les <b>clans</b> libèrent leur pouvoir (Phénix, Ouragan, Raz-de-marée, Orage total, Avalanche), le pouvoir de ton <b>héros</b> est renforcé, chaque <b>technique</b> gagne son effet d'Éveil et des techniques interdites apparaissent. Tes cartes prennent l'aura de ton clan dominant.</small>`)}
   </span>`;
 }
 // fiche de l'univers Ninja : quatre règles courtes et le cycle des éléments (le détail complet est sur l'écran du héros)
@@ -613,6 +612,7 @@ function rsvPeekH(me) {
 // marqueurs de clan : 5 orbes autour du portrait du héros (anneau = progression vers le prochain palier)
 const MK_COL = { feu:'#ff7a2a', vent:'#6fd8a0', eau:'#4ab0e8', foudre:'#ffd23a', terre:'#c8a878' };
 function mkOrbsH(d, me) {
+  if (!NJ_MK) return '';
   if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
   const els = ['feu', 'vent', 'foudre', 'terre', 'eau'];
   return `<span class="mkorbs" data-hov="mk" aria-label="Marqueurs de clan">${els.map((e, k) => {
@@ -756,7 +756,7 @@ function duelLunge(fr) {
 function duelFx() { document.querySelectorAll('.cp-side .mn.dead').forEach(el => { const r = el.getBoundingClientRect(); if (!FX_OFF() && !el.dataset.fxd) { el.dataset.fxd = 1; fxBurst(r.left + r.width / 2, r.top + r.height * .45, 'shard', 14); } }); }
 // en combat : les deux compagnons face à face, dans la même colonne, chacun à la hauteur de sa rangée
 // après l'Éveil : les cartes prennent l'effet de l'élément qui a le plus de marqueurs (braises = Feu, marée = Eau, charge = Foudre)
-function awkElCls(me) { if (!me) return ''; const c = [['feu', me.braise || 0], ['vent', me.souffle || 0], ['eau', me.maree || 0], ['foudre', me.charge || 0], ['terre', me.roche || 0]].sort((x, y) => y[1] - x[1])[0]; return c[1] > 0 ? ' awk-' + c[0] + (c[1] >= 20 ? ' awk-hi' : '') : ''; }
+function awkElCls(me) { if (!me || !me.bd) return ''; const n = {}; me.bd.forEach(m => { const e = CLAN_EL[CD(m.c).tr]; if (e) n[e] = (n[e] || 0) + 1; }); const top = Object.keys(n).sort((a, b) => n[b] - n[a])[0]; return top ? ' awk-' + top + (n[top] >= 4 ? ' awk-hi' : '') : ''; }
 // l'Éveil : grande annonce plein écran, une seule fois
 const awkKey = () => (V.pub.code || '') + ':' + V.pub.ev;
 // l'annonce de l'Éveil est en attente (ou affichée) : on cache le reste, coffre compris, jusqu'au clic
@@ -862,7 +862,7 @@ function detailH(canAct) {
 
 // choix du héros : trois médaillons, on en met un en avant puis on le porte
 /* ===== choix du héros (univers Ninja) : héros à gauche, règles illustrées en onglets à droite ===== */
-const RULE_TABS = [['tour', 'Le tour'], ['tech', 'Techniques'], ['mk', 'Marqueurs'], ['eveil', 'Éveil']];
+const RULE_TABS = [['tour', 'Le tour'], ['tech', 'Techniques'], ['eveil', 'Éveil']];
 function ruleTabH(k) {
   const el = e => `<i class="rl-el" style="--c:${ELS[e].col}"><svg viewBox="-12 -12 24 24">${EL_ICON[e]}</svg></i>`;
   const step = (n, t, x, vis) => `<li class="rl-step"><span class="rl-n">${n}</span><span class="rl-v">${vis || ''}</span><span><b>${t}</b><small>${x}</small></span></li>`;
@@ -879,7 +879,7 @@ function ruleTabH(k) {
       return `<div class="rl-p"><p>Chaque technique a une <b>nature</b> : ${['feu', 'vent', 'eau', 'foudre', 'terre'].map(el).join('')}. Celles de l'élément de ton héros coûtent <b>1 chakra de moins</b>.</p>
         <div class="rl-rsv"><span class="rl-scroll big"><i style="background:#4ab0e8"></i><i></i></span><span>→</span><span class="rl-scroll big"><i style="background:#4ab0e8"></i><i style="background:#ff7a2a"></i></span><span>→</span><b class="rl-boom">Combo !</b></div>
         <p>La 1re technique remplit une moitié du <b>réservoir</b>, la 2e l'autre : le mélange déclenche un <b>combo</b> (effet sur ton plateau), puis le réservoir se vide. Deux fois le même élément : <b>combo pur</b>. La moitié remplie reste d'un tour à l'autre.</p>
-        <ul class="rl-ul"><li><b>Katon · Kinjutsu</b> : se paient en PV du héros au lieu du chakra.</li><li><b>Fûton · À charger</b> : gardée en main, la technique se renforce (×2 puis ×3).</li><li><b>Suiton · Rouleaux</b> : utilisables 2 fois.</li><li><b>Raiton · Combiné</b> : bonus si tu as déjà lancé une technique d'une autre nature ce tour.</li><li><b>Doton · Mode ermite</b> : bonus si ton chakra est plein ou si tu n'as rien dépensé au tour précédent.</li><li><b>Hiden</b> (1 par clan) : il faut 3 serviteurs du clan. <b>Henge</b> : transforme un serviteur en un de son clan d'un niveau plus haut.</li></ul>
+        <ul class="rl-ul"><li><b>Katon · Kinjutsu</b> : se paient en PV du héros au lieu du chakra.</li><li><b>Suiton · Rouleaux</b> : utilisables 2 fois.</li><li><b>Raiton · Combiné</b> : bonus si tu as déjà lancé une technique d'une autre nature ce tour.</li><li><b>Doton · Mode ermite</b> : bonus si ton chakra est plein ou si tu n'as rien dépensé au tour précédent.</li><li><b>Hiden</b> (1 par clan) : il faut 3 serviteurs du clan. <b>Henge</b> : transforme un serviteur en un de son clan d'un niveau plus haut.</li></ul>
         <div class="njl-combos">${pairs}</div></div>`; }
     case 'comp': return `<div class="rl-p"><div class="rl-duel">${faceH('art-c_nj_glaces')}<span class="rl-vs">VS</span>${faceH('art-c_nj_kurama')}</div>
       <p>Ton compagnon est <b>déjà en jeu, doré</b>, à côté de ton plateau. Il ne combat que le <b>compagnon adverse</b> et ne blesse jamais le héros.</p>
