@@ -89,7 +89,7 @@ function fxFrame() {
       const r = t.getBoundingClientRect(), x = r.left + r.width / 2 - Math.sign(F.dx) * r.width * .18, y = r.top + r.height / 2 - Math.sign(F.dy) * r.height * .26;
       const big = (+t.dataset.dmg || 0) >= 6 || (a && +a.dataset.dmg >= 6);
       fxRing(x, y, big ? '#ffe39a' : '#fff1c8', big ? 1.6 : 1); fxBurst(x, y, 'hit', big ? 22 : 13, big ? 1.4 : 1);
-      if (a && (a.dataset.f || '').includes('v') && t.classList.contains('dying')) fxBurst(x, y, 'psn', 14);
+      if (a && /[vn]/.test(a.dataset.f || '') && t.classList.contains('dying')) fxBurst(x, y, 'psn', 14);
       if (big) fxShake(document.querySelector('.arena'), 9);
     }
     F.dx = F.dy = 0;
@@ -114,13 +114,13 @@ const dataAttrs = m => `data-c="${m.c}" data-a="${m.a}" data-h="${m.h}" data-g="
 const ariaM = m => `${CD(m.c).n}${m.g ? ' doré' : ''}, ${m.a} attaque, ${m.h} vie`;
 const demo = (id, g) => { const b = CD(id); return { c:id, a:b.a * (g ? 3 : 1), h:b.h * (g ? 3 : 1), g:g ? 1 : 0, f:b.f }; };
 const hpGem = hp => `<svg class="hpg" viewBox="0 0 40 40" aria-label="${hp} points de vie"><use href="#gem-h" width="40" height="40"/><text class="gt" x="20" y="25" dy=".36em">${hp}</text></svg>`;
-const KWI = { t:['k_taunt', '#d8c8a8', 'Provocation'], s:['k_div', '#ffe58a', 'Bouclier divin'], v:['drop', '#8fe36a', 'Toxique'], r:['k_reborn', '#9fe8ff', 'Renaissance'], w:['wind', '#cdeeff', 'Furie des vents'],
+const KWI = { t:['k_taunt', '#d8c8a8', 'Provocation'], s:['k_div', '#ffe58a', 'Bouclier divin'], v:['drop', '#8fe36a', 'Toxique'], n:['drop', '#c88aff', 'Venimeux'], r:['k_reborn', '#9fe8ff', 'Renaissance'], w:['wind', '#cdeeff', 'Furie des vents'],
   bc:['k_horn', '#ffcf7a', 'Cri de guerre'], play:['k_spark', '#ffd54a', 'Quand vous jouez'], dr:['skull', '#efe2c2', 'Râle d\'agonie'], soc:['k_cross', '#ffb27a', 'Début du combat'], eot:['k_glass', '#ffe39a', 'Fin de tour'], sot:['k_sun', '#ffe39a', 'Début de tour'],
   atk:['sword', '#ff9a8a', 'Après avoir attaqué'], surv:['k_heart', '#ff7a8a', 'Survit à des dégâts'], sell:['k_coin', '#f2c14e', 'Vente'], die:['k_tomb', '#c8c0d8', 'Quand un allié meurt'], aura:['twin', '#e9d5ff', 'Aura'],
   cast:['star', '#b48cff', 'Quand vous lancez un sort'], shield:['k_div', '#ffe58a', 'Bouclier perdu'], roll:['roll', '#9ad8ff', 'Actualisation'], up:['up', '#a6e07a', 'Amélioration'], pow:['crown', '#ffd86a', 'Pouvoir héroïque'] };
 function kwIcons(m) {
   const by = CD(m.c).by || {}, out = [], f = m.f || '';
-  for (const k of ['t', 's', 'v', 'r', 'w']) if (f.includes(k)) out.push(KWI[k]);
+  for (const k of ['t', 's', 'v', 'n', 'r', 'w']) if (f.includes(k)) out.push(KWI[k]);
   for (const tr of Object.keys(KWI)) if (tr.length > 1 && ((by[tr] && by[tr].length) || (m.x || []).some(e => ET[e.k] && ET[e.k].tr === tr))) out.push(KWI[tr]);
   return out.slice(0, 8);
 }

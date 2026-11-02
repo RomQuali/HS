@@ -53,6 +53,7 @@ const DEFAULT_SETTINGS = {
     t:{ n:'Provocation', d:'Les ennemis doivent l\'attaquer en premier.', c:1 },
     s:{ n:'Bouclier divin', d:'Ignore la première source de dégâts.', c:3 },
     v:{ n:'Toxique', d:'Détruit tout serviteur qu\'il blesse.', c:3 },
+    n:{ n:'Venimeux', d:'Détruit le premier serviteur qu\'il blesse, puis perd ce mot-clé.', c:2 },
     r:{ n:'Renaissance', d:'Revient à la vie avec 1 PV la première fois qu\'il meurt.', c:2 },
     w:{ n:'Furie des vents', d:'Attaque deux fois.', c:3 },
     k_ferveur:{ n:'Ferveur', d:'Fin de tour : gagne +1/+1.', c:3, fx:{ k:'eot_self', a:1, h:1 } },
@@ -548,7 +549,9 @@ const rint = n => Math.floor(Math.random() * n);
 const pickR = a => a[rint(a.length)];
 const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = rint(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const has = (m, k) => (m.f || '').includes(k);
-const addF = (m, k) => { if (!has(m, k)) { m.f = (m.f || '') + k; if (BSRC) { const L = m.bn || (m.bn = []); let e = L.find(x => x.s === BSRC); if (!e) { e = { s:BSRC, a:0, h:0, n:1 }; L.push(e); } if (!(e.k || '').includes(k)) e.k = (e.k || '') + k; } } };
+const addF = (m, k) => { if (k && k.length > 1) { for (const c of k) addF(m, c); return; } if (k === 'v' && !(m.c && C[m.c] && (C[m.c].f || '').includes('v'))) k = 'n';   // Toxique de base, Venimeux quand il est gagné
+  if (k === 'n' && has(m, 'v')) return;
+  if (!has(m, k)) { m.f = (m.f || '') + k; if (BSRC) { const L = m.bn || (m.bn = []); let e = L.find(x => x.s === BSRC); if (!e) { e = { s:BSRC, a:0, h:0, n:1 }; L.push(e); } if (!(e.k || '').includes(k)) e.k = (e.k || '') + k; } } };
 const remF = (m, k) => { m.f = (m.f || '').split(k).join(''); };
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 const clone = o => JSON.parse(JSON.stringify(o));
@@ -1025,6 +1028,7 @@ function simDamage(S, m, n, src) {
   if (has(m, 's')) { remF(m, 's'); const s = sideOf(S, m); S.sides[s].forEach(al => { if (al.h > 0) fxOf(al, 'shield').forEach(e => runCombat(S, s, al, e, 0, m)); }); return; }
   m.h -= n;
   if (src && has(src, 'v')) m.h = Math.min(m.h, 0);
+  else if (src && has(src, 'n')) { m.h = Math.min(m.h, 0); remF(src, 'n'); }   // Venimeux : une seule fois
   if (m.h > 0) { const s = sideOf(S, m); fxOf(m, 'surv').forEach(e => runCombat(S, s, m, e)); }
 }
 // Morts (règle Champs de bataille) : tous les serviteurs à 0 PV quittent le plateau ensemble, puis leurs effets se résolvent
@@ -1265,9 +1269,9 @@ const MK = { feu:'braise', vent:'souffle', eau:'maree', foudre:'charge', terre:'
 const MK_N = { feu:'Braises', vent:'Souffle', eau:'Marée', foudre:'Charge', terre:'Roche' };
 const MK_STEPS = [5, 10, 20];
 // bonus de palier en combat pour les serviteurs du clan : [attaque, vie, mot-clé au 3e palier]
-const MK_TIER = { feu:[[1, 0], [2, 1], [4, 2, 'r']], vent:[[1, 1], [2, 1], [3, 2, 'w']], eau:[[0, 2], [1, 3], [2, 5, 's']], foudre:[[1, 0], [2, 1], [3, 3, 'v']], terre:[[0, 3], [1, 5], [2, 8, 't']] };
+const MK_TIER = { feu:[[1, 0], [2, 1], [4, 2, 'r']], vent:[[1, 1], [2, 1], [3, 2, 'w']], eau:[[0, 2], [1, 3], [2, 5, 's']], foudre:[[1, 0], [2, 1], [3, 3, 'n']], terre:[[0, 3], [1, 5], [2, 8, 't']] };
 const MK_TIER_TX = { feu:'Clan Katon', vent:'Clan Fûton', eau:'Clan Suiton', foudre:'Clan Raiton', terre:'Clan Doton' };
-const MK_KW = { r:'Renaissance', w:'Furie des vents', s:'Bouclier divin', v:'Toxique', t:'Provocation' };
+const MK_KW = { r:'Renaissance', w:'Furie des vents', s:'Bouclier divin', v:'Venimeux', t:'Provocation' };
 // éclat de résonance (5 marqueurs consommés par un combo)
 const MK_BURST = {
   feu:['Prochain combat : 5 dégâts à l\'ennemi', (G, p) => { p.njf = (p.njf || 0) + 5; }],

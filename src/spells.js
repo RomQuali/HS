@@ -14,7 +14,7 @@ const SPELLS = {
   dt_taiyo:{ db:1, n:'Taiyoken', t:1, c:1, kc:1, ty:'nin', tg:1, fx:[{ k:'chill', a:2, n:1 }], sig:['d_tenshin', 'd_krilin'], sgx:[{ k:'chill', a:2, n:2 }], tx:'Flash solaire : prochain combat, un ennemi aléatoire perd 2 attaque.', stx:'2 ennemis de plus' },
   dt_kame:{ db:1, n:'Kaméhaméha', t:1, c:1, kc:2, ty:'nin', tg:1, fx:[{ k:'ttmp', a:3, h:0 }], sig:['d_goku', 'd_gohan', 'd_goten', 'd_kame', 'd_krilin'], sgx:[{ k:'tbuff', a:2, h:2 }], tx:'Le serviteur ciblé gagne +3 attaque au prochain combat.', stx:'+2/+2 définitif' },
   dt_kikoho:{ db:1, n:'Kikoho', t:2, c:1, kc:2, ty:'nin', tg:1, fx:[{ k:'fire', d:4 }], sig:['d_tenshin'], sgx:[{ k:'fire', d:4 }], tx:'Prochain combat : 4 dégâts à l\'ennemi.', stx:'+4 dégâts' },
-  dt_kienzan:{ db:1, n:'Kienzan', t:2, c:1, kc:3, ty:'nin', tg:1, fx:[{ k:'ttmp', a:0, h:0, kw:'v' }], sig:['d_krilin', 'd_cell'], sgx:[{ k:'tbuff', a:2, h:0 }], tx:'Disque tranchant : le serviteur ciblé gagne Toxique au prochain combat.', stx:'+2 attaque définitive' },
+  dt_kienzan:{ db:1, n:'Kienzan', t:2, c:1, kc:3, ty:'nin', tg:1, fx:[{ k:'ttmp', a:0, h:0, kw:'n' }], sig:['d_krilin', 'd_cell'], sgx:[{ k:'tbuff', a:2, h:0 }], tx:'Disque tranchant : le serviteur ciblé gagne Venimeux au prochain combat.', stx:'+2 attaque définitive' },
   dt_kaioken:{ db:1, n:'Kaioken', t:2, c:1, kc:2, ty:'nin', tg:1, fx:[{ k:'ttmp', a:4, h:-1 }], sig:['d_goku'], sgx:[{ k:'ttmp', a:0, h:0, kw:'w' }], tx:'Le serviteur ciblé gagne +4/-1 au prochain combat.', stx:'Furie des vents' },
   dt_masenko:{ db:1, n:'Masenko', t:3, c:2, kc:3, ty:'nin', tg:1, fx:[{ k:'tbuff', a:3, h:2 }], sig:['d_gohan', 'd_piccolo'], sgx:[{ k:'tbuff', a:3, h:3 }], tx:'Le serviteur ciblé gagne +3/+2.', stx:'+3/+3 de plus' },
   dt_makanko:{ db:1, n:'Makankosappo', t:3, c:2, kc:3, ty:'nin', tg:1, fx:[{ k:'ttmp', a:5, h:0 }], sig:['d_piccolo', 'd_piccolof'], sgx:[{ k:'tbuff', a:3, h:1 }], tx:'Rayon perçant : le serviteur ciblé gagne +5 attaque au prochain combat.', stx:'+3/+1 définitif' },
@@ -62,7 +62,7 @@ const SPELLS = {
   nj_ehiden:{ el:'eau', n:'Hiden : Suikōdan', t:6, c:5, ck:6, uses:2, hid:3, nin:1, ty:'nin', fx:[{ k:'fire', d:5 }, { k:'buffall', a:2, h:2, tb:'n_eau' }], awk:{ tx:'+3 dégâts', fx:[{ k:'fire', d:3 }] }, tx:'Hiden : il faut 3 serviteurs Suiton. Rouleau à 2 usages : requins d\'eau, 5 dégâts à l\'ennemi au prochain combat et +2/+2 à tes Suiton.' },
   // Raiton : jutsu combinés (bonus si une technique d'une autre nature a été lancée ce tour)
   nj_decharge:{ el:'foudre', n:'Raikyū', t:1, c:1, ck:1, nin:1, ty:'nin', fx:[{ k:'ck', n:2 }], comb:[{ k:'g', n:1 }], awk:{ tx:'+1 chakra', fx:[{ k:'ck', n:1 }] }, tx:'Sphère de foudre : gagne 2 chakra. Combiné : +1 or.' },
-  nj_foudre:{ el:'foudre', n:'Chidori', t:2, c:2, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'ttmp', a:3, h:0, kw:'v' }], comb:[{ k:'tbuff', a:2, h:0 }], awk:{ tx:'+2 attaque définitive', fx:[{ k:'tbuff', a:2, h:0 }] }, tx:'Mille oiseaux : prochain combat, le serviteur ciblé gagne +3 attaque et Toxique. Combiné : +2 attaque définitive.' },
+  nj_foudre:{ el:'foudre', n:'Chidori', t:2, c:2, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'ttmp', a:3, h:0, kw:'n' }], comb:[{ k:'tbuff', a:2, h:0 }], awk:{ tx:'+2 attaque définitive', fx:[{ k:'tbuff', a:2, h:0 }] }, tx:'Mille oiseaux : prochain combat, le serviteur ciblé gagne +3 attaque et Venimeux. Combiné : +2 attaque définitive.' },
   nj_oyoroi:{ el:'foudre', n:'Raiton no yoroi', t:3, c:2, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'tbuff', a:2, h:2 }, { k:'ttmp', a:0, h:0, kw:'w' }], comb:[{ k:'tkwp', kw:'w' }], awk:{ tx:'+2/+2 de plus', fx:[{ k:'tbuff', a:2, h:2 }] }, tx:'Armure de foudre : le serviteur ciblé gagne +2/+2 et Furie des vents au prochain combat. Combiné : Furie définitive.' },
   nj_sceau:{ el:'foudre', n:'Kirin', t:5, c:4, ck:5, nin:1, ty:'nin', fx:[{ k:'fire', d:6 }], comb:[{ k:'fire', d:4 }], awk:{ tx:'+3 dégâts', fx:[{ k:'fire', d:3 }] }, tx:'Dragon de foudre : prochain combat, 6 dégâts à l\'ennemi. Combiné : +4 dégâts.' },
   nj_ohiden:{ el:'foudre', n:'Hiden : Kuropansā', t:6, c:5, ck:6, hid:3, nin:1, ty:'nin', fx:[{ k:'buffall', a:3, h:1, tb:'n_foudre' }, { k:'tkwn', kw:'w', n:2 }], comb:[{ k:'fire', d:4 }], awk:{ tx:'+1/+1 de plus aux Raiton', fx:[{ k:'buffall', a:1, h:1, tb:'n_foudre' }] }, tx:'Hiden : il faut 3 serviteurs Raiton. Panthère noire : tes Raiton gagnent +3/+1, deux de tes serviteurs ont Furie des vents au prochain combat. Combiné : 4 dégâts à l\'ennemi.' },
@@ -90,7 +90,7 @@ const SPELLS = {
   cs_suikodan:{ cs:1, rare:1, bg:'eau', el:'eau', n:'Suikōdan', t:6, c:1, ck:6, nin:1, ty:'nin', fx:[{ k:'tma', a:2, h:3 }, { k:'tkwn', kw:'s', n:3 }], tx:'Rare. Requins d\'eau : prochain combat, tes serviteurs gagnent +2/+3 et trois d\'entre eux Bouclier divin.' },
   // Nuage
   cs_raikyu:{ cs:1, bg:'foudre', el:'foudre', n:'Raikyū', t:1, c:1, ck:1, nin:1, ty:'nin', fx:[{ k:'g', n:2 }], tx:'Sphère de foudre : gagne 2 or.' },
-  cs_chidori:{ cs:1, bg:'foudre', el:'foudre', n:'Chidori', t:2, c:1, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'ttmp', a:4, h:0, kw:'v' }], tx:'Mille oiseaux : prochain combat, le serviteur ciblé gagne +4/+0 et Toxique.' },
+  cs_chidori:{ cs:1, bg:'foudre', el:'foudre', n:'Chidori', t:2, c:1, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'ttmp', a:4, h:0, kw:'n' }], tx:'Mille oiseaux : prochain combat, le serviteur ciblé gagne +4/+0 et Venimeux.' },
   cs_bijuchakra:{ cs:1, bg:'foudre', el:'foudre', n:'Bijū no chakra', t:3, c:1, ck:4, nin:1, ty:'nin', fx:[{ k:'winup' }], tx:'Chakra de la bête : tes jinchūriki grandissent comme après une victoire.' },
   cs_bijudama:{ cs:1, rare:1, bg:'foudre', el:'foudre', n:'Bijūdama', t:6, c:1, ck:6, nin:1, ty:'nin', fx:[{ k:'winup' }, { k:'winup' }, { k:'fire', d:6 }], tx:'Rare. Orbe de la bête : tes jinchūriki grandissent deux fois comme après une victoire, et 6 dégâts frappent l\'ennemi.' },
   // Roche
@@ -277,7 +277,7 @@ function castSpell0(G, p, hi, tg) {
     case 'nj_pierre': buff(tgt, 0, 4); addF(tgt, 't'); break;
     case 'nj_brume': p.tma = { a:(p.tma && p.tma.a) || 0, h:((p.tma && p.tma.h) || 0) + 3 }; p.maree = (p.maree || 0) + 1; break;
     case 'nj_doubles': { const c = mk(tgt.c, 0); c.a = 1; c.h = 1; p.bd.splice(tg + 1, 0, c); p.maree = (p.maree || 0) + 1; break; }
-    case 'nj_foudre': tgt.tmp = { a:((tgt.tmp && tgt.tmp.a) || 0) + 3, h:(tgt.tmp && tgt.tmp.h) || 0, f:((tgt.tmp && tgt.tmp.f) || '') + 'v', s:'Lame de foudre' }; p.charge = (p.charge || 0) + 1; break;
+    case 'nj_foudre': tgt.tmp = { a:((tgt.tmp && tgt.tmp.a) || 0) + 3, h:(tgt.tmp && tgt.tmp.h) || 0, f:((tgt.tmp && tgt.tmp.f) || '') + 'n', s:'Lame de foudre' }; p.charge = (p.charge || 0) + 1; break;
     case 'nj_rafale': shuffle(p.bd.slice()).slice(0, 3).forEach(m => buff(m, 2, 1)); p.g += 1; break;
     case 'nj_invoc': { const m = drawOne(G, p.t) || drawAny(Math.max(1, p.t)); if (m) { buff(m, 0, 3); p.bd.push(m); } break; }
     case 'nj_sceau': buff(tgt, 4, 4); addF(tgt, 'r'); p.charge = (p.charge || 0) + 2; break;
