@@ -1441,8 +1441,8 @@ const COMP_LV = {
   terre:{ 3:['Début du duel : gagne +2/+0', { k:'soc_self', a:2, h:0 }], 5:['Après avoir attaqué : +1/+1', { k:'atk_self', a:1, h:1 }] },
 };
 function giveXp(m, n) { const before = compLv(m); m.xp = (m.xp || 0) + n; const after = compLv(m); for (let l = before + 1; l <= after; l++) { const P = (COMP_LV[CLAN_EL[CD(m.c).tr]] || {})[l]; if (P) withSrc('Niveau ' + l, () => { if (typeof P[1] === 'string') addF(m, P[1]); else (m.x = m.x || []).push(Object.assign({ src:'Niveau ' + l }, P[1])); }); } m.lv = after; }
-// affinité : une technique de l'élément du héros coûte 1 chakra de moins
-const ckCost = (p, S) => Math.max(0, (S.ck || 0) - (p.spd || 0) - ((htr(p, 'pspell') || {}).n || 0) - (S.el && HEROES[p.hero] && HEROES[p.hero].clan === S.el ? 1 : 0) - ((HEROES[p.hero] && HEROES[p.hero].pw && HEROES[p.hero].pw.k === 'ptechc') && S.nin ? 1 : 0));   // affinité : 1 de moins dans l'élément du héros
+// coût en chakra d'une technique (réductions des héros et des effets)
+const ckCost = (p, S) => Math.max(0, (S.ck || 0) - (p.spd || 0) - ((htr(p, 'pspell') || {}).n || 0) - ((HEROES[p.hero] && HEROES[p.hero].pw && HEROES[p.hero].pw.k === 'ptechc') && S.nin ? 1 : 0));   // affinité : 1 de moins dans l'élément du héros
 const ckmCost = (p, md) => Math.max(0, md.c - ((htr(p, 'pawk') || {}).n || 0));
 const CLAN_EL = { n_feu:'feu', n_vent:'vent', n_eau:'eau', n_foudre:'foudre', n_terre:'terre' };
 const isComp = m => !!(m && C[m.c] && C[m.c].comp);
