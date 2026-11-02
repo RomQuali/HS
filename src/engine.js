@@ -280,7 +280,7 @@ const DEFAULT_CARD_LIST = [
   ['d_daimao', 'Roi Piccolo', 4, 'd_nam', 4, 4, '', [{ k:'bc_summon', card:'d_tambourine', n:1 }]],
   ['d_guru', 'Grand Doyen', 5, 'd_nam', 2, 8, '', [{ k:'mentor', a:2, h:2, n:2 }]],
   ['d_piccolo', 'Piccolo', 5, 'd_nam', 5, 6, '', [{ k:'mentor', a:2, h:2, n:1 }, { k:'tf', st:[{ c:5, a:4, h:4, nm:'Super Namek' }] }, { k:'fus', p:'d_nail', r:'d_piccolof', p2:'d_kami' }]],
-  ['d_piccolof', 'Piccolo fusionné', 6, 'd_nam', 7, 8, '', [{ k:'fusres', a:'d_piccolo', b:'d_nail', b2:'d_kami', how:'Fusion namek' }, { k:'eot_mentor_all' }]],
+  ['d_piccolof', 'Piccolo fusionné', 6, 'd_nam', 7, 8, '', [{ k:'fusres', a:'d_piccolo', b:'d_nail', b2:'d_kami', how:'Fusion namek', buy:1 }, { k:'eot_mentor_all' }]],
   // Armée de Freezer : les soldats tombent, les officiers grandissent
   ['d_appule', 'Appule', 1, 'd_fre', 2, 1, '', [{ k:'dr_summon', card:'tk_sold', n:1 }]],
   ['d_cui', 'Cui', 1, 'd_fre', 1, 1, '', [{ k:'bc_summon', card:'tk_sold', n:1 }]],
@@ -521,8 +521,8 @@ const MECHS = {
   marche:{ n:'Marché noir', ic:'gear', d:'Vendre un serviteur de l\'univers rapporte 1 or de plus (deux fois par tour).' },
   ruee:{ n:'Ruée sauvage', ic:'leaf', d:'Au début du combat, si vous avez au moins 3 serviteurs de l\'univers, ils gagnent +2/+0 pour ce combat.' },
   pillage:{ n:'Pillage', ic:'drop', d:'Quand vous gagnez un combat avec un serviteur de l\'univers encore debout, vous recevez un sort aléatoire de votre niveau.' },
-  ki:{ n:'Ki et transformations', ic:'k_spark', d:'Mets un serviteur en méditation : il ne combat pas et te rapporte du ki (autant que son niveau). Le ki paie les transformations ; les objets s\'achètent à la taverne.' },
-  chakra:{ n:'Chakra et cycle des éléments', ic:'k_spark', d:'Chaque serviteur de l\'univers génère 1 chakra au début de votre tour (10 au plus). Les techniques s\'achètent en or et se lancent au chakra (1 de moins dans l\'élément de votre héros) ; le pouvoir du héros se paie en chakra. Deux techniques remplissent le réservoir : leur mélange déclenche un combo (effet sur le plateau et pouvoir hybride au compagnon). Le compagnon, déjà triplé et hors plateau, affronte seulement le compagnon adverse et ne blesse jamais le héros : ce duel décide du coffre (majeur s\'il gagne). Chaque coffre impose de choisir 1 récompense sur 3 (Normal à Légendaire), rangée dans l\'entraînement et posée au chakra. En duel, le compagnon résonne avec les marqueurs de son élément (+1/+1 par tranche de 3). Après l\'Éveil, compagnon et bête combattent en duo lié dans la bataille.' },
+  ki:{ n:'Ki et transformations', ic:'k_spark', d:'Mets un serviteur en méditation : il ne combat pas au prochain combat et te rapporte du ki au début du tour suivant (autant que son niveau, le double s\'il est doré ; 15 au plus). Le ki paie les transformations, les fusions et les techniques (achetées en or à la taverne) ; une technique lancée sur son propriétaire (Signature) a un bonus.' },
+  chakra:{ n:'Chakra et combos de villages', ic:'k_spark', d:'Chaque ninja de votre plateau (jetons compris) génère 1 chakra au début de votre tour (10 au plus, +1 avec 5 serviteurs d\'un même village) ; le chakra non dépensé se garde. Les sorts s\'achètent 1 or et se lancent au chakra ; le chakra paie aussi l\'Éveil des serviteurs (une fois : +stats, puis leur effet revient chaque tour) et le pouvoir de certains héros. Chaque sort de village remplit une moitié du réservoir (un pouvoir actif aussi, avec votre village le plus présent) : la seconde moitié déclenche le combo des deux villages, ou leur ultime si c\'est le même, ×1 / ×2 / ×3 selon le niveau de la taverne. Les héros s\'éveillent en accomplissant leur quête.' },
   resonance:{ n:'Résonance', ic:'twin', d:'Chaque sort que vous lancez donne +1/+1 à deux de vos serviteurs de l\'univers.' },
   eboulement:{ n:'Éboulement', ic:'up', d:'Quand un de vos serviteurs de l\'univers avec Provocation meurt, il inflige 3 dégâts à un ennemi aléatoire.' },
   fusion:{ n:'Fusion élémentaire', ic:'wind', d:'À la fin du tour, si vous avez au moins 4 éléments Squishy différents, vos serviteurs de l\'univers gagnent +1/+1.' },
@@ -729,7 +729,7 @@ const ET = {
   soc_team:{ tr:'soc', l:'Équipe de 3', ps:['a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Équipe de 3 : entouré de son clan, l'équipe gagne ${sign(e.a * k, e.h * k)}.` },
   combo_kg:{ tr:'combo', l:'Kekkei genkai', ps:['a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k, id) => `Kekkei genkai : à chaque combo, ${sign(e.a * k, e.h * k)} par élément qui est une de ses natures.` },
   fus:{ tr:'fus', l:'Fusion', ps:[], w:0, mag:() => 0, txt:e => `Fusion : avec ${[e.p, e.p2].filter(Boolean).map(x => CD(x).n).join(' ou ')} → ${[e.r, e.r2].filter(Boolean).map(x => CD(x).n).join(' ou ')} (bouton ✚, ki).` },
-  fusres:{ tr:'fus', l:'Né d\'une fusion', ps:[], w:0, mag:() => 0, txt:e => `${e.how} : naît de ${CD(e.a).n} + ${[e.b, e.b2].filter(Boolean).map(x => CD(x).n).join(' ou ')} (stats additionnées). Pas en vente.` },
+  fusres:{ tr:'fus', l:'Né d\'une fusion', ps:[], w:0, mag:() => 0, txt:e => `${e.how} : naît de ${CD(e.a).n} + ${[e.b, e.b2].filter(Boolean).map(x => CD(x).n).join(' ou ')} (stats additionnées).${e.buy ? ' Aussi en vente à la taverne.' : ' Pas en vente.'}` },
   tf_self:{ tr:'tfo', l:'Rivalité : grandir quand un allié se transforme', ps:['a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Rivalité : quand un autre de tes serviteurs se transforme, gagne ${sign(e.a * k, e.h * k)}.` },
   pas_tfc:{ tr:'pas', l:'Transformations moins chères', ps:['n'], w:1.5, mag:e => e.n * 4, txt:(e, k) => `Tes transformations coûtent ${e.n * k} ki de moins.` },
   pas_tkc:{ tr:'pas', l:'Techniques moins chères', ps:['n'], w:1.5, mag:e => e.n * 4, txt:(e, k) => `Tes techniques coûtent ${e.n * k} ki de moins.` },
@@ -886,7 +886,7 @@ const DB_FUS = [
   { id:'picnail', a:'d_piccolo', b:'d_nail', r:'d_piccolof', c:3, bo:2, nm:'Fusion namek' },
   { id:'pickami', a:'d_piccolo', b:'d_kami', r:'d_piccolof', c:3, bo:2, nm:'Fusion namek' },
 ];
-const FUS_ONLY = ['d_gogeta', 'd_vegetto', 'd_gotenks'];
+const FUS_ONLY = ['d_gogeta', 'd_vegetto', 'd_gotenks'];   // nés d'une fusion : jamais en vente (Piccolo fusionné reste aussi achetable)
 // partenaire de fusion d'un serviteur sur le plateau (le plus proche)
 function fusPartner(p, m, F) { const o = F.a === m.c ? F.b : F.b === m.c ? F.a : null; if (!o) return null; const i = p.bd.indexOf(m); return p.bd.filter(x => x !== m && x.c === o).sort((x, y) => Math.abs(p.bd.indexOf(x) - i) - Math.abs(p.bd.indexOf(y) - i))[0] || null; }
 const fusOpts = (p, m) => m ? DB_FUS.filter(F => fusPartner(p, m, F)) : [];
@@ -1015,7 +1015,7 @@ function runCombat(S, s, m, e, pos, ctx) {
     case 'soc_avalanche': { const o = en.filter(x => x.h > 0); if (o.length) simDamage(S, o[R(o.length)], Math.max(1, Math.floor((S.pre && m.h0 != null ? m.h0 : m.h) / 4)), m); break; }
     case 'soc_gate': { const d = Math.min(m.h - 1, (e.d || 0) * k); if (d > 0) m.h -= d; m.a += (e.a || 0) * k; break; }
     case 'soc_seal': { const o = en.filter(x => x.h > 0 && (x.f || '').length); for (let i = 0; i < (e.n || 1) * k && o.length; i++) { const t = o.splice(R(o.length), 1)[0]; t.f = ''; } break; }
-    case 'soc_summon': for (let i = 0; i < (e.n || 1); i++) simSummon(S, s, pos + 1, e.card, m.g); break;
+    case 'soc_summon': { const at = al.indexOf(m); for (let i = 0; i < (e.n || 1); i++) simSummon(S, s, (at < 0 ? al.length : at) + 1 + i, e.card, m.g); break; }
     case 'soc_team': { const i = al.indexOf(m), L = al[i - 1], Rr = al[i + 1]; if (L && Rr && L.h > 0 && Rr.h > 0 && tribeOk(L, tribe(m)) && tribeOk(Rr, tribe(m))) [L, m, Rr].forEach(x => buff(x, A, Hh)); break; }
     case 'atk_buff_rand': { const o = al.filter(x => x !== m && x.h > 0); if (o.length) buff(o[R(o.length)], A, Hh); break; }
   }
@@ -1624,7 +1624,7 @@ function powStep(G, p, s) {
     case 'pact': for (let i = 0; i < N; i++) pactSummon(p, s.card, p.bd[p.bd.length - 1]); break;
     case 'pactbuff': p.bd.filter(isPact).forEach(m => buff(m, s.a || 0, s.h || 0)); break;
     case 'cardset': if (p.hd.length < 10) { const ids = (s.set === 'pact' ? NJ_PACTM : NJ_KG).filter(id => C[id] && C[id].t <= Math.max(p.t, 2)); const c = ids.filter(id => G.pool[id] > 0); const id = pickR(c.length ? c : ids); if (id) { if (G.pool[id] > 0) G.pool[id]--; p.hd.push(mk(id, 0)); } } break;
-    case 'drgive': shuffle(p.bd.slice()).slice(0, N).forEach(m => { (m.x = m.x || []).push(Object.assign({ src:'Pouvoir de ' + HEROES[p.hero].n.split(' ')[0] }, s.fx)); }); break;
+    case 'drgive': { let c = p.bd.filter((m, i) => !(m.x || []).some(e => e.k === s.fx.k && e.src && /^Pouvoir/.test(e.src)) && (s.fx.k !== 'mentor' || (s.fx.n || 1) > 1 || i < p.bd.length - 1)); if (c.length < N) c = p.bd.slice(); shuffle(c).slice(0, N).forEach(m => { (m.x = m.x || []).push(Object.assign({ src:'Pouvoir de ' + HEROES[p.hero].n.split(' ')[0] }, s.fx)); }); break; }
     case 'foechill': p.foe = p.foe || {}; p.foe.chill = (p.foe.chill || []).concat(Array(s.n || 1).fill(s.a || 1)); break;
     case 'foeseal': p.foe = p.foe || {}; p.foe.seal = (p.foe.seal || 0) + (s.n || 1); break;
     case 'disc': { const tt = Math.min(6, p.t + 1), opts = []; for (let i = 0; i < 3; i++) { const m = drawOne(G, 6, tt) || drawAny(tt); if (m) opts.push(m); } if (opts.length) p.disc = opts; break; }
@@ -1794,14 +1794,14 @@ function startRecruit() {
     if (inMechAny(G, 'ki')) { let n = 0; const pm = htr(p, 'pmed'); p.bd.forEach(m => { if (m.med) { n += tierOf(m) * (m.g ? 2 : 1) + (pm ? pm.n || 1 : 0); if (pm && (pm.a || pm.h)) withSrc('Entraînement divin', () => buff(m, pm.a || 0, pm.h || 0)); m.med = 0; } }); if (n) { kiAdd(p, n); p.kiGain = n; } else p.kiGain = 0; }
     p.mkt = 0; p.cdbl = 0; p.hruse = 0;
     if (inMechAny(G, 'ames') && (p.souls || 0) >= 3) { const k = Math.floor(p.souls / 3); p.souls -= k * 3; withSrc('Moisson d\'âmes', () => p.bd.forEach(m => { if (inMech(G, 'ames', m)) buff(m, k, k); })); }
-    if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; p.ck = Math.min(ckMax(p), (p.ck || 0) + n); mkSync(p); if ((p.ck || 0) >= 10) qAdd(p, 'ckFull'); }
+    if (inMechAny(G, 'chakra')) { const n = p.bd.filter(m => inMech(G, 'chakra', m)).length; p.ck = Math.min(ckMax(p), (p.ck || 0) + n); mkSync(p); }
     // un coffre après chaque combat : majeur si le compagnon gagne son duel, mineur sinon
     if (NJ_COMP && inMechAny(G, 'chakra') && p.lastRes) p.pendChest = (p.lastRes === 'win' ? 'maj' : 'min') + (p.t || 1);
     // Éveil : le coffre favorise les plus bas au classement (moitié inférieure en points de vie)
     p.chFav = 0;
     if (NJ_COMP && inMechAny(G, 'chakra') && awake(G) && p.lastRes) { const al = G.ps.filter(x => x.al).sort((x, y) => x.hp - y.hp), k = al.indexOf(p); p.chFav = k < Math.ceil(al.length / 2) ? 1 : 0; p.pendChest = (p.chFav ? 'maj' : 'min') + (p.t || 1); }
     // pureté : 5 serviteurs ou plus d'un même clan → +1 chakra
-    if (inMechAny(G, 'chakra')) { const n = {}; p.bd.forEach(m => { const t = CD(m.c).tr; if (CLAN_EL[t]) n[t] = (n[t] || 0) + 1; }); const pure = Object.keys(n).find(t => n[t] >= 5) || null; p.pure = pure; if (pure) p.ck = Math.min(ckMax(p), (p.ck || 0) + 1); }
+    if (inMechAny(G, 'chakra')) { const n = {}; p.bd.forEach(m => { const t = CD(m.c).tr; if (CLAN_EL[t]) n[t] = (n[t] || 0) + 1; }); const pure = Object.keys(n).find(t => n[t] >= 5) || null; p.pure = pure; if (pure) p.ck = Math.min(ckMax(p), (p.ck || 0) + 1); if ((p.ck || 0) >= 10) qAdd(p, 'ckFull'); }
     { const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'pck') p.ck = Math.min(ckMax(p), (p.ck || 0) + w.n); if (w && w.k === 'ptech' && G.rd % 2 === 0 && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); } }
     p.bd.forEach(m => { delete m.tmp; }); p.tma = null; p.foe = null;
     // serviteurs éveillés : leur effet se répète (après la remise à zéro des bonus « prochain combat », sinon feu et bouclier seraient perdus)

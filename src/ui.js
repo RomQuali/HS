@@ -878,7 +878,7 @@ function detailH(canAct) {
     let acts = '';
     if (canAct && s.z === 'ss') { const c = me.spc != null ? me.spc : S.c;
       acts = `<button class="btn pri" data-act="buysp" data-k="${s.i || 0}" ${me.g < c || me.hd.length >= 10 ? 'disabled' : ''}>Acheter · ${c} or</button>`; }
-    if (canAct && s.z === 'hd') acts = S.tg ? `<button class="btn pri" data-act="aim" ${me.bd.length ? '' : 'disabled'}>${S.db ? 'Choisir le lanceur' : 'Lancer sur un serviteur'}</button>` : `<button class="btn pri" data-act="cast">Lancer le sort</button>`;
+    if (canAct && s.z === 'hd') acts = S.tg && (me.bd.length || !dbNoTgt(S)) ? `<button class="btn pri" data-act="aim" ${me.bd.length ? '' : 'disabled'}>${S.db ? 'Choisir le lanceur' : 'Lancer sur un serviteur'}</button>` : `<button class="btn pri" data-act="cast">${S.db ? 'Lancer la technique' : 'Lancer le sort'}</button>`;
     return `<div class="det">${spellCardH(id, 'd', 0)}<div class="det-s"><b>${esc(S.n)}</b><span class="meta">Sort · ${esc(SP_TYPES[S.ty].n)} · ${s.z === 'ss' ? 'sur l\'étagère de la taverne' : 'dans ta main'}</span><div class="acts">${acts}</div></div></div>`;
   }
   const z = s.z === 'sh' ? me.sh : s.z === 'bd' ? me.bd : me.hd, m = z[s.i]; if (!m) return '';

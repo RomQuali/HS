@@ -68,7 +68,7 @@ const SPELLS = {
   nj_ohiden:{ el:'foudre', n:'Hiden : Kuropansā', t:6, c:5, ck:6, hid:3, nin:1, ty:'nin', fx:[{ k:'buffall', a:3, h:1, tb:'n_foudre' }, { k:'tkwn', kw:'w', n:2 }], comb:[{ k:'fire', d:4 }], awk:{ tx:'+1/+1 de plus aux Raiton', fx:[{ k:'buffall', a:1, h:1, tb:'n_foudre' }] }, tx:'Hiden : il faut 3 serviteurs Raiton. Panthère noire : tes Raiton gagnent +3/+1, deux de tes serviteurs ont Furie des vents au prochain combat. Combiné : 4 dégâts à l\'ennemi.' },
   // Doton : mode ermite (bonus si ton chakra est plein ou si tu n'as rien dépensé au tour précédent)
   nj_pierre:{ el:'terre', n:'Doryūheki', t:1, c:1, ck:2, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_mur', n:1 }], sage:[{ k:'summon', card:'tk_mur', n:1 }], awk:{ tx:'+0/+2 à tes Murs', fx:[{ k:'buffcard', card:'tk_mur', a:0, h:2 }] }, tx:'Mur de terre : invoque un Mur de terre. Mode ermite : en invoque un second.' },
-  nj_poing:{ el:'terre', n:'Kengan no jutsu', t:2, c:2, ck:2, nin:1, ty:'nin', tg:1, fx:[{ k:'tpoing' }], sage:[{ k:'tbuff', a:0, h:3 }], awk:{ tx:'+2/+2 de plus', fx:[{ k:'tbuff', a:2, h:2 }] }, tx:'Poing de roc : le serviteur ciblé gagne +1 attaque par tranche de 3 PV (+6 au plus). Mode ermite : +0/+3 avant.' },
+  nj_poing:{ el:'terre', n:'Kengan no jutsu', t:2, c:2, ck:2, nin:1, ty:'nin', tg:1, fx:[{ k:'tpoing' }], sage:[{ k:'tbuff', a:0, h:3 }], sagePre:1, awk:{ tx:'+2/+2 de plus', fx:[{ k:'tbuff', a:2, h:2 }] }, tx:'Poing de roc : le serviteur ciblé gagne +1 attaque par tranche de 3 PV (+6 au plus). Mode ermite : +0/+3 avant.' },
   nj_thenge:{ el:'terre', n:'Henge : Iwa', t:3, c:2, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'henge' }], sage:[{ k:'tbuff', a:2, h:2 }], awk:{ tx:'+2/+2 après la transformation', fx:[{ k:'tbuff', a:2, h:2 }] }, tx:'Métamorphose de pierre : transforme le serviteur ciblé en un serviteur de son clan d\'un niveau plus haut, en gardant ses bonus. Mode ermite : +2/+2.' },
   nj_invoc:{ el:'terre', n:'Iwa Gōremu', t:4, c:3, ck:4, nin:1, ty:'nin', fx:[{ k:'summon', card:'tk_golem', n:2 }], sage:[{ k:'buffcard', card:'tk_golem', a:2, h:2 }], awk:{ tx:'+1/+2 à tes Golems', fx:[{ k:'buffcard', card:'tk_golem', a:1, h:2 }] }, tx:'Golems de roche : invoque 2 Golems de terre. Mode ermite : tes Golems gagnent +2/+2.' },
   nj_thiden:{ el:'terre', n:'Hiden : Senpō', t:6, c:5, ck:6, hid:3, nin:1, ty:'nin', fx:[{ k:'buffall', a:2, h:3 }], sage:[{ k:'buffall', a:2, h:3 }], awk:{ tx:'+1/+1 de plus pour tous', fx:[{ k:'buffall', a:1, h:1 }] }, tx:'Hiden : il faut 3 serviteurs Doton. Art ermite : tes serviteurs gagnent +2/+3. Mode ermite : encore +2/+3.' },
@@ -125,12 +125,14 @@ function drawSpell(t, el) { const nin = typeof H !== 'undefined' && H.G && inMec
   if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'ki')) { const ids = SPELL_IDS.filter(id => SPELLS[id].db && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
   if (nin && !NJ_TECH) { const ids = SPELL_IDS.filter(id => SPELLS[id].cs && SPELLS[id].t <= t); const w = ids.map(id => SPELLS[id].rare ? 0.35 : 1), tot = w.reduce((a, b) => a + b, 0); let r = Math.random() * tot; for (let i = 0; i < ids.length; i++) { r -= w[i]; if (r <= 0) return { sp:ids[i], u:UID++ }; } return ids.length ? { sp:ids[0], u:UID++ } : null; } const ev = typeof H !== 'undefined' && H.G && H.G.eveil; const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !SPELLS[id].db && !!SPELLS[id].nin === !!nin && (!SPELLS[id].forb || ev) && (!el || SPELLS[id].el === el)); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
 
+// technique Dragon Ball sans effet ciblé : lançable sans lanceur quand le plateau est vide (pas de bonus Signature)
+const dbNoTgt = S => !!(S && S.db && !(S.fx || []).some(s => ['tbuff', 'ttmp', 'tkwp', 'tpoing', 'henge'].includes(s.k)));
 // pourquoi un sort ne peut pas être lancé (null = il peut)
 function spellBlock(p, id, tgt) {
   const S = SPELLS[id];
   if (S.ck && (p.ck || 0) < ckCost(p, S)) return `Il te faut ${ckCost(p, S)} chakra pour lancer cette technique (tu en as ${p.ck || 0}).`;
   if (S.kc != null && (p.ki || 0) < kiCost(p, S)) return `Il te faut ${kiCost(p, S)} ki pour lancer cette technique (tu en as ${p.ki || 0}).`;
-  if (S.tg && !tgt) return 'Choisis un de tes serviteurs.';
+  if (S.tg && !tgt && !(dbNoTgt(S) && !p.bd.length)) return 'Choisis un de tes serviteurs.';
   if (S.hid && p.bd.filter(m => tribeOk(m, 'n_' + S.el)).length < S.hid) return `Hiden : il faut ${S.hid} serviteurs ${ELS[S.el] ? ELS[S.el].n : ''} sur ton plateau.`;
   if (S.hp && p.hp <= S.hp) return `Kinjutsu : il te faut plus de ${S.hp} PV.`;
   if (S.nin && S.fx && S.fx.some(s => s.k === 'summon') && p.bd.length >= 7) return 'Ton plateau est plein.';
@@ -177,9 +179,10 @@ const EQ_COST = id => ['eq_lame', 'eq_armure', 'eq_gants'].includes(id) ? 2 : 3;
 const sageOn = p => (p.ck || 0) >= ckMax(p) || !p.ckSpentLast;
 function techRun(G, p, S, it, tgt, tg, sage) {
   const x = S.chg ? 1 + Math.min(2, (it && it.ch) || 0) : 1;
+  if (S.sage && sage && S.sagePre) withSrc('Mode ermite', () => techSteps(G, p, S.sage, tgt, tg, 1));   // bonus appliqué avant l'effet (ex. +0/+3 avant le Poing de roc)
   techSteps(G, p, S.fx, tgt, tg, x);
   if (S.comb && (p.castEls || []).some(e => e !== S.el)) withSrc('Jutsu combiné', () => techSteps(G, p, S.comb, tgt, tg, 1));
-  if (S.sage && sage) withSrc('Mode ermite', () => techSteps(G, p, S.sage, tgt, tg, 1));
+  if (S.sage && sage && !S.sagePre) withSrc('Mode ermite', () => techSteps(G, p, S.sage, tgt, tg, 1));
 }
 function techSteps(G, p, steps, tgt, tg, x) {
   const tmp = (m, a, h, kw) => { m.tmp = { a:((m.tmp && m.tmp.a) || 0) + a, h:((m.tmp && m.tmp.h) || 0) + h, f:((m.tmp && m.tmp.f) || '') + (kw || ''), s:BSRC || 'Technique' }; };
@@ -328,6 +331,7 @@ function combatBoard(p) {
       { const el = CLAN_EL[CD(m.c).tr], t = el && NJ_MK ? mkTier(p, el) : 0; if (t && !(C[m.c] && C[m.c].comp)) { const B = MK_TIER[el][t - 1]; c.a += B[0]; c.h += B[1]; if (B[2]) addF(c, B[2]); } }
       const tr = CD(m.c).tr, k = m.g ? 2 : 1, x = c.x = (c.x || []).slice();
       (CD(m.c).fxAll || []).filter(e => e.k === 'awk_surge').forEach(e => { if ((p.ck || 0) >= 7) { c.a += e.a * k; c.h += e.h * k; } });
+      { const n = Math.min(5, p.ck || 0); if (n) (CD(m.c).fxAll || []).filter(e => e.k === 'soc_ck').forEach(e => { c.a += e.a * k * n; c.h += e.h * k * n; }); }   // selon le chakra (5 au plus)
       if (aw) {
         if (tr === 'n_feu') { c.a += phx; c.h += phx; addF(c, 'r'); }                       // Phénix
         if (tr === 'n_vent') x.push({ k:'atk_zap', d:1, n:3, src:'Ouragan' });                 // Ouragan
@@ -584,7 +588,7 @@ const COMBO_BD = {
   'Éclair ardent':       ['Konoha + Kumo : prochain combat, 2 dégâts (×niveau) à l\'ennemi ; tes serviteurs de Kumo gagnent +1/+0 (×niveau).', (G, p) => { const x = cmx(p); p.njf = (p.njf || 0) + 2 * x; cVil(p, 'n_foudre', x, 0); }],
   'Jiton':        ['Iwa + Suna : invoque 1 Kugutsu (×niveau − 1, au moins 1) ; tes Kugutsu gagnent +0/+2 et Provocation.', (G, p) => { cSum(p, 'tk_puppet', Math.max(1, cmx(p) - 1)); p.bd.filter(m => m.c === 'tk_puppet').forEach(m => { buff(m, 0, 2); addF(m, 't'); }); }],
   'Grande explosion':['Ultime de Konoha : prochain combat, 5 dégâts (×niveau) répartis sur l\'ennemi.', (G, p) => { p.njf = (p.njf || 0) + 5 * cmx(p); }],
-  'Suna no tate géant':['Ultime de Suna : tes serviteurs gagnent +0/+2 (×niveau) ; invoque 1 Kugutsu.', (G, p) => { cSum(p, 'tk_puppet', 1); p.bd.forEach(m => buff(m, 0, 2 * cmx(p))); }],
+  'Suna no tate géant':['Ultime de Suna : invoque 1 Kugutsu, puis tes serviteurs gagnent +0/+2 (×niveau).', (G, p) => { cSum(p, 'tk_puppet', 1); p.bd.forEach(m => buff(m, 0, 2 * cmx(p))); }],
   'Renaissance de Kiri':['Ultime de Kiri : prochain combat, Renaissance pour 1 serviteur (+1 par niveau), Kiri d\'abord.', (G, p) => { const n = 1 + cmx(p), o = p.bd.slice().sort((a, b) => (tribeOk(b, 'n_eau') ? 1 : 0) - (tribeOk(a, 'n_eau') ? 1 : 0)).filter(m => !has(m, 'r')); o.slice(0, n).forEach(m => cTmp(m, 'r')); }],
   'Libération du Bijū':['Ultime de Kumo : invoque une Bijū (6/6) ; tes jinchūriki grandissent (×niveau).', (G, p) => { cSum(p, 'tk_bijuu', 1); for (let i = 0; i < cmx(p); i++) winUp(p); }],
   'Avalanche':    ['Ultime d’Iwa : invoque 1 Doryūheki ; tes serviteurs d’Iwa gagnent +1/+2 (×niveau).', (G, p) => { const x = cmx(p); cSum(p, 'tk_mur', 1); cVil(p, 'n_terre', x, 2 * x); }],
