@@ -349,7 +349,7 @@ function combatBoard(p) {
 function aiPlayAll(G, p) {
   for (let guard = 0; guard < 12 && p.bd.length < 7; guard++) {
     const i = p.hd.findIndex(m => !m.sp); if (i < 0) break;
-    OPS.play(G, p, { i });
+    OPS.play(G, p, { i }); if (p.disc) OPS.pick(G, p, { i:aiBestIndex(p, p.disc) });
   }
 }
 const aiBestIndex = (p, list) => { let bi = 0; list.forEach((m, i) => { if (aiScore(p, m) > aiScore(p, list[bi])) bi = i; }); return bi; };

@@ -61,7 +61,7 @@ const DEFAULT_SETTINGS = {
   fxw:{},
   budget:{ 1:[3, 6], 2:[6, 11], 3:[8, 13], 4:[11, 18], 5:[15, 24], 6:[20, 32] },
   rules:{ hp:40, tribesPerGame:5, time:35, perRound:5, maxTime:75,
-    pool:{ 1:16, 2:15, 3:13, 4:11, 5:9, 6:7 }, up:{ 1:6, 2:7, 3:8, 4:9, 5:10 } },
+    pool:{ 1:16, 2:15, 3:13, 4:11, 5:9, 6:7 }, up:{ 1:6, 2:7, 3:8, 4:11, 5:11 } },   // amélioration : 5 · 7 · 8 · 11 · 11 (Champs de bataille), −1 par tour
 };
 // id, nom, niveau (0 = jeton), tribu, attaque, vie, mots-clés, effets
 const DEFAULT_CARD_LIST = [
@@ -1010,9 +1010,9 @@ function runCombat(S, s, m, e, pos, ctx) {
     }
     case 'soc_self_el': { const n = elems(al); buff(m, A * n, Hh * n); break; }
     case 'soc_aoe': case 'dr_aoe': en.filter(x => x.h > 0).forEach(x => simDamage(S, x, e.d * k, null)); break;
-    case 'soc_ginyu': { const n = al.filter(x => x !== m && (S.pre || x.h > 0) && GINYU.includes(x.c)).length; if (n) buff(m, A * n, Hh * n); break; }
-    case 'soc_fire_tb': { const n = al.filter(x => (S.pre || x.h > 0) && tribeOk(x, 'n_feu')).length; for (let i = 0; i < n; i++) { const o = en.filter(x => x.h > 0); if (!o.length) break; simDamage(S, o[R(o.length)], (e.d || 1) * k, null); } break; }
-    case 'soc_avalanche': { const o = en.filter(x => x.h > 0); if (o.length) simDamage(S, o[R(o.length)], Math.max(1, Math.floor((S.pre && m.h0 != null ? m.h0 : m.h) / 4)), m); break; }
+    case 'soc_ginyu': { const n = al.filter(x => x !== m && x.h > 0 && GINYU.includes(x.c)).length; if (n) buff(m, A * n, Hh * n); break; }
+    case 'soc_fire_tb': { const n = al.filter(x => x.h > 0 && tribeOk(x, 'n_feu')).length; for (let i = 0; i < n; i++) { const o = en.filter(x => x.h > 0); if (!o.length) break; simDamage(S, o[R(o.length)], (e.d || 1) * k, null); } break; }
+    case 'soc_avalanche': { const o = en.filter(x => x.h > 0); if (o.length) simDamage(S, o[R(o.length)], Math.max(1, Math.floor(m.h / 4)), m); break; }
     case 'soc_gate': { const d = Math.min(m.h - 1, (e.d || 0) * k); if (d > 0) m.h -= d; m.a += (e.a || 0) * k; break; }
     case 'soc_seal': { const o = en.filter(x => x.h > 0 && (x.f || '').length); for (let i = 0; i < (e.n || 1) * k && o.length; i++) { const t = o.splice(R(o.length), 1)[0]; t.f = ''; } break; }
     case 'soc_summon': { const at = al.indexOf(m); for (let i = 0; i < (e.n || 1); i++) simSummon(S, s, (at < 0 ? al.length : at) + 1 + i, e.card, m.g); break; }
@@ -1027,28 +1027,24 @@ function simDamage(S, m, n, src) {
   if (src && has(src, 'v')) m.h = Math.min(m.h, 0);
   if (m.h > 0) { const s = sideOf(S, m); fxOf(m, 'surv').forEach(e => runCombat(S, s, m, e)); }
 }
-function simDeaths(S) {
-  let changed = true, guard = 0;
-  while (changed && guard++ < 50) {
-    changed = false;
-    for (const s of [0, 1]) {
-      const arr = S.sides[s];
-      let i = arr.findIndex(x => x.h <= 0);
-      while (i >= 0) {
-        changed = true;
-        const d = arr[i]; arr.splice(i, 1); S.dead[s].push(d.c);
-        if (S.mx.eboulement && has(d, 't') && S.mx.eboulement.includes(tribe(d))) { const o = S.sides[1 - s].filter(x => x.h > 0); if (o.length) simDamage(S, o[Math.floor(S.rng() * o.length)], 3, null); }
-        for (const al of arr.slice()) if (al.h > 0) fxOf(al, 'die').forEach(e => runCombat(S, s, al, e, 0, d));
-        const before = arr.length;
-        const ndr = auraTimes(arr, 'aura_dr');
-        for (let r = 0; r < ndr; r++) fxOf(d, 'dr').forEach(e => runCombat(S, s, d, e, i));
-        const added = arr.length - before;
-        if (has(d, 'r') && !d.rb && arr.length < 7) {
-          const nm = simSummon(S, s, i + Math.max(0, added), d.c, d.g);
-          if (nm) { nm.h = 1; remF(nm, 'r'); nm.rb = 1; }
-        }
-        i = arr.findIndex(x => x.h <= 0);
-      }
+// Morts (règle Champs de bataille) : tous les serviteurs à 0 PV quittent le plateau ensemble, puis leurs effets se résolvent
+// camp de l'attaquant d'abord (f), puis l'autre, chaque camp de gauche à droite : « quand un allié meurt », Râle d'agonie
+// (invoqué à la place du mort), puis Renaissance (1 PV, à droite des invocations du râle). Les morts causées par ces effets
+// forment la vague suivante.
+function simDeaths(S, f = 0) {
+  for (let guard = 0; guard < 50; guard++) {
+    const batch = [];
+    for (const s of [f, 1 - f]) for (const m of S.sides[s]) if (m.h <= 0) batch.push({ s, m });
+    if (!batch.length) return;
+    for (const d of batch) { const arr = S.sides[d.s], i = arr.indexOf(d.m); d.L = arr[i - 1] || null; arr.splice(i, 1); S.dead[d.s].push(d.m.c); }   // ancre : voisin de gauche encore en place
+    for (const { s, m:d, L } of batch) {
+      const arr = S.sides[s], pos = () => (L && arr.includes(L) ? arr.indexOf(L) + 1 : 0);
+      if (S.mx.eboulement && has(d, 't') && S.mx.eboulement.includes(tribe(d))) { const o = S.sides[1 - s].filter(x => x.h > 0); if (o.length) simDamage(S, o[Math.floor(S.rng() * o.length)], 3, null); }
+      for (const al of arr.slice()) if (al.h > 0) fxOf(al, 'die').forEach(e => runCombat(S, s, al, e, 0, d));
+      const before = arr.length, ndr = auraTimes(arr, 'aura_dr');
+      for (let r = 0; r < ndr; r++) fxOf(d, 'dr').forEach(e => runCombat(S, s, d, e, pos()));
+      const added = Math.max(0, arr.length - before);
+      if (has(d, 'r') && !d.rb && arr.length < 7) { const nm = simSummon(S, s, pos() + added, d.c, d.g); if (nm) { nm.h = 1; remF(nm, 'r'); nm.rb = 1; } }
     }
   }
 }
@@ -1060,26 +1056,39 @@ function simulate(bA, bB, seed, tA, tB, fire, mx) {
 function simulate0(bA, bB, seed, tA, tB, fire, mx) {
   const S = { sides:[clone(bA), clone(bB)], rng:mulberry(seed), uid:1000000, frames:[], mx:mx || {}, dead:[[], []] };
   S.frames.push({ s:snap(S) });
-  S.pre = 1; S.sides.forEach(arr => arr.forEach(m => { m.h0 = m.h; }));
-  if (fire) for (const s of [0, 1]) {
-    const en = S.sides[1 - s].filter(x => x.h > 0);
+  // Ordre de résolution « Champs de bataille » : le camp qui a le plus de serviteurs est prioritaire (égalité : au hasard)
+  const nA = S.sides[0].length, nB = S.sides[1].length;
+  let first = nA > nB ? 0 : nB > nA ? 1 : (S.rng() < 0.5 ? 0 : 1);
+  const ord = [first, 1 - first];
+  // 1. effets « prochain combat » des héros (dégâts préparés), héros prioritaire d'abord ; chaque mort est résolue aussitôt
+  if (fire) for (const s of ord) {
     let dmg = fire[s] || 0, hit = [];
     while (dmg > 0) {
       const pool = S.sides[1 - s].filter(x => x.h > 0 && !hit.includes(x)); if (!pool.length) break;
       const t = pool[Math.floor(S.rng() * pool.length)]; hit.push(t);
       const shielded = has(t, 's'), dealt = shielded ? dmg : Math.min(dmg, t.h);
       S.frames.push({ s:snap(S), fb:t.u, fs:s, fd:shielded ? 0 : dealt });
-      simDamage(S, t, dealt, null);
+      simDamage(S, t, dealt, null); simDeaths(S, s);
       dmg = shielded ? 0 : dmg - dealt;
     }
   }
-  // début du combat simultané : les dégâts du héros et les effets de Début du combat des deux camps se résolvent avant toute mort
-  for (const s of [0, 1]) { const nsoc = auraTimes(S.sides[s], 'aura_soc'); for (const m of S.sides[s].slice()) for (let r = 0; r < nsoc; r++) fxOf(m, 'soc').forEach(e => runCombat(S, s, m, e)); }
-  if (S.mx.ruee) for (const s of [0, 1]) { const w = S.sides[s].filter(m => m.h > 0 && S.mx.ruee.includes(tribe(m))); if (w.length >= 3) w.forEach(m => buff(m, 2, 0)); }
-  S.pre = 0; simDeaths(S);
+  // 2. Début du combat des serviteurs : en alternance entre les deux camps à partir du camp prioritaire, chacun de gauche
+  //    à droite (serviteurs présents au départ) ; un serviteur mort avant son tour ne se déclenche pas ; les morts sont résolues
+  //    après chaque déclenchement (râles compris)
+  const q = ord.map(s => S.sides[s].filter(m => fxOf(m, 'soc').length));
+  while (q[0].length || q[1].length) for (let k = 0; k < 2; k++) {
+    const s = ord[k]; let m; while ((m = q[k].shift()) && !(m.h > 0 && S.sides[s].includes(m))) {}
+    if (!m) continue;
+    const nsoc = auraTimes(S.sides[s], 'aura_soc');
+    for (let r = 0; r < nsoc; r++) fxOf(m, 'soc').forEach(e => { if (m.h > 0 && S.sides[s].includes(m)) runCombat(S, s, m, e); });
+    simDeaths(S, s);
+  }
+  if (S.mx.ruee) for (const s of ord) { const w = S.sides[s].filter(m => m.h > 0 && S.mx.ruee.includes(tribe(m))); if (w.length >= 3) w.forEach(m => buff(m, 2, 0)); }
+  simDeaths(S, first);
   S.frames.push({ s:snap(S) });
+  // 3. premier attaquant : le camp qui a le plus de serviteurs une fois le Début du combat résolu (égalité : au hasard)
   const lA = S.sides[0].length, lB = S.sides[1].length;
-  let cur = lA > lB ? 0 : lB > lA ? 1 : (S.rng() < 0.5 ? 0 : 1);
+  let cur = lA > lB ? 0 : lB > lA ? 1 : (lA === nA && lB === nB ? first : (S.rng() < 0.5 ? 0 : 1));
   const ptr = [0, 0]; let guard = 0, stall = 0;
   while (S.sides[0].length && S.sides[1].length && guard++ < 400) {
     const arr = S.sides[cur], en = S.sides[1 - cur];
@@ -1087,21 +1096,24 @@ function simulate0(bA, bB, seed, tA, tB, fire, mx) {
     for (let k = 0; k < arr.length; k++) { const j = (ptr[cur] + k) % arr.length; if (arr[j].a > 0) { idx = j; break; } }
     if (idx < 0) { if (++stall >= 2) break; cur = 1 - cur; continue; }
     stall = 0;
-    const att = arr[idx]; const swings = has(att, 'w') ? 2 : 1; let posBefore = idx;
+    const att = arr[idx]; const swings = has(att, 'w') ? 2 : 1; let rights = arr.slice(idx + 1);
     for (let w = 0; w < swings; w++) {
       if (att.h <= 0 || !arr.includes(att) || !en.length) break;
       const taunts = en.filter(x => has(x, 't')); const pool = taunts.length ? taunts : en;
       const tgt = pool[Math.floor(S.rng() * pool.length)];
       S.frames.push({ s:snap(S), at:att.u, tg:tgt.u });
-      posBefore = arr.indexOf(att);
+      rights = arr.slice(arr.indexOf(att) + 1);
       const aa = att.a, ta = tgt.a;
       simDamage(S, tgt, aa, att); if (!(S.mx.first && tgt.h <= 0)) simDamage(S, att, ta, tgt);   // duel : la cible abattue ne riposte pas
       if (att.h > 0) fxOf(att, 'atk').forEach(e => runCombat(S, cur, att, e, 0, tgt));
-      simDeaths(S);
+      simDeaths(S, cur);
       // duo lié (Éveil) : le partenaire du compagnon frappe aussitôt la même cible
-      if (att.duo && tgt.h > 0 && en.includes(tgt)) { const pt = arr.find(x => x !== att && x.duo && x.h > 0 && x.a > 0); if (pt) { S.frames.push({ s:snap(S), at:pt.u, tg:tgt.u }); const pa = pt.a, tb = tgt.a; simDamage(S, tgt, pa, pt); simDamage(S, pt, tb, tgt); simDeaths(S); } }
+      if (att.duo && tgt.h > 0 && en.includes(tgt)) { const pt = arr.find(x => x !== att && x.duo && x.h > 0 && x.a > 0); if (pt) { S.frames.push({ s:snap(S), at:pt.u, tg:tgt.u }); const pa = pt.a, tb = tgt.a; simDamage(S, tgt, pa, pt); simDamage(S, pt, tb, tgt); simDeaths(S, cur); } }
     }
-    ptr[cur] = arr.includes(att) ? arr.indexOf(att) + 1 : Math.min(posBefore, arr.length);
+    // prochain attaquant : le serviteur à droite de l'attaquant ; s'il est mort, le premier survivant qui était à sa droite
+    // (les invocations apparues à sa place attendent le tour suivant) ; plus personne à droite : on repart de la gauche
+    if (arr.includes(att)) ptr[cur] = arr.indexOf(att) + 1;
+    else { const nx = rights.find(x => arr.includes(x)); ptr[cur] = nx ? arr.indexOf(nx) : arr.length; }
     if (ptr[cur] >= arr.length) ptr[cur] = 0;
     cur = 1 - cur;
   }
@@ -1460,13 +1472,13 @@ const OPS = {
     const nbc = auraTimes(p.bd, 'aura_bc');
     for (let r = 0; r < nbc; r++) fxOf(m, 'bc').forEach(e => runRecruit(G, p, m, e));
     p.bd.slice().forEach(x => { if (x !== m) fxOf(x, 'play').forEach(e => runRecruit(G, p, x, e, m)); });
-    if (m.tr) { delete m.tr; if (p.hd.length < 10) { const r = drawOne(G, 6, Math.min(6, p.t + 1)); if (r) p.hd.push(r); } }
+    if (m.tr) { delete m.tr; if (p.hd.length < 10 && !p.disc) { const tt = Math.min(6, p.t + 1), opts = []; for (let i = 0; i < 3; i++) { const r = drawOne(G, 6, tt) || (typeof drawAny === 'function' ? drawAny(tt) : null); if (r) opts.push(r); } if (opts.length) p.disc = opts; } }   // récompense de triple : découverte au niveau supérieur
     checkTriple(G, p); return true;
   },
   move(G, p, a) { const m = p.bd[a.i]; if (!m) return false; p.bd.splice(a.i, 1); p.bd.splice(Math.max(0, Math.min(a.to, p.bd.length)), 0, m); return true; },
   roll(G, p) { const free = (p.hero === 'rivet' || (htr(p, 'pturn') || {}).roll) && p.rr === 0; if (!free && p.g < 1) return false; if (!free) p.g -= 1; p.rr++; qAdd(p, 'rolls'); p.fz = false; fillShop(G, p); trigBoard(G, p, 'roll'); return true; },
   frz(G, p) { p.fz = !p.fz; return true; },
-  up(G, p) { const c = upCost(p); if (p.t >= 6 || p.g < c) return false; p.g -= c; p.t++; p.uc = (+RU().up[p.t] || 0) + (inMechAny(G, 'chakra') && p.t < 6 ? 1 : 0); trigBoard(G, p, 'up'); if (htr(p, 'pkg') && p.t >= 3) withSrc('Pouvoir de Mei', () => kgCard(G, p)); return true; },
+  up(G, p) { const c = upCost(p); if (p.t >= 6 || p.g < c) return false; p.g -= c; p.t++; p.uc = +RU().up[p.t] || 0; trigBoard(G, p, 'up'); if (htr(p, 'pkg') && p.t >= 3) withSrc('Pouvoir de Mei', () => kgCard(G, p)); return true; },
   comp(G, p) { const id = compOf(p.hero); if (inMechAny(G, 'chakra') || !id || !C[id] || (p.cb || 0) >= compLimit(G.rd) || p.g < 3 || p.hd.length >= 10) return false; p.g -= 3; p.cb = (p.cb || 0) + 1; p.hd.push(mk(id, 0)); checkTriple(G, p); return true; },
   pow(G, p) { const r = withSrc(HEROES[p.hero] ? 'Pouvoir de ' + HEROES[p.hero].n.split(' ')[0] : null, () => OPS.pow0(G, p)); if (r) checkTriple(G, p); return r; },   // jetons invoqués par le pouvoir : triple possible
   pow0(G, p) {
@@ -1839,7 +1851,8 @@ function endRecruit() {
     if (ok) break; order = shuffle(alive.slice());
   }
   G.pend = []; let maxFrames = 0;
-  const cap = G.rd <= 3 ? 5 : alive.length >= 4 ? 15 : 99;
+  // plafond de dégâts (Champs de bataille, saison 9) : 5 jusqu'à la manche 3, 10 jusqu'à la 7, 15 ensuite ; plus de plafond dans le Top 4
+  const cap = alive.length <= 4 ? 99 : G.rd <= 3 ? 5 : G.rd <= 7 ? 10 : 15;
   const fight = (p, q, ghost) => {
     const seed = rint(1e9), qb = ghost ? ghost.bd : q.bd, qt = ghost ? ghost.t : q.t, qn = ghost ? 'Fantôme de ' + ghost.n : q.n;
     const heat = x => (x.fbq ? (x.fb || 3) : 0) + (x.hero === 'pyra' ? 2 : 0) + (x.njf || 0) + (HEROES[x.hero] && HEROES[x.hero].pw && HEROES[x.hero].pw.k === 'pfire' ? HEROES[x.hero].pw.d * (awake(G) ? 2 : 1) : 0) + (awake(G) && x.bd && inMechAny(G, 'chakra') ? x.bd.filter(m => tribeOk(m, 'n_foudre')).length * (x.bd.some(m => hasFx(m, 'awk_storm')) ? 2 : 1) : 0);
@@ -1884,7 +1897,8 @@ function endRecruit() {
     p.lastOpp = ghost ? null : q.pid; if (!ghost) q.lastOpp = p.pid;
   };
   for (let i = 0; i + 1 < order.length; i += 2) fight(order[i], order[i + 1]);
-  if (order.length % 2) { const p = order[order.length - 1]; const others = alive.filter(x => x !== p); fight(p, null, others.length ? pickR(others) : p); }
+  // joueur impair : il affronte le fantôme du dernier joueur éliminé (son plateau et son niveau de taverne) ; à défaut, un vivant au hasard
+  if (order.length % 2) { const p = order[order.length - 1]; const gone = G.ps.filter(x => !x.al && x.place).sort((a, b) => a.place - b.place), others = alive.filter(x => x !== p); fight(p, null, gone[0] || (others.length ? pickR(others) : p)); }
   G.ph = 'combat';
   const anyWatcher = G.ps.some(p => p.human && !p.bot && p.peer);
   G.end = Date.now() + (anyWatcher ? Math.min(50000, 3500 + maxFrames * 700) : 800);
