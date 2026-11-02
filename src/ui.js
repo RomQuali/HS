@@ -350,6 +350,7 @@ function univPickH(sel, edit, actions) {
     const k = (SET.univ || []).indexOf(u), a = ch.us.includes(u.n), L = univLook(u), M = u.mech && u.mech !== 'none' ? MECHS[u.mech] : null;
     const heroes = Object.keys(HEROES).filter(h => heroFam(h).some(t => u.tribes.includes(t)));
     const fams = u.tribes.filter(t => on.includes(t));
+    if (!univOpen(u)) return `<button type="button" class="ban wip" style="--uc:${esc(L.col)}" ${edit ? `data-act="univ" data-u="${k}"` : 'disabled'} aria-disabled="true"><span class="ban-rib wip-rib">En chantier</span><span class="ban-hd"><span class="ban-em">${icon(L.ic)}</span><span class="ban-t"><b>${esc(u.n)}</b><i>Bientôt disponible</i></span></span></button>`;
     return `<button type="button" class="ban${a ? ' on' : ''}${u.mech === 'chakra' ? ' ban-nj' : ''}" style="--uc:${esc(L.col)}" ${edit ? `data-act="univ" data-u="${k}"` : 'disabled'} aria-pressed="${a}">
       ${a ? '<span class="ban-rib">Levé</span>' : ''}
       <span class="ban-hd"><span class="ban-em">${icon(L.ic)}</span><span class="ban-t"><b>${esc(u.n)}</b>${L.lore ? `<i>${esc(L.lore)}</i>` : ''}</span></span>
@@ -362,7 +363,7 @@ function univPickH(sel, edit, actions) {
   const sum = rnd ? 'Au hasard · un univers tiré au sort' : `${ch.us[0]} · ${ch.trs.length} familles en jeu`;
   const laws = rnd ? 'Sa loi s\'appliquera à la partie.' : 'Loi active : ' + ch.us.map(nm => { const u = SET.univ.find(x => x.n === nm); return u && MECHS[u.mech] && u.mech !== 'none' ? MECHS[u.mech].n : null; }).filter(Boolean).join(' · ');
   return `<div class="upick">
-    <div class="bans">${us.map(banner).join('')}</div>
+    <div class="bans">${us.filter(univOpen).map(banner).join('')}</div>${us.some(u => !univOpen(u)) ? `<div class="bans bans-wip"><small class="wip-t">En chantier</small>${us.filter(u => !univOpen(u)).map(banner).join('')}</div>` : ''}
     <div class="ubar"><div class="ubar-t"><b>${sum}</b><span>${esc(laws)}</span></div>${edit ? `<button type="button" class="btn ubar-r${rnd ? ' on' : ''}" data-act="univ" data-u="-1" aria-pressed="${rnd}">${icon('dice')}Au hasard</button>` : ''}${actions || ''}</div>
   </div>`;
 }
@@ -1164,6 +1165,7 @@ function doAct(act, btn) {
     case 'univ': {
       const k = +btn.dataset.u, u = (SET.univ || [])[k];
       let sel = (V.univSel || []).slice();
+      if (u && !univOpen(u)) { toast(u.n + ' : univers en chantier, bientôt disponible.'); break; }
       if (k < 0 || !u) sel = []; else sel = sel[0] === u.n ? [] : [u.n];   // un seul univers à la fois
       V.univSel = sel; try { localStorage.setItem('tav-univ', JSON.stringify(sel)); } catch (e) {}
       if (Net.role === 'host' && !H.G) sendPub(); else render();

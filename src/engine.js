@@ -1052,7 +1052,7 @@ function simDeaths(S, f = 0) {
     }
   }
 }
-const snap = S => S.sides.map(arr => arr.map(m => ({ c:m.c, a:m.a, h:m.h, g:m.g, f:m.f, u:m.u })));
+const snap = S => S.sides.map(arr => arr.map(m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g, f:m.f, u:m.u }; if (m.tf) o.tf = m.tf; return o; }));   // tf : l'image transformée reste en combat
 function simulate(bA, bB, seed, tA, tB, fire, mx) {
   const BS0 = BSRC; BSRC = null;
   try { return simulate0(bA, bB, seed, tA, tB, fire, mx); } finally { BSRC = BS0; }
@@ -1138,10 +1138,13 @@ function newPlayer(pid, n, human, peer) {
 const upCost = p => p.t >= 6 ? 0 : Math.max(0, p.uc - (p.hero === 'ilka' ? 1 : 0));
 
 const UNIV_FAMS = 5;   // chaque univers compte 5 familles ; on n'en joue qu'un par partie
+// univers jouables pour l'instant (les autres sont en chantier)
+const UNIV_OPEN = ['Naruto', 'Dragon Ball'];
+const univOpen = u => !!u && UNIV_OPEN.includes(u.n);
 function univChosen(sel) {
   const on = SET.tribes.filter(t => t.on !== false).map(t => t.id);
   const first = (sel || [])[0];
-  const us = (SET.univ || []).filter(u => u.n === first && u.tribes.some(t => on.includes(t)));
+  const us = (SET.univ || []).filter(u => u.n === first && univOpen(u) && u.tribes.some(t => on.includes(t)));
   const trs = [];
   for (const u of us) for (const t of u.tribes) if (on.includes(t) && !trs.includes(t)) trs.push(t);
   return { us:us.map(u => u.n), trs };
@@ -1170,7 +1173,7 @@ function hostStart(humans, opt) {
   const n = +RU().tribesPerGame || 0;
   const ch = univChosen(opt && opt.univ);
   G.univ = [];
-  const pool = (SET.univ || []).filter(u => u.tribes.some(t => on.includes(t)));
+  const pool = (SET.univ || []).filter(u => univOpen(u) && u.tribes.some(t => on.includes(t)));
   if (ch.trs.length) { G.univ = ch.us; G.trs = ch.trs; G.pick = 1; }
   else if (pool.length) { const u = pickR(pool); G.univ = [u.n]; G.trs = u.tribes.filter(t => on.includes(t)); }
   else if (n > 0 && n < on.length) {
@@ -1967,7 +1970,7 @@ function hostTick() {
 
 /* ---------- diffusion ---------- */
 const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u, ch:m.ch || 0, us:m.us || 0 }; const o = { c:m.c, a:m.a, h:m.h }; if (m.awk) o.awk = 1; if (m.sl) o.sl = m.sl; if (m.med) o.med = 1; if (m.tf) { o.tf = m.tf; o.tfn = m.tfn; } if (m.abs) o.abs = m.abs; if (m.rk) o.rk = m.rk; if (m.memo) o.memo = m.memo; if (m.el) o.el = m.el; if (m.fu) o.fu = m.fu; if (m.xp) o.xp = m.xp; if (m.eq && m.eq.length) o.eq = m.eq; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; if (m.bn) o.bn = m.bn; return o; };
-const fullM = m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g || 0, f:m.f || '', u:m.u }; if (m.x) o.x = m.x; if (m.domb) o.domb = m.domb; if (m.awk) o.awk = m.awk; if (m.duo) o.duo = 1; if (m.el) o.el = m.el; return o; };
+const fullM = m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g || 0, f:m.f || '', u:m.u }; if (m.x) o.x = m.x; if (m.domb) o.domb = m.domb; if (m.awk) o.awk = m.awk; if (m.tf) o.tf = m.tf; if (m.duo) o.duo = 1; if (m.el) o.el = m.el; return o; };
 function pubData() {
   const G = H.G;
   if (!G) return { ph:'lobby', code:H.code, cv:CAT_REV, us:(V.univSel || []).slice(), pl:H.roster.map(r => ({ n:r.n, pe:r.peer })), last:H.last || null };

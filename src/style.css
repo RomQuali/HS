@@ -1953,3 +1953,13 @@ body.u-nj .counter-line,body.u-nj .board-zone{border-radius:18px;background:rgba
 body.u-nj .hand{background:linear-gradient(180deg,rgba(6,10,14,0),rgba(6,10,14,.55))}
 /* Venimeux (gagné, une seule fois) : halo violet */
 .mn.kw-n .mn-svg{filter:drop-shadow(0 0 8px rgba(190,120,255,.9)) drop-shadow(0 4px 4px rgba(0,0,0,.45))}
+
+/* univers en chantier : visibles mais non sélectionnables */
+.ban.wip{opacity:.55;filter:grayscale(.85);cursor:not-allowed}
+.ban.wip .ban-hd{padding-bottom:6px}
+.ban-rib.wip-rib{display:none}
+.bans-wip{display:flex!important;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+.bans-wip .wip-t{width:100%;font:700 12px var(--f-label),serif;letter-spacing:.08em;text-transform:uppercase;color:#bfae8a}
+.bans-wip .ban.wip{flex:0 1 auto;min-height:0;padding:4px 10px;width:auto}
+.bans-wip .ban.wip .ban-t i{display:none}
+.bans-wip .ban.wip .ban-em{width:24px;height:24px}
