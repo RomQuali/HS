@@ -219,7 +219,7 @@ function foeApply(p, board) {
   const f = p && p.foe; if (!f || !board) return;
   const live = () => board.filter(m => m.h > 0);
   for (let i = 0; i < (f.seal || 0); i++) { const o = live().filter(m => (m.f || '').length); if (!o.length) break; pickR(o).f = ''; }
-  (f.chill || []).forEach(v => { const o = live(); if (o.length) { const t = pickR(o); t.a = Math.max(0, t.a - v); } });
+  { const used = new Set(); (f.chill || []).forEach(v => { let o = live().filter(m => !used.has(m)); if (!o.length) { used.clear(); o = live(); } if (o.length) { const t = pickR(o); used.add(t); t.a = Math.max(0, t.a - v); } }); }   // cibles différentes tant que possible
 }
 function castSpell(G, p, hi, tg) { const it = p.hd[hi], S0 = it && SPELLS[it.sp]; const ok = withSrc(S0 ? 'Sort : ' + S0.n : BSRC, () => castSpell0(G, p, hi, tg)); if (ok && inMechAny(G, 'resonance')) withSrc('Résonance', () => { const c = p.bd.filter(m => inMech(G, 'resonance', m)); for (let k = 0; k < 2 && c.length; k++) buff(c.splice(Math.floor(Math.random() * c.length), 1)[0], 1, 1); }); return ok; }
 function castSpell0(G, p, hi, tg) {
@@ -525,7 +525,7 @@ function spellCardH(id, z, i, o = {}) {
   return `<div class="cd spc${sel ? ' sel' : ''}${V.aim != null && V.aim === i && z === 'hd' ? ' aiming' : ''}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="Sort ${esc(S.n)}">`
     + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#sp-${id}" y="-4" width="100" height="100"/></svg></div>`
     + `<div class="cd-tier" aria-hidden="true">${'<i></i>'.repeat(S.t)}</div>`
-    + `<div class="cd-nm"><span>${esc(S.n)}</span></div><div class="cd-tx${n + (AWK_TECH[id] ? 30 : 0) > 95 ? ' xlong' : n + (AWK_TECH[id] ? 30 : 0) > 62 ? ' long' : ''}">${badge}${esc(S.tx)}${AWK_TECH[id] ? `<span class="tx-awk${awakeUI() ? ' on' : ''}"><b>Éveil :</b> ${esc(AWK_TECH[id][0])}</span>` : ''}${S.sig ? `<span class="tx-awk on tx-sig"><b>Signature</b> (${esc(S.sig.slice(0, 3).map(c => C[c] ? C[c].n : c).join(', '))}) : ${esc(S.stx)}</span>` : ''}</div>`
+    + `<div class="cd-nm"><span>${esc(S.n)}</span></div><div class="cd-tx${n + (AWK_TECH[id] ? 30 : 0) > 95 ? ' xlong' : n + (AWK_TECH[id] ? 30 : 0) > 62 ? ' long' : ''}">${badge}${esc(S.tx)}${AWK_TECH[id] ? `<span class="tx-awk${awakeUI() ? ' on' : ''}"><b>Éveil :</b> ${esc(AWK_TECH[id][0])}</span>` : ''}${S.sig ? `<span class="tx-awk on tx-sig"><b>Signature</b> si le lanceur est ${esc(S.sig.slice(0, 3).map(c => C[c] ? C[c].n : c).join(', '))} : ${esc(S.stx)}</span>` : ''}</div>`
     + `<div class="cd-tb" style="background:${ty.col}">${esc(ty.n)}</div>`
     + (S.item ? '' : costGemH(spellCostFor(id, z), S.c)) + (S.kc != null ? ckMarkH(V.me ? kiCost(V.me, S) : S.kc, 'ck-gem ki-gem' + (V.me && kiCost(V.me, S) < S.kc ? ' aff' : ''), 'Coût en ki') : '') + (S.ck ? ckMarkH(V.me ? ckCost(V.me, S) : S.ck, 'ck-gem' + (V.me && ckCost(V.me, S) < S.ck ? ' aff' : ''), 'Coût en chakra' + (V.me && ckCost(V.me, S) < S.ck ? ' (affinité de ton héros : 1 de moins)' : '')) : '') + (S.el ? `<span class="el-tag" style="--ec:${ELS[S.el].col}">${elBadgeH(S.el)}${ELS[S.el].n}</span>` : '') + `${z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : ''}</div>`;
 }
@@ -573,7 +573,7 @@ const cTmp = (m, kw) => { m.tmp = { a:(m.tmp && m.tmp.a) || 0, h:(m.tmp && m.tmp
 const cVil = (p, tb, a, h) => p.bd.filter(m => tribeOk(m, tb)).forEach(m => buff(m, a, h));
 const cPup = (p, a, h) => p.bd.filter(m => m.c === 'tk_puppet').forEach(m => buff(m, a, h));
 const COMBO_BD = {
-  'Hyōton':        ['Kiri + Suna : invoque 1 Kugutsu (×niveau) ; tes Kugutsu gagnent Bouclier divin au prochain combat.', (G, p) => { cSum(p, 'tk_puppet', cmx(p)); p.bd.filter(m => m.c === 'tk_puppet').forEach(m => cTmp(m, 's')); }],
+  'Hyōton':        ['Kiri + Suna : invoque 1 Kugutsu (×niveau − 1, au moins 1) ; tes Kugutsu gagnent Bouclier divin au prochain combat.', (G, p) => { cSum(p, 'tk_puppet', Math.max(1, cmx(p) - 1)); p.bd.filter(m => m.c === 'tk_puppet').forEach(m => cTmp(m, 's')); }],
   'Mokuton':         ['Kiri + Iwa : invoque 1 Doryūheki ; tes serviteurs de Kiri et d’Iwa gagnent +0/+2 (×niveau).', (G, p) => { const x = cmx(p); cSum(p, 'tk_mur', 1); cVil(p, 'n_eau', 0, 2 * x); cVil(p, 'n_terre', 0, 2 * x); }],
   'Yōton':         ['Konoha + Iwa : prochain combat, 3 dégâts (×niveau) à l\'ennemi ; tes serviteurs d’Iwa gagnent +1/+0 (×niveau).', (G, p) => { const x = cmx(p); p.njf = (p.njf || 0) + 3 * x; cVil(p, 'n_terre', x, 0); }],
   'Futton':       ['Konoha + Kiri : tes serviteurs de Konoha et de Kiri gagnent +1/+1 (×niveau).', (G, p) => { const x = cmx(p); cVil(p, 'n_feu', x, x); cVil(p, 'n_eau', x, x); }],
@@ -582,7 +582,7 @@ const COMBO_BD = {
   'Tempête du Fūton':      ['Kumo + Suna : tes Kugutsu gagnent +1/+1 (×niveau) ; tes jinchūriki grandissent comme après une victoire.', (G, p) => { const x = cmx(p); cPup(p, x, x); winUp(p); }],
   'Ranton':['Kumo + Kiri : tes jinchūriki grandissent comme après une victoire ; tes serviteurs de Kiri gagnent +0/+2 (×niveau).', (G, p) => { winUp(p); cVil(p, 'n_eau', 0, 2 * cmx(p)); }],
   'Éclair ardent':       ['Konoha + Kumo : prochain combat, 2 dégâts (×niveau) à l\'ennemi ; tes serviteurs de Kumo gagnent +1/+0 (×niveau).', (G, p) => { const x = cmx(p); p.njf = (p.njf || 0) + 2 * x; cVil(p, 'n_foudre', x, 0); }],
-  'Jiton':        ['Iwa + Suna : invoque 1 Kugutsu (×niveau) ; tes Kugutsu gagnent +0/+2 et Provocation.', (G, p) => { cSum(p, 'tk_puppet', cmx(p)); p.bd.filter(m => m.c === 'tk_puppet').forEach(m => { buff(m, 0, 2); addF(m, 't'); }); }],
+  'Jiton':        ['Iwa + Suna : invoque 1 Kugutsu (×niveau − 1, au moins 1) ; tes Kugutsu gagnent +0/+2 et Provocation.', (G, p) => { cSum(p, 'tk_puppet', Math.max(1, cmx(p) - 1)); p.bd.filter(m => m.c === 'tk_puppet').forEach(m => { buff(m, 0, 2); addF(m, 't'); }); }],
   'Grande explosion':['Ultime de Konoha : prochain combat, 5 dégâts (×niveau) répartis sur l\'ennemi.', (G, p) => { p.njf = (p.njf || 0) + 5 * cmx(p); }],
   'Suna no tate géant':['Ultime de Suna : tes serviteurs gagnent +0/+2 (×niveau) ; invoque 1 Kugutsu.', (G, p) => { cSum(p, 'tk_puppet', 1); p.bd.forEach(m => buff(m, 0, 2 * cmx(p))); }],
   'Renaissance de Kiri':['Ultime de Kiri : prochain combat, Renaissance pour 1 serviteur (+1 par niveau), Kiri d\'abord.', (G, p) => { const n = 1 + cmx(p), o = p.bd.slice().sort((a, b) => (tribeOk(b, 'n_eau') ? 1 : 0) - (tribeOk(a, 'n_eau') ? 1 : 0)).filter(m => !has(m, 'r')); o.slice(0, n).forEach(m => cTmp(m, 'r')); }],

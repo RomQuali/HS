@@ -664,7 +664,7 @@ function comboWatch() {
 }
 function kiGauge(d, me) {
   if (!(d.laws || []).some(l => l.k === 'ki')) return '';
-  const ki = me.ki || 0, inc = (me.bd || []).filter(m => m.med).reduce((t, m) => t + tierOf(m) * (m.g ? 2 : 1), 0);
+  const ki = me.ki || 0, pm = htr(me, 'pmed'), inc = Math.min(KI_MAX - ki, (me.bd || []).filter(m => m.med).reduce((t, m) => t + tierOf(m) * (m.g ? 2 : 1) + (pm ? pm.n || 1 : 0), 0));
   return `<div class="purse kip" aria-label="${ki} ki" data-tip="Ki : mets un serviteur en méditation (☯) pour en gagner autant que son niveau ; il ne combattra pas. Le ki paie les transformations et certains pouvoirs.${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ki}<small> ki</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:15 }, (_, k) => `<i class="kic${k < ki ? '' : ' off'}"></i>`).join('')}</span>${inc ? `<span class="inc">+${inc} ki au prochain tour</span>` : ''}</div>`;
 }
 function ckGauge(d, me) {
@@ -878,7 +878,7 @@ function detailH(canAct) {
     let acts = '';
     if (canAct && s.z === 'ss') { const c = me.spc != null ? me.spc : S.c;
       acts = `<button class="btn pri" data-act="buysp" data-k="${s.i || 0}" ${me.g < c || me.hd.length >= 10 ? 'disabled' : ''}>Acheter · ${c} or</button>`; }
-    if (canAct && s.z === 'hd') acts = S.tg ? `<button class="btn pri" data-act="aim" ${me.bd.length ? '' : 'disabled'}>Lancer sur un serviteur</button>` : `<button class="btn pri" data-act="cast">Lancer le sort</button>`;
+    if (canAct && s.z === 'hd') acts = S.tg ? `<button class="btn pri" data-act="aim" ${me.bd.length ? '' : 'disabled'}>${S.db ? 'Choisir le lanceur' : 'Lancer sur un serviteur'}</button>` : `<button class="btn pri" data-act="cast">Lancer le sort</button>`;
     return `<div class="det">${spellCardH(id, 'd', 0)}<div class="det-s"><b>${esc(S.n)}</b><span class="meta">Sort · ${esc(SP_TYPES[S.ty].n)} · ${s.z === 'ss' ? 'sur l\'étagère de la taverne' : 'dans ta main'}</span><div class="acts">${acts}</div></div></div>`;
   }
   const z = s.z === 'sh' ? me.sh : s.z === 'bd' ? me.bd : me.hd, m = z[s.i]; if (!m) return '';
