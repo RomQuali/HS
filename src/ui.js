@@ -905,7 +905,7 @@ function ruleTabH(k) {
       ${step(1, 'Recrute', `Achète des ninjas à la taverne (3 ${coin}), place-les sur ton plateau, monte de niveau pour en trouver de plus forts. Tu gagnes un peu plus d'or à chaque manche.`, faceH('art-n_f1'))}
       ${step(2, 'Triples', 'Trois exemplaires d\'une même créature (jetons compris) fusionnent en une version dorée : stats additionnées, et une carte de niveau supérieur en récompense.', '<span class="rl-pow">✦</span>')}
       ${step(3, 'Chakra, sorts, pouvoir', 'Dépense ton chakra : éveille tes serviteurs, lance tes sorts. Utilise le pouvoir de ton héros (en or, en chakra, ou passif).', ck)}
-      ${step(4, 'Début du combat', 'Règles des Champs de bataille : les effets des héros d\'abord, puis ceux des serviteurs, en alternance entre les deux camps (le camp qui a le plus de serviteurs commence) et de gauche à droite. Chaque mort est résolue aussitôt.', '<span class="rl-pow">⚡</span>')}
+      ${step(4, 'Début du combat', 'Tous les effets s\'empilent et se déclenchent de gauche à droite : ceux des héros d\'abord, puis ceux des serviteurs (le camp qui a le plus de serviteurs commence). Personne ne meurt pendant la pile : chaque serviteur déclenche son effet, et les morts sont résolues à la fin.', '<span class="rl-pow">⚡</span>')}
       ${step(5, 'Combat', 'Le camp le plus nombreux attaque en premier, puis chacun son tour, de gauche à droite ; chaque attaquant subit aussi l\'attaque du défenseur. Le perdant prend des dégâts : niveau de taverne du vainqueur + niveaux de ses survivants (plafonnés à 5, 10 puis 15 jusqu\'au Top 4). Le dernier héros debout gagne.', '<span class="rl-vs">VS</span>')}
     </ol>`;
     case 'ck': return `<div class="rl-p">

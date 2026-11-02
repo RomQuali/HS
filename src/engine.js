@@ -1013,9 +1013,9 @@ function runCombat(S, s, m, e, pos, ctx) {
     }
     case 'soc_self_el': { const n = elems(al); buff(m, A * n, Hh * n); break; }
     case 'soc_aoe': case 'dr_aoe': en.filter(x => x.h > 0).forEach(x => simDamage(S, x, e.d * k, null)); break;
-    case 'soc_ginyu': { const n = al.filter(x => x !== m && x.h > 0 && GINYU.includes(x.c)).length; if (n) buff(m, A * n, Hh * n); break; }
-    case 'soc_fire_tb': { const n = al.filter(x => x.h > 0 && tribeOk(x, 'n_feu')).length; for (let i = 0; i < n; i++) { const o = en.filter(x => x.h > 0); if (!o.length) break; simDamage(S, o[R(o.length)], (e.d || 1) * k, null); } break; }
-    case 'soc_avalanche': { const o = en.filter(x => x.h > 0); if (o.length) simDamage(S, o[R(o.length)], Math.max(1, Math.floor(m.h / 4)), m); break; }
+    case 'soc_ginyu': { const n = al.filter(x => x !== m && (S.pre || x.h > 0) && GINYU.includes(x.c)).length; if (n) buff(m, A * n, Hh * n); break; }
+    case 'soc_fire_tb': { const n = al.filter(x => (S.pre || x.h > 0) && tribeOk(x, 'n_feu')).length; for (let i = 0; i < n; i++) { const o = en.filter(x => x.h > 0); if (!o.length) break; simDamage(S, o[R(o.length)], (e.d || 1) * k, null); } break; }
+    case 'soc_avalanche': { const o = en.filter(x => x.h > 0); if (o.length) simDamage(S, o[R(o.length)], Math.max(1, Math.floor((S.pre && m.h0 != null ? m.h0 : m.h) / 4)), m); break; }
     case 'soc_gate': { const d = Math.min(m.h - 1, (e.d || 0) * k); if (d > 0) m.h -= d; m.a += (e.a || 0) * k; break; }
     case 'soc_seal': { const o = en.filter(x => x.h > 0 && (x.f || '').length); for (let i = 0; i < (e.n || 1) * k && o.length; i++) { const t = o.splice(R(o.length), 1)[0]; t.f = ''; } break; }
     case 'soc_summon': { const at = al.indexOf(m); for (let i = 0; i < (e.n || 1); i++) simSummon(S, s, (at < 0 ? al.length : at) + 1 + i, e.card, m.g); break; }
@@ -1064,7 +1064,10 @@ function simulate0(bA, bB, seed, tA, tB, fire, mx) {
   const nA = S.sides[0].length, nB = S.sides[1].length;
   let first = nA > nB ? 0 : nB > nA ? 1 : (S.rng() < 0.5 ? 0 : 1);
   const ord = [first, 1 - first];
-  // 1. effets « prochain combat » des héros (dégâts préparés), héros prioritaire d'abord ; chaque mort est résolue aussitôt
+  // Début du combat (règle de la maison) : tous les effets s'empilent et se déclenchent de gauche à droite — héros d'abord
+  // (camp prioritaire puis l'autre), puis les serviteurs du camp prioritaire puis ceux de l'autre camp. Personne ne meurt
+  // pendant la pile : chaque serviteur présent au départ déclenche son effet, et les morts (râles compris) sont résolues à la fin.
+  S.pre = true; S.sides.forEach(arr => arr.forEach(m => { m.h0 = m.h; }));
   if (fire) for (const s of ord) {
     let dmg = fire[s] || 0, hit = [];
     while (dmg > 0) {
@@ -1072,21 +1075,13 @@ function simulate0(bA, bB, seed, tA, tB, fire, mx) {
       const t = pool[Math.floor(S.rng() * pool.length)]; hit.push(t);
       const shielded = has(t, 's'), dealt = shielded ? dmg : Math.min(dmg, t.h);
       S.frames.push({ s:snap(S), fb:t.u, fs:s, fd:shielded ? 0 : dealt });
-      simDamage(S, t, dealt, null); simDeaths(S, s);
+      simDamage(S, t, dealt, null);
       dmg = shielded ? 0 : dmg - dealt;
     }
   }
-  // 2. Début du combat des serviteurs : en alternance entre les deux camps à partir du camp prioritaire, chacun de gauche
-  //    à droite (serviteurs présents au départ) ; un serviteur mort avant son tour ne se déclenche pas ; les morts sont résolues
-  //    après chaque déclenchement (râles compris)
-  const q = ord.map(s => S.sides[s].filter(m => fxOf(m, 'soc').length));
-  while (q[0].length || q[1].length) for (let k = 0; k < 2; k++) {
-    const s = ord[k]; let m; while ((m = q[k].shift()) && !(m.h > 0 && S.sides[s].includes(m))) {}
-    if (!m) continue;
-    const nsoc = auraTimes(S.sides[s], 'aura_soc');
-    for (let r = 0; r < nsoc; r++) fxOf(m, 'soc').forEach(e => { if (m.h > 0 && S.sides[s].includes(m)) runCombat(S, s, m, e); });
-    simDeaths(S, s);
-  }
+  for (const s of ord) { const list = S.sides[s].filter(m => fxOf(m, 'soc').length), nsoc = auraTimes(S.sides[s], 'aura_soc'); for (const m of list) if (S.sides[s].includes(m)) for (let r = 0; r < nsoc; r++) fxOf(m, 'soc').forEach(e => runCombat(S, s, m, e)); }
+  S.pre = false; S.sides.forEach(arr => arr.forEach(m => { delete m.h0; }));
+  simDeaths(S, first);
   if (S.mx.ruee) for (const s of ord) { const w = S.sides[s].filter(m => m.h > 0 && S.mx.ruee.includes(tribe(m))); if (w.length >= 3) w.forEach(m => buff(m, 2, 0)); }
   simDeaths(S, first);
   S.frames.push({ s:snap(S) });
