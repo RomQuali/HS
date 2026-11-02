@@ -322,7 +322,7 @@ function combatBoard(p) {
   const phx = 2 * (anyFx('awk_phoenix') ? 2 : 1), tide = 2 * (anyFx('awk_tsunami') ? 2 : 1);
   return bd.filter(m => !m.med).map(m => {
     const c = { ...m }; delete c.tmp;
-    if (m.tmp) { c.a += m.tmp.a || 0; c.h += m.tmp.h || 0; if (m.tmp.f) addF(c, m.tmp.f); }
+    if (m.tmp) { c.a += m.tmp.a || 0; c.h = Math.max(1, c.h + (m.tmp.h || 0)); if (m.tmp.f) addF(c, m.tmp.f); }
     if (p.tma) { c.a += p.tma.a; c.h += p.tma.h; }
     if (ninja) {
       { const el = CLAN_EL[CD(m.c).tr], t = el && NJ_MK ? mkTier(p, el) : 0; if (t && !(C[m.c] && C[m.c].comp)) { const B = MK_TIER[el][t - 1]; c.a += B[0]; c.h += B[1]; if (B[2]) addF(c, B[2]); } }

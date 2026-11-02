@@ -1011,7 +1011,7 @@ function runCombat(S, s, m, e, pos, ctx) {
     case 'soc_self_el': { const n = elems(al); buff(m, A * n, Hh * n); break; }
     case 'soc_aoe': case 'dr_aoe': en.filter(x => x.h > 0).forEach(x => simDamage(S, x, e.d * k, null)); break;
     case 'soc_ginyu': { const n = al.filter(x => x !== m && (S.pre || x.h > 0) && GINYU.includes(x.c)).length; if (n) buff(m, A * n, Hh * n); break; }
-    case 'soc_fire_tb': { const n = al.filter(x => (S.pre || x.h > 0) && tribeOk(x, 'n_feu')).length * (e.d || 1) * k; for (let i = 0; i < n; i++) { const o = en.filter(x => x.h > 0); if (!o.length) break; simDamage(S, o[R(o.length)], 1, m); } break; }
+    case 'soc_fire_tb': { const n = al.filter(x => (S.pre || x.h > 0) && tribeOk(x, 'n_feu')).length; for (let i = 0; i < n; i++) { const o = en.filter(x => x.h > 0); if (!o.length) break; simDamage(S, o[R(o.length)], (e.d || 1) * k, null); } break; }
     case 'soc_avalanche': { const o = en.filter(x => x.h > 0); if (o.length) simDamage(S, o[R(o.length)], Math.max(1, Math.floor((S.pre && m.h0 != null ? m.h0 : m.h) / 4)), m); break; }
     case 'soc_gate': { const d = Math.min(m.h - 1, (e.d || 0) * k); if (d > 0) m.h -= d; m.a += (e.a || 0) * k; break; }
     case 'soc_seal': { const o = en.filter(x => x.h > 0 && (x.f || '').length); for (let i = 0; i < (e.n || 1) * k && o.length; i++) { const t = o.splice(R(o.length), 1)[0]; t.f = ''; } break; }
@@ -1673,7 +1673,7 @@ function powRun(G, p, w0) {
 }
 // le pouvoir a-t-il un effet possible maintenant ? (même règles que pow0, sans rien modifier)
 function powCan(p, rd) {
-  const h = HX(p); if (!h || !h.cost || p.pu || (p.ckPay ? (p.ck || 0) : p.g) < h.cost) return false;
+  const h = HX(p); if (!h || !h.cost || p.pu || (p.kiPay ? (p.ki || 0) : p.ckPay ? (p.ck || 0) : p.g) < h.cost) return false;
   if (h.pw) return powCanW(p, h.pw);
   const bd = p.bd || [], hd = p.hd || [], tr = t => bd.some(m => tribe(m) === t);
   switch (p.hero) {
@@ -1786,7 +1786,7 @@ function startRecruit() {
     if (p.hero === 'barnabe' && G.rd % 2 === 0) p.g += 1;
     p.uc = Math.max(0, p.uc - 1);
     if (p.fz) { p.fz = false; topUpShop(G, p); } else fillShop(G, p);
-    p.pu = false; p.bd.forEach(x => { if (x.awk && !C[x.c].comp) { const md = (CD(x.c).fxAll || []).find(f => f.k === 'ckm'); if (md) withSrc('Éveil · ' + CD(x.c).n, () => runMode(G, p, x, md.m)); } }); checkTriple(G, p); p.castN = 0; p.castEls = []; p.ckSpentLast = p.ckSpent || 0; p.ckSpent = 0; p.hd.forEach(x => { if (x.sp && SPELLS[x.sp] && SPELLS[x.sp].chg) x.ch = Math.min(2, (x.ch || 0) + 1); }); p.fbq = false; p.njf = 0; p.sylv = false; p.rr = 0; p.rdy = false; p.lastRes = p.res ? (p.res.cr || p.res.r) : null; p.res = null;
+    p.pu = false; p.castN = 0; p.castEls = []; p.ckSpentLast = p.ckSpent || 0; p.ckSpent = 0; p.hd.forEach(x => { if (x.sp && SPELLS[x.sp] && SPELLS[x.sp].chg) x.ch = Math.min(2, (x.ch || 0) + 1); }); p.fbq = false; p.njf = 0; p.sylv = false; p.rr = 0; p.rdy = false; p.lastRes = p.res ? (p.res.cr || p.res.r) : null; p.res = null;
     if (p.inc && p.inc.length) p.g += p.inc.shift() || 0;
     { const w = /^(nh|dh)_/.test(p.hero || '') ? htr(p, 'pturn') : (pwOf(p) && pwOf(p).k === 'pturn' ? null : null); if (w) { if (w.g) p.g += w.g; if (w.ki) kiAdd(p, w.ki); if (w.ck) p.ck = Math.min(ckMax(p), (p.ck || 0) + w.ck); if ((w.h || w.a) && p.bd.length) { if (w.all) p.bd.forEach(m => buff(m, w.a || 0, w.h || 0)); else buff(pickR(p.bd), w.a || 0, w.h || 0); } if (w.el) mkAdd(p, w.el, w.n); const src = 'Pouvoir de ' + HEROES[p.hero].n.split(' ')[0]; if (w.sl) shuffle(p.bd.slice()).slice(0, w.sl).forEach(m => sealAdd(p, m, 1)); if (w.drp) withSrc(src, () => { const o = p.bd.filter(m => !(m.x || []).some(e => e.drp)); shuffle(o).slice(0, w.drp).forEach(t => (t.x = t.x || []).push({ k:'dr_summon', card:'tk_puppet', n:1, drp:1, src:'Sasori' })); }); if (w.pa) withSrc(src, () => { const a = p.bd.filter(isPact); if (a.length) a.forEach(m => buff(m, 1, 1)); else pactSummon(p, 'tk_toad', p.bd[p.bd.length - 1]); }); if (w.dr) withSrc(src, () => p.bd.forEach(m => { if (fxOf(m, 'dr').length) buff(m, w.dr, 0); })); } p.spd = 0; }
     trigBoard(G, p, 'sot'); checkTriple(G, p);
@@ -1803,6 +1803,8 @@ function startRecruit() {
     if (inMechAny(G, 'chakra')) { const n = {}; p.bd.forEach(m => { const t = CD(m.c).tr; if (CLAN_EL[t]) n[t] = (n[t] || 0) + 1; }); const pure = Object.keys(n).find(t => n[t] >= 5) || null; p.pure = pure; if (pure) p.ck = Math.min(ckMax(p), (p.ck || 0) + 1); }
     { const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'pck') p.ck = Math.min(ckMax(p), (p.ck || 0) + w.n); if (w && w.k === 'ptech' && G.rd % 2 === 0 && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); } }
     p.bd.forEach(m => { delete m.tmp; }); p.tma = null; p.foe = null;
+    // serviteurs éveillés : leur effet se répète (après la remise à zéro des bonus « prochain combat », sinon feu et bouclier seraient perdus)
+    p.bd.slice().forEach(x => { if (x.awk && !C[x.c].comp) { const md = (CD(x.c).fxAll || []).find(f => f.k === 'ckm'); if (md) withSrc('Éveil · ' + CD(x.c).n, () => runMode(G, p, x, md.m)); } }); checkTriple(G, p);
   }
   G.ph = 'recruit';
   const live = humansLive(G).length;
