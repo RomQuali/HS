@@ -250,7 +250,7 @@ const DEFAULT_CARD_LIST = [
   ['d_nappa', 'Nappa', 2, 'd_sai', 3, 3, '', [{ k:'bc_summon', card:'tk_saiba', n:1 }]],
   ['d_bardock', 'Bardock', 2, 'd_sai', 3, 2, '', [{ k:'tf', st:[{ c:3, a:3, h:2, nm:'Super Saiyan' }], cond:'colere' }]],
   ['d_trunks', 'Trunks', 3, 'd_sai', 3, 3, '', [{ k:'tf', st:[{ c:3, a:2, h:2, nm:'Super Saiyan' }, { c:4, a:3, h:3, nm:'Super Trunks' }] }, { k:'fus', p:'d_goten', r:'d_gotenks' }]],
-  ['d_gohan', 'Gohan', 3, 'd_sai', 2, 4, '', [{ k:'tf', st:[{ c:3, a:3, h:2, nm:'Super Saiyan' }, { c:5, a:4, h:4, kw:'w', nm:'Gohan ultime' }], cond:'colere' }]],
+  ['d_gohan', 'Gohan', 3, 'd_sai', 2, 4, '', [{ k:'tf', st:[{ c:3, a:3, h:2, nm:'Super Saiyan 2' }, { c:5, a:4, h:4, kw:'w', nm:'Gohan ultime' }], cond:'colere' }]],
   ['d_vegeta', 'Vegeta', 4, 'd_sai', 4, 4, '', [{ k:'tf_self', a:2, h:2 }, { k:'tf', st:[{ c:4, a:3, h:3, nm:'Super Saiyan' }, { c:6, a:4, h:4, nm:'Super Saiyan Blue' }] }, { k:'fus', p:'d_goku', r:'d_gogeta', r2:'d_vegetto' }]],
   ['d_roivegeta', 'Roi Vegeta', 4, 'd_sai', 4, 5, '', [{ k:'pas_tfc', n:1 }]],
   ['d_goku', 'Goku', 5, 'd_sai', 5, 6, '', [{ k:'tf', st:[{ c:4, a:3, h:3, nm:'Super Saiyan' }, { c:6, a:4, h:4, nm:'Super Saiyan 2' }, { c:8, a:6, h:6, kw:'w', nm:'Super Saiyan 3' }] }, { k:'fus', p:'d_vegeta', r:'d_gogeta', r2:'d_vegetto' }]],
