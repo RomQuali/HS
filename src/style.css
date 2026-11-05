@@ -1977,8 +1977,9 @@ body.u-nj .hand{background:linear-gradient(180deg,rgba(6,10,14,0),rgba(6,10,14,.
 .spbub::after{content:"";position:absolute;left:50%;bottom:-8px;margin-left:-8px;border:8px solid transparent;border-top-color:#fffdf4;border-bottom:0}
 @keyframes spbub{0%{opacity:0;transform:translateY(8px) scale(.9)}8%{opacity:1;transform:none}88%{opacity:1}100%{opacity:0;transform:translateY(-6px)}}
 
-/* plateaux Dragon Ball, Rick et Morty, South Park : décor en haut, sol prolongé */
+/* plateaux Dragon Ball, Rick et Morty, South Park, Les Simpson : décor en haut, sol prolongé (Simpson : fond neutre tant que --board-sim n'est pas fourni) */
 :root body.u-db .table{background:linear-gradient(180deg,rgba(6,8,14,.15),rgba(6,8,14,0) 20%,rgba(6,8,14,0) 70%,rgba(6,8,14,.5)),var(--board-db,none) center top/cover no-repeat,#1e2230!important}
 :root body.u-rm .table{background:linear-gradient(180deg,rgba(4,10,6,.15),rgba(4,10,6,0) 20%,rgba(4,10,6,0) 70%,rgba(4,10,6,.5)),var(--board-rm,none) center top/cover no-repeat,#141a14!important}
 :root body.u-sp .table{background:linear-gradient(180deg,rgba(8,10,16,.1),rgba(8,10,16,0) 20%,rgba(8,10,16,0) 70%,rgba(8,10,16,.5)),var(--board-sp,none) center top/cover no-repeat,#22242c!important}
-body.u-db .counter-line,body.u-db .board-zone,body.u-rm .counter-line,body.u-rm .board-zone,body.u-sp .counter-line,body.u-sp .board-zone{border-radius:18px;background:rgba(8,12,18,.32);box-shadow:inset 0 0 0 1.5px rgba(220,220,230,.18),0 8px 24px rgba(0,0,0,.3)}
+:root.has-board-sim body.u-sim .table{background:linear-gradient(180deg,rgba(20,12,4,.1),rgba(20,12,4,0) 20%,rgba(20,12,4,0) 70%,rgba(20,12,4,.5)),var(--board-sim,none) center top/cover no-repeat,#2a2018!important}
+body.u-db .counter-line,body.u-db .board-zone,body.u-rm .counter-line,body.u-rm .board-zone,body.u-sp .counter-line,body.u-sp .board-zone,body.u-sim .counter-line,body.u-sim .board-zone{border-radius:18px;background:rgba(8,12,18,.32);box-shadow:inset 0 0 0 1.5px rgba(220,220,230,.18),0 8px 24px rgba(0,0,0,.3)}

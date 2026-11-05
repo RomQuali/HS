@@ -6,7 +6,7 @@
    ===================================================================== */
 const SP_TYPES = {
   renf:{ n:'Renfort', col:'#c8963e' }, eco:{ n:'Économie', col:'#4f8a3a' }, arc:{ n:'Arcane', col:'#3f6fb0' },
-  ombre:{ n:'Ombre', col:'#5a3d7a' }, comb:{ n:'Combat', col:'#a8322a' }, nat:{ n:'Nature', col:'#3f8a6a' }, nin:{ n:'Technique', col:'#2a5a9a' }, inv:{ n:'Invention', col:'#2f8a5a' }, obj:{ n:'Objet culte', col:'#8a4a9a' }, eq:{ n:'Équipement', col:'#8a6a3a' }, cof:{ n:'Coffre', col:'#a8742a' },
+  ombre:{ n:'Ombre', col:'#5a3d7a' }, comb:{ n:'Combat', col:'#a8322a' }, nat:{ n:'Nature', col:'#3f8a6a' }, nin:{ n:'Technique', col:'#2a5a9a' }, inv:{ n:'Invention', col:'#2f8a5a' }, obj:{ n:'Objet culte', col:'#8a4a9a' }, spr:{ n:'Objet de Springfield', col:'#e8508a' }, eq:{ n:'Équipement', col:'#8a6a3a' }, cof:{ n:'Coffre', col:'#a8742a' },
 };
 const SPELLS = {
   // objets de l'univers Dragon Ball
@@ -45,6 +45,17 @@ const SPELLS = {
   so_chili:{ spk:1, n:'Chili de Chef', t:4, c:2, ty:'obj', fx:[{ k:'buffnb', a:1, h:1, a2:2, h2:2 }], tx:'Tes serviteurs gagnent +1/+1, ou +2/+2 s\'ils ont un voisin de leur famille.' },
   so_baton:{ spk:1, n:'Bâton de la vérité', t:4, c:3, ty:'obj', tg:1, fx:[{ k:'tfamall' }, { k:'tbuff', a:2, h:2 }], tx:'Le serviteur ciblé compte comme toutes les familles pour la cohésion et gagne +2/+2.' },
   so_cape:{ spk:1, n:'Cape de Mysterion', t:5, c:3, ty:'obj', tg:1, fx:[{ k:'tkwp', kw:'r' }, { k:'tbuff', a:3, h:3 }], tx:'Le héros qui ne meurt jamais : le serviteur ciblé gagne Renaissance et +3/+3.' },
+  // ----- objets de Springfield (univers Les Simpson) : achetés et utilisés en or, à l'étagère de la taverne ; plusieurs font grandir les gags -----
+  si_donut:{ sim:1, n:'Donut', t:1, c:1, ty:'spr', tg:1, fx:[{ k:'tbuff', a:1, h:2 }, { k:'tgag', n:1 }], tx:'Mmmh, donut : le serviteur ciblé gagne +1/+2 ; s\'il a un Gag, son compteur grandit de 1.' },
+  si_duff:{ sim:1, n:'Bière Duff', t:1, c:1, ty:'spr', fx:[{ k:'buffr', n:2, a:1, h:1 }, { k:'buffall', a:1, h:0, tb:'si_moe' }], tx:'À la tienne : deux de tes serviteurs aléatoires gagnent +1/+1, et tes Piliers de bar gagnent +1/+0.' },
+  si_lancepierre:{ sim:1, n:'Lance-pierre de Bart', t:2, c:1, ty:'spr', tg:1, fx:[{ k:'tbuff', a:2, h:0 }, { k:'fire', d:2 }], tx:'Mange ça : le serviteur ciblé gagne +2 attaque, et 2 dégâts frappent l\'ennemi au prochain combat.' },
+  si_saxo:{ sim:1, n:'Saxophone de Lisa', t:2, c:2, ty:'spr', tg:1, fx:[{ k:'tnb', a:1, h:2 }], tx:'Solo de blues : le serviteur ciblé et ses voisins gagnent +1/+2.' },
+  si_flaming:{ sim:1, n:'Flaming Moe', t:3, c:2, ty:'spr', fx:[{ k:'fire', d:4 }, { k:'buffall', a:1, h:1, tb:'si_moe' }], tx:'Ça flambe : 4 dégâts frappent l\'ennemi au prochain combat, et tes Piliers de bar gagnent +1/+1.' },
+  si_squishee:{ sim:1, n:'Squishee', t:3, c:2, ty:'spr', fx:[{ k:'gagnow' }], tx:'Rush de sucre : les gags de fin de tour de tes serviteurs se déclenchent tout de suite (et grandissent).' },
+  si_plutonium:{ sim:1, n:'Barre de plutonium', t:3, c:2, ty:'spr', tg:1, fx:[{ k:'tbuff', a:2, h:2 }, { k:'ttmp', a:0, h:0, kw:'n' }], tx:'Radioactif : le serviteur ciblé gagne +2/+2, et Venimeux au prochain combat.' },
+  si_tetine:{ sim:1, n:'Tétine de Maggie', t:4, c:2, ty:'spr', tg:1, fx:[{ k:'tbuff', a:0, h:5 }, { k:'tkwp', kw:'t' }], tx:'Chut : le serviteur ciblé gagne +0/+5 et Provocation.' },
+  si_ticket:{ sim:1, n:'Ticket de monorail', t:4, c:3, ty:'spr', fx:[{ k:'disc' }, { k:'inc', n:1 }], tx:'Mono… rail ! Découvre un serviteur d\'un niveau au-dessus de ta taverne (un parmi trois), et gagne 1 or au début du prochain tour.' },
+  si_bonbon:{ sim:1, n:'Bonbon Krusty', t:5, c:3, ty:'spr', fx:[{ k:'gagall', n:1 }, { k:'buffall', a:1, h:1 }], tx:'Hey hey ! Les compteurs de gag de tous tes serviteurs grandissent de 1, et tes serviteurs gagnent +1/+1.' },
   sp_pinte:{ n:'Pinte offerte', t:1, c:1, ty:'renf', tg:1, tx:'Donne +2/+1 à un de tes serviteurs.' },
   sp_tournee:{ n:'Nouvelle tournée', t:1, c:0, ty:'eco', tx:'Rafraîchit la taverne gratuitement.' },
   sp_placement:{ n:'Placement prudent', t:1, c:1, ty:'eco', tx:'Au début de ton prochain tour, gagne 2 or.' },
@@ -147,7 +158,8 @@ function drawSpell(t, el) { const nin = typeof H !== 'undefined' && H.G && inMec
   if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'ki')) { const ids = SPELL_IDS.filter(id => SPELLS[id].db && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
   if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'portail')) { const ids = SPELL_IDS.filter(id => SPELLS[id].rm && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }   // Rick et Morty : seulement les inventions
   if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'bande')) { const ids = SPELL_IDS.filter(id => SPELLS[id].spk && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }   // South Park : seulement les objets cultes
-  if (nin && !NJ_TECH) { const ids = SPELL_IDS.filter(id => SPELLS[id].cs && SPELLS[id].t <= t); const w = ids.map(id => SPELLS[id].rare ? 0.35 : 1), tot = w.reduce((a, b) => a + b, 0); let r = Math.random() * tot; for (let i = 0; i < ids.length; i++) { r -= w[i]; if (r <= 0) return { sp:ids[i], u:UID++ }; } return ids.length ? { sp:ids[0], u:UID++ } : null; } const ev = typeof H !== 'undefined' && H.G && H.G.eveil; const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !SPELLS[id].db && !SPELLS[id].rm && !SPELLS[id].spk && !!SPELLS[id].nin === !!nin && (!SPELLS[id].forb || ev) && (!el || SPELLS[id].el === el)); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
+  if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'gag')) { const ids = SPELL_IDS.filter(id => SPELLS[id].sim && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }   // Les Simpson : seulement les objets de Springfield
+  if (nin && !NJ_TECH) { const ids = SPELL_IDS.filter(id => SPELLS[id].cs && SPELLS[id].t <= t); const w = ids.map(id => SPELLS[id].rare ? 0.35 : 1), tot = w.reduce((a, b) => a + b, 0); let r = Math.random() * tot; for (let i = 0; i < ids.length; i++) { r -= w[i]; if (r <= 0) return { sp:ids[i], u:UID++ }; } return ids.length ? { sp:ids[0], u:UID++ } : null; } const ev = typeof H !== 'undefined' && H.G && H.G.eveil; const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !SPELLS[id].db && !SPELLS[id].rm && !SPELLS[id].spk && !SPELLS[id].sim && !!SPELLS[id].nin === !!nin && (!SPELLS[id].forb || ev) && (!el || SPELLS[id].el === el)); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
 
 // technique Dragon Ball sans effet ciblé : lançable sans lanceur quand le plateau est vide (pas de bonus Signature)
 const dbNoTgt = S => !!(S && S.db && !(S.fx || []).some(s => ['tbuff', 'ttmp', 'tkwp', 'tpoing', 'henge'].includes(s.k)));
@@ -159,7 +171,8 @@ function spellBlock(p, id, tgt) {
   if (S.tg && !tgt && !(dbNoTgt(S) && !p.bd.length)) return 'Choisis un de tes serviteurs.';
   if (S.hid && p.bd.filter(m => tribeOk(m, 'n_' + S.el)).length < S.hid) return `Hiden : il faut ${S.hid} serviteurs ${ELS[S.el] ? ELS[S.el].n : ''} sur ton plateau.`;
   if (S.hp && p.hp <= S.hp) return `Kinjutsu : il te faut plus de ${S.hp} PV.`;
-  if ((S.nin || S.rm || S.spk) && S.fx && S.fx.some(s => s.k === 'summon') && p.bd.length >= 7) return 'Ton plateau est plein.';
+  if ((S.nin || S.rm || S.spk || S.sim) && S.fx && S.fx.some(s => s.k === 'summon') && p.bd.length >= 7) return 'Ton plateau est plein.';
+  if (S.sim && S.fx && S.fx.some(s => s.k === 'gagnow') && !p.bd.some(m => fxOf(m, 'eot').some(isGag))) return 'Aucun de tes serviteurs n\'a de gag de fin de tour.';
   if (S.spk && S.fx && S.fx.some(s => s.k === 'tfamall') && tgt && tgt.fam === '*') return 'Ce serviteur compte déjà pour toutes les familles.';
   if (S.rm && S.fx && S.fx.some(s => s.k === 'portal') && tgt && (CD(tgt.c).tok || isComp(tgt))) return 'Un jeton ne peut pas passer le portail.';
   if ((id === 'nj_doubles' || id === 'nj_invoc') && p.bd.length >= 7) return 'Ton plateau est plein.';
@@ -253,6 +266,11 @@ function techSteps(G, p, steps, tgt, tg, x) {
       case 'tfamall': if (tgt) { tgt.fam = '*'; tgt.famOf = (SPELLS[p.lastCast] || {}).n || 'Bâton de la vérité'; } break;
       case 'tnear': if (tgt) { const i = p.bd.indexOf(tgt); if (i >= 0 && !nbFam(p.bd, i)) { let best = -1; p.bd.forEach((m, j) => { if (m !== tgt && sameFam(m, tgt) && (best < 0 || Math.abs(j - i) < Math.abs(best - i))) best = j; }); if (best >= 0) { p.bd.splice(i, 1); p.bd.splice(best < i ? best + 1 : best, 0, tgt); } } } break;
       case 'buffnb': p.bd.forEach((m, i) => { const nb = nbFam(p.bd, i); buff(m, nb ? (s.a2 || 0) * x : a, nb ? (s.h2 || 0) * x : h); }); break;
+      // ----- objets de Springfield (Les Simpson) -----
+      case 'tgag': if (tgt && hasGag(tgt)) tgt.gag = (tgt.gag || 0) + s.n * x; break;
+      case 'gagall': p.bd.forEach(m => { if (hasGag(m)) m.gag = (m.gag || 0) + s.n * x; }); break;
+      case 'gagnow': p.bd.slice().forEach(m => fxOf(m, 'eot').filter(isGag).forEach(e => runRecruit(G, p, m, e))); break;
+      case 'tnb': if (tgt) { const i = p.bd.indexOf(tgt); [p.bd[i - 1], tgt, p.bd[i + 1]].forEach(m => { if (m) buff(m, a, h); }); } break;
     }
   }
 }
@@ -276,7 +294,7 @@ function castSpell0(G, p, hi, tg) {
   if (S.nin && (HX(p) && HX(p).pw && HX(p).pw.k === 'ptechc') && !(p.rsv || []).length) p.g += 1;
   p.lastCast = id;
   if (S.db && S.fx) { techSteps(G, p, S.fx, tgt, tg, 1); if (tgt && S.sig && S.sig.includes(tgt.c)) withSrc('Signature · ' + S.n, () => techSteps(G, p, S.sgx, tgt, tg, 1)); }
-  else if ((S.rm || S.spk) && S.fx) techSteps(G, p, S.fx, tgt, tg, 1);
+  else if ((S.rm || S.spk || S.sim) && S.fx) techSteps(G, p, S.fx, tgt, tg, 1);
   else if (S.nin && S.fx) techRun(G, p, S, it0, tgt, tg, sage0);
   else switch (id) {
     case '__db': break;
@@ -406,6 +424,8 @@ function aiTarget(p, id) {
   if (st.includes('tfamall')) return by(m => m.a + m.h + tierOf(m) * 2 - nbFam(p.bd, p.bd.indexOf(m)) * 6, m => !CD(m.c).tok && m.fam !== '*');
   if (st.includes('tnear')) { const i = by(m => m.a + m.h + tierOf(m) * 2, m => !CD(m.c).tok && !nbFam(p.bd, p.bd.indexOf(m)) && p.bd.some(x => x !== m && sameFam(x, m))); return i == null ? by(m => m.a + m.h + tierOf(m) * 2, m => !CD(m.c).tok) : i; }
   if (st.includes('tfams')) return by(m => m.a + m.h + tierOf(m) * 2, m => !CD(m.c).tok);
+  if (st.includes('tgag')) { const i = by(m => (m.gag || 0) * 3 + m.a + m.h + tierOf(m) * 2, m => hasGag(m)); return i == null ? by(m => m.a + m.h + tierOf(m) * 2, m => !CD(m.c).tok) : i; }
+  if (st.includes('tnb')) return by(m => { const i = p.bd.indexOf(m); return (p.bd[i - 1] ? 5 : 0) + (p.bd[i + 1] ? 5 : 0) + m.a + m.h; });
   if (st.includes('tpoing')) return by(m => m.h);
   if (st.includes('ttmp') || id === 'nj_oyoroi') return by(m => m.a + m.h / 2, m => !CD(m.c).tok);
   if (st.includes('tbuff')) return by(m => m.a + m.h + tierOf(m) * 2 + (has(m, 'w') ? 4 : 0), m => !CD(m.c).tok);
@@ -430,12 +450,13 @@ function aiCanCast(G, p, it) {
   if (S.hid && p.bd.filter(m => tribeOk(m, 'n_' + S.el)).length < S.hid) return false;       // hiden : attendre le clan
   if (p.aiSave && S.ck) return false;
   if (S.kc != null && (p.ki || 0) < kiCost(p, S)) return false;                                                        // tour d'économie (mode ermite)
+  if (S.sim && (S.fx || []).some(s => s.k === 'gagnow') && !p.bd.some(m => fxOf(m, 'eot').some(isGag))) return false;   // Squishee : seulement avec un gag de fin de tour
   return true;
 }
 // ordre : mode ermite d'abord (avant de dépenser), techniques combinées en dernier
 function aiCastPrio(G, p, it) { const S = SPELLS[it.sp] || {}; return (S.sage && sageOn(p) ? 30 : 0) + (S.comb ? ((p.castEls || []).some(e => e !== S.el) ? 25 : -10) : 0) + (S.t || 0); }
 // achat : pas de hiden sans clan, pas de kinjutsu à petite vie
-function aiWantSpell(p, S) { if (S.hid && p.bd.filter(m => tribeOk(m, 'n_' + S.el)).length < Math.max(1, S.hid - 1)) return false; if (S.hp && p.hp <= S.hp + 10) return false; return true; }
+function aiWantSpell(p, S) { if (S.sim && (S.fx || []).some(s => s.k === 'gagnow') && !p.bd.some(m => fxOf(m, 'eot').some(isGag))) return false; if (S.hid && p.bd.filter(m => tribeOk(m, 'n_' + S.el)).length < Math.max(1, S.hid - 1)) return false; if (S.hp && p.hp <= S.hp + 10) return false; return true; }
 function aiSpells(G, p) {
   const bad = new Set();
   for (let guard = 0; guard < 8; guard++) {
@@ -542,6 +563,17 @@ Object.assign(SPART, {
   so_chili: () => softGlow(50, 58, 32, '#ff8a4a', .35) + P('M18 52 Q50 44 82 52 Q80 84 50 88 Q20 84 18 52 Z', '#c8a06a', so()) + E(50, 52, 30, 7, '#b83a1a', so(1.6)) + [[38, 50], [52, 54], [62, 48]].map(([x, y]) => Ci(x, y, 3, '#8a2a12')).join('') + E(44, 50, 4, 2, '#ff8a4a', 'opacity=".8"') + [34, 50, 66].map((x, k) => Ln(`M${x} 40 C ${x - 4} 34, ${x + 4} 28, ${x} 20`, '#fff', 2.2, `opacity="${.6 - k * .1}"`)).join('') + Ln('M70 60 L88 40', '#c8ccd4', 3.4),
   so_baton: () => softGlow(50, 50, 32, '#ffd86a', .35) + Ln('M30 88 L62 24', OUT, 8) + Ln('M30 88 L62 24', '#8a5a2a', 5) + Ln('M40 68 L46 56 M50 50 L54 42', '#5a3a1a', 1.6) + P('M58 30 L66 14 L74 30 L66 38 Z', '#9fe4ff', so(1.8) + ' ' + GLOW) + P('M62 30 L66 20 L70 30 Z', '#ffffff', 'opacity=".6"') + [[22, 30], [80, 70], [26, 80]].map(([x, y]) => P(starD(x, y, 3.2, 1.2, 4), '#fff6c8', GLOW)).join(''),
   so_cape: () => softGlow(50, 54, 32, '#b48cff', .35) + P('M30 26 Q50 14 70 26 L84 88 Q50 78 16 88 Z', '#2a1a4a', so()) + P('M36 26 Q50 18 64 26 L58 42 L42 42 Z', '#1a1030', so(1.4)) + P('M44 60 Q50 54 56 60 Q56 66 50 66 L50 72', 'none', 'stroke="#9fe36a" stroke-width="3" stroke-linecap="round"') + Ci(50, 78, 2, '#9fe36a') + Ln('M30 26 L22 40 M70 26 L78 40', '#5a3a8a', 3),
+  // ----- objets de Springfield : objets abstraits, jamais de personnage -----
+  si_donut: () => softGlow(50, 54, 32, '#ff9ac8', .35) + Ci(50, 54, 28, '#e8a060', so()) + Ci(50, 54, 9, '#2a1a10', so(1.4)) + P('M22 54 Q24 36 50 30 Q76 36 78 54 Q70 60 60 56 Q50 66 40 56 Q30 60 22 54 Z', '#ff7ab8', so(1.6)) + Ci(50, 54, 9, '#2a1a10') + [[36, 44, 20], [50, 38, -30], [62, 46, 60], [42, 54, 70], [58, 56, -20], [30, 52, -60]].map(([x, y, r]) => `<rect x="${x - 3}" y="${y - 1}" width="6" height="2.4" rx="1.2" fill="${['#fff36a', '#6ad8ff', '#ffffff', '#8aff8a'][(x + y) % 4]}" transform="rotate(${r} ${x} ${y})"/>`).join(''),
+  si_duff: () => softGlow(50, 54, 32, '#ff6a6a', .3) + `<rect x="34" y="22" width="32" height="62" rx="6" fill="#d83a3a" ${so()}/>` + `<rect x="34" y="22" width="32" height="10" rx="5" fill="#c8c8d0" ${so(1.6)}/>` + `<rect x="34" y="76" width="32" height="8" rx="4" fill="#c8c8d0" ${so(1.6)}/>` + `<rect x="34" y="44" width="32" height="18" fill="#fff6c8" ${so(1.4)}/>` + Ln('M40 53 H60', '#d83a3a', 3) + Ci(50, 27, 2.5, '#6a6a72'),
+  si_lancepierre: () => softGlow(50, 54, 32, '#c8a06a', .3) + Ln('M50 90 V52', OUT, 9) + Ln('M50 90 V52', '#8a5a2a', 6) + Ln('M50 56 L30 24 M50 56 L70 24', OUT, 8) + Ln('M50 56 L30 24 M50 56 L70 24', '#8a5a2a', 5) + Ln('M30 24 Q50 40 70 24', '#d8b070', 3) + Ci(50, 36, 6, '#6a6a72', so(1.4)),
+  si_saxo: () => softGlow(50, 54, 32, '#ffd86a', .35) + P('M60 14 L66 18 L52 60 Q50 72 40 76 Q24 80 22 64 Q22 56 30 54 Q38 54 38 62 Q38 68 32 68 L34 72 Q46 70 46 58 Z', '#e8b030', so()) + Ci(30, 66, 10, '#f0c040', so(1.6)) + Ci(30, 66, 5, '#8a5a12') + [[56, 30], [53, 40], [50, 50]].map(([x, y]) => Ci(x, y, 2.4, '#fff6c8', so(1))).join(''),
+  si_flaming: () => softGlow(50, 50, 32, '#ff9a3a', .4) + P('M34 44 L66 44 L62 88 L38 88 Z', '#7a4a2a', so()) + P('M36 50 L64 50 L61 84 L39 84 Z', '#b86a3a', 'opacity=".8"') + P('M50 12 Q64 30 54 38 Q62 36 66 28 Q72 44 60 50 L40 50 Q28 42 36 28 Q40 38 46 36 Q36 24 50 12 Z', '#ff7a2a', so(1.6)) + P('M50 26 Q56 34 50 42 Q44 34 50 26 Z', '#ffe36a') + Ln('M30 48 H70', '#5a2a12', 2),
+  si_squishee: () => softGlow(50, 54, 32, '#6ad8ff', .35) + P('M30 40 L70 40 L64 88 L36 88 Z', '#e8f4ff', so()) + P('M30 40 L70 40 L68 56 L32 56 Z', '#d83a5a', so(1.4)) + P('M34 24 Q50 8 66 24 Q70 32 66 40 L34 40 Q30 32 34 24 Z', '#5ab0ff', so(1.6)) + Ci(42, 28, 3, '#dff4ff', 'opacity=".8"') + Ln('M58 12 L62 42', OUT, 5) + Ln('M58 12 L62 42', '#ff6a8a', 3),
+  si_plutonium: () => softGlow(50, 54, 32, '#9fff6a', .45) + `<rect x="36" y="18" width="28" height="68" rx="6" fill="#3a8a3a" ${so()}/>` + `<rect x="40" y="24" width="20" height="56" rx="4" fill="#9fff6a" opacity=".85"/>` + P('M50 36 L56 52 L44 52 Z', '#2a1a10', 'opacity=".7"') + Ci(50, 60, 5, '#2a1a10', 'opacity=".7"') + [[26, 30], [76, 34], [24, 70], [78, 72]].map(([x, y]) => Ci(x, y, 2, '#dfffc0', 'opacity=".9"')).join(''),
+  si_tetine: () => softGlow(50, 54, 32, '#ff9ac8', .3) + E(50, 68, 24, 14, '#ff6aa8', so()) + Ci(50, 66, 7, '#ffe6f0', so(1.4)) + P('M38 56 Q50 30 62 56 Z', '#f8e0c0', so(1.6)) + Ln('M44 72 Q50 90 56 72', '#ff6aa8', 4),
+  si_ticket: () => softGlow(50, 54, 32, '#ffd86a', .3) + `<g transform="rotate(-12 50 54)"><rect x="18" y="38" width="64" height="32" rx="4" fill="#fff0b0" ${so()}/>` + Ln('M30 38 V70', '#2a1a10', 2, 'stroke-dasharray="3 3"') + Ln('M38 48 H72 M38 56 H66 M38 64 H60', '#2a1a10', 2.4) + Ci(24, 54, 3.5, '#d83a3a') + '</g>' + P('M30 24 L70 24 L76 32 L24 32 Z', '#5ab0ff', so(1.6)) + Ln('M24 32 H76', '#2a3a5a', 2),
+  si_bonbon: () => softGlow(50, 54, 32, '#ff6a8a', .35) + P('M20 44 L34 36 L34 72 L20 64 L26 54 Z', '#ffd0e0', so(1.6)) + P('M80 44 L66 36 L66 72 L80 64 L74 54 Z', '#ffd0e0', so(1.6)) + E(50, 54, 18, 16, '#ff4a8a', so()) + [-10, 0, 10].map(x => Ln(`M${50 + x - 4} 40 Q${50 + x + 4} 54 ${50 + x - 4} 68`, '#fff', 3, 'opacity=".8"')).join(''),
 });
 Object.assign(SPART, { cs_hosenka:SPART.nj_souffle, cs_kibaku:SPART.nj_sceau, cs_gokakyu:SPART.nj_boule, cs_amaterasu:SPART.nj_deluge, cs_kugutsu:SPART.nj_doubles, cs_sunatate:SPART.nj_pierre, cs_kamaitachi:SPART.nj_rafale, cs_sabaku:SPART.nj_porteur,
   cs_kiri:SPART.nj_brume, cs_shosen:SPART.nj_vague, cs_suiro:SPART.nj_x_sceau, cs_suikodan:SPART.nj_vague, cs_raikyu:SPART.nj_decharge, cs_chidori:SPART.nj_foudre, cs_bijuchakra:SPART.nj_x_eveil, cs_bijudama:SPART.nj_x_cinq,

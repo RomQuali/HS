@@ -127,6 +127,9 @@ function kwIcons(m) {
 }
 const KW_ANG = [62, -62, 92, -92, 34, -34, 120, -120];
 const SHIELD_D = 'M50 -4 C 85 -4, 102 28, 102 60 C 102 93, 79 115, 50 115 C 21 115, -2 93, -2 60 C -2 28, 15 -4, 50 -4 Z';
+// Les Simpson : bulle jaune du compteur de gag (nombre de déclenchements) et son infobulle
+function gagTip(m) { const n = m.gag || 0, e = (CD(m.c).fxAll || []).find(isGag) || (m.x || []).find(isGag); const nx = e ? ((e.a || e.h) ? ' Prochain déclenchement : ' + sign(e.a ? (e.a + n) * mult(m) : 0, e.h ? (e.h + n) * mult(m) : 0) + '.' : e.d ? ' Prochain déclenchement : ' + (e.d + n) * mult(m) + ' dégâts.' : e.card ? ' Prochain déclenchement : ' + ((e.n || 1) + n) + ' × ' + CD(e.card).n + '.' : '') : ''; return `Gag récurrent : déclenché ${n} fois.${nx}`; }
+function gagBadgeH(m) { const n = m.gag || 0; return `<g class="gagb"><title>${esc(gagTip(m))}</title><path d="M4 3 h24 a4 4 0 0 1 4 4 v8 a4 4 0 0 1 -4 4 h-12 l-6 5 l1 -5 h-7 a4 4 0 0 1 -4 -4 v-8 a4 4 0 0 1 4 -4 Z" fill="${n ? '#ffd23a' : '#f4e6b8'}" stroke="#120a06" stroke-width="2"/><text x="16" y="11" dy=".36em" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a1606">!${n}</text></g>`; }
 function tokenH(m, z, i, o = {}) {
   const b = CD(m.c), f = (m.f || '') + (m.tmp && m.tmp.f ? m.tmp.f : ''), g = !!m.g;   // mots-clés permanents + ceux du prochain combat
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
@@ -141,6 +144,7 @@ function tokenH(m, z, i, o = {}) {
     + ics.map(([ic, col, nm], k) => { const a = KW_ANG[k] * Math.PI / 180; return `<g class="kwi" transform="translate(${f1(50 + 51 * Math.sin(a))} ${f1(55 - 58 * Math.cos(a))})"><title>${nm}</title><circle r="8.4" fill="#1b120b" stroke="${col}" stroke-width="1.8"/><use href="#ic-${ic}" x="-5.6" y="-5.6" width="11.2" height="11.2" style="color:${col}"/></g>`; }).join('')
     + (isComp(m) && compEl(m) ? `<g class="elb"><title>Élément : ${ELS[compEl(m)].n}${m.fu ? ' · combo : ' + m.fu : ''}</title><circle cx="14" cy="12" r="10" fill="${ELS[compEl(m)].col}" stroke="#120a06" stroke-width="2.2"/><text x="14" y="12" dy=".36em" text-anchor="middle" font-size="10" font-weight="700" fill="#120a06">${ELS[compEl(m)].n[0]}</text></g>` : '')
     + (isComp(m) ? `<g><title>Niveau d'entraînement ${compLv(m)} · ${m.xp || 0} expérience${compLv(m) < 5 ? ' (prochain niveau à ' + XP_LV[compLv(m)] + ')' : ''}</title><rect x="38" y="113" width="24" height="12" rx="6" fill="#2a6ad8" stroke="#120a06" stroke-width="1.8"/><text x="50" y="119" dy=".36em" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff">Nv ${compLv(m)}</text></g>` : '')
+    + (hasGag(m) || m.gag ? gagBadgeH(m) : '')
     + (m.sl ? `<g class="slb"><title>${m.sl} sceau${m.sl > 1 ? 'x' : ''}${m.sl >= 5 ? ' : Bouclier divin obtenu' : ' (5 : Bouclier divin)'}</title><path d="M4 4 h20 v14 l-10 7 l-10 -7 Z" fill="${m.sl >= 5 ? '#ffd86a' : '#c8304a'}" stroke="#120a06" stroke-width="2"/><text x="14" y="13" dy=".36em" text-anchor="middle" font-size="10" font-weight="700" fill="${m.sl >= 5 ? '#120a06' : '#fff3c0'}">${m.sl}</text></g>` : '')
     + (m.eq && m.eq.length ? `<g><title>Équipements : ${m.eq.map(e => SPELLS[e] ? SPELLS[e].n : e).join(', ')}</title><rect x="72" y="4" width="22" height="14" rx="7" fill="#8a6a3a" stroke="#120a06" stroke-width="2"/><text x="83" y="11" dy=".36em" text-anchor="middle" font-size="9" font-weight="700" fill="#fff3c0">⚒${m.eq.length}</text></g>` : '')
     + `<use href="#gem-a" x="-1" y="90" width="34" height="34"/><text class="gt${up(m.a, b.a)}" x="16" y="107" dy=".36em">${m.a}</text>`
@@ -176,6 +180,7 @@ function cardH(m, z, i, o = {}) {
     + (b.tr !== 'neu' && trName(b.tr) ? `<div class="cd-tb">${esc(b.tr2 && trName(b.tr2) ? trName(b.tr).replace(/^Clan /, '') + ' + ' + trName(b.tr2).replace(/^Clan /, '') : trName(b.tr))}</div>` : b.tok ? '<div class="cd-tb">Jeton</div>' : '')
     + `<svg class="cd-gem a" viewBox="0 0 40 40" aria-hidden="true"><use href="#gem-a" width="40" height="40"/><text class="gt${up(m.a, b.a)}" x="20" y="20" dy=".36em">${m.a}</text></svg>`
     + `<svg class="cd-gem h" viewBox="0 0 40 40" aria-hidden="true"><use href="#gem-h" width="40" height="40"/><text class="gt${up(m.h, b.h)}" x="20" y="25" dy=".36em">${m.h}</text></svg>`
+    + (m.gag ? `<span class="cd-gag" data-tip="${esc(gagTip(m))}">Gag ×${m.gag}</span>` : '')
     + (m.tr ? '<span class="tri">Triple !</span>' : '') + (z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : '') + '</div>';
 }
 const med = (act, ic, label, cost, dis, on) => `<button class="med${on ? ' on' : ''}" data-act="${act}" ${dis ? 'disabled' : ''}><span class="disc">${icon(ic)}</span>${cost != null ? `<span class="cost">${cost}</span>` : ''}<span class="ml">${label}</span></button>`;
@@ -357,6 +362,16 @@ function spCardH() {
     ${row('✦', '#3a2a5a', 'Les objets cultes', 'Cheesy Poofs, Chili de Chef, Bâton de la vérité, Cape de Mysterion… s\'achètent et s\'utilisent en or à l\'étagère de la taverne. Certains déplacent tes serviteurs ou les font compter pour toutes les familles.')}
   </span>`;
 }
+// fiche de l'univers Les Simpson : gags récurrents, objets de Springfield, familles
+function simCardH() {
+  const row = (ic, col, t, x) => `<span class="nj-r"><i class="nj-i" style="--c:${col}"><span class="nj-tx">${ic}</span></i><span><b>${t}</b><small>${x}</small></span></span>`;
+  const fam = (tb, x) => `<em style="color:${shade((TRIBES[tb] || {}).col || '#ffffff', 0.45)}">${esc(trName(tb))}</em> : ${x}`;
+  return `<span class="ban-law nj-law"><b>Les nouvelles mécaniques</b>
+    ${row('!', '#5a3a12', 'Les gags récurrents', 'Certains serviteurs ont un Gag (fin de tour, début du combat, râle d\'agonie, après une attaque…). Chaque fois qu\'il se déclenche, son effet grandit de +1 pour toute la partie : le compteur reste sur le serviteur, s\'additionne dans un triple, et s\'affiche sur sa carte (bulle jaune).')}
+    ${row('✦', '#3a2a5a', 'Les objets de Springfield', 'Donut, Bière Duff, Flaming Moe, Squishee, Bonbon Krusty… s\'achètent et s\'utilisent en or à l\'étagère de la taverne. Le Donut et le Bonbon font grandir les compteurs de gag ; le Squishee déclenche tout de suite tes gags de fin de tour.')}
+    ${row('★', '#1e4a6a', 'Cinq familles', `${fam('si_fam', 'soutien entre membres de la famille')} · ${fam('si_moe', 'tournées, bonus à tous en fin de tour')} · ${fam('si_cra', 'vol d\'or, de stats et de cartes de la taverne')} · ${fam('si_aut', 'Provocation et protection')} · ${fam('si_hor', 'râles d\'agonie et invocations')}.`)}
+  </span>`;
+}
 function ninjaCardH() {
   const row = (ic, col, t, x) => `<span class="nj-r"><i class="nj-i" style="--c:${col}">${ic}</i><span><b>${t}</b><small>${x}</small></span></span>`;
   return `<span class="ban-law nj-law"><b>Les nouvelles mécaniques</b>
@@ -374,10 +389,10 @@ function univPickH(sel, edit, actions) {
     const heroes = Object.keys(HEROES).filter(h => heroFam(h).some(t => u.tribes.includes(t)));
     const fams = u.tribes.filter(t => on.includes(t));
     if (!univOpen(u)) return `<button type="button" class="ban wip" style="--uc:${esc(L.col)}" ${edit ? `data-act="univ" data-u="${k}"` : 'disabled'} aria-disabled="true"><span class="ban-rib wip-rib">En chantier</span><span class="ban-hd"><span class="ban-em">${icon(L.ic)}</span><span class="ban-t"><b>${esc(u.n)}</b><i>Bientôt disponible</i></span></span></button>`;
-    return `<button type="button" class="ban${a ? ' on' : ''}${u.mech === 'chakra' ? ' ban-nj' : u.mech === 'ki' ? ' ban-db' : u.mech === 'portail' ? ' ban-rm' : u.mech === 'bande' ? ' ban-sp' : ''}" style="--uc:${esc(L.col)}" ${edit ? `data-act="univ" data-u="${k}"` : 'disabled'} aria-pressed="${a}">
+    return `<button type="button" class="ban${a ? ' on' : ''}${u.mech === 'chakra' ? ' ban-nj' : u.mech === 'ki' ? ' ban-db' : u.mech === 'portail' ? ' ban-rm' : u.mech === 'bande' ? ' ban-sp' : u.mech === 'gag' ? ' ban-sim' : ''}" style="--uc:${esc(L.col)}" ${edit ? `data-act="univ" data-u="${k}"` : 'disabled'} aria-pressed="${a}">
       ${a ? '<span class="ban-rib">Levé</span>' : ''}
       <span class="ban-hd"><span class="ban-em">${icon(L.ic)}</span><span class="ban-t"><b>${esc(u.n)}</b>${L.lore ? `<i>${esc(L.lore)}</i>` : ''}</span></span>
-      ${u.mech === 'ki' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${dbCardH()}</span></span>` : u.mech === 'portail' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${rmCardH()}</span></span>` : u.mech === 'bande' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${spCardH()}</span></span>` : u.mech === 'chakra' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${ninjaCardH()}</span></span>` : M ? `<span class="ban-law"><b>Loi · ${esc(M.n)}</b><small>${esc(M.d)}</small></span>` : ''}
+      ${u.mech === 'ki' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${dbCardH()}</span></span>` : u.mech === 'portail' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${rmCardH()}</span></span>` : u.mech === 'bande' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${spCardH()}</span></span>` : u.mech === 'gag' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${simCardH()}</span></span>` : u.mech === 'chakra' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${ninjaCardH()}</span></span>` : M ? `<span class="ban-law"><b>Loi · ${esc(M.n)}</b><small>${esc(M.d)}</small></span>` : ''}
       <span class="ban-fam">${fams.map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span>
       <span class="ban-her">${heroes.slice(0, 6).map(h => `<span class="ban-h" title="${esc(HEROES[h].n)}">${faceH('art-h-' + h)}</span>`).join('')}<small>${heroes.length} héros</small></span>
     </button>`;
@@ -1037,7 +1052,7 @@ function heroPickRowH(d, me) {
       </button>
       ${on ? `<button class="t-go hp-go" data-act="hero" data-h="${h}">Choisir</button>` : ''}
     </div>`; };
-  const tab = V.ruleTab || 'tour', rules = nin && (d.laws || []).some(l => l.k === 'chakra') && V.hpRules, por = (d.laws || []).some(l => l.k === 'portail') ? rmCardH : (d.laws || []).some(l => l.k === 'bande') ? spCardH : null;
+  const tab = V.ruleTab || 'tour', rules = nin && (d.laws || []).some(l => l.k === 'chakra') && V.hpRules, por = (d.laws || []).some(l => l.k === 'portail') ? rmCardH : (d.laws || []).some(l => l.k === 'bande') ? spCardH : (d.laws || []).some(l => l.k === 'gag') ? simCardH : null;
   return `<div class="ov hp-ov"><div class="hp-wrap">
     <h2 class="hp-t">Choisis ton héros</h2><p class="hp-sub">Survole un héros pour voir son pouvoir, clique pour le choisir.</p>${rollInfoH(me)}
     <div class="hp-row">${me.ho.map(card).join('')}</div>
@@ -1867,6 +1882,7 @@ function bonusTipH(m) {
   const ra = m.a - ba - la, rh = m.h - bh - lh;
   if (ra || rh) rows.push(`<li><b>${sgn(ra)}/${sgn(rh)}</b><span>Autres effets</span></li>`);
   (m.x || []).forEach(e => rows.push(`<li class="ench"><b>Enchantement</b><span>${esc(fxText(e))}${e.src ? ` <i>${esc(e.src)}</i>` : ''}</span></li>`));
+  if (hasGag(m) || m.gag) rows.push(`<li class="ench"><b>Gag ×${m.gag || 0}</b><span>${esc(gagTip(m))}</span></li>`);
   if (m.tmp) { const kw = kwNames(m.tmp.f); rows.push(`<li class="tmp"><b>Prochain combat · ${sgn(m.tmp.a || 0)}/${sgn(m.tmp.h || 0)}${kw ? ' · ' + kw : ''}</b><span>${m.tmp.s ? esc(m.tmp.s) : 'Effet temporaire'}</span></li>`); }
   if (V.me && V.me.tma && V.me.bd.includes(m)) rows.push(`<li class="tmp"><b>Prochain combat · ${sgn(V.me.tma.a)}/${sgn(V.me.tma.h)}</b><span>Bonus pour tous tes serviteurs</span></li>`);
   if (!rows.length) return '';
@@ -1962,7 +1978,7 @@ function sceneMode() {
   if (!document.body.classList.contains(m)) { document.body.classList.remove('sc-menu', 'sc-lobby', 'sc-atl', 'sc-game'); document.body.classList.add(m); }
   if (V.screen === 'menu' && !V.mp && typeof csLeave === 'function') csLeave();
   document.body.classList.toggle('u-nj', V.screen === 'game' && !!(V.pub && (V.pub.laws || []).some(l => l.k === 'chakra')));
-  { const law = k => V.screen === 'game' && !!(V.pub && (V.pub.laws || []).some(l => l.k === k)); document.body.classList.toggle('u-db', law('ki')); document.body.classList.toggle('u-rm', law('portail')); document.body.classList.toggle('u-sp', law('bande')); }
+  { const law = k => V.screen === 'game' && !!(V.pub && (V.pub.laws || []).some(l => l.k === k)); document.body.classList.toggle('u-db', law('ki')); document.body.classList.toggle('u-rm', law('portail')); document.body.classList.toggle('u-sp', law('bande')); document.body.classList.toggle('u-sim', law('gag')); }
   document.body.classList.toggle('cs-still', (V.screen === 'menu' && !!V.mp) || V.screen === 'lobby' || !!V.waitTable);
 }
 
@@ -2835,6 +2851,9 @@ html.lite .awk-go{animation:none}
 @media (max-width:1000px){.coh-sum{right:4px;top:-6px;padding:0 6px;gap:4px}.coh-sum b{font-size:12px}.coh-sum .coh-lb{font-size:0}.coh-sum .coh-lb::before{content:'⛓';font-size:11px}.coh-sum .coh-bd{font-size:9px;padding:0 4px}}
 @container (max-width:64px){.coh-n,.fam-n,.coh-b small{display:none}.coh-b{font-size:9px;padding:0 5px}.coh-l{width:14px;font-size:9px}}
 .hp-sp{padding:10px 14px}
+/* Les Simpson : bulle de gag sur la grande carte, fiche des règles */
+.cd-gag{position:absolute;left:50%;top:58%;transform:translateX(-50%);z-index:6;padding:1px 7px;border-radius:99px;font:700 clamp(9px,1.2vh,12px) var(--f-label),serif;white-space:nowrap;pointer-events:auto;background:#ffd23a;color:#2a1606;box-shadow:0 0 0 1.5px #120a06}
+.gagb{pointer-events:auto}
 /* Rick et Morty : bouton de portail sous le serviteur, étiquette de dimension, jauge de fluide */
 .por-b{position:absolute;left:-6%;top:4%;z-index:7;width:clamp(20px,26%,36px);aspect-ratio:1;display:grid;place-items:center;border-radius:50%;cursor:pointer;font-size:clamp(13px,2vh,22px);line-height:1;color:#d8ffe8;background:radial-gradient(circle at 40% 35%,#3fbf6f,#0f3a22);box-shadow:0 0 0 2px #120a06,0 0 0 3.5px #7fe8a8;filter:grayscale(.7) brightness(.75);transition:transform .15s}
 .por-b.ok{filter:none;animation:porspin 2.4s linear infinite}.por-b:hover{transform:scale(1.12)}
