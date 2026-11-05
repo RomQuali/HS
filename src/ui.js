@@ -1962,6 +1962,7 @@ function sceneMode() {
   if (!document.body.classList.contains(m)) { document.body.classList.remove('sc-menu', 'sc-lobby', 'sc-atl', 'sc-game'); document.body.classList.add(m); }
   if (V.screen === 'menu' && !V.mp && typeof csLeave === 'function') csLeave();
   document.body.classList.toggle('u-nj', V.screen === 'game' && !!(V.pub && (V.pub.laws || []).some(l => l.k === 'chakra')));
+  { const law = k => V.screen === 'game' && !!(V.pub && (V.pub.laws || []).some(l => l.k === k)); document.body.classList.toggle('u-db', law('ki')); document.body.classList.toggle('u-rm', law('portail')); document.body.classList.toggle('u-sp', law('bande')); }
   document.body.classList.toggle('cs-still', (V.screen === 'menu' && !!V.mp) || V.screen === 'lobby' || !!V.waitTable);
 }
 
