@@ -482,6 +482,8 @@ function castleScene(el) {
     if (id === 'confetti' || id === 'confetti2') { const near = id === 'confetti2'; const cols = ['#ff5a5a', '#ffd24a', '#5ad0ff', '#9aff6a', '#ff8ad8', '#ffffff']; const r = csRnd(near ? 6 : 5); let h = ''; for (let k = 0; k < (lite ? 14 : 40); k++) h += `<i class="cs-cf${near ? ' n' : ''}" style="left:${csF((near ? 380 : 340) + r() * (near ? 840 : 920))}px;top:${csF((near ? 470 : 380) + r() * 60)}px;background:${cols[k % 6]};animation-duration:${csF(2.6 + r() * 2.4)}s;animation-delay:-${csF(r() * 5)}s"></i>`; w.innerHTML = h; }
     stage.appendChild(w); slots[id] = w;
   });
+  // derrière la porte : la vidéo fournie (muette, en boucle) remplace le décor
+  if (typeof CS_VIDEO !== 'undefined' && slots.confetti) { const v = document.createElement('video'); v.className = 'cs-vid'; [[typeof CS_VIDEO_WEBM !== 'undefined' && CS_VIDEO_WEBM, 'video/webm'], [CS_VIDEO, 'video/mp4']].forEach(([s, ty]) => { if (!s) return; const so = document.createElement('source'); so.src = s; so.type = ty; v.appendChild(so); }); v.muted = true; v.defaultMuted = true; v.loop = true; v.autoplay = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.setAttribute('muted', ''); v.setAttribute('aria-hidden', 'true'); slots.confetti.appendChild(v); const go = () => { const pr = v.play(); if (pr && pr.catch) pr.catch(() => {}); }; go(); document.addEventListener('pointerdown', go, { once:true }); }
   const imgs = {};
   const mk = (L, url) => {
     const im = document.createElement('img'); im.alt = ''; im.decoding = 'async'; im.src = url; im.draggable = false;

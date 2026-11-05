@@ -90,6 +90,7 @@ function fxFrame() {
       const big = (+t.dataset.dmg || 0) >= 6 || (a && +a.dataset.dmg >= 6);
       fxRing(x, y, big ? '#ffe39a' : '#fff1c8', big ? 1.6 : 1); fxBurst(x, y, 'hit', big ? 22 : 13, big ? 1.4 : 1);
       if (a && /[vn]/.test(a.dataset.f || '') && t.classList.contains('dying')) fxBurst(x, y, 'psn', 14);
+      if (t.classList.contains('dying') && SP_LINES_ON() && Math.random() < .35) spSay(t, t.dataset.c);
       if (big) fxShake(document.querySelector('.arena'), 9);
     }
     F.dx = F.dy = 0;
@@ -155,7 +156,8 @@ function tokenH(m, z, i, o = {}) {
   const porU = z === 'bd' && V.me && V.pub && (V.pub.laws || []).some(l => l.k === 'portail') && !b.tok && !isComp(m), pf = V.me ? (V.me.pf || 0) : 0;
   const porH = porU ? `<span class="por-b${recr && pf >= 1 ? ' ok' : ''}" role="button" tabindex="0" data-act="portal" data-i="${i}" data-tip="${esc('Portail (1 fluide, tu en as ' + pf + ') : ' + b.n + ' revient d\'une autre dimension en ' + ((TRIBES[b.tr] || {}).sg || trName(b.tr) || 'serviteur') + ' aléatoire de niveau ' + Math.max(1, tierOf(m) - 1) + ' ou ' + Math.min(6, tierOf(m) + 1) + ', en gardant ses bonus' + (m.g ? ', doré compris' : '') + '.')}" aria-label="Faire passer un portail">◎</span>` + (m.por ? `<span class="por-n" data-tip="${esc('Variante d\'une autre dimension (' + m.por + ' portail' + (m.por > 1 ? 's' : '') + (m.porOf ? ', ex-' + m.porOf : '') + ')')}">Dim. ${m.por}</span>` : '') : '';
   const mdH = md ? `<span class="ckm-b${mdOk ? ' ok' : ''}" role="button" tabindex="0" data-act="ckm" data-i="${i}" data-tip="${esc('Éveil (' + mdC + ' chakra, une seule fois) : +' + md.c * mult(m) + '/+' + md.c * mult(m) + ', puis chaque tour : ' + mTx(md.m, mult(m)))}" aria-label="Éveiller ce serviteur">${ckMarkH(mdC)}</span>` : '';
-  return `<div class="${cls}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.dmg ? ` data-dmg="${o.dmg}"` : ''}${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">${svg}${mdH}${kiH}${porH}${o.name === false ? '' : `<span class="mn-nm">${esc(b.n)}</span>`}${m.tr ? '<span class="tri">Triple !</span>' : o.trip ? '<span class="tri pulse">Triple !</span>' : ''}${o.extra || ''}</div>`;
+  const famH = m.fam && z !== 'sh' ? `<span class="fam-n" data-tip="${esc(m.fam === '*' ? 'Compte comme toutes les familles pour la cohésion' + (m.famOf ? ' (' + m.famOf + ')' : '') + '.' : 'Converti : compte comme ' + ((TRIBES[m.fam] || {}).sg || trName(m.fam)) + ' pour la cohésion' + (m.famOf ? ' (' + m.famOf + ')' : '') + '.')}">${m.fam === '*' ? '✦ Toutes familles' : esc(trName(m.fam))}</span>` : '';
+  return `<div class="${cls}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.dmg ? ` data-dmg="${o.dmg}"` : ''}${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">${svg}${mdH}${kiH}${porH}${famH}${o.name === false ? '' : `<span class="mn-nm">${esc(b.n)}</span>`}${m.tr ? '<span class="tri">Triple !</span>' : o.trip ? '<span class="tri pulse">Triple !</span>' : ''}${o.extra || ''}</div>`;
 }
 // pièce de coût en haut à gauche ; en vert avec l'ancien prix barré quand une réduction est active
 function costGemH(c, base) {
@@ -345,6 +347,16 @@ function rmCardH() {
     ${row('✦', '#5a3a12', 'Cinq familles', 'Smith : soutien entre membres. Citadelle : bonus par Rick ou Morty sur ton plateau (toutes familles). Aliens amis : Râles d\'agonie pour les alliés. Monstres : Début du combat. Méchants : vol de stats.')}
   </span>`;
 }
+// fiche de l'univers South Park : cohésion de groupe, bandes, objets cultes
+function spCardH() {
+  const row = (ic, col, t, x) => `<span class="nj-r"><i class="nj-i" style="--c:${col}"><span class="nj-tx">${ic}</span></i><span><b>${t}</b><small>${x}</small></span></span>`;
+  const fam = tb => `<em style="color:${shade((TRIBES[tb] || {}).col || '#ffffff', 0.45)}">${esc(tb === 's_cel' ? 'Célébrités parodiées' : trName(tb))}</em> : ${esc(BAND_FX[tb][0])}`;
+  return `<span class="ban-law nj-law"><b>Les nouvelles mécaniques</b>
+    ${row('⛓', '#1e4a6a', 'La cohésion de groupe', 'Au début de chaque combat, chaque serviteur gagne +1/+1 par voisin direct de la même famille (pour ce combat). Déplace tes serviteurs pour les regrouper : les maillons apparaissent entre voisins de la même famille.')}
+    ${row('★', '#5a3a12', 'Les bandes activées', `Trois voisins ou plus de la même famille forment une bande, qui déclenche l'effet de sa famille au combat. ${['s_gin', 's_adu', 's_got', 's_cel', 's_ani'].map(fam).join(' · ')}.`)}
+    ${row('✦', '#3a2a5a', 'Les objets cultes', 'Cheesy Poofs, Chili de Chef, Bâton de la vérité, Cape de Mysterion… s\'achètent et s\'utilisent en or à l\'étagère de la taverne. Certains déplacent tes serviteurs ou les font compter pour toutes les familles.')}
+  </span>`;
+}
 function ninjaCardH() {
   const row = (ic, col, t, x) => `<span class="nj-r"><i class="nj-i" style="--c:${col}">${ic}</i><span><b>${t}</b><small>${x}</small></span></span>`;
   return `<span class="ban-law nj-law"><b>Les nouvelles mécaniques</b>
@@ -365,7 +377,7 @@ function univPickH(sel, edit, actions) {
     return `<button type="button" class="ban${a ? ' on' : ''}${u.mech === 'chakra' ? ' ban-nj' : ''}" style="--uc:${esc(L.col)}" ${edit ? `data-act="univ" data-u="${k}"` : 'disabled'} aria-pressed="${a}">
       ${a ? '<span class="ban-rib">Levé</span>' : ''}
       <span class="ban-hd"><span class="ban-em">${icon(L.ic)}</span><span class="ban-t"><b>${esc(u.n)}</b>${L.lore ? `<i>${esc(L.lore)}</i>` : ''}</span></span>
-      ${u.mech === 'ki' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${dbCardH()}</span></span>` : u.mech === 'portail' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${rmCardH()}</span></span>` : u.mech === 'chakra' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${ninjaCardH()}</span></span>` : M ? `<span class="ban-law"><b>Loi · ${esc(M.n)}</b><small>${esc(M.d)}</small></span>` : ''}
+      ${u.mech === 'ki' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${dbCardH()}</span></span>` : u.mech === 'portail' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${rmCardH()}</span></span>` : u.mech === 'bande' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${spCardH()}</span></span>` : u.mech === 'chakra' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${ninjaCardH()}</span></span>` : M ? `<span class="ban-law"><b>Loi · ${esc(M.n)}</b><small>${esc(M.d)}</small></span>` : ''}
       <span class="ban-fam">${fams.map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span>
       <span class="ban-her">${heroes.slice(0, 6).map(h => `<span class="ban-h" title="${esc(HEROES[h].n)}">${faceH('art-h-' + h)}</span>`).join('')}<small>${heroes.length} héros</small></span>
     </button>`;
@@ -488,7 +500,14 @@ function gameH() {
           <div class="kr">${medal('roll', 'roll', 'Actualiser', freeRoll ? 0 : 1, !canAct || (me.g < 1 && !freeRoll))}${medal('frz', 'frz', me.fz ? 'Gelée' : 'Geler', null, !canAct, me.fz)}</div></div>
         <div class="line counter-line">${me.sh.length ? me.sh.map((m, i) => tokenH(m, 'sh', i, { drag:canAct, trip:(own[m.c] || 0) >= 2, pair:(own[m.c] || 0) === 1 })).join('') : '<p class="hint">La taverne est vide. Actualise pour faire entrer du monde.</p>'}${me.sp || me.sp2 ? `<div class="shelf${me.sp2 ? ' two' : ''}" title="Étagère à sorts"><span class="shelf-l">Sort${me.sp2 ? 's' : ''}</span><span class="shelf-row">${me.sp ? spellTokenH(me.sp, 'ss', 0, { drag:canAct }) : ''}${me.sp2 ? spellTokenH(me.sp2, 'ss', 1, { drag:canAct }) : ''}</span></div>` : ''}</div>
         ${d.trs ? `<span class="trs ktrs">${d.trs.map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span>` : ''}</section>`;
-      boardRow = me.bd.length ? me.bd.map((m, i) => tokenH(m, 'bd', i, { drag:canAct })).join('') : '<p class="hint">Joue tes serviteurs ici. Ils attaquent de gauche à droite.</p>';
+      // South Park : maillons de cohésion entre voisins de la même famille, ruban « Bande ! » sur les suites de 3 ou plus
+      const coh = (d.laws || []).some(l => l.k === 'bande'), bands = coh ? bandsOf(me.bd) : [];
+      boardRow = me.bd.length ? me.bd.map((m, i) => { if (!coh) return tokenH(m, 'bd', i, { drag:canAct }); const n = nbFam(me.bd, i), b = bands.find(x => i >= x.s && i <= x.e), col = b ? ((TRIBES[b.tb] || {}).col || '#ffd86a') : '', mid = b && i === Math.floor((b.s + b.e) / 2); let extra = '';
+        if (sameFam(m, me.bd[i + 1])) extra += `<span class="coh-l" data-tip="Cohésion : voisins de la même famille, +1/+1 chacun au début du combat.">⛓</span>`;
+        if (mid) extra += `<span class="coh-b" data-tip="${esc(bandTx(b.tb) + ' Et +' + n + '/+' + n + ' de cohésion pour celui-ci.')}">Bande ! <small>+${n}/+${n}</small></span>`;
+        else if (n) extra += `<span class="coh-n" data-tip="${esc('Cohésion : +' + n + '/+' + n + ' au prochain combat (' + n + ' voisin' + (n > 1 ? 's' : '') + ' de sa famille).')}">+${n}/+${n}</span>`;
+        return tokenH(m, 'bd', i, { drag:canAct, extra, cls:b ? 'inband' + (i === b.s ? ' bs' : '') + (i === b.e ? ' be' : '') : '' , style:b ? `--bc:${col}` : '' }); }).join('') : '<p class="hint">Joue tes serviteurs ici. Ils attaquent de gauche à droite.</p>';
+      if (coh && me.bd.length) { const tot = me.bd.reduce((t, m, i) => t + nbFam(me.bd, i), 0); V.cohSum = `<div class="coh-sum" aria-label="Cohésion +${tot}/+${tot}" data-tip="Cohésion de groupe : +1/+1 par voisin de la même famille au début du combat ; 3 voisins ou plus de la même famille forment une bande activée (effet de la famille).${bands.length ? ' Bandes : ' + bands.map(x => trName(x.tb) + ' (' + bandTx(x.tb) + ')').join(' · ') : ''}"><span class="coh-lb">⛓ Cohésion</span><b>+${tot}<small>/+${tot}</small></b>${bands.length ? `<span class="coh-bd">${bands.length} bande${bands.length > 1 ? 's' : ''}</span>` : ''}</div>`; } else V.cohSum = '';
     }
     const aimS = !fighting && V.aim != null && me.hd[V.aim] && me.hd[V.aim].sp ? SPELLS[me.hd[V.aim].sp] : null;
     const sockets = Array.from({ length:7 }, () => '<i></i>').join('');
@@ -496,6 +515,7 @@ function gameH() {
     const board = `<section class="board-zone${aimS ? ' aim' : ''}${me.cp && (!fighting || V.fight.duel) ? ' has-cp' : ''}" ${fighting ? '' : 'data-drop="bd"'} aria-label="Ton plateau">${cpSide}
       ${aimS ? `<div class="aimbar"><span>${icon('bolt')}<b>${esc(aimS.n)}</b> : touche le serviteur à cibler.</span><button class="btn sm" data-act="aimcancel">Annuler</button></div>` : ''}
       ${!fighting && me.tma ? `<span class="tma-b">Prochain combat : +${me.tma.a}/+${me.tma.h} pour tous</span>` : ''}
+      ${!fighting && V.cohSum ? V.cohSum : ''}
       <div class="line" id="bdrow">${boardRow}</div></section>`;
     const nono = me.hero === 'nono', locked = nono && (me.rd || 0) < 3;
     const powSub = nono ? `${me.fb} dégât${me.fb > 1 ? 's' : ''}` : me.pu ? 'Utilisé' : '';
@@ -1017,13 +1037,13 @@ function heroPickRowH(d, me) {
       </button>
       ${on ? `<button class="t-go hp-go" data-act="hero" data-h="${h}">Choisir</button>` : ''}
     </div>`; };
-  const tab = V.ruleTab || 'tour', rules = nin && (d.laws || []).some(l => l.k === 'chakra') && V.hpRules, por = (d.laws || []).some(l => l.k === 'portail');
+  const tab = V.ruleTab || 'tour', rules = nin && (d.laws || []).some(l => l.k === 'chakra') && V.hpRules, por = (d.laws || []).some(l => l.k === 'portail') ? rmCardH : (d.laws || []).some(l => l.k === 'bande') ? spCardH : null;
   return `<div class="ov hp-ov"><div class="hp-wrap">
     <h2 class="hp-t">Choisis ton héros</h2><p class="hp-sub">Survole un héros pour voir son pouvoir, clique pour le choisir.</p>${rollInfoH(me)}
     <div class="hp-row">${me.ho.map(card).join('')}</div>
     <div class="hp-infos">${pcs.join('')}<p class="hp-ph">Survole un héros pour voir son pouvoir.</p></div>
     ${nin && (d.laws || []).some(l => l.k === 'chakra') ? `<button class="btn sm hp-rb" data-act="hprules">${rules ? 'Masquer les règles' : 'Comment on joue ?'}</button>` : ''}
-    ${por ? `<button class="btn sm hp-rb" data-act="hprules">${V.hpRules ? 'Masquer les règles' : 'Comment on joue ?'}</button>${V.hpRules ? `<div class="hpick-r hp-rules hp-rm">${rmCardH()}</div>` : ''}` : ''}
+    ${por ? `<button class="btn sm hp-rb" data-act="hprules">${V.hpRules ? 'Masquer les règles' : 'Comment on joue ?'}</button>${V.hpRules ? `<div class="hpick-r hp-rules hp-rm">${por()}</div>` : ''}` : ''}
     ${rules ? `<div class="hpick-r hp-rules"><div class="rl-tabs" role="tablist">${RULE_TABS.map(([k, n]) => `<button role="tab" class="rl-tab${k === tab ? ' on' : ''}" data-act="rtab" data-k="${k}" aria-selected="${k === tab}">${n}</button>`).join('')}</div><div class="rl-body">${ruleTabH(tab)}</div></div>` : ''}
   </div></div>`;
 }
@@ -1592,6 +1612,16 @@ function comboHitFx(e, cb, k, dv, born) {
   };
   setTimeout(go, 750 + k * 140);
 }
+// South Park : une réplique au hasard dans une bulle au-dessus du personnage
+let spSayAt = 0;
+const SP_LINES_ON = () => typeof SP_LINES !== 'undefined' && !!(V.pub && (V.pub.laws || []).some(l => l.k === 'bande'));
+function spSay(el, key, force) {
+  if (typeof SP_LINES === 'undefined' || !el || FX_OFF()) return; const L = SP_LINES[key]; if (!L || !L.length) return;
+  const now = Date.now(); if (!force && now - spSayAt < 2500) return; spSayAt = now;
+  document.querySelectorAll('.spbub').forEach(b => b.remove());
+  const r = el.getBoundingClientRect(), b = document.createElement('div'); b.className = 'spbub'; b.textContent = L[Math.floor(Math.random() * L.length)]; b.style.visibility = 'hidden'; fxLayer.appendChild(b);
+  const w = b.offsetWidth, h = b.offsetHeight; b.style.left = f1(Math.max(8, Math.min(innerWidth - w - 8, r.left + r.width / 2 - w / 2))) + 'px'; b.style.top = f1(Math.max(8, r.top - h - 12)) + 'px'; b.style.visibility = ''; setTimeout(() => b.remove(), 3800);
+}
 function buffFx(e, p, c) {
   const da = c[0] - p[0], dh = c[1] - p[1], kwNew = (c[2] || '').split('').filter(k => !(p[2] || '').includes(k)), tmpNew = c[3] && c[3] !== p[3], fxNew = (c[6] || 0) > (p[6] || 0) && c[7];
   if (!(da > 0 || dh > 0 || kwNew.length || tmpNew || fxNew)) return;
@@ -1618,7 +1648,7 @@ function fxAfter(rects) {
   const cur = { bd:{}, hd:new Set(me.hd.map(m => m.u)), sh:new Set(me.sh.map(m => m.u)), t:me.t, g:me.g, rd:d.rd };
   me.bd.concat(me.cp ? [me.cp] : []).forEach(m => cur.bd[m.u] = [m.a, m.h, m.f || '', m.tmp ? (m.tmp.a || 0) + '/' + (m.tmp.h || 0) + (m.tmp.f || '') : '', Object.fromEntries((m.bn || []).map(e => [e.s, [e.a, e.h, e.k || '']])), m.tmp && m.tmp.s || '', (m.x || []).length, m.x && m.x.length ? m.x[m.x.length - 1] : null]); cur.tma = me.tma ? me.tma.a + '/' + me.tma.h : '';
   if (me.cp) { cur.cpLv = compLv(me.cp); cur.cpEl = compEl(me.cp); }
-  cur.cmb = me.combo ? me.combo.id : 0; cur.njf = me.njf || 0;
+  cur.cmb = me.combo ? me.combo.id : 0; cur.njf = me.njf || 0; cur.pu = !!me.pu;
   const P = V.fxPrev; V.fxPrev = cur; cur.fighting = fighting;
   // fin du tour : les effets de fin de tour s'affichent sur le plateau de combat, avant la première attaque
   // fin du tour : les effets de fin de tour s'affichent sur le plateau de combat, avant la première attaque
@@ -1648,6 +1678,7 @@ function fxAfter(rects) {
   const cmb = cur.cmb && cur.cmb !== P.cmb ? me.combo : null; let ck = 0;
   for (const u in cur.bd) {
     const p = P.bd[u], c = cur.bd[u]; const e = el(u); if (!e) continue;
+    if (!p && P.hd.has(+u) && e.dataset.c && SP_LINES_ON()) setTimeout(() => { const n = el(u); if (n) spSay(n, n.dataset.c, true); }, 520);   // après l'arrivée sur le plateau
     if (!p) { if (!P.hd.has(+u) && !(rects && rects[u])) { if (cmb) comboHitFx(e, cmb, ck++, null, true); else { e.classList.add('born'); const [x, y] = fxCenter(e); fxRing(x, y, '#cfe8ff', 1); } } continue; }
     if (cmb && comboGain(p, c)) comboHitFx(e, cmb, ck++, [c[0] - p[0], c[1] - p[1], (c[2] || '').split('').filter(k => !(p[2] || '').includes(k)).join(''), c[3] && c[3] !== p[3] ? c[3] : '']);
     else buffFx(e, p, c);
@@ -1655,6 +1686,7 @@ function fxAfter(rects) {
   if (cmb && cur.njf > (P.njf || 0)) { const r0 = document.querySelector('.rsv'); if (r0) { const [x, y] = fxCenter(r0, .2); setTimeout(() => fxLabel(x, y - 20, `<b>Prochain combat : +${cur.njf - (P.njf || 0)} dégâts</b><small class="bl-src">Combo · ${esc(cmb.n)}</small>`, 'buffinfo cbinfo'), 900); } }
   if (cur.tma && cur.tma !== P.tma) document.querySelectorAll('#bdrow .mn').forEach((e, k) => setTimeout(() => { const [x, y] = fxCenter(e, .4); fxRing(x, y, '#9fd8ff', 1); e.classList.add('tmpup'); setTimeout(() => e.classList.remove('tmpup'), 1400); }, k * 60));
   if (cur.tma && cur.tma !== P.tma) { const r0 = document.querySelector('#bdrow'); if (r0) { const [x, y] = fxCenter(r0, .1); fxLabel(x, y, `<b>Prochain combat : ${cur.tma.split('/').map(v => '+' + v).join('/')} pour tous</b>`, 'bufftmp'); } }
+  if (cur.pu && !P.pu && SP_LINES_ON() && me.hero) spSay(document.querySelector('.hz-hero'), me.hero + (me.haw ? '_aw' : ''), true);
   const purse = document.querySelector('.purse');
   if (cur.g > P.g && purse) { const [x, y] = fxCenter(purse); fxBurst(x, y, 'gold', 10, .9); fxLabel(x, y - 18, `+${cur.g - P.g}`, 'gold'); }
   if (me.cp && P.cpLv != null) { const e = document.querySelector('.cp-side .cp-tok'), lv = compLv(me.cp), ce = compEl(me.cp);
@@ -2789,6 +2821,19 @@ html.lite .awk-go{animation:none}
 @keyframes fuspulse{from{box-shadow:0 0 0 1.5px #120a06}to{box-shadow:0 0 0 1.5px #120a06,0 0 12px 2px #7fd0ff}}
 @keyframes tfpulse{from{transform:scale(1)}to{transform:scale(1.12)}}
 .kip b small{font-size:.6em;color:#9fd8ff}.kip .kic{display:block;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e0f6ff,#2a8ad8);box-shadow:0 0 0 1px #0a1a2a}.kip .kic.off{opacity:.2}
+/* South Park : maillons de cohésion, ruban de bande, étiquette de conversion */
+.coh-l{position:absolute;right:-9%;top:38%;z-index:9;width:clamp(16px,24%,30px);aspect-ratio:1;display:grid;place-items:center;border-radius:50%;font-size:clamp(10px,1.6vh,16px);line-height:1;color:#ffe39a;background:radial-gradient(circle at 40% 35%,#6fb8e0,#1e3a5a);box-shadow:0 0 0 2px #120a06,0 0 8px rgba(111,184,224,.8);pointer-events:auto;transform:translateX(50%)}
+.coh-n{position:absolute;left:50%;top:-7%;transform:translateX(-50%);z-index:6;padding:1px 6px;border-radius:99px;font:700 clamp(9px,1.2vh,12px) var(--f-label),serif;white-space:nowrap;pointer-events:auto;background:#1e3a5a;color:#d8f0ff;box-shadow:0 0 0 1px #6fb8e0}
+.mn.inband::after{content:'';position:absolute;left:-8px;right:-8px;top:3%;height:4px;border-radius:3px;background:var(--bc,#ffd86a);box-shadow:0 0 0 1px #120a06,0 0 8px var(--bc,#ffd86a);z-index:5;pointer-events:none}
+.mn.inband.bs::after{left:6%;border-radius:3px 0 0 3px}.mn.inband.be::after{right:6%;border-radius:0 3px 3px 0}.mn.inband.bs.be::after{border-radius:3px}
+.coh-b{position:absolute;left:50%;top:-9%;transform:translateX(-50%);z-index:10;padding:1px 8px;border-radius:99px;font:700 clamp(10px,1.4vh,13px) var(--f-label),serif;white-space:nowrap;pointer-events:auto;color:#2a1606;background:linear-gradient(#fff0b0,var(--bc,#ffd86a));box-shadow:0 0 0 1.5px #120a06,0 0 10px var(--bc,#ffd86a);animation:cohpulse 1.6s ease-in-out infinite alternate}
+@keyframes cohpulse{from{transform:translateX(-50%) scale(1)}to{transform:translateX(-50%) scale(1.08)}}
+.fam-n{position:absolute;left:50%;top:60%;transform:translateX(-50%);z-index:6;padding:1px 6px;border-radius:99px;font:700 clamp(8px,1.1vh,11px) var(--f-label),serif;white-space:nowrap;pointer-events:auto;background:#3a2a1a;color:#ffe39a;box-shadow:0 0 0 1px #d8622a}
+.coh-b small{font-size:.8em;opacity:.85}
+.board-zone{position:relative}.coh-sum{position:absolute;right:10px;top:4px;z-index:4;display:flex;align-items:baseline;gap:6px;padding:2px 10px;border-radius:99px;background:rgba(20,30,50,.75);box-shadow:0 0 0 1px #6fb8e0}.coh-sum b{font-family:var(--f-num);font-size:17px;color:var(--gold);font-weight:normal}.coh-sum b small{font-size:.6em;color:#9fd8ff}.coh-sum .coh-lb{font:700 11px var(--f-label),serif;color:#9fd8ff;white-space:nowrap}.coh-sum .coh-bd{font:700 10px var(--f-label),serif;color:#2a1606;background:#ffd86a;padding:1px 6px;border-radius:99px;white-space:nowrap}
+@media (max-width:1000px){.coh-sum{right:4px;top:-6px;padding:0 6px;gap:4px}.coh-sum b{font-size:12px}.coh-sum .coh-lb{font-size:0}.coh-sum .coh-lb::before{content:'⛓';font-size:11px}.coh-sum .coh-bd{font-size:9px;padding:0 4px}}
+@container (max-width:64px){.coh-n,.fam-n,.coh-b small{display:none}.coh-b{font-size:9px;padding:0 5px}.coh-l{width:14px;font-size:9px}}
+.hp-sp{padding:10px 14px}
 /* Rick et Morty : bouton de portail sous le serviteur, étiquette de dimension, jauge de fluide */
 .por-b{position:absolute;left:-6%;top:4%;z-index:7;width:clamp(20px,26%,36px);aspect-ratio:1;display:grid;place-items:center;border-radius:50%;cursor:pointer;font-size:clamp(13px,2vh,22px);line-height:1;color:#d8ffe8;background:radial-gradient(circle at 40% 35%,#3fbf6f,#0f3a22);box-shadow:0 0 0 2px #120a06,0 0 0 3.5px #7fe8a8;filter:grayscale(.7) brightness(.75);transition:transform .15s}
 .por-b.ok{filter:none;animation:porspin 2.4s linear infinite}.por-b:hover{transform:scale(1.12)}

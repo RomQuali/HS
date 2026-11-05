@@ -6,7 +6,7 @@
    ===================================================================== */
 const SP_TYPES = {
   renf:{ n:'Renfort', col:'#c8963e' }, eco:{ n:'Économie', col:'#4f8a3a' }, arc:{ n:'Arcane', col:'#3f6fb0' },
-  ombre:{ n:'Ombre', col:'#5a3d7a' }, comb:{ n:'Combat', col:'#a8322a' }, nat:{ n:'Nature', col:'#3f8a6a' }, nin:{ n:'Technique', col:'#2a5a9a' }, inv:{ n:'Invention', col:'#2f8a5a' }, eq:{ n:'Équipement', col:'#8a6a3a' }, cof:{ n:'Coffre', col:'#a8742a' },
+  ombre:{ n:'Ombre', col:'#5a3d7a' }, comb:{ n:'Combat', col:'#a8322a' }, nat:{ n:'Nature', col:'#3f8a6a' }, nin:{ n:'Technique', col:'#2a5a9a' }, inv:{ n:'Invention', col:'#2f8a5a' }, obj:{ n:'Objet culte', col:'#8a4a9a' }, eq:{ n:'Équipement', col:'#8a6a3a' }, cof:{ n:'Coffre', col:'#a8742a' },
 };
 const SPELLS = {
   // objets de l'univers Dragon Ball
@@ -34,6 +34,17 @@ const SPELLS = {
   ri_serum:{ rm:1, n:'Sérum d\'amour', t:4, c:2, ty:'inv', tg:1, fx:[{ k:'tfam', a:1, h:1 }], tx:'Le serviteur ciblé gagne +1/+1 par serviteur de sa famille sur ton plateau (lui compris).' },
   ri_beurre:{ rm:1, n:'Robot beurre', t:4, c:3, ty:'inv', fx:[{ k:'disc' }], tx:'Il passe le beurre… et découvre un serviteur d\'un niveau au-dessus de ta taverne : choisis-en un parmi trois.' },
   ri_voiture:{ rm:1, n:'Voiture spatiale', t:5, c:3, ty:'inv', tg:1, fx:[{ k:'portal' }, { k:'tbuff', a:2, h:2 }], tx:'Le serviteur ciblé passe un portail sans dépenser de fluide (variante de sa famille, niveau ±1, bonus gardés), puis gagne +2/+2.' },
+  // ----- objets cultes (univers South Park) : achetés et utilisés en or, à l'étagère de la taverne ; plusieurs jouent sur la cohésion -----
+  so_poofs:{ spk:1, n:'Cheesy Poofs', t:1, c:1, ty:'obj', tg:1, fx:[{ k:'tbuff', a:2, h:1 }], tx:'Un paquet entier : le serviteur ciblé gagne +2/+1.' },
+  so_cakes:{ spk:1, n:'Snacky Cakes', t:1, c:1, ty:'obj', fx:[{ k:'buffr', n:2, a:1, h:1 }], tx:'Goûter partagé : deux de tes serviteurs aléatoires gagnent +1/+1.' },
+  so_tv:{ spk:1, n:'Terrance et Phillip TV', t:2, c:1, ty:'obj', fx:[{ k:'fire', d:4 }], tx:'Gaz hilarant à l\'antenne : prochain combat, 4 dégâts à l\'ennemi.' },
+  so_sac:{ spk:1, n:'Sac de Towelie', t:2, c:1, ty:'obj', tg:1, fx:[{ k:'tnear' }, { k:'tbuff', a:1, h:2 }], tx:'Ta serviette ! Le serviteur ciblé rejoint le plus proche serviteur de sa famille, puis gagne +1/+2.' },
+  so_chinpoko:{ spk:1, n:'Chinpokomon', t:2, c:2, ty:'obj', tg:1, fx:[{ k:'tfams', a:1, h:1 }], tx:'Attrape-les tous : le serviteur ciblé gagne +1/+1 par famille différente sur ton plateau.' },
+  so_tegridy:{ spk:1, n:'Ferme Tegridy', t:3, c:2, ty:'obj', fx:[{ k:'incn', n:3 }], tx:'Récolte : gagne 1 or au début de chacun de tes 3 prochains tours.' },
+  so_coon:{ spk:1, n:'Chapeau du Coon', t:3, c:2, ty:'obj', tg:1, fx:[{ k:'tbuff', a:2, h:2 }, { k:'tkwp', kw:'t' }], tx:'Le justicier masqué : le serviteur ciblé gagne +2/+2 et Provocation.' },
+  so_chili:{ spk:1, n:'Chili de Chef', t:4, c:2, ty:'obj', fx:[{ k:'buffnb', a:1, h:1, a2:2, h2:2 }], tx:'Tes serviteurs gagnent +1/+1, ou +2/+2 s\'ils ont un voisin de leur famille.' },
+  so_baton:{ spk:1, n:'Bâton de la vérité', t:4, c:3, ty:'obj', tg:1, fx:[{ k:'tfamall' }, { k:'tbuff', a:2, h:2 }], tx:'Le serviteur ciblé compte comme toutes les familles pour la cohésion et gagne +2/+2.' },
+  so_cape:{ spk:1, n:'Cape de Mysterion', t:5, c:3, ty:'obj', tg:1, fx:[{ k:'tkwp', kw:'r' }, { k:'tbuff', a:3, h:3 }], tx:'Le héros qui ne meurt jamais : le serviteur ciblé gagne Renaissance et +3/+3.' },
   sp_pinte:{ n:'Pinte offerte', t:1, c:1, ty:'renf', tg:1, tx:'Donne +2/+1 à un de tes serviteurs.' },
   sp_tournee:{ n:'Nouvelle tournée', t:1, c:0, ty:'eco', tx:'Rafraîchit la taverne gratuitement.' },
   sp_placement:{ n:'Placement prudent', t:1, c:1, ty:'eco', tx:'Au début de ton prochain tour, gagne 2 or.' },
@@ -135,7 +146,8 @@ const SPELL_IDS = Object.keys(SPELLS);
 function drawSpell(t, el) { const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra');
   if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'ki')) { const ids = SPELL_IDS.filter(id => SPELLS[id].db && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
   if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'portail')) { const ids = SPELL_IDS.filter(id => SPELLS[id].rm && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }   // Rick et Morty : seulement les inventions
-  if (nin && !NJ_TECH) { const ids = SPELL_IDS.filter(id => SPELLS[id].cs && SPELLS[id].t <= t); const w = ids.map(id => SPELLS[id].rare ? 0.35 : 1), tot = w.reduce((a, b) => a + b, 0); let r = Math.random() * tot; for (let i = 0; i < ids.length; i++) { r -= w[i]; if (r <= 0) return { sp:ids[i], u:UID++ }; } return ids.length ? { sp:ids[0], u:UID++ } : null; } const ev = typeof H !== 'undefined' && H.G && H.G.eveil; const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !SPELLS[id].db && !SPELLS[id].rm && !!SPELLS[id].nin === !!nin && (!SPELLS[id].forb || ev) && (!el || SPELLS[id].el === el)); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
+  if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'bande')) { const ids = SPELL_IDS.filter(id => SPELLS[id].spk && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }   // South Park : seulement les objets cultes
+  if (nin && !NJ_TECH) { const ids = SPELL_IDS.filter(id => SPELLS[id].cs && SPELLS[id].t <= t); const w = ids.map(id => SPELLS[id].rare ? 0.35 : 1), tot = w.reduce((a, b) => a + b, 0); let r = Math.random() * tot; for (let i = 0; i < ids.length; i++) { r -= w[i]; if (r <= 0) return { sp:ids[i], u:UID++ }; } return ids.length ? { sp:ids[0], u:UID++ } : null; } const ev = typeof H !== 'undefined' && H.G && H.G.eveil; const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !SPELLS[id].db && !SPELLS[id].rm && !SPELLS[id].spk && !!SPELLS[id].nin === !!nin && (!SPELLS[id].forb || ev) && (!el || SPELLS[id].el === el)); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
 
 // technique Dragon Ball sans effet ciblé : lançable sans lanceur quand le plateau est vide (pas de bonus Signature)
 const dbNoTgt = S => !!(S && S.db && !(S.fx || []).some(s => ['tbuff', 'ttmp', 'tkwp', 'tpoing', 'henge'].includes(s.k)));
@@ -147,7 +159,8 @@ function spellBlock(p, id, tgt) {
   if (S.tg && !tgt && !(dbNoTgt(S) && !p.bd.length)) return 'Choisis un de tes serviteurs.';
   if (S.hid && p.bd.filter(m => tribeOk(m, 'n_' + S.el)).length < S.hid) return `Hiden : il faut ${S.hid} serviteurs ${ELS[S.el] ? ELS[S.el].n : ''} sur ton plateau.`;
   if (S.hp && p.hp <= S.hp) return `Kinjutsu : il te faut plus de ${S.hp} PV.`;
-  if ((S.nin || S.rm) && S.fx && S.fx.some(s => s.k === 'summon') && p.bd.length >= 7) return 'Ton plateau est plein.';
+  if ((S.nin || S.rm || S.spk) && S.fx && S.fx.some(s => s.k === 'summon') && p.bd.length >= 7) return 'Ton plateau est plein.';
+  if (S.spk && S.fx && S.fx.some(s => s.k === 'tfamall') && tgt && tgt.fam === '*') return 'Ce serviteur compte déjà pour toutes les familles.';
   if (S.rm && S.fx && S.fx.some(s => s.k === 'portal') && tgt && (CD(tgt.c).tok || isComp(tgt))) return 'Un jeton ne peut pas passer le portail.';
   if ((id === 'nj_doubles' || id === 'nj_invoc') && p.bd.length >= 7) return 'Ton plateau est plein.';
   if (S.eq && !(C[tgt.c] && C[tgt.c].comp)) return 'Un équipement se pose sur ton compagnon.';
@@ -233,6 +246,13 @@ function techSteps(G, p, steps, tgt, tg, x) {
       case 'trm': if (tgt && isRM(tgt)) buff(tgt, a, h); break;
       case 'tfam': if (tgt) { const n = p.bd.filter(m => tribeOk(m, tribe(tgt))).length; buff(tgt, a * n, h * n); } break;
       case 'portal': if (tgt) { const nm = doPortal(G, p, tgt); if (nm) tgt = nm; } break;
+      // ----- objets cultes (South Park) -----
+      case 'buffr': shuffle(p.bd.slice()).slice(0, s.n * x).forEach(m => buff(m, a, h)); break;
+      case 'incn': p.inc = p.inc || []; for (let i = 0; i < s.n; i++) p.inc[i] = (p.inc[i] || 0) + x; break;
+      case 'tfams': if (tgt) { const n = new Set(p.bd.filter(m => famOf(m) !== 'neu' && m.fam !== '*').map(famOf)).size; if (n) buff(tgt, a * n, h * n); } break;
+      case 'tfamall': if (tgt) { tgt.fam = '*'; tgt.famOf = (SPELLS[p.lastCast] || {}).n || 'Bâton de la vérité'; } break;
+      case 'tnear': if (tgt) { const i = p.bd.indexOf(tgt); if (i >= 0 && !nbFam(p.bd, i)) { let best = -1; p.bd.forEach((m, j) => { if (m !== tgt && sameFam(m, tgt) && (best < 0 || Math.abs(j - i) < Math.abs(best - i))) best = j; }); if (best >= 0) { p.bd.splice(i, 1); p.bd.splice(best < i ? best + 1 : best, 0, tgt); } } } break;
+      case 'buffnb': p.bd.forEach((m, i) => { const nb = nbFam(p.bd, i); buff(m, nb ? (s.a2 || 0) * x : a, nb ? (s.h2 || 0) * x : h); }); break;
     }
   }
 }
@@ -256,7 +276,7 @@ function castSpell0(G, p, hi, tg) {
   if (S.nin && (HX(p) && HX(p).pw && HX(p).pw.k === 'ptechc') && !(p.rsv || []).length) p.g += 1;
   p.lastCast = id;
   if (S.db && S.fx) { techSteps(G, p, S.fx, tgt, tg, 1); if (tgt && S.sig && S.sig.includes(tgt.c)) withSrc('Signature · ' + S.n, () => techSteps(G, p, S.sgx, tgt, tg, 1)); }
-  else if (S.rm && S.fx) techSteps(G, p, S.fx, tgt, tg, 1);
+  else if ((S.rm || S.spk) && S.fx) techSteps(G, p, S.fx, tgt, tg, 1);
   else if (S.nin && S.fx) techRun(G, p, S, it0, tgt, tg, sage0);
   else switch (id) {
     case '__db': break;
@@ -383,6 +403,9 @@ function aiTarget(p, id) {
   if (st.includes('portal')) return by(m => -tierOf(m) * 10 + m.a + m.h - (CD(m.c).a + CD(m.c).h) * (m.g ? 3 : 1), m => !CD(m.c).tok && !isComp(m));
   if (st.includes('tfam')) { const cnt = {}; p.bd.forEach(m => { cnt[tribe(m)] = (cnt[tribe(m)] || 0) + 1; }); return by(m => (cnt[tribe(m)] || 0) * 10 + m.a + m.h); }
   if (st.includes('trm')) return by(m => (isRM(m) ? 10 : 0) + m.a + m.h + tierOf(m) * 2, m => !CD(m.c).tok);
+  if (st.includes('tfamall')) return by(m => m.a + m.h + tierOf(m) * 2 - nbFam(p.bd, p.bd.indexOf(m)) * 6, m => !CD(m.c).tok && m.fam !== '*');
+  if (st.includes('tnear')) { const i = by(m => m.a + m.h + tierOf(m) * 2, m => !CD(m.c).tok && !nbFam(p.bd, p.bd.indexOf(m)) && p.bd.some(x => x !== m && sameFam(x, m))); return i == null ? by(m => m.a + m.h + tierOf(m) * 2, m => !CD(m.c).tok) : i; }
+  if (st.includes('tfams')) return by(m => m.a + m.h + tierOf(m) * 2, m => !CD(m.c).tok);
   if (st.includes('tpoing')) return by(m => m.h);
   if (st.includes('ttmp') || id === 'nj_oyoroi') return by(m => m.a + m.h / 2, m => !CD(m.c).tok);
   if (st.includes('tbuff')) return by(m => m.a + m.h + tierOf(m) * 2 + (has(m, 'w') ? 4 : 0), m => !CD(m.c).tok);
@@ -506,6 +529,19 @@ Object.assign(SPART, {
   ri_serum: () => softGlow(50, 58, 30, '#ff8ab0', .4) + P('M42 18 L58 18 L58 40 C 74 46, 80 64, 70 78 C 64 86, 36 86, 30 78 C 20 64, 26 46, 42 40 Z', '#e8f4f6', so() + ' opacity=".9"') + P('M29 64 C 40 60, 60 68, 71 62 C 73 70, 70 76, 66 80 C 58 86, 42 86, 34 80 C 30 76, 27 70, 29 64 Z', '#ff5a8a') + `<rect x="40" y="12" width="20" height="7" rx="2" fill="#a0703e" ${so(1.6)}/>` + [[46, 56], [56, 50], [50, 44]].map(([x, y]) => P(`M${x} ${y + 3} C ${x - 4} ${y}, ${x - 3} ${y - 5}, ${x} ${y - 2} C ${x + 3} ${y - 5}, ${x + 4} ${y}, ${x} ${y + 3} Z`, '#ffb0c8', GLOW)).join('') + Ln('M38 50 C 36 56, 36 60, 38 64', '#fff', 1.6, 'opacity=".7"'),
   ri_beurre: () => softGlow(50, 56, 30, '#ffe39a', .3) + `<rect x="32" y="46" width="36" height="30" rx="5" fill="#c4c9ce" ${so()}/>` + `<rect x="38" y="32" width="24" height="16" rx="4" fill="#d8dce4" ${so(1.8)}/>` + Ci(45, 40, 2.6, '#2a6ad8') + Ci(55, 40, 2.6, '#2a6ad8') + Ci(38, 82, 5, '#3a3a44', so(1.6)) + Ci(62, 82, 5, '#3a3a44', so(1.6)) + Ln('M30 56 L18 50 M70 56 L82 50', '#8a929c', 4) + `<rect x="8" y="42" width="16" height="10" rx="2" fill="#ffd84a" ${so(1.6)}/>` + `<rect x="76" y="42" width="16" height="10" rx="2" fill="#ffd84a" ${so(1.6)}/>` + Ln('M50 32 L50 24', '#8a929c', 2) + Ci(50, 22, 2.4, '#ff5a3a', GLOW),
   ri_voiture: () => softGlow(50, 56, 34, '#9fe4ff', .35) + E(50, 60, 36, 12, '#8a929c', so()) + P('M26 56 C 26 34, 74 34, 74 56 Z', '#bfe8ff', so(1.8) + ' opacity=".85"') + E(50, 60, 24, 6, '#5a626c', 'opacity=".6"') + [[22, 60], [38, 66], [62, 66], [78, 60]].map(([x, y]) => Ci(x, y, 2.6, '#9fe36a', GLOW)).join('') + Ln('M34 76 L28 90 M66 76 L72 90', '#6fd0ff', 3, 'opacity=".8"') + Ci(50, 44, 3, '#ffffff', 'opacity=".7"'),
+});
+// objets cultes (South Park) : des objets abstraits, jamais de personnage
+Object.assign(SPART, {
+  so_poofs: () => softGlow(50, 54, 32, '#ffb04a', .35) + P('M28 26 L72 26 L76 86 L24 86 Z', '#e8641a', so()) + P('M28 26 Q50 18 72 26 L72 34 Q50 26 28 34 Z', '#ffd24a', so(1.6)) + Ln('M30 60 H70', '#ffd24a', 2) + [[40, 48], [54, 44], [48, 70], [62, 66], [36, 76]].map(([x, y]) => Ci(x, y, 5, '#ffcf6a', so(1.2)) + Ci(x - 1.5, y - 1.5, 1.6, '#fff3c0')).join(''),
+  so_cakes: () => softGlow(50, 56, 32, '#ff9ab8', .3) + `<rect x="22" y="44" width="56" height="34" rx="4" fill="#f06a9a" ${so()}/>` + P('M22 44 L30 30 L86 30 L78 44 Z', '#ffb0cc', so(1.8)) + P('M78 44 L86 30 L86 64 L78 78 Z', '#c84a7a', so(1.8)) + E(50, 60, 14, 8, '#fff0c8', so(1.6)) + E(50, 56, 14, 5, '#ffd84a', 'opacity=".9"') + Ci(50, 50, 3, '#ff4a6a', so(1)),
+  so_tv: () => softGlow(50, 56, 32, '#9fe4ff', .3) + `<rect x="18" y="32" width="64" height="48" rx="6" fill="#6a4a2a" ${so()}/>` + `<rect x="24" y="38" width="42" height="36" rx="4" fill="#1a2a3a" ${so(1.6)}/>` + [[28, 44], [40, 50], [34, 60], [52, 46], [58, 66], [46, 68], [30, 70]].map(([x, y]) => `<rect x="${x}" y="${y}" width="5" height="3" fill="#9fe4ff" opacity=".8"/>`).join('') + Ci(74, 48, 4, '#c8ccd4', so(1.2)) + Ci(74, 62, 4, '#c8ccd4', so(1.2)) + Ln('M40 32 L30 14 M60 32 L70 14', '#c8ccd4', 2.6) + Ci(30, 14, 2.4, '#ffe39a') + Ci(70, 14, 2.4, '#ffe39a') + Ln('M30 86 H70', OUT, 4),
+  so_sac: () => softGlow(50, 54, 32, '#9fe4ff', .3) + P('M20 36 Q50 26 80 36 L80 72 Q50 82 20 72 Z', '#4ab0e8', so()) + [44, 54, 64].map(y => P(`M20 ${y} Q50 ${y - 10} 80 ${y}`, 'none', 'stroke="#dff4ff" stroke-width="3" opacity=".8"')).join('') + P('M20 36 Q50 26 80 36 L80 42 Q50 32 20 42 Z', '#2a7ab8', so(1.4)) + Ln('M36 20 Q50 12 64 20', '#8a6a3a', 4),
+  so_chinpoko: () => softGlow(50, 54, 32, '#ffd86a', .35) + `<rect x="22" y="56" width="56" height="28" rx="5" fill="#d84a3a" ${so()}/>` + P('M22 56 L30 44 L78 44 L78 56 Z', '#ff8a6a', so(1.6)) + E(50, 40, 18, 16, '#ffd84a', so()) + E(50, 40, 12, 10, '#ffe89a', 'opacity=".6"') + Ci(44, 38, 3, '#2a1a1a') + Ci(56, 38, 3, '#2a1a1a') + Ci(45, 37, 1, '#fff') + Ci(57, 37, 1, '#fff') + Ln('M46 46 Q50 49 54 46', '#2a1a1a', 1.6) + P('M38 28 L34 16 L44 26 Z', '#ffd84a', so(1.4)) + P('M62 28 L66 16 L56 26 Z', '#ffd84a', so(1.4)),
+  so_tegridy: () => softGlow(50, 56, 32, '#ffe39a', .25) + P('M12 92 L88 92 L80 70 L20 70 Z', '#8a6a3a', so(1.6)) + [26, 40, 54, 68].map(x => Ln(`M${x} 90 L${x + 8} 72`, '#6a4a22', 2)).join('') + P('M26 70 L26 44 L50 28 L74 44 L74 70 Z', '#b83a2a', so()) + P('M22 46 L50 26 L78 46', 'none', so(2.4)) + `<rect x="42" y="52" width="16" height="18" fill="#5a2a1a" ${so(1.4)}/>` + Ln('M42 52 L58 70 M58 52 L42 70', '#e8a86a', 1.6) + Ci(50, 40, 4, '#ffe39a', so(1.2)),
+  so_coon: () => softGlow(50, 54, 32, '#c8a06a', .3) + P('M18 60 Q50 42 82 60 L78 78 Q50 70 22 78 Z', '#6a4a2a', so()) + P('M26 60 L22 36 L40 50 Z', '#6a4a2a', so(1.6)) + P('M74 60 L78 36 L60 50 Z', '#6a4a2a', so(1.6)) + P('M28 62 Q50 50 72 62 L72 70 Q50 60 28 70 Z', '#2a1a14', so(1.4)) + E(40, 66, 5, 3, '#ffe39a') + E(60, 66, 5, 3, '#ffe39a') + Ln('M18 60 L10 82 M82 60 L90 82', '#6a4a2a', 3),
+  so_chili: () => softGlow(50, 58, 32, '#ff8a4a', .35) + P('M18 52 Q50 44 82 52 Q80 84 50 88 Q20 84 18 52 Z', '#c8a06a', so()) + E(50, 52, 30, 7, '#b83a1a', so(1.6)) + [[38, 50], [52, 54], [62, 48]].map(([x, y]) => Ci(x, y, 3, '#8a2a12')).join('') + E(44, 50, 4, 2, '#ff8a4a', 'opacity=".8"') + [34, 50, 66].map((x, k) => Ln(`M${x} 40 C ${x - 4} 34, ${x + 4} 28, ${x} 20`, '#fff', 2.2, `opacity="${.6 - k * .1}"`)).join('') + Ln('M70 60 L88 40', '#c8ccd4', 3.4),
+  so_baton: () => softGlow(50, 50, 32, '#ffd86a', .35) + Ln('M30 88 L62 24', OUT, 8) + Ln('M30 88 L62 24', '#8a5a2a', 5) + Ln('M40 68 L46 56 M50 50 L54 42', '#5a3a1a', 1.6) + P('M58 30 L66 14 L74 30 L66 38 Z', '#9fe4ff', so(1.8) + ' ' + GLOW) + P('M62 30 L66 20 L70 30 Z', '#ffffff', 'opacity=".6"') + [[22, 30], [80, 70], [26, 80]].map(([x, y]) => P(starD(x, y, 3.2, 1.2, 4), '#fff6c8', GLOW)).join(''),
+  so_cape: () => softGlow(50, 54, 32, '#b48cff', .35) + P('M30 26 Q50 14 70 26 L84 88 Q50 78 16 88 Z', '#2a1a4a', so()) + P('M36 26 Q50 18 64 26 L58 42 L42 42 Z', '#1a1030', so(1.4)) + P('M44 60 Q50 54 56 60 Q56 66 50 66 L50 72', 'none', 'stroke="#9fe36a" stroke-width="3" stroke-linecap="round"') + Ci(50, 78, 2, '#9fe36a') + Ln('M30 26 L22 40 M70 26 L78 40', '#5a3a8a', 3),
 });
 Object.assign(SPART, { cs_hosenka:SPART.nj_souffle, cs_kibaku:SPART.nj_sceau, cs_gokakyu:SPART.nj_boule, cs_amaterasu:SPART.nj_deluge, cs_kugutsu:SPART.nj_doubles, cs_sunatate:SPART.nj_pierre, cs_kamaitachi:SPART.nj_rafale, cs_sabaku:SPART.nj_porteur,
   cs_kiri:SPART.nj_brume, cs_shosen:SPART.nj_vague, cs_suiro:SPART.nj_x_sceau, cs_suikodan:SPART.nj_vague, cs_raikyu:SPART.nj_decharge, cs_chidori:SPART.nj_foudre, cs_bijuchakra:SPART.nj_x_eveil, cs_bijudama:SPART.nj_x_cinq,

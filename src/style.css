@@ -1963,3 +1963,11 @@ body.u-nj .hand{background:linear-gradient(180deg,rgba(6,10,14,0),rgba(6,10,14,.
 .bans-wip .ban.wip{flex:0 1 auto;min-height:0;padding:4px 10px;width:auto}
 .bans-wip .ban.wip .ban-t i{display:none}
 .bans-wip .ban.wip .ban-em{width:24px;height:24px}
+
+/* accueil : vidéo derrière la porte (couvre l'ouverture des battants) */
+.cs-vid{position:absolute;left:150px;top:30px;width:1300px;height:800px;object-fit:cover;pointer-events:none;background:#000}
+
+/* South Park : bulle de dialogue */
+.spbub{position:absolute;z-index:60;max-width:240px;padding:7px 11px;border-radius:14px;background:#fffdf4;color:#1a1208;font:600 13px/1.25 Georgia,serif;box-shadow:0 0 0 2px #1a1208,0 6px 14px rgba(0,0,0,.45);text-align:center;pointer-events:none;animation:spbub 3.8s ease both}
+.spbub::after{content:"";position:absolute;left:50%;bottom:-8px;margin-left:-8px;border:8px solid transparent;border-top-color:#fffdf4;border-bottom:0}
+@keyframes spbub{0%{opacity:0;transform:translateY(8px) scale(.9)}8%{opacity:1;transform:none}88%{opacity:1}100%{opacity:0;transform:translateY(-6px)}}
