@@ -683,6 +683,7 @@ const ICONS = (() => {
     plus: '<path d="M12 4 V20 M4 12 H20" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>',
     back: '<path d="M14.5 5 L7.5 12 L14.5 19" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>',
     moon: '<path d="M15 3a8 8 0 1 0 6 13A9 9 0 0 1 15 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
+    portal: '<circle cx="12" cy="12" r="9.2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 12 m-5.5 0 a5.5 5.5 0 1 1 5.5 5.5 M12 12 m-2.4 0 a2.4 2.4 0 1 1 2.4 2.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/>',
     wave: '<path d="M2 12c3-3 5-3 8 0s5 3 8 0 4-2 4-2M2 17c3-3 5-3 8 0s5 3 8 0" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>',
     star: '<path d="M12 2l2.5 7H22l-6 4.5 2.5 7.5L12 16.5 5.5 21 8 13.5 2 9h7.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',
     mount: '<path d="M2 20l7-12 4 6 3-4 6 10z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>',

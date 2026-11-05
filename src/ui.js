@@ -152,8 +152,10 @@ function tokenH(m, z, i, o = {}) {
     + (st ? `<span class="tf-b${recr && (V.me.ki || 0) >= tfC ? ' ok' : ''}" role="button" tabindex="0" data-act="tf" data-i="${i}" data-tip="${esc('Transformation · ' + st.nm + ' (' + tfC + ' ki) : +' + st.a * mult(m) + '/+' + st.h * mult(m) + (st.kw ? ', ' + ((SET.kw[st.kw] || {}).n || '') : ''))}" aria-label="Transformer"><b>${tfC}</b></span>` : '')
     + fus.map((F, k) => `<span class="fus-b${recr && (V.me.ki || 0) >= F.c ? ' ok' : ''}" style="--k:${k}" role="button" tabindex="0" data-act="fuse" data-i="${i}" data-f="${F.id}" data-tip="${esc(F.nm + ' (' + F.c + ' ki) : ' + CD(F.a).n + ' + ' + CD(F.b).n + ' → ' + CD(F.r).n + '. Stats additionnées +' + F.bo + '/+' + F.bo + ', effets conservés.')}" aria-label="${esc('Fusion en ' + CD(F.r).n)}"><i>✚</i><b>${esc(CD(F.r).n)}</b><em>${F.c}</em></span>`).join('')
     + (m.tfn ? `<span class="tf-n">${esc(m.tfn)}</span>` : '') + (m.med ? '<span class="med-n">Méditation</span>' : '') : '';
+  const porU = z === 'bd' && V.me && V.pub && (V.pub.laws || []).some(l => l.k === 'portail') && !b.tok && !isComp(m), pf = V.me ? (V.me.pf || 0) : 0;
+  const porH = porU ? `<span class="por-b${recr && pf >= 1 ? ' ok' : ''}" role="button" tabindex="0" data-act="portal" data-i="${i}" data-tip="${esc('Portail (1 fluide, tu en as ' + pf + ') : ' + b.n + ' revient d\'une autre dimension en ' + ((TRIBES[b.tr] || {}).sg || trName(b.tr) || 'serviteur') + ' aléatoire de niveau ' + Math.max(1, tierOf(m) - 1) + ' ou ' + Math.min(6, tierOf(m) + 1) + ', en gardant ses bonus' + (m.g ? ', doré compris' : '') + '.')}" aria-label="Faire passer un portail">◎</span>` + (m.por ? `<span class="por-n" data-tip="${esc('Variante d\'une autre dimension (' + m.por + ' portail' + (m.por > 1 ? 's' : '') + (m.porOf ? ', ex-' + m.porOf : '') + ')')}">Dim. ${m.por}</span>` : '') : '';
   const mdH = md ? `<span class="ckm-b${mdOk ? ' ok' : ''}" role="button" tabindex="0" data-act="ckm" data-i="${i}" data-tip="${esc('Éveil (' + mdC + ' chakra, une seule fois) : +' + md.c * mult(m) + '/+' + md.c * mult(m) + ', puis chaque tour : ' + mTx(md.m, mult(m)))}" aria-label="Éveiller ce serviteur">${ckMarkH(mdC)}</span>` : '';
-  return `<div class="${cls}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.dmg ? ` data-dmg="${o.dmg}"` : ''}${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">${svg}${mdH}${kiH}${o.name === false ? '' : `<span class="mn-nm">${esc(b.n)}</span>`}${m.tr ? '<span class="tri">Triple !</span>' : o.trip ? '<span class="tri pulse">Triple !</span>' : ''}${o.extra || ''}</div>`;
+  return `<div class="${cls}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.dmg ? ` data-dmg="${o.dmg}"` : ''}${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">${svg}${mdH}${kiH}${porH}${o.name === false ? '' : `<span class="mn-nm">${esc(b.n)}</span>`}${m.tr ? '<span class="tri">Triple !</span>' : o.trip ? '<span class="tri pulse">Triple !</span>' : ''}${o.extra || ''}</div>`;
 }
 // pièce de coût en haut à gauche ; en vert avec l'ancien prix barré quand une réduction est active
 function costGemH(c, base) {
@@ -334,6 +336,15 @@ function dbCardH() {
     ${row('✦', '#3a2a5a', 'Les techniques', 'Kaméhaméha, Final Flash, Death Ball… s\'achètent en or et se lancent avec du ki. Signature : bonus en plus si tu la lances sur son propriétaire.')}
   </span>`;
 }
+// fiche de l'univers Rick et Morty : portails, inventions, familles
+function rmCardH() {
+  const row = (ic, col, t, x) => `<span class="nj-r"><i class="nj-i" style="--c:${col}"><span class="nj-tx">${ic}</span></i><span><b>${t}</b><small>${x}</small></span></span>`;
+  return `<span class="ban-law nj-law"><b>Les nouvelles mécaniques</b>
+    ${row('◎', '#1e5a3a', 'Les portails', 'Tu gagnes 1 fluide de portail par tour (3 au plus, il se garde). Clique sur ◎ sous un serviteur : il revient d\'une autre dimension, en personnage aléatoire de sa famille d\'un niveau au-dessus ou au-dessous, avec tous ses bonus (stats, mots-clés, effets, dorure).')}
+    ${row('⚗', '#3a2a5a', 'Les inventions de Rick', 'Cornichon, Plumbus, Boîte à Meeseeks, Voiture spatiale… s\'achètent et se lancent en or à l\'étagère de la taverne. Certaines donnent du fluide ou font passer un portail gratuit.')}
+    ${row('✦', '#5a3a12', 'Cinq familles', 'Smith : soutien entre membres. Citadelle : bonus par Rick ou Morty sur ton plateau (toutes familles). Aliens amis : Râles d\'agonie pour les alliés. Monstres : Début du combat. Méchants : vol de stats.')}
+  </span>`;
+}
 function ninjaCardH() {
   const row = (ic, col, t, x) => `<span class="nj-r"><i class="nj-i" style="--c:${col}">${ic}</i><span><b>${t}</b><small>${x}</small></span></span>`;
   return `<span class="ban-law nj-law"><b>Les nouvelles mécaniques</b>
@@ -354,7 +365,7 @@ function univPickH(sel, edit, actions) {
     return `<button type="button" class="ban${a ? ' on' : ''}${u.mech === 'chakra' ? ' ban-nj' : ''}" style="--uc:${esc(L.col)}" ${edit ? `data-act="univ" data-u="${k}"` : 'disabled'} aria-pressed="${a}">
       ${a ? '<span class="ban-rib">Levé</span>' : ''}
       <span class="ban-hd"><span class="ban-em">${icon(L.ic)}</span><span class="ban-t"><b>${esc(u.n)}</b>${L.lore ? `<i>${esc(L.lore)}</i>` : ''}</span></span>
-      ${u.mech === 'ki' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${dbCardH()}</span></span>` : u.mech === 'chakra' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${ninjaCardH()}</span></span>` : M ? `<span class="ban-law"><b>Loi · ${esc(M.n)}</b><small>${esc(M.d)}</small></span>` : ''}
+      ${u.mech === 'ki' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${dbCardH()}</span></span>` : u.mech === 'portail' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${rmCardH()}</span></span>` : u.mech === 'chakra' ? `<span class="lawdr${(V.lawOpen || {})[u.n] ? ' open' : ''}"><span class="lawdr-b" role="button" tabindex="0" data-act="lawtog" data-u="${esc(u.n)}" aria-expanded="${!!(V.lawOpen || {})[u.n]}">${(V.lawOpen || {})[u.n] ? 'Masquer les règles ▴' : 'Voir les règles ▾'}</span><span class="lawdr-c">${ninjaCardH()}</span></span>` : M ? `<span class="ban-law"><b>Loi · ${esc(M.n)}</b><small>${esc(M.d)}</small></span>` : ''}
       <span class="ban-fam">${fams.map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span>
       <span class="ban-her">${heroes.slice(0, 6).map(h => `<span class="ban-h" title="${esc(HEROES[h].n)}">${faceH('art-h-' + h)}</span>`).join('')}<small>${heroes.length} héros</small></span>
     </button>`;
@@ -494,7 +505,7 @@ function gameH() {
     const heroZone = `<section class="hero-zone">
       <div class="hz-left">${trainH(d, me, canAct)}${me.cp || (!NJ_COMP && (d.laws || []).some(l => l.k === 'chakra')) ? '' : `<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span>`}</div>
       <div class="hz-hero${me.haw ? ' haw' : ''}${me.haw && V.hawSeen !== me.hawId ? ' haw-new' : ''}" data-hov="hero">${me.haw ? hawFrameH(hero) : ''}<span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? heroArt(me.hero, me.haw) : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}${mkOrbsH(d, me)}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span>${HQ ? (me.haw ? `<span class="hq done">${esc(hero.awn || 'Éveillé')}</span>` : `<span class="hq" data-tip="${esc('Quête d\'éveil : ' + HQ.tx + ' Récompense : ' + HEROES[me.hero].aw.nm + ' (nouveau pouvoir).')}"><i style="--p:${Math.min(1, (me.qp || 0) / HQ.n)}"></i>${Math.min(me.qp || 0, HQ.n)}/${HQ.n}</span>`) : ''}</div>
-      <div class="hz-right"><span class="hov" data-hov="pow">${power}</span><span class="purses">${coins}${canAct ? ckGauge(d, me) + kiGauge(d, me) : ''}</span>${rsvH(d, me)}</div>
+      <div class="hz-right"><span class="hov" data-hov="pow">${power}</span><span class="purses">${coins}${canAct ? ckGauge(d, me) + kiGauge(d, me) + pfGauge(d, me) : ''}</span>${rsvH(d, me)}</div>
       <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}"><span class="bell-shine" aria-hidden="true"></span>${icon('bell')}<span class="bell-t">${me.rdy ? 'Prêt !' : 'Prêt'}</span><small class="bell-s">${me.rdy ? 'en attente' : 'fin du tour'}</small></button></div></section>`;
     const n = me.hd.length;
     const hand = fighting ? '' : `<section class="hand" data-drop="hd" aria-label="Ta main · ${n}/10"><div class="fan${n > 7 ? ' many' : n > 4 ? ' some' : ''}" style="--n:${n}">${n ? me.hd.map((m, i) => { const o = i - (n - 1) / 2, op = { drag:canAct, style:`--o:${f1(o)};--o2:${f1(o * o)}` }; return m.sp ? spellCardH(m.sp, 'hd', i, op) : cardH(m, 'hd', i, op); }).join('') : ''}</div></section>`;
@@ -667,6 +678,12 @@ function kiGauge(d, me) {
   if (!(d.laws || []).some(l => l.k === 'ki')) return '';
   const ki = me.ki || 0, pm = htr(me, 'pmed'), inc = Math.min(KI_MAX - ki, (me.bd || []).filter(m => m.med).reduce((t, m) => t + tierOf(m) * (m.g ? 2 : 1) + (pm ? pm.n || 1 : 0), 0));
   return `<div class="purse kip" aria-label="${ki} ki" data-tip="Ki : mets un serviteur en méditation (☯) pour en gagner autant que son niveau ; il ne combattra pas. Le ki paie les transformations et certains pouvoirs.${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ki}<small> ki</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:15 }, (_, k) => `<i class="kic${k < ki ? '' : ' off'}"></i>`).join('')}</span>${inc ? `<span class="inc">+${inc} ki au prochain tour</span>` : ''}</div>`;
+}
+// Rick et Morty : la jauge de fluide de portail (3 au plus)
+function pfGauge(d, me) {
+  if (!(d.laws || []).some(l => l.k === 'portail')) return '';
+  const pf = me.pf || 0, nx = Math.min(PF_MAX - pf, 1 + (me.pfn || 0));
+  return `<div class="purse pfp" aria-label="${pf} fluide de portail sur ${PF_MAX}" data-tip="Fluide de portail : +1 au début de chaque tour (${PF_MAX} au plus, il se garde). Clique sur ◎ sous un serviteur pour le faire passer un portail : il revient en variante de sa famille, d'un niveau au-dessus ou au-dessous, avec tous ses bonus.${nx > 0 ? ' +' + nx + ' au prochain tour.' : ''}"><b>${pf}<small>/${PF_MAX}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:PF_MAX }, (_, k) => `<i class="pfc${k < pf ? '' : ' off'}"></i>`).join('')}</span>${me.pfn ? `<span class="inc">+${me.pfn} fluide au prochain tour</span>` : ''}</div>`;
 }
 function ckGauge(d, me) {
   const law = (d.laws || []).find(l => l.k === 'chakra'); if (!law) return '';
@@ -1000,12 +1017,13 @@ function heroPickRowH(d, me) {
       </button>
       ${on ? `<button class="t-go hp-go" data-act="hero" data-h="${h}">Choisir</button>` : ''}
     </div>`; };
-  const tab = V.ruleTab || 'tour', rules = nin && (d.laws || []).some(l => l.k === 'chakra') && V.hpRules;
+  const tab = V.ruleTab || 'tour', rules = nin && (d.laws || []).some(l => l.k === 'chakra') && V.hpRules, por = (d.laws || []).some(l => l.k === 'portail');
   return `<div class="ov hp-ov"><div class="hp-wrap">
     <h2 class="hp-t">Choisis ton héros</h2><p class="hp-sub">Survole un héros pour voir son pouvoir, clique pour le choisir.</p>${rollInfoH(me)}
     <div class="hp-row">${me.ho.map(card).join('')}</div>
     <div class="hp-infos">${pcs.join('')}<p class="hp-ph">Survole un héros pour voir son pouvoir.</p></div>
     ${nin && (d.laws || []).some(l => l.k === 'chakra') ? `<button class="btn sm hp-rb" data-act="hprules">${rules ? 'Masquer les règles' : 'Comment on joue ?'}</button>` : ''}
+    ${por ? `<button class="btn sm hp-rb" data-act="hprules">${V.hpRules ? 'Masquer les règles' : 'Comment on joue ?'}</button>${V.hpRules ? `<div class="hpick-r hp-rules hp-rm">${rmCardH()}</div>` : ''}` : ''}
     ${rules ? `<div class="hpick-r hp-rules"><div class="rl-tabs" role="tablist">${RULE_TABS.map(([k, n]) => `<button role="tab" class="rl-tab${k === tab ? ' on' : ''}" data-act="rtab" data-k="${k}" aria-selected="${k === tab}">${n}</button>`).join('')}</div><div class="rl-body">${ruleTabH(tab)}</div></div>` : ''}
   </div></div>`;
 }
@@ -1187,6 +1205,7 @@ function doAct(act, btn) {
     case 'ckm': sendAct({ t:'ckm', i:+btn.dataset.i }); break;
     case 'med': sendAct({ t:'med', i:+btn.dataset.i }); break;
     case 'tf': sendAct({ t:'tf', i:+btn.dataset.i }); break;
+    case 'portal': if (btn.classList.contains('ok')) sendAct({ t:'portal', i:+btn.dataset.i }); else toast((V.me && (V.me.pf || 0) < 1 ? 'Il te faut 1 fluide de portail (tu en gagnes 1 par tour). ' : '') + (btn.dataset.tip || '')); break;
     case 'fuse': if (btn.classList.contains('ok')) sendAct({ t:'fuse', i:+btn.dataset.i, f:btn.dataset.f }); else toast(btn.dataset.tip || ''); break;
     case 'hprules': V.hpRules = !V.hpRules; render(); if (V.hpRules) requestAnimationFrame(() => { const r = document.querySelector('.hp-rules'); if (r) r.scrollIntoView({ block:'end', behavior:'smooth' }); }); break;
     case 'rwst': rwSet(((V.rw || 0) + (+btn.dataset.d) + 10) % 10); render(); break;
@@ -2770,6 +2789,13 @@ html.lite .awk-go{animation:none}
 @keyframes fuspulse{from{box-shadow:0 0 0 1.5px #120a06}to{box-shadow:0 0 0 1.5px #120a06,0 0 12px 2px #7fd0ff}}
 @keyframes tfpulse{from{transform:scale(1)}to{transform:scale(1.12)}}
 .kip b small{font-size:.6em;color:#9fd8ff}.kip .kic{display:block;width:9px;height:9px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e0f6ff,#2a8ad8);box-shadow:0 0 0 1px #0a1a2a}.kip .kic.off{opacity:.2}
+/* Rick et Morty : bouton de portail sous le serviteur, étiquette de dimension, jauge de fluide */
+.por-b{position:absolute;left:-6%;top:4%;z-index:7;width:clamp(20px,26%,36px);aspect-ratio:1;display:grid;place-items:center;border-radius:50%;cursor:pointer;font-size:clamp(13px,2vh,22px);line-height:1;color:#d8ffe8;background:radial-gradient(circle at 40% 35%,#3fbf6f,#0f3a22);box-shadow:0 0 0 2px #120a06,0 0 0 3.5px #7fe8a8;filter:grayscale(.7) brightness(.75);transition:transform .15s}
+.por-b.ok{filter:none;animation:porspin 2.4s linear infinite}.por-b:hover{transform:scale(1.12)}
+@keyframes porspin{from{box-shadow:0 0 0 2px #120a06,0 0 0 3.5px #7fe8a8,0 0 6px 1px rgba(63,191,111,.6)}50%{box-shadow:0 0 0 2px #120a06,0 0 0 3.5px #d8ffe8,0 0 14px 3px rgba(63,191,111,.9)}to{box-shadow:0 0 0 2px #120a06,0 0 0 3.5px #7fe8a8,0 0 6px 1px rgba(63,191,111,.6)}}
+.por-n{position:absolute;left:50%;top:-6%;transform:translateX(-50%);z-index:6;padding:1px 6px;border-radius:99px;font:700 clamp(9px,1.2vh,12px) var(--f-label),serif;white-space:nowrap;pointer-events:auto;background:#0f3a22;color:#d8ffe8;box-shadow:0 0 0 1px #7fe8a8}
+.pfp b small{font-size:.6em;color:#9fe8b8}.pfp .pfc{display:block;width:11px;height:11px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e0ffe8,#2a9a58 60%,#0f3a22);box-shadow:0 0 0 1px #0a1a10,0 0 6px rgba(63,191,111,.7)}.pfp .pfc.off{opacity:.2;box-shadow:0 0 0 1px #0a1a10}
+.hp-rm{padding:10px 14px}.hp-rm .nj-law{display:grid;gap:8px}
 .pwb-cost.kic{background:radial-gradient(circle at 35% 30%,#e0f6ff,#2a8ad8)}.pwb-cost.kic b{font:700 18px var(--f-disp),serif;color:#0a1a2a}
 .rl-body{overflow:auto;min-height:0;padding-right:4px;text-align:left}
 .rl-p p,.rl-ul li{font-size:13px;line-height:1.45;color:#f1e4c6;margin:0 0 8px}.rl-p b,.rl-ul b,.rl-step b{color:#ffd86a}

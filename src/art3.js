@@ -576,9 +576,15 @@ function dbFor(id) {
   };
   for (const id in ARCH) { let h = 7; for (const c of id) h = (h * 31 + c.charCodeAt(0)) >>> 0; const o = Object.assign({ seed:h, noband:1, iris:'#3a2a1a', eyes:'round' }, ARCH[id]); HART[id] = () => `<rect width="100" height="100" fill="#2a1a10"/>` + animeNinja(o); }
   // cartes Dragon Ball : en attendant tes images, un médaillon neutre (couleur de la famille, étoiles du niveau)
-  for (const id in (typeof DEFAULT_CARDS !== 'undefined' ? DEFAULT_CARDS : {})) if (/^(d_[a-z]+[0-9]*|tk_saiba|tk_sold)$/.test(id) && !/^d_[a-z][0-9]+$/.test(id)) {
+  // héros Rick et Morty : en attendant tes images, un tourbillon de portail neutre (pas de visage)
+  for (const id in (typeof HEROES !== 'undefined' ? HEROES : {})) if (/^rh_/.test(id)) { let h = 11; for (const c of id) h = (h * 31 + c.charCodeAt(0)) >>> 0; const r = mulberry(h), rot = Math.floor(r() * 360), n = 3 + Math.floor(r() * 2);
+    const arms = Array.from({ length:n }, (_, k) => { const a0 = k * 360 / n; return `<path d="M0 0 C 10 -4, 18 -16, 30 -14 C 24 -10, 20 -4, 22 4" fill="none" stroke="#b8ffd0" stroke-width="5" stroke-linecap="round" opacity=".85" transform="rotate(${f1(a0)})"/>`; }).join('');
+    HART[id] = () => `<rect width="100" height="100" fill="#0b2a18"/>${softGlow(50, 52, 34, '#3fbf6f', .8)}<g transform="translate(50 52) rotate(${rot})"><circle r="30" fill="#1f8a4a" stroke="#0a3a1e" stroke-width="2.4"/><circle r="21" fill="#49d884"/><circle r="12" fill="#c8ffe0"/>${arms}</g>${[[16, 20], [84, 26], [20, 84], [80, 80]].map(([x, y]) => Ci(x, y, 1.8, '#d8ffe8', 'opacity=".8"')).join('')}`; }
+  // cartes Dragon Ball et Rick et Morty : en attendant tes images, un médaillon neutre (couleur de la famille, étoiles du niveau)
+  for (const id in (typeof DEFAULT_CARDS !== 'undefined' ? DEFAULT_CARDS : {})) if (/^(d_[a-z]+[0-9]*|tk_saiba|tk_sold|rm_[a-z0-9]+|tk_meeseeks|tk_cronen)$/.test(id) && !/^d_[a-z][0-9]+$/.test(id)) {
     const b = DEFAULT_CARDS[id], col = (SET.tribes.find(x => x.id === b.tr) || {}).col || '#e8701a', nT = Math.max(1, b.t || 1);
     const stars = Array.from({ length:nT }, (_, k) => { const a = -Math.PI / 2 + k * 2 * Math.PI / nT, r = nT > 1 ? 9 : 0; return `<path d="${starD(50 + Math.cos(a) * r, 52 + Math.sin(a) * r, 4.6, 2, 5)}" fill="#c8301a"/>`; }).join('');
-    ART[id] = () => `<rect width="100" height="100" fill="${col}"/><circle cx="50" cy="52" r="26" fill="#ffb02a" stroke="#7a3a08" stroke-width="2.4"/><circle cx="42" cy="44" r="7" fill="#ffe6a0" opacity=".7"/>${stars}`;
+    const rm = /^(rm_|tk_meeseeks|tk_cronen)/.test(id);   // Rick et Morty : portail vert ; Dragon Ball : boule de cristal
+    ART[id] = rm ? () => `<rect width="100" height="100" fill="${col}"/><circle cx="50" cy="52" r="27" fill="#1a5a2a" stroke="#0a2a12" stroke-width="2.4"/><circle cx="50" cy="52" r="22" fill="none" stroke="#9cff6a" stroke-width="4" stroke-dasharray="30 10"/><circle cx="50" cy="52" r="14" fill="none" stroke="#c8ff9a" stroke-width="3" stroke-dasharray="18 8"/><circle cx="50" cy="52" r="6" fill="#e8ffd0"/>${stars.replace(/#c8301a/g, '#ffe36a')}` : () => `<rect width="100" height="100" fill="${col}"/><circle cx="50" cy="52" r="26" fill="#ffb02a" stroke="#7a3a08" stroke-width="2.4"/><circle cx="42" cy="44" r="7" fill="#ffe6a0" opacity=".7"/>${stars}`;
   }
 })();

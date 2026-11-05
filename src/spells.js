@@ -6,7 +6,7 @@
    ===================================================================== */
 const SP_TYPES = {
   renf:{ n:'Renfort', col:'#c8963e' }, eco:{ n:'Économie', col:'#4f8a3a' }, arc:{ n:'Arcane', col:'#3f6fb0' },
-  ombre:{ n:'Ombre', col:'#5a3d7a' }, comb:{ n:'Combat', col:'#a8322a' }, nat:{ n:'Nature', col:'#3f8a6a' }, nin:{ n:'Technique', col:'#2a5a9a' }, eq:{ n:'Équipement', col:'#8a6a3a' }, cof:{ n:'Coffre', col:'#a8742a' },
+  ombre:{ n:'Ombre', col:'#5a3d7a' }, comb:{ n:'Combat', col:'#a8322a' }, nat:{ n:'Nature', col:'#3f8a6a' }, nin:{ n:'Technique', col:'#2a5a9a' }, inv:{ n:'Invention', col:'#2f8a5a' }, eq:{ n:'Équipement', col:'#8a6a3a' }, cof:{ n:'Coffre', col:'#a8742a' },
 };
 const SPELLS = {
   // objets de l'univers Dragon Ball
@@ -23,6 +23,17 @@ const SPELLS = {
   dt_final:{ db:1, n:'Final Flash', t:5, c:3, kc:5, ty:'nin', tg:1, fx:[{ k:'fire', d:8 }, { k:'tbuff', a:2, h:0 }], sig:['d_vegeta', 'd_roivegeta'], sgx:[{ k:'tbuff', a:4, h:4 }], tx:'Prochain combat : 8 dégâts à l\'ennemi ; le serviteur ciblé gagne +2 attaque.', stx:'+4/+4 de plus' },
   dt_death:{ db:1, n:'Death Ball', t:5, c:3, kc:5, ty:'nin', tg:1, fx:[{ k:'fire', d:7 }, { k:'buffall', a:1, h:0, tb:'d_fre' }], sig:['d_freezer', 'd_cooler', 'd_cold'], sgx:[{ k:'tbuff', a:4, h:4 }], tx:'Prochain combat : 7 dégâts à l\'ennemi ; tes Freezer gagnent +1/+0.', stx:'+4/+4' },
   dt_genki:{ db:1, n:'Genkidama', t:6, c:3, kc:6, ty:'nin', tg:1, fx:[{ k:'buffall', a:2, h:2 }], sig:['d_goku', 'd_uub'], sgx:[{ k:'buffall', a:1, h:1 }], tx:'L\'énergie de tous : tes serviteurs gagnent +2/+2.', stx:'+1/+1 de plus pour tous' },
+  // ----- inventions de Rick (univers Rick et Morty) : achetées et lancées en or, à l'étagère de la taverne -----
+  ri_cornichon:{ rm:1, n:'Cornichon', t:1, c:1, ty:'inv', tg:1, fx:[{ k:'tbuff', a:1, h:3 }], tx:'Le serviteur ciblé se change un instant en cornichon : il gagne +1/+3.' },
+  ri_batterie:{ rm:1, n:'Batterie du microvers', t:1, c:1, ty:'inv', fx:[{ k:'pf', n:1 }, { k:'inc', n:1 }], tx:'Un microvers travaille pour toi : gagne 1 fluide de portail et 1 or au début de ton prochain tour.' },
+  ri_laser:{ rm:1, n:'Pistolet laser', t:2, c:1, ty:'inv', fx:[{ k:'fire', d:4 }], tx:'Prochain combat : 4 dégâts à l\'ennemi au début du combat.' },
+  ri_casque:{ rm:1, n:'Casque de rêves', t:2, c:2, ty:'inv', tg:1, fx:[{ k:'tbuff', a:2, h:2 }, { k:'trm', a:1, h:1 }], tx:'Le serviteur ciblé gagne +2/+2, et +1/+1 de plus si c\'est un Rick ou un Morty.' },
+  ri_meeseeks:{ rm:1, n:'Boîte à Meeseeks', t:2, c:2, ty:'inv', fx:[{ k:'summon', card:'tk_meeseeks', n:2 }], tx:'Appuie sur le bouton : invoque 2 Mr. Meeseeks (2/2).' },
+  ri_plumbus:{ rm:1, n:'Plumbus', t:3, c:2, ty:'inv', tg:1, fx:[{ k:'tbuff', a:3, h:3 }], tx:'Tout le monde a un plumbus : le serviteur ciblé gagne +3/+3.' },
+  ri_graine:{ rm:1, n:'Graine de méga-arbre', t:3, c:3, ty:'inv', tg:1, fx:[{ k:'ttmp', a:5, h:0 }, { k:'tbuff', a:1, h:1 }], tx:'Le serviteur ciblé gagne +5 attaque au prochain combat, et +1/+1 pour de bon.' },
+  ri_serum:{ rm:1, n:'Sérum d\'amour', t:4, c:2, ty:'inv', tg:1, fx:[{ k:'tfam', a:1, h:1 }], tx:'Le serviteur ciblé gagne +1/+1 par serviteur de sa famille sur ton plateau (lui compris).' },
+  ri_beurre:{ rm:1, n:'Robot beurre', t:4, c:3, ty:'inv', fx:[{ k:'disc' }], tx:'Il passe le beurre… et découvre un serviteur d\'un niveau au-dessus de ta taverne : choisis-en un parmi trois.' },
+  ri_voiture:{ rm:1, n:'Voiture spatiale', t:5, c:3, ty:'inv', tg:1, fx:[{ k:'portal' }, { k:'tbuff', a:2, h:2 }], tx:'Le serviteur ciblé passe un portail sans dépenser de fluide (variante de sa famille, niveau ±1, bonus gardés), puis gagne +2/+2.' },
   sp_pinte:{ n:'Pinte offerte', t:1, c:1, ty:'renf', tg:1, tx:'Donne +2/+1 à un de tes serviteurs.' },
   sp_tournee:{ n:'Nouvelle tournée', t:1, c:0, ty:'eco', tx:'Rafraîchit la taverne gratuitement.' },
   sp_placement:{ n:'Placement prudent', t:1, c:1, ty:'eco', tx:'Au début de ton prochain tour, gagne 2 or.' },
@@ -123,7 +134,8 @@ const SPELLS = {
 const SPELL_IDS = Object.keys(SPELLS);
 function drawSpell(t, el) { const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra');
   if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'ki')) { const ids = SPELL_IDS.filter(id => SPELLS[id].db && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
-  if (nin && !NJ_TECH) { const ids = SPELL_IDS.filter(id => SPELLS[id].cs && SPELLS[id].t <= t); const w = ids.map(id => SPELLS[id].rare ? 0.35 : 1), tot = w.reduce((a, b) => a + b, 0); let r = Math.random() * tot; for (let i = 0; i < ids.length; i++) { r -= w[i]; if (r <= 0) return { sp:ids[i], u:UID++ }; } return ids.length ? { sp:ids[0], u:UID++ } : null; } const ev = typeof H !== 'undefined' && H.G && H.G.eveil; const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !SPELLS[id].db && !!SPELLS[id].nin === !!nin && (!SPELLS[id].forb || ev) && (!el || SPELLS[id].el === el)); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
+  if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'portail')) { const ids = SPELL_IDS.filter(id => SPELLS[id].rm && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }   // Rick et Morty : seulement les inventions
+  if (nin && !NJ_TECH) { const ids = SPELL_IDS.filter(id => SPELLS[id].cs && SPELLS[id].t <= t); const w = ids.map(id => SPELLS[id].rare ? 0.35 : 1), tot = w.reduce((a, b) => a + b, 0); let r = Math.random() * tot; for (let i = 0; i < ids.length; i++) { r -= w[i]; if (r <= 0) return { sp:ids[i], u:UID++ }; } return ids.length ? { sp:ids[0], u:UID++ } : null; } const ev = typeof H !== 'undefined' && H.G && H.G.eveil; const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !SPELLS[id].db && !SPELLS[id].rm && !!SPELLS[id].nin === !!nin && (!SPELLS[id].forb || ev) && (!el || SPELLS[id].el === el)); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
 
 // technique Dragon Ball sans effet ciblé : lançable sans lanceur quand le plateau est vide (pas de bonus Signature)
 const dbNoTgt = S => !!(S && S.db && !(S.fx || []).some(s => ['tbuff', 'ttmp', 'tkwp', 'tpoing', 'henge'].includes(s.k)));
@@ -135,7 +147,8 @@ function spellBlock(p, id, tgt) {
   if (S.tg && !tgt && !(dbNoTgt(S) && !p.bd.length)) return 'Choisis un de tes serviteurs.';
   if (S.hid && p.bd.filter(m => tribeOk(m, 'n_' + S.el)).length < S.hid) return `Hiden : il faut ${S.hid} serviteurs ${ELS[S.el] ? ELS[S.el].n : ''} sur ton plateau.`;
   if (S.hp && p.hp <= S.hp) return `Kinjutsu : il te faut plus de ${S.hp} PV.`;
-  if (S.nin && S.fx && S.fx.some(s => s.k === 'summon') && p.bd.length >= 7) return 'Ton plateau est plein.';
+  if ((S.nin || S.rm) && S.fx && S.fx.some(s => s.k === 'summon') && p.bd.length >= 7) return 'Ton plateau est plein.';
+  if (S.rm && S.fx && S.fx.some(s => s.k === 'portal') && tgt && (CD(tgt.c).tok || isComp(tgt))) return 'Un jeton ne peut pas passer le portail.';
   if ((id === 'nj_doubles' || id === 'nj_invoc') && p.bd.length >= 7) return 'Ton plateau est plein.';
   if (S.eq && !(C[tgt.c] && C[tgt.c].comp)) return 'Un équipement se pose sur ton compagnon.';
 
@@ -214,6 +227,12 @@ function techSteps(G, p, steps, tgt, tg, x) {
       case 'winup': winUp(p); break;
       case 'uc': p.uc = Math.max(0, (p.uc || 0) - s.n); break;
       case 'disc': { const t = Math.min(6, p.t + 1), opts = []; for (let i = 0; i < 3; i++) { const m = drawOne(G, 6, t) || drawAny(t); if (m) opts.push(m); } if (opts.length) p.disc = opts; break; }
+      // ----- inventions de Rick -----
+      case 'pf': pfAdd(p, s.n * x); break;
+      case 'inc': p.inc = p.inc || []; p.inc[0] = (p.inc[0] || 0) + s.n * x; break;
+      case 'trm': if (tgt && isRM(tgt)) buff(tgt, a, h); break;
+      case 'tfam': if (tgt) { const n = p.bd.filter(m => tribeOk(m, tribe(tgt))).length; buff(tgt, a * n, h * n); } break;
+      case 'portal': if (tgt) { const nm = doPortal(G, p, tgt); if (nm) tgt = nm; } break;
     }
   }
 }
@@ -237,6 +256,7 @@ function castSpell0(G, p, hi, tg) {
   if (S.nin && (HX(p) && HX(p).pw && HX(p).pw.k === 'ptechc') && !(p.rsv || []).length) p.g += 1;
   p.lastCast = id;
   if (S.db && S.fx) { techSteps(G, p, S.fx, tgt, tg, 1); if (tgt && S.sig && S.sig.includes(tgt.c)) withSrc('Signature · ' + S.n, () => techSteps(G, p, S.sgx, tgt, tg, 1)); }
+  else if (S.rm && S.fx) techSteps(G, p, S.fx, tgt, tg, 1);
   else if (S.nin && S.fx) techRun(G, p, S, it0, tgt, tg, sage0);
   else switch (id) {
     case '__db': break;
@@ -360,6 +380,9 @@ function aiTarget(p, id) {
   if (S.sig && p.bd.some(m => S.sig.includes(m.c) && !m.med)) return by(m => m.a + m.h, m => S.sig.includes(m.c) && !m.med);
   if (S.db) return by(m => m.a + m.h + tierOf(m) * 2, m => !m.med);
   if (st.includes('henge')) return by(m => -tierOf(m) * 10 + m.a + m.h, m => tierOf(m) < 6 && !CD(m.c).tok);
+  if (st.includes('portal')) return by(m => -tierOf(m) * 10 + m.a + m.h - (CD(m.c).a + CD(m.c).h) * (m.g ? 3 : 1), m => !CD(m.c).tok && !isComp(m));
+  if (st.includes('tfam')) { const cnt = {}; p.bd.forEach(m => { cnt[tribe(m)] = (cnt[tribe(m)] || 0) + 1; }); return by(m => (cnt[tribe(m)] || 0) * 10 + m.a + m.h); }
+  if (st.includes('trm')) return by(m => (isRM(m) ? 10 : 0) + m.a + m.h + tierOf(m) * 2, m => !CD(m.c).tok);
   if (st.includes('tpoing')) return by(m => m.h);
   if (st.includes('ttmp') || id === 'nj_oyoroi') return by(m => m.a + m.h / 2, m => !CD(m.c).tok);
   if (st.includes('tbuff')) return by(m => m.a + m.h + tierOf(m) * 2 + (has(m, 'w') ? 4 : 0), m => !CD(m.c).tok);
@@ -470,6 +493,19 @@ Object.assign(SPART, {
   dt_final: () => softGlow(50, 52, 38, '#ffe36a', .55) + P('M10 34 L90 26 L90 78 L10 70 Z', '#fff2a0', 'opacity=".8"') + Ci(20, 52, 16, '#ffffff', 'filter="url(#fx-glow)"'),
   dt_death: () => softGlow(50, 52, 36, '#ff6a3a', .45) + Ci(50, 50, 26, '#ff7a3a', so()) + Ci(50, 50, 18, '#ffb070', '') + Ci(44, 42, 6, '#ffe0c0', ''),
   dt_genki: () => softGlow(50, 52, 40, '#9fe4ff', .55) + Ci(50, 50, 28, '#bff0ff', 'filter="url(#fx-glow)"') + Ci(50, 50, 20, '#e8fbff', '') + [[-30, 30], [30, 32], [0, 40]].map(([x, y]) => Ln(`M${50 + x} ${50 + y} L50 50`, '#9fe4ff', 1.6)).join(''),
+});
+// inventions de Rick : des objets abstraits (jamais de personnage)
+Object.assign(SPART, {
+  ri_cornichon: () => softGlow(50, 52, 32, '#9fe36a', .35) + '<g transform="rotate(-32 50 52)">' + E(50, 52, 14, 32, '#5fa83a', so()) + E(46, 46, 6, 18, '#8fd05a', 'opacity=".55"') + [[44, 30], [56, 40], [42, 60], [57, 68], [50, 78]].map(([x, y]) => Ci(x, y, 1.8, '#2f6a1e')).join('') + '</g>',
+  ri_batterie: () => softGlow(50, 52, 32, '#9fe4ff', .3) + `<rect x="24" y="22" width="52" height="60" rx="6" fill="#2a3a5a" ${so()}/>` + `<rect x="40" y="14" width="20" height="10" rx="3" fill="#8a929c" ${so(1.8)}/>` + `<rect x="30" y="30" width="40" height="44" rx="4" fill="#0c1a3a"/>` + [[38, 40, 1.6], [56, 36, 1.2], [46, 52, 2], [62, 58, 1.4], [36, 64, 1.2], [52, 68, 1]].map(([x, y, r]) => Ci(x, y, r, '#e8fcff', GLOW)).join('') + Ci(50, 50, 9, 'none', 'stroke="#6fd0ff" stroke-width="1.2" opacity=".7"') + Ln('M30 88 H70', '#9fe36a', 3),
+  ri_laser: () => softGlow(50, 52, 34, '#ff7ad8', .3) + P('M18 40 L62 36 L66 48 L46 50 L44 66 L30 66 L34 50 L18 50 Z', '#c8ccd4', so()) + P('M62 36 L80 38 L80 46 L66 48 Z', '#5a3d7a', so(1.8)) + Ci(40, 42, 4, '#ff5ad0', 'stroke="#24160d" stroke-width="1.4"') + Ln('M80 42 L94 42', '#ff7ad8', 4, GLOW) + Ln('M84 34 L90 30 M84 50 L90 54', '#ffb0ea', 2),
+  ri_casque: () => softGlow(50, 56, 32, '#b48cff', .35) + P('M20 62 C 20 30, 80 30, 80 62 L80 72 L20 72 Z', '#6a4ab8', so()) + P('M28 60 C 28 40, 72 40, 72 60 Z', '#9a7ad8', 'opacity=".5"') + Ln('M14 54 C 8 44, 12 30, 24 26 M86 54 C 92 44, 88 30, 76 26', '#c8ccd4', 2.6) + Ci(24, 26, 4, '#ffe39a', so(1.4)) + Ci(76, 26, 4, '#ffe39a', so(1.4)) + Ln('M30 80 H70', OUT, 4) + [[36, 50], [50, 46], [64, 50]].map(([x, y]) => P(starD(x, y, 3, 1.2, 4), '#fff6c8', GLOW)).join(''),
+  ri_meeseeks: () => softGlow(50, 54, 32, '#6fc8ff', .35) + `<rect x="22" y="34" width="56" height="48" rx="6" fill="#3a8ad8" ${so()}/>` + P('M22 34 L34 22 L90 22 L78 34 Z', '#5aa8f0', so(1.8)) + P('M78 34 L90 22 L90 70 L78 82 Z', '#2a6ab0', so(1.8)) + Ci(50, 58, 11, '#e84a3a', so()) + Ci(50, 58, 6, '#ff8a7a', 'opacity=".7"') + Ln('M30 72 H42 M58 72 H70', '#9fd8ff', 2),
+  ri_plumbus: () => softGlow(50, 52, 32, '#ff9ab8', .35) + P('M30 70 C 18 60, 22 36, 40 34 C 50 32, 56 40, 54 50 C 52 60, 44 70, 30 70 Z', '#e87aa0', so()) + P('M52 44 C 62 36, 78 36, 84 46 C 88 54, 80 62, 70 58 C 62 56, 56 52, 52 44 Z', '#f0a0c0', so(1.8)) + [[36, 46], [40, 58], [66, 48], [74, 54]].map(([x, y]) => Ci(x, y, 2.4, '#b04a70')).join('') + Ln('M34 72 L30 86 M44 70 L46 84', '#d86a90', 4) + Ln('M62 36 C 60 26, 68 22, 72 28', '#c8ccd4', 3),
+  ri_graine: () => softGlow(50, 56, 30, '#b6ff9a', .3) + P('M18 100 Q50 80 82 100 Z', '#5a3a22', so()) + E(50, 76, 16, 11, '#a8744a', so()) + E(46, 72, 6, 3, '#d8a870', 'opacity=".6"') + Ln('M50 66 C 50 50, 44 40, 48 24', '#3f7a2a', 4.4) + P('M48 44 C 36 42, 28 34, 26 22 C 38 22, 46 30, 48 44 Z', '#7fd05a', so(1.8)) + P('M50 36 C 60 30, 70 24, 74 12 C 62 12, 54 22, 50 36 Z', '#8fe36a', so(1.8)) + [[30, 54], [72, 44], [60, 60]].map(([x, y]) => P(starD(x, y, 3, 1.2, 4), '#fff6c8', GLOW)).join(''),
+  ri_serum: () => softGlow(50, 58, 30, '#ff8ab0', .4) + P('M42 18 L58 18 L58 40 C 74 46, 80 64, 70 78 C 64 86, 36 86, 30 78 C 20 64, 26 46, 42 40 Z', '#e8f4f6', so() + ' opacity=".9"') + P('M29 64 C 40 60, 60 68, 71 62 C 73 70, 70 76, 66 80 C 58 86, 42 86, 34 80 C 30 76, 27 70, 29 64 Z', '#ff5a8a') + `<rect x="40" y="12" width="20" height="7" rx="2" fill="#a0703e" ${so(1.6)}/>` + [[46, 56], [56, 50], [50, 44]].map(([x, y]) => P(`M${x} ${y + 3} C ${x - 4} ${y}, ${x - 3} ${y - 5}, ${x} ${y - 2} C ${x + 3} ${y - 5}, ${x + 4} ${y}, ${x} ${y + 3} Z`, '#ffb0c8', GLOW)).join('') + Ln('M38 50 C 36 56, 36 60, 38 64', '#fff', 1.6, 'opacity=".7"'),
+  ri_beurre: () => softGlow(50, 56, 30, '#ffe39a', .3) + `<rect x="32" y="46" width="36" height="30" rx="5" fill="#c4c9ce" ${so()}/>` + `<rect x="38" y="32" width="24" height="16" rx="4" fill="#d8dce4" ${so(1.8)}/>` + Ci(45, 40, 2.6, '#2a6ad8') + Ci(55, 40, 2.6, '#2a6ad8') + Ci(38, 82, 5, '#3a3a44', so(1.6)) + Ci(62, 82, 5, '#3a3a44', so(1.6)) + Ln('M30 56 L18 50 M70 56 L82 50', '#8a929c', 4) + `<rect x="8" y="42" width="16" height="10" rx="2" fill="#ffd84a" ${so(1.6)}/>` + `<rect x="76" y="42" width="16" height="10" rx="2" fill="#ffd84a" ${so(1.6)}/>` + Ln('M50 32 L50 24', '#8a929c', 2) + Ci(50, 22, 2.4, '#ff5a3a', GLOW),
+  ri_voiture: () => softGlow(50, 56, 34, '#9fe4ff', .35) + E(50, 60, 36, 12, '#8a929c', so()) + P('M26 56 C 26 34, 74 34, 74 56 Z', '#bfe8ff', so(1.8) + ' opacity=".85"') + E(50, 60, 24, 6, '#5a626c', 'opacity=".6"') + [[22, 60], [38, 66], [62, 66], [78, 60]].map(([x, y]) => Ci(x, y, 2.6, '#9fe36a', GLOW)).join('') + Ln('M34 76 L28 90 M66 76 L72 90', '#6fd0ff', 3, 'opacity=".8"') + Ci(50, 44, 3, '#ffffff', 'opacity=".7"'),
 });
 Object.assign(SPART, { cs_hosenka:SPART.nj_souffle, cs_kibaku:SPART.nj_sceau, cs_gokakyu:SPART.nj_boule, cs_amaterasu:SPART.nj_deluge, cs_kugutsu:SPART.nj_doubles, cs_sunatate:SPART.nj_pierre, cs_kamaitachi:SPART.nj_rafale, cs_sabaku:SPART.nj_porteur,
   cs_kiri:SPART.nj_brume, cs_shosen:SPART.nj_vague, cs_suiro:SPART.nj_x_sceau, cs_suikodan:SPART.nj_vague, cs_raikyu:SPART.nj_decharge, cs_chidori:SPART.nj_foudre, cs_bijuchakra:SPART.nj_x_eveil, cs_bijudama:SPART.nj_x_cinq,

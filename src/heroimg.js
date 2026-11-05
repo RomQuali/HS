@@ -154,3 +154,8 @@ const DBIMG3 = {
 };
 for (const id in DBIMG3) ART[id] = () => `<rect width="100" height="100" fill="#fff"/><image href="${DBIMG3[id]}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`;
 ART.d_vegetto_tf1 = ART.d_vegetto;
+// ----- univers Rick et Morty : dépose ici tes images (data:URL) ; clés = identifiants des cartes (rm_*, tk_meeseeks, tk_cronen)
+// ou des héros (rh_*, et rh_*_aw pour la version éveillée). Tant que la table est vide, les médaillons neutres d'art3.js s'affichent.
+const RMIMG = {
+};
+for (const id in RMIMG) { const f = () => `<rect width="100" height="100" fill="#fff"/><image href="${RMIMG[id]}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`; if (/^rh_/.test(id)) HART[id] = f; else ART[id] = f; }
