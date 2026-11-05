@@ -1964,8 +1964,13 @@ body.u-nj .hand{background:linear-gradient(180deg,rgba(6,10,14,0),rgba(6,10,14,.
 .bans-wip .ban.wip .ban-t i{display:none}
 .bans-wip .ban.wip .ban-em{width:24px;height:24px}
 
-/* accueil : vidéo derrière la porte (couvre l'ouverture des battants) */
-.cs-vid{position:absolute;left:150px;top:30px;width:1300px;height:800px;object-fit:cover;pointer-events:none;background:#000}
+/* accueil : la vidéo du bus derrière la porte, puis en plein écran */
+.cs-vid{position:absolute;left:0;top:0;width:1600px;height:900px;object-fit:cover;pointer-events:none;background:#000}
+.cs-stage .cs-p{transition:opacity .9s ease}
+.cs-stage.cs-vidfull .cs-p:not(.cs-pvid),.cs-stage.cs-vidfull .cs-glow{opacity:0}
+.cs-stage.cs-vidfull ~ .cs-vig{opacity:.35}
+.cs-skip{position:fixed;right:22px;bottom:22px;z-index:10000;padding:9px 18px;border:0;border-radius:99px;font:700 15px var(--f-label,Georgia),serif;color:#2e1c08;background:linear-gradient(180deg,#ffe08a,#e0a43a);box-shadow:0 3px 0 #8a5a1a,0 6px 16px rgba(0,0,0,.45);cursor:pointer}
+.cs-skip[hidden]{display:none}
 
 /* South Park : bulle de dialogue */
 .spbub{position:absolute;z-index:60;max-width:240px;padding:7px 11px;border-radius:14px;background:#fffdf4;color:#1a1208;font:600 13px/1.25 Georgia,serif;box-shadow:0 0 0 2px #1a1208,0 6px 14px rgba(0,0,0,.45);text-align:center;pointer-events:none;animation:spbub 3.8s ease both}

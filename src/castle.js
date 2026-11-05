@@ -473,6 +473,8 @@ function castleScene(el) {
   byId.bridge = csBridge(); byId.frame = csFrame(); byId.leafL = csLeaf(0); byId.leafR = csLeaf(1); byId.ogre = csOgre(); byId.undead = csUndead();
   const fw = Ls.filter(L => /^fw/.test(L.id)).map(L => L.id), pc = Ls.filter(L => /^pc/.test(L.id) && !L.near).map(L => L.id), pcn = Ls.filter(L => /^pc/.test(L.id) && L.near).map(L => L.id);
   const order = ['sky', ...fw, 'mnt', 'rock', 'w1', 'w2', 'w3', 'field', 'kn', 'dragon', 'wing', 'fire', 's1', 's2', 's3', 's4', 's5', 's6', ...pc, 'ball', 'confetti', 'moat', 's7', 's8', 'bridge', ...pcn, 'confetti2', 'frame', 'leafL', 'leafR', 'beam', 'ropes', 'ogre', 'undead'];
+  const VID = typeof CS_VIDEO !== 'undefined', FRONT = ['frame', 'leafL', 'leafR', 'beam', 'ropes', 'ogre', 'undead'];
+  if (VID) order.splice(0, order.length, 'vid', ...order.filter(id => FRONT.includes(id)));   // derrière la porte : seulement la vidéo
   const slots = {};
   order.forEach((id, z) => {
     const L = byId[id], w = document.createElement('div');
@@ -480,10 +482,12 @@ function castleScene(el) {
     if (id === 'ropes') w.innerHTML = `<svg class="cs-ov" viewBox="0 0 1600 900" width="1600" height="900"><g fill="none" stroke-linecap="round"><path id="cs-r1" stroke="#3a2a18" stroke-width="9"/><path id="cs-r2" stroke="#3a2a18" stroke-width="9"/><path id="cs-r1b" stroke="#8a6a3a" stroke-width="3" stroke-dasharray="5 7"/><path id="cs-r2b" stroke="#8a6a3a" stroke-width="3" stroke-dasharray="5 7"/></g></svg>`;
     if (id === 'beam') w.innerHTML = `<svg class="cs-ov" viewBox="0 0 1600 900" width="1600" height="900"><defs><linearGradient id="cs-bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffd8a0" stop-opacity=".0"/><stop offset=".5" stop-color="#ffc070" stop-opacity=".22"/><stop offset="1" stop-color="#ffb060" stop-opacity=".5"/></linearGradient><filter id="cs-sb" x="-50%" y="-10%" width="200%" height="120%"><feGaussianBlur stdDeviation="3"/></filter></defs><path id="cs-beam" fill="url(#cs-bg)"/><path id="cs-seam" d="M800 90 V800" stroke="#ffd08a" stroke-width="5" filter="url(#cs-sb)"/></svg>`;
     if (id === 'confetti' || id === 'confetti2') { const near = id === 'confetti2'; const cols = ['#ff5a5a', '#ffd24a', '#5ad0ff', '#9aff6a', '#ff8ad8', '#ffffff']; const r = csRnd(near ? 6 : 5); let h = ''; for (let k = 0; k < (lite ? 14 : 40); k++) h += `<i class="cs-cf${near ? ' n' : ''}" style="left:${csF((near ? 380 : 340) + r() * (near ? 840 : 920))}px;top:${csF((near ? 470 : 380) + r() * 60)}px;background:${cols[k % 6]};animation-duration:${csF(2.6 + r() * 2.4)}s;animation-delay:-${csF(r() * 5)}s"></i>`; w.innerHTML = h; }
+    if (id === 'vid') w.classList.add('cs-pvid');
     stage.appendChild(w); slots[id] = w;
   });
-  // derrière la porte : la vidéo fournie (muette, en boucle) remplace le décor
-  if (typeof CS_VIDEO !== 'undefined' && slots.confetti) { const v = document.createElement('video'); v.className = 'cs-vid'; [[typeof CS_VIDEO_WEBM !== 'undefined' && CS_VIDEO_WEBM, 'video/webm'], [CS_VIDEO, 'video/mp4']].forEach(([s, ty]) => { if (!s) return; const so = document.createElement('source'); so.src = s; so.type = ty; v.appendChild(so); }); v.muted = true; v.defaultMuted = true; v.loop = true; v.autoplay = true; v.playsInline = true; v.setAttribute('playsinline', ''); v.setAttribute('muted', ''); v.setAttribute('aria-hidden', 'true'); slots.confetti.appendChild(v); const go = () => { const pr = v.play(); if (pr && pr.catch) pr.catch(() => {}); }; go(); document.addEventListener('pointerdown', go, { once:true }); }
+  // derrière la porte : la vidéo fournie (muette), jouée en entier à l'ouverture
+  let vid = null;
+  if (VID && slots.vid) { vid = document.createElement('video'); vid.className = 'cs-vid'; [[typeof CS_VIDEO_WEBM !== 'undefined' && CS_VIDEO_WEBM, 'video/webm'], [CS_VIDEO, 'video/mp4']].forEach(([s, ty]) => { if (!s) return; const so = document.createElement('source'); so.src = s; so.type = ty; vid.appendChild(so); }); vid.muted = true; vid.defaultMuted = true; vid.preload = 'auto'; vid.playsInline = true; ['playsinline', 'muted'].forEach(k => vid.setAttribute(k, '')); vid.setAttribute('aria-hidden', 'true'); slots.vid.appendChild(vid); try { vid.load(); } catch (e) {} }
   const imgs = {};
   const mk = (L, url) => {
     const im = document.createElement('img'); im.alt = ''; im.decoding = 'async'; im.src = url; im.draggable = false;
@@ -537,15 +541,34 @@ function castleScene(el) {
   const plain = document.createElement('div'); plain.className = 'cs-plain';
   plain.innerHTML = csTavernBg();
   el.appendChild(plain);
+  // passer la vidéo : bouton et clic
+  const skip = document.createElement('button'); skip.type = 'button'; skip.className = 'cs-skip'; skip.textContent = 'Passer ▸'; skip.hidden = true; document.body.appendChild(skip);
+  const playVideo = () => new Promise(done => {
+    if (!vid) return done();
+    let fin = false; const end = () => { if (fin) return; fin = true; skip.hidden = true; try { vid.pause(); } catch (e) {} vid.removeEventListener('ended', end); clearTimeout(tm); done(); };
+    const tm = setTimeout(end, ((vid.duration && isFinite(vid.duration) ? vid.duration : 6.1) + 1.5) * 1000);
+    vid.addEventListener('ended', end); skip.onclick = end; skip.hidden = false;
+    try { vid.currentTime = 0; const pr = vid.play(); if (pr && pr.catch) pr.catch(() => end()); } catch (e) { end(); }
+  });
   const startEnter = cb => {
     state = 'entering'; document.body.classList.add('cs-entering');
     (async () => {
+      if (vid) { try { vid.pause(); vid.currentTime = 0; } catch (e) {} }
       await tween(0, .12, 520, 1);                 // ça grince…
       await tween(.12, .09, 260, .5);
-      setTimeout(() => { stage.classList.add('cs-in'); zoom = 2.8; fit(); }, 200);
-      setTimeout(() => flash.classList.add('on'), 1250);
-      await tween(.09, 1.02, 1500, 1);             // …les battants s'ouvrent en grand
-      await wait(380);
+      if (vid) {
+        // la porte s'ouvre en grand sur le bus, la porte et ses gardiens s'effacent, la vidéo joue en entier
+        const pv = playVideo();
+        setTimeout(() => { stage.classList.add('cs-vidfull'); zoom = 1.08; fit(); }, 900);
+        await tween(.09, 1.02, 1500, 1);
+        await pv;
+        flash.classList.add('on'); await wait(650);
+      } else {
+        setTimeout(() => { stage.classList.add('cs-in'); zoom = 2.8; fit(); }, 200);
+        setTimeout(() => flash.classList.add('on'), 1250);
+        await tween(.09, 1.02, 1500, 1);             // …les battants s'ouvrent en grand
+        await wait(380);
+      }
       el.classList.add('cs-inside');
       document.body.classList.remove('cs-entering'); state = 'in';
       try { cb(); } catch (e) {}
@@ -562,13 +585,14 @@ function castleScene(el) {
   const flush = () => { if (pending && state === 'closed' && doorReady) { const cb = pending; pending = null; startEnter(cb); } };
   window.csLeave = () => {
     if (state !== 'in') return;
-    state = 'leaving'; el.classList.remove('cs-inside'); stage.classList.remove('cs-in'); zoom = 1; fit();
+    state = 'leaving'; el.classList.remove('cs-inside'); stage.classList.remove('cs-in', 'cs-vidfull'); zoom = 1; fit();
+    if (vid) { try { vid.pause(); vid.currentTime = 0; } catch (e) {} }
     (async () => { await wait(500); await tween(phi, 0, 1700, -1); lean = 0; put(); stage.classList.remove('cs-thud'); void stage.offsetWidth; stage.classList.add('cs-thud'); state = 'closed'; flush(); })();
   };
   (async () => {
     const shared = csSharedDefs();
     for (const id of queue) {
-      const L = byId[id]; if (!L) continue;
+      const L = byId[id]; if (!L || !slots[id]) continue;
       const Rl = L.big ? Math.min(R, 1.25) : Math.min(2, R * 1.25);
       mk(L, L.img ? L.img : await csRaster(L, Rl, L.shared ? shared : ''));
       if (L.bridge || L.leaf || id === 'ogre' || id === 'undead') put();
