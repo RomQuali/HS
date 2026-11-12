@@ -208,3 +208,110 @@ html.lite .mn-svg .hs-rb{animation:none}
 @media (orientation:landscape) and (max-height:540px){.hp-col{flex:0 0 clamp(80px,24vh,110px)!important}.hp-row{justify-content:center!important;margin-top:14px!important}.hp-wrap{justify-content:center}.hp-card{aspect-ratio:400/480!important}.hp-fams{display:none}.hp-infos{display:none!important}.hp-pop{top:-30%}}
 html.lite .hp-ok{animation:none!important}
 `; document.head.appendChild(st); })();
+
+// ----- disposition Champs de bataille (captures de référence 1916×1047 ramenées au canevas 1672×941) : décors Roni et ovales bronze conservés,
+// tavernier en arche et boutons de taverne en haut au centre, deux rangées de serviteurs sur la table, classement en colonne, héros en arche + médaillon, plaque chrono/Prêt, or en bas à droite -----
+(function () { const st = document.createElement('style'); st.id = 'bg-layout-css'; st.textContent = rnCss(`
+/* fond : plateau de l'univers, plein écran (pack Roni-Tavernes-Cinq-Univers) ; l'ancienne table et l'ancien décor ne sont plus affichés */
+html:root:root:root:root:root:root:root:root body.rn[class] .rn-tb,html:root:root:root:root:root:root:root:root body.rn[class] .rn-surf{display:none}
+§ .stage::after{background:#312723 url(assets/plateaux/dragon-ball.webp) 0 0/100% 100% no-repeat}
+§ .stage::before{background:linear-gradient(rgba(8,5,3,.6),rgba(8,5,3,.6)),#0b0705 url(assets/plateaux/dragon-ball.webp) center/cover no-repeat}
+§.u-nj .stage::after{background-image:url(assets/plateaux/naruto.webp)}§.u-nj .stage::before{background-image:linear-gradient(rgba(8,5,3,.6),rgba(8,5,3,.6)),url(assets/plateaux/naruto.webp)}
+§.u-sp .stage::after{background-image:url(assets/plateaux/south-park.webp)}§.u-sp .stage::before{background-image:linear-gradient(rgba(8,5,3,.6),rgba(8,5,3,.6)),url(assets/plateaux/south-park.webp)}
+§.u-rm .stage::after{background-image:url(assets/plateaux/rick-et-morty.webp)}§.u-rm .stage::before{background-image:linear-gradient(rgba(8,5,3,.6),rgba(8,5,3,.6)),url(assets/plateaux/rick-et-morty.webp)}
+§.u-sim .stage::after{background-image:url(assets/plateaux/les-simpson.webp)}§.u-sim .stage::before{background-image:linear-gradient(rgba(8,5,3,.6),rgba(8,5,3,.6)),url(assets/plateaux/les-simpson.webp)}
+/* zones */
+§ .keeper-zone{height:470u;--tw:112u}
+§ .keeper-zone:not(.enemy)::before{content:none}
+§ .board-zone{top:470u;height:220u;--tw:112u}
+§ .board-zone #bdrow{left:260u;top:15u;width:1130u;height:140u}
+§ .board-zone #bdrow .mn,§ .keeper-zone:not(.enemy) .counter-line .mn,§ .keeper-zone.enemy .counter-line .mn{width:112u;margin:0 3u;gap:1u}
+§ .board-zone.drop-ok::after{left:250u;top:7u;width:1150u;height:156u}
+§ .board-zone .hint{top:44u}
+§ .keeper-zone:not(.enemy) .counter-line{left:260u;top:319u;width:1130u;height:140u}
+§ .keeper-zone.enemy .counter-line{left:260u;top:319u;width:1130u;height:140u}
+§ .keeper-zone .hint{top:370u}
+§ .keeper-zone .shelf{margin:0 0 0 8u;padding:2u 5u 4u;min-width:96u;--tw:84u}
+§ .keeper-zone .shelf.two{--tw:70u}
+/* tavernier en arche, blason du niveau */
+§ .keeper .kc{left:769u;top:86u;width:134u;height:160u;background:none}
+§ .keeper .kc::after{content:none}
+§ .keeper .kc::before{content:'';position:absolute;inset:0;z-index:2;background:url(assets/hs/heros-cadre.webp) 0 0/100% 100% no-repeat;pointer-events:none}
+§ .keeper .kc .face{display:block;position:absolute;inset:0;width:100%;height:100%;margin:0;border:0;border-radius:0;box-shadow:none;background:#1a120c;clip-path:polygon(50% 12%,63% 15%,73% 20%,80% 28%,84% 37%,87% 46%,87% 90%,13% 90%,13% 48%,15% 38%,19% 28%,25% 21%,36% 15%)}
+§ .keeper .kc .face svg{position:absolute;left:11%;top:10%;width:78%;height:82%}
+§ .keeper .kc .lv{left:-30u;top:84u;width:60u;height:61u;z-index:3;background:url(assets/hs/b-blason-niveau.webp) 0 0/100% 100% no-repeat}
+§ .keeper .kc .ts{position:absolute;left:14u;top:13u;width:32u;height:30u;display:flex;flex-wrap:wrap;align-content:center;justify-content:center;gap:0}
+§ .keeper .kc .ts i{flex:none;display:none;width:15u;height:15u;background:url(assets/hs/b-etoile-niveau.webp) center/118% no-repeat}
+§ .keeper .kc .ts i.on{display:block;background:url(assets/hs/b-etoile-niveau.webp) center/118% no-repeat}
+/* boutons de taverne */
+§ .keeper .medal{border-radius:0}
+§ .keeper .medal[data-act="up"]{left:646u;top:110u;width:84u;height:114u;border-radius:0;background-image:url(assets/hs/b-ameliorer.webp)}
+§ .keeper .medal[data-act="up"] small{display:none}
+§ .keeper .medal[data-act="up"] .cost,§ .keeper .medal .cost{left:50%;top:-13u;width:34u;height:34u;margin:0 0 0 -17u;font-size:fs(21,9);color:#fff;text-shadow:0 0 2u #000,0 2u 0 #3a2206,0 0 4u #3a2206;background:url(assets/hs/b-piece-or.webp) center/100% 100% no-repeat;box-shadow:none}
+§ .keeper .medal[data-act="roll"]{left:932u;top:110u;width:84u;height:114u;background-image:url(assets/hs/b-renouveler.webp)}
+§ .keeper .medal[data-act="frz"]{left:1028u;top:92u;width:76u;height:103u;background-image:url(assets/hs/b-geler.webp)}
+§ .keeper .medal:not(:disabled){filter:drop-shadow(0 0 3u #38ff4a) drop-shadow(0 0 5u rgba(60,255,90,.7))}
+§ .keeper .medal:not(:disabled):hover{filter:drop-shadow(0 0 4u #7dff8a) drop-shadow(0 0 8u rgba(60,255,90,.9)) brightness(1.15)}
+§ .keeper .medal[data-act="frz"].on{filter:drop-shadow(0 0 5u #8fe8ff) drop-shadow(0 0 9u #8fe8ff) brightness(1.15)}
+/* adversaire en combat : arche en haut au centre */
+§ .keeper-zone.enemy .keeper{left:769u;top:86u;width:134u;height:160u;transform:none;display:block;padding:0;border-radius:0;background:none;box-shadow:none}
+§ .keeper-zone.enemy .keeper::before{content:'';position:absolute;inset:0;z-index:2;background:url(assets/hs/heros-cadre.webp) 0 0/100% 100% no-repeat;pointer-events:none}
+§ .keeper-zone.enemy .keeper .face.kf{position:absolute;inset:0;width:100%;height:100%;margin:0;border:0;border-radius:0;box-shadow:none;background:#1a120c;clip-path:polygon(50% 12%,63% 15%,73% 20%,80% 28%,84% 37%,87% 46%,87% 90%,13% 90%,13% 48%,15% 38%,19% 28%,25% 21%,36% 15%)}
+§ .keeper-zone.enemy .keeper .face.kf svg{position:absolute;left:11%;top:10%;width:78%;height:82%}
+§ .keeper-zone.enemy .kn-en{position:absolute;left:142u;top:44u;width:max-content;display:grid;gap:4u;padding:6u 14u;border-radius:12u;background:rgba(16,10,8,.72);box-shadow:inset 0 0 0 1.5u rgba(200,150,62,.5)}
+§ .keeper-zone.enemy .kn-en b{font-size:fs(22,9)}
+§ .keeper-zone.enemy .kn-en .ts i{width:fs(17,7);height:fs(17,7)}
+§ .table-skip{top:262u}
+/* classement en colonne étroite : portraits carrés, vie dessous, nom au survol */
+§ .opps{left:222u;top:124u;width:92u}
+§ .opps::before{content:'';position:absolute;left:-6u;right:-6u;top:-12u;bottom:-10u;border-radius:30u;background:linear-gradient(180deg,rgba(40,70,124,.92),rgba(16,28,58,.95));box-shadow:inset 0 0 0 2u rgba(130,190,255,.6),inset 0 0 20u rgba(60,130,255,.4),0 0 14u rgba(50,120,255,.5);pointer-events:none}
+§ .opps .op{width:92u;height:70u;margin:0 0 9u;background:none}
+§ .opps .op-face .face{left:13u;top:2u;width:66u;height:66u;border-radius:10u;box-shadow:0 0 0 3u #b3201c,0 0 0 5u #3a0808,0 3u 6u rgba(0,0,0,.6);background:#2a1a10}
+§ .opps .op.me .op-face .face{box-shadow:0 0 0 3u #2c8fd8,0 0 0 5u #082a4a,0 3u 6u rgba(0,0,0,.6)}
+§ .opps .op.vs .op-face .face{box-shadow:0 0 0 3u #ff3a2a,0 0 0 5u #3a0808,0 0 12u #ff3a2a}
+§ .opps .op.me,§ .opps .op.vs{filter:none}
+§ .opps .op-hp{left:52u;top:44u;width:36u;height:30u;font-size:fs(15,7.5);background:url(assets/hs/b-vie.webp) center/contain no-repeat}
+§ .opps .op-t{left:0;top:-6u}
+§ .opps .op-r{right:auto;left:68u;top:-6u}
+§ .opps .op-el{left:0;top:46u}
+§ .opps .op-n{display:none}
+/* héros du joueur en arche, vie, quête, médaillon du pouvoir, emplacements */
+§ .hz-hero{left:769u;top:2u;width:134u;height:160u;background:none}
+§ .hz-hero::after{content:'';position:absolute;inset:0;z-index:2;background:url(assets/hs/heros-cadre-or.webp) 0 0/100% 100% no-repeat;pointer-events:none}
+§ .hz-hero .face.hf{left:0;top:0;width:100%;height:100%;border-radius:0;box-shadow:none;clip-path:polygon(50% 12%,63% 15%,73% 20%,80% 28%,84% 37%,87% 46%,87% 90%,13% 90%,13% 48%,15% 38%,19% 28%,25% 21%,36% 15%)}
+§ .hz-hero .face.hf svg{position:absolute;left:11%;top:10%;width:78%;height:82%}
+§ .hz-hero .haw-fr{display:none}
+§ .hz-hero .hpg{left:94u;top:100u;width:50u;height:66u;z-index:4;background:url(assets/hs/b-vie.webp) center/contain no-repeat}
+§ .hz-hero .hq{left:100u;top:50u;width:50u;height:58u;z-index:4;background:url(assets/hs/b-armure.webp) 0 0/100% 100% no-repeat}
+§ .hero-zone .hz-right > .hov{left:929u;top:14u;width:114u;height:114u}
+§ .hero-zone .powm:not(.pwh-nh_sasuke)::after{background-image:url(assets/hs/heros-medaillon.webp)}
+§ .hero-zone .powm:not(.pwh-nh_sasuke):not(:disabled):not(.passive):hover::after{background-image:url(assets/hs/heros-medaillon.webp);filter:brightness(1.25) drop-shadow(0 0 5u #ffe08a)}
+§ .hero-zone .powm:not(.pwh-nh_sasuke).used::after{background-image:url(assets/hs/heros-medaillon.webp);filter:grayscale(1) brightness(.7)}
+§ .hero-zone .powm:not(.pwh-nh_sasuke) .pwart{left:16%;top:16%;width:68%;height:68%}
+§ .hero-zone .powm .pcost:not(.ck){top:-12u;width:34u;height:34u;margin:0 0 0 -17u;color:#fff;text-shadow:0 0 2u #000,0 2u 0 #3a2206,0 0 4u #3a2206;background:url(assets/hs/b-piece-or.webp) center/100% 100% no-repeat}
+§ .hero-zone .powm small{top:112u}
+§ .hero-zone::before,§ .hero-zone::after{content:'';position:absolute;width:84u;height:84u;background:url(assets/hs/b-emplacement.webp) 0 0/100% 100% no-repeat;pointer-events:none;inset:auto;filter:brightness(.85)}
+§ .hero-zone::before{left:604u;top:16u}
+§ .hero-zone::after{left:672u;top:78u}
+§ .hero-zone .hz-left{right:1080uz;top:20uz}
+/* or en bas à droite */
+§ .hero-zone .purses{left:1060u;top:20u}
+§ .hero-zone .purses .purse:not(.ckp):not(.kip):not(.pfp){left:-18u;top:176u;width:330u;height:46u;background:none}
+§ .hero-zone .purses .purse:not(.ckp):not(.kip):not(.pfp) b{left:0;top:3u;width:76u;height:40u;border-radius:20u;background:linear-gradient(#2a1c10,#120a06);box-shadow:inset 0 0 0 2u #8a6a2c,0 2u 5u rgba(0,0,0,.6);font-size:fs(22,10);color:#ffe9a0;text-shadow:0 1px 2px #000;display:flex;align-items:baseline;justify-content:center;gap:1u;padding-top:8u;box-sizing:border-box}
+§ .hero-zone .purses .purse:not(.ckp):not(.kip):not(.pfp) b small{position:static;width:auto;font-size:fs(17,8);color:#ffe9a0}
+§ .hero-zone .purses .purse:not(.ckp):not(.kip):not(.pfp) .coinrow{left:84u;top:6u;width:244u;height:34u;padding:0;gap:1u;background:none;box-shadow:none;border-radius:0}
+§ .hero-zone .purses .purse:not(.ckp):not(.kip):not(.pfp) .coin{flex:0 1 23u;border-radius:50%;box-shadow:none;background:url(assets/hs/b-piece-or.webp) center/100% 100% no-repeat}
+§ .hero-zone .purses .purse:not(.ckp):not(.kip):not(.pfp) .coin.off{filter:grayscale(1) brightness(.45);opacity:.8}
+§ .hero-zone .purses .purse:not(.ckp):not(.kip):not(.pfp) .inc{right:auto;left:86u;top:-15u}
+§ .hero-zone .rsv{left:1240uz;top:10uz}
+/* plaque du chrono : c'est aussi le bouton Prêt */
+§ .hero-zone .bellwrap{left:1336u;top:-252u;width:134u;height:74u;background:none}
+§ .hero-zone .bell .bell-t{left:0;top:0;width:100%;height:100%;border-radius:0;box-shadow:none;display:grid;place-items:end center;padding:0 0 9u;box-sizing:border-box;font-size:fs(13,6.5);color:#4a3a06;text-shadow:0 1px 0 rgba(255,250,200,.7);background:url(assets/hs/b-fin-tour.webp) 0 0/100% 100% no-repeat}
+§ .hero-zone .bell.rung .bell-t{background:url(assets/hs/b-pret.webp) 0 0/100% 100% no-repeat;color:#0c3a08}
+§ .hero-zone .bell:disabled .bell-t{display:grid;place-items:center;padding:0;font-size:0;background:url(assets/hs/b-fin-inactive.webp) 0 0/100% 100% no-repeat}
+§ .hero-zone .bell:disabled .bell-t::after{content:'Combat';position:static;inset:auto;background:none;font-size:fs(21,9);color:#fff;text-shadow:0 0 2u #000,0 2u 0 #222,0 0 5u #000}
+§ .hero-zone .bell.rung .bell-t::before{right:-16u;top:-22u;width:54u;height:54u}
+§ .hud .timer{left:1336u;top:404u;width:134u;height:40u;font-size:fs(27,11);color:#fff;text-shadow:0 0 2u #000,0 2u 0 #3a2a06,0 0 6u rgba(0,0,0,.9)}
+/* main : cartes à la taille Champs de bataille */
+§ .table .hand{--hw:max(64px,132u)}
+`); document.head.appendChild(st); })();
