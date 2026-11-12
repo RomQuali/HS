@@ -199,12 +199,6 @@ function cardH(m, z, i, o = {}) {
   const b = CD(m.c), g = !!m.g;
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
   const up = (v, base) => v > base * (g ? 3 : 1) ? ' up' : '';
-  const uf = ufOf(m);
-  if (uf) return `<div class="cd rf${g ? ' g' : ''}${sel ? ' sel' : ''}${m.tr ? ' newgold' : ''}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">`
-    + `<svg class="uf-svg" viewBox="-4 -6 108 132" aria-hidden="true">${ufIn(m, uf, up)}</svg>`
-    + (() => { const t = cardTextH(m.c, g), n = t.replace(/<[^>]+>/g, '').length; return `<div class="cd-tx${n > 150 ? ' xlong xxl x3' : n > 110 ? ' xlong xxl' : n > 75 ? ' xlong' : n > 45 ? ' long' : ''}"><span>${t}</span></div>`; })()
-    + (b.tr !== 'neu' && trName(b.tr) ? `<div class="cd-tb">${esc(b.tr2 && trName(b.tr2) ? trName(b.tr).replace(/^Clan /, '') + ' + ' + trName(b.tr2).replace(/^Clan /, '') : trName(b.tr))}</div>` : b.tok ? '<div class="cd-tb">Jeton</div>' : '')
-    + (m.tr ? '<span class="tri">Triple !</span>' : '') + (z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : '') + '</div>';
   return `<div class="cd${g ? ' g' : ''}${sel ? ' sel' : ''}${m.tr ? ' newgold' : ''}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">`
     + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-${artOf(m)}" y="-4" width="100" height="100"/></svg></div>`
     + (g ? '<i class="cd-dr" aria-hidden="true"></i>' : '') + (b.t ? `<div class="cd-tier" aria-label="Niveau ${b.t}"><b>${b.t}</b></div>` : '')
