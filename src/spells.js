@@ -616,12 +616,11 @@ const ckMarkH = (n, cls = '', title = '', col) => `<svg class="ckm ${cls}" viewB
 function spellTokenH(id, z, i, o = {}) {
   const S = SPELLS[id], sel = V.sel && V.sel.z === z && V.sel.i === i;
   return `<div class="spt${sel ? ' sel' : ''}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="Sort ${esc(S.n)}, coût ${S.c} or">
-    <svg class="spt-svg" viewBox="-4 -6 108 124" aria-hidden="true"><path d="M8 6 Q50 -4 92 6 L92 96 Q50 106 8 96 Z" fill="#f1e2bd" ${so(2.6)}/>
-    <clipPath id="spc-${z}-${i}"><path d="M14 12 Q50 4 86 12 L86 90 Q50 98 14 90 Z"/></clipPath><g clip-path="url(#spc-${z}-${i})"><use href="#sp-${id}" x="14" y="4" width="72" height="94"/></g>
-    <path d="M14 12 Q50 4 86 12 L86 90 Q50 98 14 90 Z" fill="none" ${so(2)}/>
-    <rect x="0" y="-2" width="100" height="10" rx="5" fill="#7a4a28" ${so(2)}/><rect x="0" y="94" width="100" height="10" rx="5" fill="#7a4a28" ${so(2)}/>
+    <svg class="spt-svg" viewBox="-4 -6 108 124" aria-hidden="true"><use href="#fr-parch" x="0" y="0" width="100" height="104"/>
+    <clipPath id="spc-${z}-${i}"><rect x="14.5" y="14" width="71" height="76" rx="4"/></clipPath><g clip-path="url(#spc-${z}-${i})"><use href="#sp-${id}" x="12" y="5" width="76" height="94"/></g>
+    <rect x="14.5" y="14" width="71" height="76" rx="4" fill="none" stroke="#3a2410" stroke-width="3.4"/><rect x="14.5" y="14" width="71" height="76" rx="4" fill="none" stroke="#c89a52" stroke-width="1.4"/>
     <circle cx="14" cy="104" r="12" fill="url(#gr-badge)" stroke="#e2b452" stroke-width="2.2"/><text class="gt" x="14" y="104" dy=".36em" style="fill:${spellCostFor(id, z) < S.c ? '#b8ff8a' : '#ffe39a'}">${spellCostFor(id, z)}</text>
-    <g><title>Niveau ${S.t}</title>${Array.from({ length:S.t }, (_, k) => `<path d="${starD(50 + (k - (S.t - 1) / 2) * 14, 3, 7.4, 3.2, 5)}" fill="#ffd86a" stroke="#120a06" stroke-width="1.4" stroke-linejoin="round"/>`).join('')}</g>${S.el ? elBadgeG(S.el, 50, 102, 13) : ''}${S.kc != null ? ckMarkG(V.me ? kiCost(V.me, S) : S.kc, 86, 101, 13, '#fff') : ''}${S.ck ? ckMarkG(V.me ? ckCost(V.me, S) : S.ck, 86, 101, 13, V.me && ckCost(V.me, S) < S.ck ? '#b8ff8a' : '#fff') : ''}</svg>
+    <g><title>Niveau ${S.t}</title><use href="#fr-star" x="35" y="-13" width="30" height="28.4"/><text class="gt st" x="50" y="2.2" dy=".36em">${S.t}</text></g>${S.el ? elBadgeG(S.el, 50, 102, 13) : ''}${S.kc != null ? ckMarkG(V.me ? kiCost(V.me, S) : S.kc, 86, 101, 13, '#fff') : ''}${S.ck ? ckMarkG(V.me ? ckCost(V.me, S) : S.ck, 86, 101, 13, V.me && ckCost(V.me, S) < S.ck ? '#b8ff8a' : '#fff') : ''}</svg>
     <span class="mn-nm">${esc(S.n)}</span></div>`;
 }
 // coût réel pour le joueur (réductions actives), et coût de base
@@ -632,9 +631,9 @@ function spellCardH(id, z, i, o = {}) {
   const n = S.tx.length + (S.n.length > 16 ? 30 : 0);   // un nom sur deux lignes laisse moins de place au texte
   return `<div class="cd spc${sel ? ' sel' : ''}${V.aim != null && V.aim === i && z === 'hd' ? ' aiming' : ''}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="Sort ${esc(S.n)}">`
     + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#sp-${id}" y="-4" width="100" height="100"/></svg></div>`
-    + `<div class="cd-tier" aria-hidden="true">${'<i></i>'.repeat(S.t)}</div>`
-    + `<div class="cd-nm"><span>${esc(S.n)}</span></div><div class="cd-tx${n + (AWK_TECH[id] ? 30 : 0) > 95 ? ' xlong' : n + (AWK_TECH[id] ? 30 : 0) > 62 ? ' long' : ''}">${badge}${esc(S.tx)}${AWK_TECH[id] ? `<span class="tx-awk${awakeUI() ? ' on' : ''}"><b>Éveil :</b> ${esc(AWK_TECH[id][0])}</span>` : ''}${S.sig ? `<span class="tx-awk on tx-sig"><b>Signature</b> si le lanceur est ${esc(S.sig.slice(0, 3).map(c => C[c] ? C[c].n : c).join(', '))} : ${esc(S.stx)}</span>` : ''}</div>`
-    + `<div class="cd-tb" style="background:${ty.col}">${esc(ty.n)}</div>`
+    + `<div class="cd-tier" aria-label="Niveau ${S.t}"><b>${S.t}</b></div>`
+    + `<div class="cd-nm${S.n.length > 15 ? ' l' : ''}"><span>${esc(S.n)}</span></div><div class="cd-tx${n + (AWK_TECH[id] ? 30 : 0) > 95 ? ' xlong' : n + (AWK_TECH[id] ? 30 : 0) > 62 ? ' long' : ''}"><span>${badge}${esc(S.tx)}${AWK_TECH[id] ? `<span class="tx-awk${awakeUI() ? ' on' : ''}"><b>Éveil :</b> ${esc(AWK_TECH[id][0])}</span>` : ''}${S.sig ? `<span class="tx-awk on tx-sig"><b>Signature</b> si le lanceur est ${esc(S.sig.slice(0, 3).map(c => C[c] ? C[c].n : c).join(', '))} : ${esc(S.stx)}</span>` : ''}</span></div>`
+    + `<div class="cd-tb" style="--tc:${ty.col}">${esc(ty.n)}</div>`
     + (S.item ? '' : costGemH(spellCostFor(id, z), S.c)) + (S.kc != null ? ckMarkH(V.me ? kiCost(V.me, S) : S.kc, 'ck-gem ki-gem' + (V.me && kiCost(V.me, S) < S.kc ? ' aff' : ''), 'Coût en ki') : '') + (S.ck ? ckMarkH(V.me ? ckCost(V.me, S) : S.ck, 'ck-gem' + (V.me && ckCost(V.me, S) < S.ck ? ' aff' : ''), 'Coût en chakra' + (V.me && ckCost(V.me, S) < S.ck ? ' (réduit)' : '')) : '') + (S.el ? `<span class="el-tag" style="--ec:${ELS[S.el].col}">${elBadgeH(S.el)}${ELS[S.el].n}</span>` : '') + `${z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : ''}</div>`;
 }
 

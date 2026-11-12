@@ -138,17 +138,18 @@ function tokenH(m, z, i, o = {}) {
   const up = (v, base) => v > base * (g ? 3 : 1) ? ' up' : '';
   const svg = `<svg class="mn-svg" viewBox="-4 -6 108 132" aria-hidden="true">`
     + (f.includes('t') ? '<use href="#tk-taunt"/>' : '')
-    + `<use href="#tk-frame${g ? '-g' : ''}"/><g clip-path="url(#tk-clip)"><use href="#art-${artOf(m)}" x="12" y="9.5" width="76" height="91.5"/></g><use href="#tk-rim"/>`
+    + `<ellipse cx="50" cy="56.2" rx="37.6" ry="45.4" fill="#1a110a"/><g clip-path="url(#fr-clip)"><use href="#art-${artOf(m)}" x="12" y="10.5" width="76" height="91.5"/></g>`
+    + (g ? '<use class="fr-f" href="#fr-oval-g" x="1.35" y="-12.2" width="97.6" height="135.9"/><use class="fr-dr" href="#fr-dragon" x="45" y="-17" width="60" height="69"/>' : '<use class="fr-f" href="#fr-oval" x="2.9" y="-11" width="94.2" height="134"/>')
     + (f.includes('s') ? `<g class="bubg"><use class="bub" href="#tk-shield"/><path class="bub-run" pathLength="100" d="${SHIELD_D}"/></g>` : '')
-    + (b.t && z === 'sh' ? `<g class="tflag"><path d="M37 -6 H63 V17 L50 12 L37 17 Z" fill="#4a4044" stroke="#0c0808" stroke-width="2"/><path d="M39.5 -4 H60.5 V14 L50 10 L39.5 14 Z" fill="none" stroke="#ffb050" stroke-width="1.2"/>${Array.from({ length:b.t }, (_, k) => { const row = k < 3 ? 0 : 1, n = row ? b.t - 3 : Math.min(3, b.t), j = row ? k - 3 : k; return `<text x="${f1(50 + (j - (n - 1) / 2) * 6.4)}" y="${row ? 9 : 2.6}" font-size="7" text-anchor="middle" fill="#ffd27a">★</text>`; }).join('')}</g>` : '')
+    + (b.t && z === 'sh' ? `<g class="tflag"><title>Niveau ${b.t}</title><use href="#fr-star" x="32.5" y="-15" width="35" height="33.1"/><text class="gt st" x="50" y="2.8" dy=".36em">${b.t}</text></g>` : '')
     + ics.map(([ic, col, nm], k) => { const a = KW_ANG[k] * Math.PI / 180; return `<g class="kwi" transform="translate(${f1(50 + 51 * Math.sin(a))} ${f1(55 - 58 * Math.cos(a))})"><title>${nm}</title><circle r="8.4" fill="#1b120b" stroke="${col}" stroke-width="1.8"/><use href="#ic-${ic}" x="-5.6" y="-5.6" width="11.2" height="11.2" style="color:${col}"/></g>`; }).join('')
     + (isComp(m) && compEl(m) ? `<g class="elb"><title>Élément : ${ELS[compEl(m)].n}${m.fu ? ' · combo : ' + m.fu : ''}</title><circle cx="14" cy="12" r="10" fill="${ELS[compEl(m)].col}" stroke="#120a06" stroke-width="2.2"/><text x="14" y="12" dy=".36em" text-anchor="middle" font-size="10" font-weight="700" fill="#120a06">${ELS[compEl(m)].n[0]}</text></g>` : '')
     + (isComp(m) ? `<g><title>Niveau d'entraînement ${compLv(m)} · ${m.xp || 0} expérience${compLv(m) < 5 ? ' (prochain niveau à ' + XP_LV[compLv(m)] + ')' : ''}</title><rect x="38" y="113" width="24" height="12" rx="6" fill="#2a6ad8" stroke="#120a06" stroke-width="1.8"/><text x="50" y="119" dy=".36em" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff">Nv ${compLv(m)}</text></g>` : '')
     + (hasGag(m) || m.gag ? gagBadgeH(m) : '')
     + (m.sl ? `<g class="slb"><title>${m.sl} sceau${m.sl > 1 ? 'x' : ''}${m.sl >= 5 ? ' : Bouclier divin obtenu' : ' (5 : Bouclier divin)'}</title><path d="M4 4 h20 v14 l-10 7 l-10 -7 Z" fill="${m.sl >= 5 ? '#ffd86a' : '#c8304a'}" stroke="#120a06" stroke-width="2"/><text x="14" y="13" dy=".36em" text-anchor="middle" font-size="10" font-weight="700" fill="${m.sl >= 5 ? '#120a06' : '#fff3c0'}">${m.sl}</text></g>` : '')
     + (m.eq && m.eq.length ? `<g><title>Équipements : ${m.eq.map(e => SPELLS[e] ? SPELLS[e].n : e).join(', ')}</title><rect x="72" y="4" width="22" height="14" rx="7" fill="#8a6a3a" stroke="#120a06" stroke-width="2"/><text x="83" y="11" dy=".36em" text-anchor="middle" font-size="9" font-weight="700" fill="#fff3c0">⚒${m.eq.length}</text></g>` : '')
-    + `<use href="#gem-a" x="-1" y="90" width="34" height="34"/><text class="gt${up(m.a, b.a)}" x="16" y="107" dy=".36em">${m.a}</text>`
-    + `<use href="#gem-h" x="67" y="88" width="34" height="34"/><text class="gt${up(m.h, b.h)}" x="84" y="108.6" dy=".36em">${m.h}</text></svg>`;
+    + `<use href="#fr-atk" x="-9" y="76" width="41" height="50.3"/><text class="gt${up(m.a, b.a)}" x="15.6" y="103" dy=".36em">${m.a}</text>`
+    + `<use href="#fr-hp" x="67" y="80" width="36" height="44.5"/><text class="gt${up(m.h, b.h)}" x="85" y="103.4" dy=".36em">${m.h}</text></svg>`;
   const md = z === 'bd' && !m.awk && (b.fxAll || []).find(e => e.k === 'ckm'), mdC = md ? (V.me ? Math.max(0, md.c - ((htr(V.me, 'pawk') || {}).n || 0)) : md.c) : 0, mdOk = md && V.me && (V.me.ck || 0) >= mdC && V.pub && V.pub.ph === 'recruit';
   const kiU = z === 'bd' && V.me && V.pub && (V.pub.laws || []).some(l => l.k === 'ki'), recr = V.pub && V.pub.ph === 'recruit';
   const T = kiU && (b.fxAll || []).find(e => e.k === 'tf'), st = T && T.st[m.tf || 0];
@@ -175,11 +176,11 @@ function cardH(m, z, i, o = {}) {
   const up = (v, base) => v > base * (g ? 3 : 1) ? ' up' : '';
   return `<div class="cd${g ? ' g' : ''}${sel ? ' sel' : ''}${m.tr ? ' newgold' : ''}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">`
     + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-${artOf(m)}" y="-4" width="100" height="100"/></svg></div>`
-    + (b.t ? `<div class="cd-tier" aria-label="Niveau ${b.t}">${'<i></i>'.repeat(b.t)}</div>` : '')
-    + `<div class="cd-nm"><span>${esc(b.n)}</span></div>${(() => { const t = cardTextH(m.c, g), n = t.replace(/<[^>]+>/g, '').length; return `<div class="cd-tx${n > 95 ? ' xlong' : n > 62 ? ' long' : ''}">${t}</div>`; })()}`
+    + (g ? '<i class="cd-dr" aria-hidden="true"></i>' : '') + (b.t ? `<div class="cd-tier" aria-label="Niveau ${b.t}"><b>${b.t}</b></div>` : '')
+    + `<div class="cd-nm${b.n.length > 15 ? ' l' : ''}"><span>${esc(b.n)}</span></div>${(() => { const t = cardTextH(m.c, g), n = t.replace(/<[^>]+>/g, '').length; return `<div class="cd-tx${n > 185 ? ' xlong xxl x3' : n > 135 ? ' xlong xxl' : n > 95 ? ' xlong' : n > 62 ? ' long' : ''}"><span>${t}</span></div>`; })()}`
     + (b.tr !== 'neu' && trName(b.tr) ? `<div class="cd-tb">${esc(b.tr2 && trName(b.tr2) ? trName(b.tr).replace(/^Clan /, '') + ' + ' + trName(b.tr2).replace(/^Clan /, '') : trName(b.tr))}</div>` : b.tok ? '<div class="cd-tb">Jeton</div>' : '')
-    + `<svg class="cd-gem a" viewBox="0 0 40 40" aria-hidden="true"><use href="#gem-a" width="40" height="40"/><text class="gt${up(m.a, b.a)}" x="20" y="20" dy=".36em">${m.a}</text></svg>`
-    + `<svg class="cd-gem h" viewBox="0 0 40 40" aria-hidden="true"><use href="#gem-h" width="40" height="40"/><text class="gt${up(m.h, b.h)}" x="20" y="25" dy=".36em">${m.h}</text></svg>`
+    + `<svg class="cd-gem a" viewBox="0 0 40 49" aria-hidden="true"><use href="#fr-atk" width="40" height="49"/><text class="gt${up(m.a, b.a)}" x="24" y="26" dy=".36em">${m.a}</text></svg>`
+    + `<svg class="cd-gem h" viewBox="0 0 40 49" aria-hidden="true"><use href="#fr-hp" width="40" height="49"/><text class="gt${up(m.h, b.h)}" x="20" y="25.6" dy=".36em">${m.h}</text></svg>`
     + (m.gag ? `<span class="cd-gag" data-tip="${esc(gagTip(m))}">Gag ×${m.gag}</span>` : '')
     + (m.tr ? '<span class="tri">Triple !</span>' : '') + (z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : '') + '</div>';
 }
@@ -1433,7 +1434,7 @@ function placePeek(r, pw, ph, touch) {
   else { x = r.right + 14; if (x + pw > innerWidth - 8) x = r.left - pw - 14; if (x < 8) x = Math.max(8, Math.min(innerWidth - pw - 8, r.left)); y = Math.max(8, Math.min(innerHeight - ph - 8, r.top + r.height / 2 - ph / 2)); }
   peekEl.style.left = x + 'px'; peekEl.style.top = y + 'px';
 }
-function peekSize() { const v = parseFloat(getComputedStyle(peekEl).getPropertyValue('--hw')) || 176; return [v, v * 1.4]; }
+function peekSize() { const v = parseFloat(getComputedStyle(peekEl).getPropertyValue('--hw')) || 176; return [v, v * 1.66]; }
 function showPeek(t, touch) {
   const r = t.getBoundingClientRect();
   if (t.classList.contains('eqm') && t.dataset.sp) { peekFor = t; peekEl.innerHTML = spellCardH(t.dataset.sp, 'p', 0) + `<div class="peek-note">${esc(t.dataset.why || '')}</div>`; peekEl.hidden = false; const [pw, ph] = peekSize(); placePeek(r, pw, ph + 40, touch); return true; }
@@ -3235,3 +3236,83 @@ html.lite .ckm-b.ok{animation:none}
 html.lite .mn.mn-awk .mn-svg{animation:none}
 `; document.head.appendChild(st); })();
 (function(){ const st = document.createElement('style'); st.textContent = `.shelf-row{display:flex;gap:clamp(6px,1cqi,14px);align-items:flex-start}.shelf-l{justify-self:center}`; document.head.appendChild(st); })();
+/* ===================== CADRES ILLUSTRÉS (planche fournie) : cartes rectangulaires, serviteurs en médaillon ovale ===================== */
+(function(){ const st = document.createElement('style'); st.textContent = frameCss(`
+:root body .cd{aspect-ratio:254/405;padding:0;border-radius:7%/4.4%;background:none;box-shadow:0 10px 16px -4px rgba(0,0,0,.6);color:#3a2616}
+:root body .cd.g:not(.newgold){animation:none}
+:root body .cd.g{box-shadow:0 0 16px 1px rgba(255,205,90,.5),0 10px 16px -4px rgba(0,0,0,.6)}
+:root body .cd::before{content:"";position:absolute;inset:0;z-index:1;border-radius:0;pointer-events:none;box-shadow:none;background:var(--fr-card) center/100% 100% no-repeat}
+:root body .cd.g::before{inset:-2.6% -1% -1.2%;background-image:var(--fr-card-g)}
+:root body .cd.sel{box-shadow:0 0 0 2.5px var(--gold),0 0 22px 2px rgba(242,193,78,.75)}
+:root body .cd .cd-art{position:absolute;left:15.4%;top:11.6%;width:69.2%;height:45.6%;margin:0;aspect-ratio:auto;z-index:0;overflow:hidden;background:#1a110a;border-radius:50% 50% 5% 5%/37% 37% 4% 4%;box-shadow:none}
+:root body .cd.g .cd-art{top:12.6%;height:44.6%}
+:root body .cd .cd-dr{position:absolute;right:-9%;top:-7.5%;width:64cqi;height:73.6cqi;z-index:3;pointer-events:none;background:var(--fr-dragon) center/100% 100% no-repeat}
+:root body .cd .cd-tier{position:absolute;left:-6%;right:auto;top:-3.6%;width:31cqi;height:29.3cqi;min-height:0;padding:1.4cqi 0 0;margin:0;box-sizing:border-box;transform:none;z-index:4;display:grid;place-items:center;place-content:stretch;clip-path:none;box-shadow:none;filter:none;background:var(--fr-star) center/100% 100% no-repeat}
+:root body .cd .cd-tier b,:root body .cd .cd-tb,:root body .cd .cd-nm span{font-family:var(--f-label)}
+:root body .cd .cd-tier b{font:normal 15cqi/1 var(--f-num);color:#fff;-webkit-text-stroke:1.1cqi #3a2206;paint-order:stroke fill}
+:root body .cd .cd-nm{position:absolute;left:-1%;right:-1%;top:47.6%;height:40cqi;margin:0;z-index:2;filter:none;background:var(--fr-ribbon) center/100% 100% no-repeat}
+:root body .cd .cd-nm span{position:absolute;left:13%;right:13%;top:13%;height:55%;padding:0;display:grid;place-items:center;text-align:center;text-wrap:balance;font-weight:700;font-size:9.6cqi;line-height:1;color:#fff3d6;text-shadow:0 .4cqi 0 #2a1408,0 0 1.2cqi #2a1408;background:none;box-shadow:none;clip-path:none}
+:root body .cd .cd-nm.l span{font-size:8.2cqi}
+:root body .cd .cd-tx{position:absolute;left:13.5%;right:13.5%;top:65.6%;bottom:10.6%;margin:0;padding:0;min-height:0;z-index:2;display:flex;align-items:center;justify-content:center;--fs:7.7cqi;line-height:1.14;text-align:center;color:#3a2616;background:none;box-shadow:none;border-radius:0;overflow:hidden}
+:root body .cd .cd-tx.long{--fs:6.9cqi;line-height:1.12}
+:root body .cd .cd-tx.xlong{--fs:6cqi;line-height:1.1}
+:root body .cd .cd-tx.xxl{--fs:5.3cqi}
+:root body .cd .cd-tx.x3{--fs:4.7cqi;line-height:1.06}
+:root body .cd .cd-tx,:root body #peek .cd .cd-tx,:root body .table .cd .cd-tx{font-size:var(--fs)}
+:root body #peek .cd .cd-tb{font-size:6.8cqi}
+:root body .cd .cd-tb{position:absolute;left:50%;bottom:-4.4%;transform:translateX(-50%);z-index:3;box-sizing:border-box;min-width:46cqi;height:21cqi;padding:0 1cqi 1.6cqi;display:grid;place-items:center;white-space:nowrap;clip-path:none;filter:none;box-shadow:none;border-radius:0;background:none;
+  border-style:solid;border-color:transparent;border-width:0 9.5cqi;border-image:var(--fr-plaque) 0 56 fill/0 9.5cqi stretch;font-weight:700;font-size:6.8cqi;letter-spacing:.02em;text-transform:none;color:#3a2410;text-shadow:0 1px 0 rgba(255,246,220,.6)}
+:root body .cd .cd-gem{bottom:-5.4%;width:33cqi;height:40.4cqi;z-index:4}
+:root body .cd .cd-gem.a{left:-11.5%}:root body .cd .cd-gem.h{right:-9.5%;width:30cqi;height:36.8cqi}
+:root body .cd .cd-gem.cost{left:-8%;right:auto;top:-4%;bottom:auto;width:30cqi;height:30cqi}
+:root body .cd .gt{font-size:21px;stroke-width:4.6px}
+.gt.st{font-size:15px;stroke-width:3.4px}
+:root body .cd .cd-gag{top:60%;z-index:5}
+:root body .cd .tri{z-index:6}
+@container (max-width:84px){:root body .cd .cd-tx,:root body .cd .cd-tb{display:none}}
+/* sorts : parchemin encadré */
+:root body .cd.spc{background:none;border-style:solid;border-color:transparent;border-width:0;border-image:var(--fr-parch) 60 80 fill/20cqi 27cqi stretch}
+:root body .cd.spc::before{display:none}
+:root body .cd.spc .cd-art{left:13%;top:8.4%;width:74%;height:30%;border-radius:4cqi;box-shadow:0 0 0 .8cqi #3a2410,0 0 0 2.2cqi #b98a4a,0 0 0 3cqi #3a2410}
+:root body .cd.spc .cd-nm{top:30.5%}
+:root body .cd.spc .cd-tx{top:49%;bottom:12.5%;left:13.5%;right:13.5%;--fs:7.1cqi;color:#2e1c0e}
+:root body .cd.spc .cd-tx.long{--fs:6.3cqi}:root body .cd.spc .cd-tx.xlong{--fs:5.5cqi}
+:root body .cd.spc .cd-tier{left:50%;right:auto;top:-6.5%;transform:translateX(-50%);width:27cqi;height:25.5cqi}
+:root body .cd.spc .cd-tier b{font-size:13cqi}
+:root body .cd.spc .el-tag{top:24.5%;left:16%;transform:none;font-size:6.2cqi;z-index:1}
+:root body .cd.spc .cd-tb{border:0;border-image:none;min-width:0;height:auto;bottom:.6%;padding:.8cqi 5cqi;border-radius:99px;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.6);background:var(--tc,#4a3d7a);box-shadow:0 0 0 .6cqi #3a2410,0 0 0 1.4cqi #d8b060,0 0 0 2cqi #3a2410}
+:root body .cd.spc .tx-awk{color:#6a5236}:root body .cd.spc .tx-awk b{color:#8a5a14}:root body .cd.spc .tx-awk.on{color:#8a3206}:root body .cd.spc .tx-awk.on b{color:#a03a04}
+:root body .cd.spc.sel{box-shadow:0 0 0 2.5px var(--gold),0 0 22px 2px rgba(242,193,78,.75)}
+:root body .cd.spc.aiming{box-shadow:0 0 0 3px #b48cff,0 0 24px rgba(180,140,255,.8)}
+/* galerie et découverte : place pour les icônes qui débordent du cadre */
+:root body .atl-item{padding:16px 16px 4px;box-sizing:border-box;contain-intrinsic-size:150px 290px}
+:root body .disc{gap:26px 46px}
+/* infobulles : panneau de parchemin */
+:root body #peek .tip,:root body .btip{background:none;box-shadow:none;border-radius:0;color:#3a2616;border-style:solid;border-color:transparent;border-width:0;padding:20px 26px 22px;border-image:var(--fr-parch) 60 80 fill/27px 36px stretch;filter:drop-shadow(0 8px 12px rgba(0,0,0,.55))}
+:root body #peek .tip{min-width:150px;max-width:270px}
+:root body #peek .tip b{color:#7a2c08}
+:root body .btip{width:270px}
+:root body .btip .bt-h{color:#7a2c08}:root body .btip .bt-h small{color:#6a5236}:root body .btip .bt-h small b{color:#2e6a12}
+:root body .btip li{background:rgba(110,70,20,.16);box-shadow:inset 0 0 0 1px rgba(90,60,20,.28)}
+:root body .btip li b{color:#2e6a12}:root body .btip li span{color:#3a2616}:root body .btip li i{color:#8a5210}:root body .btip li.ench b{color:#3a6a12}
+:root body .btip li.tmp{background:rgba(170,60,10,.16)}:root body .btip li.tmp b{color:#a03a04}
+/* pouvoir héroïque : bannière violette */
+:root body .hero-zone .powm.powm{width:108px;height:111px;min-height:0;padding:0;margin:6px 4px 20px;border-radius:0;display:block;background:var(--fr-banner) center/100% 100% no-repeat;box-shadow:none;animation:none}
+:root body .hero-zone .powm.powm .ic,:root body .hero-zone .powm.powm .ic.pwart{position:absolute;left:50%;top:53%;width:50px;height:50px;margin:-25px 0 0 -25px;padding:0;border-radius:50%;box-shadow:0 0 0 1.5px #2a1206,0 0 0 3.5px #e2b04e,0 0 0 5px #2a1206}
+:root body .hero-zone .powm.powm .pcost{left:50%;top:-9px}
+:root body .hero-zone .powm.powm small{left:50%;bottom:-17px}
+:root body .hero-zone .powm.powm.can:not(:disabled){animation:usableB 1.6s ease-in-out infinite}
+@keyframes usableB{0%,100%{filter:drop-shadow(0 0 5px #6fd0ff)}50%{filter:drop-shadow(0 0 13px #9fe4ff) brightness(1.12)}}
+html.lite .hero-zone .powm.powm.can:not(:disabled){animation:none;filter:drop-shadow(0 0 6px #6fd0ff)}
+@media (max-width:820px){ :root body .pwb{--pw:170px} }
+@media (max-width:820px),(max-height:540px){ :root body .hero-zone .powm.powm{width:66px;height:68px;margin:6px 2px} :root body .hero-zone .powm.powm .ic,:root body .hero-zone .powm.powm .ic.pwart{width:30px;height:30px;margin:-15px 0 0 -15px;box-shadow:0 0 0 1px #2a1206,0 0 0 2.5px #e2b04e} :root body .hero-zone .powm.powm .pcost{top:-6px} }
+:root body .pwb{--pw:clamp(170px,14vw,210px);width:var(--pw);padding:0 0 4px;background:none;box-shadow:none;clip-path:none;filter:none;gap:4px}
+:root body .pwb::before{content:"";display:block;width:76%;aspect-ratio:289/297;background:var(--fr-banner) center/100% 100% no-repeat;filter:drop-shadow(0 8px 10px rgba(0,0,0,.5))}
+:root body .pwb .pwb-med{position:absolute;left:50%;top:0;margin:0;transform:translate(-50%,-50%);top:calc(var(--pw) * .395);width:calc(var(--pw) * .27);height:calc(var(--pw) * .27);box-shadow:inset 0 0 0 3px #2a1806,0 0 0 2px #2a1206,0 0 0 5px #e2b04e,0 0 0 7px #2a1206}
+:root body .pwb .pwb-cost{left:50%;top:-8px;width:32px;height:32px}
+:root body .pwb .pwb-med .pwart{width:66%;height:66%}
+:root body .pwb .pwb-nm{width:100%;margin-top:calc(var(--pw) * -.12);position:relative;z-index:1}
+:root body .pwb .pwb-tx{background:none;box-shadow:none;padding:13px 18px 15px;font-size:12px;line-height:1.3;color:#3a2616;border-style:solid;border-color:transparent;border-width:0;border-image:var(--fr-parch) 60 80 fill/24px 32px stretch}
+/* serviteurs sur le plateau */
+.mn .fr-dr{pointer-events:none}
+`); document.head.appendChild(st); })();

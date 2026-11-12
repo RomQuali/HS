@@ -1600,33 +1600,6 @@ body.cs-entering #scene *{animation-play-state:running!important}
 /* plateau agrandi (modèle commun) */
 @media (min-width:821px){ .table .board-zone{--tw:min(130px, calc((100cqi - 70px) / 7.3), 14.4vh)} }
 @media (min-width:821px) and (min-height:541px) and (max-height:1050px){ .table .hand{height:calc(var(--hw) * .54)} }
-/* ===================== CARTES : modèle « étendard » (niveau à gauche, portrait ovale) ===================== */
-.cd:not(.spc){border-radius:7%/5%;padding:calc(var(--hw) * .07) calc(var(--hw) * .07) 0;
-  background-image:var(--grain),radial-gradient(120% 70% at 50% 20%,#8a8178,#5f574f 60%,#463f39);
-  box-shadow:inset 0 0 0 1.5px #1a1410,inset 0 0 0 3.5px #9a8f82,inset 0 0 0 5px #2a231e,0 8px 16px rgba(0,0,0,.55)}
-.cd:not(.spc)::before{inset:3.5%;border-radius:5%/3.6%;background:repeating-linear-gradient(0deg,rgba(0,0,0,.08) 0 1px,transparent 1px 9px),radial-gradient(100% 80% at 50% 40%,#776e65,#4f4740);box-shadow:inset 0 0 12px rgba(0,0,0,.5)}
-.cd.g:not(.spc){background-image:linear-gradient(120deg,#a87418,#e2b04e 20%,#fff1b8 30%,#e2b04e 40%,#a87418 60%,#e2b04e 80%,#fff1b8 90%,#a87418);background-size:300% 300%}
-.cd.g:not(.spc)::before{background:radial-gradient(100% 80% at 50% 40%,#9a7a4a,#6a4e26)}
-.cd:not(.spc) .cd-art{width:70%;margin:1% auto 0;aspect-ratio:.82;border-radius:50%;
-  box-shadow:0 0 0 2px #1a1410,0 0 0 4.5px #c8b48a,0 0 0 6px #2a231e,0 6px 10px rgba(0,0,0,.5)}
-.cd.g:not(.spc) .cd-art{box-shadow:0 0 0 2px #1a1410,0 0 0 4.5px #ffe08a,0 0 0 6px #5a3a10,0 0 14px rgba(255,220,120,.7)}
-.cd:not(.spc) .cd-tier{left:5%;right:auto;top:0;width:19cqi;height:auto;min-height:20cqi;transform:none;padding:2.5cqi 0 6cqi;box-sizing:border-box;
-  flex-direction:row;flex-wrap:wrap;justify-content:center;align-content:flex-start;gap:.6cqi;row-gap:.6cqi;
-  background:linear-gradient(180deg,#8a3fa8,#5a1f78);box-shadow:inset 0 0 0 1px #2a0c3a,inset 0 0 0 2.2px #d6a6f0;
-  clip-path:polygon(0 0,100% 0,100% 100%,50% 82%,0 100%);filter:drop-shadow(0 2px 2px rgba(0,0,0,.6))}
-.cd:not(.spc) .cd-tier i{width:7.2cqi;height:7.2cqi}
-.cd:not(.spc) .cd-gem.cost{left:auto;right:-7%;top:-5%}
-.cd:not(.spc) .cost-was{left:auto;right:24cqi}
-.cd:not(.spc) .cd-nm{margin:-9% -6% 0}
-.cd:not(.spc) .cd-nm span{padding:3.5% 9%;font-size:11cqi;color:#fff6dc;text-shadow:0 1px 0 #000,0 0 3px #000;
-  background:linear-gradient(180deg,#6a6058,#3e3630);box-shadow:inset 0 0 0 1px #1a1410;
-  clip-path:polygon(0 15%,50% 0,100% 15%,95% 57%,100% 100%,50% 85%,0 100%,5% 57%)}
-.cd.g:not(.spc) .cd-nm span{background:linear-gradient(180deg,#c8963e,#7a4e18)}
-.cd:not(.spc) .cd-tx{margin:2% 3% 0;padding:4% 4% 10cqi;min-height:31cqi;box-sizing:border-box;border-radius:6cqi;color:#2a2018;
-  background:linear-gradient(180deg,#e9e1cf,#cfc4ab);box-shadow:inset 0 0 0 1.2px #2a231e,inset 0 0 6px rgba(80,60,30,.35)}
-.cd:not(.spc) .cd-tb{bottom:1.6%;padding:.8cqi 5cqi;border-radius:2.4cqi;color:#f1e8d6;font-size:7.6cqi;
-  background:linear-gradient(180deg,#5a524a,#2e2824);box-shadow:inset 0 0 0 1px #1a1410,inset 0 0 0 2px #9a8f82}
-@container (max-width:84px){.cd:not(.spc) .cd-tx{display:none}}
 /* ===================== HÉROS EN ARCHE + POUVOIR EN BANNIÈRE ===================== */
 .face.hf.arch{width:clamp(88px,11cqi,106px);height:auto;aspect-ratio:.84;border-radius:50% 50% 6px 6px/42% 42% 6px 6px;background:#1a1008;
   box-shadow:inset 0 0 0 2px #1a1008,0 0 0 4px #e2b04e,0 0 0 5.5px #6a4410,0 0 0 8px #c8963e,0 0 0 9.5px #2a1806,0 0 22px rgba(242,193,78,.35),0 10px 20px rgba(0,0,0,.6)}
@@ -1924,29 +1897,6 @@ body.cs-entering #scene *{animation-play-state:running!important}
 .eq-lv{position:absolute;left:-5px;bottom:-5px;width:18px;height:18px;display:grid;place-items:center;border-radius:50%;font-family:var(--f-num);font-size:11px;color:#2e1c08;background:#f2c14e;box-shadow:0 0 0 2px #1a1008}
 .chrev-c.up .cd{filter:drop-shadow(0 0 26px rgba(120,220,255,.85)) drop-shadow(0 14px 20px rgba(0,0,0,.6))}
 .chrev-b{max-width:var(--hw);text-align:center;font-style:normal;font-size:13px;color:#bfe8ff}
-/* ===================== CARTES : style « pierre sculptée » (référence fournie) ===================== */
-.cd:not(.spc){border-radius:6%/4.4%;
-  background-image:var(--grain),linear-gradient(160deg,#b9ae96,#9a8f78 45%,#7e7461);
-  box-shadow:inset 0 0 0 1.5px #2a2418,inset 0 0 0 3.2px #d6ccb2,inset 0 0 0 4.6px #5a5040,inset 0 0 0 7px #a39880,inset 0 0 0 8.2px #4a4234,0 10px 18px rgba(0,0,0,.55)}
-.cd:not(.spc)::before{inset:5%;border-radius:4%/3%;background:repeating-linear-gradient(90deg,rgba(60,50,30,.06) 0 2px,transparent 2px 7px),radial-gradient(110% 80% at 50% 35%,#a69c84,#7f7662);box-shadow:inset 0 0 0 1px #4a4234,inset 0 0 14px rgba(40,30,15,.45)}
-.cd.g:not(.spc){background-image:linear-gradient(120deg,#a87418,#e2b04e 20%,#fff1b8 30%,#e2b04e 40%,#a87418 60%,#e2b04e 80%,#fff1b8 90%,#a87418);background-size:300% 300%}
-.cd.g:not(.spc)::before{background:radial-gradient(110% 80% at 50% 35%,#c8a060,#8a6430)}
-.cd:not(.spc) .cd-art{width:76%;margin:2% auto 0;aspect-ratio:.8;border-radius:50%;
-  box-shadow:0 0 0 1.6px #2a2418,0 0 0 4px #cfc4a8,0 0 0 5.6px #6a604c,0 0 0 7.4px #a39880,0 0 0 8.6px #2a2418,0 6px 10px rgba(0,0,0,.5)}
-.cd.g:not(.spc) .cd-art{box-shadow:0 0 0 1.6px #2a1a08,0 0 0 4px #ffe08a,0 0 0 5.6px #8a5a14,0 0 0 7.4px #e2b04e,0 0 0 8.6px #2a1a08,0 0 16px rgba(255,220,120,.7)}
-.cd:not(.spc) .cd-nm{margin:-10% -9% 0;filter:drop-shadow(0 2px 2px rgba(0,0,0,.55))}
-.cd:not(.spc) .cd-nm span{padding:4% 12% 4.6%;font-size:11.4cqi;color:#2a1c10;text-shadow:0 1px 0 rgba(255,250,235,.6);
-  background:linear-gradient(180deg,#f3ead2 0%,#e2d4b0 55%,#c9b88e 100%);box-shadow:inset 0 0 0 1px #5a4a30;
-  clip-path:polygon(0 22%,6% 14%,50% 0,94% 14%,100% 22%,96% 60%,100% 100%,94% 92%,50% 80%,6% 92%,0 100%,4% 60%)}
-.cd.g:not(.spc) .cd-nm span{background:linear-gradient(180deg,#fff1b8,#e2b04e 60%,#b7802a);color:#2a1606}
-.cd:not(.spc) .cd-tx{margin:2.6% 4% 0;padding:5% 5% 11cqi;border-radius:3cqi;color:#2a2018;
-  background:linear-gradient(180deg,rgba(236,226,202,.96),rgba(214,200,168,.96));box-shadow:inset 0 0 0 1.2px #5a4a30,inset 0 0 8px rgba(80,60,30,.3)}
-.cd:not(.spc) .cd-tb{bottom:1.4%;padding:1cqi 7cqi;border-radius:0;color:#2a1c10;font-size:7.8cqi;letter-spacing:.06em;text-shadow:none;
-  background:linear-gradient(180deg,#efe4c6,#cbb98e);box-shadow:inset 0 0 0 1px #5a4a30;clip-path:polygon(0 0,100% 0,94% 50%,100% 100%,0 100%,6% 50%);filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))}
-.cd:not(.spc) .cd-tier{left:4%;top:-1.5%;width:20cqi;min-height:22cqi;
-  background:linear-gradient(180deg,#9a3aa8,#5a1a70);box-shadow:inset 0 0 0 1px #2a0c3a,inset 0 0 0 2.4px #e0b8f0,inset 0 0 0 3.4px #2a0c3a;
-  clip-path:polygon(0 0,100% 0,100% 70%,50% 100%,0 70%)}
-
 /* univers Naruto : plateau de la Vallée de la Fin */
 :root body.u-nj .table{background:linear-gradient(180deg,rgba(6,10,14,.35),rgba(6,10,14,0) 16%,rgba(6,10,14,0) 70%,rgba(6,10,14,.55)),var(--board-nj,none) center 18%/cover no-repeat,#16202a!important}
 body.u-nj .counter-line,body.u-nj .board-zone{border-radius:18px;background:rgba(8,14,20,.38);box-shadow:inset 0 0 0 1.5px rgba(180,210,230,.22),0 8px 24px rgba(0,0,0,.35);backdrop-filter:blur(1.5px)}
