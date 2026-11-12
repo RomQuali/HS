@@ -537,8 +537,8 @@ function gameH() {
       <div class="line" id="bdrow">${boardRow}</div></section>`;
     const nono = me.hero === 'nono', locked = nono && (me.rd || 0) < 3;
     const powSub = nono ? `${me.fb} dégât${me.fb > 1 ? 's' : ''}` : me.pu ? 'Utilisé' : '';
-    const power = hero && hero.cost ? `<button class="powm${me.pu ? ' used' : ''}${canAct && !locked && powCan(me, me.rd || (V.pub && V.pub.rd)) ? ' can' : ''}" data-act="pow" ${!canAct || me.pu || locked || (me.kiPay ? (me.ki || 0) : me.ckPay ? (me.ck || 0) : me.g) < hero.cost ? 'disabled' : ''} aria-label="${esc(hero.n + ' : ' + hero.tx + ' Coût : ' + hero.cost + (me.ckPay ? ' chakra.' : ' or.'))}"><span class="pcost${me.ckPay ? ' ck' : ''}">${me.ckPay ? ckMarkH(hero.cost, 'pc-ck', 'Coût : ' + hero.cost + ' chakra') : hero.cost}</span>${powArtH(me.hero)}<small>${locked ? 'Manche 3' : powSub || powerTitle(hero)[0] || 'Pouvoir'}</small><span class="pc-tx">${esc(powerTitle(hero)[1])}</span></button>`
-      : `<span class="powm passive" aria-label="${esc(hero ? hero.tx : '')}">${hero ? powArtH(me.hero) : icon('crown')}<small>Passif</small>${hero ? `<span class="pc-tx">${esc(hero.tx)}</span>` : ''}</span>`;
+    const power = hero && hero.cost ? `<button class="powm pwh-${me.hero}${me.pu ? ' used' : ''}${canAct && !locked && powCan(me, me.rd || (V.pub && V.pub.rd)) ? ' can' : ''}" data-act="pow" ${!canAct || me.pu || locked || (me.kiPay ? (me.ki || 0) : me.ckPay ? (me.ck || 0) : me.g) < hero.cost ? 'disabled' : ''} aria-label="${esc(hero.n + ' : ' + hero.tx + ' Coût : ' + hero.cost + (me.ckPay ? ' chakra.' : ' or.'))}"><span class="pcost${me.ckPay ? ' ck' : ''}">${me.ckPay ? ckMarkH(hero.cost, 'pc-ck', 'Coût : ' + hero.cost + ' chakra') : hero.cost}</span>${powArtH(me.hero)}<small>${locked ? 'Manche 3' : powSub || powerTitle(hero)[0] || 'Pouvoir'}</small><span class="pc-tx">${esc(powerTitle(hero)[1])}</span></button>`
+      : `<span class="powm passive pwh-${me.hero || 'x'}" aria-label="${esc(hero ? hero.tx : '')}">${hero ? powArtH(me.hero) : icon('crown')}<small>Passif</small>${hero ? `<span class="pc-tx">${esc(hero.tx)}</span>` : ''}</span>`;
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
       <div class="hz-left">${trainH(d, me, canAct)}${me.cp || (!NJ_COMP && (d.laws || []).some(l => l.k === 'chakra')) ? '' : `<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span>`}</div>
@@ -3481,6 +3481,30 @@ html.has-board-sim:root§.u-sim .rn-surf{background-image:var(--board-sim);backg
 § .hero-zone .powm .pc-tx{display:none}
 § .hero-zone .powm.used,§ .hero-zone .powm:disabled{filter:grayscale(.8) brightness(.72)}
 § .hero-zone .powm.can{filter:drop-shadow(0 0 5u rgba(255,200,90,.9))}
+/* héros et pouvoir validés sur la maquette : portrait en arche dorée, vie et armure à droite, pouvoir dans la monture Roni (Sharingan complet pour Sasuke) */
+§ .hz-hero{background:none}
+§ .hz-hero .face.hf{left:24u;top:-4u;width:118u;height:144u;border-radius:59u 59u 14u 14u;box-shadow:0 0 0 3u #3a2410,0 0 0 8u #c89a52,0 0 0 10u #3a2410,0 8u 14u rgba(0,0,0,.7);overflow:hidden}
+§ .hz-hero .haw-fr{left:17u;top:0}
+§ .hz-hero .hpg{left:118u;top:76u;width:60u;height:71u;z-index:3}
+§ .hz-hero .hq{left:126u;top:22u;width:50u;height:57u;padding:4u 0 0;font-size:fs(12,6);z-index:3}
+§ .hz-hero .hq.done{font-size:fs(8,4.5);padding:0 7u}
+§ .hero-zone .hz-right > .hov{left:1010u;top:44u;width:118u;height:118u}
+§ .hero-zone .powm,§ .hero-zone .powm.passive,§ .hero-zone .powm:not(.passive){background:none;border-radius:0}
+§ .hero-zone .powm::after{content:'';position:absolute;inset:0;background:url(assets/pouvoir/anneau-dispo.webp) 0 0/100% 100% no-repeat;pointer-events:none;z-index:1}
+§ .hero-zone .powm:not(:disabled):not(.passive):hover::after{background-image:url(assets/pouvoir/anneau-survol.webp)}
+§ .hero-zone .powm.used::after{background-image:url(assets/pouvoir/anneau-utilise.webp)}
+§ .hero-zone .powm .pwart{left:24.2%;top:25.6%;width:51.6%;height:51.6%;padding:8u;background:radial-gradient(circle at 50% 40%,#3d5f9a,#13213f 75%);z-index:0}
+§ .hero-zone .powm.used .pwart{filter:grayscale(1) brightness(.6)}
+§ .hero-zone .powm.used,§ .hero-zone .powm:disabled{filter:none}
+§ .hero-zone .powm:disabled:not(.used){filter:brightness(.72) saturate(.7)}
+§ .hero-zone .powm .pcost:not(.ck){transform:none;left:50%;top:calc(13.6% - 15u);width:30u;height:30u;margin:0 0 0 -15u;background:none;box-shadow:none;border:0;color:#341904;text-shadow:0 1px 0 rgba(255,236,170,.7);font-size:fs(21,9);z-index:2}
+§ .hero-zone .powm.used .pcost:not(.ck){color:#292623;text-shadow:none}
+§ .hero-zone .powm .pcost.ck{top:calc(13.6% - 19u);z-index:2}
+§ .hero-zone .powm small{top:112u;z-index:2}
+§ .hero-zone .powm.pwh-nh_sasuke::after{background-image:url(assets/pouvoir/sharingan-dispo.webp)}
+§ .hero-zone .powm.pwh-nh_sasuke:not(:disabled):not(.passive):hover::after{background-image:url(assets/pouvoir/sharingan-survol.webp)}
+§ .hero-zone .powm.pwh-nh_sasuke.used::after{background-image:url(assets/pouvoir/sharingan-utilise.webp)}
+§ .hero-zone .powm.pwh-nh_sasuke .pwart{display:none}
 § .hero-zone .purses{position:absolute;left:1140u;top:52u;width:180u;display:flex;flex-direction:column;align-items:flex-start;gap:4u;margin:0;padding:0}
 § .hero-zone .purses .purse{zoom:var(--rzw)}
 § .hero-zone .purses .purse:not(.ckp):not(.kip):not(.pfp){zoom:1;position:absolute;left:186u;top:121u;width:335u;height:80u;display:block;margin:0;padding:0;background:url(assets/plateau/compteur-or.webp) 0 0/100% 100% no-repeat;border:0;box-shadow:none;border-radius:0}
