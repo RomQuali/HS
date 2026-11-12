@@ -479,6 +479,7 @@ function ringP() {
 }
 const PH = { hero:'Choix du héros', recruit:'Recrutement', combat:'Combat', end:'Fin de partie' };
 
+const RN_LAYERS = '<i class="rn-surf" aria-hidden="true"></i><i class="rn-tb" aria-hidden="true"></i>';
 function gameH() {
   const d = V.pub, me = V.me; if (!d) return '<div class="menu"><p class="note">Chargement…</p></div>';
   const myPid = me ? me.pid : -1;
@@ -488,7 +489,7 @@ function gameH() {
       <span class="op-face${p.haw ? ' haw' : ''}">${faceH(playerSym(p))}<b class="op-hp">${p.al ? Math.max(0, p.hp) : p.pl + 'e'}</b><span class="op-t">${p.t}</span>${d.ph === 'recruit' && p.r && p.al ? '<span class="op-r">✓</span>' : ''}${p.el && ELS[p.el] && p.al ? `<span class="op-el" style="--c:${ELS[p.el].col}" title="${esc('Compagnon ' + ELS[p.el].n + ' · ' + p.mk + ' ' + MK_N[p.el].toLowerCase())}"><svg viewBox="-12 -12 24 24">${EL_ICON[p.el]}</svg></span>` : ''}</span>
       <span class="op-n">${esc(p.n)}</span></li>`).join('');
   const myInfo = d.pl.find(p => p.pid === myPid), alive = !!(myInfo && myInfo.al);
-  const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span>${d.ev && d.rd >= d.ev ? '<span class="eveil" data-tip="Éveil : la moitié des ninjas sont tombés à 20 PV ou moins. Les clans libèrent leur pouvoir ultime, ton compagnon prend sa forme éveillée, le pouvoir de ton héros est renforcé, chaque technique gagne son effet d\'Éveil et des techniques interdites apparaissent.">Éveil</span>' : ''}${d.laws && d.laws.length && d.ph !== 'end' ? `<span class="hud-laws">${d.laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<span class="hl" data-hov="law" data-tip="${esc(M.n + ' : ' + M.d)}">${icon(M.ic)}</span>`; }).join('')}${V.me && V.me.souls ? `<span class="souls" data-tip="Âmes récoltées : toutes les 3 âmes, tes serviteurs des Ténèbres gagnent +1/+1 au début du tour.">${icon('skull')}<b>${V.me.souls}</b></span>` : ''}</span>` : ''}<span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerTxt()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm" data-act="leave">Quitter</button></div>`;
+  const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span>${d.ev && d.rd >= d.ev ? '<span class="eveil" data-tip="Éveil : la moitié des ninjas sont tombés à 20 PV ou moins. Les clans libèrent leur pouvoir ultime, ton compagnon prend sa forme éveillée, le pouvoir de ton héros est renforcé, chaque technique gagne son effet d\'Éveil et des techniques interdites apparaissent.">Éveil</span>' : ''}${d.laws && d.laws.length && d.ph !== 'end' ? `<span class="hud-laws">${d.laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<span class="hl" data-hov="law" data-tip="${esc(M.n + ' : ' + M.d)}">${icon(M.ic)}</span>`; }).join('')}${V.me && V.me.souls ? `<span class="souls" data-tip="Âmes récoltées : toutes les 3 âmes, tes serviteurs des Ténèbres gagnent +1/+1 au début du tour.">${icon('skull')}<b>${V.me.souls}</b></span>` : ''}</span>` : ''}<span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerTxt()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran" title="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm lv-b" data-act="leave" title="Quitter la partie">Quitter</button></div>`;
   let table;
   if (me && alive) {
     const canAct = d.ph === 'recruit';
@@ -510,7 +511,9 @@ function gameH() {
         banner = `<div class="table-banner"><div class="banner ${won ? 'win' : lost ? 'loss' : 'draw'}">${won ? 'Victoire !' : lost ? 'Défaite' : 'Égalité'}</div><p class="banner-s">${won ? `Tu infliges ${dmg} dégâts à ${esc(F.on)}.` : lost ? `Tu subis ${dmg} dégâts.` : 'Personne ne perd de points de vie.'}</p>${duelLine(F)}${d.ph === 'combat' ? '<p class="mute">Les autres tables terminent leur combat…</p>' : ''}</div>`;
       } else banner = `<div class="table-skip"><button class="btn sm" data-act="skip">Passer l'animation</button></div>`;
     } else {
-      topZone = `<section class="keeper-zone${me.fz ? ' frozen' : ''}" data-drop="sh" aria-label="Taverne">
+      const rnN = me.sh.length, rnM = Math.max(5, rnN);   // plateau Roni : 5 emplacements au moins, les jetons se posent dessus
+      topZone = `<section class="keeper-zone${me.fz ? ' frozen' : ''}" data-drop="sh" aria-label="Taverne" style="--rn-m:${rnM};--rn-o:${(rnM - rnN) % 2}">
+        <div class="rn-slots" aria-hidden="true">${'<i></i>'.repeat(rnM)}</div>
         <div class="keeper">${medal('up', 'up', me.t >= 6 ? 'Niveau max' : 'Améliorer', me.t >= 6 ? null : me.uc, !canAct || me.t >= 6 || me.g < me.uc)}
           <div class="kc"><span class="face kf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-h-keeper" width="100" height="100"/></svg></span><div class="kname"><b>Bastien, tavernier</b><span class="lv">${tierStars(me.t)}</span></div></div>
           <div class="kr">${medal('roll', 'roll', 'Actualiser', freeRoll ? 0 : 1, !canAct || (me.g < 1 && !freeRoll))}${medal('frz', 'frz', me.fz ? 'Gelée' : 'Geler', null, !canAct, me.fz)}</div></div>
@@ -528,11 +531,12 @@ function gameH() {
     const aimS = !fighting && V.aim != null && me.hd[V.aim] && me.hd[V.aim].sp ? SPELLS[me.hd[V.aim].sp] : null;
     const sockets = Array.from({ length:7 }, () => '<i></i>').join('');
     const cpSide = me.cp && !fighting ? cpSideH(me, null, 0) : '';
+    const rnBd = (boardRow.match(/<div class="mn/g) || []).length || 1;   // plateau Roni : rangée calée sur les 7 emplacements (fantômes compris)
     const board = `<section class="board-zone${aimS ? ' aim' : ''}${me.cp && (!fighting || V.fight.duel) ? ' has-cp' : ''}" ${fighting ? '' : 'data-drop="bd"'} aria-label="Ton plateau">${cpSide}
       ${aimS ? `<div class="aimbar"><span>${icon('bolt')}<b>${esc(aimS.n)}</b> : touche le serviteur à cibler.</span><button class="btn sm" data-act="aimcancel">Annuler</button></div>` : ''}
       ${!fighting && me.tma ? `<span class="tma-b">Prochain combat : +${me.tma.a}/+${me.tma.h} pour tous</span>` : ''}
       ${!fighting && V.cohSum ? V.cohSum : ''}
-      <div class="line" id="bdrow">${boardRow}</div></section>`;
+      <div class="line" id="bdrow" style="--rn-e:${rnBd % 2 ? 0 : 1}">${boardRow}</div></section>`;
     const nono = me.hero === 'nono', locked = nono && (me.rd || 0) < 3;
     const powSub = nono ? `${me.fb} dégât${me.fb > 1 ? 's' : ''}` : me.pu ? 'Utilisé' : '';
     const power = hero && hero.cost ? `<button class="powm${me.pu ? ' used' : ''}${canAct && !locked && powCan(me, me.rd || (V.pub && V.pub.rd)) ? ' can' : ''}" data-act="pow" ${!canAct || me.pu || locked || (me.kiPay ? (me.ki || 0) : me.ckPay ? (me.ck || 0) : me.g) < hero.cost ? 'disabled' : ''} aria-label="${esc(hero.n + ' : ' + hero.tx + ' Coût : ' + hero.cost + (me.ckPay ? ' chakra.' : ' or.'))}"><span class="pcost${me.ckPay ? ' ck' : ''}">${me.ckPay ? ckMarkH(hero.cost, 'pc-ck', 'Coût : ' + hero.cost + ' chakra') : hero.cost}</span>${powArtH(me.hero)}<small>${locked ? 'Manche 3' : powSub || powerTitle(hero)[0] || 'Pouvoir'}</small><span class="pc-tx">${esc(powerTitle(hero)[1])}</span></button>`
@@ -547,11 +551,11 @@ function gameH() {
     const hand = fighting ? '' : `<section class="hand" data-drop="hd" aria-label="Ta main · ${n}/10"><div class="fan${n > 7 ? ' many' : n > 4 ? ' some' : ''}" style="--n:${n}">${n ? me.hd.map((m, i) => { const o = i - (n - 1) / 2, op = { drag:canAct, style:`--o:${f1(o)};--o2:${f1(o * o)}` }; return m.sp ? spellCardH(m.sp, 'hd', i, op) : cardH(m, 'hd', i, op); }).join('') : ''}</div></section>`;
     const det = !fighting && V.sel ? `<div class="detail-pop">${detailH(canAct)}<button class="dp-x" data-act="unsel" aria-label="Fermer">×</button></div>` : '';
     const duelCol = fighting && V.fight.duel && me.cp ? `<div class="duel-col" aria-label="Duel des compagnons">${cpSideH(me, V.fight, 1)}<span class="duel-vs">VS</span>${cpSideH(me, V.fight, 0)}</div>` : '';
-    table = `<div class="table${fighting ? ' fighting arena' + (V.fight.duel ? '' : (me.cp ? ' joined' : '')) : ''}${awakeUI() && (d.laws || []).some(l => l.k === 'chakra') ? ' awakened' + awkElCls(me) : ''}">${duelCol}${hud}${topZone}${board}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}${choiceH(d, me)}`;
+    table = `<div class="table${fighting ? ' fighting arena' + (V.fight.duel ? '' : (me.cp ? ' joined' : '')) : ''}${awakeUI() && (d.laws || []).some(l => l.k === 'chakra') ? ' awakened' + awkElCls(me) : ''}">${RN_LAYERS}${duelCol}${hud}${topZone}${board}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}${choiceH(d, me)}`;
   } else if (myInfo) {
-    table = `<div class="table">${hud}<section class="plaque solo-msg"><h2>Éliminé · ${myInfo.pl}e place</h2><p class="note">Tu peux suivre la fin de la partie à gauche ou retourner au menu.</p><div class="btns"><button class="btn" data-act="leave">Retour au menu</button></div></section></div>`;
+    table = `<div class="table">${RN_LAYERS}${hud}<section class="plaque solo-msg"><h2>Éliminé · ${myInfo.pl}e place</h2><p class="note">Tu peux suivre la fin de la partie à gauche ou retourner au menu.</p><div class="btns"><button class="btn" data-act="leave">Retour au menu</button></div></section></div>`;
   } else {
-    table = `<div class="table">${hud}<section class="plaque solo-msg"><h2>Spectateur</h2><p class="note">Tu observes cette partie.</p></section></div>`;
+    table = `<div class="table">${RN_LAYERS}${hud}<section class="plaque solo-msg"><h2>Spectateur</h2><p class="note">Tu observes cette partie.</p></section></div>`;
   }
   return `<div class="stage"><aside class="opps" aria-label="Joueurs"><ol>${opps}</ol></aside>${table}</div>${overlayH()}`;
 }
@@ -3316,3 +3320,210 @@ html.lite .hero-zone .powm.powm.can:not(:disabled){animation:none;filter:drop-sh
 /* serviteurs sur le plateau */
 .mn .fr-dr{pointer-events:none}
 `); document.head.appendChild(st); })();
+
+/* ---------- plateau Roni (maquette « plateau éclairé ») ----------
+   Les images sont des fichiers séparés (assets/plateau/*.webp, à publier à côté de la page) : le plateau ne s'active
+   que si toutes se chargent, sinon l'écran de jeu garde son habillage d'origine. --rz = échelle de la maquette 1672 × 941. */
+const RN = { ok:false, dir:'assets/plateau/', files:['fond', 'table', 'table-univers', 'emplacement', 'plaque', 'enseigne', 'jauge', 'actualiser', 'geler', 'sablier', 'support', 'compteur-or', 'sac-menu', 'journal', 'reglages', 'portrait', 'vie', 'armure', 'pouvoir'] };
+function rnFit() {
+  const w = innerWidth, h = innerHeight, z = Math.min(w / 1672, h / 941), st = document.documentElement.style;
+  st.setProperty('--rz', z.toFixed(4)); st.setProperty('--rzw', Math.max(z, .62).toFixed(4)); st.setProperty('--rx', ((w - 1672 * z) / 2).toFixed(1) + 'px'); st.setProperty('--ry', ((h - 941 * z) / 2).toFixed(1) + 'px');
+  if (document.body) document.body.classList.toggle('rn', RN.ok && w >= h * 1.05);
+}
+(function () {
+  rnFit(); addEventListener('resize', rnFit); addEventListener('orientationchange', () => setTimeout(rnFit, 120));
+  try {
+    Promise.all(RN.files.map(f => new Promise((ok, ko) => { const im = new Image(); im.onload = ok; im.onerror = ko; im.src = RN.dir + f + '.webp'; })))
+      .then(() => { RN.ok = true; rnFit(); }, () => { RN.ok = false; rnFit(); });
+  } catch (e) {}
+})();
+// feuille du plateau : « 12u » = 12 px de maquette, « 12uz » = idem dans un bloc zoomé (--rzw), fs(a,b) = a px de maquette, b px au moins,
+// § = :root:root:root body.rn (spécificité renforcée) ; chaque déclaration reçoit !important (sauf suffixe ¤) pour passer devant les couches de style précédentes
+const rnCss = s => s.replace(/§/g, ':root:root:root body.rn')
+  .replace(/fs\((-?[\d.]+),(-?[\d.]+)\)/g, 'max($2px,calc(var(--u)*$1))')
+  .replace(/(^|[\s:(,\/])(-?\d*\.?\d+)uz(?=[\s;,)}]|$)/g, '$1calc(var(--u)*$2/var(--rzw,1))')
+  .replace(/(^|[\s:(,\/])(-?\d*\.?\d+)u(?=[\s;,)}]|$)/g, '$1calc(var(--u)*$2)')
+  .replace(/([\w-]+\s*:[^;{}]+?)\s*(?=;|})/g, (m, d) => /¤$/.test(d) ? d.slice(0, -1) : d + '!important');
+(function(){ const st = document.createElement('style'); st.id = 'rn-css'; st.textContent = rnCss(`/*RN-CSS*/
+:root{--u:calc(var(--rz,1)*1px)¤}
+.rn-surf,.rn-tb,.rn-slots{display:none¤}
+/* scène : maquette 1672 × 941 centrée, mise à l'échelle par --u */
+§ .stage{position:fixed;left:var(--rx,0px);top:var(--ry,0px);width:1672u;height:941u;display:block;margin:0;padding:0;gap:0;overflow:hidden;overflow:clip;z-index:1;max-width:none;min-height:0;grid-template:none}
+§ .stage::before{content:'';position:fixed;inset:0;z-index:-2;background:linear-gradient(rgba(8,5,3,.6),rgba(8,5,3,.6)),#0b0705 url(assets/plateau/fond.webp) center/cover no-repeat;filter:blur(14px);transform:scale(1.06);pointer-events:none}
+html.lite:root:root body.rn .stage::before{filter:none;transform:none;background:linear-gradient(rgba(8,5,3,.8),rgba(8,5,3,.8)),#0b0705 url(assets/plateau/fond.webp) center/cover no-repeat}
+§ .stage::after{content:'';position:absolute;inset:0;z-index:-1;background:url(assets/plateau/fond.webp) 0 0/100% 100% no-repeat;pointer-events:none}
+§ .table{position:absolute;inset:0;display:block;margin:0;padding:0;background:none;box-shadow:none;border-radius:0;border:0;overflow:visible;container-type:normal;min-height:0;height:auto;width:auto;grid-template:none;animation:none}
+§ .table::before,§ .table::after{content:none}
+§ .rn-tb{display:block;position:absolute;left:222u;top:306u;width:1217u;height:472u;background:url(assets/plateau/table.webp) 0 0/100% 100% no-repeat;pointer-events:none;z-index:0}
+§.u-nj .rn-tb,§.u-db .rn-tb,§.u-rm .rn-tb,§.u-sp .rn-tb,html.has-board-sim:root§.u-sim .rn-tb{background-image:url(assets/plateau/table-univers.webp)}
+§.u-nj .rn-surf,§.u-db .rn-surf,§.u-rm .rn-surf,§.u-sp .rn-surf,html.has-board-sim:root§.u-sim .rn-surf{display:block;position:absolute;left:222u;top:306u;width:1217u;height:472u;pointer-events:none;z-index:0;background-repeat:no-repeat;background-size:100% auto;background-color:#1a1410;
+  clip-path:polygon(4.6% 31.8%,7.7% 16%,13.4% 10.2%,50.7% 8.1%,86.6% 10.2%,92.4% 16%,95.5% 31.8%,92.4% 43.4%,86.6% 47.9%,50.7% 48.7%,13.4% 47.9%,7.7% 43.4%)}
+§.u-nj .rn-surf{background-image:var(--board-nj);background-position:50% 30%}
+§.u-db .rn-surf{background-image:var(--board-db);background-position:50% 22%}
+§.u-rm .rn-surf{background-image:var(--board-rm);background-position:50% 22%}
+§.u-sp .rn-surf{background-image:var(--board-sp);background-position:50% 22%}
+html.has-board-sim:root§.u-sim .rn-surf{background-image:var(--board-sim);background-position:50% 22%}
+
+/* bandeau : manche, phase, règles, boutons ronds, minuteur */
+§ .hud{position:static;display:flex;align-items:center;gap:12u;width:610u;height:56u;margin:0;padding:8u 0 0 18u;zoom:1;background:none;box-shadow:none;pointer-events:none;flex-wrap:nowrap;border:0;min-height:0;text-shadow:0 1px 3px #000,0 0 8px rgba(0,0,0,.8)}
+§ .hud .round,§ .hud .phase,§ .hud .eveil{zoom:var(--rzw);pointer-events:auto}
+§ .hud .sp,§ .hud .rot-hint{display:none}
+§ .hud .hud-laws{position:absolute;left:1537u;top:4u;display:flex;flex-direction:column;align-items:center;gap:3u;margin:0;padding:0;pointer-events:auto;z-index:6}
+§ .hud .hl{position:relative;width:63u;height:63u;background:url(assets/plateau/journal.webp) 0 0/100% 100% no-repeat;border-radius:50%;border:0;box-shadow:none;display:block;padding:0;margin:0;cursor:help}
+§ .hud .hl .ic{position:absolute;right:-2u;bottom:-2u;width:24u;height:24u;padding:4u;border-radius:50%;background:#1b120b;box-shadow:0 0 0 1.5u #c8963e;color:#ffd86a;box-sizing:border-box}
+§ .hud .souls{zoom:var(--rzw)}
+§ .hud .btn.fs-b,§ .hud .btn.lv-b{position:absolute;top:4u;width:63u;height:63u;min-width:0;min-height:0;padding:0;margin:0;border:0;border-radius:50%;box-shadow:none;font-size:0;color:transparent;text-shadow:none;background-color:transparent;background-repeat:no-repeat;background-size:100% 100%;pointer-events:auto;z-index:6;transition:filter .15s}
+§ .hud .btn.fs-b{left:1601u;background-image:url(assets/plateau/reglages.webp)}
+§ .hud .btn.lv-b{left:1470u;background-image:url(assets/plateau/sac-menu.webp)}
+§ .hud .btn.fs-b:hover,§ .hud .btn.lv-b:hover,§ .hud .hl:hover{filter:brightness(1.25)}
+§ .hud .timer{position:absolute;left:1484u;top:557u;width:112u;height:46u;display:grid;place-items:center;margin:0;padding:0;background:none;box-shadow:none;border:0;border-radius:0;font-size:fs(34,13);line-height:1;color:#ffeab0;text-shadow:0 2u 0 #2a1206,0 0 6u #000,0 0 12u rgba(0,0,0,.9);z-index:7;pointer-events:none;zoom:1}
+§ .hud .timer.low{color:#ff7a5a}
+
+/* classement : plaques à gauche */
+§ .opps{position:absolute;left:10u;top:88u;width:207u;height:auto;margin:0;padding:0;zoom:1;background:none;box-shadow:none;border:0;border-radius:0;overflow:visible;z-index:4;max-height:none}
+§ .opps ol{display:block;margin:0;padding:0;gap:0;background:none;box-shadow:none}
+§ .opps .op{display:block;position:relative;width:207u;height:78u;margin:0 0 -6u;padding:0;background:url(assets/plateau/plaque.webp) 0 0/100% 100% no-repeat;box-shadow:none;border:0;border-radius:0;cursor:help;opacity:1}
+§ .opps .op-face{position:static;display:block;width:auto;height:auto;margin:0;box-shadow:none;border:0;background:none}
+§ .opps .op-face .face{position:absolute;left:22u;top:11u;width:55u;height:55u;border-radius:50%;border:0;box-shadow:inset 0 0 0 1.5u rgba(30,16,6,.8);background:#2a1a10;overflow:hidden}
+§ .opps .op-face .face svg{width:100%;height:100%}
+§ .opps .op-hp{position:absolute;left:72u;top:46u;right:auto;bottom:auto;width:30u;height:28u;min-width:0;display:grid;place-items:center;padding:0;margin:0;background:none;box-shadow:none;border:0;border-radius:0;font-size:fs(13.5,7.5);line-height:1;color:#fff;text-shadow:0 0 2u #3a0008,0 1u 0 #3a0008,1u 0 0 #3a0008,-1u 0 0 #3a0008,0 -1u 0 #3a0008;z-index:2}
+§ .opps .op-t{position:absolute;left:10u;top:2u;right:auto;bottom:auto;width:24u;height:24u;font-size:fs(13,7);z-index:2;margin:0}
+§ .opps .op-r{position:absolute;left:auto;right:6u;top:8u;bottom:auto;width:20u;height:20u;font-size:fs(12,6);z-index:2;margin:0}
+§ .opps .op-el{position:absolute;left:8u;top:48u;right:auto;bottom:auto;width:22u;height:22u;z-index:2;margin:0}
+§ .opps .op-n{position:absolute;left:103u;top:23u;width:84u;height:30u;display:block;margin:0;padding:0;font-size:fs(15,6.5);line-height:30u;text-align:center;color:#3a2410;text-shadow:0 1px 0 rgba(255,240,200,.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;background:none;font-weight:700}
+§ .opps .op.me{filter:drop-shadow(0 0 3u #ffd86a) drop-shadow(0 0 1u #ffd86a)}
+§ .opps .op.vs{filter:drop-shadow(0 0 3u #ff5a3a) drop-shadow(0 0 1u #ff5a3a)}
+§ .opps .op.dead{filter:grayscale(1) brightness(.6)}
+
+/* taverne : enseigne et niveau, amélioration, actualiser, geler, emplacements */
+§ .keeper-zone{position:absolute;left:0;top:0;width:1672u;height:303u;display:block;margin:0;padding:0;background:none;box-shadow:none;border:0;border-radius:0;z-index:2;zoom:1;min-height:0;--sw:min(153u,calc(900u / var(--rn-m,5) - 15u));--tw:calc(var(--sw) * .66)}
+§ .keeper-zone::before,§ .keeper-zone::after{content:none}
+§ .keeper-zone:not(.enemy)::before{content:'';position:absolute;left:1288u;top:92u;width:230u;height:246u;background:url(assets/plateau/support.webp) 0 0/100% 100% no-repeat;pointer-events:none;inset:auto;left:1288u;top:92u;border:0;box-shadow:none;border-radius:0;opacity:1;transform:none;animation:none}
+§ .keeper-zone:not(.enemy) .keeper{display:contents}
+§ .keeper{zoom:1}
+§ .keeper .kc{position:absolute;left:652u;top:0;width:356u;height:102u;display:block;margin:0;padding:0;background:url(assets/plateau/enseigne.webp) 0 0/100% 100% no-repeat;cursor:default}
+§ .keeper .kc .face,§ .keeper .kc .kname b{display:none}
+§ .keeper .kc .kname{position:static;display:block;margin:0;padding:0;background:none}
+§ .keeper .kc .lv{position:absolute;left:99u;top:63u;width:156u;height:24u;display:block;margin:0;padding:0;background:none}
+§ .keeper .kc .ts{display:flex;gap:0;width:100%;height:100%}
+§ .keeper .kc .ts i{flex:1;width:auto;height:100%;clip-path:none;background:radial-gradient(circle,rgba(24,15,10,.86) 0 52%,transparent 58%)}
+§ .keeper .kc .ts i.on{background:none}
+§ .keeper .medal{position:absolute;margin:0;padding:0;border:0;box-shadow:none;clip-path:none;filter:none;background-color:transparent;background-repeat:no-repeat;background-size:100% 100%;display:block;border-radius:50%;transition:filter .15s;min-width:0;min-height:0;transform:none}
+§ .keeper .medal::before,§ .keeper .medal::after{content:none}
+§ .keeper .medal .ic{display:none}
+§ .keeper .medal small{display:none}
+§ .keeper .medal:disabled{filter:grayscale(.85) brightness(.7);cursor:default;opacity:1}
+§ .keeper .medal:not(:disabled):hover{filter:brightness(1.22)}
+§ .keeper .medal .cost{position:absolute;left:50%;top:-10u;right:auto;bottom:auto;width:36u;height:36u;margin:0 0 0 -18u;display:grid;place-items:center;border-radius:50%;font-size:fs(21,9);line-height:1;color:#3a2206;background:radial-gradient(circle at 35% 30%,#fff3b8,#f2c14e 55%,#b7802a);box-shadow:0 0 0 1.5u #5a3a10,0 2u 4u rgba(0,0,0,.6);text-shadow:none;padding:0}
+§ .keeper .medal[data-act="roll"]{left:1305u;top:113u;width:99u;height:99u;background-image:url(assets/plateau/actualiser.webp)}
+§ .keeper .medal[data-act="frz"]{left:1399u;top:114u;width:99u;height:99u;background-image:url(assets/plateau/geler.webp)}
+§ .keeper .medal[data-act="frz"].on{filter:drop-shadow(0 0 6u #8fe8ff) brightness(1.25)}
+§ .keeper .medal[data-act="up"]{left:1000u;top:28u;width:186u;height:44u;border-radius:22u;background-image:url(assets/plateau/jauge.webp)}
+§ .keeper .medal[data-act="up"] small{display:block;position:absolute;left:13u;top:8u;width:160u;height:28u;box-sizing:border-box;padding:0 8u 0 40u;border-radius:14u;background:linear-gradient(#2a1b10,#170e08);box-shadow:inset 0 0 0 1u rgba(200,150,62,.5);font-size:fs(15,6.5);line-height:28u;color:#ffe9b0;text-align:center;letter-spacing:.3px;white-space:nowrap;margin:0;text-transform:none;opacity:1}
+§ .keeper .medal[data-act="up"] .cost{left:14u;top:4u;margin:0;z-index:2}
+§ .keeper .medal[data-act="up"]:not(:disabled) small{color:#fff3c8;box-shadow:inset 0 0 0 1u #ffd86a,0 0 8u rgba(255,200,90,.55)}
+§ .rn-slots{display:flex;position:absolute;left:299u;top:82u;width:1077u;height:215u;justify-content:center;align-items:flex-start;gap:15u;pointer-events:none}
+§ .rn-slots i{display:block;flex:none;width:var(--sw);height:calc(var(--sw) * 1.346);background:url(assets/plateau/emplacement.webp) 0 0/100% 100% no-repeat}
+§ .keeper-zone.frozen .rn-slots i{filter:drop-shadow(0 0 5u #7fe0ff)}
+§ .keeper-zone:not(.enemy) .counter-line{position:absolute;left:299u;top:82u;width:1077u;height:215u;display:flex;justify-content:center;align-items:flex-start;gap:15u;margin:0;padding:0 calc(var(--rn-o,0) * (var(--sw) + 15u)) 0 0;box-sizing:border-box;background:none;box-shadow:none;border:0;border-radius:0;min-height:0;backdrop-filter:none;flex-wrap:nowrap}
+§ .keeper-zone:not(.enemy) .counter-line .mn{width:var(--tw);margin:calc(var(--sw) * .135) calc(var(--sw) * .17) 0;gap:0}
+§ .keeper-zone:not(.enemy) .counter-line .mn .mn-nm{position:absolute;left:-22%;top:calc(var(--sw) * .915);width:144%;min-height:0;height:calc(var(--sw) * .17);display:grid;place-items:center;font-size:max(5.5px,calc(var(--sw) * .076));line-height:.98;color:#3a2410;text-shadow:none;font-weight:700;overflow:hidden;white-space:normal;text-wrap:balance;padding:0}
+§ .keeper-zone .hint{position:absolute;left:0;right:0;top:118u;margin:0;text-align:center;font-size:fs(17,8);color:#ffe9b0;text-shadow:0 1px 3px #000;pointer-events:none}
+§ .keeper-zone .shelf{position:absolute;left:-66u;top:6u;width:178u;height:auto;margin:0;padding:4u 4u 6u;display:grid;justify-items:center;gap:2u;border:0;border-radius:14u;background:rgba(18,10,6,.5);box-shadow:inset 0 0 0 1.5u rgba(200,150,62,.55);--tw:96u}
+§ .keeper-zone .shelf.two{--tw:80u}
+§ .keeper-zone .shelf::before,§ .keeper-zone .shelf::after{content:none}
+§ .keeper-zone .shelf .shelf-l{font-size:fs(13,6.5);color:#ffd86a;letter-spacing:1px}
+§ .keeper-zone .shelf .shelf-row{display:flex;gap:4u;justify-content:center}
+§ .keeper-zone .ktrs{position:absolute;left:18uz;top:58uz;right:auto;bottom:auto;width:600u;margin:0;display:flex;flex-wrap:wrap;gap:4px;justify-content:flex-start;zoom:var(--rzw);transform:none}
+
+/* combat : héros adverse en haut, sa rangée sur la table */
+§ .keeper-zone.enemy{height:540u;pointer-events:none}
+§ .keeper-zone.enemy .keeper{position:absolute;left:50%;right:auto;top:112u;width:max-content;transform:translateX(-50%);display:flex;flex-direction:row;justify-content:center;align-items:center;gap:18u;margin:0;padding:8u 34u 8u 8u;pointer-events:auto;border-radius:80u;background:linear-gradient(180deg,rgba(40,22,12,.9),rgba(16,9,5,.9));box-shadow:inset 0 0 0 2u #c8963e,inset 0 0 0 4u rgba(20,10,5,.8),0 6u 18u rgba(0,0,0,.6)}
+§ .keeper-zone.enemy .keeper .face.kf{width:124u;height:124u;border-radius:50%;flex:none;margin:0}
+§ .keeper-zone.enemy .kn-en{position:static;transform:none;display:grid;gap:6u;justify-items:start;text-align:left;margin:0;padding:0;background:none}
+§ .keeper-zone.enemy .kn-en b{font-size:fs(34,12);line-height:1.05}
+§ .keeper-zone.enemy .kn-en .ts{gap:3u}
+§ .keeper-zone.enemy .kn-en .ts i{width:fs(24,9);height:fs(24,9)}
+§ .keeper-zone.enemy .counter-line{position:absolute;left:299u;top:346u;width:1077u;height:150u;display:flex;justify-content:center;align-items:flex-start;gap:0;margin:0;padding:0;background:none;box-shadow:none;border:0;border-radius:0;min-height:0;backdrop-filter:none;pointer-events:auto;--tw:118u}
+§ .keeper-zone.enemy .counter-line .mn{width:118u;margin:0 14u}
+
+/* table : les 7 emplacements d'équipe */
+§ .board-zone{position:absolute;left:0;top:303u;width:1672u;height:387u;display:block;margin:0;padding:0;background:none;box-shadow:none;border:0;border-radius:0;z-index:2;--tw:118u;min-height:0;backdrop-filter:none}
+§ .board-zone::before,§ .board-zone::after{content:none}
+§ .board-zone #bdrow{position:absolute;left:299u;top:236u;width:1077u;height:150u;display:flex;justify-content:center;align-items:flex-start;gap:0;margin:0;padding:0 calc(var(--rn-e,0) * 146u) 0 0;box-sizing:border-box;min-height:0;background:none;z-index:1}
+§ .board-zone #bdrow .mn{width:118u;margin:0 14u}
+§ .board-zone #bdrow .mn .mn-nm{display:none}
+§ .board-zone .hint{position:absolute;left:0;right:0;top:-150u;margin:0;text-align:center;font-size:fs(19,8.5);color:#ffe9b0;text-shadow:0 1px 3px #000,0 0 10px #000;pointer-events:none;width:auto}
+§ .board-zone.drop-ok{background:none;box-shadow:none}
+§ .board-zone.drop-ok::after{content:'';position:absolute;left:290u;top:232u;width:1094u;height:156u;border-radius:20u;box-shadow:inset 0 0 0 2u rgba(255,216,106,.85),0 0 22u rgba(255,200,90,.55);pointer-events:none}
+§ .board-zone .aimbar{position:absolute;left:50%;top:60uz;transform:translateX(-50%);z-index:5;margin:0;zoom:var(--rzw)}
+§ .board-zone .tma-b{position:absolute;left:50%;top:176uz;transform:translateX(-50%);margin:0;zoom:var(--rzw);z-index:3}
+§ .board-zone .coh-sum{position:absolute;left:auto;right:300u;top:150u;bottom:auto;margin:0;z-index:3;transform:none}
+§ .table-skip{position:absolute;left:0;right:0;top:268u;bottom:auto;display:flex;justify-content:center;margin:0;padding:0;zoom:1;z-index:8;pointer-events:none;transform:none}
+§ .table-skip .btn{pointer-events:auto;zoom:var(--rzw)}
+§ .table-banner{position:absolute;left:262u;right:auto;width:1138u;border-radius:90u;top:352u;bottom:auto;margin:0;z-index:9;display:grid;justify-items:center;text-align:center;transform:none;pointer-events:none}
+
+/* héros : portrait, vie, quête, pouvoir, or */
+§ .hero-zone{position:absolute;left:0;top:648u;width:1672u;height:182u;display:block;margin:0;padding:0;zoom:1;background:none;box-shadow:none;border:0;border-radius:0;pointer-events:none;z-index:3;min-height:0;grid-template:none}
+§ .hero-zone::before,§ .hero-zone::after{content:none}
+§ .hero-zone > *{pointer-events:auto}
+§ .hz-hero{position:absolute;left:752u;top:26u;width:167u;height:142u;display:block;margin:0;padding:0;background:url(assets/plateau/portrait.webp) 0 0/100% 100% no-repeat;transform:none}
+§ .hz-hero .face.hf{position:absolute;left:27u;top:17u;width:113u;height:113u;border-radius:50%;clip-path:none;border:0;box-shadow:inset 0 0 0 2u rgba(30,16,6,.7);margin:0;background:#2a1a10}
+§ .hz-hero .face.hf svg{width:100%;height:100%}
+§ .hz-hero .hpg{position:absolute;left:-71u;top:46u;right:auto;bottom:auto;width:73u;height:87u;margin:0;background:url(assets/plateau/vie.webp) 0 0/100% 100% no-repeat;transform:none;filter:none}
+§ .hz-hero .hpg use{display:none}
+§ .hz-hero .hpg text{font-size:17px}
+§ .hz-hero .hname{display:none}
+§ .hz-hero .haw-fr{position:absolute;left:17u;top:7u;width:133u;height:133u;margin:0;transform:none;z-index:1;pointer-events:none}
+§ .hz-hero .hq{position:absolute;left:158u;top:50u;right:auto;bottom:auto;width:73u;height:83u;margin:0;padding:6u 0 0;box-sizing:border-box;display:grid;place-items:center;background:url(assets/plateau/armure.webp) 0 0/100% 100% no-repeat;border:0;border-radius:0;box-shadow:none;font-size:fs(15,7);line-height:1;color:#fff;text-shadow:0 0 2u #0a1a2a,0 1u 0 #0a1a2a,1u 0 0 #0a1a2a,-1u 0 0 #0a1a2a;white-space:nowrap;overflow:visible;transform:none;min-width:0;text-align:center}
+§ .hz-hero .hq i{display:none}
+§ .hz-hero .hq.done{font-size:fs(10,5);white-space:normal;padding:0 12u}
+§ .hero-zone .hz-right{display:block;position:static;margin:0;padding:0}
+§ .hero-zone .hz-right > .hov{position:absolute;left:1015u;top:49u;width:106u;height:112u;display:block;margin:0;padding:0}
+§ .hero-zone .powm,§ .hero-zone .powm.passive,§ .hero-zone .powm:not(.passive){position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;display:block;border:0;border-radius:50%;box-shadow:none;background:url(assets/plateau/pouvoir.webp) 0 0/100% 100% no-repeat;clip-path:none;min-width:0;min-height:0;transform:none}
+§ .hero-zone .powm::before,§ .hero-zone .powm::after{content:none}
+§ .hero-zone .powm .pwart{position:absolute;left:21u;top:25u;width:64u;height:64u;padding:10u;box-sizing:border-box;border-radius:50%;background:radial-gradient(circle at 50% 40%,#3a2414,#170d07 75%);margin:0;filter:none}
+§ .hero-zone .powm .pcost{position:absolute;left:50%;top:-12u;right:auto;bottom:auto;width:38u;height:38u;margin:0 0 0 -19u;display:grid;place-items:center;border-radius:50%;font-size:fs(22,9);line-height:1;z-index:2;padding:0}
+§ .hero-zone .powm small{position:absolute;left:-20u;right:-20u;top:100u;bottom:auto;margin:0;padding:0;font-size:fs(13,6.5);line-height:1.1;text-align:center;color:#ffe9b0;text-shadow:0 1px 2px #000,0 0 6px #000;background:none;white-space:nowrap;width:auto;transform:none;box-shadow:none;border:0}
+§ .hero-zone .powm .pc-tx{display:none}
+§ .hero-zone .powm.used,§ .hero-zone .powm:disabled{filter:grayscale(.8) brightness(.72)}
+§ .hero-zone .powm.can{filter:drop-shadow(0 0 5u rgba(255,200,90,.9))}
+§ .hero-zone .purses{position:absolute;left:1140u;top:52u;width:180u;display:flex;flex-direction:column;align-items:flex-start;gap:4u;margin:0;padding:0}
+§ .hero-zone .purses .purse{zoom:var(--rzw)}
+§ .hero-zone .purses .purse:not(.ckp):not(.kip):not(.pfp){zoom:1;position:absolute;left:186u;top:121u;width:335u;height:80u;display:block;margin:0;padding:0;background:url(assets/plateau/compteur-or.webp) 0 0/100% 100% no-repeat;border:0;box-shadow:none;border-radius:0}
+§ .hero-zone .purses .purse:not(.ckp):not(.kip):not(.pfp) b{position:absolute;left:43u;top:13u;width:58u;height:54u;display:grid;place-items:center;margin:0;font-size:fs(34,12);line-height:1;color:#3a2206;text-shadow:0 0 3u #ffe9a0,0 0 3u #ffe9a0,0 1px 0 rgba(255,245,200,.9);white-space:nowrap}
+§ .hero-zone .purses .purse:not(.ckp):not(.kip):not(.pfp) b small{position:absolute;left:60u;top:17u;width:34u;text-align:center;font-size:fs(16,7);color:#ffe9b0;text-shadow:0 1px 2px #000;z-index:2}
+§ .hero-zone .purses .purse:not(.ckp):not(.kip):not(.pfp) .coinrow{position:absolute;left:106u;top:21u;width:208u;height:38u;box-sizing:border-box;display:flex;align-items:center;justify-content:flex-start;gap:2.5u;padding:0 8u 0 34u;margin:0;border-radius:19u;background:linear-gradient(#20140c,#150c07);box-shadow:inset 0 2u 4u rgba(0,0,0,.7);flex-wrap:nowrap;max-width:none}
+§ .hero-zone .purses .purse:not(.ckp):not(.kip):not(.pfp) .coin{flex:0 1 15u;width:auto;height:auto;aspect-ratio:1;min-width:0;margin:0}
+§ .hero-zone .purses .purse:not(.ckp):not(.kip):not(.pfp) .inc{position:absolute;right:14u;top:-17u;left:auto;margin:0;font-size:fs(13,6.5);white-space:nowrap;color:#ffe9b0;text-shadow:0 1px 2px #000,0 0 6px #000}
+§ .hero-zone .rsv{position:absolute;left:1290uz;top:56uz;margin:0;zoom:var(--rzw)}
+§ .hero-zone .hz-left{position:absolute;left:auto;right:1150uz;top:52uz;display:flex;flex-direction:row;justify-content:flex-end;align-items:center;gap:10px;margin:0;padding:0;zoom:var(--rzw);max-width:none;width:auto}
+/* sablier : minuteur et bouton « Prêt » */
+§ .hero-zone .bellwrap{position:absolute;left:1430u;top:-350u;width:232u;height:400u;margin:0;padding:0;background:url(assets/plateau/sablier.webp) 0 0/232u 352u no-repeat;border-radius:0;box-shadow:none;border:0;animation:none}
+§ .hero-zone .bellwrap::before,§ .hero-zone .bellwrap::after{content:none;display:none}
+§ .hero-zone .bell{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;display:block;background:none;border:0;border-radius:0;box-shadow:none;overflow:visible;animation:none;filter:none}
+§ .hero-zone .bell::before,§ .hero-zone .bell::after{content:none}
+§ .hero-zone .bell .ic,§ .hero-zone .bell .bell-shine,§ .hero-zone .bell .bell-s{display:none}
+§ .hero-zone .bell .bell-t{position:absolute;left:38u;top:346u;width:156u;height:44u;display:grid;place-items:center;margin:0;padding:0;border-radius:22u;font-size:fs(24,10);line-height:1;color:#2a1608;text-shadow:0 1px 0 rgba(255,245,200,.6);background:linear-gradient(180deg,#ffe9a0,#f2c14e 55%,#c88a26);box-shadow:0 0 0 2u #5a3a10,0 3u 0 2u #3a2208,0 6u 12u rgba(0,0,0,.6);letter-spacing:.5px}
+§ .hero-zone .bell:not(:disabled):hover .bell-t{filter:brightness(1.12)}
+§ .hero-zone .bell.rung .bell-t{background:linear-gradient(180deg,#d8ffb0,#8fd85a 55%,#4a9a2a);color:#10300a}
+§ .hero-zone .bell:disabled{cursor:default;opacity:1;filter:none}
+§ .hero-zone .bell:disabled .bell-t{display:none}
+
+/* main */
+§ .table .hand{position:absolute;left:0;top:790u;width:1672u;height:151u;display:block;margin:0;padding:0;background:none;box-shadow:none;border:0;pointer-events:none;z-index:11;--hw:max(72px,172u);min-height:0}
+§ .table .hand .fan{pointer-events:auto}
+§ .table .hand .fan .cd{bottom:calc(var(--hw) * -.79)}
+
+/* étiquettes, fiche de sélection, messages */
+§ .keeper-zone .mn.pairok::after,§ .keeper-zone .mn.tripok::after{font-size:max(6.5px,calc(var(--tw) * .125));padding:.15em .7em;top:-7%}
+§ .mn .tri,§ .cd .tri{font-size:fs(13,6.5);padding:.1em .6em;top:-6u}
+§ .table .detail-pop{position:absolute;left:50%;right:auto;top:324uz;bottom:auto;transform:translateX(-50%);z-index:14;zoom:var(--rzw);max-width:430px;width:max-content;margin:0}
+§ .table .solo-msg{position:absolute;left:50%;top:340uz;transform:translateX(-50%);width:560px;max-width:none;margin:0;zoom:var(--rzw);z-index:5}
+§ .hero-zone,§ .keeper-zone,§ .board-zone,§ .table .hand,§ .hud,§ .opps{overflow:visible;contain:none;clip-path:none;transform:none;filter:none;mask:none;max-width:none;max-height:none;scrollbar-width:none}
+§ .keeper .medal,§ .keeper .kc{z-index:5}
+§ .keeper-zone .counter-line,§ .board-zone #bdrow{pointer-events:none}
+§ .keeper-zone .counter-line > *,§ .board-zone #bdrow > *{pointer-events:auto}
+§ .keeper-zone .hint,§ .board-zone .hint{pointer-events:none}
+§ .keeper-zone .hint,§ .board-zone .hint{width:100%;max-width:none;display:block;justify-self:auto}
+/*RN-END*/`); document.head.appendChild(st); })();
