@@ -101,3 +101,5 @@ function gelSync() {
   } catch (e) {}
 }
 (function () { const r0 = render; render = function () { const out = r0.apply(this, arguments); gelSync(); return out; }; })();
+// la couche de glace ne doit jamais intercepter les clics (le plateau redonne les clics aux enfants de la taverne)
+(function () { try { const st = document.createElement('style'); st.textContent = ':root:root:root:root:root body canvas.roni-effet-gel.roni-effet-gel{pointer-events:none!important}'; document.head.appendChild(st); } catch (e) {} })();
