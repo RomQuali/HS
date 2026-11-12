@@ -562,8 +562,8 @@ function gameH() {
       <div class="line" id="bdrow">${boardRow}</div></section>`;
     const nono = me.hero === 'nono', locked = nono && (me.rd || 0) < 3;
     const powSub = nono ? `${me.fb} dégât${me.fb > 1 ? 's' : ''}` : me.pu ? 'Utilisé' : '';
-    const power = hero && hero.cost ? `<button class="powm pwh-${me.hero}${me.pu ? ' used' : ''}${canAct && !locked && powCan(me, me.rd || (V.pub && V.pub.rd)) ? ' can' : ''}" data-act="pow" ${!canAct || me.pu || locked || (me.kiPay ? (me.ki || 0) : me.ckPay ? (me.ck || 0) : me.g) < hero.cost ? 'disabled' : ''} aria-label="${esc(hero.n + ' : ' + hero.tx + ' Coût : ' + hero.cost + (me.ckPay ? ' chakra.' : ' or.'))}"><span class="pcost${me.ckPay ? ' ck' : ''}">${me.ckPay ? ckMarkH(hero.cost, 'pc-ck', 'Coût : ' + hero.cost + ' chakra') : hero.cost}</span>${powArtH(me.hero)}<small>${locked ? 'Manche 3' : powSub || powerTitle(hero)[0] || 'Pouvoir'}</small><span class="pc-tx">${esc(powerTitle(hero)[1])}</span></button>`
-      : `<span class="powm passive pwh-${me.hero || 'x'}" aria-label="${esc(hero ? hero.tx : '')}">${hero ? powArtH(me.hero) : icon('crown')}<small>Passif</small>${hero ? `<span class="pc-tx">${esc(hero.tx)}</span>` : ''}</span>`;
+    const power = hero && hero.cost ? `<button class="powm pwh-${me.hero}${me.pu ? ' used' : ''}${canAct && !locked && powCan(me, me.rd || (V.pub && V.pub.rd)) ? ' can' : ''}" data-act="pow" ${!canAct || me.pu || locked || (me.kiPay ? (me.ki || 0) : me.ckPay ? (me.ck || 0) : me.g) < hero.cost ? 'disabled' : ''} aria-label="${esc(hero.n + ' : ' + hero.tx + ' Coût : ' + hero.cost + (me.ckPay ? ' chakra.' : ' or.'))}"><span class="pcost${me.ckPay ? ' ck' : ''}">${me.ckPay ? ckMarkH(hero.cost, 'pc-ck', 'Coût : ' + hero.cost + ' chakra') : hero.cost}</span>${powArtH(me.hero, me.haw)}<small>${locked ? 'Manche 3' : powSub || powerTitle(hero)[0] || 'Pouvoir'}</small><span class="pc-tx">${esc(powerTitle(hero)[1])}</span></button>`
+      : `<span class="powm passive pwh-${me.hero || 'x'}" aria-label="${esc(hero ? hero.tx : '')}">${hero ? powArtH(me.hero, me.haw) : icon('crown')}<small>Passif</small>${hero ? `<span class="pc-tx">${esc(hero.tx)}</span>` : ''}</span>`;
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
       <div class="hz-left">${trainH(d, me, canAct)}${me.cp || (!NJ_COMP && (d.laws || []).some(l => l.k === 'chakra')) ? '' : `<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span>`}</div>
@@ -1800,7 +1800,8 @@ const PWART = {
   storm:'<path d="M23 4 L12 22 H19 L15 36 L29 16 H21 Z" fill="#ffe14a"/><path d="M8 10 L12 14 M32 26 L28 22" stroke="#fff6c0" stroke-width="2.4" stroke-linecap="round"/>',
   wind:'<path d="M6 15h17a4 4 0 1 0-4-4M6 21h24a4 4 0 1 1-4 4M6 27h11" stroke="#bff0e6" stroke-width="3" fill="none" stroke-linecap="round"/>'
 };
-const powArtH = hid => { const th = HTHEME[hid] || 'spark', col = THC[th]; return `<svg class="ic pwart" viewBox="0 0 40 40" style="--hc:${col}" aria-hidden="true">${PWART[th]}</svg>`; };
+// illustrations Roni des pouvoirs (assets/pouvoirs/<id>.webp, <id>_eveil.webp) pour les héros des 5 univers ouverts ; dessin vectoriel pour les autres
+const powArtH = (hid, aw) => { if (/^(nh|dh|rh|sh|smh)_/.test(hid || '')) return `<span class="ic pwart pwimg" aria-hidden="true"><i style="background-image:url(assets/pouvoirs/${hid}${aw ? '_eveil' : ''}.webp)"></i></span>`; const th = HTHEME[hid] || 'spark', col = THC[th]; return `<svg class="ic pwart" viewBox="0 0 40 40" style="--hc:${col}" aria-hidden="true">${PWART[th]}</svg>`; };
 const RUNES = 'ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ';
 function hfxH(th, n = 18) {
   let h = '';
@@ -1841,7 +1842,7 @@ function heroArchH(art, hp, cls = '') {
 function powBannerH(x, hid, nin) {
   const cost = x.cost ? (x.pay === 'ki' ? `<span class="pwb-cost kic"><b>${x.cost}</b></span>` : nin && x.pay !== 'g' ? `<span class="pwb-cost ck">${ckMarkH(x.cost)}</span>` : `<span class="pwb-cost g"><b>${x.cost}</b></span>`) : '<span class="pwb-cost p"><b>∞</b></span>';
   const main = (x.trx ? x.tx.replace(' Bonus : ' + x.trx, '') : x.tx || '').replace(/^Passif : /, '');
-  return `<div class="pwb">${cost}<span class="pwb-med">${powArtH(hid)}</span><b class="pwb-nm">${esc(x.pwn || (x.cost ? 'Pouvoir héroïque' : 'Pouvoir passif'))}</b>
+  return `<div class="pwb">${cost}<span class="pwb-med">${powArtH(hid, !!(x && x.nm && !x.n))}</span><b class="pwb-nm">${esc(x.pwn || (x.cost ? 'Pouvoir héroïque' : 'Pouvoir passif'))}</b>
     <p class="pwb-tx"><small>${x.cost ? 'Pouvoir héroïque' + (x.pay === 'ki' ? ' · ' + x.cost + ' ki' : '') : 'Pouvoir passif'}</small>${esc(main.charAt(0).toUpperCase() + main.slice(1))}</p></div>`;
 }
 // survol d'un joueur du classement (façon Champs de bataille) : héros, pouvoir, et parchemin des statistiques
@@ -2830,6 +2831,8 @@ html.lite .awk-go{animation:none}
 .pwb-cost.p{background:radial-gradient(circle at 40% 35%,#6a4a2a,#2a1a0e)}.pwb-cost.p b{color:#ffd86a;font-size:18px}
 .pwb-med{width:76px;height:76px;margin-top:-12px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 40% 35%,#6a4a2a,#1a0e06);box-shadow:inset 0 0 0 3px #2a1806,0 0 0 5px #5a3a1a,0 0 0 8px #c8a04a,0 0 0 10px #2a1806}
 .pwb-med .pwart{width:48px;height:48px}
+.ic.pwart.pwimg{display:block;position:relative;border-radius:50%;box-sizing:border-box;padding:0;overflow:hidden}
+.ic.pwart.pwimg i{position:absolute;inset:0;border-radius:50%;background:#1a110a center/cover no-repeat}
 .pwb-nm{width:calc(100% + 30px);margin-top:8px;padding:5px 0 6px;font:700 15px var(--f-label),serif;color:#2a1c10;background:linear-gradient(180deg,#f6eed8,#d8c89e 60%,#b8a478);box-shadow:inset 0 0 0 1px #5a4a30;
   clip-path:polygon(0 0,100% 0,94% 50%,100% 100%,0 100%,6% 50%);filter:drop-shadow(0 2px 2px rgba(0,0,0,.5))}
 .pwb-tx{margin:2px 0 0;width:100%;padding:8px 8px 10px;box-sizing:border-box;font-size:12.5px;line-height:1.35;color:#2a2018;background:linear-gradient(180deg,#e6dfcf,#c9bfa8);box-shadow:inset 0 0 0 1.5px #6a5a40,inset 0 0 0 3px #e9e1cf}
@@ -3540,6 +3543,7 @@ html.has-board-sim:root§.u-sim .rn-surf{background-image:var(--board-sim);backg
 § .hero-zone .powm.pwh-nh_sasuke:not(:disabled):not(.passive):hover::after{background-image:url(assets/pouvoir/sharingan-survol.webp)}
 § .hero-zone .powm.pwh-nh_sasuke.used::after{background-image:url(assets/pouvoir/sharingan-utilise.webp)}
 § .hero-zone .powm.pwh-nh_sasuke .pwart{display:none}
+§ .hero-zone .powm .pwart.pwimg{padding:0}
 § .hero-zone .purses{position:absolute;left:1140u;top:52u;width:180u;display:flex;flex-direction:column;align-items:flex-start;gap:4u;margin:0;padding:0}
 § .hero-zone .purses .purse{zoom:var(--rzw)}
 § .hero-zone .purses .purse:not(.ckp):not(.kip):not(.pfp){zoom:1;position:absolute;left:186u;top:121u;width:335u;height:80u;display:block;margin:0;padding:0;background:url(assets/plateau/compteur-or.webp) 0 0/100% 100% no-repeat;border:0;box-shadow:none;border-radius:0}

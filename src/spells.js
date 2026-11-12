@@ -595,11 +595,13 @@ function spellBg(ty) {
 }
 function buildSpellDefs() {
   let s = Object.keys(SP_TYPES).map(spellBg).join('');
+  // illustrations Roni des sorts (assets/sorts/<id>.webp) ; les autres gardent leur dessin
+  const SP_IMG = new Set('cs_amaterasu cs_bijuchakra cs_bijudama cs_chidori cs_chokei cs_doryu cs_gokakyu cs_henge cs_hosenka cs_iwa cs_kagebunshin cs_kamaitachi cs_kawarimi cs_kengan cs_kibaku cs_kiri cs_kuchiyose cs_kugutsu cs_raikyu cs_sabaku cs_shosen cs_shunshin cs_suikodan cs_suiro cs_sunatate dt_barriere dt_death dt_final dt_galick dt_genki dt_kaioken dt_kame dt_kienzan dt_kikoho dt_makanko dt_masenko dt_taiyo ri_batterie ri_beurre ri_casque ri_cornichon ri_graine ri_laser ri_meeseeks ri_plumbus ri_serum ri_voiture si_bonbon si_donut si_duff si_flaming si_lancepierre si_plutonium si_saxo si_squishee si_tetine si_ticket so_baton so_cakes so_cape so_chili so_chinpoko so_coon so_poofs so_sac so_tegridy so_tv'.split(' '));
   const runes = [[12, 14], [88, 18], [10, 86], [90, 84]].map(([x, y]) => Ci(x, y, 3.4, 'none', 'stroke="#fff" stroke-width=".8" opacity=".35"') + P(starD(x, y, 2, 0.6, 4), '#fff', 'opacity=".45"')).join('');
   // techniques ninja : le fond prend la couleur de leur nature
   const ELBG = { feu:'#c8401a', vent:'#b8862a', eau:'#1e6ab0', foudre:'#6a4ab8', terre:'#7a5a32' };
   for (const e in ELBG) s += `<radialGradient id="spbg-el-${e}" cx="50%" cy="42%" r="70%"><stop offset="0" stop-color="${shade(ELBG[e], 0.5)}"/><stop offset=".6" stop-color="${ELBG[e]}"/><stop offset="1" stop-color="${shade(ELBG[e], -0.6)}"/></radialGradient>`;
-  for (const id in SPELLS) s += `<symbol id="sp-${id}" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><rect width="100" height="100" fill="url(#spbg-${SPELLS[id].bg && ELBG[SPELLS[id].bg] ? 'el-' + SPELLS[id].bg : SPELLS[id].el && ELBG[SPELLS[id].el] && !SPELLS[id].item ? 'el-' + SPELLS[id].el : SPELLS[id].ty})"/>${Ci(50, 50, 40, 'none', 'stroke="#fff" stroke-width=".8" stroke-dasharray="2 3" opacity=".35"')}${runes}${SPART[id]()}</symbol>`;
+  for (const id in SPELLS) s += `<symbol id="sp-${id}" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice"><rect width="100" height="100" fill="url(#spbg-${SPELLS[id].bg && ELBG[SPELLS[id].bg] ? 'el-' + SPELLS[id].bg : SPELLS[id].el && ELBG[SPELLS[id].el] && !SPELLS[id].item ? 'el-' + SPELLS[id].el : SPELLS[id].ty})"/>${Ci(50, 50, 40, 'none', 'stroke="#fff" stroke-width=".8" stroke-dasharray="2 3" opacity=".35"')}${runes}${SP_IMG.has(id) ? `<image href="assets/sorts/${id}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>` : SPART[id]()}</symbol>`;
   document.body.insertAdjacentHTML('afterbegin', `<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>${s}${Object.values(SOFT).join('')}</defs></svg>`);
 }
 
