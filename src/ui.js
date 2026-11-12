@@ -3382,7 +3382,7 @@ html.lite .mn.mn-awk .mn-svg{animation:none}
 :root body .gt.uf-r,:root body .cd .gt.uf-r{font-size:11px;stroke-width:2.6px}
 :root body .mn.rf .mn-nm{display:none}
 :root body .mn.rf.g .uf-f{filter:sepia(1) saturate(2.6) hue-rotate(-12deg) brightness(1.28) contrast(1.05)}
-:root body .mn.rf.g .fr-dr{filter:sepia(1) saturate(3) hue-rotate(-12deg) brightness(1.35) drop-shadow(0 1px 1px rgba(40,20,0,.8))}
+:root body .mn .fr-dr,:root body .cd .cd-dr{filter:sepia(1) saturate(3) hue-rotate(-12deg) brightness(1.35) drop-shadow(0 1px 1px rgba(40,20,0,.8))}
 :root body .cd.rf{background:none;border-style:solid;border-color:transparent;border-width:0;border-image:var(--fr-parch) 60 80 fill/20cqi 27cqi stretch}
 :root body .cd.rf::before{display:none}
 :root body .cd.rf .uf-svg{position:absolute;left:8%;top:.5%;width:84%;height:auto;overflow:visible;z-index:1;filter:drop-shadow(0 3px 3px rgba(0,0,0,.5))}
