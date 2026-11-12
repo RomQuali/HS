@@ -315,3 +315,23 @@ html:root:root:root:root:root:root:root:root body.rn[class] .rn-tb,html:root:roo
 /* main : cartes à la taille Champs de bataille */
 § .table .hand{--hw:max(64px,132u)}
 `); document.head.appendChild(st); })();
+
+// ----- cadres de serviteur de Champs de bataille : anneau gris (doré pour les cartes dorées), portrait qui remplit l'anneau, gemmes d'attaque et de vie -----
+(function () {
+  try { document.body.insertAdjacentHTML('afterbegin', '<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><clipPath id="hsf-clip"><ellipse cx="50" cy="62" rx="34.5" ry="52.5"/></clipPath></defs></svg>'); } catch (e) {}
+  const of0 = ufOf, in0 = ufIn;
+  ufOf = function (m) { if (V.screen !== 'game' || !V.pub || !m || m.sp || !C[m.c]) return null; return 'hs'; };
+  ufIn = function (m, id, up) {
+    if (id !== 'hs') return in0(m, id, up);
+    const b = CD(m.c);
+    return `<ellipse cx="50" cy="62" rx="34.5" ry="52.5" fill="#1a110a"/><g clip-path="url(#hsf-clip)"><use href="#art-${artOf(m)}" x="-3" y="9" width="106" height="106"/></g>`
+      + `<image class="hsf-f" href="assets/hs/f-cadre-${m.g ? 'dore' : 'serviteur'}.webp" x="-3.75" y="-6" width="107.5" height="132" preserveAspectRatio="none"/>`
+      + (b.t ? `<g class="hsf-t"><title>Niveau ${b.t}</title><image href="assets/hs/b-etoile-niveau.webp" x="40" y="-7" width="20" height="20"/><text class="gt uf-r" x="50" y="3.6" dy=".36em">${b.t}</text></g>` : '')
+      + `<image href="assets/hs/f-gemme-attaque.webp" x="3" y="87" width="31" height="31"/><image href="assets/hs/f-gemme-vie.webp" x="69" y="85" width="22" height="33"/>`
+      + `<text class="gt uf-s${up(m.a, b.a)}" x="18.5" y="103" dy=".36em">${m.a}</text><text class="gt uf-s${up(m.h, b.h)}" x="80" y="104" dy=".36em">${m.h}</text>`;
+  };
+  const st = document.createElement('style'); st.id = 'hs-frame-css'; st.textContent = `
+.mn-svg .hsf-t .uf-r{font-size:9px;fill:#3a2206;stroke:none;paint-order:normal}
+.mn-svg .hsf-f{pointer-events:none}
+`; document.head.appendChild(st);
+})();
