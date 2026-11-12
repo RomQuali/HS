@@ -3522,7 +3522,7 @@ html.has-board-sim:root§.u-sim .rn-surf{background-image:var(--board-sim);backg
 § .keeper-zone:not(.enemy) .counter-line{position:absolute;left:299u;top:82u;width:1077u;height:215u;display:flex;justify-content:center;align-items:flex-start;gap:0;margin:0;padding:0;box-sizing:border-box;background:none;box-shadow:none;border:0;border-radius:0;min-height:0;backdrop-filter:none;flex-wrap:nowrap}
 § .keeper-zone:not(.enemy) .counter-line .mn{width:140u;margin:0 8u;gap:2u}
 § .keeper-zone .hint{position:absolute;left:0;right:0;top:118u;margin:0;text-align:center;font-size:fs(17,8);color:#ffe9b0;text-shadow:0 1px 3px #000;pointer-events:none}
-§ .keeper-zone .shelf{position:absolute;left:-66u;top:6u;width:178u;height:auto;margin:0;padding:4u 4u 6u;display:grid;justify-items:center;gap:2u;border:0;border-radius:14u;background:rgba(18,10,6,.5);box-shadow:inset 0 0 0 1.5u rgba(200,150,62,.55);--tw:96u}
+§ .keeper-zone .shelf{position:relative;left:auto;top:auto;flex:none;align-self:flex-start;width:auto;min-width:118u;height:auto;margin:6u 0 0 10u;padding:4u 6u 6u;display:grid;justify-items:center;gap:2u;border:0;border-radius:14u;background:rgba(18,10,6,.5);box-shadow:inset 0 0 0 1.5u rgba(200,150,62,.55);--tw:96u}
 § .keeper-zone .shelf.two{--tw:80u}
 § .keeper-zone .shelf::before,§ .keeper-zone .shelf::after{content:none}
 § .keeper-zone .shelf .shelf-l{font-size:fs(13,6.5);color:#ffd86a;letter-spacing:1px}
