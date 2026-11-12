@@ -1,0 +1,308 @@
+{
+  "largeur": 1672,
+  "hauteur": 941,
+  "fond": "Fond-de-recalage.png",
+  "pieces": [
+    {
+      "fichier": "01-Plateau/table-de-combat.png",
+      "x": 222,
+      "y": 306,
+      "largeur": 1217,
+      "hauteur": 472
+    },
+    {
+      "fichier": "02-Classement/adversaire-01.png",
+      "x": 10,
+      "y": 88,
+      "largeur": 207,
+      "hauteur": 78
+    },
+    {
+      "fichier": "02-Classement/adversaire-02.png",
+      "x": 10,
+      "y": 160,
+      "largeur": 207,
+      "hauteur": 78
+    },
+    {
+      "fichier": "02-Classement/adversaire-03.png",
+      "x": 10,
+      "y": 231,
+      "largeur": 207,
+      "hauteur": 78
+    },
+    {
+      "fichier": "02-Classement/adversaire-04.png",
+      "x": 10,
+      "y": 304,
+      "largeur": 207,
+      "hauteur": 78
+    },
+    {
+      "fichier": "02-Classement/adversaire-05.png",
+      "x": 10,
+      "y": 377,
+      "largeur": 207,
+      "hauteur": 78
+    },
+    {
+      "fichier": "02-Classement/adversaire-06.png",
+      "x": 10,
+      "y": 448,
+      "largeur": 207,
+      "hauteur": 78
+    },
+    {
+      "fichier": "02-Classement/adversaire-07.png",
+      "x": 10,
+      "y": 520,
+      "largeur": 207,
+      "hauteur": 78
+    },
+    {
+      "fichier": "02-Classement/adversaire-08.png",
+      "x": 10,
+      "y": 591,
+      "largeur": 207,
+      "hauteur": 78
+    },
+    {
+      "fichier": "03-Taverne/enseigne-arbre-et-rang.png",
+      "x": 652,
+      "y": 0,
+      "largeur": 356,
+      "hauteur": 102
+    },
+    {
+      "fichier": "03-Taverne/jauge-superieure.png",
+      "x": 1000,
+      "y": 28,
+      "largeur": 186,
+      "hauteur": 44
+    },
+    {
+      "fichier": "03-Taverne/emplacement-01.png",
+      "x": 425,
+      "y": 82,
+      "largeur": 153,
+      "hauteur": 261
+    },
+    {
+      "fichier": "03-Taverne/emplacement-02.png",
+      "x": 597,
+      "y": 82,
+      "largeur": 153,
+      "hauteur": 206
+    },
+    {
+      "fichier": "03-Taverne/emplacement-03.png",
+      "x": 763,
+      "y": 82,
+      "largeur": 153,
+      "hauteur": 206
+    },
+    {
+      "fichier": "03-Taverne/emplacement-04.png",
+      "x": 928,
+      "y": 82,
+      "largeur": 153,
+      "hauteur": 206
+    },
+    {
+      "fichier": "03-Taverne/emplacement-05.png",
+      "x": 1099,
+      "y": 82,
+      "largeur": 153,
+      "hauteur": 261
+    },
+    {
+      "fichier": "04-Commandes/sac-menu.png",
+      "x": 1470,
+      "y": 4,
+      "largeur": 63,
+      "hauteur": 63
+    },
+    {
+      "fichier": "04-Commandes/journal.png",
+      "x": 1537,
+      "y": 4,
+      "largeur": 63,
+      "hauteur": 63
+    },
+    {
+      "fichier": "04-Commandes/reglages.png",
+      "x": 1601,
+      "y": 4,
+      "largeur": 63,
+      "hauteur": 63
+    },
+    {
+      "fichier": "04-Commandes/support-des-commandes.png",
+      "x": 1288,
+      "y": 92,
+      "largeur": 230,
+      "hauteur": 246
+    },
+    {
+      "fichier": "04-Commandes/actualiser.png",
+      "x": 1305,
+      "y": 113,
+      "largeur": 99,
+      "hauteur": 99
+    },
+    {
+      "fichier": "04-Commandes/geler.png",
+      "x": 1399,
+      "y": 114,
+      "largeur": 99,
+      "hauteur": 99
+    },
+    {
+      "fichier": "04-Commandes/sablier.png",
+      "x": 1430,
+      "y": 298,
+      "largeur": 232,
+      "hauteur": 352
+    },
+    {
+      "fichier": "05-Equipe/emplacement-01.png",
+      "x": 333,
+      "y": 543,
+      "largeur": 132,
+      "hauteur": 141
+    },
+    {
+      "fichier": "05-Equipe/emplacement-02.png",
+      "x": 479,
+      "y": 543,
+      "largeur": 132,
+      "hauteur": 141
+    },
+    {
+      "fichier": "05-Equipe/emplacement-03.png",
+      "x": 626,
+      "y": 543,
+      "largeur": 132,
+      "hauteur": 141
+    },
+    {
+      "fichier": "05-Equipe/emplacement-04.png",
+      "x": 771,
+      "y": 543,
+      "largeur": 132,
+      "hauteur": 141
+    },
+    {
+      "fichier": "05-Equipe/emplacement-05.png",
+      "x": 918,
+      "y": 543,
+      "largeur": 132,
+      "hauteur": 141
+    },
+    {
+      "fichier": "05-Equipe/emplacement-06.png",
+      "x": 1064,
+      "y": 543,
+      "largeur": 132,
+      "hauteur": 141
+    },
+    {
+      "fichier": "05-Equipe/emplacement-07.png",
+      "x": 1210,
+      "y": 543,
+      "largeur": 132,
+      "hauteur": 141
+    },
+    {
+      "fichier": "06-Heros/ornement-du-heros.png",
+      "x": 530,
+      "y": 648,
+      "largeur": 499,
+      "hauteur": 178
+    },
+    {
+      "fichier": "06-Heros/portrait-central.png",
+      "x": 752,
+      "y": 674,
+      "largeur": 167,
+      "hauteur": 142
+    },
+    {
+      "fichier": "06-Heros/vie.png",
+      "x": 681,
+      "y": 720,
+      "largeur": 73,
+      "hauteur": 87
+    },
+    {
+      "fichier": "06-Heros/armure.png",
+      "x": 910,
+      "y": 724,
+      "largeur": 73,
+      "hauteur": 83
+    },
+    {
+      "fichier": "06-Heros/pouvoir.png",
+      "x": 1015,
+      "y": 697,
+      "largeur": 106,
+      "hauteur": 112
+    },
+    {
+      "fichier": "07-Main/carte-visible-01.png",
+      "x": 460,
+      "y": 821,
+      "largeur": 180,
+      "hauteur": 120
+    },
+    {
+      "fichier": "07-Main/carte-visible-02.png",
+      "x": 609,
+      "y": 805,
+      "largeur": 166,
+      "hauteur": 136
+    },
+    {
+      "fichier": "07-Main/carte-visible-03.png",
+      "x": 757,
+      "y": 795,
+      "largeur": 159,
+      "hauteur": 146
+    },
+    {
+      "fichier": "07-Main/carte-visible-04.png",
+      "x": 905,
+      "y": 806,
+      "largeur": 159,
+      "hauteur": 135
+    },
+    {
+      "fichier": "07-Main/carte-visible-05.png",
+      "x": 1039,
+      "y": 823,
+      "largeur": 169,
+      "hauteur": 118
+    },
+    {
+      "fichier": "04-Commandes/inventaire.png",
+      "x": 18,
+      "y": 823,
+      "largeur": 115,
+      "hauteur": 81
+    },
+    {
+      "fichier": "04-Commandes/coffre.png",
+      "x": 128,
+      "y": 823,
+      "largeur": 113,
+      "hauteur": 81
+    },
+    {
+      "fichier": "04-Commandes/compteur-or.png",
+      "x": 1326,
+      "y": 821,
+      "largeur": 335,
+      "hauteur": 80
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+RONI — COLLECTION DE CARTES ET PLATEAU ÉCLAIRÉ
+261 entrées : 71 South Park, 72 Les Simpson, 118 Naruto.
+
+Chaque univers contient deux dossiers parallèles. Illustrations fournit les PNG carrés de 512 × 512 px. Cartes fournit les assemblages en 512 × 768 px avec cadre, titre, famille ou forme, et niveau le cas échéant. Les héros normaux et éveillés partagent le même dossier de personnage. Les listes en CSV et JSON relient chaque illustration à sa carte.
+Format de référence des exports HearthstoneJSON : https://hearthstonejson.com/docs/images.html
+
+Le dossier 00-Plateau contient la maquette éclairée en 1672 × 941 px, le décor fourni en pleine définition et un exemple de table occupée. Les 43 éléments d’interface sont détourés en PNG transparents. Le fichier placement.json donne le fond de recalage puis les pièces dans leur ordre de superposition. Les coordonnées partent du coin supérieur gauche. La remise en place reproduit la maquette pixel pour pixel.
+Le décor fourni possède aussi 25 découpes (vitraux, lanternes, mobilier, paysage, végétation…). Le fichier placement-decor.json permet de le remonter sur le fond résiduel. Les découpes reprennent la surface visible d’images aplaties. Les zones masquées par un autre élément et le bas des cartes de la main sortant du champ restent partiels. Le cadre complet à fenêtre transparente se trouve dans 08-Cadre-de-carte.
+
+Rod et Todd Flanders partagent une carte. Les unités de village Naruto sans nom propre reçoivent des apparences originales. Les deux cartes de Maggie ont des illustrations emblématiques : tétine et nœud bleu pour la forme normale, médaille en forme de cible pour la forme éveillée. Les noms, familles et formes suivent la liste fournie. Les cartes ne comportent aucune statistique inventée.

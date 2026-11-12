@@ -1,0 +1,182 @@
+{
+  "largeur": 1672,
+  "hauteur": 941,
+  "fond": "09-Decor-detache/Fond-residuel.png",
+  "pieces": [
+    {
+      "fichier": "09-Decor-detache/paysage-des-cascades.png",
+      "x": 1334,
+      "y": 0,
+      "largeur": 338,
+      "hauteur": 825
+    },
+    {
+      "fichier": "09-Decor-detache/arbre-et-lierre-gauche.png",
+      "x": 0,
+      "y": 0,
+      "largeur": 477,
+      "hauteur": 916
+    },
+    {
+      "fichier": "09-Decor-detache/ramure-du-toit.png",
+      "x": 488,
+      "y": 0,
+      "largeur": 1184,
+      "hauteur": 186
+    },
+    {
+      "fichier": "09-Decor-detache/plateau-de-bois.png",
+      "x": 165,
+      "y": 297,
+      "largeur": 1278,
+      "hauteur": 293
+    },
+    {
+      "fichier": "09-Decor-detache/traverse-et-boiseries.png",
+      "x": 177,
+      "y": 570,
+      "largeur": 1230,
+      "hauteur": 137
+    },
+    {
+      "fichier": "09-Decor-detache/pupitre-du-premier-plan.png",
+      "x": 328,
+      "y": 749,
+      "largeur": 961,
+      "hauteur": 192
+    },
+    {
+      "fichier": "09-Decor-detache/escalier-et-balustrade.png",
+      "x": 1232,
+      "y": 648,
+      "largeur": 440,
+      "hauteur": 293
+    },
+    {
+      "fichier": "09-Decor-detache/vitrail-gauche.png",
+      "x": 265,
+      "y": 64,
+      "largeur": 64,
+      "hauteur": 149
+    },
+    {
+      "fichier": "09-Decor-detache/vitrail-ambre.png",
+      "x": 446,
+      "y": 15,
+      "largeur": 92,
+      "hauteur": 157
+    },
+    {
+      "fichier": "09-Decor-detache/vitrail-central.png",
+      "x": 751,
+      "y": 6,
+      "largeur": 150,
+      "hauteur": 222
+    },
+    {
+      "fichier": "09-Decor-detache/vitrail-droit.png",
+      "x": 1060,
+      "y": 52,
+      "largeur": 69,
+      "hauteur": 117
+    },
+    {
+      "fichier": "09-Decor-detache/rayonnage-gauche.png",
+      "x": 266,
+      "y": 157,
+      "largeur": 379,
+      "hauteur": 134
+    },
+    {
+      "fichier": "09-Decor-detache/rayonnage-droit.png",
+      "x": 1011,
+      "y": 151,
+      "largeur": 302,
+      "hauteur": 139
+    },
+    {
+      "fichier": "09-Decor-detache/astrolabe.png",
+      "x": 216,
+      "y": 153,
+      "largeur": 78,
+      "hauteur": 101
+    },
+    {
+      "fichier": "09-Decor-detache/bougies-et-livres-gauche.png",
+      "x": 293,
+      "y": 196,
+      "largeur": 119,
+      "hauteur": 82
+    },
+    {
+      "fichier": "09-Decor-detache/bougies-du-rayonnage-droit.png",
+      "x": 1263,
+      "y": 214,
+      "largeur": 54,
+      "hauteur": 95
+    },
+    {
+      "fichier": "09-Decor-detache/lanterne-suspendue-gauche.png",
+      "x": 202,
+      "y": 32,
+      "largeur": 58,
+      "hauteur": 110
+    },
+    {
+      "fichier": "09-Decor-detache/lanterne-suspendue-bibliotheque.png",
+      "x": 553,
+      "y": 30,
+      "largeur": 46,
+      "hauteur": 86
+    },
+    {
+      "fichier": "09-Decor-detache/lanterne-suspendue-droite.png",
+      "x": 1207,
+      "y": 24,
+      "largeur": 50,
+      "hauteur": 85
+    },
+    {
+      "fichier": "09-Decor-detache/lanterne-basse-gauche.png",
+      "x": 352,
+      "y": 742,
+      "largeur": 42,
+      "hauteur": 70
+    },
+    {
+      "fichier": "09-Decor-detache/lanterne-basse-droite.png",
+      "x": 1269,
+      "y": 744,
+      "largeur": 44,
+      "hauteur": 66
+    },
+    {
+      "fichier": "09-Decor-detache/bureau-decriture.png",
+      "x": 0,
+      "y": 773,
+      "largeur": 368,
+      "hauteur": 168
+    },
+    {
+      "fichier": "09-Decor-detache/plume-et-encrier.png",
+      "x": 198,
+      "y": 719,
+      "largeur": 83,
+      "hauteur": 79
+    },
+    {
+      "fichier": "09-Decor-detache/livres-du-bureau.png",
+      "x": 38,
+      "y": 737,
+      "largeur": 111,
+      "hauteur": 74
+    },
+    {
+      "fichier": "09-Decor-detache/bougies-du-bureau.png",
+      "x": 145,
+      "y": 742,
+      "largeur": 57,
+      "hauteur": 59
+    }
+  ]
+}

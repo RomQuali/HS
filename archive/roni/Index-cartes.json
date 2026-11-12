@@ -1,0 +1,2351 @@
+[
+  {
+    "univers": "South Park",
+    "famille": "Gingers et sectes",
+    "niveau_ou_forme": "N1",
+    "personnage": "Gamin roux",
+    "nom": "Gamin roux",
+    "illustration": "01-South-Park/Illustrations/gingers-et-sectes/N1_gamin-roux.png",
+    "carte": "01-South-Park/Cartes/gingers-et-sectes/N1_gamin-roux.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Gingers et sectes",
+    "niveau_ou_forme": "N1",
+    "personnage": "Ginger fanatique",
+    "nom": "Ginger fanatique",
+    "illustration": "01-South-Park/Illustrations/gingers-et-sectes/N1_ginger-fanatique.png",
+    "carte": "01-South-Park/Cartes/gingers-et-sectes/N1_ginger-fanatique.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Gingers et sectes",
+    "niveau_ou_forme": "N2",
+    "personnage": "Mormon (Gary)",
+    "nom": "Mormon (Gary)",
+    "illustration": "01-South-Park/Illustrations/gingers-et-sectes/N2_mormon-gary.png",
+    "carte": "01-South-Park/Cartes/gingers-et-sectes/N2_mormon-gary.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Gingers et sectes",
+    "niveau_ou_forme": "N2",
+    "personnage": "Scientologue",
+    "nom": "Scientologue",
+    "illustration": "01-South-Park/Illustrations/gingers-et-sectes/N2_scientologue.png",
+    "carte": "01-South-Park/Cartes/gingers-et-sectes/N2_scientologue.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Gingers et sectes",
+    "niveau_ou_forme": "N3",
+    "personnage": "Butters ginger",
+    "nom": "Butters ginger",
+    "illustration": "01-South-Park/Illustrations/gingers-et-sectes/N3_butters-ginger.png",
+    "carte": "01-South-Park/Cartes/gingers-et-sectes/N3_butters-ginger.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Gingers et sectes",
+    "niveau_ou_forme": "N3",
+    "personnage": "Cartman ginger",
+    "nom": "Cartman ginger",
+    "illustration": "01-South-Park/Illustrations/gingers-et-sectes/N3_cartman-ginger.png",
+    "carte": "01-South-Park/Cartes/gingers-et-sectes/N3_cartman-ginger.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Gingers et sectes",
+    "niveau_ou_forme": "N4",
+    "personnage": "Prophète mormon",
+    "nom": "Prophète mormon",
+    "illustration": "01-South-Park/Illustrations/gingers-et-sectes/N4_prophete-mormon.png",
+    "carte": "01-South-Park/Cartes/gingers-et-sectes/N4_prophete-mormon.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Gingers et sectes",
+    "niveau_ou_forme": "N4",
+    "personnage": "Chef de secte ginger",
+    "nom": "Chef de secte ginger",
+    "illustration": "01-South-Park/Illustrations/gingers-et-sectes/N4_chef-de-secte-ginger.png",
+    "carte": "01-South-Park/Cartes/gingers-et-sectes/N4_chef-de-secte-ginger.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Gingers et sectes",
+    "niveau_ou_forme": "N5",
+    "personnage": "Grand Prêtre de la secte",
+    "nom": "Grand Prêtre de la secte",
+    "illustration": "01-South-Park/Illustrations/gingers-et-sectes/N5_grand-pretre-de-la-secte.png",
+    "carte": "01-South-Park/Cartes/gingers-et-sectes/N5_grand-pretre-de-la-secte.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Gingers et sectes",
+    "niveau_ou_forme": "N6",
+    "personnage": "Roi des Gingers",
+    "nom": "Roi des Gingers",
+    "illustration": "01-South-Park/Illustrations/gingers-et-sectes/N6_roi-des-gingers.png",
+    "carte": "01-South-Park/Cartes/gingers-et-sectes/N6_roi-des-gingers.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Adultes",
+    "niveau_ou_forme": "N1",
+    "personnage": "Officier Barbrady",
+    "nom": "Officier Barbrady",
+    "illustration": "01-South-Park/Illustrations/adultes/N1_officier-barbrady.png",
+    "carte": "01-South-Park/Cartes/adultes/N1_officier-barbrady.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Adultes",
+    "niveau_ou_forme": "N1",
+    "personnage": "Mr. Mackey",
+    "nom": "Mr. Mackey",
+    "illustration": "01-South-Park/Illustrations/adultes/N1_mr-mackey.png",
+    "carte": "01-South-Park/Cartes/adultes/N1_mr-mackey.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Adultes",
+    "niveau_ou_forme": "N2",
+    "personnage": "Sharon Marsh",
+    "nom": "Sharon Marsh",
+    "illustration": "01-South-Park/Illustrations/adultes/N2_sharon-marsh.png",
+    "carte": "01-South-Park/Cartes/adultes/N2_sharon-marsh.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Adultes",
+    "niveau_ou_forme": "N2",
+    "personnage": "Liane Cartman",
+    "nom": "Liane Cartman",
+    "illustration": "01-South-Park/Illustrations/adultes/N2_liane-cartman.png",
+    "carte": "01-South-Park/Cartes/adultes/N2_liane-cartman.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Adultes",
+    "niveau_ou_forme": "N3",
+    "personnage": "Chef",
+    "nom": "Chef",
+    "illustration": "01-South-Park/Illustrations/adultes/N3_chef.png",
+    "carte": "01-South-Park/Cartes/adultes/N3_chef.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Adultes",
+    "niveau_ou_forme": "N3",
+    "personnage": "Mr. Garrison",
+    "nom": "Mr. Garrison",
+    "illustration": "01-South-Park/Illustrations/adultes/N3_mr-garrison.png",
+    "carte": "01-South-Park/Cartes/adultes/N3_mr-garrison.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Adultes",
+    "niveau_ou_forme": "N4",
+    "personnage": "PC Principal",
+    "nom": "PC Principal",
+    "illustration": "01-South-Park/Illustrations/adultes/N4_pc-principal.png",
+    "carte": "01-South-Park/Cartes/adultes/N4_pc-principal.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Adultes",
+    "niveau_ou_forme": "N4",
+    "personnage": "Shelly Marsh",
+    "nom": "Shelly Marsh",
+    "illustration": "01-South-Park/Illustrations/adultes/N4_shelly-marsh.png",
+    "carte": "01-South-Park/Cartes/adultes/N4_shelly-marsh.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Adultes",
+    "niveau_ou_forme": "N5",
+    "personnage": "Randy (Tegridy)",
+    "nom": "Randy (Tegridy)",
+    "illustration": "01-South-Park/Illustrations/adultes/N5_randy-tegridy.png",
+    "carte": "01-South-Park/Cartes/adultes/N5_randy-tegridy.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Adultes",
+    "niveau_ou_forme": "N6",
+    "personnage": "Maire McDaniels",
+    "nom": "Maire McDaniels",
+    "illustration": "01-South-Park/Illustrations/adultes/N6_maire-mcdaniels.png",
+    "carte": "01-South-Park/Cartes/adultes/N6_maire-mcdaniels.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Goths",
+    "niveau_ou_forme": "N1",
+    "personnage": "Petit Goth",
+    "nom": "Petit Goth",
+    "illustration": "01-South-Park/Illustrations/goths/N1_petit-goth.png",
+    "carte": "01-South-Park/Cartes/goths/N1_petit-goth.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Goths",
+    "niveau_ou_forme": "N1",
+    "personnage": "Goth fumeur",
+    "nom": "Goth fumeur",
+    "illustration": "01-South-Park/Illustrations/goths/N1_goth-fumeur.png",
+    "carte": "01-South-Park/Cartes/goths/N1_goth-fumeur.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Goths",
+    "niveau_ou_forme": "N2",
+    "personnage": "Goth bouclé",
+    "nom": "Goth bouclé",
+    "illustration": "01-South-Park/Illustrations/goths/N2_goth-boucle.png",
+    "carte": "01-South-Park/Cartes/goths/N2_goth-boucle.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Goths",
+    "niveau_ou_forme": "N2",
+    "personnage": "Goth fille",
+    "nom": "Goth fille",
+    "illustration": "01-South-Park/Illustrations/goths/N2_goth-fille.png",
+    "carte": "01-South-Park/Cartes/goths/N2_goth-fille.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Goths",
+    "niveau_ou_forme": "N3",
+    "personnage": "Henrietta",
+    "nom": "Henrietta",
+    "illustration": "01-South-Park/Illustrations/goths/N3_henrietta.png",
+    "carte": "01-South-Park/Cartes/goths/N3_henrietta.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Goths",
+    "niveau_ou_forme": "N3",
+    "personnage": "Michael",
+    "nom": "Michael",
+    "illustration": "01-South-Park/Illustrations/goths/N3_michael.png",
+    "carte": "01-South-Park/Cartes/goths/N3_michael.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Goths",
+    "niveau_ou_forme": "N4",
+    "personnage": "Pete",
+    "nom": "Pete",
+    "illustration": "01-South-Park/Illustrations/goths/N4_pete.png",
+    "carte": "01-South-Park/Cartes/goths/N4_pete.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Goths",
+    "niveau_ou_forme": "N4",
+    "personnage": "Firkle",
+    "nom": "Firkle",
+    "illustration": "01-South-Park/Illustrations/goths/N4_firkle.png",
+    "carte": "01-South-Park/Cartes/goths/N4_firkle.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Goths",
+    "niveau_ou_forme": "N5",
+    "personnage": "Vampire emo",
+    "nom": "Vampire emo",
+    "illustration": "01-South-Park/Illustrations/goths/N5_vampire-emo.png",
+    "carte": "01-South-Park/Cartes/goths/N5_vampire-emo.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Goths",
+    "niveau_ou_forme": "N6",
+    "personnage": "Goth suprême",
+    "nom": "Goth suprême",
+    "illustration": "01-South-Park/Illustrations/goths/N6_goth-supreme.png",
+    "carte": "01-South-Park/Cartes/goths/N6_goth-supreme.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Célébrités",
+    "niveau_ou_forme": "N1",
+    "personnage": "Lutin du Père Noël",
+    "nom": "Lutin du Père Noël",
+    "illustration": "01-South-Park/Illustrations/celebrites/N1_lutin-du-pere-noel.png",
+    "carte": "01-South-Park/Cartes/celebrites/N1_lutin-du-pere-noel.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Célébrités",
+    "niveau_ou_forme": "N1",
+    "personnage": "Mr. Hat",
+    "nom": "Mr. Hat",
+    "illustration": "01-South-Park/Illustrations/celebrites/N1_mr-hat.png",
+    "carte": "01-South-Park/Cartes/celebrites/N1_mr-hat.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Célébrités",
+    "niveau_ou_forme": "N2",
+    "personnage": "Towelie",
+    "nom": "Towelie",
+    "illustration": "01-South-Park/Illustrations/celebrites/N2_towelie.png",
+    "carte": "01-South-Park/Cartes/celebrites/N2_towelie.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Célébrités",
+    "niveau_ou_forme": "N2",
+    "personnage": "Terrance",
+    "nom": "Terrance",
+    "illustration": "01-South-Park/Illustrations/celebrites/N2_terrance.png",
+    "carte": "01-South-Park/Cartes/celebrites/N2_terrance.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Célébrités",
+    "niveau_ou_forme": "N3",
+    "personnage": "Phillip",
+    "nom": "Phillip",
+    "illustration": "01-South-Park/Illustrations/celebrites/N3_phillip.png",
+    "carte": "01-South-Park/Cartes/celebrites/N3_phillip.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Célébrités",
+    "niveau_ou_forme": "N3",
+    "personnage": "Mr. Hankey",
+    "nom": "Mr. Hankey",
+    "illustration": "01-South-Park/Illustrations/celebrites/N3_mr-hankey.png",
+    "carte": "01-South-Park/Cartes/celebrites/N3_mr-hankey.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Célébrités",
+    "niveau_ou_forme": "N4",
+    "personnage": "Jésus",
+    "nom": "Jésus",
+    "illustration": "01-South-Park/Illustrations/celebrites/N4_jesus.png",
+    "carte": "01-South-Park/Cartes/celebrites/N4_jesus.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Célébrités",
+    "niveau_ou_forme": "N4",
+    "personnage": "Père Noël",
+    "nom": "Père Noël",
+    "illustration": "01-South-Park/Illustrations/celebrites/N4_pere-noel.png",
+    "carte": "01-South-Park/Cartes/celebrites/N4_pere-noel.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Célébrités",
+    "niveau_ou_forme": "N5",
+    "personnage": "Satan",
+    "nom": "Satan",
+    "illustration": "01-South-Park/Illustrations/celebrites/N5_satan.png",
+    "carte": "01-South-Park/Cartes/celebrites/N5_satan.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Célébrités",
+    "niveau_ou_forme": "N6",
+    "personnage": "Cthulhu",
+    "nom": "Cthulhu",
+    "illustration": "01-South-Park/Illustrations/celebrites/N6_cthulhu.png",
+    "carte": "01-South-Park/Cartes/celebrites/N6_cthulhu.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Animaux",
+    "niveau_ou_forme": "N1",
+    "personnage": "Lemmiwinks",
+    "nom": "Lemmiwinks",
+    "illustration": "01-South-Park/Illustrations/animaux/N1_lemmiwinks.png",
+    "carte": "01-South-Park/Cartes/animaux/N1_lemmiwinks.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Animaux",
+    "niveau_ou_forme": "N1",
+    "personnage": "Sparky",
+    "nom": "Sparky",
+    "illustration": "01-South-Park/Illustrations/animaux/N1_sparky.png",
+    "carte": "01-South-Park/Cartes/animaux/N1_sparky.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Animaux",
+    "niveau_ou_forme": "N2",
+    "personnage": "Mr. Kitty",
+    "nom": "Mr. Kitty",
+    "illustration": "01-South-Park/Illustrations/animaux/N2_mr-kitty.png",
+    "carte": "01-South-Park/Cartes/animaux/N2_mr-kitty.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Animaux",
+    "niveau_ou_forme": "N2",
+    "personnage": "Fluffy (cochon)",
+    "nom": "Fluffy (cochon)",
+    "illustration": "01-South-Park/Illustrations/animaux/N2_fluffy-cochon.png",
+    "carte": "01-South-Park/Cartes/animaux/N2_fluffy-cochon.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Animaux",
+    "niveau_ou_forme": "N3",
+    "personnage": "Dinde géante",
+    "nom": "Dinde géante",
+    "illustration": "01-South-Park/Illustrations/animaux/N3_dinde-geante.png",
+    "carte": "01-South-Park/Cartes/animaux/N3_dinde-geante.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Animaux",
+    "niveau_ou_forme": "N3",
+    "personnage": "Stripe (gremlin)",
+    "nom": "Stripe (gremlin)",
+    "illustration": "01-South-Park/Illustrations/animaux/N3_stripe-gremlin.png",
+    "carte": "01-South-Park/Cartes/animaux/N3_stripe-gremlin.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Animaux",
+    "niveau_ou_forme": "N4",
+    "personnage": "Scuzzlebutt",
+    "nom": "Scuzzlebutt",
+    "illustration": "01-South-Park/Illustrations/animaux/N4_scuzzlebutt.png",
+    "carte": "01-South-Park/Cartes/animaux/N4_scuzzlebutt.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Animaux",
+    "niveau_ou_forme": "N4",
+    "personnage": "ManBearPig",
+    "nom": "ManBearPig",
+    "illustration": "01-South-Park/Illustrations/animaux/N4_manbearpig.png",
+    "carte": "01-South-Park/Cartes/animaux/N4_manbearpig.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Animaux",
+    "niveau_ou_forme": "N5",
+    "personnage": "Hamster géant",
+    "nom": "Hamster géant",
+    "illustration": "01-South-Park/Illustrations/animaux/N5_hamster-geant.png",
+    "carte": "01-South-Park/Cartes/animaux/N5_hamster-geant.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Animaux",
+    "niveau_ou_forme": "N6",
+    "personnage": "Cochon-éléphant",
+    "nom": "Cochon-éléphant",
+    "illustration": "01-South-Park/Illustrations/animaux/N6_cochon-elephant.png",
+    "carte": "01-South-Park/Cartes/animaux/N6_cochon-elephant.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Jeton",
+    "niveau_ou_forme": "Jeton",
+    "personnage": "Bestiole",
+    "nom": "Bestiole",
+    "illustration": "01-South-Park/Illustrations/jeton/jeton_bestiole.png",
+    "carte": "01-South-Park/Cartes/jeton/jeton_bestiole.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Cartman",
+    "nom": "Cartman",
+    "illustration": "01-South-Park/Illustrations/Heros/cartman/normal_cartman.png",
+    "carte": "01-South-Park/Cartes/Heros/cartman/normal_cartman.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Cartman",
+    "nom": "Le Coon",
+    "illustration": "01-South-Park/Illustrations/Heros/cartman/eveille_le-coon.png",
+    "carte": "01-South-Park/Cartes/Heros/cartman/eveille_le-coon.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Stan",
+    "nom": "Stan",
+    "illustration": "01-South-Park/Illustrations/Heros/stan/normal_stan.png",
+    "carte": "01-South-Park/Cartes/Heros/stan/normal_stan.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Stan",
+    "nom": "Toolshed",
+    "illustration": "01-South-Park/Illustrations/Heros/stan/eveille_toolshed.png",
+    "carte": "01-South-Park/Cartes/Heros/stan/eveille_toolshed.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Kyle",
+    "nom": "Kyle",
+    "illustration": "01-South-Park/Illustrations/Heros/kyle/normal_kyle.png",
+    "carte": "01-South-Park/Cartes/Heros/kyle/normal_kyle.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Kyle",
+    "nom": "Human Kite",
+    "illustration": "01-South-Park/Illustrations/Heros/kyle/eveille_human-kite.png",
+    "carte": "01-South-Park/Cartes/Heros/kyle/eveille_human-kite.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Kenny",
+    "nom": "Kenny",
+    "illustration": "01-South-Park/Illustrations/Heros/kenny/normal_kenny.png",
+    "carte": "01-South-Park/Cartes/Heros/kenny/normal_kenny.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Kenny",
+    "nom": "Mysterion",
+    "illustration": "01-South-Park/Illustrations/Heros/kenny/eveille_mysterion.png",
+    "carte": "01-South-Park/Cartes/Heros/kenny/eveille_mysterion.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Butters",
+    "nom": "Butters",
+    "illustration": "01-South-Park/Illustrations/Heros/butters/normal_butters.png",
+    "carte": "01-South-Park/Cartes/Heros/butters/normal_butters.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Butters",
+    "nom": "Professeur Chaos",
+    "illustration": "01-South-Park/Illustrations/Heros/butters/eveille_professeur-chaos.png",
+    "carte": "01-South-Park/Cartes/Heros/butters/eveille_professeur-chaos.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Randy",
+    "nom": "Randy",
+    "illustration": "01-South-Park/Illustrations/Heros/randy/normal_randy.png",
+    "carte": "01-South-Park/Cartes/Heros/randy/normal_randy.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Randy",
+    "nom": "Randy Tegridy",
+    "illustration": "01-South-Park/Illustrations/Heros/randy/eveille_randy-tegridy.png",
+    "carte": "01-South-Park/Cartes/Heros/randy/eveille_randy-tegridy.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Mr. Garrison",
+    "nom": "Mr. Garrison",
+    "illustration": "01-South-Park/Illustrations/Heros/mr-garrison/normal_mr-garrison.png",
+    "carte": "01-South-Park/Cartes/Heros/mr-garrison/normal_mr-garrison.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Mr. Garrison",
+    "nom": "Président Garrison",
+    "illustration": "01-South-Park/Illustrations/Heros/mr-garrison/eveille_president-garrison.png",
+    "carte": "01-South-Park/Cartes/Heros/mr-garrison/eveille_president-garrison.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Chef",
+    "nom": "Chef",
+    "illustration": "01-South-Park/Illustrations/Heros/chef/normal_chef.png",
+    "carte": "01-South-Park/Cartes/Heros/chef/normal_chef.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Chef",
+    "nom": "Chef cuistot dragon",
+    "illustration": "01-South-Park/Illustrations/Heros/chef/eveille_chef-cuistot-dragon.png",
+    "carte": "01-South-Park/Cartes/Heros/chef/eveille_chef-cuistot-dragon.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Mr. Mackey",
+    "nom": "Mr. Mackey",
+    "illustration": "01-South-Park/Illustrations/Heros/mr-mackey/normal_mr-mackey.png",
+    "carte": "01-South-Park/Cartes/Heros/mr-mackey/normal_mr-mackey.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Mr. Mackey",
+    "nom": "Mackey m'kay suprême",
+    "illustration": "01-South-Park/Illustrations/Heros/mr-mackey/eveille_mackey-m-kay-supreme.png",
+    "carte": "01-South-Park/Cartes/Heros/mr-mackey/eveille_mackey-m-kay-supreme.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Wendy",
+    "nom": "Wendy",
+    "illustration": "01-South-Park/Illustrations/Heros/wendy/normal_wendy.png",
+    "carte": "01-South-Park/Cartes/Heros/wendy/normal_wendy.png"
+  },
+  {
+    "univers": "South Park",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Wendy",
+    "nom": "Wendy présidente du club",
+    "illustration": "01-South-Park/Illustrations/Heros/wendy/eveille_wendy-presidente-du-club.png",
+    "carte": "01-South-Park/Cartes/Heros/wendy/eveille_wendy-presidente-du-club.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Simpson et voisins",
+    "niveau_ou_forme": "N1",
+    "personnage": "Milhouse",
+    "nom": "Milhouse",
+    "illustration": "02-Les-Simpson/Illustrations/simpson-et-voisins/N1_milhouse.png",
+    "carte": "02-Les-Simpson/Cartes/simpson-et-voisins/N1_milhouse.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Simpson et voisins",
+    "niveau_ou_forme": "N1",
+    "personnage": "Rod et Todd Flanders",
+    "nom": "Rod et Todd Flanders",
+    "illustration": "02-Les-Simpson/Illustrations/simpson-et-voisins/N1_rod-et-todd-flanders.png",
+    "carte": "02-Les-Simpson/Cartes/simpson-et-voisins/N1_rod-et-todd-flanders.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Simpson et voisins",
+    "niveau_ou_forme": "N2",
+    "personnage": "Patty",
+    "nom": "Patty",
+    "illustration": "02-Les-Simpson/Illustrations/simpson-et-voisins/N2_patty.png",
+    "carte": "02-Les-Simpson/Cartes/simpson-et-voisins/N2_patty.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Simpson et voisins",
+    "niveau_ou_forme": "N2",
+    "personnage": "Selma",
+    "nom": "Selma",
+    "illustration": "02-Les-Simpson/Illustrations/simpson-et-voisins/N2_selma.png",
+    "carte": "02-Les-Simpson/Cartes/simpson-et-voisins/N2_selma.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Simpson et voisins",
+    "niveau_ou_forme": "N3",
+    "personnage": "Petit Papa Noël",
+    "nom": "Petit Papa Noël",
+    "illustration": "02-Les-Simpson/Illustrations/simpson-et-voisins/N3_petit-papa-noel.png",
+    "carte": "02-Les-Simpson/Cartes/simpson-et-voisins/N3_petit-papa-noel.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Simpson et voisins",
+    "niveau_ou_forme": "N3",
+    "personnage": "Boule de neige II",
+    "nom": "Boule de neige II",
+    "illustration": "02-Les-Simpson/Illustrations/simpson-et-voisins/N3_boule-de-neige-ii.png",
+    "carte": "02-Les-Simpson/Cartes/simpson-et-voisins/N3_boule-de-neige-ii.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Simpson et voisins",
+    "niveau_ou_forme": "N4",
+    "personnage": "Maude Flanders",
+    "nom": "Maude Flanders",
+    "illustration": "02-Les-Simpson/Illustrations/simpson-et-voisins/N4_maude-flanders.png",
+    "carte": "02-Les-Simpson/Cartes/simpson-et-voisins/N4_maude-flanders.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Simpson et voisins",
+    "niveau_ou_forme": "N4",
+    "personnage": "Jacqueline Bouvier",
+    "nom": "Jacqueline Bouvier",
+    "illustration": "02-Les-Simpson/Illustrations/simpson-et-voisins/N4_jacqueline-bouvier.png",
+    "carte": "02-Les-Simpson/Cartes/simpson-et-voisins/N4_jacqueline-bouvier.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Simpson et voisins",
+    "niveau_ou_forme": "N5",
+    "personnage": "Herb Powell",
+    "nom": "Herb Powell",
+    "illustration": "02-Les-Simpson/Illustrations/simpson-et-voisins/N5_herb-powell.png",
+    "carte": "02-Les-Simpson/Cartes/simpson-et-voisins/N5_herb-powell.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Simpson et voisins",
+    "niveau_ou_forme": "N6",
+    "personnage": "Mona Simpson",
+    "nom": "Mona Simpson",
+    "illustration": "02-Les-Simpson/Illustrations/simpson-et-voisins/N6_mona-simpson.png",
+    "carte": "02-Les-Simpson/Cartes/simpson-et-voisins/N6_mona-simpson.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Taverne de Moe",
+    "niveau_ou_forme": "N1",
+    "personnage": "Barney",
+    "nom": "Barney",
+    "illustration": "02-Les-Simpson/Illustrations/taverne-de-moe/N1_barney.png",
+    "carte": "02-Les-Simpson/Cartes/taverne-de-moe/N1_barney.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Taverne de Moe",
+    "niveau_ou_forme": "N1",
+    "personnage": "Lenny",
+    "nom": "Lenny",
+    "illustration": "02-Les-Simpson/Illustrations/taverne-de-moe/N1_lenny.png",
+    "carte": "02-Les-Simpson/Cartes/taverne-de-moe/N1_lenny.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Taverne de Moe",
+    "niveau_ou_forme": "N2",
+    "personnage": "Carl",
+    "nom": "Carl",
+    "illustration": "02-Les-Simpson/Illustrations/taverne-de-moe/N2_carl.png",
+    "carte": "02-Les-Simpson/Cartes/taverne-de-moe/N2_carl.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Taverne de Moe",
+    "niveau_ou_forme": "N2",
+    "personnage": "Sam",
+    "nom": "Sam",
+    "illustration": "02-Les-Simpson/Illustrations/taverne-de-moe/N2_sam.png",
+    "carte": "02-Les-Simpson/Cartes/taverne-de-moe/N2_sam.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Taverne de Moe",
+    "niveau_ou_forme": "N3",
+    "personnage": "Moe",
+    "nom": "Moe",
+    "illustration": "02-Les-Simpson/Illustrations/taverne-de-moe/N3_moe.png",
+    "carte": "02-Les-Simpson/Cartes/taverne-de-moe/N3_moe.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Taverne de Moe",
+    "niveau_ou_forme": "N3",
+    "personnage": "Otto",
+    "nom": "Otto",
+    "illustration": "02-Les-Simpson/Illustrations/taverne-de-moe/N3_otto.png",
+    "carte": "02-Les-Simpson/Cartes/taverne-de-moe/N3_otto.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Taverne de Moe",
+    "niveau_ou_forme": "N4",
+    "personnage": "Gil",
+    "nom": "Gil",
+    "illustration": "02-Les-Simpson/Illustrations/taverne-de-moe/N4_gil.png",
+    "carte": "02-Les-Simpson/Cartes/taverne-de-moe/N4_gil.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Taverne de Moe",
+    "niveau_ou_forme": "N4",
+    "personnage": "Larry",
+    "nom": "Larry",
+    "illustration": "02-Les-Simpson/Illustrations/taverne-de-moe/N4_larry.png",
+    "carte": "02-Les-Simpson/Cartes/taverne-de-moe/N4_larry.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Taverne de Moe",
+    "niveau_ou_forme": "N5",
+    "personnage": "Duffman",
+    "nom": "Duffman",
+    "illustration": "02-Les-Simpson/Illustrations/taverne-de-moe/N5_duffman.png",
+    "carte": "02-Les-Simpson/Cartes/taverne-de-moe/N5_duffman.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Taverne de Moe",
+    "niveau_ou_forme": "N6",
+    "personnage": "Dirigeable Duff",
+    "nom": "Dirigeable Duff",
+    "illustration": "02-Les-Simpson/Illustrations/taverne-de-moe/N6_dirigeable-duff.png",
+    "carte": "02-Les-Simpson/Cartes/taverne-de-moe/N6_dirigeable-duff.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Crapules et escrocs",
+    "niveau_ou_forme": "N1",
+    "personnage": "Snake",
+    "nom": "Snake",
+    "illustration": "02-Les-Simpson/Illustrations/crapules-et-escrocs/N1_snake.png",
+    "carte": "02-Les-Simpson/Cartes/crapules-et-escrocs/N1_snake.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Crapules et escrocs",
+    "niveau_ou_forme": "N1",
+    "personnage": "Jimbo",
+    "nom": "Jimbo",
+    "illustration": "02-Les-Simpson/Illustrations/crapules-et-escrocs/N1_jimbo.png",
+    "carte": "02-Les-Simpson/Cartes/crapules-et-escrocs/N1_jimbo.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Crapules et escrocs",
+    "niveau_ou_forme": "N2",
+    "personnage": "Nelson",
+    "nom": "Nelson",
+    "illustration": "02-Les-Simpson/Illustrations/crapules-et-escrocs/N2_nelson.png",
+    "carte": "02-Les-Simpson/Cartes/crapules-et-escrocs/N2_nelson.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Crapules et escrocs",
+    "niveau_ou_forme": "N2",
+    "personnage": "Lionel Hutz",
+    "nom": "Lionel Hutz",
+    "illustration": "02-Les-Simpson/Illustrations/crapules-et-escrocs/N2_lionel-hutz.png",
+    "carte": "02-Les-Simpson/Cartes/crapules-et-escrocs/N2_lionel-hutz.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Crapules et escrocs",
+    "niveau_ou_forme": "N3",
+    "personnage": "Gros Tony",
+    "nom": "Gros Tony",
+    "illustration": "02-Les-Simpson/Illustrations/crapules-et-escrocs/N3_gros-tony.png",
+    "carte": "02-Les-Simpson/Cartes/crapules-et-escrocs/N3_gros-tony.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Crapules et escrocs",
+    "niveau_ou_forme": "N3",
+    "personnage": "Louie",
+    "nom": "Louie",
+    "illustration": "02-Les-Simpson/Illustrations/crapules-et-escrocs/N3_louie.png",
+    "carte": "02-Les-Simpson/Cartes/crapules-et-escrocs/N3_louie.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Crapules et escrocs",
+    "niveau_ou_forme": "N4",
+    "personnage": "Docteur Nick",
+    "nom": "Docteur Nick",
+    "illustration": "02-Les-Simpson/Illustrations/crapules-et-escrocs/N4_docteur-nick.png",
+    "carte": "02-Les-Simpson/Cartes/crapules-et-escrocs/N4_docteur-nick.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Crapules et escrocs",
+    "niveau_ou_forme": "N4",
+    "personnage": "Lyle Lanley",
+    "nom": "Lyle Lanley",
+    "illustration": "02-Les-Simpson/Illustrations/crapules-et-escrocs/N4_lyle-lanley.png",
+    "carte": "02-Les-Simpson/Cartes/crapules-et-escrocs/N4_lyle-lanley.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Crapules et escrocs",
+    "niveau_ou_forme": "N5",
+    "personnage": "Tahiti Bob",
+    "nom": "Tahiti Bob",
+    "illustration": "02-Les-Simpson/Illustrations/crapules-et-escrocs/N5_tahiti-bob.png",
+    "carte": "02-Les-Simpson/Cartes/crapules-et-escrocs/N5_tahiti-bob.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Crapules et escrocs",
+    "niveau_ou_forme": "N6",
+    "personnage": "Hank Scorpio",
+    "nom": "Hank Scorpio",
+    "illustration": "02-Les-Simpson/Illustrations/crapules-et-escrocs/N6_hank-scorpio.png",
+    "carte": "02-Les-Simpson/Cartes/crapules-et-escrocs/N6_hank-scorpio.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Autorités de la ville",
+    "niveau_ou_forme": "N1",
+    "personnage": "Lou",
+    "nom": "Lou",
+    "illustration": "02-Les-Simpson/Illustrations/autorites-de-la-ville/N1_lou.png",
+    "carte": "02-Les-Simpson/Cartes/autorites-de-la-ville/N1_lou.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Autorités de la ville",
+    "niveau_ou_forme": "N1",
+    "personnage": "Eddie",
+    "nom": "Eddie",
+    "illustration": "02-Les-Simpson/Illustrations/autorites-de-la-ville/N1_eddie.png",
+    "carte": "02-Les-Simpson/Cartes/autorites-de-la-ville/N1_eddie.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Autorités de la ville",
+    "niveau_ou_forme": "N2",
+    "personnage": "Willie",
+    "nom": "Willie",
+    "illustration": "02-Les-Simpson/Illustrations/autorites-de-la-ville/N2_willie.png",
+    "carte": "02-Les-Simpson/Cartes/autorites-de-la-ville/N2_willie.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Autorités de la ville",
+    "niveau_ou_forme": "N2",
+    "personnage": "Edna Krabappel",
+    "nom": "Edna Krabappel",
+    "illustration": "02-Les-Simpson/Illustrations/autorites-de-la-ville/N2_edna-krabappel.png",
+    "carte": "02-Les-Simpson/Cartes/autorites-de-la-ville/N2_edna-krabappel.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Autorités de la ville",
+    "niveau_ou_forme": "N3",
+    "personnage": "Principal Skinner",
+    "nom": "Principal Skinner",
+    "illustration": "02-Les-Simpson/Illustrations/autorites-de-la-ville/N3_principal-skinner.png",
+    "carte": "02-Les-Simpson/Cartes/autorites-de-la-ville/N3_principal-skinner.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Autorités de la ville",
+    "niveau_ou_forme": "N3",
+    "personnage": "Révérend Lovejoy",
+    "nom": "Révérend Lovejoy",
+    "illustration": "02-Les-Simpson/Illustrations/autorites-de-la-ville/N3_reverend-lovejoy.png",
+    "carte": "02-Les-Simpson/Cartes/autorites-de-la-ville/N3_reverend-lovejoy.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Autorités de la ville",
+    "niveau_ou_forme": "N4",
+    "personnage": "Chef Wiggum",
+    "nom": "Chef Wiggum",
+    "illustration": "02-Les-Simpson/Illustrations/autorites-de-la-ville/N4_chef-wiggum.png",
+    "carte": "02-Les-Simpson/Cartes/autorites-de-la-ville/N4_chef-wiggum.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Autorités de la ville",
+    "niveau_ou_forme": "N4",
+    "personnage": "Dr Hibbert",
+    "nom": "Dr Hibbert",
+    "illustration": "02-Les-Simpson/Illustrations/autorites-de-la-ville/N4_dr-hibbert.png",
+    "carte": "02-Les-Simpson/Cartes/autorites-de-la-ville/N4_dr-hibbert.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Autorités de la ville",
+    "niveau_ou_forme": "N5",
+    "personnage": "Maire Quimby",
+    "nom": "Maire Quimby",
+    "illustration": "02-Les-Simpson/Illustrations/autorites-de-la-ville/N5_maire-quimby.png",
+    "carte": "02-Les-Simpson/Cartes/autorites-de-la-ville/N5_maire-quimby.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Autorités de la ville",
+    "niveau_ou_forme": "N6",
+    "personnage": "Superintendant Chalmers",
+    "nom": "Superintendant Chalmers",
+    "illustration": "02-Les-Simpson/Illustrations/autorites-de-la-ville/N6_superintendant-chalmers.png",
+    "carte": "02-Les-Simpson/Cartes/autorites-de-la-ville/N6_superintendant-chalmers.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Aliens et Horror Show",
+    "niveau_ou_forme": "N1",
+    "personnage": "Zombie",
+    "nom": "Zombie",
+    "illustration": "02-Les-Simpson/Illustrations/aliens-et-horror-show/N1_zombie.png",
+    "carte": "02-Les-Simpson/Cartes/aliens-et-horror-show/N1_zombie.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Aliens et Horror Show",
+    "niveau_ou_forme": "N1",
+    "personnage": "Gremlin du bus",
+    "nom": "Gremlin du bus",
+    "illustration": "02-Les-Simpson/Illustrations/aliens-et-horror-show/N1_gremlin-du-bus.png",
+    "carte": "02-Les-Simpson/Cartes/aliens-et-horror-show/N1_gremlin-du-bus.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Aliens et Horror Show",
+    "niveau_ou_forme": "N2",
+    "personnage": "Kang",
+    "nom": "Kang",
+    "illustration": "02-Les-Simpson/Illustrations/aliens-et-horror-show/N2_kang.png",
+    "carte": "02-Les-Simpson/Cartes/aliens-et-horror-show/N2_kang.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Aliens et Horror Show",
+    "niveau_ou_forme": "N2",
+    "personnage": "Kodos",
+    "nom": "Kodos",
+    "illustration": "02-Les-Simpson/Illustrations/aliens-et-horror-show/N2_kodos.png",
+    "carte": "02-Les-Simpson/Cartes/aliens-et-horror-show/N2_kodos.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Aliens et Horror Show",
+    "niveau_ou_forme": "N3",
+    "personnage": "Bart-mouche",
+    "nom": "Bart-mouche",
+    "illustration": "02-Les-Simpson/Illustrations/aliens-et-horror-show/N3_bart-mouche.png",
+    "carte": "02-Les-Simpson/Cartes/aliens-et-horror-show/N3_bart-mouche.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Aliens et Horror Show",
+    "niveau_ou_forme": "N3",
+    "personnage": "Loup-garou Flanders",
+    "nom": "Loup-garou Flanders",
+    "illustration": "02-Les-Simpson/Illustrations/aliens-et-horror-show/N3_loup-garou-flanders.png",
+    "carte": "02-Les-Simpson/Cartes/aliens-et-horror-show/N3_loup-garou-flanders.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Aliens et Horror Show",
+    "niveau_ou_forme": "N4",
+    "personnage": "Robot Itchy",
+    "nom": "Robot Itchy",
+    "illustration": "02-Les-Simpson/Illustrations/aliens-et-horror-show/N4_robot-itchy.png",
+    "carte": "02-Les-Simpson/Cartes/aliens-et-horror-show/N4_robot-itchy.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Aliens et Horror Show",
+    "niveau_ou_forme": "N4",
+    "personnage": "Robot Scratchy",
+    "nom": "Robot Scratchy",
+    "illustration": "02-Les-Simpson/Illustrations/aliens-et-horror-show/N4_robot-scratchy.png",
+    "carte": "02-Les-Simpson/Cartes/aliens-et-horror-show/N4_robot-scratchy.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Aliens et Horror Show",
+    "niveau_ou_forme": "N5",
+    "personnage": "Vampire Burns",
+    "nom": "Vampire Burns",
+    "illustration": "02-Les-Simpson/Illustrations/aliens-et-horror-show/N5_vampire-burns.png",
+    "carte": "02-Les-Simpson/Cartes/aliens-et-horror-show/N5_vampire-burns.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Aliens et Horror Show",
+    "niveau_ou_forme": "N6",
+    "personnage": "Ned le Diable",
+    "nom": "Ned le Diable",
+    "illustration": "02-Les-Simpson/Illustrations/aliens-et-horror-show/N6_ned-le-diable.png",
+    "carte": "02-Les-Simpson/Cartes/aliens-et-horror-show/N6_ned-le-diable.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Jetons",
+    "niveau_ou_forme": "Jeton",
+    "personnage": "Zombie (petit)",
+    "nom": "Zombie (petit)",
+    "illustration": "02-Les-Simpson/Illustrations/jetons/jeton_zombie-petit.png",
+    "carte": "02-Les-Simpson/Cartes/jetons/jeton_zombie-petit.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Jetons",
+    "niveau_ou_forme": "Jeton",
+    "personnage": "Mini-robot",
+    "nom": "Mini-robot",
+    "illustration": "02-Les-Simpson/Illustrations/jetons/jeton_mini-robot.png",
+    "carte": "02-Les-Simpson/Cartes/jetons/jeton_mini-robot.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Homer",
+    "nom": "Homer",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/homer/normal_homer.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/homer/normal_homer.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Homer",
+    "nom": "Max Power",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/homer/eveille_max-power.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/homer/eveille_max-power.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Marge",
+    "nom": "Marge",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/marge/normal_marge.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/marge/normal_marge.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Marge",
+    "nom": "Marge policière",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/marge/eveille_marge-policiere.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/marge/eveille_marge-policiere.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Bart",
+    "nom": "Bart",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/bart/normal_bart.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/bart/normal_bart.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Bart",
+    "nom": "Bartman",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/bart/eveille_bartman.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/bart/eveille_bartman.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Lisa",
+    "nom": "Lisa",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/lisa/normal_lisa.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/lisa/normal_lisa.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Lisa",
+    "nom": "Présidente Lisa",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/lisa/eveille_presidente-lisa.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/lisa/eveille_presidente-lisa.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Maggie",
+    "nom": "Maggie",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/maggie/normal_maggie.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/maggie/normal_maggie.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Maggie",
+    "nom": "Maggie la tireuse",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/maggie/eveille_maggie-la-tireuse.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/maggie/eveille_maggie-la-tireuse.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Grand-père Abe",
+    "nom": "Grand-père Abe",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/grand-pere-abe/normal_grand-pere-abe.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/grand-pere-abe/normal_grand-pere-abe.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Grand-père Abe",
+    "nom": "Abe des Flying Hellfish",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/grand-pere-abe/eveille_abe-des-flying-hellfish.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/grand-pere-abe/eveille_abe-des-flying-hellfish.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Mr. Burns",
+    "nom": "Mr. Burns",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/mr-burns/normal_mr-burns.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/mr-burns/normal_mr-burns.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Mr. Burns",
+    "nom": "Burns cache-soleil",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/mr-burns/eveille_burns-cache-soleil.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/mr-burns/eveille_burns-cache-soleil.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Ned Flanders",
+    "nom": "Ned Flanders",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/ned-flanders/normal_ned-flanders.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/ned-flanders/normal_ned-flanders.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Ned Flanders",
+    "nom": "Ned musclé",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/ned-flanders/eveille_ned-muscle.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/ned-flanders/eveille_ned-muscle.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Krusty",
+    "nom": "Krusty",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/krusty/normal_krusty.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/krusty/normal_krusty.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Krusty",
+    "nom": "Krusty sans maquillage",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/krusty/eveille_krusty-sans-maquillage.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/krusty/eveille_krusty-sans-maquillage.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Moe",
+    "nom": "Moe",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/moe/normal_moe.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/moe/normal_moe.png"
+  },
+  {
+    "univers": "Les Simpson",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Moe",
+    "nom": "Moe Flaming",
+    "illustration": "02-Les-Simpson/Illustrations/Heros/moe/eveille_moe-flaming.png",
+    "carte": "02-Les-Simpson/Cartes/Heros/moe/eveille_moe-flaming.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Konoha",
+    "niveau_ou_forme": "N1",
+    "personnage": "Genin de Konoha",
+    "nom": "Genin de Konoha",
+    "illustration": "03-Naruto/Illustrations/konoha/N1_genin-de-konoha.png",
+    "carte": "03-Naruto/Cartes/konoha/N1_genin-de-konoha.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Konoha",
+    "niveau_ou_forme": "N1",
+    "personnage": "Apprenti des kibaku fuda",
+    "nom": "Apprenti des kibaku fuda",
+    "illustration": "03-Naruto/Illustrations/konoha/N1_apprenti-des-kibaku-fuda.png",
+    "carte": "03-Naruto/Cartes/konoha/N1_apprenti-des-kibaku-fuda.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Konoha",
+    "niveau_ou_forme": "N1",
+    "personnage": "Apprenti fūinjutsu",
+    "nom": "Apprenti fūinjutsu",
+    "illustration": "03-Naruto/Illustrations/konoha/N1_apprenti-fuinjutsu.png",
+    "carte": "03-Naruto/Cartes/konoha/N1_apprenti-fuinjutsu.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Konoha",
+    "niveau_ou_forme": "N2",
+    "personnage": "Chūnin du clan Uchiha",
+    "nom": "Chūnin du clan Uchiha",
+    "illustration": "03-Naruto/Illustrations/konoha/N2_chunin-du-clan-uchiha.png",
+    "carte": "03-Naruto/Cartes/konoha/N2_chunin-du-clan-uchiha.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Konoha",
+    "niveau_ou_forme": "N2",
+    "personnage": "Lanceur de kunai explosifs",
+    "nom": "Lanceur de kunai explosifs",
+    "illustration": "03-Naruto/Illustrations/konoha/N2_lanceur-de-kunai-explosifs.png",
+    "carte": "03-Naruto/Cartes/konoha/N2_lanceur-de-kunai-explosifs.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Konoha",
+    "niveau_ou_forme": "N2",
+    "personnage": "Disciple du mont Myōboku",
+    "nom": "Disciple du mont Myōboku",
+    "illustration": "03-Naruto/Illustrations/konoha/N2_disciple-du-mont-myoboku.png",
+    "carte": "03-Naruto/Cartes/konoha/N2_disciple-du-mont-myoboku.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Konoha",
+    "niveau_ou_forme": "N2",
+    "personnage": "Informateur de Konoha",
+    "nom": "Informateur de Konoha",
+    "illustration": "03-Naruto/Illustrations/konoha/N2_informateur-de-konoha.png",
+    "carte": "03-Naruto/Cartes/konoha/N2_informateur-de-konoha.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Konoha",
+    "niveau_ou_forme": "N3",
+    "personnage": "Jōnin du Katon",
+    "nom": "Jōnin du Katon",
+    "illustration": "03-Naruto/Illustrations/konoha/N3_jonin-du-katon.png",
+    "carte": "03-Naruto/Cartes/konoha/N3_jonin-du-katon.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Konoha",
+    "niveau_ou_forme": "N3",
+    "personnage": "Sentinelle de Konoha",
+    "nom": "Sentinelle de Konoha",
+    "illustration": "03-Naruto/Illustrations/konoha/N3_sentinelle-de-konoha.png",
+    "carte": "03-Naruto/Cartes/konoha/N3_sentinelle-de-konoha.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Konoha",
+    "niveau_ou_forme": "N4",
+    "personnage": "Maître des kibaku fuda",
+    "nom": "Maître des kibaku fuda",
+    "illustration": "03-Naruto/Illustrations/konoha/N4_maitre-des-kibaku-fuda.png",
+    "carte": "03-Naruto/Cartes/konoha/N4_maitre-des-kibaku-fuda.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Konoha",
+    "niveau_ou_forme": "N4",
+    "personnage": "ANBU de Konoha",
+    "nom": "ANBU de Konoha",
+    "illustration": "03-Naruto/Illustrations/konoha/N4_anbu-de-konoha.png",
+    "carte": "03-Naruto/Cartes/konoha/N4_anbu-de-konoha.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Konoha",
+    "niveau_ou_forme": "N4",
+    "personnage": "Gardien du Yōton",
+    "nom": "Gardien du Yōton",
+    "illustration": "03-Naruto/Illustrations/konoha/N4_gardien-du-yoton.png",
+    "carte": "03-Naruto/Cartes/konoha/N4_gardien-du-yoton.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Konoha",
+    "niveau_ou_forme": "N5",
+    "personnage": "Jōnin d'élite Uchiha",
+    "nom": "Jōnin d'élite Uchiha",
+    "illustration": "03-Naruto/Illustrations/konoha/N5_jonin-d-elite-uchiha.png",
+    "carte": "03-Naruto/Cartes/konoha/N5_jonin-d-elite-uchiha.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Konoha",
+    "niveau_ou_forme": "N5",
+    "personnage": "Ninja du Shakuton",
+    "nom": "Ninja du Shakuton",
+    "illustration": "03-Naruto/Illustrations/konoha/N5_ninja-du-shakuton.png",
+    "carte": "03-Naruto/Cartes/konoha/N5_ninja-du-shakuton.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Konoha",
+    "niveau_ou_forme": "N6",
+    "personnage": "Hokage de la Volonté du Feu",
+    "nom": "Hokage de la Volonté du Feu",
+    "illustration": "03-Naruto/Illustrations/konoha/N6_hokage-de-la-volonte-du-feu.png",
+    "carte": "03-Naruto/Cartes/konoha/N6_hokage-de-la-volonte-du-feu.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Suna",
+    "niveau_ou_forme": "N1",
+    "personnage": "Apprenti kugutsu de Suna",
+    "nom": "Apprenti kugutsu de Suna",
+    "illustration": "03-Naruto/Illustrations/suna/N1_apprenti-kugutsu-de-suna.png",
+    "carte": "03-Naruto/Cartes/suna/N1_apprenti-kugutsu-de-suna.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Suna",
+    "niveau_ou_forme": "N1",
+    "personnage": "Garde du désert de Suna",
+    "nom": "Garde du désert de Suna",
+    "illustration": "03-Naruto/Illustrations/suna/N1_garde-du-desert-de-suna.png",
+    "carte": "03-Naruto/Cartes/suna/N1_garde-du-desert-de-suna.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Suna",
+    "niveau_ou_forme": "N1",
+    "personnage": "Colporteur de Suna",
+    "nom": "Colporteur de Suna",
+    "illustration": "03-Naruto/Illustrations/suna/N1_colporteur-de-suna.png",
+    "carte": "03-Naruto/Cartes/suna/N1_colporteur-de-suna.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Suna",
+    "niveau_ou_forme": "N2",
+    "personnage": "Chūnin marionnettiste",
+    "nom": "Chūnin marionnettiste",
+    "illustration": "03-Naruto/Illustrations/suna/N2_chunin-marionnettiste.png",
+    "carte": "03-Naruto/Cartes/suna/N2_chunin-marionnettiste.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Suna",
+    "niveau_ou_forme": "N2",
+    "personnage": "Éclaireur des dunes",
+    "nom": "Éclaireur des dunes",
+    "illustration": "03-Naruto/Illustrations/suna/N2_eclaireur-des-dunes.png",
+    "carte": "03-Naruto/Cartes/suna/N2_eclaireur-des-dunes.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Suna",
+    "niveau_ou_forme": "N3",
+    "personnage": "Maître des fils de chakra",
+    "nom": "Maître des fils de chakra",
+    "illustration": "03-Naruto/Illustrations/suna/N3_maitre-des-fils-de-chakra.png",
+    "carte": "03-Naruto/Cartes/suna/N3_maitre-des-fils-de-chakra.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Suna",
+    "niveau_ou_forme": "N3",
+    "personnage": "Porteur du Suna no tate",
+    "nom": "Porteur du Suna no tate",
+    "illustration": "03-Naruto/Illustrations/suna/N3_porteur-du-suna-no-tate.png",
+    "carte": "03-Naruto/Cartes/suna/N3_porteur-du-suna-no-tate.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Suna",
+    "niveau_ou_forme": "N4",
+    "personnage": "Marionnettiste du Corps d'élite",
+    "nom": "Marionnettiste du Corps d'élite",
+    "illustration": "03-Naruto/Illustrations/suna/N4_marionnettiste-du-corps-d-elite.png",
+    "carte": "03-Naruto/Cartes/suna/N4_marionnettiste-du-corps-d-elite.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Suna",
+    "niveau_ou_forme": "N4",
+    "personnage": "Ninja du Fūton de Suna",
+    "nom": "Ninja du Fūton de Suna",
+    "illustration": "03-Naruto/Illustrations/suna/N4_ninja-du-futon-de-suna.png",
+    "carte": "03-Naruto/Cartes/suna/N4_ninja-du-futon-de-suna.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Suna",
+    "niveau_ou_forme": "N4",
+    "personnage": "Archiviste des rouleaux interdits",
+    "nom": "Archiviste des rouleaux interdits",
+    "illustration": "03-Naruto/Illustrations/suna/N4_archiviste-des-rouleaux-interdits.png",
+    "carte": "03-Naruto/Cartes/suna/N4_archiviste-des-rouleaux-interdits.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Suna",
+    "niveau_ou_forme": "N5",
+    "personnage": "Kazekage des marionnettes",
+    "nom": "Kazekage des marionnettes",
+    "illustration": "03-Naruto/Illustrations/suna/N5_kazekage-des-marionnettes.png",
+    "carte": "03-Naruto/Cartes/suna/N5_kazekage-des-marionnettes.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Suna",
+    "niveau_ou_forme": "N5",
+    "personnage": "Maître fūinjutsu de Suna",
+    "nom": "Maître fūinjutsu de Suna",
+    "illustration": "03-Naruto/Illustrations/suna/N5_maitre-fuinjutsu-de-suna.png",
+    "carte": "03-Naruto/Cartes/suna/N5_maitre-fuinjutsu-de-suna.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Suna",
+    "niveau_ou_forme": "N6",
+    "personnage": "Gardien du Sabaku",
+    "nom": "Gardien du Sabaku",
+    "illustration": "03-Naruto/Illustrations/suna/N6_gardien-du-sabaku.png",
+    "carte": "03-Naruto/Cartes/suna/N6_gardien-du-sabaku.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kiri",
+    "niveau_ou_forme": "N1",
+    "personnage": "Genin de Kiri",
+    "nom": "Genin de Kiri",
+    "illustration": "03-Naruto/Illustrations/kiri/N1_genin-de-kiri.png",
+    "carte": "03-Naruto/Cartes/kiri/N1_genin-de-kiri.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kiri",
+    "niveau_ou_forme": "N1",
+    "personnage": "Apprenti ninja-médecin",
+    "nom": "Apprenti ninja-médecin",
+    "illustration": "03-Naruto/Illustrations/kiri/N1_apprenti-ninja-medecin.png",
+    "carte": "03-Naruto/Cartes/kiri/N1_apprenti-ninja-medecin.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kiri",
+    "niveau_ou_forme": "N2",
+    "personnage": "Chūnin du Kirigakure",
+    "nom": "Chūnin du Kirigakure",
+    "illustration": "03-Naruto/Illustrations/kiri/N2_chunin-du-kirigakure.png",
+    "carte": "03-Naruto/Cartes/kiri/N2_chunin-du-kirigakure.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kiri",
+    "niveau_ou_forme": "N2",
+    "personnage": "Garde du Suiton",
+    "nom": "Garde du Suiton",
+    "illustration": "03-Naruto/Illustrations/kiri/N2_garde-du-suiton.png",
+    "carte": "03-Naruto/Cartes/kiri/N2_garde-du-suiton.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kiri",
+    "niveau_ou_forme": "N3",
+    "personnage": "Ninja-médecin de Kiri",
+    "nom": "Ninja-médecin de Kiri",
+    "illustration": "03-Naruto/Illustrations/kiri/N3_ninja-medecin-de-kiri.png",
+    "carte": "03-Naruto/Cartes/kiri/N3_ninja-medecin-de-kiri.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kiri",
+    "niveau_ou_forme": "N3",
+    "personnage": "Apprenti épéiste de Kiri",
+    "nom": "Apprenti épéiste de Kiri",
+    "illustration": "03-Naruto/Illustrations/kiri/N3_apprenti-epeiste-de-kiri.png",
+    "carte": "03-Naruto/Cartes/kiri/N3_apprenti-epeiste-de-kiri.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kiri",
+    "niveau_ou_forme": "N3",
+    "personnage": "Disciple du Hyōton",
+    "nom": "Disciple du Hyōton",
+    "illustration": "03-Naruto/Illustrations/kiri/N3_disciple-du-hyoton.png",
+    "carte": "03-Naruto/Cartes/kiri/N3_disciple-du-hyoton.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kiri",
+    "niveau_ou_forme": "N3",
+    "personnage": "Disciple de la forêt Shikkotsu",
+    "nom": "Disciple de la forêt Shikkotsu",
+    "illustration": "03-Naruto/Illustrations/kiri/N3_disciple-de-la-foret-shikkotsu.png",
+    "carte": "03-Naruto/Cartes/kiri/N3_disciple-de-la-foret-shikkotsu.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kiri",
+    "niveau_ou_forme": "N4",
+    "personnage": "Gardien du brouillard",
+    "nom": "Gardien du brouillard",
+    "illustration": "03-Naruto/Illustrations/kiri/N4_gardien-du-brouillard.png",
+    "carte": "03-Naruto/Cartes/kiri/N4_gardien-du-brouillard.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kiri",
+    "niveau_ou_forme": "N4",
+    "personnage": "Maître du Shōsen jutsu",
+    "nom": "Maître du Shōsen jutsu",
+    "illustration": "03-Naruto/Illustrations/kiri/N4_maitre-du-shosen-jutsu.png",
+    "carte": "03-Naruto/Cartes/kiri/N4_maitre-du-shosen-jutsu.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kiri",
+    "niveau_ou_forme": "N5",
+    "personnage": "Héritier des Sept Sabres",
+    "nom": "Héritier des Sept Sabres",
+    "illustration": "03-Naruto/Illustrations/kiri/N5_heritier-des-sept-sabres.png",
+    "carte": "03-Naruto/Cartes/kiri/N5_heritier-des-sept-sabres.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kiri",
+    "niveau_ou_forme": "N5",
+    "personnage": "Nukenin de Kiri",
+    "nom": "Nukenin de Kiri",
+    "illustration": "03-Naruto/Illustrations/kiri/N5_nukenin-de-kiri.png",
+    "carte": "03-Naruto/Cartes/kiri/N5_nukenin-de-kiri.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kiri",
+    "niveau_ou_forme": "N6",
+    "personnage": "Mizukage du brouillard",
+    "nom": "Mizukage du brouillard",
+    "illustration": "03-Naruto/Illustrations/kiri/N6_mizukage-du-brouillard.png",
+    "carte": "03-Naruto/Cartes/kiri/N6_mizukage-du-brouillard.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kumo",
+    "niveau_ou_forme": "N1",
+    "personnage": "Genin de Kumo",
+    "nom": "Genin de Kumo",
+    "illustration": "03-Naruto/Illustrations/kumo/N1_genin-de-kumo.png",
+    "carte": "03-Naruto/Cartes/kumo/N1_genin-de-kumo.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kumo",
+    "niveau_ou_forme": "N1",
+    "personnage": "Ninja du Raiton",
+    "nom": "Ninja du Raiton",
+    "illustration": "03-Naruto/Illustrations/kumo/N1_ninja-du-raiton.png",
+    "carte": "03-Naruto/Cartes/kumo/N1_ninja-du-raiton.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kumo",
+    "niveau_ou_forme": "N1",
+    "personnage": "Shinobi kamikaze",
+    "nom": "Shinobi kamikaze",
+    "illustration": "03-Naruto/Illustrations/kumo/N1_shinobi-kamikaze.png",
+    "carte": "03-Naruto/Cartes/kumo/N1_shinobi-kamikaze.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kumo",
+    "niveau_ou_forme": "N2",
+    "personnage": "Chūnin du Raiton",
+    "nom": "Chūnin du Raiton",
+    "illustration": "03-Naruto/Illustrations/kumo/N2_chunin-du-raiton.png",
+    "carte": "03-Naruto/Cartes/kumo/N2_chunin-du-raiton.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kumo",
+    "niveau_ou_forme": "N2",
+    "personnage": "Élève jinchūriki",
+    "nom": "Élève jinchūriki",
+    "illustration": "03-Naruto/Illustrations/kumo/N2_eleve-jinchuriki.png",
+    "carte": "03-Naruto/Cartes/kumo/N2_eleve-jinchuriki.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kumo",
+    "niveau_ou_forme": "N2",
+    "personnage": "Élève de l'Académie de Kumo",
+    "nom": "Élève de l'Académie de Kumo",
+    "illustration": "03-Naruto/Illustrations/kumo/N2_eleve-de-l-academie-de-kumo.png",
+    "carte": "03-Naruto/Cartes/kumo/N2_eleve-de-l-academie-de-kumo.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kumo",
+    "niveau_ou_forme": "N3",
+    "personnage": "Garde du Raikage",
+    "nom": "Garde du Raikage",
+    "illustration": "03-Naruto/Illustrations/kumo/N3_garde-du-raikage.png",
+    "carte": "03-Naruto/Cartes/kumo/N3_garde-du-raikage.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kumo",
+    "niveau_ou_forme": "N3",
+    "personnage": "Coureur du Raiton no yoroi",
+    "nom": "Coureur du Raiton no yoroi",
+    "illustration": "03-Naruto/Illustrations/kumo/N3_coureur-du-raiton-no-yoroi.png",
+    "carte": "03-Naruto/Cartes/kumo/N3_coureur-du-raiton-no-yoroi.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kumo",
+    "niveau_ou_forme": "N4",
+    "personnage": "Jinchūriki instable",
+    "nom": "Jinchūriki instable",
+    "illustration": "03-Naruto/Illustrations/kumo/N4_jinchuriki-instable.png",
+    "carte": "03-Naruto/Cartes/kumo/N4_jinchuriki-instable.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kumo",
+    "niveau_ou_forme": "N4",
+    "personnage": "Escouade de Kumo",
+    "nom": "Escouade de Kumo",
+    "illustration": "03-Naruto/Illustrations/kumo/N4_escouade-de-kumo.png",
+    "carte": "03-Naruto/Cartes/kumo/N4_escouade-de-kumo.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kumo",
+    "niveau_ou_forme": "N5",
+    "personnage": "Hôte d'un bijū",
+    "nom": "Hôte d'un bijū",
+    "illustration": "03-Naruto/Illustrations/kumo/N5_hote-d-un-biju.png",
+    "carte": "03-Naruto/Cartes/kumo/N5_hote-d-un-biju.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kumo",
+    "niveau_ou_forme": "N5",
+    "personnage": "Dragon du Ranton",
+    "nom": "Dragon du Ranton",
+    "illustration": "03-Naruto/Illustrations/kumo/N5_dragon-du-ranton.png",
+    "carte": "03-Naruto/Cartes/kumo/N5_dragon-du-ranton.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kumo",
+    "niveau_ou_forme": "N5",
+    "personnage": "Sannin de la grotte Ryūchi",
+    "nom": "Sannin de la grotte Ryūchi",
+    "illustration": "03-Naruto/Illustrations/kumo/N5_sannin-de-la-grotte-ryuchi.png",
+    "carte": "03-Naruto/Cartes/kumo/N5_sannin-de-la-grotte-ryuchi.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Kumo",
+    "niveau_ou_forme": "N6",
+    "personnage": "Raikage de la tempête",
+    "nom": "Raikage de la tempête",
+    "illustration": "03-Naruto/Illustrations/kumo/N6_raikage-de-la-tempete.png",
+    "carte": "03-Naruto/Cartes/kumo/N6_raikage-de-la-tempete.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Iwa",
+    "niveau_ou_forme": "N1",
+    "personnage": "Genin d'Iwa",
+    "nom": "Genin d'Iwa",
+    "illustration": "03-Naruto/Illustrations/iwa/N1_genin-d-iwa.png",
+    "carte": "03-Naruto/Cartes/iwa/N1_genin-d-iwa.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Iwa",
+    "niveau_ou_forme": "N1",
+    "personnage": "Bâtisseur du Doton",
+    "nom": "Bâtisseur du Doton",
+    "illustration": "03-Naruto/Illustrations/iwa/N1_batisseur-du-doton.png",
+    "carte": "03-Naruto/Cartes/iwa/N1_batisseur-du-doton.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Iwa",
+    "niveau_ou_forme": "N2",
+    "personnage": "Chūnin du Doryūheki",
+    "nom": "Chūnin du Doryūheki",
+    "illustration": "03-Naruto/Illustrations/iwa/N2_chunin-du-doryuheki.png",
+    "carte": "03-Naruto/Cartes/iwa/N2_chunin-du-doryuheki.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Iwa",
+    "niveau_ou_forme": "N2",
+    "personnage": "Garde des falaises d'Iwa",
+    "nom": "Garde des falaises d'Iwa",
+    "illustration": "03-Naruto/Illustrations/iwa/N2_garde-des-falaises-d-iwa.png",
+    "carte": "03-Naruto/Cartes/iwa/N2_garde-des-falaises-d-iwa.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Iwa",
+    "niveau_ou_forme": "N3",
+    "personnage": "Invocateur de Doryūheki",
+    "nom": "Invocateur de Doryūheki",
+    "illustration": "03-Naruto/Illustrations/iwa/N3_invocateur-de-doryuheki.png",
+    "carte": "03-Naruto/Cartes/iwa/N3_invocateur-de-doryuheki.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Iwa",
+    "niveau_ou_forme": "N3",
+    "personnage": "Colosse du Doton",
+    "nom": "Colosse du Doton",
+    "illustration": "03-Naruto/Illustrations/iwa/N3_colosse-du-doton.png",
+    "carte": "03-Naruto/Cartes/iwa/N3_colosse-du-doton.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Iwa",
+    "niveau_ou_forme": "N3",
+    "personnage": "Gardien du fūinjutsu",
+    "nom": "Gardien du fūinjutsu",
+    "illustration": "03-Naruto/Illustrations/iwa/N3_gardien-du-fuinjutsu.png",
+    "carte": "03-Naruto/Cartes/iwa/N3_gardien-du-fuinjutsu.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Iwa",
+    "niveau_ou_forme": "N3",
+    "personnage": "Porteur de kibaku fuda",
+    "nom": "Porteur de kibaku fuda",
+    "illustration": "03-Naruto/Illustrations/iwa/N3_porteur-de-kibaku-fuda.png",
+    "carte": "03-Naruto/Cartes/iwa/N3_porteur-de-kibaku-fuda.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Iwa",
+    "niveau_ou_forme": "N4",
+    "personnage": "Maître de la forteresse d'Iwa",
+    "nom": "Maître de la forteresse d'Iwa",
+    "illustration": "03-Naruto/Illustrations/iwa/N4_maitre-de-la-forteresse-d-iwa.png",
+    "carte": "03-Naruto/Cartes/iwa/N4_maitre-de-la-forteresse-d-iwa.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Iwa",
+    "niveau_ou_forme": "N4",
+    "personnage": "Lanceur de rochers d'Iwa",
+    "nom": "Lanceur de rochers d'Iwa",
+    "illustration": "03-Naruto/Illustrations/iwa/N4_lanceur-de-rochers-d-iwa.png",
+    "carte": "03-Naruto/Cartes/iwa/N4_lanceur-de-rochers-d-iwa.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Iwa",
+    "niveau_ou_forme": "N4",
+    "personnage": "Sculpteur explosif",
+    "nom": "Sculpteur explosif",
+    "illustration": "03-Naruto/Illustrations/iwa/N4_sculpteur-explosif.png",
+    "carte": "03-Naruto/Cartes/iwa/N4_sculpteur-explosif.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Iwa",
+    "niveau_ou_forme": "N4",
+    "personnage": "Trésorier du Tsuchikage",
+    "nom": "Trésorier du Tsuchikage",
+    "illustration": "03-Naruto/Illustrations/iwa/N4_tresorier-du-tsuchikage.png",
+    "carte": "03-Naruto/Cartes/iwa/N4_tresorier-du-tsuchikage.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Iwa",
+    "niveau_ou_forme": "N5",
+    "personnage": "Gardien de la montagne",
+    "nom": "Gardien de la montagne",
+    "illustration": "03-Naruto/Illustrations/iwa/N5_gardien-de-la-montagne.png",
+    "carte": "03-Naruto/Cartes/iwa/N5_gardien-de-la-montagne.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Iwa",
+    "niveau_ou_forme": "N6",
+    "personnage": "Tsuchikage de l'Avalanche",
+    "nom": "Tsuchikage de l'Avalanche",
+    "illustration": "03-Naruto/Illustrations/iwa/N6_tsuchikage-de-l-avalanche.png",
+    "carte": "03-Naruto/Cartes/iwa/N6_tsuchikage-de-l-avalanche.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Jetons",
+    "niveau_ou_forme": "Jeton",
+    "personnage": "Kage bunshin",
+    "nom": "Kage bunshin",
+    "illustration": "03-Naruto/Illustrations/jetons/jeton_kage-bunshin.png",
+    "carte": "03-Naruto/Cartes/jetons/jeton_kage-bunshin.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Jetons",
+    "niveau_ou_forme": "Jeton",
+    "personnage": "Golem du Doton",
+    "nom": "Golem du Doton",
+    "illustration": "03-Naruto/Illustrations/jetons/jeton_golem-du-doton.png",
+    "carte": "03-Naruto/Cartes/jetons/jeton_golem-du-doton.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Jetons",
+    "niveau_ou_forme": "Jeton",
+    "personnage": "Doryūheki",
+    "nom": "Doryūheki",
+    "illustration": "03-Naruto/Illustrations/jetons/jeton_doryuheki.png",
+    "carte": "03-Naruto/Cartes/jetons/jeton_doryuheki.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Jetons",
+    "niveau_ou_forme": "Jeton",
+    "personnage": "Kugutsu",
+    "nom": "Kugutsu",
+    "illustration": "03-Naruto/Illustrations/jetons/jeton_kugutsu.png",
+    "carte": "03-Naruto/Cartes/jetons/jeton_kugutsu.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Jetons",
+    "niveau_ou_forme": "Jeton",
+    "personnage": "Crapaud de Myōboku",
+    "nom": "Crapaud de Myōboku",
+    "illustration": "03-Naruto/Illustrations/jetons/jeton_crapaud-de-myoboku.png",
+    "carte": "03-Naruto/Cartes/jetons/jeton_crapaud-de-myoboku.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Jetons",
+    "niveau_ou_forme": "Jeton",
+    "personnage": "Limace de Shikkotsu",
+    "nom": "Limace de Shikkotsu",
+    "illustration": "03-Naruto/Illustrations/jetons/jeton_limace-de-shikkotsu.png",
+    "carte": "03-Naruto/Cartes/jetons/jeton_limace-de-shikkotsu.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Jetons",
+    "niveau_ou_forme": "Jeton",
+    "personnage": "Serpent de Ryūchi",
+    "nom": "Serpent de Ryūchi",
+    "illustration": "03-Naruto/Illustrations/jetons/jeton_serpent-de-ryuchi.png",
+    "carte": "03-Naruto/Cartes/jetons/jeton_serpent-de-ryuchi.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Jetons",
+    "niveau_ou_forme": "Jeton",
+    "personnage": "Requin du Suiton",
+    "nom": "Requin du Suiton",
+    "illustration": "03-Naruto/Illustrations/jetons/jeton_requin-du-suiton.png",
+    "carte": "03-Naruto/Cartes/jetons/jeton_requin-du-suiton.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Jetons",
+    "niveau_ou_forme": "Jeton",
+    "personnage": "Bijū",
+    "nom": "Bijū",
+    "illustration": "03-Naruto/Illustrations/jetons/jeton_biju.png",
+    "carte": "03-Naruto/Cartes/jetons/jeton_biju.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Naruto Uzumaki",
+    "nom": "Naruto Uzumaki",
+    "illustration": "03-Naruto/Illustrations/Heros/naruto-uzumaki/normal_naruto-uzumaki.png",
+    "carte": "03-Naruto/Cartes/Heros/naruto-uzumaki/normal_naruto-uzumaki.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Naruto Uzumaki",
+    "nom": "Mode Ermite",
+    "illustration": "03-Naruto/Illustrations/Heros/naruto-uzumaki/eveille_mode-ermite.png",
+    "carte": "03-Naruto/Cartes/Heros/naruto-uzumaki/eveille_mode-ermite.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Kakashi Hatake",
+    "nom": "Kakashi Hatake",
+    "illustration": "03-Naruto/Illustrations/Heros/kakashi-hatake/normal_kakashi-hatake.png",
+    "carte": "03-Naruto/Cartes/Heros/kakashi-hatake/normal_kakashi-hatake.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Kakashi Hatake",
+    "nom": "Kamui",
+    "illustration": "03-Naruto/Illustrations/Heros/kakashi-hatake/eveille_kamui.png",
+    "carte": "03-Naruto/Cartes/Heros/kakashi-hatake/eveille_kamui.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Jiraiya",
+    "nom": "Jiraiya",
+    "illustration": "03-Naruto/Illustrations/Heros/jiraiya/normal_jiraiya.png",
+    "carte": "03-Naruto/Cartes/Heros/jiraiya/normal_jiraiya.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Jiraiya",
+    "nom": "Mode Ermite des crapauds",
+    "illustration": "03-Naruto/Illustrations/Heros/jiraiya/eveille_mode-ermite-des-crapauds.png",
+    "carte": "03-Naruto/Cartes/Heros/jiraiya/eveille_mode-ermite-des-crapauds.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Itachi Uchiha",
+    "nom": "Itachi Uchiha",
+    "illustration": "03-Naruto/Illustrations/Heros/itachi-uchiha/normal_itachi-uchiha.png",
+    "carte": "03-Naruto/Cartes/Heros/itachi-uchiha/normal_itachi-uchiha.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Itachi Uchiha",
+    "nom": "Mangekyō Sharingan",
+    "illustration": "03-Naruto/Illustrations/Heros/itachi-uchiha/eveille_mangekyo-sharingan.png",
+    "carte": "03-Naruto/Cartes/Heros/itachi-uchiha/eveille_mangekyo-sharingan.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Sasuke Uchiha",
+    "nom": "Sasuke Uchiha",
+    "illustration": "03-Naruto/Illustrations/Heros/sasuke-uchiha/normal_sasuke-uchiha.png",
+    "carte": "03-Naruto/Cartes/Heros/sasuke-uchiha/normal_sasuke-uchiha.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Sasuke Uchiha",
+    "nom": "Mangekyō éternel",
+    "illustration": "03-Naruto/Illustrations/Heros/sasuke-uchiha/eveille_mangekyo-eternel.png",
+    "carte": "03-Naruto/Cartes/Heros/sasuke-uchiha/eveille_mangekyo-eternel.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Shikamaru Nara",
+    "nom": "Shikamaru Nara",
+    "illustration": "03-Naruto/Illustrations/Heros/shikamaru-nara/normal_shikamaru-nara.png",
+    "carte": "03-Naruto/Cartes/Heros/shikamaru-nara/normal_shikamaru-nara.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Shikamaru Nara",
+    "nom": "Ombre étrangleuse",
+    "illustration": "03-Naruto/Illustrations/Heros/shikamaru-nara/eveille_ombre-etrangleuse.png",
+    "carte": "03-Naruto/Cartes/Heros/shikamaru-nara/eveille_ombre-etrangleuse.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Hashirama Senju",
+    "nom": "Hashirama Senju",
+    "illustration": "03-Naruto/Illustrations/Heros/hashirama-senju/normal_hashirama-senju.png",
+    "carte": "03-Naruto/Cartes/Heros/hashirama-senju/normal_hashirama-senju.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Hashirama Senju",
+    "nom": "Mode Sage du bois",
+    "illustration": "03-Naruto/Illustrations/Heros/hashirama-senju/eveille_mode-sage-du-bois.png",
+    "carte": "03-Naruto/Cartes/Heros/hashirama-senju/eveille_mode-sage-du-bois.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Kushina Uzumaki",
+    "nom": "Kushina Uzumaki",
+    "illustration": "03-Naruto/Illustrations/Heros/kushina-uzumaki/normal_kushina-uzumaki.png",
+    "carte": "03-Naruto/Cartes/Heros/kushina-uzumaki/normal_kushina-uzumaki.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Kushina Uzumaki",
+    "nom": "Chaînes adamantines",
+    "illustration": "03-Naruto/Illustrations/Heros/kushina-uzumaki/eveille_chaines-adamantines.png",
+    "carte": "03-Naruto/Cartes/Heros/kushina-uzumaki/eveille_chaines-adamantines.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Gaara",
+    "nom": "Gaara",
+    "illustration": "03-Naruto/Illustrations/Heros/gaara/normal_gaara.png",
+    "carte": "03-Naruto/Cartes/Heros/gaara/normal_gaara.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Gaara",
+    "nom": "Défense absolue",
+    "illustration": "03-Naruto/Illustrations/Heros/gaara/eveille_defense-absolue.png",
+    "carte": "03-Naruto/Cartes/Heros/gaara/eveille_defense-absolue.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Kankuro",
+    "nom": "Kankuro",
+    "illustration": "03-Naruto/Illustrations/Heros/kankuro/normal_kankuro.png",
+    "carte": "03-Naruto/Cartes/Heros/kankuro/normal_kankuro.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Kankuro",
+    "nom": "Trio de marionnettes",
+    "illustration": "03-Naruto/Illustrations/Heros/kankuro/eveille_trio-de-marionnettes.png",
+    "carte": "03-Naruto/Cartes/Heros/kankuro/eveille_trio-de-marionnettes.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Sasori",
+    "nom": "Sasori",
+    "illustration": "03-Naruto/Illustrations/Heros/sasori/normal_sasori.png",
+    "carte": "03-Naruto/Cartes/Heros/sasori/normal_sasori.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Sasori",
+    "nom": "Cent marionnettes",
+    "illustration": "03-Naruto/Illustrations/Heros/sasori/eveille_cent-marionnettes.png",
+    "carte": "03-Naruto/Cartes/Heros/sasori/eveille_cent-marionnettes.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Rasa",
+    "nom": "Rasa",
+    "illustration": "03-Naruto/Illustrations/Heros/rasa/normal_rasa.png",
+    "carte": "03-Naruto/Cartes/Heros/rasa/normal_rasa.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Rasa",
+    "nom": "Pluie d'or",
+    "illustration": "03-Naruto/Illustrations/Heros/rasa/eveille_pluie-d-or.png",
+    "carte": "03-Naruto/Cartes/Heros/rasa/eveille_pluie-d-or.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Mei Terumi",
+    "nom": "Mei Terumi",
+    "illustration": "03-Naruto/Illustrations/Heros/mei-terumi/normal_mei-terumi.png",
+    "carte": "03-Naruto/Cartes/Heros/mei-terumi/normal_mei-terumi.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Mei Terumi",
+    "nom": "Futton et Yōton",
+    "illustration": "03-Naruto/Illustrations/Heros/mei-terumi/eveille_futton-et-yoton.png",
+    "carte": "03-Naruto/Cartes/Heros/mei-terumi/eveille_futton-et-yoton.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Haku",
+    "nom": "Haku",
+    "illustration": "03-Naruto/Illustrations/Heros/haku/normal_haku.png",
+    "carte": "03-Naruto/Cartes/Heros/haku/normal_haku.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Haku",
+    "nom": "Miroirs démoniaques",
+    "illustration": "03-Naruto/Illustrations/Heros/haku/eveille_miroirs-demoniaques.png",
+    "carte": "03-Naruto/Cartes/Heros/haku/eveille_miroirs-demoniaques.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Killer Bee",
+    "nom": "Killer Bee",
+    "illustration": "03-Naruto/Illustrations/Heros/killer-bee/normal_killer-bee.png",
+    "carte": "03-Naruto/Cartes/Heros/killer-bee/normal_killer-bee.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Killer Bee",
+    "nom": "Mode Bijū",
+    "illustration": "03-Naruto/Illustrations/Heros/killer-bee/eveille_mode-biju.png",
+    "carte": "03-Naruto/Cartes/Heros/killer-bee/eveille_mode-biju.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Kakuzu",
+    "nom": "Kakuzu",
+    "illustration": "03-Naruto/Illustrations/Heros/kakuzu/normal_kakuzu.png",
+    "carte": "03-Naruto/Cartes/Heros/kakuzu/normal_kakuzu.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Kakuzu",
+    "nom": "Cinq cœurs",
+    "illustration": "03-Naruto/Illustrations/Heros/kakuzu/eveille_cinq-curs.png",
+    "carte": "03-Naruto/Cartes/Heros/kakuzu/eveille_cinq-curs.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Yugito Nii",
+    "nom": "Yugito Nii",
+    "illustration": "03-Naruto/Illustrations/Heros/yugito-nii/normal_yugito-nii.png",
+    "carte": "03-Naruto/Cartes/Heros/yugito-nii/normal_yugito-nii.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Yugito Nii",
+    "nom": "Nibi libéré",
+    "illustration": "03-Naruto/Illustrations/Heros/yugito-nii/eveille_nibi-libere.png",
+    "carte": "03-Naruto/Cartes/Heros/yugito-nii/eveille_nibi-libere.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Omoi",
+    "nom": "Omoi",
+    "illustration": "03-Naruto/Illustrations/Heros/omoi/normal_omoi.png",
+    "carte": "03-Naruto/Cartes/Heros/omoi/normal_omoi.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Omoi",
+    "nom": "Lame de Kumo",
+    "illustration": "03-Naruto/Illustrations/Heros/omoi/eveille_lame-de-kumo.png",
+    "carte": "03-Naruto/Cartes/Heros/omoi/eveille_lame-de-kumo.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Deidara",
+    "nom": "Deidara",
+    "illustration": "03-Naruto/Illustrations/Heros/deidara/normal_deidara.png",
+    "carte": "03-Naruto/Cartes/Heros/deidara/normal_deidara.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Deidara",
+    "nom": "C4 Karura",
+    "illustration": "03-Naruto/Illustrations/Heros/deidara/eveille_c4-karura.png",
+    "carte": "03-Naruto/Cartes/Heros/deidara/eveille_c4-karura.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Normal",
+    "personnage": "Roshi",
+    "nom": "Roshi",
+    "illustration": "03-Naruto/Illustrations/Heros/roshi/normal_roshi.png",
+    "carte": "03-Naruto/Cartes/Heros/roshi/normal_roshi.png"
+  },
+  {
+    "univers": "Naruto",
+    "famille": "Héros",
+    "niveau_ou_forme": "Éveillé",
+    "personnage": "Roshi",
+    "nom": "Mode Lave",
+    "illustration": "03-Naruto/Illustrations/Heros/roshi/eveille_mode-lave.png",
+    "carte": "03-Naruto/Cartes/Heros/roshi/eveille_mode-lave.png"
+  }
+]
