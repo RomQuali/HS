@@ -511,9 +511,7 @@ function gameH() {
         banner = `<div class="table-banner"><div class="banner ${won ? 'win' : lost ? 'loss' : 'draw'}">${won ? 'Victoire !' : lost ? 'Défaite' : 'Égalité'}</div><p class="banner-s">${won ? `Tu infliges ${dmg} dégâts à ${esc(F.on)}.` : lost ? `Tu subis ${dmg} dégâts.` : 'Personne ne perd de points de vie.'}</p>${duelLine(F)}${d.ph === 'combat' ? '<p class="mute">Les autres tables terminent leur combat…</p>' : ''}</div>`;
       } else banner = `<div class="table-skip"><button class="btn sm" data-act="skip">Passer l'animation</button></div>`;
     } else {
-      const rnN = me.sh.length, rnM = Math.max(5, rnN);   // plateau Roni : 5 emplacements au moins, les jetons se posent dessus
-      topZone = `<section class="keeper-zone${me.fz ? ' frozen' : ''}" data-drop="sh" aria-label="Taverne" style="--rn-m:${rnM};--rn-o:${(rnM - rnN) % 2}">
-        <div class="rn-slots" aria-hidden="true">${'<i></i>'.repeat(rnM)}</div>
+      topZone = `<section class="keeper-zone${me.fz ? ' frozen' : ''}" data-drop="sh" aria-label="Taverne">
         <div class="keeper">${medal('up', 'up', me.t >= 6 ? 'Niveau max' : 'Améliorer', me.t >= 6 ? null : me.uc, !canAct || me.t >= 6 || me.g < me.uc)}
           <div class="kc"><span class="face kf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-h-keeper" width="100" height="100"/></svg></span><div class="kname"><b>Bastien, tavernier</b><span class="lv">${tierStars(me.t)}</span></div></div>
           <div class="kr">${medal('roll', 'roll', 'Actualiser', freeRoll ? 0 : 1, !canAct || (me.g < 1 && !freeRoll))}${medal('frz', 'frz', me.fz ? 'Gelée' : 'Geler', null, !canAct, me.fz)}</div></div>
@@ -531,12 +529,11 @@ function gameH() {
     const aimS = !fighting && V.aim != null && me.hd[V.aim] && me.hd[V.aim].sp ? SPELLS[me.hd[V.aim].sp] : null;
     const sockets = Array.from({ length:7 }, () => '<i></i>').join('');
     const cpSide = me.cp && !fighting ? cpSideH(me, null, 0) : '';
-    const rnBd = (boardRow.match(/<div class="mn/g) || []).length || 1;   // plateau Roni : rangée calée sur les 7 emplacements (fantômes compris)
     const board = `<section class="board-zone${aimS ? ' aim' : ''}${me.cp && (!fighting || V.fight.duel) ? ' has-cp' : ''}" ${fighting ? '' : 'data-drop="bd"'} aria-label="Ton plateau">${cpSide}
       ${aimS ? `<div class="aimbar"><span>${icon('bolt')}<b>${esc(aimS.n)}</b> : touche le serviteur à cibler.</span><button class="btn sm" data-act="aimcancel">Annuler</button></div>` : ''}
       ${!fighting && me.tma ? `<span class="tma-b">Prochain combat : +${me.tma.a}/+${me.tma.h} pour tous</span>` : ''}
       ${!fighting && V.cohSum ? V.cohSum : ''}
-      <div class="line" id="bdrow" style="--rn-e:${rnBd % 2 ? 0 : 1}">${boardRow}</div></section>`;
+      <div class="line" id="bdrow">${boardRow}</div></section>`;
     const nono = me.hero === 'nono', locked = nono && (me.rd || 0) < 3;
     const powSub = nono ? `${me.fb} dégât${me.fb > 1 ? 's' : ''}` : me.pu ? 'Utilisé' : '';
     const power = hero && hero.cost ? `<button class="powm${me.pu ? ' used' : ''}${canAct && !locked && powCan(me, me.rd || (V.pub && V.pub.rd)) ? ' can' : ''}" data-act="pow" ${!canAct || me.pu || locked || (me.kiPay ? (me.ki || 0) : me.ckPay ? (me.ck || 0) : me.g) < hero.cost ? 'disabled' : ''} aria-label="${esc(hero.n + ' : ' + hero.tx + ' Coût : ' + hero.cost + (me.ckPay ? ' chakra.' : ' or.'))}"><span class="pcost${me.ckPay ? ' ck' : ''}">${me.ckPay ? ckMarkH(hero.cost, 'pc-ck', 'Coût : ' + hero.cost + ' chakra') : hero.cost}</span>${powArtH(me.hero)}<small>${locked ? 'Manche 3' : powSub || powerTitle(hero)[0] || 'Pouvoir'}</small><span class="pc-tx">${esc(powerTitle(hero)[1])}</span></button>`
@@ -3324,7 +3321,7 @@ html.lite .hero-zone .powm.powm.can:not(:disabled){animation:none;filter:drop-sh
 /* ---------- plateau Roni (maquette « plateau éclairé ») ----------
    Les images sont des fichiers séparés (assets/plateau/*.webp, à publier à côté de la page) : le plateau ne s'active
    que si toutes se chargent, sinon l'écran de jeu garde son habillage d'origine. --rz = échelle de la maquette 1672 × 941. */
-const RN = { ok:false, dir:'assets/plateau/', files:['fond', 'table', 'table-univers', 'emplacement', 'plaque', 'enseigne', 'jauge', 'actualiser', 'geler', 'sablier', 'support', 'compteur-or', 'sac-menu', 'journal', 'reglages', 'portrait', 'vie', 'armure', 'pouvoir'] };
+const RN = { ok:false, dir:'assets/plateau/', files:['fond', 'table-grande', 'table-grande-univers', 'plaque', 'enseigne', 'jauge', 'actualiser', 'geler', 'sablier', 'support', 'compteur-or', 'sac-menu', 'journal', 'reglages', 'portrait', 'vie', 'armure', 'pouvoir'] };
 function rnFit() {
   const w = innerWidth, h = innerHeight, z = Math.min(w / 1672, h / 941), st = document.documentElement.style;
   st.setProperty('--rz', z.toFixed(4)); st.setProperty('--rzw', Math.max(z, .62).toFixed(4)); st.setProperty('--rx', ((w - 1672 * z) / 2).toFixed(1) + 'px'); st.setProperty('--ry', ((h - 941 * z) / 2).toFixed(1) + 'px');
@@ -3346,7 +3343,7 @@ const rnCss = s => s.replace(/§/g, ':root:root:root body.rn')
   .replace(/([\w-]+\s*:[^;{}]+?)\s*(?=;|})/g, (m, d) => /¤$/.test(d) ? d.slice(0, -1) : d + '!important');
 (function(){ const st = document.createElement('style'); st.id = 'rn-css'; st.textContent = rnCss(`/*RN-CSS*/
 :root{--u:calc(var(--rz,1)*1px)¤}
-.rn-surf,.rn-tb,.rn-slots{display:none¤}
+.rn-surf,.rn-tb{display:none¤}
 /* scène : maquette 1672 × 941 centrée, mise à l'échelle par --u */
 § .stage{position:fixed;left:var(--rx,0px);top:var(--ry,0px);width:1672u;height:941u;display:block;margin:0;padding:0;gap:0;overflow:hidden;overflow:clip;z-index:1;max-width:none;min-height:0;grid-template:none}
 § .stage::before{content:'';position:fixed;inset:0;z-index:-2;background:linear-gradient(rgba(8,5,3,.6),rgba(8,5,3,.6)),#0b0705 url(assets/plateau/fond.webp) center/cover no-repeat;filter:blur(14px);transform:scale(1.06);pointer-events:none}
@@ -3354,10 +3351,10 @@ html.lite:root:root body.rn .stage::before{filter:none;transform:none;background
 § .stage::after{content:'';position:absolute;inset:0;z-index:-1;background:url(assets/plateau/fond.webp) 0 0/100% 100% no-repeat;pointer-events:none}
 § .table{position:absolute;inset:0;display:block;margin:0;padding:0;background:none;box-shadow:none;border-radius:0;border:0;overflow:visible;container-type:normal;min-height:0;height:auto;width:auto;grid-template:none;animation:none}
 § .table::before,§ .table::after{content:none}
-§ .rn-tb{display:block;position:absolute;left:222u;top:306u;width:1217u;height:472u;background:url(assets/plateau/table.webp) 0 0/100% 100% no-repeat;pointer-events:none;z-index:0}
-§.u-nj .rn-tb,§.u-db .rn-tb,§.u-rm .rn-tb,§.u-sp .rn-tb,html.has-board-sim:root§.u-sim .rn-tb{background-image:url(assets/plateau/table-univers.webp)}
-§.u-nj .rn-surf,§.u-db .rn-surf,§.u-rm .rn-surf,§.u-sp .rn-surf,html.has-board-sim:root§.u-sim .rn-surf{display:block;position:absolute;left:222u;top:306u;width:1217u;height:472u;pointer-events:none;z-index:0;background-repeat:no-repeat;background-size:100% auto;background-color:#1a1410;
-  clip-path:polygon(4.6% 31.8%,7.7% 16%,13.4% 10.2%,50.7% 8.1%,86.6% 10.2%,92.4% 16%,95.5% 31.8%,92.4% 43.4%,86.6% 47.9%,50.7% 48.7%,13.4% 47.9%,7.7% 43.4%)}
+§ .rn-tb{display:block;position:absolute;left:200u;top:296u;width:1250u;height:521u;background:url(assets/plateau/table-grande.webp) 0 0/100% 100% no-repeat;pointer-events:none;z-index:0}
+§.u-nj .rn-tb,§.u-db .rn-tb,§.u-rm .rn-tb,§.u-sp .rn-tb,html.has-board-sim:root§.u-sim .rn-tb{background-image:url(assets/plateau/table-grande-univers.webp)}
+§.u-nj .rn-surf,§.u-db .rn-surf,§.u-rm .rn-surf,§.u-sp .rn-surf,html.has-board-sim:root§.u-sim .rn-surf{display:block;position:absolute;left:200u;top:296u;width:1250u;height:521u;pointer-events:none;z-index:0;background-repeat:no-repeat;background-size:100% auto;background-color:#1a1410;
+  clip-path:polygon(4.6% 49.2%,7.7% 21.2%,13.4% 10.9%,50.7% 7.5%,86.6% 10.9%,92.4% 21.2%,95.5% 49.2%,92.4% 69.6%,86.6% 77.6%,50.7% 78.4%,13.4% 77.6%,7.7% 69.6%)}
 §.u-nj .rn-surf{background-image:var(--board-nj);background-position:50% 30%}
 §.u-db .rn-surf{background-image:var(--board-db);background-position:50% 22%}
 §.u-rm .rn-surf{background-image:var(--board-rm);background-position:50% 22%}
@@ -3396,7 +3393,7 @@ html.has-board-sim:root§.u-sim .rn-surf{background-image:var(--board-sim);backg
 § .opps .op.dead{filter:grayscale(1) brightness(.6)}
 
 /* taverne : enseigne et niveau, amélioration, actualiser, geler, emplacements */
-§ .keeper-zone{position:absolute;left:0;top:0;width:1672u;height:303u;display:block;margin:0;padding:0;background:none;box-shadow:none;border:0;border-radius:0;z-index:2;zoom:1;min-height:0;--sw:min(153u,calc(900u / var(--rn-m,5) - 15u));--tw:calc(var(--sw) * .66)}
+§ .keeper-zone{position:absolute;left:0;top:0;width:1672u;height:303u;display:block;margin:0;padding:0;background:none;box-shadow:none;border:0;border-radius:0;z-index:2;zoom:1;min-height:0;--tw:124u}
 § .keeper-zone::before,§ .keeper-zone::after{content:none}
 § .keeper-zone:not(.enemy)::before{content:'';position:absolute;left:1288u;top:92u;width:230u;height:246u;background:url(assets/plateau/support.webp) 0 0/100% 100% no-repeat;pointer-events:none;inset:auto;left:1288u;top:92u;border:0;box-shadow:none;border-radius:0;opacity:1;transform:none;animation:none}
 § .keeper-zone:not(.enemy) .keeper{display:contents}
@@ -3422,12 +3419,8 @@ html.has-board-sim:root§.u-sim .rn-surf{background-image:var(--board-sim);backg
 § .keeper .medal[data-act="up"] small{display:block;position:absolute;left:13u;top:8u;width:160u;height:28u;box-sizing:border-box;padding:0 8u 0 40u;border-radius:14u;background:linear-gradient(#2a1b10,#170e08);box-shadow:inset 0 0 0 1u rgba(200,150,62,.5);font-size:fs(15,6.5);line-height:28u;color:#ffe9b0;text-align:center;letter-spacing:.3px;white-space:nowrap;margin:0;text-transform:none;opacity:1}
 § .keeper .medal[data-act="up"] .cost{left:14u;top:4u;margin:0;z-index:2}
 § .keeper .medal[data-act="up"]:not(:disabled) small{color:#fff3c8;box-shadow:inset 0 0 0 1u #ffd86a,0 0 8u rgba(255,200,90,.55)}
-§ .rn-slots{display:flex;position:absolute;left:299u;top:82u;width:1077u;height:215u;justify-content:center;align-items:flex-start;gap:15u;pointer-events:none}
-§ .rn-slots i{display:block;flex:none;width:var(--sw);height:calc(var(--sw) * 1.346);background:url(assets/plateau/emplacement.webp) 0 0/100% 100% no-repeat}
-§ .keeper-zone.frozen .rn-slots i{filter:drop-shadow(0 0 5u #7fe0ff)}
-§ .keeper-zone:not(.enemy) .counter-line{position:absolute;left:299u;top:82u;width:1077u;height:215u;display:flex;justify-content:center;align-items:flex-start;gap:15u;margin:0;padding:0 calc(var(--rn-o,0) * (var(--sw) + 15u)) 0 0;box-sizing:border-box;background:none;box-shadow:none;border:0;border-radius:0;min-height:0;backdrop-filter:none;flex-wrap:nowrap}
-§ .keeper-zone:not(.enemy) .counter-line .mn{width:var(--tw);margin:calc(var(--sw) * .135) calc(var(--sw) * .17) 0;gap:0}
-§ .keeper-zone:not(.enemy) .counter-line .mn .mn-nm{position:absolute;left:-22%;top:calc(var(--sw) * .915);width:144%;min-height:0;height:calc(var(--sw) * .17);display:grid;place-items:center;font-size:max(5.5px,calc(var(--sw) * .076));line-height:.98;color:#3a2410;text-shadow:none;font-weight:700;overflow:hidden;white-space:normal;text-wrap:balance;padding:0}
+§ .keeper-zone:not(.enemy) .counter-line{position:absolute;left:299u;top:82u;width:1077u;height:215u;display:flex;justify-content:center;align-items:flex-start;gap:0;margin:0;padding:0;box-sizing:border-box;background:none;box-shadow:none;border:0;border-radius:0;min-height:0;backdrop-filter:none;flex-wrap:nowrap}
+§ .keeper-zone:not(.enemy) .counter-line .mn{width:124u;margin:0 12u;gap:2u}
 § .keeper-zone .hint{position:absolute;left:0;right:0;top:118u;margin:0;text-align:center;font-size:fs(17,8);color:#ffe9b0;text-shadow:0 1px 3px #000;pointer-events:none}
 § .keeper-zone .shelf{position:absolute;left:-66u;top:6u;width:178u;height:auto;margin:0;padding:4u 4u 6u;display:grid;justify-items:center;gap:2u;border:0;border-radius:14u;background:rgba(18,10,6,.5);box-shadow:inset 0 0 0 1.5u rgba(200,150,62,.55);--tw:96u}
 § .keeper-zone .shelf.two{--tw:80u}
@@ -3444,18 +3437,17 @@ html.has-board-sim:root§.u-sim .rn-surf{background-image:var(--board-sim);backg
 § .keeper-zone.enemy .kn-en b{font-size:fs(34,12);line-height:1.05}
 § .keeper-zone.enemy .kn-en .ts{gap:3u}
 § .keeper-zone.enemy .kn-en .ts i{width:fs(24,9);height:fs(24,9)}
-§ .keeper-zone.enemy .counter-line{position:absolute;left:299u;top:346u;width:1077u;height:150u;display:flex;justify-content:center;align-items:flex-start;gap:0;margin:0;padding:0;background:none;box-shadow:none;border:0;border-radius:0;min-height:0;backdrop-filter:none;pointer-events:auto;--tw:118u}
-§ .keeper-zone.enemy .counter-line .mn{width:118u;margin:0 14u}
+§ .keeper-zone.enemy .counter-line{position:absolute;left:260u;top:334u;width:1130u;height:180u;display:flex;justify-content:center;align-items:flex-start;gap:0;margin:0;padding:0;background:none;box-shadow:none;border:0;border-radius:0;min-height:0;backdrop-filter:none;pointer-events:auto;--tw:118u}
+§ .keeper-zone.enemy .counter-line .mn{width:124u;margin:0 12u;gap:2u}
 
-/* table : les 7 emplacements d'équipe */
+/* table : rangée d'équipe sur la grande table */
 § .board-zone{position:absolute;left:0;top:303u;width:1672u;height:387u;display:block;margin:0;padding:0;background:none;box-shadow:none;border:0;border-radius:0;z-index:2;--tw:118u;min-height:0;backdrop-filter:none}
 § .board-zone::before,§ .board-zone::after{content:none}
-§ .board-zone #bdrow{position:absolute;left:299u;top:236u;width:1077u;height:150u;display:flex;justify-content:center;align-items:flex-start;gap:0;margin:0;padding:0 calc(var(--rn-e,0) * 146u) 0 0;box-sizing:border-box;min-height:0;background:none;z-index:1}
-§ .board-zone #bdrow .mn{width:118u;margin:0 14u}
-§ .board-zone #bdrow .mn .mn-nm{display:none}
+§ .board-zone #bdrow{position:absolute;left:260u;top:214u;width:1130u;height:180u;display:flex;justify-content:center;align-items:flex-start;gap:0;margin:0;padding:0;box-sizing:border-box;min-height:0;background:none;z-index:1}
+§ .board-zone #bdrow .mn{width:124u;margin:0 12u;gap:2u}
 § .board-zone .hint{position:absolute;left:0;right:0;top:-150u;margin:0;text-align:center;font-size:fs(19,8.5);color:#ffe9b0;text-shadow:0 1px 3px #000,0 0 10px #000;pointer-events:none;width:auto}
 § .board-zone.drop-ok{background:none;box-shadow:none}
-§ .board-zone.drop-ok::after{content:'';position:absolute;left:290u;top:232u;width:1094u;height:156u;border-radius:20u;box-shadow:inset 0 0 0 2u rgba(255,216,106,.85),0 0 22u rgba(255,200,90,.55);pointer-events:none}
+§ .board-zone.drop-ok::after{content:'';position:absolute;left:250u;top:208u;width:1150u;height:192u;border-radius:20u;box-shadow:inset 0 0 0 2u rgba(255,216,106,.85),0 0 22u rgba(255,200,90,.55);pointer-events:none}
 § .board-zone .aimbar{position:absolute;left:50%;top:60uz;transform:translateX(-50%);z-index:5;margin:0;zoom:var(--rzw)}
 § .board-zone .tma-b{position:absolute;left:50%;top:176uz;transform:translateX(-50%);margin:0;zoom:var(--rzw);z-index:3}
 § .board-zone .coh-sum{position:absolute;left:auto;right:300u;top:150u;bottom:auto;margin:0;z-index:3;transform:none}
