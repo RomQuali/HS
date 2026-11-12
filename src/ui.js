@@ -8,6 +8,64 @@ let savedUniv = []; try { savedUniv = JSON.parse(localStorage.getItem('tav-univ'
 let savedName = ''; try { savedName = localStorage.getItem('tav-name') || ''; } catch (e) {}
 const V = { screen:'menu', name:savedName || 'Aventurier', nameRaw:savedName, pub:null, pubAt:0, me:null, sel:null, fight:null, fi:0, hostGone:false, univSel:savedUniv };
 
+// ----- sons d'interface Roni : une seule planche sonore (assets/sons/interface.mp3), chaque son = [début, durée] en ms -----
+const SFX = { on:true, vol:.55, ctx:null, buf:null, ld:0, pool:null, last:{}, any:0, act:0, map:{"ui_focus":[0,163],"ui_appuyer":[313,246],"ui_confirmer":[709,298],"ui_retour":[1157,246],"ui_onglet":[1554,225],"ui_panneau_ouvrir":[1928,350],"ui_panneau_fermer":[2429,336],"ui_inspecter":[2915,457],"ui_annuler":[3522,274],"ui_refus":[3946,435],"file_debut":[4531,413],"file_annuler":[5094,276],"partie_trouvee":[5521,956],"heros_proposer":[6627,371],"heros_preselection":[7148,433],"heros_confirmer":[7731,724],"taverne_entree":[8604,1116],"recrutement_debut":[9871,621],"or_ajoute":[10641,506],"or_epuise":[11298,308],"boutique_actualiser":[11755,420],"boutique_geler":[12325,602],"boutique_degeler":[13077,505],"taverne_ameliorer":[13732,738],"carte_saisir":[14620,191],"carte_relacher":[14962,241],"serviteur_acheter":[15353,442],"sort_acheter":[15946,766],"carte_recevoir":[16861,379],"serviteur_poser":[17390,310],"serviteur_deplacer":[17850,340],"serviteur_vendre":[18340,545],"main_pleine":[19034,346],"plateau_plein":[19531,386],"triple_fusion":[20067,1113],"decouverte_ouvrir":[21329,778],"decouverte_choisir":[22257,732],"pouvoir_pret":[23139,696],"pouvoir_activer":[23985,791],"pouvoir_deja_utilise":[24926,307],"passif_resoudre":[25383,478],"pouvoir_eveil":[26011,785],"cible_debut":[26946,344],"cible_survol":[27441,411],"cible_valider":[28001,190],"cible_invalide":[28342,377],"cible_annuler":[28869,253],"sort_jouer":[29272,624],"effet_confirmer":[30046,427],"temps_alerte":[30623,391],"temps_tick":[31164,210],"temps_fin":[31525,565],"pret_confirmer":[32240,490],"combat_debut":[32880,809],"combat_gagne":[33839,726],"combat_perdu":[34715,514],"combat_nul":[35379,517],"armure_absorber":[36045,454],"armure_briser":[36649,513],"vie_perdre":[37312,439],"vie_critique":[37901,610],"duo_portail_ouvrir":[38662,617],"duo_portail_retour":[39428,567],"duo_carte_envoyer":[40145,636],"duo_carte_recevoir":[40931,561],"duo_ping_ouvrir":[41642,333],"duo_ping_oui":[42125,426],"duo_ping_non":[42701,362],"duo_ping_question":[43213,494],"duo_ping_passage":[43857,605],"classement_ouvrir":[44612,332],"classement_changer":[45093,348],"joueur_elimine":[45591,537],"partie_elimination":[46278,585],"partie_victoire":[47013,951],"cote_gain":[48114,529],"cote_perte":[48793,401],"recap_ouvrir":[49344,355],"quete_choisir":[49849,335],"quete_progres":[50334,194],"quete_terminee":[50678,1008],"bijou_proposer":[51836,503],"bijou_acquerir":[52489,743],"unite_activer":[53381,554],"emote_ouvrir":[54086,369],"emote_envoyer":[54604,582]} };
+try { SFX.on = localStorage.getItem('mdt_sfx') !== '0'; } catch (e) {}
+function sfxLoad() {
+  if (SFX.ld) return; SFX.ld = 1;
+  const url = 'assets/sons/interface.mp3', fallback = () => { try { SFX.pool = [0, 1, 2, 3].map(() => { const a = new Audio(url); a.preload = 'auto'; return a; }); } catch (e) {} };
+  try { const AC = window.AudioContext || window.webkitAudioContext; SFX.ctx = new AC(); fetch(url).then(r => { if (!r.ok) throw 0; return r.arrayBuffer(); }).then(b => new Promise((ok, ko) => SFX.ctx.decodeAudioData(b, ok, ko))).then(b => { SFX.buf = b; }).catch(fallback); } catch (e) { fallback(); }
+}
+function sfx(id, v) {
+  const m = SFX.map[id]; if (!SFX.on || !m) return;
+  if (!SFX.ld) { sfxLoad(); return; }
+  const now = performance.now(); if (now - (SFX.last[id] || 0) < 80) return; SFX.last[id] = now; SFX.any = now;
+  const vol = Math.max(0, Math.min(1, (v == null ? 1 : v) * SFX.vol));
+  try {
+    if (SFX.buf) { if (SFX.ctx.state === 'suspended') SFX.ctx.resume(); const src = SFX.ctx.createBufferSource(), g = SFX.ctx.createGain(); src.buffer = SFX.buf; g.gain.value = vol; src.connect(g); g.connect(SFX.ctx.destination); src.start(0, m[0] / 1000, m[1] / 1000 + .09); }
+    else if (SFX.pool) { const a = SFX.pool.find(x => x.paused) || SFX.pool[0]; clearTimeout(a._t); a.currentTime = m[0] / 1000; a.volume = vol; const pr = a.play(); if (pr && pr.catch) pr.catch(() => {}); a._t = setTimeout(() => a.pause(), m[1] + 90); }
+  } catch (e) {}
+}
+// son d'une action du joueur (achat, vente, pouvoir…)
+const SFX_ACT = { buy:'serviteur_acheter', sell:'serviteur_vendre', play:'serviteur_poser', move:'serviteur_deplacer', roll:'boutique_actualiser', up:'taverne_ameliorer', pow:'pouvoir_activer', buysp:'sort_acheter', cast:'sort_jouer', pick:'decouverte_choisir', hero:'heros_confirmer', hroll:'boutique_actualiser', comp:'serviteur_acheter', tf:'unite_activer', fuse:'unite_activer', portal:'unite_activer', ckm:'unite_activer', med:'unite_activer', chest:'bijou_proposer', upick:'bijou_acquerir', uapply:'bijou_acquerir', equip:'bijou_acquerir' };
+function sfxAct(a) { if (!a) return; SFX.act = performance.now(); if (a.t === 'frz') return sfx(V.me && V.me.fz ? 'boutique_degeler' : 'boutique_geler'); if (a.t === 'rdy') return sfx(V.me && V.me.rdy ? 'ui_annuler' : 'pret_confirmer'); if (SFX_ACT[a.t]) sfx(SFX_ACT[a.t]); }
+// sons déclenchés par un changement d'état (phase, vie, découverte, éveil, triple…)
+function sfxPub(P, d) {
+  if (!P || !d) return;
+  if (d.ph !== P.ph) {
+    if (d.ph === 'hero') sfx('heros_proposer');
+    else if (d.ph === 'combat') sfx('combat_debut');
+    else if (d.ph === 'recruit') { const r = V.me && V.me.res && V.me.res.r; if (P.ph === 'combat' && r) { sfx(r === 'win' ? 'combat_gagne' : r === 'loss' ? 'combat_perdu' : 'combat_nul'); setTimeout(() => sfx('recrutement_debut', .8), 750); } else sfx(P.ph === 'hero' ? 'taverne_entree' : 'recrutement_debut'); }
+    else if (d.ph === 'end') { const me = V.me && (d.pl || []).find(x => x.pid === V.me.pid); sfx(me && me.pl === 1 ? 'partie_victoire' : 'partie_elimination'); }
+  }
+  const out = x => (x.pl || []).filter(q => q.al === false).length;
+  if (d.ph !== 'end' && out(d) > out(P)) sfx('joueur_elimine', .8);
+}
+function sfxPriv(P, d) {
+  if (!P || !d || performance.now() - SFX.act < 250 && !(d.disc && !P.disc)) { if (P && d && d.disc && !P.disc) sfx('decouverte_ouvrir'); return; }
+  if (d.disc && !P.disc) sfx('decouverte_ouvrir');
+  if (d.haw && !P.haw) sfx('pouvoir_eveil');
+  else if ((d.qp || 0) > (P.qp || 0)) sfx('quete_progres', .7);
+  if (d.hp != null && P.hp != null && d.hp < P.hp) sfx(d.hp <= 10 ? 'vie_critique' : 'vie_perdre');
+  if ((d.hd || []).some(x => x.tr) && !(P.hd || []).some(x => x.tr)) sfx('triple_fusion');
+  else if ((d.hd || []).length > (P.hd || []).length) sfx('carte_recevoir', .8);
+}
+// bouton son (en bas à gauche), clics génériques, compte à rebours
+(function () { try {
+  const ICON = on => `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/>${on ? '<path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/>' : '<path d="M17 9l5 6M22 9l-5 6"/>'}</svg>`;
+  const init = () => {
+    const b = document.createElement('button'); b.id = 'sfxb'; b.type = 'button';
+    const upd = () => { b.innerHTML = ICON(SFX.on); b.setAttribute('aria-label', SFX.on ? 'Couper les sons' : 'Activer les sons'); b.setAttribute('aria-pressed', SFX.on ? 'true' : 'false'); b.title = SFX.on ? 'Sons activés' : 'Sons coupés'; };
+    b.addEventListener('click', e => { e.stopPropagation(); SFX.on = !SFX.on; try { localStorage.setItem('mdt_sfx', SFX.on ? '1' : '0'); } catch (x) {} upd(); if (SFX.on) { sfxLoad(); setTimeout(() => sfx('ui_confirmer'), 250); } });
+    upd(); document.body.appendChild(b);
+    const st = document.createElement('style'); st.textContent = '#sfxb{position:fixed;left:8px;bottom:8px;z-index:9000;width:34px;height:34px;display:grid;place-items:center;padding:0;border-radius:50%;border:1.5px solid #c89a52;background:rgba(26,17,10,.82);color:#ffe9b0;cursor:pointer;opacity:.8}#sfxb:hover,#sfxb:focus-visible{opacity:1}#sfxb[aria-pressed="false"]{color:#a89a84;border-color:#6a5a44}'; document.head.appendChild(st);
+    document.addEventListener('pointerdown', () => { if (SFX.on) sfxLoad(); }, { once:true, capture:true });
+    document.addEventListener('click', e => { const t = e.target && e.target.closest && e.target.closest('button,[data-act],[role="button"]'); if (!t || t.id === 'sfxb' || t.disabled) return; setTimeout(() => { if (performance.now() - SFX.any > 140) sfx('ui_appuyer', .6); }, 40); }, true);
+  };
+  if (document.body) init(); else document.addEventListener('DOMContentLoaded', init);
+  let lastS = -1;
+  setInterval(() => { if (!V.pub || V.screen !== 'game' || V.pub.ph !== 'recruit' || (V.me && V.me.rdy)) { lastS = -1; return; } const s = Math.ceil((V.pub.rem - (Date.now() - V.pubAt)) / 1000); if (s === lastS) return; lastS = s; if (s === 10) sfx('temps_alerte', .8); else if (s > 0 && s <= 5) sfx('temps_tick', .7); else if (s === 0) sfx('temps_fin', .8); }, 200);
+} catch (e) {} })();
 function onPub(d) {
   if (!d || typeof d !== 'object') return;
   const key = JSON.stringify(Object.assign({}, d, { rem:0 }));
@@ -18,6 +76,7 @@ function onPub(d) {
   // multijoueur : au lancement, tout le monde franchit la porte (la partie s'affiche derrière l'éblouissement)
   if (V.screen === 'lobby' && screen === 'game' && typeof csEnter === 'function') csEnter(() => render());
   if (V.screen === 'game' && screen === 'lobby') { V.me = null; V.fight = null; V.sel = null; V.aim = null; V.privKey = null; }
+  if (!same && V.screen === 'game' && screen === 'game') sfxPub(V.pub, d);
   V.pub = d; V.pubAt = Date.now(); V.pubKey = key; V.screen = screen;
   if (d.cv && d.cv !== CAT_REV && Net.role === 'client' && !V.cvWarn) { V.cvWarn = true; toast('Les cartes de l\'hôte diffèrent des tiennes : recharge la page avant la prochaine partie.'); }
   if (d.ph === 'recruit' && V.fight && V.fight.rd !== d.rd) V.fight = null;
@@ -27,6 +86,7 @@ function onPriv(d) {
   if (!d || typeof d !== 'object') return;
   const key = JSON.stringify(d);
   if (key === V.privKey) return;
+  sfxPriv(V.me, d);
   V.privKey = key; V.me = d;
   if (V.chestRev && d.choice) { const R = V.chestRev; V.chestRev = null; V.choiceAt = R.at + 950; setTimeout(render, Math.max(0, V.choiceAt - Date.now()) + 20); }
   else if (V.chestRev && d.loot) { const R = V.chestRev; V.chestRev = null; const got = d.loot.slice(); if (got.length) setTimeout(() => chestReveal(got), Math.max(0, 950 - (Date.now() - R.at))); }
@@ -103,7 +163,7 @@ function fxFrame() {
   document.querySelectorAll('.arena .mn.born').forEach(el => { const r = el.getBoundingClientRect(); setTimeout(() => fxRing(r.left + r.width / 2, r.top + r.height * .5, '#cfe8ff', 1.1), 280); });
   document.querySelectorAll('.arena .mn.dying').forEach(el => { const r = el.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height * .45; setTimeout(() => { fxBurst(x, y, 'shard', 16, 1.1); if (el.classList.contains('dr')) fxBurst(x, y - 10, 'soul', 10); }, 330); });
 }
-function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 3400); }
+function toast(msg) { sfx(/main est pleine|main pleine/i.test(msg) ? 'main_pleine' : /plateau est plein|plateau plein/i.test(msg) ? 'plateau_plein' : /or\b.*(faut|manque)|pas assez d.or/i.test(msg) ? 'or_epuise' : 'ui_refus', .8); const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => t.hidden = true, 3400); }
 function $(s) { return document.querySelector(s); }
 
 /* ---------- composants ---------- */
@@ -1284,8 +1344,8 @@ function doAct(act, btn) {
     case 'chest': V.chestRev = { eq:(V.me && V.me.eqs || []).slice(), hd:(V.me && V.me.hd || []).map(x => x.u), at:Date.now() }; fxChest(btn); { const o = btn.closest('.bigchest'); if (o) o.remove(); } sendAct({ t:'chest' }); break;
     case 'equip': if (btn.getAttribute('aria-disabled') === 'true') { toast(btn.dataset.why || ''); break; } sendAct({ t:'equip', i:+btn.dataset.i }); hidePeek(); break;
     case 'cast': if (s) { sendAct({ t:'cast', i:s.i }); V.sel = null; } break;
-    case 'aim': if (s) { V.aim = s.i; V.sel = null; render(); } break;
-    case 'aimcancel': V.aim = null; render(); break;
+    case 'aim': if (s) { V.aim = s.i; V.sel = null; sfx('cible_debut'); render(); } break;
+    case 'aimcancel': V.aim = null; sfx('cible_annuler'); render(); break;
     case 'pick': sendAct({ t:'pick', i:+btn.dataset.i }); break;
     case 'unsel': V.sel = null; render(); break;
     case 'play': if (s) { sendAct({ t:'play', i:s.i }); V.sel = null; } break;
@@ -1801,7 +1861,8 @@ const PWART = {
   wind:'<path d="M6 15h17a4 4 0 1 0-4-4M6 21h24a4 4 0 1 1-4 4M6 27h11" stroke="#bff0e6" stroke-width="3" fill="none" stroke-linecap="round"/>'
 };
 // illustrations Roni des pouvoirs (assets/pouvoirs/<id>.webp, <id>_eveil.webp) pour les héros des 5 univers ouverts ; dessin vectoriel pour les autres
-const powArtH = (hid, aw) => { if (/^(nh|dh|rh|sh|smh)_/.test(hid || '')) return `<span class="ic pwart pwimg" aria-hidden="true"><i style="background-image:url(assets/pouvoirs/${hid}${aw ? '_eveil' : ''}.webp)"></i></span>`; const th = HTHEME[hid] || 'spark', col = THC[th]; return `<svg class="ic pwart" viewBox="0 0 40 40" style="--hc:${col}" aria-hidden="true">${PWART[th]}</svg>`; };
+const PW_IX = 'dh_ange dh_ange_eveil dh_chasseur dh_chasseur_eveil dh_commandant dh_commandant_eveil dh_dieu dh_dieu_eveil dh_ermite dh_ermite_eveil dh_gardien dh_gardien_eveil dh_maitre dh_maitre_eveil dh_savant dh_savant_eveil dh_sorcier dh_sorcier_eveil dh_tyran dh_tyran_eveil nh_bee nh_bee_eveil nh_deidara nh_deidara_eveil nh_gaara nh_gaara_eveil nh_haku nh_haku_eveil nh_hashirama nh_hashirama_eveil nh_itachi nh_itachi_eveil nh_jiraiya nh_jiraiya_eveil nh_kakashi nh_kakashi_eveil nh_kakuzu nh_kakuzu_eveil nh_kankuro nh_kankuro_eveil nh_kushina nh_kushina_eveil nh_mei nh_mei_eveil nh_naruto nh_naruto_eveil nh_omoi nh_omoi_eveil nh_rasa nh_rasa_eveil nh_roshi nh_roshi_eveil nh_sasori nh_sasori_eveil nh_sasuke nh_sasuke_eveil nh_shikamaru nh_shikamaru_eveil nh_yugito nh_yugito_eveil rh_c137 rh_c137_eveil rh_conseil rh_conseil_eveil rh_cop rh_cop_eveil rh_cornichon rh_cornichon_eveil rh_cronen rh_cronen_eveil rh_cyborg rh_cyborg_eveil rh_doofus rh_doofus_eveil rh_sorcier rh_sorcier_eveil rh_tiny rh_tiny_eveil rh_toxique rh_toxique_eveil sh_butters sh_butters_eveil sh_cartman sh_cartman_eveil sh_chef sh_chef_eveil sh_garrison sh_garrison_eveil sh_kenny sh_kenny_eveil sh_kyle sh_kyle_eveil sh_mackey sh_mackey_eveil sh_randy sh_randy_eveil sh_stan sh_stan_eveil sh_wendy sh_wendy_eveil smh_abe smh_abe_eveil smh_bart smh_bart_eveil smh_burns smh_burns_eveil smh_homer smh_homer_eveil smh_krusty smh_krusty_eveil smh_lisa smh_lisa_eveil smh_maggie smh_maggie_eveil smh_marge smh_marge_eveil smh_moe smh_moe_eveil smh_ned smh_ned_eveil'.split(' ');   // planche assets/illus/pouvoirs.webp : 12 colonnes, dans cet ordre
+const powArtH = (hid, aw) => { if (/^(nh|dh|rh|sh|smh)_/.test(hid || '')) { const ix = PW_IX.indexOf(hid + (aw ? '_eveil' : '')); if (ix >= 0) return `<span class="ic pwart pwimg" aria-hidden="true"><i style="background-position:${f1((ix % 12) / 11 * 100)}% ${f1(Math.floor(ix / 12) / 9 * 100)}%"></i></span>`; } const th = HTHEME[hid] || 'spark', col = THC[th]; return `<svg class="ic pwart" viewBox="0 0 40 40" style="--hc:${col}" aria-hidden="true">${PWART[th]}</svg>`; };
 const RUNES = 'ᚠᚢᚦᚨᚱᚲᚷᚹᚺᚾᛁᛃᛇᛈᛉᛊᛏᛒᛖᛗᛚᛜᛞᛟ';
 function hfxH(th, n = 18) {
   let h = '';
@@ -2832,7 +2893,7 @@ html.lite .awk-go{animation:none}
 .pwb-med{width:76px;height:76px;margin-top:-12px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 40% 35%,#6a4a2a,#1a0e06);box-shadow:inset 0 0 0 3px #2a1806,0 0 0 5px #5a3a1a,0 0 0 8px #c8a04a,0 0 0 10px #2a1806}
 .pwb-med .pwart{width:48px;height:48px}
 .ic.pwart.pwimg{display:block;position:relative;border-radius:50%;box-sizing:border-box;padding:0;overflow:hidden}
-.ic.pwart.pwimg i{position:absolute;inset:0;border-radius:50%;background:#1a110a center/cover no-repeat}
+.ic.pwart.pwimg i{position:absolute;inset:0;border-radius:50%;background:#1a110a url(assets/illus/pouvoirs.webp) 0 0/1200% 1000% no-repeat}
 .pwb-nm{width:calc(100% + 30px);margin-top:8px;padding:5px 0 6px;font:700 15px var(--f-label),serif;color:#2a1c10;background:linear-gradient(180deg,#f6eed8,#d8c89e 60%,#b8a478);box-shadow:inset 0 0 0 1px #5a4a30;
   clip-path:polygon(0 0,100% 0,94% 50%,100% 100%,0 100%,6% 50%);filter:drop-shadow(0 2px 2px rgba(0,0,0,.5))}
 .pwb-tx{margin:2px 0 0;width:100%;padding:8px 8px 10px;box-sizing:border-box;font-size:12.5px;line-height:1.35;color:#2a2018;background:linear-gradient(180deg,#e6dfcf,#c9bfa8);box-shadow:inset 0 0 0 1.5px #6a5a40,inset 0 0 0 3px #e9e1cf}

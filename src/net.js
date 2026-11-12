@@ -108,6 +108,7 @@ async function leaveGame() {
   if (DATA.pending) applyLive(); else render();
 }
 function sendAct(a) {
+  if (typeof sfxAct === 'function') sfxAct(a);
   if (Net.role === 'host' || Net.role === 'solo') { const p = V.me; if (p) hostApply(p.pid, a); return; }
   if (!Net.nr) return;
   a.s = ++Net.seq; Net.acts.push(a); if (Net.acts.length > 12) Net.acts.shift();
