@@ -197,13 +197,14 @@ let UF_OK = false;
 // géométrie d'un cadre dans le repère des serviteurs (viewBox -4 -6 108 132), proportions du cadre conservées
 const UF_G = {};
 for (const id in UF) { const [W, H] = UF[id], k = Math.min(108 / W, 132 / H), w = W * k, h = H * k; UF_G[id] = { x:50 - w / 2, y:-6 + (132 - h) / 2, w, h }; }
-function ufOf(m) { if (!UF_OK || V.screen !== 'game' || !V.pub || !m || m.sp || !C[m.c]) return null; return m.g ? '10-reliquaire' : CD(m.c).tok ? '09-bord-fin' : '01-bronze'; }
+function ufOf(m) { if (!UF_OK || V.screen !== 'game' || !V.pub || !m || m.sp || !C[m.c]) return null; return CD(m.c).tok ? '09-bord-fin' : '01-bronze'; }   // les dorés gardent la forme : le cadre se dore et le dragon vient en décoration
 function ufIn(m, id, up) {
   const [, , P, R, A, Hp, N] = UF[id], g = UF_G[id], X = v => f1(g.x + v * g.w / 100), Y = v => f1(g.y + v * g.h / 100), b = CD(m.c);
   const pw = P[2] * g.w / 100, ph = P[3] * g.h / 100, sd = Math.max(pw, ph), ax = g.x + P[0] * g.w / 100 + (pw - sd) / 2, ay = g.y + P[1] * g.h / 100 + (ph - sd) * .37;
   const nw = N[2] * g.w / 100, fs = Math.min(7.4, nw / Math.max(1, b.n.length * .5));
   return `<g mask="url(#ufm-${id})"><rect x="${f1(g.x)}" y="${f1(g.y)}" width="${f1(g.w)}" height="${f1(g.h)}" fill="#1a110a"/><use href="#art-${artOf(m)}" x="${f1(ax)}" y="${f1(ay)}" width="${f1(sd)}" height="${f1(sd)}"/></g>`
     + `<image class="uf-f" href="${UF_DIR + id}.webp" x="${f1(g.x)}" y="${f1(g.y)}" width="${f1(g.w)}" height="${f1(g.h)}" preserveAspectRatio="none"/>`
+    + (m.g ? '<use class="fr-dr" href="#fr-dragon" x="48" y="-15" width="56" height="64.4"/>' : '')
     + (b.t ? `<text class="gt uf-r" x="${X(R[0])}" y="${Y(R[1])}" dy=".36em"><title>Niveau ${b.t}</title>${b.t}</text>` : '')
     + `<text class="uf-n" x="${X(N[0])}" y="${Y(N[1])}" dy=".36em" style="font-size:${f1(fs)}px">${esc(b.n)}</text>`
     + `<text class="gt uf-s${up(m.a, b.a)}" x="${X(A[0])}" y="${Y(A[1])}" dy=".36em">${m.a}</text><text class="gt uf-s${up(m.h, b.h)}" x="${X(Hp[0])}" y="${Y(Hp[1])}" dy=".36em">${m.h}</text>`;
@@ -3380,6 +3381,8 @@ html.lite .mn.mn-awk .mn-svg{animation:none}
 :root body .gt.uf-s,:root body .cd .gt.uf-s{font-size:16px;stroke-width:3.6px}
 :root body .gt.uf-r,:root body .cd .gt.uf-r{font-size:11px;stroke-width:2.6px}
 :root body .mn.rf .mn-nm{display:none}
+:root body .mn.rf.g .uf-f{filter:sepia(1) saturate(2.6) hue-rotate(-12deg) brightness(1.28) contrast(1.05)}
+:root body .mn.rf.g .fr-dr{filter:sepia(1) saturate(3) hue-rotate(-12deg) brightness(1.35) drop-shadow(0 1px 1px rgba(40,20,0,.8))}
 :root body .cd.rf{background:none;border-style:solid;border-color:transparent;border-width:0;border-image:var(--fr-parch) 60 80 fill/20cqi 27cqi stretch}
 :root body .cd.rf::before{display:none}
 :root body .cd.rf .uf-svg{position:absolute;left:8%;top:.5%;width:84%;height:auto;overflow:visible;z-index:1;filter:drop-shadow(0 3px 3px rgba(0,0,0,.5))}
