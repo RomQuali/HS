@@ -86,16 +86,14 @@ glue = r"""
 // ----- raccord au menu du jeu -----
 function tonySync() {
   try {
-    if (V.screen !== 'menu' || V.waitTable) { V.tonyHide = V.tonySeen = false; }
-    else if (V.tonyHide) { if (V.mp === 'solo') V.tonySeen = true; else if (V.tonySeen) V.tonyHide = V.tonySeen = false; }
-    const want = V.screen === 'menu' && !V.waitTable && !V.tonyHide && V.mp !== 'solo' && !window.TONY_OFF;
+    const want = V.screen === 'menu' && !V.waitTable && !window.TONY_OFF;
     if (!want && !V.tony) return;
     if (!V.tony) {
       const host = document.createElement('div'); host.id = 'tony'; document.body.appendChild(host);
       const act = a => { const b = document.querySelector('#app [data-act="' + a + '"]'); if (b) b.click(); };
       V.tonyHost = host;
       V.tony = tonyMount(host, {
-        solo() { V.tonyHide = true; V.tonySeen = false; tonySync(); act('m-solo'); },
+        solo() { act('m-solo'); },
         multijoueur() { act('m-online'); }, rejoindre() { act('m-join'); }, atelier() { act('atl-open'); },
         nom: () => V.nameRaw != null ? V.nameRaw : V.name, atelierNom: () => DATA.admin ? 'Atelier des cartes' : 'Toutes les cartes',
         pseudo({ nom }) { V.nameRaw = nom; V.name = (nom || '').trim() || 'Aventurier'; try { localStorage.setItem('tav-name', V.name); } catch (e) {} }
@@ -107,6 +105,6 @@ function tonySync() {
   } catch (e) { console.error(e); }
 }
 (function () { const r0 = render; render = function () { const out = r0.apply(this, arguments); tonySync(); return out; };
-  const st = document.createElement('style'); st.textContent = 'body.tony-on #sfxb{display:none}body.tony-on .title{z-index:25;background:none!important;pointer-events:none}body.tony-on .title::before,body.tony-on .title::after{content:none!important}body.tony-on .title > :not(.mp-back):not(.mp){visibility:hidden!important}body.tony-on .title > .mp-back,body.tony-on .title > .mp{pointer-events:auto}'; document.head.appendChild(st); })();
+  const st = document.createElement('style'); st.textContent = '#scene.sc-bureau{background:#161413 url(assets/tony/bureau-vitrine.webp) center/cover no-repeat}body.sc-lobby #scene.sc-bureau{transform:none;filter:brightness(.45) blur(3px)}body.tony-on #sfxb{display:none}body.tony-on .title{z-index:25;background:none!important;pointer-events:none}body.tony-on .title::before,body.tony-on .title::after{content:none!important}body.tony-on .title > :not(.mp-back):not(.mp){visibility:hidden!important}body.tony-on .title > .mp-back,body.tony-on .title > .mp{pointer-events:auto}'; document.head.appendChild(st); })();
 """
 open('/home/claude/parts/tony.js','a').write(glue)

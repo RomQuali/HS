@@ -2067,7 +2067,7 @@ function sceneSVG() {
 function sceneMode() {
   let el = document.getElementById('scene');
   if (!el) { el = document.createElement('div'); el.id = 'scene'; document.body.prepend(el); }
-  if (!el.dataset.cs) { try { castleScene(el); } catch (e) { console.warn(e); } }
+  if (!el.dataset.cs) { el.dataset.cs = '1'; el.className = 'sc-bureau'; }   // l'ancienne scène de la porte (castleScene) n'est plus montée : fond = bureau de Tony
   const m = V.screen === 'menu' ? 'sc-menu' : V.screen === 'lobby' || V.waitTable ? 'sc-lobby' : V.screen === 'atelier' ? 'sc-atl' : 'sc-game';
   if (!document.body.classList.contains(m)) { document.body.classList.remove('sc-menu', 'sc-lobby', 'sc-atl', 'sc-game'); document.body.classList.add(m); }
   if (V.screen === 'menu' && !V.mp && typeof csLeave === 'function') csLeave();
