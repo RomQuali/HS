@@ -1127,28 +1127,29 @@ function heroPickRowH(d, me) {
     const main = (x.trx ? x.tx.replace(' Bonus : ' + x.trx, '') : x.tx || '').replace(/^Passif : /, '');
     const gem = x.cost ? (nin && x.pay !== 'g' ? `<span class="hpc-gem ck">${ckMarkH(x.cost)}</span>` : `<span class="hpc-gem g"><b>${x.cost}</b></span>`) : '<span class="hpc-gem p"><b>∞</b></span>';
     const A = x.aw;
-    pcs[i] = `<div class="hp-pc k${i}${on ? ' on' : ''}" style="--c:${col}">
-        ${powBannerH(x, h, nin)}
-        <div class="hpc-side">${x.mc && NJ_MC[x.mc] ? `<span class="hpc-mc" style="--c:${NJ_MC[x.mc][1]}">Mécanique · ${esc(NJ_MC[x.mc][0])}</span>` : ''}
+    const side = `${x.mc && NJ_MC[x.mc] ? `<span class="hpc-mc" style="--c:${NJ_MC[x.mc][1]}">Mécanique · ${esc(NJ_MC[x.mc][0])}</span>` : ''}
         ${x.trx ? `<p class="hpc-bonus"><b>Bonus</b> ${esc(x.trx)}</p>` : ''}
         ${x.q && A ? `<div class="hpc-q"><span class="hpc-qh"><b>Quête d'éveil</b> ${esc(x.q.tx)}</span>
           <div class="hpc-aw">${HART[h + '_aw'] ? faceH('art-h-' + h + '_aw', 'face hpc-awf') : ''}<span><b>Éveil · ${esc(A.nm)}</b><small>${esc(A.tx)}</small></span></div></div>` : ''}
-        ${c && (!nin || NJ_COMP) ? `<span class="hp-cp">${faceH('art-' + cid)}<em>${esc(c.n)}</em></span>` : ''}</div>
-      </div>`;
+        ${c && (!nin || NJ_COMP) ? `<span class="hp-cp">${faceH('art-' + cid)}<em>${esc(c.n)}</em></span>` : ''}`;
+    pcs[i] = side.trim() ? `<div class="hp-pc k${i}${on ? ' on' : ''}" style="--c:${col}"><b class="hpc-who">${esc(x.n)}</b><div class="hpc-side">${side}</div></div>` : '';
+    const left = (me.hrr || 0) > 0;
     return `<div class="hp-col${on ? ' on' : ''}" style="--c:${col};--k:${i}">
       <button class="hp-card" data-act="hsel" data-h="${h}" aria-pressed="${on}" aria-label="${esc(x.n + ' : ' + pw + '. ' + main)}">
-        ${rollH(me, i)}
         ${heroArchHS('art-h-' + h, +RU().hp || 40)}
-        <span class="hp-nm">${esc(x.n)}</span>
+        <span class="hp-nm"><i>${esc(x.n)}</i></span>
         ${x.stars || x.diff ? `<span class="hp-st">${'★'.repeat(x.stars || x.diff)}</span>` : ''}
       </button>
-      ${on ? `<button class="t-go hp-go" data-act="hero" data-h="${h}">Confirmer le héros</button>` : ''}
+      <div class="hp-pop" aria-hidden="true">${powBannerH(x, h, nin)}</div>
+      <button class="hp-rr${left ? '' : ' off'}" data-act="hroll" data-i="${i}" ${left ? '' : 'disabled'} aria-label="Relancer ce héros (${me.hrr || 0} relance${(me.hrr || 0) > 1 ? 's' : ''} restante${(me.hrr || 0) > 1 ? 's' : ''})"><span class="hp-rrn">${me.hrr || 0}</span><b>Relancer</b></button>
     </div>`; };
+  const fams = [...new Set((Array.isArray(d.univ) ? d.univ : d.univ ? [d.univ] : d.us || []).flatMap(nm => ((SET.univ || []).find(u => u.n === (nm && nm.n || nm)) || {}).tribes || []).map(t => TRIBES[t] && TRIBES[t].n).filter(Boolean))];
   const tab = V.ruleTab || 'tour', rules = nin && (d.laws || []).some(l => l.k === 'chakra') && V.hpRules, por = (d.laws || []).some(l => l.k === 'portail') ? rmCardH : (d.laws || []).some(l => l.k === 'bande') ? spCardH : (d.laws || []).some(l => l.k === 'gag') ? simCardH : null;
   return `<div class="ov hp-ov"><div class="hp-wrap">
-    <h2 class="hp-t">Choisis ton héros</h2><p class="hp-sub">Clique sur un héros pour voir son pouvoir, puis confirme ton choix.</p>${rollInfoH(me)}
+    <header class="hp-head"><h2 class="hp-t">Choisis ton héros</h2>${fams.length ? `<p class="hp-fams">${esc(fams.join(', '))}</p>` : ''}</header>
     <div class="hp-row">${me.ho.map(card).join('')}</div>
-    <div class="hp-infos">${pcs.join('')}<p class="hp-ph">Survole un héros pour voir son pouvoir.</p></div>
+    <button class="hp-ok" data-act="hero" data-h="${sel || ''}" ${sel ? '' : 'disabled'}>OK</button>
+    <div class="hp-infos">${pcs.join('')}</div>
     ${nin && (d.laws || []).some(l => l.k === 'chakra') ? `<button class="btn sm hp-rb" data-act="hprules">${rules ? 'Masquer les règles' : 'Comment on joue ?'}</button>` : ''}
     ${por ? `<button class="btn sm hp-rb" data-act="hprules">${V.hpRules ? 'Masquer les règles' : 'Comment on joue ?'}</button>${V.hpRules ? `<div class="hpick-r hp-rules hp-rm">${por()}</div>` : ''}` : ''}
     ${rules ? `<div class="hpick-r hp-rules"><div class="rl-tabs" role="tablist">${RULE_TABS.map(([k, n]) => `<button role="tab" class="rl-tab${k === tab ? ' on' : ''}" data-act="rtab" data-k="${k}" aria-selected="${k === tab}">${n}</button>`).join('')}</div><div class="rl-body">${ruleTabH(tab)}</div></div>` : ''}
