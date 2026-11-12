@@ -130,26 +130,51 @@ const SHIELD_D = 'M50 -4 C 85 -4, 102 28, 102 60 C 102 93, 79 115, 50 115 C 21 1
 // Les Simpson : bulle jaune du compteur de gag (nombre de déclenchements) et son infobulle
 function gagTip(m) { const n = m.gag || 0, e = (CD(m.c).fxAll || []).find(isGag) || (m.x || []).find(isGag); const nx = e ? ((e.a || e.h) ? ' Prochain déclenchement : ' + sign(e.a ? (e.a + n) * mult(m) : 0, e.h ? (e.h + n) * mult(m) : 0) + '.' : e.d ? ' Prochain déclenchement : ' + (e.d + n) * mult(m) + ' dégâts.' : e.card ? ' Prochain déclenchement : ' + ((e.n || 1) + n) + ' × ' + CD(e.card).n + '.' : '') : ''; return `Gag récurrent : déclenché ${n} fois.${nx}`; }
 function gagBadgeH(m) { const n = m.gag || 0; return `<g class="gagb"><title>${esc(gagTip(m))}</title><path d="M4 3 h24 a4 4 0 0 1 4 4 v8 a4 4 0 0 1 -4 4 h-12 l-6 5 l1 -5 h-7 a4 4 0 0 1 -4 -4 v-8 a4 4 0 0 1 4 -4 Z" fill="${n ? '#ffd23a' : '#f4e6b8'}" stroke="#120a06" stroke-width="2"/><text x="16" y="11" dy=".36em" text-anchor="middle" font-size="9.5" font-weight="700" fill="#2a1606">!${n}</text></g>`; }
+// cadres d'unité Roni, les mêmes dans tous les univers : ovale de bronze pour les serviteurs, cadre fin pour les jetons, reliquaire pour les dorés (fichiers assets/cadres/)
+// [largeur, hauteur, portrait[x,y,l,h]%, rang[x,y]%, attaque[x,y]%, vie[x,y]%, nom[x,y,largeur]%]
+const UF = {"01-bronze":[322,438,[18.01,18.49,64.29,55.71],[50,12.1],[25.78,71.46],[74.53,71.46],[50,85.84,48.14]],"09-bord-fin":[275,413,[3.27,10.17,93.45,87.17],[49.45,9.93],[17.45,77.48],[82.18,77.72],[49.82,91.53,72.36]],"10-reliquaire":[355,444,[17.75,18.02,64.51,56.08],[50.99,12.84],[25.92,68.47],[74.65,68.24],[50.14,81.76,47.89]]}, UF_DIR = 'assets/cadres/';
+let UF_OK = false;
+// géométrie d'un cadre dans le repère des serviteurs (viewBox -4 -6 108 132), proportions du cadre conservées
+const UF_G = {};
+for (const id in UF) { const [W, H] = UF[id], k = Math.min(108 / W, 132 / H), w = W * k, h = H * k; UF_G[id] = { x:50 - w / 2, y:-6 + (132 - h) / 2, w, h }; }
+function ufOf(m) { if (!UF_OK || V.screen !== 'game' || !V.pub || !m || m.sp || !C[m.c]) return null; return m.g ? '10-reliquaire' : CD(m.c).tok ? '09-bord-fin' : '01-bronze'; }
+function ufIn(m, id, up) {
+  const [, , P, R, A, Hp, N] = UF[id], g = UF_G[id], X = v => f1(g.x + v * g.w / 100), Y = v => f1(g.y + v * g.h / 100), b = CD(m.c);
+  const pw = P[2] * g.w / 100, ph = P[3] * g.h / 100, sd = Math.max(pw, ph), ax = g.x + P[0] * g.w / 100 + (pw - sd) / 2, ay = g.y + P[1] * g.h / 100 + (ph - sd) * .37;
+  const nw = N[2] * g.w / 100, fs = Math.min(7.4, nw / Math.max(1, b.n.length * .5));
+  return `<g mask="url(#ufm-${id})"><rect x="${f1(g.x)}" y="${f1(g.y)}" width="${f1(g.w)}" height="${f1(g.h)}" fill="#1a110a"/><use href="#art-${artOf(m)}" x="${f1(ax)}" y="${f1(ay)}" width="${f1(sd)}" height="${f1(sd)}"/></g>`
+    + `<image class="uf-f" href="${UF_DIR + id}.webp" x="${f1(g.x)}" y="${f1(g.y)}" width="${f1(g.w)}" height="${f1(g.h)}" preserveAspectRatio="none"/>`
+    + (b.t ? `<text class="gt uf-r" x="${X(R[0])}" y="${Y(R[1])}" dy=".36em"><title>Niveau ${b.t}</title>${b.t}</text>` : '')
+    + `<text class="uf-n" x="${X(N[0])}" y="${Y(N[1])}" dy=".36em" style="font-size:${f1(fs)}px">${esc(b.n)}</text>`
+    + `<text class="gt uf-s${up(m.a, b.a)}" x="${X(A[0])}" y="${Y(A[1])}" dy=".36em">${m.a}</text><text class="gt uf-s${up(m.h, b.h)}" x="${X(Hp[0])}" y="${Y(Hp[1])}" dy=".36em">${m.h}</text>`;
+}
+(function () { try {
+  const ids = Object.keys(UF), add = () => document.body.insertAdjacentHTML('afterbegin', '<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs>' + ids.map(id => { const g = UF_G[id]; return `<mask id="ufm-${id}" maskUnits="userSpaceOnUse" x="${f1(g.x)}" y="${f1(g.y)}" width="${f1(g.w)}" height="${f1(g.h)}"><image href="${UF_DIR + id}-masque.webp" x="${f1(g.x)}" y="${f1(g.y)}" width="${f1(g.w)}" height="${f1(g.h)}" preserveAspectRatio="none"/></mask>`; }).join('') + '</defs></svg>');
+  if (document.body) add(); else document.addEventListener('DOMContentLoaded', add);
+  Promise.all(ids.flatMap(id => [id, id + '-masque']).map(f => new Promise((ok, ko) => { const im = new Image(); im.onload = ok; im.onerror = ko; im.src = UF_DIR + f + '.webp'; })))
+    .then(() => { UF_OK = true; if (V.screen === 'game') render(); }, () => {});
+} catch (e) {} })();
 function tokenH(m, z, i, o = {}) {
   const b = CD(m.c), f = (m.f || '') + (m.tmp && m.tmp.f ? m.tmp.f : ''), g = !!m.g;   // mots-clés permanents + ceux du prochain combat
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
-  const cls = ['mn', z === 'f' && C[m.c] && (C[m.c].comp || /^nb_/.test(m.c)) && 'cp-join', ...['s', 't', 'r', 'w', 'v'].filter(k => f.includes(k)).map(k => 'kw-' + k), o.trip && 'tripok', o.pair && 'pairok', m.awk && !isComp(m) && 'mn-awk', g && 'g', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
+  const cls = ['mn', z === 'f' && C[m.c] && (C[m.c].comp || /^nb_/.test(m.c)) && 'cp-join', ...['s', 't', 'r', 'w', 'v'].filter(k => f.includes(k)).map(k => 'kw-' + k), o.trip && 'tripok', o.pair && 'pairok', m.awk && !isComp(m) && 'mn-awk', g && 'g', ufOf(m) && 'rf', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
   const ics = kwIcons(m);
   const up = (v, base) => v > base * (g ? 3 : 1) ? ' up' : '';
+  const uf = ufOf(m);
   const svg = `<svg class="mn-svg" viewBox="-4 -6 108 132" aria-hidden="true">`
     + (f.includes('t') ? '<use href="#tk-taunt"/>' : '')
-    + `<ellipse cx="50" cy="56.2" rx="37.6" ry="45.4" fill="#1a110a"/><g clip-path="url(#fr-clip)"><use href="#art-${artOf(m)}" x="12" y="10.5" width="76" height="91.5"/></g>`
-    + (g ? '<use class="fr-f" href="#fr-oval-g" x="1.35" y="-12.2" width="97.6" height="135.9"/><use class="fr-dr" href="#fr-dragon" x="45" y="-17" width="60" height="69"/>' : '<use class="fr-f" href="#fr-oval" x="2.9" y="-11" width="94.2" height="134"/>')
+    + (uf ? ufIn(m, uf, up) : `<ellipse cx="50" cy="56.2" rx="37.6" ry="45.4" fill="#1a110a"/><g clip-path="url(#fr-clip)"><use href="#art-${artOf(m)}" x="12" y="10.5" width="76" height="91.5"/></g>`
+    + (g ? '<use class="fr-f" href="#fr-oval-g" x="1.35" y="-12.2" width="97.6" height="135.9"/><use class="fr-dr" href="#fr-dragon" x="45" y="-17" width="60" height="69"/>' : '<use class="fr-f" href="#fr-oval" x="2.9" y="-11" width="94.2" height="134"/>'))
     + (f.includes('s') ? `<g class="bubg"><use class="bub" href="#tk-shield"/><path class="bub-run" pathLength="100" d="${SHIELD_D}"/></g>` : '')
-    + (b.t && z === 'sh' ? `<g class="tflag"><title>Niveau ${b.t}</title><use href="#fr-star" x="32.5" y="-15" width="35" height="33.1"/><text class="gt st" x="50" y="2.8" dy=".36em">${b.t}</text></g>` : '')
+    + (b.t && z === 'sh' && !uf ? `<g class="tflag"><title>Niveau ${b.t}</title><use href="#fr-star" x="32.5" y="-15" width="35" height="33.1"/><text class="gt st" x="50" y="2.8" dy=".36em">${b.t}</text></g>` : '')
     + ics.map(([ic, col, nm], k) => { const a = KW_ANG[k] * Math.PI / 180; return `<g class="kwi" transform="translate(${f1(50 + 51 * Math.sin(a))} ${f1(55 - 58 * Math.cos(a))})"><title>${nm}</title><circle r="8.4" fill="#1b120b" stroke="${col}" stroke-width="1.8"/><use href="#ic-${ic}" x="-5.6" y="-5.6" width="11.2" height="11.2" style="color:${col}"/></g>`; }).join('')
     + (isComp(m) && compEl(m) ? `<g class="elb"><title>Élément : ${ELS[compEl(m)].n}${m.fu ? ' · combo : ' + m.fu : ''}</title><circle cx="14" cy="12" r="10" fill="${ELS[compEl(m)].col}" stroke="#120a06" stroke-width="2.2"/><text x="14" y="12" dy=".36em" text-anchor="middle" font-size="10" font-weight="700" fill="#120a06">${ELS[compEl(m)].n[0]}</text></g>` : '')
     + (isComp(m) ? `<g><title>Niveau d'entraînement ${compLv(m)} · ${m.xp || 0} expérience${compLv(m) < 5 ? ' (prochain niveau à ' + XP_LV[compLv(m)] + ')' : ''}</title><rect x="38" y="113" width="24" height="12" rx="6" fill="#2a6ad8" stroke="#120a06" stroke-width="1.8"/><text x="50" y="119" dy=".36em" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff">Nv ${compLv(m)}</text></g>` : '')
     + (hasGag(m) || m.gag ? gagBadgeH(m) : '')
     + (m.sl ? `<g class="slb"><title>${m.sl} sceau${m.sl > 1 ? 'x' : ''}${m.sl >= 5 ? ' : Bouclier divin obtenu' : ' (5 : Bouclier divin)'}</title><path d="M4 4 h20 v14 l-10 7 l-10 -7 Z" fill="${m.sl >= 5 ? '#ffd86a' : '#c8304a'}" stroke="#120a06" stroke-width="2"/><text x="14" y="13" dy=".36em" text-anchor="middle" font-size="10" font-weight="700" fill="${m.sl >= 5 ? '#120a06' : '#fff3c0'}">${m.sl}</text></g>` : '')
     + (m.eq && m.eq.length ? `<g><title>Équipements : ${m.eq.map(e => SPELLS[e] ? SPELLS[e].n : e).join(', ')}</title><rect x="72" y="4" width="22" height="14" rx="7" fill="#8a6a3a" stroke="#120a06" stroke-width="2"/><text x="83" y="11" dy=".36em" text-anchor="middle" font-size="9" font-weight="700" fill="#fff3c0">⚒${m.eq.length}</text></g>` : '')
-    + `<use href="#fr-atk" x="-9" y="76" width="41" height="50.3"/><text class="gt${up(m.a, b.a)}" x="15.6" y="103" dy=".36em">${m.a}</text>`
-    + `<use href="#fr-hp" x="67" y="80" width="36" height="44.5"/><text class="gt${up(m.h, b.h)}" x="85" y="103.4" dy=".36em">${m.h}</text></svg>`;
+    + (uf ? '</svg>' : `<use href="#fr-atk" x="-9" y="76" width="41" height="50.3"/><text class="gt${up(m.a, b.a)}" x="15.6" y="103" dy=".36em">${m.a}</text>`
+    + `<use href="#fr-hp" x="67" y="80" width="36" height="44.5"/><text class="gt${up(m.h, b.h)}" x="85" y="103.4" dy=".36em">${m.h}</text></svg>`);
   const md = z === 'bd' && !m.awk && (b.fxAll || []).find(e => e.k === 'ckm'), mdC = md ? (V.me ? Math.max(0, md.c - ((htr(V.me, 'pawk') || {}).n || 0)) : md.c) : 0, mdOk = md && V.me && (V.me.ck || 0) >= mdC && V.pub && V.pub.ph === 'recruit';
   const kiU = z === 'bd' && V.me && V.pub && (V.pub.laws || []).some(l => l.k === 'ki'), recr = V.pub && V.pub.ph === 'recruit';
   const T = kiU && (b.fxAll || []).find(e => e.k === 'tf'), st = T && T.st[m.tf || 0];
@@ -174,6 +199,12 @@ function cardH(m, z, i, o = {}) {
   const b = CD(m.c), g = !!m.g;
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
   const up = (v, base) => v > base * (g ? 3 : 1) ? ' up' : '';
+  const uf = ufOf(m);
+  if (uf) return `<div class="cd rf${g ? ' g' : ''}${sel ? ' sel' : ''}${m.tr ? ' newgold' : ''}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">`
+    + `<svg class="uf-svg" viewBox="-4 -6 108 132" aria-hidden="true">${ufIn(m, uf, up)}</svg>`
+    + (() => { const t = cardTextH(m.c, g), n = t.replace(/<[^>]+>/g, '').length; return `<div class="cd-tx${n > 150 ? ' xlong xxl x3' : n > 110 ? ' xlong xxl' : n > 75 ? ' xlong' : n > 45 ? ' long' : ''}"><span>${t}</span></div>`; })()
+    + (b.tr !== 'neu' && trName(b.tr) ? `<div class="cd-tb">${esc(b.tr2 && trName(b.tr2) ? trName(b.tr).replace(/^Clan /, '') + ' + ' + trName(b.tr2).replace(/^Clan /, '') : trName(b.tr))}</div>` : b.tok ? '<div class="cd-tb">Jeton</div>' : '')
+    + (m.tr ? '<span class="tri">Triple !</span>' : '') + (z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : '') + '</div>';
   return `<div class="cd${g ? ' g' : ''}${sel ? ' sel' : ''}${m.tr ? ' newgold' : ''}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">`
     + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-${artOf(m)}" y="-4" width="100" height="100"/></svg></div>`
     + (g ? '<i class="cd-dr" aria-hidden="true"></i>' : '') + (b.t ? `<div class="cd-tier" aria-label="Niveau ${b.t}"><b>${b.t}</b></div>` : '')
@@ -3286,6 +3317,16 @@ html.lite .mn.mn-awk .mn-svg{animation:none}
 :root body .cd.spc .tx-awk{color:#6a5236}:root body .cd.spc .tx-awk b{color:#8a5a14}:root body .cd.spc .tx-awk.on{color:#8a3206}:root body .cd.spc .tx-awk.on b{color:#a03a04}
 :root body .cd.spc.sel{box-shadow:0 0 0 2.5px var(--gold),0 0 22px 2px rgba(242,193,78,.75)}
 :root body .cd.spc.aiming{box-shadow:0 0 0 3px #b48cff,0 0 24px rgba(180,140,255,.8)}
+/* cadres d'unité Roni (ovale de bronze, cadre fin des jetons, reliquaire des dorés) : serviteurs en jeu et cartes, nom sur la plaque du cadre */
+:root body .uf-n{font-family:var(--f-label);font-weight:700;fill:#fff3d6;stroke:#2a1408;stroke-width:1.5px;paint-order:stroke;stroke-linejoin:round;text-anchor:middle}
+:root body .gt.uf-s,:root body .cd .gt.uf-s{font-size:16px;stroke-width:3.6px}
+:root body .gt.uf-r,:root body .cd .gt.uf-r{font-size:11px;stroke-width:2.6px}
+:root body .mn.rf .mn-nm{display:none}
+:root body .cd.rf{background:none;border-style:solid;border-color:transparent;border-width:0;border-image:var(--fr-parch) 60 80 fill/20cqi 27cqi stretch}
+:root body .cd.rf::before{display:none}
+:root body .cd.rf .uf-svg{position:absolute;left:8%;top:.5%;width:84%;height:auto;overflow:visible;z-index:1;filter:drop-shadow(0 3px 3px rgba(0,0,0,.5))}
+:root body .cd.rf .cd-tx{top:67%;bottom:10.5%;left:13.5%;right:13.5%;--fs:7.1cqi;color:#2e1c0e}
+:root body .cd.rf .cd-tx.long{--fs:6.3cqi}:root body .cd.rf .cd-tx.xlong{--fs:5.6cqi}:root body .cd.rf .cd-tx.xxl{--fs:5cqi}:root body .cd.rf .cd-tx.x3{--fs:4.5cqi}
 /* galerie et découverte : place pour les icônes qui débordent du cadre */
 :root body .atl-item{padding:16px 16px 4px;box-sizing:border-box;contain-intrinsic-size:150px 290px}
 :root body .disc{gap:26px 46px}
@@ -3394,7 +3435,7 @@ html.has-board-sim:root§.u-sim .rn-surf{background-image:var(--board-sim);backg
 § .opps .op.dead{filter:grayscale(1) brightness(.6)}
 
 /* taverne : enseigne et niveau, amélioration, actualiser, geler, emplacements */
-§ .keeper-zone{position:absolute;left:0;top:0;width:1672u;height:303u;display:block;margin:0;padding:0;background:none;box-shadow:none;border:0;border-radius:0;z-index:2;zoom:1;min-height:0;--tw:124u}
+§ .keeper-zone{position:absolute;left:0;top:0;width:1672u;height:303u;display:block;margin:0;padding:0;background:none;box-shadow:none;border:0;border-radius:0;z-index:2;zoom:1;min-height:0;--tw:140u}
 § .keeper-zone::before,§ .keeper-zone::after{content:none}
 § .keeper-zone:not(.enemy)::before{content:'';position:absolute;left:1288u;top:92u;width:230u;height:246u;background:url(assets/plateau/support.webp) 0 0/100% 100% no-repeat;pointer-events:none;inset:auto;left:1288u;top:92u;border:0;box-shadow:none;border-radius:0;opacity:1;transform:none;animation:none}
 § .keeper-zone:not(.enemy) .keeper{display:contents}
@@ -3421,7 +3462,7 @@ html.has-board-sim:root§.u-sim .rn-surf{background-image:var(--board-sim);backg
 § .keeper .medal[data-act="up"] .cost{left:14u;top:4u;margin:0;z-index:2}
 § .keeper .medal[data-act="up"]:not(:disabled) small{color:#fff3c8;box-shadow:inset 0 0 0 1u #ffd86a,0 0 8u rgba(255,200,90,.55)}
 § .keeper-zone:not(.enemy) .counter-line{position:absolute;left:299u;top:82u;width:1077u;height:215u;display:flex;justify-content:center;align-items:flex-start;gap:0;margin:0;padding:0;box-sizing:border-box;background:none;box-shadow:none;border:0;border-radius:0;min-height:0;backdrop-filter:none;flex-wrap:nowrap}
-§ .keeper-zone:not(.enemy) .counter-line .mn{width:124u;margin:0 12u;gap:2u}
+§ .keeper-zone:not(.enemy) .counter-line .mn{width:140u;margin:0 8u;gap:2u}
 § .keeper-zone .hint{position:absolute;left:0;right:0;top:118u;margin:0;text-align:center;font-size:fs(17,8);color:#ffe9b0;text-shadow:0 1px 3px #000;pointer-events:none}
 § .keeper-zone .shelf{position:absolute;left:-66u;top:6u;width:178u;height:auto;margin:0;padding:4u 4u 6u;display:grid;justify-items:center;gap:2u;border:0;border-radius:14u;background:rgba(18,10,6,.5);box-shadow:inset 0 0 0 1.5u rgba(200,150,62,.55);--tw:96u}
 § .keeper-zone .shelf.two{--tw:80u}
@@ -3439,13 +3480,13 @@ html.has-board-sim:root§.u-sim .rn-surf{background-image:var(--board-sim);backg
 § .keeper-zone.enemy .kn-en .ts{gap:3u}
 § .keeper-zone.enemy .kn-en .ts i{width:fs(24,9);height:fs(24,9)}
 § .keeper-zone.enemy .counter-line{position:absolute;left:260u;top:334u;width:1130u;height:180u;display:flex;justify-content:center;align-items:flex-start;gap:0;margin:0;padding:0;background:none;box-shadow:none;border:0;border-radius:0;min-height:0;backdrop-filter:none;pointer-events:auto;--tw:118u}
-§ .keeper-zone.enemy .counter-line .mn{width:124u;margin:0 12u;gap:2u}
+§ .keeper-zone.enemy .counter-line .mn{width:140u;margin:0 8u;gap:2u}
 
 /* table : rangée d'équipe sur la grande table */
 § .board-zone{position:absolute;left:0;top:303u;width:1672u;height:387u;display:block;margin:0;padding:0;background:none;box-shadow:none;border:0;border-radius:0;z-index:2;--tw:118u;min-height:0;backdrop-filter:none}
 § .board-zone::before,§ .board-zone::after{content:none}
 § .board-zone #bdrow{position:absolute;left:260u;top:214u;width:1130u;height:180u;display:flex;justify-content:center;align-items:flex-start;gap:0;margin:0;padding:0;box-sizing:border-box;min-height:0;background:none;z-index:1}
-§ .board-zone #bdrow .mn{width:124u;margin:0 12u;gap:2u}
+§ .board-zone #bdrow .mn{width:140u;margin:0 8u;gap:2u}
 § .board-zone .hint{position:absolute;left:0;right:0;top:-150u;margin:0;text-align:center;font-size:fs(19,8.5);color:#ffe9b0;text-shadow:0 1px 3px #000,0 0 10px #000;pointer-events:none;width:auto}
 § .board-zone.drop-ok{background:none;box-shadow:none}
 § .board-zone.drop-ok::after{content:'';position:absolute;left:250u;top:208u;width:1150u;height:192u;border-radius:20u;box-shadow:inset 0 0 0 2u rgba(255,216,106,.85),0 0 22u rgba(255,200,90,.55);pointer-events:none}
