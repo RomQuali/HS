@@ -93,7 +93,7 @@ function tonySync() {
       const act = a => { const b = document.querySelector('#app [data-act="' + a + '"]'); if (b) b.click(); };
       V.tonyHost = host;
       V.tony = tonyMount(host, {
-        solo() { act('m-solo'); },
+        solo() { if (typeof soloOpen !== 'function' || !soloOpen()) act('m-solo'); },
         multijoueur() { act('m-online'); }, rejoindre() { act('m-join'); }, atelier() { act('atl-open'); },
         nom: () => V.nameRaw != null ? V.nameRaw : V.name, atelierNom: () => DATA.admin ? 'Atelier des cartes' : 'Toutes les cartes',
         pseudo({ nom }) { V.nameRaw = nom; V.name = (nom || '').trim() || 'Aventurier'; try { localStorage.setItem('tav-name', V.name); } catch (e) {} }
