@@ -8,8 +8,8 @@ let savedUniv = []; try { savedUniv = JSON.parse(localStorage.getItem('tav-univ'
 let savedName = ''; try { savedName = localStorage.getItem('tav-name') || ''; } catch (e) {}
 const V = { screen:'menu', name:savedName || 'Aventurier', nameRaw:savedName, pub:null, pubAt:0, me:null, sel:null, fight:null, fi:0, hostGone:false, univSel:savedUniv };
 
-// ----- sons d'interface Roni : une seule planche sonore (assets/sons/interface.mp3), chaque son = [début, durée] en ms -----
-const SFX = { on:true, vol:.55, ctx:null, buf:null, ld:0, pool:null, last:{}, any:0, act:0, map:{"ui_focus":[0,163],"ui_appuyer":[313,246],"ui_confirmer":[709,298],"ui_retour":[1157,246],"ui_onglet":[1554,225],"ui_panneau_ouvrir":[1928,350],"ui_panneau_fermer":[2429,336],"ui_inspecter":[2915,457],"ui_annuler":[3522,274],"ui_refus":[3946,435],"file_debut":[4531,413],"file_annuler":[5094,276],"partie_trouvee":[5521,956],"heros_proposer":[6627,371],"heros_preselection":[7148,433],"heros_confirmer":[7731,724],"taverne_entree":[8604,1116],"recrutement_debut":[9871,621],"or_ajoute":[10641,506],"or_epuise":[11298,308],"boutique_actualiser":[11755,420],"boutique_geler":[12325,602],"boutique_degeler":[13077,505],"taverne_ameliorer":[13732,738],"carte_saisir":[14620,191],"carte_relacher":[14962,241],"serviteur_acheter":[15353,442],"sort_acheter":[15946,766],"carte_recevoir":[16861,379],"serviteur_poser":[17390,310],"serviteur_deplacer":[17850,340],"serviteur_vendre":[18340,545],"main_pleine":[19034,346],"plateau_plein":[19531,386],"triple_fusion":[20067,1113],"decouverte_ouvrir":[21329,778],"decouverte_choisir":[22257,732],"pouvoir_pret":[23139,696],"pouvoir_activer":[23985,791],"pouvoir_deja_utilise":[24926,307],"passif_resoudre":[25383,478],"pouvoir_eveil":[26011,785],"cible_debut":[26946,344],"cible_survol":[27441,411],"cible_valider":[28001,190],"cible_invalide":[28342,377],"cible_annuler":[28869,253],"sort_jouer":[29272,624],"effet_confirmer":[30046,427],"temps_alerte":[30623,391],"temps_tick":[31164,210],"temps_fin":[31525,565],"pret_confirmer":[32240,490],"combat_debut":[32880,809],"combat_gagne":[33839,726],"combat_perdu":[34715,514],"combat_nul":[35379,517],"armure_absorber":[36045,454],"armure_briser":[36649,513],"vie_perdre":[37312,439],"vie_critique":[37901,610],"duo_portail_ouvrir":[38662,617],"duo_portail_retour":[39428,567],"duo_carte_envoyer":[40145,636],"duo_carte_recevoir":[40931,561],"duo_ping_ouvrir":[41642,333],"duo_ping_oui":[42125,426],"duo_ping_non":[42701,362],"duo_ping_question":[43213,494],"duo_ping_passage":[43857,605],"classement_ouvrir":[44612,332],"classement_changer":[45093,348],"joueur_elimine":[45591,537],"partie_elimination":[46278,585],"partie_victoire":[47013,951],"cote_gain":[48114,529],"cote_perte":[48793,401],"recap_ouvrir":[49344,355],"quete_choisir":[49849,335],"quete_progres":[50334,194],"quete_terminee":[50678,1008],"bijou_proposer":[51836,503],"bijou_acquerir":[52489,743],"unite_activer":[53381,554],"emote_ouvrir":[54086,369],"emote_envoyer":[54604,582]} };
+// ----- sons : une seule planche sonore (assets/sons/interface.mp3) ; chaque événement = une ou plusieurs variantes [début, durée] en ms -----
+const SFX = { on:true, vol:.5, ctx:null, buf:null, ld:0, pool:null, last:{}, any:0, act:0, map:{"ui_appuyer":[[0,118]],"ui_refus":[[268,433]],"main_pleine":[[268,433]],"plateau_plein":[[268,433]],"or_epuise":[[268,433]],"ui_confirmer":[[850,605]],"ui_annuler":[[1605,398]],"heros_proposer":[[2153,2249]],"heros_confirmer":[[4552,4407]],"taverne_entree":[[9110,2034]],"recrutement_debut":[[11294,3045]],"combat_debut":[[14489,2962]],"serviteur_acheter":[[17601,1786]],"sort_acheter":[[19537,1522]],"serviteur_vendre":[[21209,1838]],"serviteur_poser":[[23196,1199]],"serviteur_deplacer":[[24545,385],[25080,403],[25633,389]],"boutique_actualiser":[[26172,390]],"taverne_ameliorer":[[26712,1703]],"boutique_geler":[[28565,3319]],"boutique_degeler":[[32034,1038],[33221,896],[34267,1041]],"pouvoir_activer":[[35458,816]],"pouvoir_eveil":[[36425,2014]],"sort_jouer":[[38588,1573]],"unite_activer":[[38588,1573]],"decouverte_ouvrir":[[40311,1242]],"decouverte_choisir":[[41703,1028]],"carte_recevoir":[[42881,787],[43818,742],[44711,779]],"triple_fusion":[[45640,1971]],"pret_confirmer":[[47761,1012]],"temps_alerte":[[48923,849]],"temps_tick":[[49922,1213]],"temps_fin":[[51285,1435]],"combat_gagne":[[52870,2925],[55945,3017],[59112,3012]],"combat_perdu":[[62274,1932],[64356,2247],[66753,2232]],"combat_nul":[[69135,2333]],"joueur_elimine":[[71618,687]],"partie_victoire":[[72455,4221]],"partie_top4":[[76826,3680]],"partie_elimination":[[80656,2583]],"cible_debut":[[83388,355]],"cible_annuler":[[1605,398]],"bijou_proposer":[[83893,2458]],"bijou_acquerir":[[86502,3759]]} };
 try { SFX.on = localStorage.getItem('mdt_sfx') !== '0'; } catch (e) {}
 function sfxLoad() {
   if (SFX.ld) return; SFX.ld = 1;
@@ -17,7 +17,7 @@ function sfxLoad() {
   try { const AC = window.AudioContext || window.webkitAudioContext; SFX.ctx = new AC(); fetch(url).then(r => { if (!r.ok) throw 0; return r.arrayBuffer(); }).then(b => new Promise((ok, ko) => SFX.ctx.decodeAudioData(b, ok, ko))).then(b => { SFX.buf = b; }).catch(fallback); } catch (e) { fallback(); }
 }
 function sfx(id, v) {
-  const m = SFX.map[id]; if (!SFX.on || !m) return;
+  const vs = SFX.map[id]; if (!SFX.on || !vs) return; const m = vs[Math.floor(Math.random() * vs.length)];
   if (!SFX.ld) { sfxLoad(); return; }
   const now = performance.now(); if (now - (SFX.last[id] || 0) < 80) return; SFX.last[id] = now; SFX.any = now;
   const vol = Math.max(0, Math.min(1, (v == null ? 1 : v) * SFX.vol));
@@ -36,7 +36,7 @@ function sfxPub(P, d) {
     if (d.ph === 'hero') sfx('heros_proposer');
     else if (d.ph === 'combat') sfx('combat_debut');
     else if (d.ph === 'recruit') { const r = V.me && V.me.res && V.me.res.r; if (P.ph === 'combat' && r) { sfx(r === 'win' ? 'combat_gagne' : r === 'loss' ? 'combat_perdu' : 'combat_nul'); setTimeout(() => sfx('recrutement_debut', .8), 750); } else sfx(P.ph === 'hero' ? 'taverne_entree' : 'recrutement_debut'); }
-    else if (d.ph === 'end') { const me = V.me && (d.pl || []).find(x => x.pid === V.me.pid); sfx(me && me.pl === 1 ? 'partie_victoire' : 'partie_elimination'); }
+    else if (d.ph === 'end') { const me = V.me && (d.pl || []).find(x => x.pid === V.me.pid); sfx(me && me.pl === 1 ? 'partie_victoire' : me && me.pl <= 4 ? 'partie_top4' : 'partie_elimination'); }
   }
   const out = x => (x.pl || []).filter(q => q.al === false).length;
   if (d.ph !== 'end' && out(d) > out(P)) sfx('joueur_elimine', .8);
@@ -45,8 +45,6 @@ function sfxPriv(P, d) {
   if (!P || !d || performance.now() - SFX.act < 250 && !(d.disc && !P.disc)) { if (P && d && d.disc && !P.disc) sfx('decouverte_ouvrir'); return; }
   if (d.disc && !P.disc) sfx('decouverte_ouvrir');
   if (d.haw && !P.haw) sfx('pouvoir_eveil');
-  else if ((d.qp || 0) > (P.qp || 0)) sfx('quete_progres', .7);
-  if (d.hp != null && P.hp != null && d.hp < P.hp) sfx(d.hp <= 10 ? 'vie_critique' : 'vie_perdre');
   if ((d.hd || []).some(x => x.tr) && !(P.hd || []).some(x => x.tr)) sfx('triple_fusion');
   else if ((d.hd || []).length > (P.hd || []).length) sfx('carte_recevoir', .8);
 }
