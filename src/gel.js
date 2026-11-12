@@ -326,12 +326,20 @@ html:root:root:root:root:root:root:root:root body.rn[class] .rn-tb,html:root:roo
     const b = CD(m.c);
     return `<ellipse cx="50" cy="62" rx="34.5" ry="52.5" fill="#1a110a"/><g clip-path="url(#hsf-clip)"><use href="#art-${artOf(m)}" x="-3" y="9" width="106" height="106"/></g>`
       + `<image class="hsf-f" href="assets/hs/f-cadre-${m.g ? 'dore' : 'serviteur'}.webp" x="-3.75" y="-6" width="107.5" height="132" preserveAspectRatio="none"/>`
-      + (b.t ? `<g class="hsf-t"><title>Niveau ${b.t}</title><image href="assets/hs/b-etoile-niveau.webp" x="40" y="-7" width="20" height="20"/><text class="gt uf-r" x="50" y="3.6" dy=".36em">${b.t}</text></g>` : '')
+      + (b.t ? `<g class="hsf-t"><title>Niveau ${b.t}</title><image href="assets/hs/b-blason-niveau.webp" x="34" y="-13" width="32" height="32.5"/>${Array.from({ length:b.t }, (_, k) => { const row = b.t > 3 ? (k < Math.ceil(b.t / 2) ? 0 : 1) : 0, n = b.t > 3 ? (row ? b.t - Math.ceil(b.t / 2) : Math.ceil(b.t / 2)) : b.t, i = b.t > 3 && row ? k - Math.ceil(b.t / 2) : k, sz = b.t > 3 ? 7 : b.t > 1 ? 8.4 : 11; return `<image href="assets/hs/b-etoile-niveau.webp" x="${f1(50 - n * sz / 2 + i * sz)}" y="${f1((b.t > 3 ? -5.5 + row * 6.6 : 2.2 - sz / 2))}" width="${sz}" height="${sz}"/>`; }).join('')}</g>` : '')
       + `<image href="assets/hs/f-gemme-attaque.webp" x="3" y="87" width="31" height="31"/><image href="assets/hs/f-gemme-vie.webp" x="69" y="85" width="22" height="33"/>`
       + `<text class="gt uf-s${up(m.a, b.a)}" x="18.5" y="103" dy=".36em">${m.a}</text><text class="gt uf-s${up(m.h, b.h)}" x="80" y="104" dy=".36em">${m.h}</text>`;
   };
   const st = document.createElement('style'); st.id = 'hs-frame-css'; st.textContent = `
 .mn-svg .hsf-t .uf-r{font-size:9px;fill:#3a2206;stroke:none;paint-order:normal}
 .mn-svg .hsf-f{pointer-events:none}
+/* le fanion du niveau n'apparaît que dans la boutique, comme dans Champs de bataille */
+#bdrow .mn-svg .hsf-t,.keeper-zone.enemy .mn-svg .hsf-t,.arena .mn-svg .hsf-t{display:none}
+` + rnCss(`
+§ .keeper-zone .shelf{background:none;box-shadow:none;padding:0;margin:0 0 0 6u;min-width:0;--tw:104u}
+§ .keeper-zone .shelf.two{--tw:88u}
+§ .keeper-zone .shelf .shelf-l{display:none}
+§ .keeper .medal[data-act="frz"]::before{content:'0';position:absolute;left:50%;top:-12u;width:30u;height:30u;margin:0 0 0 -15u;display:grid;place-items:center;font:700 fs(18,8)/1 var(--f-num),serif;color:#fff;text-shadow:0 0 2u #000,0 2u 0 #3a2206,0 0 4u #3a2206;background:url(assets/hs/b-piece-or.webp) center/100% 100% no-repeat}
+`) + `
 `; document.head.appendChild(st);
 })();
