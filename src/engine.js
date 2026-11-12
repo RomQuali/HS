@@ -53,7 +53,7 @@ const DEFAULT_SETTINGS = {
   univ:[
     { n:'South Park', col:'#6fb8e0', ic:'mount', lore:'Serre les rangs : les voisins d\'une même famille se renforcent.', mech:'bande', tribes:['s_gin', 's_adu', 's_got', 's_cel', 's_ani'] },
     { n:'Rick et Morty', col:'#3fbf6f', ic:'portal', lore:'Ouvre un portail : ton serviteur revient d\'une autre dimension.', mech:'portail', tribes:['r_smi', 'r_cit', 'r_ali', 'r_mon', 'r_mec'] },
-    { n:'Les Simpson', col:'#f2c230', ic:'donut', lore:'Les gags reviennent… et grandissent à chaque fois.', mech:'gag', tribes:['si_fam', 'si_moe', 'si_cra', 'si_aut', 'si_hor'] },
+    { n:'Les Simpson', col:'#f2c230', ic:'donut', lore:'Mmmh… donuts. Cinq familles, cinq façons de jouer.', mech:'gag', tribes:['si_fam', 'si_moe', 'si_cra', 'si_aut', 'si_hor'] },
     { n:'Royaumes anciens', col:'#9a7228', ic:'crown', lore:'Les vieilles lignées tiennent parole.', mech:'serment', tribes:['nain', 'elfe', 'ogre', 'bete', 'vamp'] },
     { n:'Ateliers et bas-fonds', col:'#4a6a86', ic:'gear', lore:'Tout se vend, surtout ce qui fume.', mech:'marche', tribes:['meca', 'gob', 'nain', 'cors', 'ogre'] },
     { n:'Terres sauvages', col:'#4a7a2a', ic:'leaf', lore:'La meute charge d\'abord.', mech:'ruee', tribes:['bete', 'garou', 'elfe', 'drag', 'elem'] },
@@ -439,64 +439,64 @@ const DEFAULT_CARD_LIST = [
   ['sp_manbearpig', 'ManBearPig', 4, 's_ani', 6, 5, 'r', [{ k:'atk_self', a:1, h:1 }]],
   ['sp_hamster', 'Hamster géant', 5, 's_ani', 4, 7, '', [{ k:'eot_card_buff', card:'tk_bestiole', a:2, h:2 }, { k:'bc_summon', card:'tk_bestiole', n:1 }]],
   ['sp_cochonelephant', 'Cochon-éléphant', 6, 's_ani', 6, 8, '', [{ k:'soc_kw', kw:'r', tb:'s_ani' }, { k:'dr_summon', card:'tk_bestiole', n:3 }]],
-  // ----- univers Les Simpson : 5 familles (10 personnages chacune) ; loi « Gags récurrents » (un gag grandit de +1 à chaque déclenchement) -----
-  ['tk_zombie', 'Zombie (petit)', 0, 'si_hor', 1, 2, '', []],
-  ['tk_minirobot', 'Mini-robot', 0, 'si_hor', 2, 1, '', []],
-  // Simpson et voisins : soutien entre membres de la famille
-  ['si_milhouse', 'Milhouse', 1, 'si_fam', 1, 2, '', [{ k:'play_self', tb:'si_fam', a:1, h:1 }]],
-  ['si_rodtodd', 'Rod et Todd Flanders', 1, 'si_fam', 1, 3, '', [{ k:'eot_buff_rand', a:1, h:1, n:1, tb:'si_fam' }]],
-  ['si_patty', 'Patty', 2, 'si_fam', 2, 3, '', [{ k:'duo', card:'si_selma', a:2, h:2 }]],
-  ['si_selma', 'Selma', 2, 'si_fam', 3, 2, '', [{ k:'duo', card:'si_patty', a:2, h:2 }]],
-  ['si_papanoel', 'Petit Papa Noël', 3, 'si_fam', 2, 4, '', [{ k:'gag_play_self', tb:'si_fam', a:1, h:1, cp:'Ouaf !' }]],
-  ['si_bouledeneige', 'Boule de neige II', 3, 'si_fam', 3, 3, '', [{ k:'play_other', tb:'si_fam', a:2, h:1 }]],
-  ['si_maude', 'Maude Flanders', 4, 'si_fam', 3, 5, '', [{ k:'dr_buff_all', tb:'si_fam', a:2, h:2 }]],
-  ['si_jacqueline', 'Jacqueline Bouvier', 4, 'si_fam', 2, 6, '', [{ k:'gag_eot_tribe', tb:'si_fam', a:0, h:1, cp:'Mmmh…' }]],
-  ['si_herb', 'Herb Powell', 5, 'si_fam', 4, 6, '', [{ k:'play_tribe', tb:'si_fam', a:1, h:1 }]],
-  ['si_mona', 'Mona Simpson', 6, 'si_fam', 5, 7, '', [{ k:'gag_eot_tribe', tb:'si_fam', a:1, h:1, cp:'Mon petit…' }]],
-  // Taverne de Moe : tournées (bonus à tous les alliés en fin de tour)
-  ['si_barney', 'Barney', 1, 'si_moe', 1, 2, '', [{ k:'gag_eot_self', a:0, h:1, cp:'Burp !' }]],
-  ['si_lenny', 'Lenny', 1, 'si_moe', 2, 2, '', [{ k:'eot_buff_rand', a:1, h:0, n:1, tb:'' }]],
-  ['si_carl', 'Carl', 2, 'si_moe', 2, 3, '', [{ k:'eot_buff_rand', a:0, h:1, n:2, tb:'' }]],
-  ['si_sam', 'Sam', 2, 'si_moe', 3, 2, '', [{ k:'duo', card:'si_larry', a:2, h:2 }]],
-  ['si_moe', 'Moe', 3, 'si_moe', 2, 4, '', [{ k:'gag_eot_tribe', tb:'si_moe', a:0, h:1, cp:'Tournée !' }]],
-  ['si_otto', 'Otto', 3, 'si_moe', 4, 3, '', [{ k:'eot_buff_all', tb:'si_moe', a:1, h:0 }]],
-  ['si_gil', 'Gil', 4, 'si_moe', 2, 5, '', [{ k:'bc_gold', n:2 }, { k:'eot_buff_rand', a:1, h:1, n:1, tb:'' }]],
-  ['si_larry', 'Larry', 4, 'si_moe', 4, 5, '', [{ k:'duo', card:'si_sam', a:2, h:2 }, { k:'eot_buff_rand', a:1, h:1, n:1, tb:'' }]],
-  ['si_duffman', 'Duffman', 5, 'si_moe', 4, 5, '', [{ k:'gag_eot_tribe', tb:'', a:1, h:0, cp:'Oh yeah !' }]],
-  ['si_dirigeable', 'Dirigeable Duff', 6, 'si_moe', 5, 7, '', [{ k:'gag_eot_tribe', tb:'', a:1, h:1, cp:'Duff !' }]],
-  // Crapules et escrocs : vol (or, stats, cartes de la taverne)
-  ['si_snake', 'Snake', 1, 'si_cra', 2, 1, '', [{ k:'gag_atk_self', a:1, h:0, cp:'Bye !' }]],
-  ['si_jimbo', 'Jimbo', 1, 'si_cra', 1, 3, '', [{ k:'soc_rob', a:1, h:1, n:1 }]],
-  ['si_nelson', 'Nelson', 2, 'si_cra', 3, 2, '', [{ k:'gag_soc_rob', a:1, h:1, n:1, cp:'Ha-ha !' }]],
-  ['si_hutz', 'Lionel Hutz', 2, 'si_cra', 2, 3, '', [{ k:'bc_robshop', n:1 }]],
-  ['si_grostony', 'Gros Tony', 3, 'si_cra', 3, 3, '', [{ k:'soc_rob', a:1, h:1, n:3 }]],
-  ['si_louie', 'Louie', 3, 'si_cra', 4, 3, '', [{ k:'atk_drain', n:2 }]],
-  ['si_docnick', 'Docteur Nick', 4, 'si_cra', 2, 5, '', [{ k:'soc_rob', a:1, h:2, n:2 }]],
-  ['si_lanley', 'Lyle Lanley', 4, 'si_cra', 3, 4, '', [{ k:'bc_robshop', n:2 }]],
-  ['si_tahitibob', 'Tahiti Bob', 5, 'si_cra', 5, 5, '', [{ k:'gag_soc_rob', a:1, h:1, n:3, cp:'Bart…' }]],
-  ['si_scorpio', 'Hank Scorpio', 6, 'si_cra', 5, 7, '', [{ k:'soc_rob', a:1, h:1, n:7 }, { k:'gag_soc_dmg', d:3, n:1, cp:'Lance-flammes !' }]],
-  // Autorités de la ville : Provocation et protection
-  ['si_lou', 'Lou', 1, 'si_aut', 1, 2, 't', [{ k:'eot_buff_taunt', a:0, h:1 }]],
-  ['si_eddie', 'Eddie', 1, 'si_aut', 2, 2, '', [{ k:'bc_kw', kw:'t', n:1 }]],
-  ['si_willie', 'Willie', 2, 'si_aut', 2, 4, 't', [{ k:'gag_eot_self', a:1, h:0, cp:'Grrr !' }]],
-  ['si_edna', 'Edna Krabappel', 2, 'si_aut', 2, 4, '', [{ k:'eot_buff_taunt', a:1, h:0 }]],
-  ['si_skinner', 'Principal Skinner', 3, 'si_aut', 2, 4, 't', [{ k:'gag_soc_taunt', a:0, h:2, cp:'Seymour !' }]],
-  ['si_lovejoy', 'Révérend Lovejoy', 3, 'si_aut', 2, 5, '', [{ k:'bc_kw', kw:'s', n:1 }]],
-  ['si_wiggum', 'Chef Wiggum', 4, 'si_aut', 3, 6, 't', [{ k:'gag_eot_taunt', a:1, h:1, cp:'Bah…' }]],
-  ['si_hibbert', 'Dr Hibbert', 4, 'si_aut', 3, 6, '', [{ k:'soc_kw', kw:'s', tb:'si_aut' }]],
-  ['si_quimby', 'Maire Quimby', 5, 'si_aut', 5, 6, '', [{ k:'bc_kw', kw:'t', n:2 }, { k:'eot_buff_taunt', a:1, h:1 }]],
-  ['si_chalmers', 'Superintendant Chalmers', 6, 'si_aut', 5, 8, 't', [{ k:'bc_kw', kw:'t', n:2 }, { k:'gag_soc_taunt', a:1, h:1, cp:'SKINNER !' }]],
-  // Aliens et Horror Show : râles d'agonie et invocations
-  ['si_zombie', 'Zombie', 1, 'si_hor', 1, 2, '', [{ k:'dr_summon', card:'tk_zombie', n:1 }]],
-  ['si_gremlin', 'Gremlin du bus', 1, 'si_hor', 2, 1, '', [{ k:'gag_dr_dmg', d:1, n:1, cp:'Hihi !' }]],
-  ['si_kang', 'Kang', 2, 'si_hor', 2, 4, '', [{ k:'gag_soc_dmg', d:2, n:1, cp:'Rayon !' }]],
-  ['si_kodos', 'Kodos', 2, 'si_hor', 3, 2, '', [{ k:'duo', card:'si_kang', a:2, h:2 }, { k:'dr_dmg', d:2, n:1 }]],
-  ['si_bartmouche', 'Bart-mouche', 3, 'si_hor', 3, 3, '', [{ k:'dr_buff_all', tb:'si_hor', a:1, h:1 }]],
-  ['si_garou', 'Loup-garou Flanders', 3, 'si_hor', 3, 3, '', [{ k:'dr_summon', card:'tk_zombie', n:2 }]],
-  ['si_robotitchy', 'Robot Itchy', 4, 'si_hor', 4, 5, '', [{ k:'gag_dr_summon', card:'tk_minirobot', n:1, cp:'Clic clic !' }]],
-  ['si_robotscratchy', 'Robot Scratchy', 4, 'si_hor', 3, 6, '', [{ k:'eot_card_buff', card:'tk_minirobot', a:1, h:1 }, { k:'dr_summon', card:'tk_minirobot', n:1 }]],
-  ['si_vampireburns', 'Vampire Burns', 5, 'si_hor', 5, 6, '', [{ k:'gag_dr_summon', card:'tk_zombie', n:2, cp:'Excellent…' }, { k:'atk_drain', n:1 }]],
-  ['si_neddiable', 'Ned le Diable', 6, 'si_hor', 6, 8, '', [{ k:'soc_dmg', d:3, n:2 }, { k:'aura_dr' }]],
+  // ----- univers Les Simpson v2 : 5 familles (10 personnages chacune) jouées comme des tribus de Champs de bataille ; mécanique « Donuts » (gemmes +1/+1) -----
+  ['tk_zombie', 'Zombie (petit)', 0, 'si_hor', 2, 1, 'r', []],
+  ['tk_minirobot', 'Mini-robot', 0, 'si_hor', 1, 1, 'r', []],
+  // Simpson et voisins : donuts (Huran)
+  ['si_milhouse', 'Milhouse', 1, 'si_fam', 2, 1, '', [{ k:'bc_donut', n:1 }]],
+  ['si_rodtodd', 'Rod et Todd Flanders', 1, 'si_fam', 1, 2, '', [{ k:'sell_donut', n:2 }]],
+  ['si_patty', 'Patty', 2, 'si_fam', 2, 3, '', [{ k:'eot_donut_l' }]],
+  ['si_selma', 'Selma', 2, 'si_fam', 3, 2, '', [{ k:'eot_donut_r' }]],
+  ['si_papanoel', 'Petit Papa Noël', 3, 'si_fam', 3, 3, '', [{ k:'bc_donut', n:1 }, { k:'dr_donut', n:1 }]],
+  ['si_bouledeneige', 'Boule de neige II', 3, 'si_fam', 2, 4, '', [{ k:'don_other', tb:'si_fam', a:1, h:1 }]],
+  ['si_maude', 'Maude Flanders', 4, 'si_fam', 4, 4, 's', [{ k:'donc_tribe', tb:'si_fam', a:0, h:1 }]],
+  ['si_jacqueline', 'Jacqueline Bouvier', 4, 'si_fam', 2, 6, '', [{ k:'bc_donut_up', a:1, h:0 }]],
+  ['si_herb', 'Herb Powell', 5, 'si_fam', 4, 6, '', [{ k:'spend_donut', n:4, tb:'si_fam' }]],
+  ['si_mona', 'Mona Simpson', 6, 'si_fam', 5, 7, '', [{ k:'eot_donut_all', tb:'' }]],
+  // Taverne de Moe : cris de guerre (Murlocs)
+  ['si_barney', 'Barney', 1, 'si_moe', 2, 1, '', [{ k:'bc_buff_rand', tb:'si_moe', a:1, h:1 }]],
+  ['si_lenny', 'Lenny', 1, 'si_moe', 1, 2, '', [{ k:'play_self', tb:'si_moe', a:1, h:1 }]],
+  ['si_carl', 'Carl', 2, 'si_moe', 2, 3, '', [{ k:'bc_buff_tribe', tb:'si_moe', a:1, h:2 }]],
+  ['si_sam', 'Sam', 2, 'si_moe', 3, 2, '', [{ k:'hplay_self', tb:'si_moe', a:2, h:2 }]],
+  ['si_moe', 'Moe', 3, 'si_moe', 3, 3, '', [{ k:'soc_buff', tb:'si_moe', a:2, h:1 }]],
+  ['si_otto', 'Otto', 3, 'si_moe', 3, 2, '', [{ k:'bc_disc', tb:'si_moe' }]],
+  ['si_gil', 'Gil', 4, 'si_moe', 2, 4, '', [{ k:'dr_hand', a:5, h:5 }]],
+  ['si_larry', 'Larry', 4, 'si_moe', 4, 3, '', [{ k:'bc_kw', kw:'n', n:1, tb:'si_moe' }]],
+  ['si_duffman', 'Duffman', 5, 'si_moe', 6, 3, '', [{ k:'bc_buff_tribe', tb:'si_moe', a:2, h:2 }, { k:'dr_buff_all', tb:'si_moe', a:2, h:2 }]],
+  ['si_dirigeable', 'Dirigeable Duff', 6, 'si_moe', 6, 8, '', [{ k:'aura_bc' }]],
+  // Crapules : l'or (Pirates)
+  ['si_snake', 'Snake', 1, 'si_cra', 2, 2, '', [{ k:'bc_upd', n:1 }]],
+  ['si_jimbo', 'Jimbo', 1, 'si_cra', 1, 3, '', [{ k:'bc_inc', n:1 }]],
+  ['si_nelson', 'Nelson', 2, 'si_cra', 3, 2, '', [{ k:'sell_gold', n:2 }]],
+  ['si_hutz', 'Lionel Hutz', 2, 'si_cra', 2, 3, '', [{ k:'play_self', tb:'si_cra', a:1, h:1 }]],
+  ['si_grostony', 'Gros Tony', 3, 'si_cra', 3, 4, '', [{ k:'spend_buff', n:5, tb:'si_cra', a:1, h:0 }]],
+  ['si_louie', 'Louie', 3, 'si_cra', 4, 3, '', [{ k:'bc_bought', tb:'si_cra', a:1, h:1 }]],
+  ['si_docnick', 'Docteur Nick', 4, 'si_cra', 3, 5, '', [{ k:'hand_buff', tb:'si_cra', a:1, h:1 }]],
+  ['si_lanley', 'Lyle Lanley', 4, 'si_cra', 4, 4, '', [{ k:'sot_gold', n:1 }]],
+  ['si_tahitibob', 'Tahiti Bob', 5, 'si_cra', 5, 5, '', [{ k:'buy_gold', tb:'si_cra', n:1 }]],
+  ['si_scorpio', 'Hank Scorpio', 6, 'si_cra', 6, 7, '', [{ k:'aatk_perm', tb:'si_cra', a:2, h:1 }]],
+  // Autorités : Bouclier divin, Magnétisme (Mécas)
+  ['si_lou', 'Lou', 1, 'si_aut', 2, 1, '', [{ k:'dr_dmg', d:2, n:1 }]],
+  ['si_eddie', 'Eddie', 1, 'si_aut', 2, 2, 's', []],
+  ['si_willie', 'Willie', 2, 'si_aut', 2, 3, 'ts', []],
+  ['si_edna', 'Edna Krabappel', 2, 'si_aut', 2, 2, '', [{ k:'magnet' }, { k:'sot_gold', n:1 }]],
+  ['si_skinner', 'Principal Skinner', 3, 'si_aut', 2, 4, '', [{ k:'shield_self', a:2, h:0 }]],
+  ['si_lovejoy', 'Révérend Lovejoy', 3, 'si_aut', 2, 4, 'ts', [{ k:'magnet' }]],
+  ['si_wiggum', 'Chef Wiggum', 4, 'si_aut', 4, 5, '', [{ k:'die_avenge_dmg', n:2, d:5 }]],
+  ['si_hibbert', 'Dr Hibbert', 4, 'si_aut', 3, 6, '', [{ k:'shield_gain' }]],
+  ['si_quimby', 'Maire Quimby', 5, 'si_aut', 4, 6, '', [{ k:'shield_perm', a:3, h:3 }]],
+  ['si_chalmers', 'Superintendant Chalmers', 6, 'si_aut', 7, 8, 's', [{ k:'cleave' }]],
+  // Horror Show : Renaissance (Morts-vivants)
+  ['si_zombie', 'Zombie', 1, 'si_hor', 2, 1, 'tr', []],
+  ['si_gremlin', 'Gremlin du bus', 1, 'si_hor', 1, 2, 'r', [{ k:'eot_buff_rand', a:1, h:0, n:1, tb:'si_hor' }]],
+  ['si_kang', 'Kang', 2, 'si_hor', 2, 3, '', [{ k:'bc_tribe_atk', tb:'si_hor', a:1 }]],
+  ['si_kodos', 'Kodos', 2, 'si_hor', 2, 2, '', [{ k:'pas_kk' }]],
+  ['si_bartmouche', 'Bart-mouche', 3, 'si_hor', 3, 2, '', [{ k:'dr_summon', card:'tk_zombie', n:1 }]],
+  ['si_garou', 'Loup-garou Flanders', 3, 'si_hor', 4, 3, '', [{ k:'die_avenge_self', n:2, a:1, h:1 }]],
+  ['si_robotitchy', 'Robot Itchy', 4, 'si_hor', 4, 3, '', [{ k:'soc_reborn', tb:'si_hor' }]],
+  ['si_robotscratchy', 'Robot Scratchy', 4, 'si_hor', 3, 5, '', [{ k:'dr_summon', card:'tk_minirobot', n:1 }]],
+  ['si_vampireburns', 'Vampire Burns', 5, 'si_hor', 4, 7, '', [{ k:'reborn_perm', tb:'si_hor', a:1, h:1 }]],
+  ['si_neddiable', 'Ned le Diable', 6, 'si_hor', 7, 5, 'r', [{ k:'dr_tribe_atk', tb:'si_hor', a:1 }]],
   // ----- univers Ninja : les 5 villages (10 serviteurs chacun) + kekkei genkai -----
   ['n_f1', 'Genin de Konoha', 1, 'n_feu', 2, 2, '', [{ k:'soc_dmg', d:1, n:2 }]],
   ['n_f2', 'Apprenti des kibaku fuda', 1, 'n_feu', 1, 2, '', [{ k:'ckm', c:2, m:{ k:'m_fire', d:2 } }]],
@@ -627,7 +627,7 @@ DEFAULT_CARD_LIST.forEach(([id, n, t, tr, a, h, kw, fx]) => { DEFAULT_CARDS[id] 
 // kekkei genkai : seconde nature (compte pour les deux clans)
 const TR2 = { n_k1:'n_terre', n_k2:'n_vent', n_k3:'n_eau', n_k4:'n_foudre', n_k5:'n_vent' };
 for (const id in TR2) DEFAULT_CARDS[id].tr2 = TR2[id];
-const NJ_MC = { tf:['Transformations', '#ffcf3a'], med:['Méditation', '#7ad8f0'], tk:['Techniques', '#5ab8f0'], mt:['Mentor', '#7ac04a'], sd:['Soldats', '#a86ad8'], ct:['Contrôle', '#8a7ad8'], ds:['Destruction', '#c85a8a'], zk:['Zenkai', '#ff7a3a'], fu:['Fusion', '#7ac04a'], ab:['Absorption', '#e86aa8'], kiu:['Ki', '#5ab8f0'], sv:['Soutien', '#f2c14e'], ob:['Objets', '#b48cff'], ad:['Autodestruction', '#ff5a3a'], tok:['Jetons', '#d8b45a'], seal:['Sceaux', '#e8607a'], pact:['Pacte', '#7ac04a'], dr:['Sacrifice', '#a898d0'], eco:['Économie', '#f2c14e'], spl:['Sorts', '#b48cff'], cbt:['Combat', '#ff7a5a'], ckm:['Éveil et chakra', '#5ab8f0'], cmb:['Combos', '#ff9a4a'], kg:['Kekkei genkai', '#6fd08a'], por:['Portails', '#3fbf6f'], inv:['Inventions', '#b48cff'], coh:['Cohésion', '#6fb8e0'], pet:['Petits serviteurs', '#d8b45a'], vol:['Vol', '#e05a5a'], prov:['Provocation', '#c8a040'], nb:['Nombre', '#6fb8e0'], soc:['Début du combat', '#b06ae8'], ral:['Râles d\'agonie', '#7ac04a'], gag:['Gags récurrents', '#f2c230'], fam:['Famille', '#e0b020'] };
+const NJ_MC = { tf:['Transformations', '#ffcf3a'], med:['Méditation', '#7ad8f0'], tk:['Techniques', '#5ab8f0'], mt:['Mentor', '#7ac04a'], sd:['Soldats', '#a86ad8'], ct:['Contrôle', '#8a7ad8'], ds:['Destruction', '#c85a8a'], zk:['Zenkai', '#ff7a3a'], fu:['Fusion', '#7ac04a'], ab:['Absorption', '#e86aa8'], kiu:['Ki', '#5ab8f0'], sv:['Soutien', '#f2c14e'], ob:['Objets', '#b48cff'], ad:['Autodestruction', '#ff5a3a'], tok:['Jetons', '#d8b45a'], seal:['Sceaux', '#e8607a'], pact:['Pacte', '#7ac04a'], dr:['Sacrifice', '#a898d0'], eco:['Économie', '#f2c14e'], don:['Donuts', '#ff8ac0'], spl:['Sorts', '#b48cff'], cbt:['Combat', '#ff7a5a'], ckm:['Éveil et chakra', '#5ab8f0'], cmb:['Combos', '#ff9a4a'], kg:['Kekkei genkai', '#6fd08a'], por:['Portails', '#3fbf6f'], inv:['Inventions', '#b48cff'], coh:['Cohésion', '#6fb8e0'], pet:['Petits serviteurs', '#d8b45a'], vol:['Vol', '#e05a5a'], prov:['Provocation', '#c8a040'], nb:['Nombre', '#6fb8e0'], soc:['Début du combat', '#b06ae8'], ral:['Râles d\'agonie', '#7ac04a'], gag:['Gags récurrents', '#f2c230'], fam:['Famille', '#e0b020'] };
 // trait passif d'un héros : son pouvoir (pw) ou son bonus (tr) de ce type
 function htr(p, k) { const H0 = HX(p); if (!H0) return null; if (H0.pw && H0.pw.k === k) return H0.pw; const t = H0.tr; return t && t.k === k ? t : null; }
 const DBV = ['d_sai', 'd_ter', 'd_nam', 'd_fre', 'd_and'];   // héros Dragon Ball : rattachés à l'univers
@@ -716,17 +716,17 @@ const HEROES = {
   sh_chef: {diff:2, stars:3, fam:SPV, pv:'s_cel', mc:'ob', n:'Chef', cost:2, pay:'g', pwn:'Salut les enfants', pw:{ k:'multi', s:[{ k:'tech', n:1 }] }, tr:{ k:'pcast', a:1, h:1 }, tx:'Ajoute un objet culte aléatoire à ta main.', trx:'Quand tu utilises un objet culte, un allié aléatoire gagne +1/+1.', q:{ k:'casts', n:6, tx:'Utiliser 6 objets cultes.' }, aw:{ nm:'Chef cuistot dragon', pwn:'Chili du dragon', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'tech', n:1 }] }, tr:{ k:'pcast', a:2, h:2 }, trx:'Quand tu utilises un objet culte, un allié aléatoire gagne +2/+2.', tx:'Ajoute un objet culte aléatoire à ta main.' } },
   sh_mackey: {diff:2, stars:3, fam:SPV, pv:'s_adu', mc:'mt', n:'Mr. Mackey', cost:1, pay:'g', pwn:'M\'kay ?', pw:{ k:'multi', s:[{ k:'drgive', n:1, fx:{ k:'eot_nb_buff', a:1, h:1 } }] }, tx:'Un de tes serviteurs gagne « Fin de tour : donne +1/+1 à ses voisins de la même famille ».', q:{ k:'mentor', n:10, tx:'Conseiller 10 fois un voisin.' }, aw:{ nm:'Mackey m\'kay suprême', pwn:'Grand conseil, m\'kay', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'drgive', n:2, fx:{ k:'eot_nb_buff', a:1, h:1 } }] }, tx:'Deux de tes serviteurs gagnent « Fin de tour : donne +1/+1 à leurs voisins de la même famille ».' } },
   sh_wendy: {diff:2, stars:3, fam:SPV, pv:'s_gin', mc:'nb', n:'Wendy', cost:1, pay:'g', pwn:'Pétition', pw:{ k:'multi', s:[{ k:'buffmain', a:1, h:1 }] }, tx:'Tes serviteurs de ta famille la plus nombreuse gagnent +1/+1.', q:{ k:'famBoard', n:1, tx:'Finir un tour avec 5 serviteurs d\'une même famille.' }, aw:{ nm:'Wendy présidente du club', pwn:'Motion adoptée', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'buffmain', a:2, h:2 }] }, tx:'Tes serviteurs de ta famille la plus nombreuse gagnent +2/+2.' } },
-  // ----- univers Les Simpson : 10 héros, chacun avec son alter ego (éveil) ; gags récurrents et objets de Springfield -----
-  smh_homer: {diff:2, stars:3, fam:SIV, pv:'si_fam', mc:'gag', n:'Homer', cost:1, pay:'g', pwn:'Donut du matin', pw:{ k:'multi', s:[{ k:'gagup', n:2, m:1, a:2, h:2 }] }, tx:'Le compteur de gag d\'un de tes serviteurs grandit de 2 et il gagne +2/+2 (sans gag : +2/+2 à un serviteur aléatoire).', q:{ k:'gags', n:12, tx:'Déclencher 12 gags.' }, aw:{ nm:'Max Power', pwn:'Pas de temps à perdre', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'gagup', n:2, m:2, a:2, h:2 }] }, tx:'Les compteurs de gag de deux de tes serviteurs grandissent de 2 et ils gagnent +2/+2 (sans gag : +2/+2 à un serviteur aléatoire).' } },
-  smh_marge: {diff:1, stars:3, fam:SIV, pv:'si_fam', mc:'fam', n:'Marge', cost:1, pay:'g', pwn:'La famille d\'abord', pw:{ k:'multi', s:[{ k:'buffall', a:1, h:1, tb:'si_fam' }] }, tr:{ k:'pplay', tb:'si_fam', a:1, h:2 }, tx:'Tes Simpson et voisins gagnent +1/+1.', trx:'Quand tu joues un Simpson ou voisin, il gagne +1/+2.', q:{ k:'play', card:'si_fam', n:5, tx:'Jouer 5 Simpson et voisins.' }, aw:{ nm:'Marge policière', pwn:'Au nom de la loi', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'buffall', a:1, h:1, tb:'si_fam' }, { k:'kw', kw:'t', n:1, a:0, h:2, tb:'si_fam' }] }, tr:{ k:'pplay', tb:'si_fam', a:2, h:2 }, trx:'Quand tu joues un Simpson ou voisin, il gagne +2/+2.', tx:'Tes Simpson et voisins gagnent +1/+1, et l\'un d\'eux sans Provocation gagne Provocation et +0/+2.' } },
-  smh_bart: {diff:2, stars:3, fam:SIV, pv:'si_cra', mc:'vol', n:'Bart', cost:1, pay:'g', pwn:'Ay caramba !', pw:{ k:'multi', s:[{ k:'robshop', n:2 }] }, tx:'Prend l\'attaque et la vie de deux serviteurs aléatoires de la taverne (ils tombent à 1/1) et les donne à un de tes serviteurs aléatoire.', q:{ k:'robs', n:8, tx:'Dépouiller 6 serviteurs de la taverne.' }, aw:{ nm:'Bartman', pwn:'Justice de Bartman', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'robshop', n:3 }, { k:'g', n:1 }] }, tx:'Prend l\'attaque et la vie de trois serviteurs aléatoires de la taverne (ils tombent à 1/1) et les donne à un de tes serviteurs aléatoire ; récupère 1 or.' } },
-  smh_lisa: {diff:1, stars:3, fam:SIV, pv:'si_aut', mc:'prov', n:'Lisa', cost:1, pay:'g', pwn:'Exposé brillant', pw:{ k:'multi', s:[{ k:'bufftaunt', a:1, h:2 }] }, tx:'Tes serviteurs avec Provocation gagnent +1/+2.', q:{ k:'tauntBoard', n:1, tx:'Finir un tour avec 4 serviteurs à Provocation.' }, aw:{ nm:'Présidente Lisa', pwn:'Décret présidentiel', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'kw', kw:'t', n:1, a:0, h:1 }, { k:'bufftaunt', a:2, h:2 }] }, tx:'Un de tes serviteurs sans Provocation gagne Provocation et +0/+1, puis tes serviteurs avec Provocation gagnent +2/+2.' } },
-  smh_maggie: {diff:1, stars:3, fam:SIV, pv:'si_hor', mc:'cbt', n:'Maggie', pwn:'Pan !', pw:{ k:'pfire', d:3 }, tx:'Passif : au début de chaque combat, 3 dégâts frappent un ennemi aléatoire (le surplus touche d\'autres ennemis).', q:{ k:'wins', n:4, tx:'Gagner 4 combats.' }, aw:{ nm:'Maggie la tireuse', pwn:'Qui a tiré ?', pw:{ k:'pfire', d:6 }, tx:'Passif : au début de chaque combat, 6 dégâts frappent un ennemi aléatoire (le surplus touche d\'autres ennemis).' } },
-  smh_abe: {diff:2, stars:3, fam:SIV, pv:'si_moe', mc:'gag', n:'Grand-père Abe', cost:1, pay:'g', pwn:'Au temps jadis…', pw:{ k:'multi', s:[{ k:'gaggive', fx:{ k:'gag_eot_self', a:1, h:0, cp:'Radotage' }, a:0, h:2 }] }, tx:'Si aucun de tes serviteurs ne radote, l\'un d\'eux gagne un gag « Radotage » : fin de tour, il gagne +1/+0, et +1/+0 de plus à chaque déclenchement. Sinon, le radoteur gagne +0/+2.', q:{ k:'gags', n:14, tx:'Déclencher 14 gags.' }, aw:{ nm:'Abe des Flying Hellfish', pwn:'Souvenirs de guerre', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'gaggive', fx:{ k:'gag_eot_self', a:1, h:0, cp:'Radotage' }, a:1, h:3 }, { k:'gagup', n:1, m:1 }] }, tx:'Si aucun de tes serviteurs ne radote, l\'un d\'eux gagne un gag « Radotage » (fin de tour, +1/+0, et +1/+0 de plus à chaque déclenchement) ; sinon le radoteur gagne +1/+3. Puis le compteur de gag d\'un de tes serviteurs grandit de 1.' } },
-  smh_burns: {diff:1, stars:3, fam:SIV, pv:'si_cra', mc:'eco', n:'Mr. Burns', pwn:'Excellent…', pw:{ k:'pturn', g:1 }, tx:'Passif : au début de chaque tour, gagne 1 or de plus.', q:{ k:'buys', n:9, tx:'Acheter 9 serviteurs.' }, aw:{ nm:'Burns cache-soleil', pwn:'Centrale à plein régime', pw:{ k:'pturn', g:1, sell:1, roll:1 }, tx:'Passif : au début de chaque tour, gagne 1 or de plus ; ta première actualisation du tour est gratuite et vendre rapporte 1 or de plus.' } },
-  smh_ned: {diff:2, stars:3, fam:SIV, pv:'si_aut', mc:'prov', n:'Ned Flanders', cost:1, pay:'g', pwn:'Salut voisinou !', pw:{ k:'multi', s:[{ k:'shieldtaunt', a:0, h:2 }] }, tx:'Un de tes serviteurs avec Provocation sans Bouclier divin gagne Bouclier divin et +0/+2 ; sinon un de tes serviteurs gagne Provocation et +0/+2.', q:{ k:'tauntTurns', n:4, tx:'Finir 4 tours avec 3 serviteurs à Provocation.' }, aw:{ nm:'Ned musclé', pwn:'Pectoraux du Seigneur', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'shieldtaunt', a:1, h:3 }] }, tx:'Un de tes serviteurs avec Provocation sans Bouclier divin gagne Bouclier divin et +1/+3 ; sinon un de tes serviteurs gagne Provocation et +1/+3.' } },
-  smh_krusty: {diff:2, stars:3, fam:SIV, pv:'si_moe', mc:'ob', n:'Krusty', cost:2, pay:'g', pwn:'Hey hey !', pw:{ k:'multi', s:[{ k:'tech', n:1 }] }, tr:{ k:'pcast', a:1, h:1 }, tx:'Ajoute un objet de Springfield aléatoire à ta main.', trx:'Quand tu utilises un objet de Springfield, un allié aléatoire gagne +1/+1.', q:{ k:'casts', n:6, tx:'Utiliser 6 objets de Springfield.' }, aw:{ nm:'Krusty sans maquillage', pwn:'Le vrai Krusty', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'tech', n:1 }, { k:'gagup', n:1, m:1 }] }, tr:{ k:'pcast', a:2, h:2 }, trx:'Quand tu utilises un objet de Springfield, un allié aléatoire gagne +2/+2.', tx:'Ajoute un objet de Springfield aléatoire à ta main, puis le compteur de gag d\'un de tes serviteurs grandit de 1.' } },
-  smh_moe: {diff:1, stars:3, fam:SIV, pv:'si_moe', mc:'sv', n:'Moe', cost:1, pay:'g', pwn:'Tournée du patron', pw:{ k:'multi', s:[{ k:'buffall', a:0, h:1 }, { k:'buffall', a:1, h:1, tb:'si_moe' }] }, tx:'Tes serviteurs gagnent +0/+1, et tes Piliers de bar +1/+1 de plus.', q:{ k:'tribeBoard', card:'si_moe', m:4, n:1, tx:'Finir un tour avec 4 Piliers de bar sur ton plateau.' }, aw:{ nm:'Moe Flaming', pwn:'Flaming Moe pour tous', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'buffall', a:1, h:1 }, { k:'fire', d:3 }] }, tx:'Tes serviteurs gagnent +1/+1, et 3 dégâts frappent l\'ennemi au prochain combat.' } },
+  // ----- univers Les Simpson v2 : 10 héros aux pouvoirs façon Champs de bataille, chacun avec son alter ego (éveil) -----
+  smh_homer: {diff:1, stars:3, fam:SIV, pv:'si_fam', mc:'don', n:'Homer', cost:1, pay:'g', pwn:'Donut du matin', pw:{ k:'multi', s:[{ k:'donut', n:2 }] }, tx:'Reçois deux Donuts : des sorts gratuits qui donnent chacun +1/+1 à un de tes serviteurs.', q:{ k:'donuts', n:14, tx:'Poser 14 Donuts.' }, aw:{ nm:'Max Power', pwn:'Pas de temps à perdre', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'donut', n:3 }] }, tx:'Reçois trois Donuts.' } },
+  smh_marge: {diff:1, stars:3, fam:SIV, pv:'si_aut', mc:'prov', n:'Marge', cost:1, pay:'g', pwn:'La famille d\'abord', pw:{ k:'multi', s:[{ k:'tkw', kw:'s', n:1 }] }, tx:'Un de tes serviteurs sans Bouclier divin gagne Bouclier divin pour le prochain combat.', q:{ k:'wins', n:3, tx:'Gagner 3 combats.' }, aw:{ nm:'Marge policière', pwn:'Au nom de la loi', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'tkw', kw:'s', n:2 }] }, tx:'Deux de tes serviteurs sans Bouclier divin gagnent Bouclier divin pour le prochain combat.' } },
+  smh_bart: {diff:2, stars:3, fam:SIV, pv:'si_cra', mc:'vol', n:'Bart', cost:1, pay:'g', pwn:'Ay caramba !', pw:{ k:'multi', s:[{ k:'raf' }] }, tx:'Au prochain combat, reçois dans ta main une copie du premier serviteur ennemi tué.', q:{ k:'wins', n:3, tx:'Gagner 3 combats.' }, aw:{ nm:'Bartman', pwn:'Justice de Bartman', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'raf', g:1 }] }, tx:'Au prochain combat, reçois une copie du premier serviteur ennemi tué ; récupère 1 or.' } },
+  smh_lisa: {diff:1, stars:3, fam:SIV, pv:'si_fam', mc:'sv', n:'Lisa', pwn:'Exposé brillant', pw:{ k:'pupdisc' }, tx:'Passif : quand tu améliores la taverne, découvre un serviteur du niveau que tu quittes (un parmi trois).', q:{ k:'buys', n:10, tx:'Acheter 10 serviteurs.' }, aw:{ nm:'Présidente Lisa', pwn:'Décret présidentiel', pw:{ k:'pupdisc' }, tr:{ k:'pupc', n:1 }, tx:'Passif : quand tu améliores la taverne, découvre un serviteur du niveau que tu quittes.', trx:'Améliorer la taverne coûte 1 or de moins.' } },
+  smh_maggie: {diff:1, stars:3, fam:SIV, pv:'si_hor', mc:'cbt', n:'Maggie', cost:1, pay:'g', pwn:'Pan !', pw:{ k:'multi', s:[{ k:'foeaoe', d:1 }] }, tx:'Au début du prochain combat, tous les serviteurs ennemis subissent 1 dégât.', q:{ k:'wins', n:5, tx:'Gagner 5 combats.' }, aw:{ nm:'Maggie la tireuse', pwn:'Qui a tiré ?', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'foeaoe', d:2 }] }, tx:'Au début du prochain combat, tous les serviteurs ennemis subissent 2 dégâts.' } },
+  smh_abe: {diff:3, stars:3, fam:SIV, pv:'si_moe', mc:'eco', n:'Grand-père Abe', pwn:'Au temps jadis…', pw:{ k:'pafk', n:2, t:3, m:3 }, tx:'Passif : tu fais la sieste pendant tes 2 premiers tours (aucun or). Au tour 3, découvre trois serviteurs de niveau 3, l\'un après l\'autre.', q:{ k:'buys', n:6, tx:'Acheter 6 serviteurs.' }, aw:{ nm:'Abe des Flying Hellfish', pwn:'Souvenirs de guerre', pw:{ k:'pturn', g:1 }, tx:'Passif : au début de chaque tour, gagne 1 or de plus.' } },
+  smh_burns: {diff:1, stars:3, fam:SIV, pv:'si_cra', mc:'eco', n:'Mr. Burns', pwn:'Excellent…', pw:{ k:'psell', n:1, once:1 }, tr:{ k:'pturn', g:1 }, tx:'Passif : au début de chaque tour, gagne 1 or de plus.', trx:'La première vente de chaque tour rapporte 1 or au début du prochain tour.', q:{ k:'sells', n:4, tx:'Vendre 4 serviteurs.' }, aw:{ nm:'Burns cache-soleil', pwn:'Centrale à plein régime', pw:{ k:'psell', n:1, once:1 }, tr:{ k:'pturn', g:1, roll:1 }, tx:'Passif : au début de chaque tour, gagne 1 or de plus ; ta première actualisation du tour est gratuite.', trx:'La première vente de chaque tour rapporte 1 or au début du prochain tour.' } },
+  smh_ned: {diff:2, stars:3, fam:SIV, pv:'si_aut', mc:'sv', n:'Ned Flanders', cost:1, pay:'g', pwn:'Salut voisinou !', pw:{ k:'multi', s:[{ k:'buffbought', a:1, h:1 }] }, tx:'Un de tes serviteurs aléatoire gagne +1/+1, et +1/+1 de plus par serviteur acheté ce tour.', q:{ k:'buys', n:10, tx:'Acheter 10 serviteurs.' }, aw:{ nm:'Ned musclé', pwn:'Pectoraux du Seigneur', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'buffbought', a:2, h:2 }] }, tx:'Un de tes serviteurs aléatoire gagne +2/+2, et +2/+2 de plus par serviteur acheté ce tour.' } },
+  smh_krusty: {diff:2, stars:3, fam:SIV, pv:'si_moe', mc:'eco', n:'Krusty', pwn:'Hey hey !', pw:{ k:'psellshop', n:3, a:1, h:1 }, tr:{ k:'pshop', a:1, h:0 }, tx:'Passif : quand tu vends un serviteur, trois fois de suite un serviteur aléatoire de la taverne gagne +1/+1.', trx:'Au début de chaque tour, les serviteurs de la taverne gagnent +1 ATQ.', q:{ k:'sells', n:4, tx:'Vendre 4 serviteurs.' }, aw:{ nm:'Krusty sans maquillage', pwn:'Le vrai Krusty', pw:{ k:'psellshop', n:4, a:1, h:1 }, tr:{ k:'pshop', a:1, h:1 }, tx:'Passif : quand tu vends un serviteur, quatre fois de suite un serviteur aléatoire de la taverne gagne +1/+1.', trx:'Au début de chaque tour, les serviteurs de la taverne gagnent +1/+1.' } },
+  smh_moe: {diff:1, stars:3, fam:SIV, pv:'si_moe', mc:'eco', n:'Moe', pwn:'Tournée du patron', pw:{ k:'pupc', n:1 }, tx:'Passif : améliorer la taverne coûte 1 or de moins.', q:{ k:'buys', n:8, tx:'Acheter 8 serviteurs.' }, aw:{ nm:'Moe Flaming', pwn:'Flaming Moe pour tous', pw:{ k:'pupc', n:1 }, tr:{ k:'pturn', roll:1 }, tx:'Passif : améliorer la taverne coûte 1 or de moins.', trx:'Ta première actualisation de chaque tour est gratuite.' } },
 };
 // héros Ninja : le bonus (trx) s'ajoute au texte du pouvoir
 for (const h in HEROES) if (HEROES[h].trx && !HEROES[h].tx.includes(HEROES[h].trx)) HEROES[h].tx += ' Bonus : ' + HEROES[h].trx;
@@ -754,7 +754,7 @@ const MECHS = {
   eboulement:{ n:'Éboulement', ic:'up', d:'Quand un de vos serviteurs de l\'univers avec Provocation meurt, il inflige 3 dégâts à un ennemi aléatoire.' },
   fusion:{ n:'Fusion élémentaire', ic:'wind', d:'À la fin du tour, si vous avez au moins 4 éléments Squishy différents, vos serviteurs de l\'univers gagnent +1/+1.' },
   bande:{ n:'Cohésion de groupe', ic:'users', d:'Au début de chaque combat, chaque serviteur gagne +1/+1 par voisin direct de la même famille (pour ce combat). Trois voisins ou plus de la même famille forment une bande activée, qui déclenche l\'effet de sa famille : Gingers et sectes, chaque membre gagne +1/+1 par autre Ginger ou sectaire allié ; Adultes, la bande gagne +0/+3 et tu gagnes 1 or au prochain tour ; Goths, la bande gagne Venimeux ; Célébrités, la bande gagne Bouclier divin ; Animaux, la bande gagne Renaissance. Déplace tes serviteurs pour former tes bandes. Les objets cultes s\'achètent en or à l\'étagère de la taverne.' },
-  gag:{ n:'Gags récurrents', ic:'donut', d:'Certains serviteurs ont un Gag : un effet qui grandit de +1 à chaque fois qu\'il se déclenche, pour toute la partie (le compteur reste sur le serviteur, s\'additionne dans un triple et s\'affiche sur sa carte). Fin de tour, début du combat, râle d\'agonie, après une attaque… chaque famille a ses gags. Les objets de Springfield s\'achètent en or à l\'étagère de la taverne ; certains font grandir les compteurs de gag.' },
+  gag:{ n:'Donuts', ic:'donut', d:'Un Donut est un sort gratuit qui arrive dans ta main : pose-le sur un de tes serviteurs, il gagne +1/+1 pour toute la partie. Certains serviteurs en donnent, en posent tout seuls en fin de tour, ou augmentent la valeur de tous tes Donuts. Chaque famille joue comme une tribu de Champs de bataille : Donuts, Cris de guerre, or, Bouclier divin et Magnétisme, Renaissance. Les objets de Springfield s\'achètent en or à l\'étagère de la taverne.' },
   portail:{ n:'Portails', ic:'portal', d:'Au début de chaque tour, tu gagnes 1 fluide de portail (3 au plus, il se garde d\'un tour à l\'autre ; certains serviteurs et inventions en donnent). Dépense 1 fluide sur un de tes serviteurs (bouton ◎) : il passe le portail et revient en variante d\'une autre dimension, un personnage aléatoire de sa famille d\'un niveau au-dessus ou au-dessous, en gardant tous ses bonus (stats, mots-clés gagnés, effets, dorure). Les inventions de Rick s\'achètent en or à l\'étagère de la taverne.' },
 };
 // familles concernées par une loi dans la partie en cours
@@ -1019,9 +1019,42 @@ const ET = {
   gag_dr_summon:{ tr:'dr', gag:1, l:'Gag : invocations au râle d\'agonie (grandit)', ps:['card', 'n'], w:1, mag:(e, d) => cardValueById(e.card, d) * e.n + 3, txt:(e, k) => gagTx(e, `râle d'agonie, invoque ${e.n > 1 ? e.n + ' × ' : ''}${CD(e.card).n}${k > 1 ? ' (dorés)' : ''}`, 'un de plus') },
   gag_soc_rob:{ tr:'soc', gag:1, l:'Gag : vol de stats au début du combat (grandit)', ps:['a', 'h', 'n'], w:1, mag:e => (e.a + e.h) * 2 * Math.min(e.n, 4) + 2, txt:(e, k) => gagTx(e, `début du combat, vole ${sign(e.a * k, e.h * k)} à ${e.n >= 7 ? 'tous les ennemis' : e.n > 1 ? e.n + ' ennemis aléatoires' : 'un ennemi aléatoire'}`, gagGrow(e, k)) },
   gag_atk_self:{ tr:'atk', gag:1, l:'Gag : se renforcer après avoir attaqué (grandit)', ps:['a', 'h'], w:1.1, mag:e => (e.a + e.h) * 2 + 1, txt:(e, k) => gagTx(e, `après avoir attaqué, gagne ${sign(e.a * k, e.h * k)}`, gagGrow(e, k)) },
-  bc_kw:{ tr:'bc', l:'Donner un mot-clé à des alliés (cri de guerre)', ps:['kw', 'n'], w:1, mag:e => kwCost(e.kw) * Math.min(e.n, 4), txt:(e, k) => `Cri de guerre : ${e.n >= 7 ? 'vos autres serviteurs gagnent' : e.n * k > 1 ? e.n * k + ' autres alliés aléatoires gagnent' : 'un autre allié aléatoire gagne'} ${(SET.kw[e.kw] || {}).n || '?'}.` },
+  bc_kw:{ tr:'bc', l:'Donner un mot-clé à des alliés (cri de guerre)', ps:['kw', 'n'], w:1, mag:e => kwCost(e.kw) * Math.min(e.n, 4), txt:(e, k) => `Cri de guerre : ${e.n >= 7 ? 'vos autres serviteurs gagnent' : e.n * k > 1 ? e.n * k + ' autres ' + (e.tb ? one(e.tb) : 'alliés') + ' aléatoires gagnent' : 'un autre ' + (e.tb ? one(e.tb, 1) : 'allié') + ' aléatoire gagne'} ${(SET.kw[e.kw] || {}).n || '?'}.` },
+  // ----- univers Les Simpson v2 : Donuts et tribus façon Champs de bataille -----
+  bc_donut:{ tr:'bc', l:'Recevoir des Donuts', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Cri de guerre : reçois ${donN(e.n * k)}.` },
+  sell_donut:{ tr:'sell', l:'Donuts à la vente', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Quand tu le vends, reçois ${donN(e.n * k)}.` },
+  dr_donut:{ tr:'dr', l:'Donut au râle d\'agonie', ps:['n'], w:1.2, mag:e => e.n * 2, txt:(e, k) => `Râle d'agonie : reçois ${donN(e.n * k)}.` },
+  eot_donut_l:{ tr:'eot', l:'Donut au voisin de gauche', ps:[], w:1.3, mag:() => 3, txt:(e, k) => `Fin de tour : pose ${donN(k)} sur son voisin de gauche.` },
+  eot_donut_r:{ tr:'eot', l:'Donut au voisin de droite', ps:[], w:1.3, mag:() => 3, txt:(e, k) => `Fin de tour : pose ${donN(k)} sur son voisin de droite.` },
+  eot_donut_all:{ tr:'eot', l:'Donut à tous', ps:['tb'], w:1.3, mag:() => 2 * AL() + 4, txt:(e, k) => `Fin de tour : pose ${donN(k)} sur chacun de tes ${one(e.tb)}.` },
+  don_other:{ tr:'don', l:'Partager son Donut', ps:['tb', 'a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Quand un Donut est posé sur ${k > 1 ? 'elle' : 'elle'}, un autre ${one(e.tb, 1)} gagne ${sign(e.a * k, e.h * k)}.` },
+  donc_tribe:{ tr:'donc', l:'Bonus quand tu joues un Donut', ps:['tb', 'a', 'h'], w:1.2, mag:e => (e.a + e.h) * AL(), txt:(e, k) => `Après que tu as joué un Donut, tes ${one(e.tb)} gagnent ${sign(e.a * k, e.h * k)}.` },
+  bc_donut_up:{ tr:'bc', l:'Donuts plus gros', ps:['a', 'h'], w:1.5, mag:e => (e.a + e.h) * 5, txt:(e, k) => `Cri de guerre : tes Donuts donnent ${sign(e.a * k, e.h * k)} de plus pour le reste de la partie.` },
+  spend_donut:{ tr:'spend', l:'Donuts après avoir dépensé de l\'or', ps:['n', 'tb'], w:1.3, mag:() => 2 * AL() + 2, txt:(e, k) => `Chaque fois que tu as dépensé ${e.n} or dans le tour : pose ${donN(k)} sur chacun de tes ${one(e.tb)}.` },
+  spend_buff:{ tr:'spend', l:'Bonus après avoir dépensé de l\'or', ps:['n', 'tb', 'a', 'h'], w:1.3, mag:e => (e.a + e.h) * AL() + 1, txt:(e, k) => `Chaque fois que tu as dépensé ${e.n} or dans le tour : tes ${one(e.tb)} gagnent ${sign(e.a * k, e.h * k)}.` },
+  hplay_self:{ tr:'hplay', l:'Grandir dans la main', ps:['tb', 'a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Dans ta main : gagne ${sign(e.a * k, e.h * k)} quand tu joues un ${one(e.tb, 1)}.` },
+  bc_disc:{ tr:'bc', l:'Découvrir un serviteur', ps:['tb'], w:1.5, mag:() => 4, txt:e => `Cri de guerre : découvre un ${one(e.tb, 1)}.` },
+  dr_hand:{ tr:'dr', l:'Renforcer la main au râle d\'agonie', ps:['a', 'h'], w:1, mag:e => e.a + e.h, txt:(e, k) => `Râle d'agonie : un serviteur de ta main gagne ${sign(e.a * k, e.h * k)}.` },
+  bc_inc:{ tr:'bc', l:'Or au prochain tour (cri de guerre)', ps:['n'], w:1.4, mag:e => e.n * 2, txt:(e, k) => `Cri de guerre : gagne ${e.n * k} or au début du prochain tour.` },
+  bc_bought:{ tr:'bc', l:'Bonus par achat du tour', ps:['tb', 'a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Cri de guerre : une autre ${one(e.tb, 1)} gagne ${sign(e.a * k, e.h * k)} par ${one(e.tb, 1)} achetée ce tour.` },
+  hand_buff:{ tr:'hand', l:'Bonus quand une carte arrive en main', ps:['tb', 'a', 'h'], w:1.3, mag:e => (e.a + e.h) * 3, txt:(e, k) => `Quand une carte arrive dans ta main, une autre ${one(e.tb, 1)} gagne ${sign(e.a * k, e.h * k)}.` },
+  buy_gold:{ tr:'buy', l:'Or à l\'achat', ps:['tb', 'n'], w:1.5, mag:e => e.n * 6, txt:(e, k) => `Après avoir acheté une ${one(e.tb, 1)}, gagne ${e.n * k} or.` },
+  aatk_perm:{ tr:'aatk', l:'Bonus définitif à chaque attaque', ps:['tb', 'a', 'h'], w:1.5, mag:e => (e.a + e.h) * 6, txt:(e, k) => `Quand une de tes ${one(e.tb)} attaque, tes ${one(e.tb)} gagnent ${sign(e.a * k, e.h * k)} définitivement.` },
+  magnet:{ tr:'pas', l:'Magnétisme', ps:[], w:1, mag:() => 2, txt:() => `Magnétisme : joué juste à gauche d'une Autorité, il fusionne avec elle (stats, mots-clés et effets).` },
+  cleave:{ tr:'pas', l:'Attaque les voisins', ps:[], w:1, mag:() => 6, txt:() => `Attaque aussi les voisins de sa cible.` },
+  shield_self:{ tr:'shield', l:'Grandir quand un Bouclier divin tombe', ps:['a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Quand un allié perd son Bouclier divin, gagne ${sign(e.a * k, e.h * k)} pour ce combat.` },
+  shield_gain:{ tr:'shield', l:'Reprendre un Bouclier divin', ps:[], w:1, mag:() => 5, txt:() => `Quand un autre allié perd son Bouclier divin, gagne Bouclier divin.` },
+  shield_perm:{ tr:'shield', l:'Bonus définitif quand un Bouclier divin tombe', ps:['a', 'h'], w:1.3, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Quand un allié perd son Bouclier divin, il gagne ${sign(e.a * k, e.h * k)} définitivement.` },
+  die_avenge_dmg:{ tr:'die', l:'Vengeance : dégâts', ps:['n', 'd'], w:1, mag:e => e.d * 1.5, txt:(e, k) => `Vengeance (${e.n}) : inflige ${e.d * k} dégâts à l'ennemi qui a le plus de PV.` },
+  die_avenge_self:{ tr:'die', l:'Vengeance : grandir', ps:['n', 'a', 'h'], w:1.2, mag:e => (e.a + e.h) * 3, txt:(e, k) => `Vengeance (${e.n}) : gagne ${sign(e.a * k, e.h * k)} définitivement.` },
+  bc_tribe_atk:{ tr:'bc', l:'Attaque de la famille pour la partie', ps:['tb', 'a'], w:1.3, mag:e => e.a * 6, txt:(e, k) => `Cri de guerre : tes ${one(e.tb)} ont +${e.a * k} ATQ pour le reste de la partie.` },
+  pas_kk:{ tr:'pas', l:'Kang et Kodos', ps:[], w:1, mag:() => 3, txt:(e, k) => `Gagne ${sign(k, k)} pour chaque Kang ou Kodos allié mort cette partie.` },
+  soc_reborn:{ tr:'soc', l:'Donner Renaissance', ps:['tb'], w:1, mag:() => 4, txt:(e, k) => `Début du combat : donne Renaissance à ${k > 1 ? 'deux autres' : 'un autre'} ${one(e.tb, k === 1)}.` },
+  reborn_perm:{ tr:'reborn', l:'Bonus définitif après une Renaissance', ps:['tb', 'a', 'h'], w:1.4, mag:e => (e.a + e.h) * 4, txt:(e, k) => `Après une Renaissance alliée, tes ${one(e.tb)} gagnent ${sign(e.a * k, e.h * k)} définitivement.` },
+  dr_tribe_atk:{ tr:'dr', l:'Attaque de la famille pour la partie (râle)', ps:['tb', 'a'], w:1.3, mag:e => e.a * 6, txt:(e, k) => `Râle d'agonie : tes ${one(e.tb)} ont +${e.a * k} ATQ pour le reste de la partie.` },
 };
 // gags récurrents : texte « Gag « D'oh ! » : effet, et +1 de plus à chaque déclenchement »
+const donN = n => n > 1 ? n + ' Donuts' : 'un Donut';
 const gagGrow = (e, k) => sign(e.a ? k : 0, e.h ? k : 0);
 const gagTx = (e, body, grow) => `Gag${e.cp ? ' « ' + e.cp + ' »' : ''} : ${body}, et ${grow} de plus à chaque déclenchement.`;
 const isGag = e => !!(e && ET[e.k] && ET[e.k].gag);
@@ -1170,9 +1203,36 @@ function runRecruit0(G, p, m, e, ctx) {
     case 'gag_play_self': if (tribeOk(ctx, e.tb)) { buff(m, gagV(m, e.a, k), gagV(m, e.h, k)); gagBump(p, m); } break;
     case 'gag_eot_tribe': { const A2 = gagV(m, e.a, k), H2 = gagV(m, e.h, k); others().forEach(x => buff(x, A2, H2)); gagBump(p, m); break; }
     case 'gag_eot_taunt': { const A2 = gagV(m, e.a, k), H2 = gagV(m, e.h, k); p.bd.forEach(x => { if (has(x, 't')) buff(x, A2, H2); }); gagBump(p, m); break; }
-    case 'bc_kw': shuffle(p.bd.filter(x => x !== m && !has(x, e.kw))).slice(0, e.n >= 7 ? 9 : e.n * k).forEach(x => addF(x, e.kw)); break;
+    // ----- Les Simpson v2 : Donuts et tribus -----
+    case 'bc_donut': case 'sell_donut': giveDonut(p, e.n * k); break;
+    case 'eot_donut_l': case 'eot_donut_r': { const x = p.bd[p.bd.indexOf(m) + (e.k === 'eot_donut_l' ? -1 : 1)]; for (let i = 0; i < k; i++) putDonut(G, p, x); break; }
+    case 'eot_donut_all': p.bd.filter(x => tribeOk(x, e.tb)).forEach(x => { for (let i = 0; i < k; i++) putDonut(G, p, x); }); break;
+    case 'spend_donut': p.bd.filter(x => tribeOk(x, e.tb)).forEach(x => { for (let i = 0; i < k; i++) putDonut(G, p, x); }); break;
+    case 'don_other': case 'hand_buff': { const o = others(); if (o.length) buff(pickR(o), A, Hh); break; }
+    case 'donc_tribe': case 'spend_buff': p.bd.filter(x => tribeOk(x, e.tb)).forEach(x => buff(x, A, Hh)); break;
+    case 'bc_donut_up': p.donA = (p.donA || 0) + A; p.donH = (p.donH || 0) + Hh; break;
+    case 'hplay_self': if (tribeOk(ctx, e.tb)) buff(m, A, Hh); break;
+    case 'bc_disc': if (!p.disc && p.hd.length < 10) { const opts = []; for (let i = 0; i < 3; i++) { const c = drawOne(G, p.t, null, e.tb); if (c) opts.push(c); } if (opts.length) p.disc = opts; } break;
+    case 'bc_inc': p.inc = p.inc || []; p.inc[0] = (p.inc[0] || 0) + e.n * k; break;
+    case 'bc_bought': { const n = (p.bt || {})[e.tb] || 0, o = others(); if (n && o.length) buff(pickR(o), A * n, Hh * n); break; }
+    case 'buy_gold': if (ctx && !ctx.sp && tribeOk(ctx, e.tb)) p.g += e.n * k; break;
+    case 'bc_tribe_atk': p.horA = (p.horA || 0) + A; p.bd.forEach(x => { if (tribeOk(x, e.tb)) buff(x, A, 0); }); break;
+    case 'bc_kw': shuffle(p.bd.filter(x => x !== m && !has(x, e.kw) && tribeOk(x, e.tb))).slice(0, e.n >= 7 ? 9 : e.n * k).forEach(x => addF(x, e.kw)); break;
   }
 }
+// ----- univers Les Simpson v2 : Donuts (sort gratuit +1/+1, plus les bonus gagnés pendant la partie) -----
+const DON = 'si_don';
+function handIn(p) { const G = typeof H !== 'undefined' ? H.G : null; if (!G || p._hin) return; p._hin = 1; try { p.bd.slice().forEach(x => fxOf(x, 'hand').forEach(e => runRecruit(G, p, x, e))); } finally { delete p._hin; } }
+function giveDonut(p, n) { for (let i = 0; i < n; i++) if (p.hd.length < 10) { p.hd.push({ sp:DON, u:UID++ }); handIn(p); } }
+function putDonut(G, p, m, played) {
+  if (!m) return;
+  withSrc('Donut', () => buff(m, 1 + (p.donA || 0), 1 + (p.donH || 0))); qAdd(p, 'donuts');
+  fxOf(m, 'don').forEach(e => runRecruit(G, p, m, e));
+  if (played) p.bd.slice().forEach(x => fxOf(x, 'donc').forEach(e => runRecruit(G, p, x, e, m)));
+}
+// or dépensé dans le tour : les compteurs « chaque fois que tu as dépensé N or » avancent
+function spent(G, p, n) { if (n > 0) p.bd.slice().forEach(m => fxOf(m, 'spend').forEach(e => { m.spc = (m.spc || 0) + n; while (m.spc >= e.n) { m.spc -= e.n; runRecruit(G, p, m, e); } })); }
+function discTier(G, p, t) { const opts = []; for (let i = 0; i < 3; i++) { const c = drawOne(G, 6, t) || drawAny(t); if (c) opts.push(c); } if (opts.length) p.disc = opts; }
 // ----- univers South Park : cohésion de groupe -----
 // famille « de cohésion » d'un serviteur : sa tribu, ou celle qu'on lui a donnée (converti) ; '*' = compte pour toutes les familles
 const famOf = m => m.fam || tribe(m);
@@ -1328,9 +1388,11 @@ function auraTimes(list, k) { let t = 1; for (const m of list) if (m.h > 0 && fx
    COMBAT — entièrement déterministe à partir d'une graine : l'hôte et
    chaque joueur rejouent exactement le même combat.
    ===================================================================== */
+function permBuff(S, s, x, a, h) { buff(x, a, h); const u = x.ou || x.u; S.perm = S.perm || [{}, {}]; const o = S.perm[s][u] = S.perm[s][u] || [0, 0]; o[0] += a; o[1] += h; }   // bonus « définitif » gagné en combat : reporté sur le vrai plateau
 function simSummon(S, s, pos, id, g) {
   const arr = S.sides[s]; if (arr.length >= 7 || !C[id]) return null;
   const b = C[id]; const m = { c:id, a:b.a * (g ? 3 : 1), h:b.h * (g ? 3 : 1), g:g ? 1 : 0, f:b.f, u:S.uid++ };
+  if (S.hx && S.hx[s] && b.tr === 'si_hor') m.a += S.hx[s];
   arr.splice(Math.min(pos, arr.length), 0, m); return m;
 }
 const sideOf = (S, m) => S.sides[0].includes(m) ? 0 : 1;
@@ -1385,6 +1447,18 @@ function runCombat(S, s, m, e, pos, ctx) {
     case 'soc_lone': if (!nbFam(al, al.indexOf(m))) buff(m, A, Hh); break;
     case 'duo': if (al.some(x => x !== m && (S.pre || x.h > 0) && x.c === e.card)) buff(m, A, Hh); break;
     case 'soc_rob': case 'gag_soc_rob': { const A2 = e.k === 'soc_rob' ? A : gagV(m, e.a, k), H2 = e.k === 'soc_rob' ? Hh : gagV(m, e.h, k); const o = en.filter(x => x.h > 0), tg = e.n >= 7 ? o : (() => { const r = []; for (let i = 0; i < e.n && o.length; i++) r.push(o.splice(R(o.length), 1)[0]); return r; })(); tg.forEach(x => { const va = Math.min(x.a, A2), vh = Math.min(Math.max(0, x.h - 1), H2); x.a -= va; x.h -= vh; buff(m, va, vh); }); if (e.k === 'gag_soc_rob') gagBump(null, m, S, s); break; }
+    // ----- Les Simpson v2 -----
+    case 'dr_donut': S.don = S.don || [0, 0]; S.don[s] += e.n * k; break;
+    case 'dr_hand': S.hb = S.hb || [[], []]; S.hb[s].push([A, Hh]); break;
+    case 'aatk_perm': if (ctx && tribeOk(ctx, e.tb)) al.filter(x => x.h > 0 && tribeOk(x, e.tb)).forEach(x => permBuff(S, s, x, A, Hh)); break;
+    case 'shield_self': buff(m, A, Hh); break;
+    case 'shield_gain': if (ctx !== m && !has(m, 's')) addF(m, 's'); break;
+    case 'shield_perm': if (ctx && ctx.h > 0) permBuff(S, s, ctx, A, Hh); break;
+    case 'die_avenge_dmg': m.av = (m.av || 0) + 1; if (m.av >= e.n) { m.av = 0; const o = en.filter(x => x.h > 0); if (o.length) simDamage(S, o.reduce((b, x) => x.h > b.h ? x : b), e.d * k, null); } break;
+    case 'die_avenge_self': m.av = (m.av || 0) + 1; if (m.av >= e.n) { m.av = 0; permBuff(S, s, m, A, Hh); } break;
+    case 'soc_reborn': { const o = al.filter(x => x !== m && (S.pre || x.h > 0) && tribeOk(x, e.tb) && !has(x, 'r')); for (let i = 0; i < k && o.length; i++) addF(o.splice(R(o.length), 1)[0], 'r'); break; }
+    case 'reborn_perm': al.filter(x => x.h > 0 && tribeOk(x, e.tb)).forEach(x => permBuff(S, s, x, A, Hh)); break;
+    case 'dr_tribe_atk': al.filter(x => x.h > 0 && tribeOk(x, e.tb)).forEach(x => buff(x, A, 0)); S.gl = S.gl || [{}, {}]; S.gl[s].horA = (S.gl[s].horA || 0) + A; if (S.hx) S.hx[s] += A; break;
     // ----- Les Simpson : gags récurrents (combat) -----
     case 'gag_soc_dmg': case 'gag_dr_dmg': { const d = gagV(m, e.d, k), o = en.filter(x => x.h > 0); for (let i = 0; i < (e.n || 1) && o.length; i++) { const j = R(o.length); simDamage(S, o[j], d, null); o.splice(j, 1); } gagBump(null, m, S, s); break; }
     case 'gag_dr_summon': { const n = (e.n || 1) + (m.gag || 0); for (let i = 0; i < n; i++) simSummon(S, s, pos + i, e.card, m.g); gagBump(null, m, S, s); break; }
@@ -1417,7 +1491,7 @@ function simDeaths(S, f = 0) {
       const before = arr.length, ndr = auraTimes(arr, 'aura_dr');
       for (let r = 0; r < ndr; r++) fxOf(d, 'dr').forEach(e => runCombat(S, s, d, e, pos()));
       const added = Math.max(0, arr.length - before);
-      if (has(d, 'r') && !d.rb && arr.length < 7) { const nm = simSummon(S, s, pos() + added, d.c, d.g); if (nm) { nm.h = 1; remF(nm, 'r'); nm.rb = 1; if (d.gag) nm.gag = d.gag; nm.ou = d.ou || d.u; } }   // le compteur de gag suit la Renaissance
+      if (has(d, 'r') && !d.rb && arr.length < 7) { const nm = simSummon(S, s, pos() + added, d.c, d.g); if (nm) { nm.h = 1; remF(nm, 'r'); nm.rb = 1; if (d.gag) nm.gag = d.gag; nm.ou = d.ou || d.u; for (const al of arr.slice()) if (al.h > 0 && al !== nm) fxOf(al, 'reborn').forEach(e => runCombat(S, s, al, e, 0, nm)); } }   // le compteur de gag suit la Renaissance
     }
   }
 }
@@ -1428,6 +1502,7 @@ function simulate(bA, bB, seed, tA, tB, fire, mx) {
 }
 function simulate0(bA, bB, seed, tA, tB, fire, mx) {
   const S = { sides:[clone(bA), clone(bB)], rng:mulberry(seed), uid:1000000, frames:[], mx:mx || {}, dead:[[], []] };
+  S.hx = S.sides.map(arr => arr.reduce((t, m) => Math.max(t, m.hx || 0), 0));   // Horror Show : bonus d'attaque « pour le reste de la partie », aussi pour les invoqués
   S.frames.push({ s:snap(S) });
   // Ordre de résolution « Champs de bataille » : le camp qui a le plus de serviteurs est prioritaire (égalité : au hasard)
   const nA = S.sides[0].length, nB = S.sides[1].length;
@@ -1473,8 +1548,10 @@ function simulate0(bA, bB, seed, tA, tB, fire, mx) {
       S.frames.push({ s:snap(S), at:att.u, tg:tgt.u });
       rights = arr.slice(arr.indexOf(att) + 1);
       const aa = att.a, ta = tgt.a;
-      simDamage(S, tgt, aa, att); if (!(S.mx.first && tgt.h <= 0)) simDamage(S, att, ta, tgt);   // duel : la cible abattue ne riposte pas
+      const cl = fxOf(att, 'pas').some(e => e.k === 'cleave') ? [en[en.indexOf(tgt) - 1], en[en.indexOf(tgt) + 1]].filter(Boolean) : [];   // attaque aussi les voisins de la cible
+      simDamage(S, tgt, aa, att); cl.forEach(x => simDamage(S, x, aa, att)); if (!(S.mx.first && tgt.h <= 0)) simDamage(S, att, ta, tgt);   // duel : la cible abattue ne riposte pas
       if (att.h > 0) fxOf(att, 'atk').forEach(e => runCombat(S, cur, att, e, 0, tgt));
+      for (const al of arr.slice()) if (al.h > 0) fxOf(al, 'aatk').forEach(e => runCombat(S, cur, al, e, 0, att));
       simDeaths(S, cur);
       // duo lié (Éveil) : le partenaire du compagnon frappe aussitôt la même cible
       if (att.duo && tgt.h > 0 && en.includes(tgt)) { const pt = arr.find(x => x !== att && x.duo && x.h > 0 && x.a > 0); if (pt) { S.frames.push({ s:snap(S), at:pt.u, tg:tgt.u }); const pa = pt.a, tb = tgt.a; simDamage(S, tgt, pa, pt); simDamage(S, pt, tb, tgt); simDeaths(S, cur); } }
@@ -1492,7 +1569,7 @@ function simulate0(bA, bB, seed, tA, tB, fire, mx) {
   let dmg = 0;
   if (w === 0) dmg = tA + S.sides[0].reduce((t, m) => t + tierOf(m), 0);
   if (w === 1) dmg = tB + S.sides[1].reduce((t, m) => t + tierOf(m), 0);
-  return { w, dmg, frames:S.frames, dead:S.dead, alive:S.sides.map(a => a.map(m => m.c)), pf:S.pf || null, inc:S.inc || null, gag:S.gag || null };
+  return { w, dmg, frames:S.frames, dead:S.dead, alive:S.sides.map(a => a.map(m => m.c)), pf:S.pf || null, inc:S.inc || null, gag:S.gag || null, perm:S.perm || null, gl:S.gl || null, don:S.don || null, hb:S.hb || null };
 }
 
 /* =====================================================================
@@ -1505,7 +1582,7 @@ const RU = () => SET.rules;
 function newPlayer(pid, n, human, peer) {
   return { pid, n, human, peer, bot:!human, hero:null, ho:[], hp:+RU().hp || 40, t:1, uc:+RU().up[1] || 6, g:0, mg:0, sh:[], fz:false, bd:[], hd:[], pu:false, rr:0, rdy:false, al:true, place:0, lastOpp:null, res:null };
 }
-const upCost = p => p.t >= 6 ? 0 : Math.max(0, p.uc - (p.hero === 'ilka' ? 1 : 0));
+const upCost = p => p.t >= 6 ? 0 : Math.max(0, p.uc - (p.hero === 'ilka' ? 1 : 0) - ((htr(p, 'pupc') || {}).n || 0));
 
 const UNIV_FAMS = 5;   // chaque univers compte 5 familles ; on n'en joue qu'un par partie
 // univers jouables pour l'instant (les autres sont en chantier)
@@ -1834,13 +1911,25 @@ const elems = list => new Set(list.filter(x => x.h > 0 && isSq(x)).map(tribe)).s
 const sellValue = m => 1 + fxOf(m, 'sell').reduce((t, e) => t + e.n * mult(m), 0);
 
 const OPS = {
-  buy(G, p, a) { const i = a.i; if (p.g < 3 || p.hd.length >= 10 || !p.sh[i]) return false; p.g -= 3; qAdd(p, 'buys'); p.hd.push(p.sh.splice(i, 1)[0]); checkTriple(G, p); return true; },
-  sell(G, p, a) { const m = p.bd[a.i]; if (!m) return false; p.bd.splice(a.i, 1); if (p.ck) p.ck = Math.min(p.ck, ckMax(p)); p.g += 1; if (inMech(G, 'marche', m) && (p.mkt || 0) < 2) { p.g += 1; p.mkt = (p.mkt || 0) + 1; } fxOf(m, 'sell').forEach(e => runRecruit(G, p, m, e)); { const t = htr(p, 'pturn'); if (t && t.sell) p.g += t.sell; } qAdd(p, 'sells'); toPool(G, m); return true; },
+  buy(G, p, a) { const i = a.i; if (p.g < 3 || p.hd.length >= 10 || !p.sh[i]) return false; p.g -= 3; qAdd(p, 'buys'); const m0 = p.sh.splice(i, 1)[0]; p.hd.push(m0); if (!m0.sp) { p.bt = p.bt || {}; p.bt[tribe(m0)] = (p.bt[tribe(m0)] || 0) + 1; p.btN = (p.btN || 0) + 1; } p.bd.slice().forEach(x => fxOf(x, 'buy').forEach(e => runRecruit(G, p, x, e, m0))); spent(G, p, 3); handIn(p); checkTriple(G, p); return true; },
+  sell(G, p, a) { const m = p.bd[a.i]; if (!m) return false; p.bd.splice(a.i, 1); if (p.ck) p.ck = Math.min(p.ck, ckMax(p)); p.g += 1; if (inMech(G, 'marche', m) && (p.mkt || 0) < 2) { p.g += 1; p.mkt = (p.mkt || 0) + 1; } fxOf(m, 'sell').forEach(e => runRecruit(G, p, m, e)); { const t = htr(p, 'pturn'); if (t && t.sell) p.g += t.sell; } { const w = htr(p, 'psell'); if (w && !(w.once && p.soldT)) { p.inc = p.inc || []; p.inc[0] = (p.inc[0] || 0) + (w.n || 1); } p.soldT = 1; } { const w = htr(p, 'psellshop'); if (w) withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => { for (let i = 0; i < (w.n || 2); i++) { const o = p.sh.filter(x => !x.sp); if (o.length) buff(pickR(o), w.a || 1, w.h || 1); } }); } qAdd(p, 'sells'); toPool(G, m); return true; },
   play(G, p, a) {
     const m = p.hd[a.i]; if (!m || m.sp || p.bd.length >= 7) return false;
     p.hd.splice(a.i, 1);
     const pos = Math.max(0, Math.min(a.pos == null ? p.bd.length : a.pos, p.bd.length));
+    // Magnétisme : joué juste à gauche d'un serviteur de sa famille, il fusionne avec lui
+    if (fxOf(m, 'pas').some(e => e.k === 'magnet') && p.bd[pos] && tribeOk(p.bd[pos], tribe(m))) {
+      const tgt = p.bd[pos];
+      withSrc('Magnétisme · ' + CD(m.c).n, () => { buff(tgt, m.a, m.h); addF(tgt, m.f); (CD(m.c).fxAll || []).filter(e => e.k !== 'magnet').forEach(e => xAdd(tgt, e, CD(m.c).n)); (m.x || []).forEach(e => (tgt.x = tgt.x || []).push(e)); });
+      qAdd(p, 'play', 1, CD(m.c).tr); qAdd(p, 'magnets');
+      p.bd.slice().forEach(x => fxOf(x, 'play').forEach(e => runRecruit(G, p, x, e, m)));
+      p.hd.forEach(x => { if (!x.sp) fxOf(x, 'hplay').forEach(e => runRecruit(G, p, x, e, m)); });
+      return true;
+    }
     p.bd.splice(pos, 0, m);
+    if (p.horA && tribeOk(m, 'si_hor')) withSrc('Horror Show', () => buff(m, p.horA, 0));
+    if (p.kk && fxOf(m, 'pas').some(e => e.k === 'pas_kk')) withSrc('Kang et Kodos', () => buff(m, p.kk * mult(m), p.kk * mult(m)));
+    p.hd.forEach(x => { if (!x.sp) fxOf(x, 'hplay').forEach(e => runRecruit(G, p, x, e, m)); });
     if (p.hero === 'leon' && tribe(m) === 'sq_terre') withSrc('Passif de Léon', () => { addF(m, 't'); buff(m, 1, 2); });
     qAdd(p, 'play', 1, CD(m.c).tr);
     { const w = htr(p, 'pplay'); if (w && tribeOk(m, w.tb)) withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => buff(m, w.a || 0, w.h || 0)); }
@@ -1853,9 +1942,9 @@ const OPS = {
     checkTriple(G, p); return true;
   },
   move(G, p, a) { const m = p.bd[a.i]; if (!m) return false; p.bd.splice(a.i, 1); p.bd.splice(Math.max(0, Math.min(a.to, p.bd.length)), 0, m); return true; },
-  roll(G, p) { const free = (p.hero === 'rivet' || (htr(p, 'pturn') || {}).roll) && p.rr === 0; if (!free && p.g < 1) return false; if (!free) p.g -= 1; p.rr++; qAdd(p, 'rolls'); p.fz = false; fillShop(G, p); trigBoard(G, p, 'roll'); return true; },
+  roll(G, p) { const free = (p.hero === 'rivet' || (htr(p, 'pturn') || {}).roll) && p.rr === 0; if (!free && p.g < 1) return false; if (!free) { p.g -= 1; spent(G, p, 1); } p.rr++; qAdd(p, 'rolls'); p.fz = false; fillShop(G, p); trigBoard(G, p, 'roll'); return true; },
   frz(G, p) { p.fz = !p.fz; return true; },
-  up(G, p) { const c = upCost(p); if (p.t >= 6 || p.g < c) return false; p.g -= c; p.t++; p.uc = +RU().up[p.t] || 0; trigBoard(G, p, 'up'); if (htr(p, 'pkg') && p.t >= 3) withSrc('Pouvoir de Mei', () => kgCard(G, p)); return true; },
+  up(G, p) { const c = upCost(p); if (p.t >= 6 || p.g < c) return false; p.g -= c; p.t++; p.uc = +RU().up[p.t] || 0; spent(G, p, c); trigBoard(G, p, 'up'); if (htr(p, 'pupdisc') && !p.disc && p.hd.length < 10) discTier(G, p, p.t - 1); if (htr(p, 'pkg') && p.t >= 3) withSrc('Pouvoir de Mei', () => kgCard(G, p)); return true; },
   comp(G, p) { const id = compOf(p.hero); if (inMechAny(G, 'chakra') || !id || !C[id] || (p.cb || 0) >= compLimit(G.rd) || p.g < 3 || p.hd.length >= 10) return false; p.g -= 3; p.cb = (p.cb || 0) + 1; p.hd.push(mk(id, 0)); checkTriple(G, p); return true; },
   pow(G, p) { const r = withSrc(HEROES[p.hero] ? 'Pouvoir de ' + HEROES[p.hero].n.split(' ')[0] : null, () => OPS.pow0(G, p)); if (r) checkTriple(G, p); return r; },   // jetons invoqués par le pouvoir : triple possible
   pow0(G, p) {
@@ -1874,7 +1963,7 @@ const OPS = {
     if (p.hero === 'grumbo') { if (!p.bd.length) return false; const t = p.bd.slice().sort((a, b) => b.a - a.a)[0]; buff(t, 3, 3); }
     if (p.hero === 'vaskor') { if (p.bd.length >= 7 || !C.m_squelette) return false; const t = mk('m_squelette', 0); addF(t, 'r'); p.bd.push(t); }
     if (p.hero === 'oren') { if (p.hd.length >= 10) return false; const m = drawOne(G, 6, p.t); if (!m) return false; p.hd.push(m); checkTriple(G, p); }
-    if (heroKi(p)) { p.ki -= h.cost; qAdd(p, 'kiSpent', h.cost); } else if (heroCk(G, p)) p.ck -= h.cost; else p.g -= h.cost; p.pu = true; trigBoard(G, p, 'pow'); return true;
+    if (heroKi(p)) { p.ki -= h.cost; qAdd(p, 'kiSpent', h.cost); } else if (heroCk(G, p)) p.ck -= h.cost; else { p.g -= h.cost; spent(G, p, h.cost); } p.pu = true; trigBoard(G, p, 'pow'); return true;
   },
   rdy(G, p) { p.rdy = !p.rdy; return true; },
   // entraînement : les coffres s'ouvrent gratuitement, les équipements se rangent comme des médailles
@@ -1918,7 +2007,7 @@ const OPS = {
     withSrc('Inventaire · ' + SPELLS[id].n, () => { applyEquip(comp, id); for (let l = 1; l < ((p.eqlv || {})[id] || 1); l++) eqUpgrade(comp, id); });
     return true;
   },
-  buysp(G, p, a) { const k = a && +a.k === 1 ? 'sp2' : 'sp', it = p[k], S = it && SPELLS[it.sp]; const c = S ? spCost(p, S) : 0; if (!S || p.g < c || p.hd.length >= 10) return false; p.g -= c; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(it); p[k] = null; return true; },
+  buysp(G, p, a) { const k = a && +a.k === 1 ? 'sp2' : 'sp', it = p[k], S = it && SPELLS[it.sp]; const c = S ? spCost(p, S) : 0; if (!S || p.g < c || p.hd.length >= 10) return false; p.g -= c; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(it); p[k] = null; spent(G, p, c); handIn(p); return true; },
   med(G, p, a) { const m = p.bd[a.i]; if (!m || !inMechAny(G, 'ki')) return false; m.med = m.med ? 0 : 1; return true; },
   portal(G, p, a) { const m = p.bd[a.i]; if (!m || !inMechAny(G, 'portail') || (p.pf || 0) < 1) return false; if (!doPortal(G, p, m)) return false; p.pf -= 1; return true; },
   fuse(G, p, a) { const m = p.bd[a.i], F = DB_FUS.find(f => f.id === a.f); if (!m || !F || !inMechAny(G, 'ki') || (p.ki || 0) < F.c || !fusPartner(p, m, F)) return false; p.ki -= F.c; qAdd(p, 'kiSpent', F.c); return doFusion(G, p, m, F); },
@@ -1926,7 +2015,7 @@ const OPS = {
   ckm(G, p, a) { const m = p.bd[a.i]; if (!m || m.awk) return false; const md = (CD(m.c).fxAll || []).find(x => x.k === 'ckm'); if (!md || (p.ck || 0) < ckmCost(p, md)) return false;
     p.ck -= ckmCost(p, md); m.awk = 1; qAdd(p, 'awk'); withSrc('Éveil · ' + CD(m.c).n, () => { buff(m, md.c * mult(m), md.c * mult(m)); runMode(G, p, m, md.m); }); checkTriple(G, p); return true; },
   cast(G, p, a) { const it = p.hd[a.i]; if (!it || !it.sp || p.disc) return false; return castSpell(G, p, a.i, a.tg); },
-  pick(G, p, a) { if (!p.disc || !p.disc[a.i]) return false; const m = p.disc.splice(a.i, 1)[0]; p.disc.forEach(x => toPool(G, x)); p.disc = null; if (p.hd.length < 10) p.hd.push(m); else toPool(G, m); checkTriple(G, p); return true; },
+  pick(G, p, a) { if (!p.disc || !p.disc[a.i]) return false; const m = p.disc.splice(a.i, 1)[0]; p.disc.forEach(x => toPool(G, x)); p.disc = null; if (p.hd.length < 10) { p.hd.push(m); handIn(p); } else toPool(G, m); if (p.discQ > 0 && !p.disc) { p.discQ--; discTier(G, p, p.discT); } checkTriple(G, p); return true; },
 };
 
 // pouvoirs décrits par des données (héros des Cinq Nations)
@@ -1990,6 +2079,9 @@ function powStepCan(p, s) {
     case 'shieldtaunt': return (p.bd || []).length > 0;
     case 'robshop': return (p.bd || []).length > 0 && (p.sh || []).some(x => !x.sp && (x.a > 1 || x.h > 1));
     case 'gaggive': return (p.bd || []).length > 0;
+    case 'donut': return (p.hd || []).length < 10;
+    case 'buffbought': return (p.bd || []).length > 0;
+    case 'raf': return !p.raf;
   }
   return true;
 }
@@ -2057,6 +2149,11 @@ function powStep(G, p, s) {
     case 'bufftaunt': p.bd.forEach(m => { if (has(m, 't')) buff(m, s.a || 0, s.h || 0); }); break;
     case 'shieldtaunt': { const c = p.bd.filter(m => has(m, 't') && !has(m, 's')); const t = c.length ? pickR(c) : (p.bd.filter(m => !has(m, 't')).length ? pickR(p.bd.filter(m => !has(m, 't'))) : null); if (!t) break; addF(t, c.length ? 's' : 't'); buff(t, s.a || 0, s.h || 0); break; }
     case 'gaggive': { const src = 'Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], has0 = p.bd.filter(m => (m.x || []).some(e => e.k === s.fx.k && e.src === src)); if (has0.length) has0.forEach(m => buff(m, s.a || 1, s.h || 1)); else { const t = pickR(p.bd.filter(m => !hasGag(m))) || pickR(p.bd); (t.x = t.x || []).push(Object.assign({ src }, s.fx)); } break; }
+    // ----- Les Simpson v2 -----
+    case 'donut': giveDonut(p, N); break;
+    case 'buffbought': { const n = 1 + (p.btN || 0), m = pickR(p.bd); if (m) buff(m, (s.a || 0) * n, (s.h || 0) * n); break; }
+    case 'raf': p.raf = 1; if (s.g) p.g += s.g; break;
+    case 'foeaoe': p.foe = p.foe || {}; p.foe.aoe = (p.foe.aoe || 0) + (s.d || 1); break;
     case 'robshop': { const tg = p.bd.length ? pickR(p.bd) : null; if (!tg) break; shuffle(p.sh.filter(x => !x.sp && (x.a > 1 || x.h > 1))).slice(0, N).forEach(x => { const a = Math.max(0, x.a - 1), h = Math.max(0, x.h - 1); x.a -= a; x.h -= h; buff(tg, a, h); qAdd(p, 'robs'); }); break; }
   }
 }
@@ -2226,8 +2323,11 @@ function startRecruit() {
     if (p.cp && awake(G)) summonBeast(p);
     p.mg = Math.min(10, 2 + G.rd); p.g = p.mg;
     if (p.hero === 'barnabe' && G.rd % 2 === 0) p.g += 1;
+    p.bt = {}; p.btN = 0; p.soldT = 0; p.bd.forEach(m => { delete m.spc; });
+    { const w = htr(p, 'pafk'); if (w) { if (G.rd <= w.n) p.g = 0; else if (G.rd === w.n + 1 && !p.disc) { p.discT = w.t; p.discQ = (w.m || 1) - 1; discTier(G, p, w.t); } } }   // Abe : deux tours de sieste, puis des découvertes
     p.uc = Math.max(0, p.uc - 1);
     if (p.fz) { p.fz = false; topUpShop(G, p); } else fillShop(G, p);
+    { const w = htr(p, 'pshop'); if (w) p.sh.forEach(m => { if (!m.sp) { m.a += w.a || 0; m.h += w.h || 0; } }); }   // Krusty : la taverne se renforce
     p.pu = false; p.castN = 0; p.castEls = []; p.ckSpentLast = p.ckSpent || 0; p.ckSpent = 0; p.hd.forEach(x => { if (x.sp && SPELLS[x.sp] && SPELLS[x.sp].chg) x.ch = Math.min(2, (x.ch || 0) + 1); }); p.fbq = false; p.njf = 0; p.sylv = false; p.rr = 0; p.rdy = false; p.lastRes = p.res ? (p.res.cr || p.res.r) : null; p.res = null;
     if (p.inc && p.inc.length) p.g += p.inc.shift() || 0;
     { const w = /^(nh|dh|rh|sh|smh)_/.test(p.hero || '') ? htr(p, 'pturn') : (pwOf(p) && pwOf(p).k === 'pturn' ? null : null); if (w) { if (w.g) p.g += w.g; if (w.ki) kiAdd(p, w.ki); if (w.ck) p.ck = Math.min(ckMax(p), (p.ck || 0) + w.ck); if ((w.h || w.a) && p.bd.length) { if (w.all) p.bd.forEach(m => buff(m, w.a || 0, w.h || 0)); else buff(pickR(p.bd), w.a || 0, w.h || 0); } if (w.el) mkAdd(p, w.el, w.n); const src = 'Pouvoir de ' + HEROES[p.hero].n.split(' ')[0]; if (w.sl) shuffle(p.bd.slice()).slice(0, w.sl).forEach(m => sealAdd(p, m, 1)); if (w.drp) withSrc(src, () => { const o = p.bd.filter(m => !(m.x || []).some(e => e.drp)); shuffle(o).slice(0, w.drp).forEach(t => (t.x = t.x || []).push({ k:'dr_summon', card:'tk_puppet', n:1, drp:1, src:'Sasori' })); }); if (w.pa) withSrc(src, () => { const a = p.bd.filter(isPact); if (a.length) a.forEach(m => buff(m, 1, 1)); else pactSummon(p, 'tk_toad', p.bd[p.bd.length - 1]); }); if (w.dr) withSrc(src, () => p.bd.forEach(m => { if (fxOf(m, 'dr').length) buff(m, w.dr, 0); })); } p.spd = 0; }
@@ -2296,6 +2396,7 @@ function endRecruit() {
     const heat = x => (x.fbq ? (x.fb || 3) : 0) + (x.hero === 'pyra' ? 2 : 0) + (x.njf || 0) + (HX(x) && HX(x).pw && HX(x).pw.k === 'pfire' ? HX(x).pw.d * (awake(G) ? 2 : 1) : 0) + (awake(G) && x.bd && inMechAny(G, 'chakra') ? x.bd.filter(m => tribeOk(m, 'n_foudre')).length * (x.bd.some(m => hasFx(m, 'awk_storm')) ? 2 : 1) : 0);
     const fire = [heat(p), ghost ? 0 : heat(q)];
     const pb = combatBoard(p), qcb = combatBoard(ghost || q);
+    if (p.horA) pb.forEach(m => { m.hx = p.horA; }); if ((ghost || q).horA) qcb.forEach(m => { m.hx = (ghost || q).horA; });
     foeApply(p, qcb); if (!ghost) foeApply(q, pb);
     // après l'Éveil (Ninja) : compagnon et bête d'invocation rejoignent la bataille, en tête de rangée
     const join = awake(G) && inMechAny(G, 'chakra') && (typeof AWK_JOIN === 'undefined' || AWK_JOIN);
@@ -2375,6 +2476,13 @@ function lawsAfterFight(G, p, r, side) {
   if (inMechAny(G, 'portail') && r.pf && r.pf[side]) p.pfNext = (p.pfNext || 0) + r.pf[side];   // Râle d'agonie : fluide de portail au prochain tour
   if (inMechAny(G, 'bande') && r.inc && r.inc[side]) { p.inc = p.inc || []; p.inc[0] = (p.inc[0] || 0) + r.inc[side]; }   // bande d'Adultes : or au prochain tour
   if (r.gag && r.gag[side]) { let tot = 0; for (const u in r.gag[side]) { const n = r.gag[side][u], m = p.bd.find(x => String(x.u) === u); tot += n; if (m) m.gag = (m.gag || 0) + n; } if (tot) qAdd(p, 'gags', tot); }   // gags récurrents déclenchés au combat : les compteurs grandissent sur le vrai plateau
+  // Les Simpson v2 : ce que le combat rapporte (bonus définitifs, Donuts, main, Horror Show, Kang et Kodos, copie de Bart)
+  if (r.perm && r.perm[side]) withSrc('Combat', () => { for (const u in r.perm[side]) { const m = p.bd.find(x => String(x.u) === u); if (m) buff(m, r.perm[side][u][0], r.perm[side][u][1]); } });
+  if (r.gl && r.gl[side] && r.gl[side].horA) { const n = r.gl[side].horA; p.horA = (p.horA || 0) + n; withSrc('Horror Show', () => p.bd.forEach(m => { if (tribeOk(m, 'si_hor')) buff(m, n, 0); })); }
+  if (r.don && r.don[side]) giveDonut(p, r.don[side]);
+  if (r.hb && r.hb[side]) withSrc('Gil', () => r.hb[side].forEach(([a, h]) => { const o = p.hd.filter(x => !x.sp); if (o.length) buff(pickR(o), a, h); }));
+  { const n = (r.dead[side] || []).filter(c => c === 'si_kang' || c === 'si_kodos').length; if (n) { p.kk = (p.kk || 0) + n; withSrc('Kang et Kodos', () => p.bd.forEach(m => { if (fxOf(m, 'pas').some(e => e.k === 'pas_kk')) buff(m, n * mult(m), n * mult(m)); })); } }
+  if (p.raf) { const c = (r.dead[1 - side] || [])[0]; if (c && C[c] && p.hd.length < 10) p.hd.push(mk(c, 0)); p.raf = 0; }
   if (G.mx && G.mx.pillage && r.w === side && r.alive[side].some(c => C[c] && G.mx.pillage.includes(C[c].tr)) && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) { p.hd.push(sp); p.loot = (p.loot || 0) + 1; } }
 }
 const inMechAny = (G, k) => !!(G && G.mx && G.mx[k]);
@@ -2410,7 +2518,7 @@ function hostTick() {
 
 /* ---------- diffusion ---------- */
 const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u, ch:m.ch || 0, us:m.us || 0 }; const o = { c:m.c, a:m.a, h:m.h }; if (m.awk) o.awk = 1; if (m.sl) o.sl = m.sl; if (m.med) o.med = 1; if (m.tf) { o.tf = m.tf; o.tfn = m.tfn; } if (m.abs) o.abs = m.abs; if (m.por) { o.por = m.por; o.porOf = m.porOf; } if (m.fam) { o.fam = m.fam; if (m.famOf) o.famOf = m.famOf; } if (m.gag) o.gag = m.gag; if (m.rk) o.rk = m.rk; if (m.memo) o.memo = m.memo; if (m.el) o.el = m.el; if (m.fu) o.fu = m.fu; if (m.xp) o.xp = m.xp; if (m.eq && m.eq.length) o.eq = m.eq; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; if (m.bn) o.bn = m.bn; return o; };
-const fullM = m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g || 0, f:m.f || '', u:m.u }; if (m.x) o.x = m.x; if (m.fam) o.fam = m.fam; if (m.gag) o.gag = m.gag; if (m.domb) o.domb = m.domb; if (m.awk) o.awk = m.awk; if (m.tf) o.tf = m.tf; if (m.duo) o.duo = 1; if (m.el) o.el = m.el; return o; };
+const fullM = m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g || 0, f:m.f || '', u:m.u }; if (m.x) o.x = m.x; if (m.fam) o.fam = m.fam; if (m.gag) o.gag = m.gag; if (m.domb) o.domb = m.domb; if (m.awk) o.awk = m.awk; if (m.tf) o.tf = m.tf; if (m.duo) o.duo = 1; if (m.el) o.el = m.el; if (m.hx) o.hx = m.hx; return o; };
 function pubData() {
   const G = H.G;
   if (!G) return { ph:'lobby', code:H.code, cv:CAT_REV, us:(V.univSel || []).slice(), pl:H.roster.map(r => ({ n:r.n, pe:r.peer })), last:H.last || null };

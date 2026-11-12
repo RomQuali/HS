@@ -368,9 +368,10 @@ function simCardH() {
   const row = (ic, col, t, x) => `<span class="nj-r"><i class="nj-i" style="--c:${col}"><span class="nj-tx">${ic}</span></i><span><b>${t}</b><small>${x}</small></span></span>`;
   const fam = (tb, x) => `<em style="color:${shade((TRIBES[tb] || {}).col || '#ffffff', 0.45)}">${esc(trName(tb))}</em> : ${x}`;
   return `<span class="ban-law nj-law"><b>Les nouvelles mécaniques</b>
-    ${row('!', '#5a3a12', 'Les gags récurrents', 'Certains serviteurs ont un Gag (fin de tour, début du combat, râle d\'agonie, après une attaque…). Chaque fois qu\'il se déclenche, son effet grandit de +1 pour toute la partie : le compteur reste sur le serviteur, s\'additionne dans un triple, et s\'affiche sur sa carte (bulle jaune).')}
-    ${row('✦', '#3a2a5a', 'Les objets de Springfield', 'Donut, Bière Duff, Flaming Moe, Squishee, Bonbon Krusty… s\'achètent et s\'utilisent en or à l\'étagère de la taverne. Le Donut et le Bonbon font grandir les compteurs de gag ; le Squishee déclenche tout de suite tes gags de fin de tour.')}
-    ${row('★', '#1e4a6a', 'Cinq familles', `${fam('si_fam', 'soutien entre membres de la famille')} · ${fam('si_moe', 'tournées, bonus à tous en fin de tour')} · ${fam('si_cra', 'vol d\'or, de stats et de cartes de la taverne')} · ${fam('si_aut', 'Provocation et protection')} · ${fam('si_hor', 'râles d\'agonie et invocations')}.`)}
+    ${row('◍', '#7a2a5a', 'Les Donuts', 'Un Donut est un sort gratuit qui arrive dans ta main : pose-le sur un de tes serviteurs, il gagne +1/+1 pour toute la partie. Des serviteurs en donnent, en posent tout seuls en fin de tour, ou font grossir tous tes Donuts.')}
+    ${row('✦', '#3a2a5a', 'Les objets de Springfield', 'Boîte de donuts, Bière Duff, Squishee, Flaming Moe, Ticket de monorail… s\'achètent en or à l\'étagère de la taverne, comme les sorts de taverne de Champs de bataille.')}
+    ${row('⚙', '#1e4a6a', 'Deux mots-clés', 'Magnétisme : joué juste à gauche d\'une Autorité, le serviteur fusionne avec elle. Vengeance (X) : l\'effet se déclenche après la mort de X alliés pendant le combat.')}
+    ${row('★', '#1e4a6a', 'Cinq familles', `${fam('si_fam', 'Donuts')} · ${fam('si_moe', 'Cris de guerre en chaîne')} · ${fam('si_cra', 'or gagné et dépensé')} · ${fam('si_aut', 'Bouclier divin, Provocation, Magnétisme')} · ${fam('si_hor', 'Renaissance et attaque qui grandit')}.`)}
   </span>`;
 }
 function ninjaCardH() {

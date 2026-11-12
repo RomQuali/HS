@@ -46,16 +46,17 @@ const SPELLS = {
   so_baton:{ spk:1, n:'Bâton de la vérité', t:4, c:3, ty:'obj', tg:1, fx:[{ k:'tfamall' }, { k:'tbuff', a:2, h:2 }], tx:'Le serviteur ciblé compte comme toutes les familles pour la cohésion et gagne +2/+2.' },
   so_cape:{ spk:1, n:'Cape de Mysterion', t:5, c:3, ty:'obj', tg:1, fx:[{ k:'tkwp', kw:'r' }, { k:'tbuff', a:3, h:3 }], tx:'Le héros qui ne meurt jamais : le serviteur ciblé gagne Renaissance et +3/+3.' },
   // ----- objets de Springfield (univers Les Simpson) : achetés et utilisés en or, à l'étagère de la taverne ; plusieurs font grandir les gags -----
-  si_donut:{ sim:1, n:'Donut', t:1, c:1, ty:'spr', tg:1, fx:[{ k:'tbuff', a:1, h:2 }, { k:'tgag', n:1 }], tx:'Mmmh, donut : le serviteur ciblé gagne +1/+2 ; s\'il a un Gag, son compteur grandit de 1.' },
-  si_duff:{ sim:1, n:'Bière Duff', t:1, c:1, ty:'spr', fx:[{ k:'buffr', n:2, a:1, h:1 }, { k:'buffall', a:1, h:0, tb:'si_moe' }], tx:'À la tienne : deux de tes serviteurs aléatoires gagnent +1/+1, et tes Piliers de bar gagnent +1/+0.' },
-  si_lancepierre:{ sim:1, n:'Lance-pierre de Bart', t:2, c:1, ty:'spr', tg:1, fx:[{ k:'tbuff', a:2, h:0 }, { k:'fire', d:2 }], tx:'Mange ça : le serviteur ciblé gagne +2 attaque, et 2 dégâts frappent l\'ennemi au prochain combat.' },
-  si_saxo:{ sim:1, n:'Saxophone de Lisa', t:2, c:2, ty:'spr', tg:1, fx:[{ k:'tnb', a:1, h:2 }], tx:'Solo de blues : le serviteur ciblé et ses voisins gagnent +1/+2.' },
-  si_flaming:{ sim:1, n:'Flaming Moe', t:3, c:2, ty:'spr', fx:[{ k:'fire', d:4 }, { k:'buffall', a:1, h:1, tb:'si_moe' }], tx:'Ça flambe : 4 dégâts frappent l\'ennemi au prochain combat, et tes Piliers de bar gagnent +1/+1.' },
-  si_squishee:{ sim:1, n:'Squishee', t:3, c:2, ty:'spr', fx:[{ k:'gagnow' }], tx:'Rush de sucre : les gags de fin de tour de tes serviteurs se déclenchent tout de suite (et grandissent).' },
-  si_plutonium:{ sim:1, n:'Barre de plutonium', t:3, c:2, ty:'spr', tg:1, fx:[{ k:'tbuff', a:2, h:2 }, { k:'ttmp', a:0, h:0, kw:'n' }], tx:'Radioactif : le serviteur ciblé gagne +2/+2, et Venimeux au prochain combat.' },
-  si_tetine:{ sim:1, n:'Tétine de Maggie', t:4, c:2, ty:'spr', tg:1, fx:[{ k:'tbuff', a:0, h:5 }, { k:'tkwp', kw:'t' }], tx:'Chut : le serviteur ciblé gagne +0/+5 et Provocation.' },
-  si_ticket:{ sim:1, n:'Ticket de monorail', t:4, c:3, ty:'spr', fx:[{ k:'disc' }, { k:'inc', n:1 }], tx:'Mono… rail ! Découvre un serviteur d\'un niveau au-dessus de ta taverne (un parmi trois), et gagne 1 or au début du prochain tour.' },
-  si_bonbon:{ sim:1, n:'Bonbon Krusty', t:5, c:3, ty:'spr', fx:[{ k:'gagall', n:1 }, { k:'buffall', a:1, h:1 }], tx:'Hey hey ! Les compteurs de gag de tous tes serviteurs grandissent de 1, et tes serviteurs gagnent +1/+1.' },
+  si_don:{ sim:1, don:1, item:1, n:'Donut', t:1, c:0, ty:'spr', tg:1, fx:[{ k:'tdonut' }], tx:'Mmmh… donut : le serviteur ciblé gagne +1/+1 pour toute la partie (plus tes bonus de Donut).' },
+  si_donut:{ sim:1, n:'Boîte de donuts', t:1, c:1, ty:'spr', fx:[{ k:'donut', n:2 }], tx:'Reçois 2 Donuts : chacun donne +1/+1 à un de tes serviteurs.' },
+  si_duff:{ sim:1, n:'Bière Duff', t:1, c:2, ty:'spr', fx:[{ k:'shopbuff', a:1, h:2 }], tx:'Tournée générale : les serviteurs de la taverne gagnent +1/+2.' },
+  si_lancepierre:{ sim:1, n:'Lance-pierre de Bart', t:2, c:1, ty:'spr', tg:1, fx:[{ k:'tbuff', a:4, h:0 }], tx:'Mange ça : le serviteur ciblé gagne +4 attaque.' },
+  si_squishee:{ sim:1, n:'Squishee', t:2, c:1, ty:'spr', fx:[{ k:'inc', n:2 }], tx:'Rush de sucre : gagne 2 or au début du prochain tour.' },
+  si_saxo:{ sim:1, n:'Saxophone de Lisa', t:3, c:3, ty:'spr', fx:[{ k:'discown' }], tx:'Solo de blues : découvre un serviteur de ton niveau de taverne (un parmi trois).' },
+  si_flaming:{ sim:1, n:'Flaming Moe', t:3, c:2, ty:'spr', fx:[{ k:'tma', a:2, h:1 }], tx:'Ça flambe : tes serviteurs gagnent +2/+1 pour le prochain combat.' },
+  si_tetine:{ sim:1, n:'Tétine de Maggie', t:3, c:1, ty:'spr', fx:[{ k:'rollfam' }], tx:'Chut : actualise la taverne avec des serviteurs de ta famille la plus présente.' },
+  si_ticket:{ sim:1, n:'Ticket de monorail', t:4, c:2, ty:'spr', fx:[{ k:'uc', n:3 }], tx:'Mono… rail ! Ta prochaine amélioration de taverne coûte 3 or de moins.' },
+  si_bonbon:{ sim:1, n:'Bonbon Krusty', t:4, c:3, ty:'spr', tg:1, fx:[{ k:'ttier', a:1, h:1 }], tx:'Hey hey ! Le serviteur ciblé gagne +1/+1 par niveau de ta taverne.' },
+  si_plutonium:{ sim:1, n:'Barre de plutonium', t:5, c:3, ty:'spr', tg:1, fx:[{ k:'tkwp', kw:'n' }], tx:'Radioactif : le serviteur ciblé gagne Venimeux.' },
   sp_pinte:{ n:'Pinte offerte', t:1, c:1, ty:'renf', tg:1, tx:'Donne +2/+1 à un de tes serviteurs.' },
   sp_tournee:{ n:'Nouvelle tournée', t:1, c:0, ty:'eco', tx:'Rafraîchit la taverne gratuitement.' },
   sp_placement:{ n:'Placement prudent', t:1, c:1, ty:'eco', tx:'Au début de ton prochain tour, gagne 2 or.' },
@@ -158,7 +159,7 @@ function drawSpell(t, el) { const nin = typeof H !== 'undefined' && H.G && inMec
   if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'ki')) { const ids = SPELL_IDS.filter(id => SPELLS[id].db && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
   if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'portail')) { const ids = SPELL_IDS.filter(id => SPELLS[id].rm && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }   // Rick et Morty : seulement les inventions
   if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'bande')) { const ids = SPELL_IDS.filter(id => SPELLS[id].spk && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }   // South Park : seulement les objets cultes
-  if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'gag')) { const ids = SPELL_IDS.filter(id => SPELLS[id].sim && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }   // Les Simpson : seulement les objets de Springfield
+  if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'gag')) { const ids = SPELL_IDS.filter(id => SPELLS[id].sim && !SPELLS[id].don && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }   // Les Simpson : seulement les objets de Springfield
   if (nin && !NJ_TECH) { const ids = SPELL_IDS.filter(id => SPELLS[id].cs && SPELLS[id].t <= t); const w = ids.map(id => SPELLS[id].rare ? 0.35 : 1), tot = w.reduce((a, b) => a + b, 0); let r = Math.random() * tot; for (let i = 0; i < ids.length; i++) { r -= w[i]; if (r <= 0) return { sp:ids[i], u:UID++ }; } return ids.length ? { sp:ids[0], u:UID++ } : null; } const ev = typeof H !== 'undefined' && H.G && H.G.eveil; const ids = SPELL_IDS.filter(id => SPELLS[id].t <= t && !SPELLS[id].item && !SPELLS[id].db && !SPELLS[id].rm && !SPELLS[id].spk && !SPELLS[id].sim && !!SPELLS[id].nin === !!nin && (!SPELLS[id].forb || ev) && (!el || SPELLS[id].el === el)); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
 
 // technique Dragon Ball sans effet ciblé : lançable sans lanceur quand le plateau est vide (pas de bonus Signature)
@@ -267,6 +268,13 @@ function techSteps(G, p, steps, tgt, tg, x) {
       case 'tnear': if (tgt) { const i = p.bd.indexOf(tgt); if (i >= 0 && !nbFam(p.bd, i)) { let best = -1; p.bd.forEach((m, j) => { if (m !== tgt && sameFam(m, tgt) && (best < 0 || Math.abs(j - i) < Math.abs(best - i))) best = j; }); if (best >= 0) { p.bd.splice(i, 1); p.bd.splice(best < i ? best + 1 : best, 0, tgt); } } } break;
       case 'buffnb': p.bd.forEach((m, i) => { const nb = nbFam(p.bd, i); buff(m, nb ? (s.a2 || 0) * x : a, nb ? (s.h2 || 0) * x : h); }); break;
       // ----- objets de Springfield (Les Simpson) -----
+      // ----- Les Simpson v2 : Donuts et sorts façon Champs de bataille -----
+      case 'donut': giveDonut(p, s.n * x); break;
+      case 'tdonut': if (tgt) putDonut(G, p, tgt, true); break;
+      case 'shopbuff': p.sh.filter(m => !m.sp).forEach(m => buff(m, a, h)); break;
+      case 'discown': if (!p.disc) discTier(G, p, p.t); break;
+      case 'rollfam': { const f = mainFam(p.bd).tb; p.fz = false; fillShop(G, p); if (f) p.sh = p.sh.map(m => { if (m.sp) return m; const c = drawOne(G, p.t, null, f); if (!c) return m; toPool(G, m); return c; }); break; }
+      case 'ttier': if (tgt) buff(tgt, a * p.t, h * p.t); break;
       case 'tgag': if (tgt && hasGag(tgt)) tgt.gag = (tgt.gag || 0) + s.n * x; break;
       case 'gagall': p.bd.forEach(m => { if (hasGag(m)) m.gag = (m.gag || 0) + s.n * x; }); break;
       case 'gagnow': p.bd.slice().forEach(m => fxOf(m, 'eot').filter(isGag).forEach(e => runRecruit(G, p, m, e))); break;
@@ -277,6 +285,7 @@ function techSteps(G, p, steps, tgt, tg, x) {
 // effets « prochain combat » sur le plateau adverse (sceaux, entraves)
 function foeApply(p, board) {
   const f = p && p.foe; if (!f || !board) return;
+  if (f.aoe) board.forEach(m => { if (has(m, 's')) remF(m, 's'); else m.h -= f.aoe; });   // Maggie : dégâts à tous les ennemis avant le combat
   const live = () => board.filter(m => m.h > 0);
   for (let i = 0; i < (f.seal || 0); i++) { const o = live().filter(m => (m.f || '').length); if (!o.length) break; pickR(o).f = ''; }
   { const used = new Set(); (f.chill || []).forEach(v => { let o = live().filter(m => !used.has(m)); if (!o.length) { used.clear(); o = live(); } if (o.length) { const t = pickR(o); used.add(t); t.a = Math.max(0, t.a - v); } }); }   // cibles différentes tant que possible
@@ -564,6 +573,7 @@ Object.assign(SPART, {
   so_baton: () => softGlow(50, 50, 32, '#ffd86a', .35) + Ln('M30 88 L62 24', OUT, 8) + Ln('M30 88 L62 24', '#8a5a2a', 5) + Ln('M40 68 L46 56 M50 50 L54 42', '#5a3a1a', 1.6) + P('M58 30 L66 14 L74 30 L66 38 Z', '#9fe4ff', so(1.8) + ' ' + GLOW) + P('M62 30 L66 20 L70 30 Z', '#ffffff', 'opacity=".6"') + [[22, 30], [80, 70], [26, 80]].map(([x, y]) => P(starD(x, y, 3.2, 1.2, 4), '#fff6c8', GLOW)).join(''),
   so_cape: () => softGlow(50, 54, 32, '#b48cff', .35) + P('M30 26 Q50 14 70 26 L84 88 Q50 78 16 88 Z', '#2a1a4a', so()) + P('M36 26 Q50 18 64 26 L58 42 L42 42 Z', '#1a1030', so(1.4)) + P('M44 60 Q50 54 56 60 Q56 66 50 66 L50 72', 'none', 'stroke="#9fe36a" stroke-width="3" stroke-linecap="round"') + Ci(50, 78, 2, '#9fe36a') + Ln('M30 26 L22 40 M70 26 L78 40', '#5a3a8a', 3),
   // ----- objets de Springfield : objets abstraits, jamais de personnage -----
+  si_don: () => softGlow(50, 54, 32, '#ff9ac8', .35) + Ci(50, 54, 22, '#e8a060', so()) + P('M28 54 Q30 40 50 35 Q70 40 72 54 Q66 59 58 56 Q50 63 42 56 Q34 59 28 54 Z', '#ff7ab8', so(1.6)) + Ci(50, 54, 7, '#2a1a10'),
   si_donut: () => softGlow(50, 54, 32, '#ff9ac8', .35) + Ci(50, 54, 28, '#e8a060', so()) + Ci(50, 54, 9, '#2a1a10', so(1.4)) + P('M22 54 Q24 36 50 30 Q76 36 78 54 Q70 60 60 56 Q50 66 40 56 Q30 60 22 54 Z', '#ff7ab8', so(1.6)) + Ci(50, 54, 9, '#2a1a10') + [[36, 44, 20], [50, 38, -30], [62, 46, 60], [42, 54, 70], [58, 56, -20], [30, 52, -60]].map(([x, y, r]) => `<rect x="${x - 3}" y="${y - 1}" width="6" height="2.4" rx="1.2" fill="${['#fff36a', '#6ad8ff', '#ffffff', '#8aff8a'][(x + y) % 4]}" transform="rotate(${r} ${x} ${y})"/>`).join(''),
   si_duff: () => softGlow(50, 54, 32, '#ff6a6a', .3) + `<rect x="34" y="22" width="32" height="62" rx="6" fill="#d83a3a" ${so()}/>` + `<rect x="34" y="22" width="32" height="10" rx="5" fill="#c8c8d0" ${so(1.6)}/>` + `<rect x="34" y="76" width="32" height="8" rx="4" fill="#c8c8d0" ${so(1.6)}/>` + `<rect x="34" y="44" width="32" height="18" fill="#fff6c8" ${so(1.4)}/>` + Ln('M40 53 H60', '#d83a3a', 3) + Ci(50, 27, 2.5, '#6a6a72'),
   si_lancepierre: () => softGlow(50, 54, 32, '#c8a06a', .3) + Ln('M50 90 V52', OUT, 9) + Ln('M50 90 V52', '#8a5a2a', 6) + Ln('M50 56 L30 24 M50 56 L70 24', OUT, 8) + Ln('M50 56 L30 24 M50 56 L70 24', '#8a5a2a', 5) + Ln('M30 24 Q50 40 70 24', '#d8b070', 3) + Ci(50, 36, 6, '#6a6a72', so(1.4)),
