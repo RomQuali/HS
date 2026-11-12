@@ -247,7 +247,7 @@ function tokenH(m, z, i, o = {}) {
   const porH = porU ? `<span class="por-b${recr && pf >= 1 ? ' ok' : ''}" role="button" tabindex="0" data-act="portal" data-i="${i}" data-tip="${esc('Portail (1 fluide, tu en as ' + pf + ') : ' + b.n + ' revient d\'une autre dimension en ' + ((TRIBES[b.tr] || {}).sg || trName(b.tr) || 'serviteur') + ' aléatoire de niveau ' + Math.max(1, tierOf(m) - 1) + ' ou ' + Math.min(6, tierOf(m) + 1) + ', en gardant ses bonus' + (m.g ? ', doré compris' : '') + '.')}" aria-label="Faire passer un portail">◎</span>` + (m.por ? `<span class="por-n" data-tip="${esc('Variante d\'une autre dimension (' + m.por + ' portail' + (m.por > 1 ? 's' : '') + (m.porOf ? ', ex-' + m.porOf : '') + ')')}">Dim. ${m.por}</span>` : '') : '';
   const mdH = md ? `<span class="ckm-b${mdOk ? ' ok' : ''}" role="button" tabindex="0" data-act="ckm" data-i="${i}" data-tip="${esc('Éveil (' + mdC + ' chakra, une seule fois) : +' + md.c * mult(m) + '/+' + md.c * mult(m) + ', puis chaque tour : ' + mTx(md.m, mult(m)))}" aria-label="Éveiller ce serviteur">${ckMarkH(mdC)}</span>` : '';
   const famH = m.fam && z !== 'sh' ? `<span class="fam-n" data-tip="${esc(m.fam === '*' ? 'Compte comme toutes les familles pour la cohésion' + (m.famOf ? ' (' + m.famOf + ')' : '') + '.' : 'Converti : compte comme ' + ((TRIBES[m.fam] || {}).sg || trName(m.fam)) + ' pour la cohésion' + (m.famOf ? ' (' + m.famOf + ')' : '') + '.')}">${m.fam === '*' ? '✦ Toutes familles' : esc(trName(m.fam))}</span>` : '';
-  return `<div class="${cls}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.dmg ? ` data-dmg="${o.dmg}"` : ''}${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">${svg}${mdH}${kiH}${porH}${famH}${o.name === false ? '' : `<span class="mn-nm">${esc(b.n)}</span>`}${m.tr ? '<span class="tri">Triple !</span>' : o.trip ? '<span class="tri pulse">Triple !</span>' : ''}${o.extra || ''}</div>`;
+  return `<div class="${cls}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.dmg ? ` data-dmg="${o.dmg}"` : ''}${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">${svg}${o.trip ? '<span class="ptag" aria-hidden="true">Triple !</span>' : o.pair ? '<span class="ptag" aria-hidden="true">Paire ×2</span>' : ''}${mdH}${kiH}${porH}${famH}${o.name === false ? '' : `<span class="mn-nm">${esc(b.n)}</span>`}${m.tr ? '<span class="tri">Triple !</span>' : o.trip ? '<span class="tri pulse">Triple !</span>' : ''}${o.extra || ''}</div>`;
 }
 // pièce de coût en haut à gauche ; en vert avec l'ancien prix barré quand une réduction est active
 function costGemH(c, base) {
@@ -3166,9 +3166,9 @@ html.lite .table[class*="awk-"] .board-zone .mn::after{display:none}
 (function(){ const st = document.createElement('style'); st.textContent = `@media (min-width:1100px) and (min-height:700px){ #peek .peq{max-height:calc(100vh / 1.1 - 24px);overflow:auto} }`; document.head.appendChild(st); })();
 /* taverne : un serviteur que tu possèdes déjà (paire) ou deux fois (triple) se signale */
 (function(){ const st = document.createElement('style'); st.textContent = `
-.keeper-zone .mn.pairok::after,.keeper-zone .mn.tripok::after{position:absolute;left:50%;top:-4%;transform:translateX(-50%);z-index:6;padding:2px 9px;border-radius:99px;font:700 clamp(10px, calc(var(--tw) * .12), 15px)/1.2 var(--f-label),serif;white-space:nowrap;pointer-events:none;letter-spacing:.03em}
-.keeper-zone .mn.pairok::after{content:'Paire ×2';color:#e8f4ff;background:linear-gradient(180deg,#5a7aa8,#2a3e62);box-shadow:0 0 0 1.5px #bcd6ff,0 2px 6px rgba(0,0,0,.6)}
-.keeper-zone .mn.tripok::after{content:'Triple !';color:#3a2206;background:linear-gradient(180deg,#fff1b8,#e2a83a);box-shadow:0 0 0 1.5px #fff6d0,0 0 14px rgba(255,210,90,.9);animation:tripTag 1s ease-in-out infinite}
+.keeper-zone .mn.pairok > .ptag,.keeper-zone .mn.tripok > .ptag{position:absolute;left:50%;top:-4%;transform:translateX(-50%);z-index:6;padding:2px 9px;border-radius:99px;font:700 clamp(10px, calc(var(--tw) * .12), 15px)/1.2 var(--f-label),serif;white-space:nowrap;pointer-events:none;letter-spacing:.03em}
+.keeper-zone .mn.pairok > .ptag{color:#e8f4ff;background:linear-gradient(180deg,#5a7aa8,#2a3e62);box-shadow:0 0 0 1.5px #bcd6ff,0 2px 6px rgba(0,0,0,.6)}
+.keeper-zone .mn.tripok > .ptag{color:#3a2206;background:linear-gradient(180deg,#fff1b8,#e2a83a);box-shadow:0 0 0 1.5px #fff6d0,0 0 14px rgba(255,210,90,.9);animation:tripTag 1s ease-in-out infinite}
 .keeper-zone .mn.pairok .mn-svg{filter:drop-shadow(0 0 6px rgba(150,200,255,.95)) drop-shadow(0 0 2px #fff)}
 .keeper-zone .mn.pairok::before{content:'';position:absolute;left:2%;right:2%;top:2%;bottom:18%;border-radius:50%;pointer-events:none;z-index:0;box-shadow:0 0 0 2px rgba(190,220,255,.8),0 0 16px rgba(120,180,255,.7);animation:pairPulse 1.8s ease-in-out infinite}
 .keeper-zone .mn.tripok::before{content:'';position:absolute;left:-14%;right:-14%;top:-10%;bottom:6%;border-radius:50%;pointer-events:none;z-index:0;
@@ -3177,7 +3177,7 @@ html.lite .table[class*="awk-"] .board-zone .mn::after{display:none}
 @keyframes pairPulse{50%{box-shadow:0 0 0 3px rgba(220,236,255,.95),0 0 26px rgba(120,180,255,.9)}}
 @keyframes tripTag{50%{transform:translateX(-50%) scale(1.1)}}
 html.lite .keeper-zone .mn.tripok .mn-svg{filter:drop-shadow(0 0 8px rgba(255,210,90,.95))}
-html.lite .keeper-zone .mn.pairok::before,html.lite .keeper-zone .mn.tripok::before,html.lite .keeper-zone .mn.tripok::after{animation:none}
+html.lite .keeper-zone .mn.pairok::before,html.lite .keeper-zone .mn.tripok::before,html.lite .keeper-zone .mn.tripok > .ptag{animation:none}
 `; document.head.appendChild(st); })();
 /* PC : proportions d'un auto-battler classique (portraits ~16 % de la hauteur, créatures ~17 %, rangées à 35 % / 57 %, héros à 80 %, main qui dépasse du bas) */
 (function(){ const st = document.createElement('style'); st.textContent = `
@@ -3256,9 +3256,9 @@ html.lite body .upc::after,html.lite body .upc::before{animation:none}
 (function(){ const st = document.createElement('style'); st.textContent = `
 .keeper-zone .mn.pairok::before{left:-14%;right:-14%;top:-10%;bottom:6%;box-shadow:none;
   background:repeating-conic-gradient(rgba(140,200,255,.9) 0 7deg,transparent 7deg 22deg);-webkit-mask:radial-gradient(farthest-side,transparent 52%,#000 66%,transparent 100%);mask:radial-gradient(farthest-side,transparent 52%,#000 66%,transparent 100%);animation:akSpin 5s linear infinite}
-.keeper-zone .mn.pairok::after{color:#0a1a33;background:linear-gradient(180deg,#d8ecff,#5aa0f0);box-shadow:0 0 0 1.5px #e8f4ff,0 0 14px rgba(110,170,255,.9);animation:tripTag 1s ease-in-out infinite}
+.keeper-zone .mn.pairok > .ptag{color:#0a1a33;background:linear-gradient(180deg,#d8ecff,#5aa0f0);box-shadow:0 0 0 1.5px #e8f4ff,0 0 14px rgba(110,170,255,.9);animation:tripTag 1s ease-in-out infinite}
 .keeper-zone .mn.pairok .mn-svg{filter:drop-shadow(0 0 8px rgba(110,170,255,.95))}
-html.lite .keeper-zone .mn.pairok::after{animation:none}
+html.lite .keeper-zone .mn.pairok > .ptag{animation:none}
 `; document.head.appendChild(st); })();
 
 /* choix du héros : rangée de grands portraits */
@@ -3633,7 +3633,7 @@ html.has-board-sim:root§.u-sim .rn-surf{background-image:var(--board-sim);backg
 § .table .hand .fan .cd{bottom:calc(var(--hw) * -.79)}
 
 /* étiquettes, fiche de sélection, messages */
-§ .keeper-zone .mn.pairok::after,§ .keeper-zone .mn.tripok::after{font-size:max(6.5px,calc(var(--tw) * .125));padding:.15em .7em;top:-7%}
+§ .keeper-zone .mn.pairok > .ptag,§ .keeper-zone .mn.tripok > .ptag{font-size:max(6.5px,calc(var(--tw) * .125));padding:.15em .7em;top:-7%}
 § .mn .tri,§ .cd .tri{font-size:fs(13,6.5);padding:.1em .6em;top:-6u}
 § .table .detail-pop{position:absolute;left:50%;right:auto;top:324uz;bottom:auto;transform:translateX(-50%);z-index:14;zoom:var(--rzw);max-width:430px;width:max-content;margin:0}
 § .table .solo-msg{position:absolute;left:50%;top:340uz;transform:translateX(-50%);width:560px;max-width:none;margin:0;zoom:var(--rzw);z-index:5}
