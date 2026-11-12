@@ -13,8 +13,11 @@ const SFX = { on:true, vol:.5, ctx:null, buf:null, ld:0, pool:null, last:{}, any
 try { SFX.on = localStorage.getItem('mdt_sfx') !== '0'; } catch (e) {}
 function sfxLoad() {
   if (SFX.ld) return; SFX.ld = 1;
-  const url = 'assets/sons/interface.mp3', fallback = () => { try { SFX.pool = [0, 1, 2, 3].map(() => { const a = new Audio(url); a.preload = 'auto'; return a; }); } catch (e) {} };
-  try { const AC = window.AudioContext || window.webkitAudioContext; SFX.ctx = new AC(); fetch(url).then(r => { if (!r.ok) throw 0; return r.arrayBuffer(); }).then(b => new Promise((ok, ko) => SFX.ctx.decodeAudioData(b, ok, ko))).then(b => { SFX.buf = b; }).catch(fallback); } catch (e) { fallback(); }
+  // deux planches sonores : 0 = interface, 1 = combat (la variante d'un son porte l'indice de sa planche en 3e position)
+  const urls = ['assets/sons/interface.mp3', 'assets/sons/combat.mp3']; SFX.bufs = []; SFX.pools = [];
+  const fallback = k => { try { SFX.pools[k] = [0, 1, 2, 3].map(() => { const a = new Audio(urls[k]); a.preload = 'auto'; return a; }); } catch (e) {} };
+  try { const AC = window.AudioContext || window.webkitAudioContext; SFX.ctx = new AC(); } catch (e) { SFX.ctx = null; }
+  urls.forEach((url, k) => { if (!SFX.ctx) return fallback(k); try { fetch(url).then(r => { if (!r.ok) throw 0; return r.arrayBuffer(); }).then(b => new Promise((ok, ko) => SFX.ctx.decodeAudioData(b, ok, ko))).then(b => { SFX.bufs[k] = b; }).catch(() => fallback(k)); } catch (e) { fallback(k); } });
 }
 function sfx(id, v) {
   const vs = SFX.map[id]; if (!SFX.on || !vs) return; const m = vs[Math.floor(Math.random() * vs.length)];
@@ -22,8 +25,9 @@ function sfx(id, v) {
   const now = performance.now(); if (now - (SFX.last[id] || 0) < 80) return; SFX.last[id] = now; SFX.any = now;
   const vol = Math.max(0, Math.min(1, (v == null ? 1 : v) * SFX.vol));
   try {
-    if (SFX.buf) { if (SFX.ctx.state === 'suspended') SFX.ctx.resume(); const src = SFX.ctx.createBufferSource(), g = SFX.ctx.createGain(); src.buffer = SFX.buf; g.gain.value = vol; src.connect(g); g.connect(SFX.ctx.destination); src.start(0, m[0] / 1000, m[1] / 1000 + .09); }
-    else if (SFX.pool) { const a = SFX.pool.find(x => x.paused) || SFX.pool[0]; clearTimeout(a._t); a.currentTime = m[0] / 1000; a.volume = vol; const pr = a.play(); if (pr && pr.catch) pr.catch(() => {}); a._t = setTimeout(() => a.pause(), m[1] + 90); }
+    const sk = m[2] || 0, sbuf = SFX.bufs && SFX.bufs[sk], spool = SFX.pools && SFX.pools[sk];
+    if (sbuf) { if (SFX.ctx.state === 'suspended') SFX.ctx.resume(); const src = SFX.ctx.createBufferSource(), g = SFX.ctx.createGain(); src.buffer = sbuf; g.gain.value = vol; src.connect(g); g.connect(SFX.ctx.destination); src.start(0, m[0] / 1000, m[1] / 1000 + .09); }
+    else if (spool) { const a = spool.find(x => x.paused) || spool[0]; clearTimeout(a._t); a.currentTime = m[0] / 1000; a.volume = vol; const pr = a.play(); if (pr && pr.catch) pr.catch(() => {}); a._t = setTimeout(() => a.pause(), m[1] + 90); }
   } catch (e) {}
 }
 // son d'une action du joueur (achat, vente, pouvoir…)
@@ -224,6 +228,7 @@ function tokenH(m, z, i, o = {}) {
     + (f.includes('t') ? '<use href="#tk-taunt"/>' : '')
     + (uf ? ufIn(m, uf, up) : `<ellipse cx="50" cy="56.2" rx="37.6" ry="45.4" fill="#1a110a"/><g clip-path="url(#fr-clip)"><use href="#art-${artOf(m)}" x="12" y="10.5" width="76" height="91.5"/></g>`
     + (g ? '<use class="fr-f" href="#fr-oval-g" x="1.35" y="-12.2" width="97.6" height="135.9"/><use class="fr-dr" href="#fr-dragon" x="45" y="-17" width="60" height="69"/>' : '<use class="fr-f" href="#fr-oval" x="2.9" y="-11" width="94.2" height="134"/>'))
+    + (f.includes('r') ? '<image class="hs-rb" href="assets/hs/c-reincarnation.webp" x="-3" y="-10" width="106" height="134" preserveAspectRatio="none"/>' : '')
     + (f.includes('s') ? `<g class="bubg"><use class="bub" href="#tk-shield"/><path class="bub-run" pathLength="100" d="${SHIELD_D}"/></g>` : '')
     + (b.t && z === 'sh' && !uf ? `<g class="tflag"><title>Niveau ${b.t}</title><use href="#fr-star" x="32.5" y="-15" width="35" height="33.1"/><text class="gt st" x="50" y="2.8" dy=".36em">${b.t}</text></g>` : '')
     + ics.map(([ic, col, nm], k) => { const a = KW_ANG[k] * Math.PI / 180; return `<g class="kwi" transform="translate(${f1(50 + 51 * Math.sin(a))} ${f1(55 - 58 * Math.cos(a))})"><title>${nm}</title><circle r="8.4" fill="#1b120b" stroke="${col}" stroke-width="1.8"/><use href="#ic-${ic}" x="-5.6" y="-5.6" width="11.2" height="11.2" style="color:${col}"/></g>`; }).join('')
@@ -1133,15 +1138,15 @@ function heroPickRowH(d, me) {
     return `<div class="hp-col${on ? ' on' : ''}" style="--c:${col};--k:${i}">
       <button class="hp-card" data-act="hsel" data-h="${h}" aria-pressed="${on}" aria-label="${esc(x.n + ' : ' + pw + '. ' + main)}">
         ${rollH(me, i)}
-        ${heroArchH('art-h-' + h, +RU().hp || 40, 'hp-arch')}
+        ${heroArchHS('art-h-' + h, +RU().hp || 40)}
         <span class="hp-nm">${esc(x.n)}</span>
         ${x.stars || x.diff ? `<span class="hp-st">${'★'.repeat(x.stars || x.diff)}</span>` : ''}
       </button>
-      ${on ? `<button class="t-go hp-go" data-act="hero" data-h="${h}">Choisir</button>` : ''}
+      ${on ? `<button class="t-go hp-go" data-act="hero" data-h="${h}">Confirmer le héros</button>` : ''}
     </div>`; };
   const tab = V.ruleTab || 'tour', rules = nin && (d.laws || []).some(l => l.k === 'chakra') && V.hpRules, por = (d.laws || []).some(l => l.k === 'portail') ? rmCardH : (d.laws || []).some(l => l.k === 'bande') ? spCardH : (d.laws || []).some(l => l.k === 'gag') ? simCardH : null;
   return `<div class="ov hp-ov"><div class="hp-wrap">
-    <h2 class="hp-t">Choisis ton héros</h2><p class="hp-sub">Survole un héros pour voir son pouvoir, clique pour le choisir.</p>${rollInfoH(me)}
+    <h2 class="hp-t">Choisis ton héros</h2><p class="hp-sub">Clique sur un héros pour voir son pouvoir, puis confirme ton choix.</p>${rollInfoH(me)}
     <div class="hp-row">${me.ho.map(card).join('')}</div>
     <div class="hp-infos">${pcs.join('')}<p class="hp-ph">Survole un héros pour voir son pouvoir.</p></div>
     ${nin && (d.laws || []).some(l => l.k === 'chakra') ? `<button class="btn sm hp-rb" data-act="hprules">${rules ? 'Masquer les règles' : 'Comment on joue ?'}</button>` : ''}
@@ -1229,7 +1234,7 @@ function fightRow(F, side) {
     ps.forEach(m => {
       if (alive.has(m.u)) { after = cur[side].findIndex(x => x.u === m.u); return; }
       const dr = !!(CD(m.c).by || {}).dr;
-      ghosts.push({ at:after, html:tokenH(m, 'f', -1, { name:false, cls:'dying' + (dr ? ' dr' : ''), extra:`<span class="dmg"><b>${m.h > 0 ? '-' + m.h : '✖'}</b></span>` }) });
+      ghosts.push({ at:after, html:tokenH(m, 'f', -1, { name:false, cls:'dying' + (dr ? ' dr' : ''), extra:`<i class="hs-fis" aria-hidden="true"></i><span class="dmg mort${(m.f || '').includes('r') ? ' rbd' : ''}"><b></b></span>` }) });
     });
     for (let g = ghosts.length - 1; g >= 0; g--) out.splice(ghosts[g].at + 1, 0, { html:ghosts[g].html });
   }
