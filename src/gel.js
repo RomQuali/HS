@@ -40,9 +40,9 @@ function hsSync() {
 html.lite .hs-pop > span{animation-duration:1.4s}
 :root:root:root:root:root body .hs-gel,:root:root:root:root:root body .hs-gelb{pointer-events:none!important}
 .mn > .hs-gel{position:absolute;left:0;top:0;width:100%;height:100%;z-index:5;display:block;border-radius:50%;
-  background:url(assets/hs/gel-anneau.webp) center/112% 108% no-repeat,radial-gradient(ellipse at 50% 45%,rgba(190,235,255,.08) 40%,rgba(150,215,255,.38) 72%,rgba(120,200,255,0) 74%);filter:drop-shadow(0 0 6px rgba(150,220,255,.75))}
+  background:url(assets/hs/gel-anneau.webp) center/112% 108% no-repeat,radial-gradient(ellipse at 50% 45%,rgba(190,235,255,.05) 40%,rgba(150,215,255,.24) 72%,rgba(120,200,255,0) 74%);filter:drop-shadow(0 0 6px rgba(150,220,255,.75));-webkit-mask-image:linear-gradient(#000 66%,transparent 82%);mask-image:linear-gradient(#000 66%,transparent 82%)}
 .mn > .hs-gel::before,.mn > .hs-gel::after{content:'';position:absolute;background:center/contain no-repeat;pointer-events:none}
-.mn > .hs-gel::before{left:-12%;bottom:-6%;width:46%;height:40%;background-image:url(assets/hs/gel-eclat.webp);transform:rotate(-18deg)}
+.mn > .hs-gel::before{left:-16%;bottom:26%;width:40%;height:34%;background-image:url(assets/hs/gel-eclat.webp);transform:rotate(-18deg)}
 .mn > .hs-gel::after{right:-9%;top:2%;width:24%;height:52%;background-image:url(assets/hs/gel-bloc.webp);transform:rotate(14deg);opacity:.9}
 .mn > .hs-gel.in{animation:hsGel .5s cubic-bezier(.2,.9,.3,1.2) both}
 @keyframes hsGel{0%{opacity:0;transform:scale(1.35);filter:brightness(2.4) drop-shadow(0 0 14px #dff6ff)}60%{opacity:1}100%{opacity:1;transform:scale(1)}}
@@ -51,6 +51,7 @@ html.lite .hs-pop > span{animation-duration:1.4s}
 @keyframes hsGelB{50%{opacity:.45}}
 @keyframes hsGelIn{0%{opacity:0;transform:scale(.9)}100%{opacity:.3;transform:scale(1)}}
 html.lite .hs-gelb,html.lite .mn > .hs-gel.in{animation:none}
+:root:root body .keeper-zone.frozen .counter-line .mn-svg{filter:saturate(.8) brightness(1.06) drop-shadow(0 4px 4px rgba(0,0,0,.45))}   /* plus de virage bleu sous la glace : le givre suffit */
 .keeper-zone .mn.tripok > .ptag::before{content:'';position:absolute;left:50%;bottom:92%;width:2.3em;height:2.3em;margin-left:-1.15em;background:url(assets/hs/fleche-triple.webp) center/contain no-repeat;filter:drop-shadow(0 0 3px #0a2c55) drop-shadow(0 0 5px rgba(120,200,255,.9));animation:hsFl 1s ease-in-out infinite}
 @keyframes hsFl{50%{transform:translateY(-18%)}}
 html.lite .keeper-zone .mn.tripok > .ptag::before{animation:none}
@@ -90,15 +91,15 @@ function heroArchHS(art, hp) {
 // ----- phase de combat (pack Roni-Phase-Combat) : impacts, étoiles de dégâts, têtes de mort, fissures, mots-clés et 44 bruitages (planche assets/sons/combat.mp3) -----
 Object.assign(SFX.map, {"c_att":[[60233,285,1]],"c_hit1":[[55377,1491,1]],"c_hit2":[[58805,1278,1]],"c_hit3":[[57018,1637,1]],"c_armure":[[97470,479,1]],"c_bd_acquis":[[108767,3326,1]],"c_bd_rupture":[[46276,2723,1]],"c_bd_touche":[[49149,2213,1]],"c_bd_renforce":[[51511,3716,1]],"c_mort":[[71970,3141,1],[75261,3078,1],[78489,3296,1],[81935,2524,1],[84609,2919,1],[87678,2668,1]],"c_soin":[[69385,2435,1]],"c_soin_depart":[[60668,2807,1],[63625,3132,1],[66907,2327,1]],"c_soin_ombre":[[93691,3630,1]],"c_vol_vie":[[33309,1970,1]],"c_etoiles":[[10934,2925,1],[14009,3017,1],[17176,3012,1]],"c_proj":[[27198,1912,1],[29261,1819,1],[31229,1930,1]],"c_himpact":[[20338,1932,1],[22420,2247,1],[24817,2232,1]],"c_prov":[[113880,1361,1]],"c_prov_fin":[[112243,1487,1]],"c_rb_acquis":[[101188,2594,1]],"c_rb_mort":[[103932,2161,1]],"c_rb_retour":[[106243,2374,1]],"c_rale":[[98099,2939,1]],"c_rale_rebond":[[43585,2541,1]],"c_bascule_c":[[38542,2410,1]],"c_bascule_r":[[41102,2333,1]],"c_combat":[[35430,2962,1]],"c_recrut":[[90496,3045,1]],"c_p1":[[2733,4221,1]],"c_p4":[[7104,3680,1]],"c_p8":[[0,2583,1]]});
 function hsSprite(x, y, img, size, ms, cls) {
-  if (FX_OFF()) return; const e = document.createElement('i'); e.className = 'hs-spr ' + (cls || '');
+  if (FX_OFF() || !V.pub || V.pub.ph !== 'combat') return; const e = document.createElement('i'); e.className = 'hs-spr ' + (cls || '');
   e.style.cssText = `left:${f1(x - size / 2)}px;top:${f1(y - size / 2)}px;width:${f1(size)}px;height:${f1(size)}px;background-image:url(assets/hs/${img}.webp)`;
   fxLayer.appendChild(e);
   const k = []; for (let i = 0; i < 8; i++) k.push({ backgroundPosition:`${(i % 4) * 100 / 3}% ${i < 4 ? 0 : 100}%`, easing:'steps(1)' }); k.push({ backgroundPosition:'100% 100%' });
   try { e.animate(k, { duration:ms || 380 }).onfinish = () => e.remove(); } catch (er) { setTimeout(() => e.remove(), ms || 380); }
 }
-function hsDecal(x, y, img, size, cls, ms) { if (FX_OFF()) return; const e = document.createElement('i'); e.className = 'hs-dec ' + cls; e.style.cssText = `left:${f1(x - size / 2)}px;top:${f1(y - size / 2)}px;width:${f1(size)}px;height:${f1(size)}px;background-image:url(assets/hs/${img}.webp)`; fxLayer.appendChild(e); setTimeout(() => e.remove(), ms); }
+function hsDecal(x, y, img, size, cls, ms) { if (FX_OFF() || !V.pub || V.pub.ph !== 'combat') return; const e = document.createElement('i'); e.className = 'hs-dec ' + cls; e.style.cssText = `left:${f1(x - size / 2)}px;top:${f1(y - size / 2)}px;width:${f1(size)}px;height:${f1(size)}px;background-image:url(assets/hs/${img}.webp)`; fxLayer.appendChild(e); setTimeout(() => e.remove(), ms); }
 function hsCombatFrame() {
-  const F = V.fight; if (!F || V.fi === 0) return;
+  const F = V.fight; if (!F || V.fi === 0 || !V.pub || V.pub.ph !== 'combat') return;
   const pa = F.r.frames[V.fi - 1]; if (!pa) return;
   if (pa.at) {
     const a = fq(pa.at), t = fq(pa.tg), d = Math.max(t ? +t.dataset.dmg || 0 : 0, a ? +a.dataset.dmg || 0 : 0);
@@ -137,7 +138,7 @@ function hsCombatFrame() {
   // mots-clés : écu de Provocation et bulle de Bouclier divin de Hearthstone à la place des dessins vectoriels
   try {
     const tk = document.getElementById('tk-taunt'); if (tk) tk.innerHTML = '<image href="assets/hs/c-provocation.webp" x="-11" y="-17" width="122" height="152" preserveAspectRatio="none"/>';
-    const sh = document.getElementById('tk-shield'); if (sh) sh.innerHTML = '<image href="assets/hs/c-bouclier-divin.webp" x="-13" y="-22" width="126" height="152" preserveAspectRatio="none" opacity=".55" style="mix-blend-mode:screen"/>';
+    const sh = document.getElementById('tk-shield'); if (sh) sh.innerHTML = '<image href="assets/hs/c-bouclier-divin.webp" x="-13" y="-22" width="126" height="152" preserveAspectRatio="none" opacity=".4" style="mix-blend-mode:screen"/>';
   } catch (e) {}
   const st = document.createElement('style'); st.id = 'hs-combat-css'; st.textContent = `
 .hs-spr,.hs-dec{position:absolute;pointer-events:none;background-repeat:no-repeat}
@@ -156,9 +157,10 @@ function hsCombatFrame() {
 .fxtxt.hdmg{width:92px!important;height:92px!important}
 .fxtxt.hdmg::before{clip-path:none!important;background:url(assets/hs/c-degats-heros.webp) center/contain no-repeat!important;inset:-18%!important}
 .bub-run{display:none!important}
+body:has(#app .ov) #fxl{display:none}   /* aucun effet de combat par-dessus l'écran de fin ou un panneau plein écran */
 .fxtxt.intro{display:none!important}
-.mn-svg .hs-rb{mix-blend-mode:screen;opacity:.85;animation:hsRb 2.4s ease-in-out infinite;pointer-events:none}
-@keyframes hsRb{50%{opacity:.45}}
+.mn-svg .hs-rb{mix-blend-mode:screen;opacity:.42;animation:hsRb 2.4s ease-in-out infinite;pointer-events:none}
+@keyframes hsRb{50%{opacity:.22}}
 html.lite .mn-svg .hs-rb{animation:none}
 `; document.head.appendChild(st);
 })();
@@ -312,6 +314,12 @@ html:root:root:root:root:root:root:root:root body.rn[class] .rn-tb,html:root:roo
 § .hero-zone .bell:disabled .bell-t::after{content:'Combat';position:static;inset:auto;background:none;font-size:fs(21,9);color:#fff;text-shadow:0 0 2u #000,0 2u 0 #222,0 0 5u #000}
 § .hero-zone .bell.rung .bell-t::before{right:-16u;top:-22u;width:54u;height:54u}
 § .hud .timer{left:1336u;top:404u;width:134u;height:40u;font-size:fs(27,11);color:#fff;text-shadow:0 0 2u #000,0 2u 0 #3a2a06,0 0 6u rgba(0,0,0,.9)}
+/* bannière de résultat du combat : entre le classement et la plaque du chrono */
+§ .table-banner{left:336u;width:920u}
+/* fiche de la carte sélectionnée : dans le coin libre en haut à droite, plus sur la rangée de la taverne */
+§ .table .detail-pop{left:1120u;top:118uz;transform:none}
+/* joueur éliminé ou spectateur : le chrono garde une plaque même sans bouton Prêt */
+§ .table:not(:has(.hero-zone .bellwrap)) .hud .timer{background:url(assets/hs/b-fin-inactive.webp) 0 0/100% 100% no-repeat;top:398u;height:74u;display:grid;place-items:center}
 /* main : cartes à la taille Champs de bataille */
 § .table .hand{--hw:max(64px,132u)}
 `); document.head.appendChild(st); })();

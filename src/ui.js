@@ -1525,8 +1525,12 @@ function placePeek(r, pw, ph, touch) {
   if (touch) { x = Math.max(8, Math.min(innerWidth - pw - 8, r.left + r.width / 2 - pw / 2)); y = r.top - ph - 12; if (y < 8) { x = r.right + 12; if (x + pw > innerWidth - 8) x = r.left - pw - 12; x = Math.max(8, Math.min(innerWidth - pw - 8, x)); y = Math.max(8, Math.min(innerHeight - ph - 8, r.top + r.height / 2 - ph / 2)); } }
   else { x = r.right + 14; if (x + pw > innerWidth - 8) x = r.left - pw - 14; if (x < 8) x = Math.max(8, Math.min(innerWidth - pw - 8, r.left)); y = Math.max(8, Math.min(innerHeight - ph - 8, r.top + r.height / 2 - ph / 2)); }
   peekEl.style.left = x + 'px'; peekEl.style.top = y + 'px';
+  // garde-fou : la hauteur réelle peut dépasser l'estimation (fiche de héros, carte + encart) ; on ramène la bulle dans l'écran
+  const b = peekEl.getBoundingClientRect();
+  if (b.height && b.bottom > innerHeight - 8) peekEl.style.top = Math.max(8, innerHeight - 8 - b.height) + 'px';
+  if (b.width && b.right > innerWidth - 8) peekEl.style.left = Math.max(8, innerWidth - 8 - b.width) + 'px';
 }
-function peekSize() { const v = parseFloat(getComputedStyle(peekEl).getPropertyValue('--hw')) || 176; return [v, v * 1.66]; }
+function peekSize() { const c = peekEl.firstElementChild, w = c ? c.getBoundingClientRect().width : 0, v = w || parseFloat(getComputedStyle(peekEl).getPropertyValue('--hw')) || 176; return [v, v * 1.66]; }   // --hw peut être un clamp() : on mesure la carte réellement affichée
 function showPeek(t, touch) {
   const r = t.getBoundingClientRect();
   if (t.classList.contains('eqm') && t.dataset.sp) { peekFor = t; peekEl.innerHTML = spellCardH(t.dataset.sp, 'p', 0) + `<div class="peek-note">${esc(t.dataset.why || '')}</div>`; peekEl.hidden = false; const [pw, ph] = peekSize(); placePeek(r, pw, ph + 40, touch); return true; }
