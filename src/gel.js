@@ -379,6 +379,7 @@ function tipSync() {
     set(q('.keeper .kc'), `Tavernier : taverne de niveau ${me.t || 1}. Il propose de nouveaux serviteurs à chaque tour ; fais glisser un serviteur vers lui pour le vendre 1 or.`);
     set(q('.hud .timer'), V.pub.ph === 'combat' ? 'Temps avant la fin du combat.' : 'Temps restant pour ce tour. À la fin du chrono, le combat démarre.');
     set(q('.hz-hero .hpg'), `Points de vie : ${me.hp != null ? Math.max(0, me.hp) : '?'}. À 0, tu es éliminé.`);
+    document.querySelectorAll('.table .fan .cd').forEach((el, i) => el.classList.toggle('tmpc', !!(me.hd && me.hd[i] && me.hd[i].tmpc)));
     const ek = q('.keeper-zone.enemy .keeper'); if (ek) { const b = ek.querySelector('.kn-en b'); if (b && b.textContent) { ek.dataset.hov = 'op'; ek.dataset.n = b.textContent; } }
   } catch (e) {}
 }
@@ -403,10 +404,13 @@ function hsBadges(m) {
   const by = CD(m.c).by || {}, f = m.f || '', xs = m.x || [], has = tr => (by[tr] && by[tr].length) || xs.some(e => ET[e.k] && ET[e.k].tr === tr), L = [];
   if (has('dr')) L.push(['rale-d-agonie', 'Râle d\'agonie', 1]);
   if (f.includes('v')) L.push(['toxicite', 'Toxicité', 1.05]); else if (f.includes('n')) L.push(['venimosite', 'Venimosité', 1.05]);
+  if (f.includes('l')) L.push(['vol-de-vie', 'Vol de vie', 1]);
   if (has('atk') || has('aatk')) L.push(['ralliement', 'Ralliement : se déclenche quand il attaque', 1]);
   if (['soc', 'eot', 'sot', 'surv', 'die', 'cast', 'shield', 'roll', 'up', 'pow', 'sell', 'buy', 'play', 'reborn', 'don', 'donc', 'spend', 'hand', 'combo', 'win'].some(has)) L.push(['declenchement', 'Capacité déclenchée', .8]);
   const B = L.slice(0, 2), n = B.length, sz = n > 1 ? 21 : 25;
-  return (f.includes('w') ? '<g class="hs-wind"><title>Furie des vents</title><image href="assets/hs/k-furie-des-vents-filage.webp" x="-6" y="30" width="112" height="26" preserveAspectRatio="none"/><image href="assets/hs/k-furie-des-vents-filage.webp" x="-6" y="62" width="112" height="22" preserveAspectRatio="none"/></g>' : '')
+  return (f.includes('c') ? '<g class="hs-cam"><title>Camouflage</title><image href="assets/hs/k-camouflage-ombre.webp" x="-8" y="-12" width="116" height="146" preserveAspectRatio="none"/></g>' : '')
+    + (f.includes('i') ? '<g class="hs-imm"><title>Insensible</title><ellipse cx="50" cy="60" rx="45" ry="60" fill="none" stroke="#fff2b0" stroke-width="2.2"/></g>' : '')
+    + (f.includes('w') ? '<g class="hs-wind"><title>Furie des vents</title><image href="assets/hs/k-furie-des-vents-filage.webp" x="-6" y="30" width="112" height="26" preserveAspectRatio="none"/><image href="assets/hs/k-furie-des-vents-filage.webp" x="-6" y="62" width="112" height="22" preserveAspectRatio="none"/></g>' : '')
     + B.map(([img, nm, k], i) => { const w = sz * k, x = 50 + (n > 1 ? (i ? 11.5 : -11.5) : 0) - w / 2; return `<g class="hs-bdg"><title>${nm}</title><image href="assets/hs/k-${img}.webp" x="${f1(x)}" y="${f1(112.5 - w / 2)}" width="${f1(w)}" height="${f1(w)}"/></g>`; }).join('');
 }
 (function () { const st = document.createElement('style'); st.id = 'hs-kw-css'; st.textContent = `
@@ -428,3 +432,17 @@ html.lite .mn-svg .hs-wind image{animation:none}
     try { if (a && a.t === 'play' && V.me && V.me.hd && V.me.hd[a.i] && !FX_OFF()) { const c = V.me.hd[a.i].c, bc = C[c] && ((CD(c).by || {}).bc || []).length; if (bc) { const pos = a.pos == null ? (V.me.bd || []).length : a.pos; setTimeout(() => { const el = document.querySelectorAll('#bdrow .mn')[pos]; if (!el || el.dataset.c !== c) return; const r = el.getBoundingClientRect(), e = document.createElement('i'); e.className = 'hs-bc'; const s = r.width * 1.9; e.style.cssText = `left:${r.left + r.width / 2 - s / 2}px;top:${r.top + r.height * .46 - s / 2}px;width:${s}px;height:${s}px`; document.body.appendChild(e); setTimeout(() => e.remove(), 750); }, 220); } } } catch (e) {}
     return a0.apply(this, arguments); };
 })();
+
+// Camouflage, Insensible, Choix des armes, sorts temporaires (Sorcellerie)
+(function () { const st = document.createElement('style'); st.id = 'hs-kw2-css'; st.textContent = `
+.mn.kw-c .mn-svg{opacity:.78}
+.mn-svg .hs-cam{pointer-events:none;opacity:.9}
+.mn-svg .hs-imm{pointer-events:none;filter:drop-shadow(0 0 2.5px #ffe680) drop-shadow(0 0 5px rgba(255,230,120,.8));animation:hsRb 1.8s ease-in-out infinite}
+.cho{display:grid;grid-template-columns:1fr 1fr;gap:18px;width:min(720px,90vw);margin:6px auto 0}
+.cho-b{min-height:150px;padding:18px 20px;border:0;border-radius:14px;cursor:pointer;font:600 clamp(15px,2.2vh,19px)/1.35 var(--f-body,inherit);color:#3a2206;text-wrap:balance;
+  background:linear-gradient(180deg,#f7e6b4,#dcc081 60%,#b7955a);box-shadow:inset 0 0 0 2px #7a5c2c,inset 0 0 0 5px rgba(255,246,210,.5),0 8px 18px rgba(0,0,0,.6);transition:transform .15s,filter .15s}
+.cho-b:hover,.cho-b:focus-visible{transform:translateY(-4px);filter:brightness(1.1);box-shadow:inset 0 0 0 2px #7a5c2c,inset 0 0 0 5px rgba(255,246,210,.5),0 0 22px rgba(255,210,90,.8),0 8px 18px rgba(0,0,0,.6)}
+@media (max-width:560px){.cho{grid-template-columns:1fr}}
+.fan .cd.tmpc::before{content:'Temporaire';position:absolute;left:50%;top:-9%;transform:translateX(-50%);z-index:5;padding:1px 8px;border-radius:9px;font:700 10px/1.5 var(--f-label,inherit);color:#dff6ff;background:#1c4a7a;box-shadow:0 0 0 1.5px #7fd0ff,0 0 10px rgba(110,200,255,.8);white-space:nowrap;pointer-events:none}
+.fan .cd.tmpc{filter:drop-shadow(0 0 6px rgba(110,200,255,.9))}
+`; document.head.appendChild(st); })();

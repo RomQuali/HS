@@ -1,7 +1,7 @@
 /* =====================================================================
    DONNÉES PAR DÉFAUT — tout est modifiable depuis l'atelier (admin)
    ===================================================================== */
-const BASE_KW = ['t', 's', 'v', 'r', 'w'];
+const BASE_KW = ['t', 's', 'v', 'r', 'w', 'c', 'l', 'i'];
 const PATTERNS = { meca:'Engrenages', bete:'Prairie', cors:'Mer au couchant', spec:'Nuit étoilée', neu:'Planches', chateau:'Château sous la lune', lune:'Pleine lune', tombe:'Cimetière', mine:'Mine', foret:'Forêt', colline:'Collines', bazar:'Bazar', volcan:'Volcan', vortex:'Vortex', sqfeu:'Bonbons brûlants', sqeau:'Bulles', sqterre:'Pâte à modeler', sqvent:'Nuages-guimauve', sqglace:'Flocons', sqfoudre:'Orage rigolo' };
 const DEFAULT_SETTINGS = {
   tribes:[
@@ -72,6 +72,9 @@ const DEFAULT_SETTINGS = {
     v:{ n:'Toxicité', d:'Détruit tout serviteur blessé par celui-ci.', c:3 },
     n:{ n:'Venimosité', d:'À chaque combat, détruit le premier serviteur blessé par celui-ci.', c:2 },
     r:{ n:'Réincarnation', d:'À sa première mort, revient sous la forme d\'une nouvelle copie à 1 PV s\'il reste une place.', c:2 },
+    c:{ n:'Camouflage', d:'Les attaques ennemies ne peuvent pas le viser tant qu\'il n\'a pas attaqué.', c:2 },
+    l:{ n:'Vol de vie', d:'Les dégâts qu\'il inflige soignent ton héros.', c:2 },
+    i:{ n:'Insensible', d:'Ne subit aucun dégât pendant qu\'il attaque.', c:3 },
     w:{ n:'Furie des vents', d:'Quand vient son tour d\'attaquer, attaque deux fois de suite.', c:3 },
     k_ferveur:{ n:'Ferveur', d:'Fin de tour : gagne +1/+1.', c:3, fx:{ k:'eot_self', a:1, h:1 } },
   },
@@ -902,8 +905,8 @@ const ET = {
   die_self:{ tr:'die', l:'Se renforcer quand un allié meurt', ps:['tb', 'a', 'h'], w:1.2, mag:e => e.a + e.h, txt:(e, k) => `Quand un autre ${one(e.tb, 1)} allié meurt, gagne ${sign(e.a * k, e.h * k)}.` },
   die_others:{ tr:'die', l:'Renforcer les alliés quand un allié meurt', ps:['tb', 'a', 'h'], w:0.8, mag:e => (e.a + e.h) * AL(), txt:(e, k) => `Quand un ${one(e.tb, 1)} allié meurt, donne ${sign(e.a * k, e.h * k)} à vos autres ${one(e.tb)}.` },
   surv_self:{ tr:'surv', l:'Se renforcer après des dégâts', ps:['a', 'h'], w:1.2, mag:e => e.a + e.h, txt:(e, k) => `Quand il survit à des dégâts, gagne ${sign(e.a * k, e.h * k)}.` },
-  atk_self:{ tr:'atk', l:'Se renforcer après avoir attaqué', ps:['a', 'h'], w:1.2, mag:e => e.a + e.h, txt:(e, k) => `Après avoir attaqué, gagne ${sign(e.a * k, e.h * k)}.` },
-  atk_buff_rand:{ tr:'atk', l:'Bonus à un autre allié', ps:['a', 'h'], w:1.2, mag:e => e.a + e.h, txt:(e, k) => `Après avoir attaqué, donne ${sign(e.a * k, e.h * k)} à un autre allié aléatoire.` },
+  atk_self:{ tr:'atk', l:'Se renforcer après avoir attaqué', ps:['a', 'h'], w:1.2, mag:e => e.a + e.h, txt:(e, k) => `Ralliement : gagne ${sign(e.a * k, e.h * k)}.` },
+  atk_buff_rand:{ tr:'atk', l:'Bonus à un autre allié', ps:['a', 'h'], w:1.2, mag:e => e.a + e.h, txt:(e, k) => `Ralliement : donne ${sign(e.a * k, e.h * k)} à un autre allié aléatoire.` },
   soc_self:{ tr:'soc', l:'Se transformer', ps:['a', 'h'], w:0.9, mag:e => e.a + e.h, txt:(e, k) => `Début du combat : gagne ${sign(e.a * k, e.h * k)}.` },
   soc_aoe:{ tr:'soc', l:'Dégâts à tous les ennemis', ps:['d'], w:1, mag:e => e.d * 4, txt:(e, k) => `Début du combat : inflige ${e.d * k} dégât${e.d * k > 1 ? 's' : ''} à tous les ennemis.` },
   eot_buff_taunt:{ tr:'eot', l:'Bonus aux serviteurs avec Provocation', ps:['a', 'h'], w:1.1, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Fin de tour : vos serviteurs avec Provocation gagnent ${sign(e.a * k, e.h * k)}.` },
@@ -926,8 +929,8 @@ const ET = {
   soc_chill:{ tr:'soc', l:'Gel : baisser l\'attaque d\'ennemis', ps:['a', 'n'], w:0.8, mag:e => e.a * Math.min(e.n, 4) * 1.2, txt:(e, k) => `Début du combat : ${e.n >= 7 ? 'tous les ennemis perdent' : e.n > 1 ? e.n + ' ennemis aléatoires perdent' : 'un ennemi aléatoire perd'} ${e.a * k} attaque.` },
   soc_combo_chill:{ tr:'soc', l:'Combo : gel si…', ps:['tb2', 'a', 'n'], w:0.6, mag:e => e.a * Math.min(e.n, 4) * 1.2, txt:(e, k) => `Début du combat : si vous avez un ${one(e.tb2, 1)}, ${e.n > 1 ? e.n + ' ennemis aléatoires perdent' : 'un ennemi aléatoire perd'} ${e.a * k} attaque.` },
   soc_chill_el:{ tr:'soc', l:'Gel par élément', ps:['a'], w:0.8, mag:e => e.a * 2.5 * 4, txt:(e, k) => `Début du combat : tous les ennemis perdent ${e.a * k} attaque par élément Squishy différent sur votre plateau.` },
-  atk_zap:{ tr:'atk', l:'Zap : dégâts après avoir attaqué', ps:['d', 'n'], w:1.1, mag:e => e.d * e.n * 2, txt:(e, k) => `Après avoir attaqué, inflige ${e.d * k} dégât${e.d * k > 1 ? 's' : ''} à ${e.n > 1 ? e.n + ' ennemis aléatoires' : 'un ennemi aléatoire'}.` },
-  atk_zap_el:{ tr:'atk', l:'Zap par élément', ps:['d'], w:1.1, mag:e => e.d * 2.5 * 2, txt:(e, k) => `Après avoir attaqué, inflige ${e.d * k} dégât${e.d * k > 1 ? 's' : ''} à un ennemi aléatoire par élément Squishy différent sur votre plateau.` },
+  atk_zap:{ tr:'atk', l:'Zap : dégâts après avoir attaqué', ps:['d', 'n'], w:1.1, mag:e => e.d * e.n * 2, txt:(e, k) => `Ralliement : inflige ${e.d * k} dégât${e.d * k > 1 ? 's' : ''} à ${e.n > 1 ? e.n + ' ennemis aléatoires' : 'un ennemi aléatoire'}.` },
+  atk_zap_el:{ tr:'atk', l:'Zap par élément', ps:['d'], w:1.1, mag:e => e.d * 2.5 * 2, txt:(e, k) => `Ralliement : inflige ${e.d * k} dégât${e.d * k > 1 ? 's' : ''} à un ennemi aléatoire par élément Squishy différent sur votre plateau.` },
   eot_elements:{ tr:'eot', l:'Se renforcer par élément', ps:['a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2.5, txt:(e, k) => `Fin de tour : gagne ${sign(e.a * k, e.h * k)} par élément différent parmi vos Squishys.` },
   soc_elements:{ tr:'soc', l:'Bonus aux Squishys par élément', ps:['a', 'h'], w:0.6, mag:e => (e.a + e.h) * 2.5 * AL(), txt:(e, k) => `Début du combat : vos autres Squishys gagnent ${sign(e.a * k, e.h * k)} par élément différent.` },
   soc_self_el:{ tr:'soc', l:'Se renforcer par élément', ps:['a', 'h'], w:0.9, mag:e => (e.a + e.h) * 2.5, txt:(e, k) => `Début du combat : gagne ${sign(e.a * k, e.h * k)} par élément différent parmi vos Squishys.` },
@@ -1035,6 +1038,14 @@ const ET = {
   spend_donut:{ tr:'spend', l:'Donuts après avoir dépensé de l\'or', ps:['n', 'tb'], w:1.3, mag:() => 2 * AL() + 2, txt:(e, k) => `Chaque fois que tu as dépensé ${e.n} or dans le tour : pose ${donN(k)} sur chacun de tes ${one(e.tb)}.` },
   spend_buff:{ tr:'spend', l:'Bonus après avoir dépensé de l\'or', ps:['n', 'tb', 'a', 'h'], w:1.3, mag:e => (e.a + e.h) * AL() + 1, txt:(e, k) => `Chaque fois que tu as dépensé ${e.n} or dans le tour : tes ${one(e.tb)} gagnent ${sign(e.a * k, e.h * k)}.` },
   hplay_self:{ tr:'hplay', l:'Grandir dans la main', ps:['tb', 'a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Dans ta main : gagne ${sign(e.a * k, e.h * k)} quand tu joues un ${one(e.tb, 1)}.` },
+  // mots-clés de Champs de bataille : Gemme de sang, Engloutir, Sorcellerie, Choix des armes
+  bc_gem:{ tr:'bc', l:'Gemmes de sang', ps:['n'], w:1.2, mag:e => e.n * 2.5, txt:(e, k) => `Cri de guerre : obtiens ${e.n * k} Gemme${e.n * k > 1 ? 's' : ''} de sang.` },
+  eot_gem:{ tr:'eot', l:'Gemme de sang à chaque tour', ps:['n'], w:1.4, mag:e => e.n * 5, txt:(e, k) => `Fin de tour : obtiens ${e.n * k} Gemme${e.n * k > 1 ? 's' : ''} de sang.` },
+  bc_gem_up:{ tr:'bc', l:'Améliorer les Gemmes de sang', ps:['a', 'h'], w:1.6, mag:e => (e.a + e.h) * 4, txt:(e, k) => `Cri de guerre : tes Gemmes de sang donnent ${sign(e.a * k, e.h * k)} de plus.` },
+  bc_devour:{ tr:'bc', l:'Engloutir', ps:[], w:1.5, mag:() => 6, txt:(e, k) => `Cri de guerre : Engloutir un serviteur de la taverne${k > 1 ? ' (caractéristiques doublées)' : ''}.` },
+  eot_devour:{ tr:'eot', l:'Engloutir à chaque tour', ps:[], w:1.8, mag:() => 10, txt:(e, k) => `Fin de tour : Engloutir un serviteur de la taverne${k > 1 ? ' (caractéristiques doublées)' : ''}.` },
+  craft:{ tr:'bc', l:'Sorcellerie', ps:['sp'], w:1.4, mag:() => 5, txt:e => `Sorcellerie : ${typeof SPELLS !== 'undefined' && SPELLS[e.sp] ? SPELLS[e.sp].n : 'un sort'} (sort temporaire, à chaque tour).` },
+  choose:{ tr:'bc', l:'Choix des armes', ps:['o'], w:1.3, mag:e => Math.max(...(e.o || []).map(o => ET[o.k] && ET[o.k].mag ? ET[o.k].mag(o) : 3)), txt:(e, k) => `Choix des armes : ${(e.o || []).map(o => ET[o.k] ? ET[o.k].txt(o, k).replace(/^Cri de guerre : /, '').replace(/\.$/, '') : '?').join(' ; ou ')}.` },
   bc_disc:{ tr:'bc', l:'Découvrir un serviteur', ps:['tb'], w:1.5, mag:() => 4, txt:e => `Cri de guerre : découvre un ${one(e.tb, 1)}.` },
   dr_hand:{ tr:'dr', l:'Renforcer la main au râle d\'agonie', ps:['a', 'h'], w:1, mag:e => e.a + e.h, txt:(e, k) => `Râle d'agonie : un serviteur de ta main gagne ${sign(e.a * k, e.h * k)}.` },
   bc_inc:{ tr:'bc', l:'Or au prochain tour (cri de guerre)', ps:['n'], w:1.4, mag:e => e.n * 2, txt:(e, k) => `Cri de guerre : gagne ${e.n * k} or au début du prochain tour.` },
@@ -1214,6 +1225,11 @@ function runRecruit0(G, p, m, e, ctx) {
     case 'donc_tribe': case 'spend_buff': p.bd.filter(x => tribeOk(x, e.tb)).forEach(x => buff(x, A, Hh)); break;
     case 'bc_donut_up': p.donA = (p.donA || 0) + A; p.donH = (p.donH || 0) + Hh; break;
     case 'hplay_self': if (tribeOk(ctx, e.tb)) buff(m, A, Hh); break;
+    case 'bc_gem': case 'eot_gem': giveGem(p, e.n * k); break;
+    case 'bc_gem_up': p.gemA = (p.gemA || 0) + e.a * k; p.gemH = (p.gemH || 0) + e.h * k; break;
+    case 'bc_devour': case 'eot_devour': devour(G, p, m, k); break;
+    case 'craft': giveCraft(p, m, e); break;
+    case 'choose': if ((e.o || []).length) { if (p.bot) runRecruit(G, p, m, pickR(e.o)); else p.cho = { u:m.u, c:m.c, o:e.o }; } break;
     case 'bc_disc': if (!p.disc && p.hd.length < 10) { const opts = []; for (let i = 0; i < 3; i++) { const c = drawOne(G, p.t, null, e.tb); if (c) opts.push(c); } if (opts.length) p.disc = opts; } break;
     case 'bc_inc': p.inc = p.inc || []; p.inc[0] = (p.inc[0] || 0) + e.n * k; break;
     case 'bc_bought': { const n = (p.bt || {})[e.tb] || 0, o = others(); if (n && o.length) buff(pickR(o), A * n, Hh * n); break; }
@@ -1224,6 +1240,13 @@ function runRecruit0(G, p, m, e, ctx) {
 }
 // ----- univers Les Simpson v2 : Donuts (sort gratuit +1/+1, plus les bonus gagnés pendant la partie) -----
 const DON = 'si_don';
+// Gemme de sang : sort gratuit, +1/+1 (améliorable) sur un serviteur ; Sorcellerie : sort temporaire donné à la pose puis à chaque tour
+const GEM = 'hs_gem';
+function giveGem(p, n) { for (let i = 0; i < n; i++) if (p.hd.length < 10) { p.hd.push({ sp:GEM, u:UID++ }); handIn(p); } }
+function putGem(G, p, m) { if (!m) return; withSrc('Gemme de sang', () => buff(m, 1 + (p.gemA || 0), 1 + (p.gemH || 0))); qAdd(p, 'gems'); }
+function giveCraft(p, m, e) { if (p.hd.length < 10 && SPELLS[e.sp]) p.hd.push({ sp:e.sp, u:UID++, tmpc:1, free:1, src:m.u }); }
+// Engloutir : retire un serviteur de la taverne et ajoute ses caractéristiques
+function devour(G, p, m, k) { const o = p.sh.filter(x => !x.sp); if (!o.length) return false; const v = pickR(o); p.sh.splice(p.sh.indexOf(v), 1); toPool(G, v); withSrc('Engloutir · ' + CD(v.c).n, () => buff(m, v.a * k, v.h * k)); qAdd(p, 'devours'); return true; }
 function handIn(p) { const G = typeof H !== 'undefined' ? H.G : null; if (!G || p._hin) return; p._hin = 1; try { p.bd.slice().forEach(x => fxOf(x, 'hand').forEach(e => runRecruit(G, p, x, e))); } finally { delete p._hin; } }
 function giveDonut(p, n) { for (let i = 0; i < n; i++) if (p.hd.length < 10) { p.hd.push({ sp:DON, u:UID++ }); handIn(p); } }
 function putDonut(G, p, m, played) {
@@ -1472,6 +1495,7 @@ function simDamage(S, m, n, src) {
   if (n <= 0 || m.h <= 0) return;
   if (has(m, 's')) { remF(m, 's'); const s = sideOf(S, m); S.sides[s].forEach(al => { if (al.h > 0) fxOf(al, 'shield').forEach(e => runCombat(S, s, al, e, 0, m)); }); return; }
   m.h -= n;
+  if (src && has(src, 'l')) { const ss = sideOf(S, src); if (ss >= 0) { S.heal = S.heal || [0, 0]; S.heal[ss] += n; } }   // Vol de vie : les dégâts infligés soignent le héros
   if (src && has(src, 'v')) m.h = Math.min(m.h, 0);
   else if (src && has(src, 'n')) { m.h = Math.min(m.h, 0); remF(src, 'n'); }   // Venimosité : une seule fois
   if (m.h > 0) { const s = sideOf(S, m); fxOf(m, 'surv').forEach(e => runCombat(S, s, m, e)); }
@@ -1545,15 +1569,19 @@ function simulate0(bA, bB, seed, tA, tB, fire, mx) {
     const att = arr[idx]; const swings = has(att, 'w') ? 2 : 1; let rights = arr.slice(idx + 1);
     for (let w = 0; w < swings; w++) {
       if (att.h <= 0 || !arr.includes(att) || !en.length) break;
-      const taunts = en.filter(x => has(x, 't')); const pool = taunts.length ? taunts : en;
+      const seen = en.filter(x => !has(x, 'c')), vis = seen.length ? seen : en;   // Camouflage : invisible aux attaques tant qu'il n'a pas attaqué (sauf s'il ne reste que des camouflés)
+      const taunts = vis.filter(x => has(x, 't')); const pool = taunts.length ? taunts : vis;
       const tgt = pool[Math.floor(S.rng() * pool.length)];
+      if (has(att, 'c')) remF(att, 'c');
       S.frames.push({ s:snap(S), at:att.u, tg:tgt.u });
       rights = arr.slice(arr.indexOf(att) + 1);
+      // Ralliement : « quand il attaque », avant les dégâts (règle de Champs de bataille)
+      fxOf(att, 'atk').forEach(e => runCombat(S, cur, att, e, 0, tgt));
+      for (const al of arr.slice()) if (al.h > 0) fxOf(al, 'aatk').forEach(e => runCombat(S, cur, al, e, 0, att));
+      if (att.h <= 0 || !en.includes(tgt) || tgt.h <= 0) { simDeaths(S, cur); if (att.h <= 0 || !arr.includes(att)) break; if (!en.includes(tgt) || tgt.h <= 0) continue; }
       const aa = att.a, ta = tgt.a;
       const cl = fxOf(att, 'pas').some(e => e.k === 'cleave') ? [en[en.indexOf(tgt) - 1], en[en.indexOf(tgt) + 1]].filter(Boolean) : [];   // attaque aussi les voisins de la cible
-      simDamage(S, tgt, aa, att); cl.forEach(x => simDamage(S, x, aa, att)); if (!(S.mx.first && tgt.h <= 0)) simDamage(S, att, ta, tgt);   // duel : la cible abattue ne riposte pas
-      if (att.h > 0) fxOf(att, 'atk').forEach(e => runCombat(S, cur, att, e, 0, tgt));
-      for (const al of arr.slice()) if (al.h > 0) fxOf(al, 'aatk').forEach(e => runCombat(S, cur, al, e, 0, att));
+      simDamage(S, tgt, aa, att); cl.forEach(x => simDamage(S, x, aa, att)); if (!(S.mx.first && tgt.h <= 0) && !has(att, 'i')) simDamage(S, att, ta, tgt);   // duel : la cible abattue ne riposte pas ; Insensible : aucun dégât pendant son attaque
       simDeaths(S, cur);
       // duo lié (Éveil) : le partenaire du compagnon frappe aussitôt la même cible
       if (att.duo && tgt.h > 0 && en.includes(tgt)) { const pt = arr.find(x => x !== att && x.duo && x.h > 0 && x.a > 0); if (pt) { S.frames.push({ s:snap(S), at:pt.u, tg:tgt.u }); const pa = pt.a, tb = tgt.a; simDamage(S, tgt, pa, pt); simDamage(S, pt, tb, tgt); simDeaths(S, cur); } }
@@ -1571,7 +1599,7 @@ function simulate0(bA, bB, seed, tA, tB, fire, mx) {
   let dmg = 0;
   if (w === 0) dmg = tA + S.sides[0].reduce((t, m) => t + tierOf(m), 0);
   if (w === 1) dmg = tB + S.sides[1].reduce((t, m) => t + tierOf(m), 0);
-  return { w, dmg, frames:S.frames, dead:S.dead, alive:S.sides.map(a => a.map(m => m.c)), pf:S.pf || null, inc:S.inc || null, gag:S.gag || null, perm:S.perm || null, gl:S.gl || null, don:S.don || null, hb:S.hb || null };
+  return { w, dmg, frames:S.frames, dead:S.dead, alive:S.sides.map(a => a.map(m => m.c)), pf:S.pf || null, inc:S.inc || null, gag:S.gag || null, perm:S.perm || null, gl:S.gl || null, don:S.don || null, hb:S.hb || null, heal:S.heal || null };
 }
 
 /* =====================================================================
@@ -2019,6 +2047,7 @@ const OPS = {
   ckm(G, p, a) { const m = p.bd[a.i]; if (!m || m.awk) return false; const md = (CD(m.c).fxAll || []).find(x => x.k === 'ckm'); if (!md || (p.ck || 0) < ckmCost(p, md)) return false;
     p.ck -= ckmCost(p, md); m.awk = 1; qAdd(p, 'awk'); withSrc('Éveil · ' + CD(m.c).n, () => { buff(m, md.c * mult(m), md.c * mult(m)); runMode(G, p, m, md.m); }); checkTriple(G, p); return true; },
   cast(G, p, a) { const it = p.hd[a.i]; if (!it || !it.sp || p.disc) return false; return castSpell(G, p, a.i, a.tg); },
+  choose(G, p, a) { const ch = p.cho; if (!ch || !ch.o[a.i]) return false; p.cho = null; const m = p.bd.find(x => x.u === ch.u); if (m) runRecruit(G, p, m, ch.o[a.i]); checkTriple(G, p); return true; },
   pick(G, p, a) { if (!p.disc || !p.disc[a.i]) return false; const m = p.disc.splice(a.i, 1)[0]; p.disc.forEach(x => toPool(G, x)); p.disc = null; if (p.hd.length < 10) { p.hd.push(m); handIn(p); } else toPool(G, m); if (p.discQ > 0 && !p.disc) { p.discQ--; discTier(G, p, p.discT); } checkTriple(G, p); return true; },
 };
 
@@ -2335,6 +2364,7 @@ function startRecruit() {
     p.pu = false; p.castN = 0; p.castEls = []; p.ckSpentLast = p.ckSpent || 0; p.ckSpent = 0; p.hd.forEach(x => { if (x.sp && SPELLS[x.sp] && SPELLS[x.sp].chg) x.ch = Math.min(2, (x.ch || 0) + 1); }); p.fbq = false; p.njf = 0; p.sylv = false; p.rr = 0; p.rdy = false; p.lastRes = p.res ? (p.res.cr || p.res.r) : null; p.res = null;
     if (p.inc && p.inc.length) p.g += p.inc.shift() || 0;
     { const w = /^(nh|dh|rh|sh|smh)_/.test(p.hero || '') ? htr(p, 'pturn') : (pwOf(p) && pwOf(p).k === 'pturn' ? null : null); if (w) { if (w.g) p.g += w.g; if (w.ki) kiAdd(p, w.ki); if (w.ck) p.ck = Math.min(ckMax(p), (p.ck || 0) + w.ck); if ((w.h || w.a) && p.bd.length) { if (w.all) p.bd.forEach(m => buff(m, w.a || 0, w.h || 0)); else buff(pickR(p.bd), w.a || 0, w.h || 0); } if (w.el) mkAdd(p, w.el, w.n); const src = 'Pouvoir de ' + HEROES[p.hero].n.split(' ')[0]; if (w.sl) shuffle(p.bd.slice()).slice(0, w.sl).forEach(m => sealAdd(p, m, 1)); if (w.drp) withSrc(src, () => { const o = p.bd.filter(m => !(m.x || []).some(e => e.drp)); shuffle(o).slice(0, w.drp).forEach(t => (t.x = t.x || []).push({ k:'dr_summon', card:'tk_puppet', n:1, drp:1, src:'Sasori' })); }); if (w.pa) withSrc(src, () => { const a = p.bd.filter(isPact); if (a.length) a.forEach(m => buff(m, 1, 1)); else pactSummon(p, 'tk_toad', p.bd[p.bd.length - 1]); }); if (w.dr) withSrc(src, () => p.bd.forEach(m => { if (fxOf(m, 'dr').length) buff(m, w.dr, 0); })); } p.spd = 0; }
+    p.bd.forEach(m => fxOf(m, 'bc').forEach(e => { if (e.k === 'craft') giveCraft(p, m, e); }));   // Sorcellerie : un nouveau sort temporaire à chaque tour
     trigBoard(G, p, 'sot'); checkTriple(G, p);
     if (inMechAny(G, 'ki')) { let n = 0; const pm = htr(p, 'pmed'); p.bd.forEach(m => { if (m.med) { n += tierOf(m) * (m.g ? 2 : 1) + (pm ? pm.n || 1 : 0); if (pm && (pm.a || pm.h)) withSrc('Entraînement divin', () => buff(m, pm.a || 0, pm.h || 0)); m.med = 0; } }); if (n) { kiAdd(p, n); p.kiGain = n; } else p.kiGain = 0; }
     p.mkt = 0; p.cdbl = 0; p.hruse = 0;
@@ -2365,6 +2395,7 @@ function startRecruit() {
 function endRecruit() {
   const G = H.G;
   for (const p of G.ps) if (p.al) {
+    p.hd = p.hd.filter(x => !x.tmpc);   // Sorcellerie : le sort temporaire non lancé disparaît à la fin du tour
     qSet(p, 'drBoard', p.bd.filter(m => fxOf(m, 'dr').length).length);
     if (p.pendChest) OPS.chest(G, p);
     if (p.choice) { const b = p.bot ? p.choice.reduce((bi, o, i) => o.r > p.choice[bi].r ? i : bi, 0) : 0; OPS.upick(G, p, { i:b }); }
@@ -2376,6 +2407,7 @@ function endRecruit() {
     if (p.hero === 'maelle' && p.bd[0]) withSrc('Passif de Maëlle', () => buff(p.bd[0], 1, 1));
     if (inMechAny(G, 'fusion') && elems(p.bd) >= 4) withSrc('Fusion élémentaire', () => p.bd.forEach(m => { if (inMech(G, 'fusion', m)) buff(m, 1, 1); }));
     if (p.hero === 'nono' && G.rd >= 3 && !p.pu) p.fb = (p.fb || 3) + 1;
+    if (p.cho) OPS.choose(G, p, { i:0 });   // Choix des armes non tranché : premier effet
     // chrono écoulé pendant un choix de carte : un joueur prend la première proposée (les IA gardent leur meilleur choix) ; on vide aussi les choix en file
     for (let g = 0; g < 6 && p.disc; g++) OPS.pick(G, p, { i:p.bot ? aiBestIndex(p, p.disc) : 0 });
     // Rick et Morty : passif de Rick Cop (Provocation) et quêtes « finir un tour avec… »
@@ -2484,6 +2516,7 @@ function lawsAfterFight(G, p, r, side) {
   // Les Simpson v2 : ce que le combat rapporte (bonus définitifs, Donuts, main, Horror Show, Kang et Kodos, copie de Bart)
   if (r.perm && r.perm[side]) withSrc('Combat', () => { for (const u in r.perm[side]) { const m = p.bd.find(x => String(x.u) === u); if (m) buff(m, r.perm[side][u][0], r.perm[side][u][1]); } });
   if (r.gl && r.gl[side] && r.gl[side].horA) { const n = r.gl[side].horA; p.horA = (p.horA || 0) + n; withSrc('Horror Show', () => p.bd.forEach(m => { if (tribeOk(m, 'si_hor')) buff(m, n, 0); })); }
+  if (r.heal && r.heal[side]) p.hp = Math.min(+RU().hp || 40, p.hp + r.heal[side]);   // Vol de vie
   if (r.don && r.don[side]) giveDonut(p, r.don[side]);
   if (r.hb && r.hb[side]) withSrc('Gil', () => r.hb[side].forEach(([a, h]) => { const o = p.hd.filter(x => !x.sp); if (o.length) buff(pickR(o), a, h); }));
   { const n = (r.dead[side] || []).filter(c => c === 'si_kang' || c === 'si_kodos').length; if (n) { p.kk = (p.kk || 0) + n; withSrc('Kang et Kodos', () => p.bd.forEach(m => { if (fxOf(m, 'pas').some(e => e.k === 'pas_kk')) buff(m, n * mult(m), n * mult(m)); })); } }
@@ -2522,7 +2555,7 @@ function hostTick() {
 }
 
 /* ---------- diffusion ---------- */
-const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u, ch:m.ch || 0, us:m.us || 0 }; const o = { c:m.c, a:m.a, h:m.h }; if (m.awk) o.awk = 1; if (m.sl) o.sl = m.sl; if (m.med) o.med = 1; if (m.tf) { o.tf = m.tf; o.tfn = m.tfn; } if (m.abs) o.abs = m.abs; if (m.por) { o.por = m.por; o.porOf = m.porOf; } if (m.fam) { o.fam = m.fam; if (m.famOf) o.famOf = m.famOf; } if (m.gag) o.gag = m.gag; if (m.rk) o.rk = m.rk; if (m.memo) o.memo = m.memo; if (m.el) o.el = m.el; if (m.fu) o.fu = m.fu; if (m.xp) o.xp = m.xp; if (m.eq && m.eq.length) o.eq = m.eq; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; if (m.bn) o.bn = m.bn; return o; };
+const smallM = m => { if (m.sp) return { sp:m.sp, u:m.u, ch:m.ch || 0, us:m.us || 0, tmpc:m.tmpc || 0 }; const o = { c:m.c, a:m.a, h:m.h }; if (m.awk) o.awk = 1; if (m.sl) o.sl = m.sl; if (m.med) o.med = 1; if (m.tf) { o.tf = m.tf; o.tfn = m.tfn; } if (m.abs) o.abs = m.abs; if (m.por) { o.por = m.por; o.porOf = m.porOf; } if (m.fam) { o.fam = m.fam; if (m.famOf) o.famOf = m.famOf; } if (m.gag) o.gag = m.gag; if (m.rk) o.rk = m.rk; if (m.memo) o.memo = m.memo; if (m.el) o.el = m.el; if (m.fu) o.fu = m.fu; if (m.xp) o.xp = m.xp; if (m.eq && m.eq.length) o.eq = m.eq; if (m.u) o.u = m.u; if (m.g) o.g = 1; if (m.f) o.f = m.f; if (m.tr) o.tr = 1; if (m.x) o.x = m.x; if (m.tmp) o.tmp = m.tmp; if (m.bn) o.bn = m.bn; return o; };
 const fullM = m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g || 0, f:m.f || '', u:m.u }; if (m.x) o.x = m.x; if (m.fam) o.fam = m.fam; if (m.gag) o.gag = m.gag; if (m.domb) o.domb = m.domb; if (m.awk) o.awk = m.awk; if (m.tf) o.tf = m.tf; if (m.duo) o.duo = 1; if (m.el) o.el = m.el; if (m.hx) o.hx = m.hx; return o; };
 function pubData() {
   const G = H.G;
@@ -2532,7 +2565,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, sp2:p.sp2 ? p.sp2.sp : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ki:p.ki || 0, kiGain:p.kiGain || 0, pf:p.pf || 0, pfn:p.pfNext || 0, dbDied:p.dbDied || 0, dbRes:p.dbRes || '', njf:p.njf || 0, spd:p.spd || 0, castN:p.castN || 0, ckm:ckMax(p), ckPay:heroCk(H.G, p) ? 1 : 0, kiPay:heroKi(p) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, mkl:(mkSync(p), p.mkl) || {}, souffle:p.souffle || 0, roche:p.roche || 0, choice:p.choice || null, chFav:p.chFav || 0, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, hrr:p.hrr || 0, hrm:p.hrm || HERO_ROLLS, haw:p.haw || 0, hawId:p.hawId || 0, qp:p.qp || 0, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, sp2:p.sp2 ? p.sp2.sp : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, cho:p.cho || null, gem:[p.gemA || 0, p.gemH || 0], inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ki:p.ki || 0, kiGain:p.kiGain || 0, pf:p.pf || 0, pfn:p.pfNext || 0, dbDied:p.dbDied || 0, dbRes:p.dbRes || '', njf:p.njf || 0, spd:p.spd || 0, castN:p.castN || 0, ckm:ckMax(p), ckPay:heroCk(H.G, p) ? 1 : 0, kiPay:heroKi(p) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, mkl:(mkSync(p), p.mkl) || {}, souffle:p.souffle || 0, roche:p.roche || 0, choice:p.choice || null, chFav:p.chFav || 0, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, hrr:p.hrr || 0, hrm:p.hrm || HERO_ROLLS, haw:p.haw || 0, hawId:p.hawId || 0, qp:p.qp || 0, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;

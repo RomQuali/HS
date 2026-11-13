@@ -177,13 +177,13 @@ const dataAttrs = m => `data-c="${m.c}" data-a="${m.a}" data-h="${m.h}" data-g="
 const ariaM = m => `${CD(m.c).n}${m.g ? ' doré' : ''}, ${m.a} attaque, ${m.h} vie`;
 const demo = (id, g) => { const b = CD(id); return { c:id, a:b.a * (g ? GOLD_K : 1), h:b.h * (g ? GOLD_K : 1), g:g ? 1 : 0, f:b.f }; };
 const hpGem = hp => `<svg class="hpg" viewBox="0 0 40 40" aria-label="${hp} points de vie"><use href="#gem-h" width="40" height="40"/><text class="gt" x="20" y="25" dy=".36em">${hp}</text></svg>`;
-const KWI = { t:['k_taunt', '#d8c8a8', 'Provocation'], s:['k_div', '#ffe58a', 'Bouclier divin'], v:['drop', '#8fe36a', 'Toxicité'], n:['drop', '#c88aff', 'Venimosité'], r:['k_reborn', '#9fe8ff', 'Réincarnation'], w:['wind', '#cdeeff', 'Furie des vents'],
+const KWI = { t:['k_taunt', '#d8c8a8', 'Provocation'], s:['k_div', '#ffe58a', 'Bouclier divin'], v:['drop', '#8fe36a', 'Toxicité'], n:['drop', '#c88aff', 'Venimosité'], r:['k_reborn', '#9fe8ff', 'Réincarnation'], w:['wind', '#cdeeff', 'Furie des vents'], c:['k_glass', '#b9c2d8', 'Camouflage'], l:['k_heart', '#d08aff', 'Vol de vie'], i:['k_div', '#fff2b0', 'Insensible'],
   bc:['k_horn', '#ffcf7a', 'Cri de guerre'], play:['k_spark', '#ffd54a', 'Quand vous jouez'], dr:['skull', '#efe2c2', 'Râle d\'agonie'], soc:['k_cross', '#ffb27a', 'Début du combat'], eot:['k_glass', '#ffe39a', 'Fin de tour'], sot:['k_sun', '#ffe39a', 'Début de tour'],
-  atk:['sword', '#ff9a8a', 'Après avoir attaqué'], surv:['k_heart', '#ff7a8a', 'Survit à des dégâts'], sell:['k_coin', '#f2c14e', 'Vente'], die:['k_tomb', '#c8c0d8', 'Quand un allié meurt'], aura:['twin', '#e9d5ff', 'Aura'],
+  atk:['sword', '#ff9a8a', 'Ralliement'], surv:['k_heart', '#ff7a8a', 'Survit à des dégâts'], sell:['k_coin', '#f2c14e', 'Vente'], die:['k_tomb', '#c8c0d8', 'Quand un allié meurt'], aura:['twin', '#e9d5ff', 'Aura'],
   cast:['star', '#b48cff', 'Quand vous lancez un sort'], shield:['k_div', '#ffe58a', 'Bouclier perdu'], roll:['roll', '#9ad8ff', 'Actualisation'], up:['up', '#a6e07a', 'Amélioration'], pow:['crown', '#ffd86a', 'Pouvoir héroïque'] };
 function kwIcons(m) {
   const by = CD(m.c).by || {}, out = [], f = m.f || '';
-  for (const k of ['t', 's', 'v', 'n', 'r', 'w']) if (f.includes(k)) out.push(KWI[k]);
+  for (const k of ['t', 's', 'v', 'n', 'r', 'w', 'c', 'l', 'i']) if (f.includes(k)) out.push(KWI[k]);
   for (const tr of Object.keys(KWI)) if (tr.length > 1 && ((by[tr] && by[tr].length) || (m.x || []).some(e => ET[e.k] && ET[e.k].tr === tr))) out.push(KWI[tr]);
   return out.slice(0, 8);
 }
@@ -220,7 +220,7 @@ function ufIn(m, id, up) {
 function tokenH(m, z, i, o = {}) {
   const b = CD(m.c), f = (m.f || '') + (m.tmp && m.tmp.f ? m.tmp.f : ''), g = !!m.g;   // mots-clés permanents + ceux du prochain combat
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
-  const cls = ['mn', z === 'f' && C[m.c] && (C[m.c].comp || /^nb_/.test(m.c)) && 'cp-join', ...['s', 't', 'r', 'w', 'v'].filter(k => f.includes(k)).map(k => 'kw-' + k), o.trip && 'tripok', o.pair && 'pairok', m.awk && !isComp(m) && 'mn-awk', g && 'g', ufOf(m) && 'rf', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
+  const cls = ['mn', z === 'f' && C[m.c] && (C[m.c].comp || /^nb_/.test(m.c)) && 'cp-join', ...['s', 't', 'r', 'w', 'v', 'c', 'l', 'i'].filter(k => f.includes(k)).map(k => 'kw-' + k), o.trip && 'tripok', o.pair && 'pairok', m.awk && !isComp(m) && 'mn-awk', g && 'g', ufOf(m) && 'rf', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
   const ics = kwIcons(m);
   const up = (v, base) => v > base * (g ? GOLD_K : 1) ? ' up' : '';
   const uf = ufOf(m);
@@ -1187,6 +1187,8 @@ function heroMedalsH(me) {
 }
 function overlayH() {
   const d = V.pub, me = V.me;
+  if (me && me.cho && d.ph === 'recruit') return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Choix des armes</h2><p class="ov-s">${esc(C[me.cho.c] ? CD(me.cho.c).n : '')} : choisis un des deux effets. À la fin du chrono, le premier est pris.</p>
+    <div class="cho">${me.cho.o.map((o, i) => `<button class="cho-b" data-act="choose" data-i="${i}">${esc(ET[o.k] ? ET[o.k].txt(o, 1).replace(/^Cri de guerre : /, '').replace(/^./, c => c.toUpperCase()) : '?')}</button>`).join('')}</div></div></div>`;
   if (me && me.disc && d.ph === 'recruit') return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Découverte</h2><p class="ov-s">Choisis un serviteur. Les deux autres retournent dans la réserve.</p>
     <div class="disc">${me.disc.map((m, i) => `<button class="disc-b" data-act="pick" data-i="${i}" aria-label="Choisir ${esc(CD(m.c).n)}">${cardH(m, 'disc', i)}</button>`).join('')}</div></div></div>`;
   if (d.ph === 'hero' && me) {
@@ -1353,6 +1355,7 @@ function doAct(act, btn) {
     case 'aim': if (s) { V.aim = s.i; V.sel = null; sfx('cible_debut'); render(); } break;
     case 'aimcancel': V.aim = null; sfx('cible_annuler'); render(); break;
     case 'pick': sendAct({ t:'pick', i:+btn.dataset.i }); break;
+    case 'choose': sendAct({ t:'choose', i:+btn.dataset.i }); break;
     case 'unsel': V.sel = null; render(); break;
     case 'play': if (s) { sendAct({ t:'play', i:s.i }); V.sel = null; } break;
     case 'sell': if (s) { sendAct({ t:'sell', i:s.i }); V.sel = null; } break;
