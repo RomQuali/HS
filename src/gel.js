@@ -453,3 +453,12 @@ html.lite .mn-svg .hs-wind image{animation:none}
 .fan .cd.tmpc::before{content:'Temporaire';position:absolute;left:50%;top:-9%;transform:translateX(-50%);z-index:5;padding:1px 8px;border-radius:9px;font:700 10px/1.5 var(--f-label,inherit);color:#dff6ff;background:#1c4a7a;box-shadow:0 0 0 1.5px #7fd0ff,0 0 10px rgba(110,200,255,.8);white-space:nowrap;pointer-events:none}
 .fan .cd.tmpc{filter:drop-shadow(0 0 6px rgba(110,200,255,.9))}
 `; document.head.appendChild(st); })();
+
+/* ===== Naruto (refonte) : goutte du jutsu, étoile de transformation, nom de la forme ===== */
+(function () { const st = document.createElement('style'); st.id = 'nk-css'; st.textContent = `
+.mn .tf-b.nk-tf{right:-12%;top:-8%;width:clamp(26px,36%,46px);filter:grayscale(.55) brightness(.8)}
+.mn .tf-b.nk-tf.ok{filter:drop-shadow(0 0 7px #ffd84a)}
+.mn .tf-b.nk-tf b{font-size:clamp(12px,1.7vh,18px)}
+.mn .jut-b.used{opacity:.35;filter:grayscale(1);cursor:default;animation:none}
+body.u-nj .mn .tf-n{top:auto;bottom:-11%;font-size:clamp(8px,1.05vh,11px);padding:1px 7px;z-index:8}
+`; document.head.appendChild(st); })();

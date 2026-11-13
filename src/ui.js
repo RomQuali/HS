@@ -250,8 +250,13 @@ function tokenH(m, z, i, o = {}) {
   const porU = z === 'bd' && V.me && V.pub && (V.pub.laws || []).some(l => l.k === 'portail') && !b.tok && !isComp(m), pf = V.me ? (V.me.pf || 0) : 0;
   const porH = porU ? `<span class="por-b${recr && pf >= 1 ? ' ok' : ''}" role="button" tabindex="0" data-act="portal" data-i="${i}" data-tip="${esc('Portail (1 fluide, tu en as ' + pf + ') : ' + b.n + ' revient d\'une autre dimension en ' + ((TRIBES[b.tr] || {}).sg || trName(b.tr) || 'serviteur') + ' aléatoire de niveau ' + Math.max(1, tierOf(m) - 1) + ' ou ' + Math.min(6, tierOf(m) + 1) + ', en gardant ses bonus' + (m.g ? ', doré compris' : '') + '.')}" aria-label="Faire passer un portail">◎</span>` + (m.por ? `<span class="por-n" data-tip="${esc('Variante d\'une autre dimension (' + m.por + ' portail' + (m.por > 1 ? 's' : '') + (m.porOf ? ', ex-' + m.porOf : '') + ')')}">Dim. ${m.por}</span>` : '') : '';
   const mdH = md ? `<span class="ckm-b${mdOk ? ' ok' : ''}" role="button" tabindex="0" data-act="ckm" data-i="${i}" data-tip="${esc('Éveil (' + mdC + ' chakra, une seule fois) : +' + md.c * mult(m) + '/+' + md.c * mult(m) + ', puis chaque tour : ' + mTx(md.m, mult(m)))}" aria-label="Éveiller ce serviteur">${ckMarkH(mdC)}</span>` : '';
+  const nkU = z === 'bd' && V.me && V.pub && (V.pub.laws || []).some(l => l.k === 'chakra') && typeof jutOf === 'function', nkJ = nkU && jutOf(m);
+  const nkC = nkJ ? jutCost(V.me, m) : 0, nkUsed = nkJ && m.ju === V.pub.rd, nkOk = nkJ && recr && !nkUsed && (V.me.ck || 0) >= nkC, nkT = nkJ ? nkTfCost(V.me, m) : null;
+  const nkH = nkJ ? `<span class="ckm-b jut-b${nkOk ? ' ok' : ''}${nkUsed ? ' used' : ''}" role="button" tabindex="0" data-act="jutsu" data-i="${i}" data-tip="${esc('Jutsu · ' + nkJ.nm + ' (' + nkC + ' chakra, une fois par tour) : ' + jutBody(jutFx(nkJ, m.tf), mult(m)) + '.' + (nkUsed ? ' Déjà lancé ce tour.' : ''))}" aria-label="Lancer le jutsu">${ckMarkH(nkC)}</span>`
+    + (nkT != null ? `<span class="tf-b nk-tf${recr && (V.me.ck || 0) >= nkT ? ' ok' : ''}" role="button" tabindex="0" data-act="nktf" data-i="${i}" data-tip="${esc('Transformation · ' + nkJ.tf.nm + ' (' + nkT + ' chakra, une seule fois) : +' + nkJ.tf.a * mult(m) + '/+' + nkJ.tf.h * mult(m) + (nkJ.tf.kw ? ', ' + ((SET.kw[nkJ.tf.kw] || {}).n || '') : '') + (nkJ.tf.x || []).map(o => ', ' + fxText(o, mult(m)).replace(/\.$/, '')).join('') + (nkJ.tf.fx ? ' ; son jutsu devient : ' + jutBody(nkJ.tf.fx, mult(m)) : '') + '.')}" aria-label="Transformer"><b>${nkT}</b></span>` : '')
+    + (m.tfn ? `<span class="tf-n">${esc(m.tfn)}</span>` : '') : '';
   const famH = m.fam && z !== 'sh' ? `<span class="fam-n" data-tip="${esc(m.fam === '*' ? 'Compte comme toutes les familles pour la cohésion' + (m.famOf ? ' (' + m.famOf + ')' : '') + '.' : 'Converti : compte comme ' + ((TRIBES[m.fam] || {}).sg || trName(m.fam)) + ' pour la cohésion' + (m.famOf ? ' (' + m.famOf + ')' : '') + '.')}">${m.fam === '*' ? '✦ Toutes familles' : esc(trName(m.fam))}</span>` : '';
-  return `<div class="${cls}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.dmg ? ` data-dmg="${o.dmg}"` : ''}${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">${svg}${o.trip ? '<span class="ptag" aria-hidden="true">Triple !</span>' : o.pair ? '<span class="ptag" aria-hidden="true">Paire ×2</span>' : ''}${mdH}${kiH}${porH}${famH}${o.name === false ? '' : `<span class="mn-nm">${esc(b.n)}</span>`}${m.tr ? '<span class="tri">Triple !</span>' : o.trip ? '<span class="tri pulse">Triple !</span>' : ''}${o.extra || ''}</div>`;
+  return `<div class="${cls}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.dmg ? ` data-dmg="${o.dmg}"` : ''}${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">${svg}${o.trip ? '<span class="ptag" aria-hidden="true">Triple !</span>' : o.pair ? '<span class="ptag" aria-hidden="true">Paire ×2</span>' : ''}${mdH}${kiH}${porH}${nkH}${famH}${o.name === false ? '' : `<span class="mn-nm">${esc(b.n)}</span>`}${m.tr ? '<span class="tri">Triple !</span>' : o.trip ? '<span class="tri pulse">Triple !</span>' : ''}${o.extra || ''}</div>`;
 }
 // pièce de coût en haut à gauche ; en vert avec l'ancien prix barré quand une réduction est active
 function costGemH(c, base) {
@@ -266,7 +271,7 @@ function cardH(m, z, i, o = {}) {
   return `<div class="cd${g ? ' g' : ''}${sel ? ' sel' : ''}${m.tr ? ' newgold' : ''}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">`
     + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-${artOf(m)}" y="-4" width="100" height="100"/></svg></div>`
     + (g ? '<i class="cd-dr" aria-hidden="true"></i>' : '') + (b.t ? `<div class="cd-tier" aria-label="Niveau ${b.t}"><b>${b.t}</b></div>` : '')
-    + `<div class="cd-nm${b.n.length > 15 ? ' l' : ''}"><span>${esc(b.n)}</span></div>${(() => { const t = cardTextH(m.c, g), n = t.replace(/<[^>]+>/g, '').length; return `<div class="cd-tx${n > 185 ? ' xlong xxl x3' : n > 135 ? ' xlong xxl' : n > 95 ? ' xlong' : n > 62 ? ' long' : ''}"><span>${t}</span></div>`; })()}`
+    + `<div class="cd-nm${b.n.length > 15 ? ' l' : ''}"><span>${esc(b.n)}</span></div>${(() => { const t = cardTextH(m.c, g), n = t.replace(/<[^>]+>/g, '').length; return `<div class="cd-tx${n > 185 ? ' xlong xxl x3 x4' : n > 135 ? ' xlong xxl' : n > 95 ? ' xlong' : n > 62 ? ' long' : ''}"><span>${t}</span></div>`; })()}`
     + (b.tr !== 'neu' && trName(b.tr) ? `<div class="cd-tb">${esc(b.tr2 && trName(b.tr2) ? trName(b.tr).replace(/^Clan /, '') + ' + ' + trName(b.tr2).replace(/^Clan /, '') : trName(b.tr))}</div>` : b.tok ? '<div class="cd-tb">Jeton</div>' : '')
     + `<svg class="cd-gem a" viewBox="0 0 40 49" aria-hidden="true"><use href="#fr-atk" width="40" height="49"/><text class="gt${up(m.a, b.a)}" x="24" y="26" dy=".36em">${m.a}</text></svg>`
     + `<svg class="cd-gem h" viewBox="0 0 40 49" aria-hidden="true"><use href="#fr-hp" width="40" height="49"/><text class="gt${up(m.h, b.h)}" x="20" y="25.6" dy=".36em">${m.h}</text></svg>`
@@ -406,24 +411,24 @@ function elCycleSvg(order, col, title) {
 }
 // explication de la loi du chakra (étendard de l'univers, choix du héros)
 function chakraLawH(big) {
-  const combo = (a, b, F) => `<i style="--c:${F.col}"><em style="background:${ELS[a].col}"></em><em style="background:${ELS[b].col}"></em><b>${esc(F.n)}</b></i>`;
-  const pairs = Object.entries(FUSIONS).map(([k, F]) => { const [a, b] = k.split('+'); return combo(a, b, F); }).join('') + Object.entries(PURES).map(([e, F]) => combo(e, e, F)).join('');
   const sec = (ic, t, body) => `<div class="njl-s"><b class="njl-h"><span>${ic}</span>${t}</b>${body}</div>`;
-  const ctr = (n, col, tx) => `<span class="njl-ctr" style="--c:${col}"><b>${n}</b> ${tx}</span>`;
-  const vil = (tb, ic, t, d, m, f) => sec(ic, esc((TRIBES[tb] || {}).n || t), `<small><b>Début</b> : ${d}</small><small><b>Milieu</b> : ${m}</small><small><b>Fin</b> : ${f}</small>`);
+  const fam = (tb, ic, x) => sec(ic, esc((TRIBES[tb] || {}).n || ''), `<small>${x}</small>`);
   return `<span class="ban-law ck-law njl${big ? ' big' : ''}">
-    ${sec('🪙', 'Ressources', `<small><b>Or</b> : acheter les serviteurs, monter la taverne et certains pouvoirs de héros.</small><small><b>Chakra</b> : chaque ninja en jeu en donne 1 par tour (10 au plus). Il lance les <b>sorts</b>, <b>éveille</b> les serviteurs (une seule fois : la goutte bleue au-dessus d'eux) et paie certains pouvoirs de héros.</small>`)}
-    ${vil('n_feu', '🔥', 'Konoha', 'petits dégâts au début du combat.', 'ils s\'additionnent : 1 dégât par allié de Konoha.', 'grandes explosions qui touchent tous les ennemis.')}
-    ${vil('n_vent', '🏜️', 'Suna', 'invoque des marionnettes 1/1.', 'les marionnettes se renforcent chaque tour.', 'bouclier de sable sur tout le plateau.')}
-    ${vil('n_eau', '🌫️', 'Kiri', 'beaucoup de PV, ils grandissent en survivant.', 'Bouclier divin et soins de fin de tour.', 'Réincarnation pour toute Kiri.')}
-    ${vil('n_foudre', '⚡', 'Kumo', 'des jinchūriki faibles.', 'ils grandissent à chaque combat gagné.', 'en mourant, ils libèrent une Bijū 8/8.')}
-    ${vil('n_terre', '⛰️', 'Iwa', 'Provocation et gros PV.', 'ils invoquent des Doryūheki.', 'Avalanche : un quart de leur vie en dégâts au début du combat.')}
-    ${sec('🧬', 'Kekkei genkai', `<small>Quelques serviteurs appartiennent à <b>deux villages</b> : ils profitent des bonus des deux et grandissent quand un combo du réservoir contient une de leurs natures.</small>`)}
+    ${sec('💧', 'Chakra', `<small>Chaque serviteur de ton plateau (invocations comprises) donne 1 chakra au début du tour. Il se garde, 10 au plus.</small>`)}
+    ${sec('🌀', 'Jutsus', `<small>Chaque ninja porte son jutsu : clique sur la goutte bleue au-dessus de lui. Une fois par tour, pour un coût égal à son niveau.</small>`)}
+    ${sec('⭐', 'Transformations', `<small>Certains ninjas se transforment une seule fois (étoile dorée, 5 à 10 chakra) : caractéristiques, mot-clé, et un jutsu plus fort.</small>`)}
+    ${fam('nk_kon', '🍃', 'Maîtres et élèves : les élèves grandissent quand un autre ninja de Konoha lance un jutsu.')}
+    ${fam('nk_aka', '☁️', 'Peu nombreux mais énormes, en binôme : bonus si le partenaire est sur le plateau.')}
+    ${fam('nk_sun', '🏜️', 'Vente et revente : or, chakra et bonus à chaque serviteur vendu.')}
+    ${fam('nk_oto', '🐍', 'Les expériences d\'Orochimaru : Engloutir les serviteurs de la taverne.')}
+    ${fam('nk_kir', '🌫️', 'Les épéistes de la Brume : Ralliement, Vol de vie et Camouflage.')}
+    ${sec('🐸', 'Invocations', `<small>Gamabunta, Manda, Katsuyu… n'apparaissent pas en taverne : seuls les jutsus de leurs invocateurs les appellent.</small>`)}
   </span>`;
 }
+function njCardH() { return chakraLawH(true); }
 // style de jeu de chaque village (étendard, cartes de héros)
-const NJ_STYLE = { n_feu:'Explosions', n_vent:'Kugutsu et sable', n_eau:'Survie et soins', n_foudre:'Jinchūriki', n_terre:'Forteresse' };
-const NJ_VIC = { n_feu:'🔥', n_vent:'🏜️', n_eau:'🌫️', n_foudre:'⚡', n_terre:'⛰️' };
+const NJ_STYLE = { nk_kon:'Maîtres et élèves', nk_aka:'Binômes', nk_sun:'Vente et revente', nk_oto:'Engloutir', nk_kir:'Épéistes', n_feu:'Explosions', n_vent:'Kugutsu et sable', n_eau:'Survie et soins', n_foudre:'Jinchūriki', n_terre:'Forteresse' };
+const NJ_VIC = { nk_kon:'🍃', nk_aka:'☁️', nk_sun:'🏜️', nk_oto:'🐍', nk_kir:'🌫️', n_feu:'🔥', n_vent:'🏜️', n_eau:'🌫️', n_foudre:'⚡', n_terre:'⛰️' };
 // fiche de l'univers Ninja : cinq règles courtes (le détail est sur l'écran du héros)
 function dbCardH() {
   const row = (ic, col, t, x) => `<span class="nj-r"><i class="nj-i" style="--c:${col}"><span class="nj-tx">${ic}</span></i><span><b>${t}</b><small>${x}</small></span></span>`;
@@ -746,6 +751,7 @@ function compSheetH(mc, lv, eq) {
   </div>`;
 }
 function rsvH(d, me) {
+  if (typeof NJ_RSV !== 'undefined' && !NJ_RSV) return '';
 
   if (!(d.laws || []).some(l => l.k === 'chakra')) return '';
   const r = me.rsv || [], a = r[0], col = e => ELS[e] ? ELS[e].col : 'transparent';
@@ -814,8 +820,8 @@ function pfGauge(d, me) {
 }
 function ckGauge(d, me) {
   const law = (d.laws || []).find(l => l.k === 'chakra'); if (!law) return '';
-  const ck = me.ck || 0, inc = (me.bd || []).filter(m => (law.trs || []).includes(CD(m.c).tr)).length;
-  return `<div class="purse ckp" aria-label="${ck} chakra sur 10" data-tip="Chakra : il lance tes techniques ninja et le pouvoir de ton héros. Chaque serviteur Ninja en génère 1 au début de ton tour (10 au plus).${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ck}<small>/10</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:10 }, (_, k) => `<i class="ckc${k < ck ? '' : ' off'}"></i>`).join('')}</span></div>`;
+  const ck = me.ck || 0, inc = (me.bd || []).length;
+  return `<div class="purse ckp" aria-label="${ck} chakra sur 10" data-tip="Chakra : il lance les jutsus de tes ninjas (goutte bleue) et paie leur transformation (étoile dorée). Chaque serviteur de ton plateau en génère 1 au début de ton tour (10 au plus, il se garde).${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ck}<small>/10</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:10 }, (_, k) => `<i class="ckc${k < ck ? '' : ' off'}"></i>`).join('')}</span></div>`;
 }
 // compteurs de clan (braises, marée, charge) sous le chakra
 const clanCtrH = me => { const c = [['braise', 'Braises', '#ff9a5a', 'Braises (Clan Katon) : chaque technique les attise. Après l\'Éveil, Phénix : tes serviteurs Katon gagnent +1/+1 par paire de braises et Réincarnation.'], ['maree', 'Marée', '#6fc8ff', 'Marée (Clan Suiton) : elle monte à chaque fin de tour. Après l\'Éveil, raz-de-marée : tous tes serviteurs gagnent +1/+1 par tranche de 4.'], ['charge', 'Charge', '#ffe14a', 'Charge (Clan Raiton) : elle s\'accumule à chaque fin de tour. Après l\'Éveil, orage total : la moitié frappe l\'ennemi au début de chaque combat.']].filter(([k]) => me[k]);
@@ -1144,13 +1150,13 @@ function heroPickRowH(d, me) {
       <button class="hp-rr${left ? '' : ' off'}" data-act="hroll" data-i="${i}" ${left ? '' : 'disabled'} aria-label="Relancer ce héros (${me.hrr || 0} relance${(me.hrr || 0) > 1 ? 's' : ''} restante${(me.hrr || 0) > 1 ? 's' : ''})"><span class="hp-rrn">${me.hrr || 0}</span><b>Relancer</b></button>
     </div>`; };
   const fams = [...new Set((Array.isArray(d.univ) ? d.univ : d.univ ? [d.univ] : d.us || []).flatMap(nm => ((SET.univ || []).find(u => u.n === (nm && nm.n || nm)) || {}).tribes || []).map(t => TRIBES[t] && TRIBES[t].n).filter(Boolean))];
-  const tab = V.ruleTab || 'tour', rules = nin && (d.laws || []).some(l => l.k === 'chakra') && V.hpRules, por = (d.laws || []).some(l => l.k === 'portail') ? rmCardH : (d.laws || []).some(l => l.k === 'bande') ? spCardH : (d.laws || []).some(l => l.k === 'gag') ? simCardH : null;
+  const tab = V.ruleTab || 'tour', rules = false, por = (d.laws || []).some(l => l.k === 'chakra') ? njCardH : (d.laws || []).some(l => l.k === 'portail') ? rmCardH : (d.laws || []).some(l => l.k === 'bande') ? spCardH : (d.laws || []).some(l => l.k === 'gag') ? simCardH : null;
   return `<div class="ov hp-ov"><div class="hp-wrap">
     <header class="hp-head"><h2 class="hp-t">Choisis ton héros</h2>${fams.length ? `<p class="hp-fams">${esc(fams.join(', '))}</p>` : ''}</header>
     <div class="hp-row">${me.ho.map(card).join('')}</div>
     <button class="hp-ok" data-act="hero" data-h="${sel || ''}" ${sel ? '' : 'disabled'}>OK</button>
     <div class="hp-infos">${pcs.join('')}</div>
-    ${nin && (d.laws || []).some(l => l.k === 'chakra') ? `<button class="btn sm hp-rb" data-act="hprules">${rules ? 'Masquer les règles' : 'Comment on joue ?'}</button>` : ''}
+    ${false ? `<button class="btn sm hp-rb" data-act="hprules">${rules ? 'Masquer les règles' : 'Comment on joue ?'}</button>` : ''}
     ${por ? `<button class="btn sm hp-rb" data-act="hprules">${V.hpRules ? 'Masquer les règles' : 'Comment on joue ?'}</button>${V.hpRules ? `<div class="hpick-r hp-rules hp-rm">${por()}</div>` : ''}` : ''}
     ${rules ? `<div class="hpick-r hp-rules"><div class="rl-tabs" role="tablist">${RULE_TABS.map(([k, n]) => `<button role="tab" class="rl-tab${k === tab ? ' on' : ''}" data-act="rtab" data-k="${k}" aria-selected="${k === tab}">${n}</button>`).join('')}</div><div class="rl-body">${ruleTabH(tab)}</div></div>` : ''}
   </div></div>`;
@@ -1334,6 +1340,7 @@ function doAct(act, btn) {
     case 'hero': sendAct({ t:'hero', h:btn.dataset.h }); V.heroSel = null; break;
     case 'hsel': V.heroSel = btn.dataset.h; render(); break;
     case 'ckm': sendAct({ t:'ckm', i:+btn.dataset.i }); break;
+    case 'jutsu': case 'nktf': sendAct({ t:btn.dataset.act, i:+btn.dataset.i }); break;
     case 'med': sendAct({ t:'med', i:+btn.dataset.i }); break;
     case 'tf': sendAct({ t:'tf', i:+btn.dataset.i }); break;
     case 'portal': if (btn.classList.contains('ok')) sendAct({ t:'portal', i:+btn.dataset.i }); else toast((V.me && (V.me.pf || 0) < 1 ? 'Il te faut 1 fluide de portail (tu en gagnes 1 par tour). ' : '') + (btn.dataset.tip || '')); break;
@@ -3365,6 +3372,7 @@ html.lite .mn.mn-awk .mn-svg{animation:none}
 :root body .cd .cd-tx.xlong{--fs:6cqi;line-height:1.1}
 :root body .cd .cd-tx.xxl{--fs:5.3cqi}
 :root body .cd .cd-tx.x3{--fs:4.7cqi;line-height:1.06}
+:root body .cd .cd-tx.x3.x4{--fs:4.45cqi;line-height:1.05}
 :root body .cd .cd-tx,:root body #peek .cd .cd-tx,:root body .table .cd .cd-tx{font-size:var(--fs)}
 :root body #peek .cd .cd-tb{font-size:6.8cqi}
 :root body .cd .cd-tb{position:absolute;left:50%;bottom:-4.4%;transform:translateX(-50%);z-index:3;box-sizing:border-box;min-width:46cqi;height:21cqi;padding:0 1cqi 1.6cqi;display:grid;place-items:center;white-space:nowrap;clip-path:none;filter:none;box-shadow:none;border-radius:0;background:none;

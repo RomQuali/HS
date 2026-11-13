@@ -10,8 +10,8 @@ window.RoniUnivers = [
    regles:["La loi active de Springfield est « Donuts ». Les cinq familles participent à la partie."]},
   {id:"dragon-ball",nom:"Dragon Ball",heros:10,theme:"Ki",symbole:"etoile",couleur:"#eda658",familles:["Saiyans","Terriens","Namekiens","Armée de Freezer","Androïdes"],
    regles:["Médite, charge ton ki et transforme tes guerriers."]},
-  {id:"naruto",nom:"Naruto",heros:20,theme:"Chakra",symbole:"kunai",couleur:"#dba26d",familles:["Konoha","Suna","Kiri","Kumo","Iwa"],
-   regles:["Les cinq villages partagent un même chakra. Mêle leurs techniques pendant la partie."]}
+  {id:"naruto",nom:"Naruto",heros:20,theme:"Chakra",symbole:"kunai",couleur:"#dba26d",familles:["Konoha","Akatsuki","Suna","Oto","Kiri"],
+   regles:["Charge ton chakra : lance le jutsu de chaque ninja, puis transforme-le."]}
 ];
 
 
@@ -69,7 +69,7 @@ window.RoniUnivers = [
       $('.type').textContent=u.loi?'Loi active':'Mécanique';$('.loi').textContent=u.loi||u.theme||u.nom;
       const emblem=$('.embleme');const donut=u.id==='les-simpson';emblem.classList.toggle('paysage',!donut&&!u.embleme);
       emblem.src=u.embleme??(donut?url('visuels/donut.webp'):boutons[i].querySelector('img').src);
-      $('.familles h2').textContent=u.id==='les-simpson'?'Familles de Springfield':u.id==='naruto'?'Villages de Naruto':'Familles · '+u.nom;
+      $('.familles h2').textContent=u.id==='les-simpson'?'Familles de Springfield':u.id==='naruto'?'Familles de Naruto':'Familles · '+u.nom;
       const tags=$('.familles ul');tags.replaceChildren();
       (u.familles||[]).forEach((nom,j)=>{const tag=el('li','',nom);const [fond,bord]=teintes[j%teintes.length];tag.style.setProperty('--teinte',fond);tag.style.setProperty('--filet',bord);tags.append(tag)});
       aide.replaceChildren(el('h3','','Règles · '+u.nom));

@@ -161,7 +161,7 @@ const SPELLS = {
   cf_or:{ n:'Coffre d\'or', t:1, c:0, ck:6, item:1, ty:'cof', tx:'Reçu après une victoire avec une taverne de niveau 4 ou plus. Ouvre-le avec 6 chakra : deux équipements rares.' },
 };
 const SPELL_IDS = Object.keys(SPELLS);
-function drawSpell(t, el) { const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra');
+function drawSpell(t, el) { if (typeof NJ_SPELLS !== 'undefined' && !NJ_SPELLS && typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra')) return null; const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra');
   if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'ki')) { const ids = SPELL_IDS.filter(id => SPELLS[id].db && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
   if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'portail')) { const ids = SPELL_IDS.filter(id => SPELLS[id].rm && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }   // Rick et Morty : seulement les inventions
   if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'bande')) { const ids = SPELL_IDS.filter(id => SPELLS[id].spk && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }   // South Park : seulement les objets cultes
