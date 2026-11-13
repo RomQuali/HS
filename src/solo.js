@@ -41,7 +41,7 @@ window.RoniUnivers = [
     const dlg=el('dialog');dlg.setAttribute('aria-labelledby','titre');dlg.setAttribute('aria-describedby','description');
     dlg.innerHTML='<div class="plaque"><header class="tete"><div><h1 id="titre">Partie solo</h1><p id="description">Toi contre sept IA.</p></div><button class="fermer" type="button" aria-label="Fermer">×</button></header><div class="galerie" role="radiogroup" aria-label="Univers de la taverne"></div><section class="fiche"><div class="mecanique"><img class="embleme" alt=""><div><h2 class="type"></h2><p class="loi"></p></div></div><div class="familles"><h2></h2><ul></ul></div><button class="action voir" type="button" aria-controls="regles" aria-expanded="false">Voir les règles</button></section><section class="regles" id="regles" hidden></section><footer class="pied"><details class="chantier"><summary>Univers en chantier</summary><p></p></details><div class="actions"><button class="action hasard" type="button"><span aria-hidden="true">⚄</span> Au hasard</button><button class="action jouer" type="button">Lancer la partie</button></div></footer><span class="sr" role="status"></span></div>';
     const $=s=>dlg.querySelector(s),gal=$('.galerie'),aide=$('.regles'),voir=$('.voir');
-    $('.chantier p').textContent=chantier.join(' · ');
+    $('.chantier p').textContent=chantier.join(' · ');if(options.titre)$('#titre').textContent=options.titre;if(options.description)$('#description').textContent=options.description;if(options.libelle)$('.jouer').textContent=options.libelle;
     const boutons=catalogue.map((u,i)=>{
       const b=el('button','carte');b.type='button';b.dataset.univers=u.id;b.setAttribute('role','radio');
       const img=el('img');img.alt='';img.src=u.image??url('visuels/'+encodeURIComponent(u.id)+'.webp');
@@ -115,3 +115,16 @@ function soloOpen() {
     return true;
   } catch (e) { return false; }
 }
+// en ligne : l'hôte choisit l'univers de la table avec le même écran
+function soloOpenMp() {
+  try {
+    const cur = Object.keys(SOLO_IDS).find(k => SOLO_IDS[k] === (V.univSel || [])[0]) || 'les-simpson';
+    const cat = window.RoniUnivers.filter(u => { const x = (SET.univ || []).find(z => z.n === SOLO_IDS[u.id]); return !!x && (typeof univOpen !== 'function' || univOpen(x)); });
+    if (!cat.length) return false;
+    RoniSolo.ouvrir({ univers:cat, selection:cat.some(u => u.id === cur) ? cur : cat[0].id, titre:'Partie multijoueur', description:'Choisis l’univers de la table.', libelle:'Choisir cet univers', onJouer({ universId }) {
+      V.univSel = [SOLO_IDS[universId]]; try { localStorage.setItem('tav-univ', JSON.stringify(V.univSel)); } catch (e) {}
+      if (Net.role === 'host' && !H.G) sendPub(); else render(); } });
+    return true;
+  } catch (e) { return false; }
+}
+

@@ -157,6 +157,12 @@ function hsCombatFrame() {
 .fxtxt.hdmg{width:92px!important;height:92px!important}
 .fxtxt.hdmg::before{clip-path:none!important;background:url(assets/hs/c-degats-heros.webp) center/contain no-repeat!important;inset:-18%!important}
 .bub-run{display:none!important}
+/* téléphone en portrait (ancienne disposition) : même plateau d'univers que sur grand écran */
+:root:root:root body.u-nj:not(.rn) .table{background:linear-gradient(180deg,rgba(8,10,16,.25),rgba(8,10,16,0) 18%,rgba(8,10,16,0) 72%,rgba(8,10,16,.55)),url(assets/plateaux/naruto.webp) center/cover no-repeat,#22242c!important}
+:root:root:root body.u-db:not(.rn) .table{background:linear-gradient(180deg,rgba(8,10,16,.25),rgba(8,10,16,0) 18%,rgba(8,10,16,0) 72%,rgba(8,10,16,.55)),url(assets/plateaux/dragon-ball.webp) center/cover no-repeat,#22242c!important}
+:root:root:root body.u-rm:not(.rn) .table{background:linear-gradient(180deg,rgba(8,10,16,.25),rgba(8,10,16,0) 18%,rgba(8,10,16,0) 72%,rgba(8,10,16,.55)),url(assets/plateaux/rick-et-morty.webp) center/cover no-repeat,#22242c!important}
+:root:root:root body.u-sp:not(.rn) .table{background:linear-gradient(180deg,rgba(8,10,16,.25),rgba(8,10,16,0) 18%,rgba(8,10,16,0) 72%,rgba(8,10,16,.55)),url(assets/plateaux/south-park.webp) center/cover no-repeat,#22242c!important}
+:root:root:root body.u-sim:not(.rn) .table{background:linear-gradient(180deg,rgba(8,10,16,.25),rgba(8,10,16,0) 18%,rgba(8,10,16,0) 72%,rgba(8,10,16,.55)),url(assets/plateaux/les-simpson.webp) center/cover no-repeat,#22242c!important}
 body:has(#app .ov) #fxl{display:none}   /* aucun effet de combat par-dessus l'écran de fin ou un panneau plein écran */
 .fxtxt.intro{display:none!important}
 .mn-svg .hs-rb{mix-blend-mode:screen;opacity:.42;animation:hsRb 2.4s ease-in-out infinite;pointer-events:none}
@@ -175,7 +181,7 @@ html.lite .mn-svg .hs-rb{animation:none}
 .hp-t{margin:0!important;font:800 clamp(24px,4.4vh,50px)/1.05 var(--f-disp),serif!important;color:#fff!important;text-shadow:0 0 2px #000,0 3px 0 #1a0a2c,0 0 12px rgba(20,0,40,.9)!important;letter-spacing:.01em}
 .hp-fams{margin:0;max-width:min(520px,70vw);font:700 clamp(11px,1.9vh,20px)/1.2 var(--f-label),serif;color:#f6a6ee;text-align:center;text-shadow:0 1px 0 #2a0a44}
 .hp-row{align-items:flex-start!important;gap:clamp(8px,2.6vw,52px)!important;margin-top:clamp(4px,1.6vh,18px)!important}
-.hp-col{flex:0 1 clamp(110px,min(18vw,28vh),270px)!important;gap:0!important;justify-items:center}
+.hp-col{flex:0 1 clamp(110px,min(18vw,23vh),240px)!important;gap:0!important;justify-items:center}
 .hp-card{margin-bottom:0!important;overflow:visible}
 .hp-col .hp-card:hover{transform:translateY(-4px)!important;filter:none!important}
 .hp-col.on .hp-card{transform:translateY(-4px) scale(1.03)!important;filter:drop-shadow(0 0 10px #46ff5a) drop-shadow(0 0 22px rgba(60,255,90,.75))!important}
@@ -194,7 +200,8 @@ html.lite .mn-svg .hs-rb{animation:none}
 .hp-rr.off{filter:grayscale(.9) brightness(.62);cursor:not-allowed}.hp-rr.off .hp-rrn{color:#c9c9c9}
 .hp-pop{position:absolute;z-index:8;left:66%;top:-9%;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(8px) scale(.94);transform-origin:0 40%;transition:opacity .14s,transform .14s,visibility .14s}
 .hp-col:last-child .hp-pop,.hp-col:nth-child(n+3):nth-last-child(-n+2) .hp-pop{left:auto;right:66%;transform-origin:100% 40%}
-.hp-col:hover .hp-pop,.hp-row:not(:has(.hp-col:hover)) .hp-col.on .hp-pop{opacity:1;visibility:visible;transform:none}
+.hp-col:hover .hp-pop{opacity:1;visibility:visible;transform:none}
+.hpc-pw{margin:0 0 4px;font-size:clamp(12px,1.7vh,15px);line-height:1.3;color:#f3e6c8}.hpc-pw b{color:#ffd86a;margin-right:6px}
 .hp-pop .pwb{width:clamp(168px,min(15vw,30vh),236px)}
 .hp-ok{margin-top:clamp(2px,1vh,10px);min-width:clamp(120px,12vw,196px);height:clamp(44px,8.6vh,92px);padding:0 30px;border:0;border-radius:30px/46%;cursor:pointer;
   font:800 clamp(20px,4vh,40px) var(--f-disp),serif;color:#fff;text-shadow:0 0 2px #000,0 3px 0 #2a2a30;background:linear-gradient(180deg,#f2f2f6,#c9cad2 45%,#8c8e9a);box-shadow:inset 0 0 0 3px #6c6e7a,inset 0 0 0 7px rgba(255,255,255,.55),0 6px 14px rgba(0,0,0,.7);transition:filter .15s,transform .15s}
@@ -202,8 +209,8 @@ html.lite .mn-svg .hs-rb{animation:none}
 .hp-ok:not(:disabled):hover{filter:brightness(1.1);transform:scale(1.04)}
 .hp-ok:disabled{cursor:default;filter:brightness(.8) saturate(.6)}
 @keyframes hpOk{50%{box-shadow:inset 0 0 0 3px #7a5414,inset 0 0 0 7px rgba(255,250,220,.6),0 0 34px rgba(255,220,110,.95),0 6px 14px rgba(0,0,0,.7)}}
-.hp-infos{min-height:clamp(96px,15vh,140px)!important;width:min(820px,94vw)!important;margin:0!important}
-.hp-pc{position:relative!important;display:none!important;grid-template-columns:auto 1fr!important;padding:10px 18px!important;column-gap:18px!important;opacity:1!important;visibility:visible!important}
+.hp-infos{min-height:clamp(96px,22vh,210px)!important;width:min(820px,94vw)!important;margin:0!important}
+.hp-pc{position:relative!important;display:none!important;grid-template-columns:auto 1fr!important;padding:8px 16px!important;column-gap:16px!important;row-gap:2px!important;font-size:clamp(11px,1.5vh,13px);opacity:1!important;visibility:visible!important}
 .hp-wrap:has(.hp-col:nth-child(1):hover) .hp-pc.k0,.hp-wrap:has(.hp-col:nth-child(2):hover) .hp-pc.k1,.hp-wrap:has(.hp-col:nth-child(3):hover) .hp-pc.k2,.hp-wrap:has(.hp-col:nth-child(4):hover) .hp-pc.k3,.hp-wrap:not(:has(.hp-col:hover)) .hp-pc.on{display:grid!important}
 .hpc-who{align-self:center;font:800 clamp(14px,2vh,20px) var(--f-label),serif;color:#ffe0a6}
 @media (max-width:820px){.hp-pop{left:50%!important;right:auto!important;top:auto;bottom:-6%;transform-origin:50% 100%!important;margin-left:-84px}.hp-pc{grid-template-columns:1fr!important}}
@@ -292,9 +299,6 @@ html:root:root:root:root:root:root:root:root body.rn[class] .rn-tb,html:root:roo
 § .hero-zone .powm:not(.pwh-nh_sasuke) .pwart{left:16%;top:16%;width:68%;height:68%}
 § .hero-zone .powm .pcost:not(.ck){top:-12u;width:34u;height:34u;margin:0 0 0 -17u;color:#fff;text-shadow:0 0 2u #000,0 2u 0 #3a2206,0 0 4u #3a2206;background:url(assets/hs/b-piece-or.webp) center/100% 100% no-repeat}
 § .hero-zone .powm small{top:112u}
-§ .hero-zone::before,§ .hero-zone::after{content:'';position:absolute;width:84u;height:84u;background:url(assets/hs/b-emplacement.webp) 0 0/100% 100% no-repeat;pointer-events:none;inset:auto;filter:brightness(.85)}
-§ .hero-zone::before{left:604u;top:16u}
-§ .hero-zone::after{left:672u;top:78u}
 § .hero-zone .hz-left{right:1080uz;top:20uz}
 /* or en bas à droite */
 § .hero-zone .purses{left:1060u;top:20u}
@@ -327,6 +331,10 @@ html:root:root:root:root:root:root:root:root body.rn[class] .rn-tb,html:root:roo
 // ----- cadres de serviteur de Champs de bataille : anneau gris (doré pour les cartes dorées), portrait qui remplit l'anneau, gemmes d'attaque et de vie -----
 (function () {
   try { document.body.insertAdjacentHTML('afterbegin', '<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><clipPath id="hsf-clip"><ellipse cx="50" cy="62" rx="34.5" ry="52.5"/></clipPath></defs></svg>'); } catch (e) {}
+  // cartes (main, survol, découverte) : mêmes gemmes d'attaque et de vie que sur le plateau
+  try { const ga = document.getElementById('fr-atk'), gh = document.getElementById('fr-hp');
+    if (ga) ga.innerHTML = '<image href="assets/hs/f-gemme-attaque.webp" x="40" y="54" width="250" height="250" preserveAspectRatio="none"/>';
+    if (gh) gh.innerHTML = '<image href="assets/hs/f-gemme-vie.webp" x="48" y="22" width="170" height="256" preserveAspectRatio="none"/>'; } catch (e) {}
   const of0 = ufOf, in0 = ufIn;
   ufOf = function (m) { if (V.screen !== 'game' || !V.pub || !m || m.sp || !C[m.c]) return null; return 'hs'; };
   ufIn = function (m, id, up) {

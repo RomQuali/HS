@@ -229,7 +229,7 @@ const DEFAULT_CARD_LIST = [
   ['sv_nuage', 'Nuage-coussin', 5, 'sq_vent', 5, 7, '', [{ k:'soc_elements', a:1, h:0 }]],
   ['sv_ouragan', 'Ouragan câlin', 6, 'sq_vent', 6, 6, 'w', [{ k:'eot_elements', a:1, h:1 }]],
   // Givrous (glace) : ils refroidissent l'attaque des ennemis
-  ['sg_boule', 'Boule de neige', 0, 'sq_glace', 2, 2, '', []],
+  ['sg_boule', 'Boulette de neige', 0, 'sq_glace', 2, 2, '', []],
   ['sg_glacon', 'Glaçon grelottant', 1, 'sq_glace', 1, 3, '', [{ k:'eot_combo', tb2:'sq_eau', a:1, h:1 }]],
   ['sg_flocon', 'Flocon timide', 2, 'sq_glace', 2, 3, '', [{ k:'soc_chill', a:2, n:1 }]],
   ['sg_pingouin', 'Pingouin pas pressé', 3, 'sq_glace', 3, 4, 't', [{ k:'soc_combo_chill', tb2:'sq_eau', a:2, n:2 }]],

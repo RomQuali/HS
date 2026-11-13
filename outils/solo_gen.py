@@ -8,6 +8,7 @@ def rep(a,b):
 rep("const dossier = new URL('.', document.currentScript.src);","const dossier = new URL('assets/solo/', window.location.href);")
 rep("const css=el('link');css.rel='stylesheet';css.href=url('solo.css');","const css=el('style');css.textContent=SOLO_CSS;")
 rep("css.addEventListener('load',montrer,{once:true});css.addEventListener('error',montrer,{once:true});","")
+rep("$('.chantier p').textContent=chantier.join(' · ');","$('.chantier p').textContent=chantier.join(' · ');if(options.titre)$('#titre').textContent=options.titre;if(options.description)$('#description').textContent=options.description;if(options.libelle)$('.jouer').textContent=options.libelle;")
 rep("choisir(index,false);active=api;return api;","choisir(index,false);active=api;montrer();return api;")
 out="""
 // ----- écran « Partie solo » (pack Roni-Tavernes-Cinq-Univers) : choix de l'univers par vignettes ; généré par outils/solo_gen.py -----
@@ -27,5 +28,18 @@ function soloOpen() {
     return true;
   } catch (e) { return false; }
 }
+// en ligne : l'hôte choisit l'univers de la table avec le même écran
+function soloOpenMp() {
+  try {
+    const cur = Object.keys(SOLO_IDS).find(k => SOLO_IDS[k] === (V.univSel || [])[0]) || 'les-simpson';
+    const cat = window.RoniUnivers.filter(u => { const x = (SET.univ || []).find(z => z.n === SOLO_IDS[u.id]); return !!x && (typeof univOpen !== 'function' || univOpen(x)); });
+    if (!cat.length) return false;
+    RoniSolo.ouvrir({ univers:cat, selection:cat.some(u => u.id === cur) ? cur : cat[0].id, titre:'Partie multijoueur', description:'Choisis l’univers de la table.', libelle:'Choisir cet univers', onJouer({ universId }) {
+      V.univSel = [SOLO_IDS[universId]]; try { localStorage.setItem('tav-univ', JSON.stringify(V.univSel)); } catch (e) {}
+      if (Net.role === 'host' && !H.G) sendPub(); else render(); } });
+    return true;
+  } catch (e) { return false; }
+}
+
 """
 open('/home/claude/parts/solo.js','w').write(out); print(len(out))

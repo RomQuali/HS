@@ -9,7 +9,7 @@ const key = crypto.pbkdf2Sync(pass, salt, IT, 32, 'sha256');
 const c = crypto.createCipheriv('aes-256-gcm', key, iv);
 const enc = Buffer.concat([c.update(html), c.final(), c.getAuthTag()]);
 const b64 = x => x.toString('base64');
-const page = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>Mêlée de Taverne</title>
+const page = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive"><title>Roni</title>
 <style id="lk-css">
 :root{--bg:#140c07;--card:#24160c;--fg:#f1e4c6;--mut:#bfae8a;--gold:#f2c14e;--err:#ff8a6a}
 :root[data-theme="light"]{--bg:#140c07}
@@ -28,7 +28,7 @@ body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial
 .lk .sl i{position:absolute;left:3px;top:3px;width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff1a8,#f2c14e 45%,#a8701a);box-shadow:0 0 0 2px #3a2206,0 2px 5px rgba(0,0,0,.6);cursor:grab}
 .lk .sl.ok{box-shadow:inset 0 0 0 2px #7ac04a}.lk .sl.ok span{color:#b8e89a;padding-left:0}.lk .sl.ok i{background:radial-gradient(circle at 35% 30%,#e8ffd0,#8fd85a 45%,#3e7a1c);cursor:default}
 </style></head><body>
-<form class="lk" id="lk" autocomplete="off"><h1>Mêlée de Taverne</h1><p>Entre le mot de passe pour jouer.</p>
+<form class="lk" id="lk" autocomplete="off"><h1>Roni</h1><p>Entre le mot de passe pour jouer.</p>
 <input id="pw" type="password" aria-label="Mot de passe" placeholder="Mot de passe" autofocus>
 <input class="hpot" id="site" name="site" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
 <div class="sl" id="sl" role="slider" tabindex="0" aria-label="Glisse la pièce vers la droite pour prouver que tu n'es pas un robot" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span id="slt">Glisse la pièce vers la droite</span><i id="slk"></i></div>

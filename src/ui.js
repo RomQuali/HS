@@ -353,7 +353,7 @@ function menuH(side) {
     <main class="t-main">
       <div class="t-logo">
         <p class="t-kick"><span>Auto-combat de taverne</span></p>
-        <h1><span class="l1">Mêlée</span><span class="l2">de Taverne</span></h1>
+        <h1><span class="l1">Roni</span></h1>
         <p class="t-tag">Recrute, fusionne, survis. Huit à table, un seul debout.</p>
       </div>
       <div class="t-stage">
@@ -547,7 +547,7 @@ function roundTableH() {
     : `<p class="rt-note">Aucun jeton posé : un univers sera tiré au sort.</p>`;
   const foot = !d ? '<span class="rt-sum">Connexion à l\'hôte…</span>'
     : `<span class="rt-sum"><b>${pl.length} / 8</b> à table · ${pl.length < 8 ? 'les places libres iront aux IA' : 'table complète'}</span>`
-      + (isHost ? `<button class="btn" data-act="univ" data-u="-1">${icon('dice')}Au hasard</button><button class="t-go" data-act="launch">Lancer la partie</button>` : '<span class="rt-wait">En attente de l\'hôte…</span>');
+      + (isHost ? `<button class="btn" data-act="univ-pick">Choisir l'univers</button><button class="btn" data-act="univ" data-u="-1">${icon('dice')}Au hasard</button><button class="t-go" data-act="launch">Lancer la partie</button>` : '<span class="rt-wait">En attente de l\'hôte…</span>');
   return `<aside class="rt" aria-label="La table">
     <div class="rt-hd"><div><h2>${isHost ? 'Ta table' : 'À table'}</h2><p>${isHost ? 'Pose sur la table les jetons des univers, donne le code à tes amis, puis lance la partie.' : 'L\'hôte choisit les univers. La partie démarre à son signal.'}</p></div><button class="rt-x" data-act="leave" aria-label="Quitter la table">×</button></div>
     <div class="rt-body">
@@ -1132,7 +1132,7 @@ function heroPickRowH(d, me) {
         ${x.q && A ? `<div class="hpc-q"><span class="hpc-qh"><b>Quête d'éveil</b> ${esc(x.q.tx)}</span>
           <div class="hpc-aw">${HART[h + '_aw'] ? faceH('art-h-' + h + '_aw', 'face hpc-awf') : ''}<span><b>Éveil · ${esc(A.nm)}</b><small>${esc(A.tx)}</small></span></div></div>` : ''}
         ${c && (!nin || NJ_COMP) ? `<span class="hp-cp">${faceH('art-' + cid)}<em>${esc(c.n)}</em></span>` : ''}`;
-    pcs[i] = side.trim() ? `<div class="hp-pc k${i}${on ? ' on' : ''}" style="--c:${col}"><b class="hpc-who">${esc(x.n)}</b><div class="hpc-side">${side}</div></div>` : '';
+    pcs[i] = `<div class="hp-pc k${i}${on ? ' on' : ''}" style="--c:${col}"><b class="hpc-who">${esc(x.n)}</b><div class="hpc-side"><p class="hpc-pw"><b>${esc(pw)}</b> ${esc(main)}</p>${side}</div></div>`;
     const left = (me.hrr || 0) > 0;
     return `<div class="hp-col${on ? ' on' : ''}" style="--c:${col};--k:${i}">
       <button class="hp-card" data-act="hsel" data-h="${h}" aria-pressed="${on}" aria-label="${esc(x.n + ' : ' + pw + '. ' + main)}">
@@ -1317,6 +1317,7 @@ function doAct(act, btn) {
       if (Net.role === 'host' && !H.G) sendPub(); else render();
       break;
     }
+    case 'univ-pick': if (typeof soloOpenMp === 'function') soloOpenMp(); break;
     case 'create': V.mp = null; createOnline(); break;
     case 'join': joinOnline(btn.dataset.code); break;
     case 'joincode': {
