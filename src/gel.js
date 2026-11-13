@@ -462,3 +462,40 @@ html.lite .mn-svg .hs-wind image{animation:none}
 .mn .jut-b.used{opacity:.35;filter:grayscale(1);cursor:default;animation:none}
 body.u-nj .mn .tf-n{top:auto;bottom:-11%;font-size:clamp(8px,1.05vh,11px);padding:1px 7px;z-index:8}
 `; document.head.appendChild(st); })();
+
+/* ===== Naruto : bandeau des groupes emblématiques (actifs en doré, incomplets en gris) ===== */
+function nkGroupsSync() {
+  const tb = document.querySelector('#app .table'); let el = document.getElementById('nk-groups');
+  const on = tb && V.screen === 'game' && V.me && V.pub && (V.pub.laws || []).some(l => l.k === 'chakra') && typeof nkLv === 'function';
+  if (!on) { if (el) el.remove(); return; }
+  const L = nkLv(V.me), rows = NK_GROUPS.filter(g => L[g.id] && (L[g.id].l || L[g.id].n >= 1)).sort((a, b) => (L[b.id].l - L[a.id].l) || (L[b.id].n - L[a.id].n));
+  const h = rows.slice(0, 9).map(g => { const x = L[g.id], next = g.th[x.l], names = g.m.map(c => CD(c).n.split(' ')[0]).join(', ');
+    const tip = g.n + ' (' + names + '). ' + g.th.map((t, i) => (g.th.length > 1 ? t + ' : ' : '') + g.tx[i]).join(' ') + (x.l ? '' : ' Il te manque ' + (g.th[0] - x.n) + ' membre' + (g.th[0] - x.n > 1 ? 's' : '') + '.');
+    return `<span class="nkg${x.l ? ' on' : ''}" data-tip="${esc(tip)}"><b>${esc(g.n)}</b><i>${x.n}/${next || g.th[g.th.length - 1]}</i></span>`; }).join('');
+  if (!el) { el = document.createElement('div'); el.id = 'nk-groups'; }
+  if (el.parentNode !== tb) tb.appendChild(el);
+  if (el.innerHTML !== h) el.innerHTML = h;
+  // plateau : halo doré sur les membres d'un groupe actif ; taverne et main : étiquette sur les cartes qui font avancer un de mes groupes
+  const act = new Set(); NK_GROUPS.forEach(g => { if (L[g.id] && L[g.id].l) g.m.forEach(c => act.add(c)); });
+  const have = new Set((V.me.bd || []).map(m => m.c));
+  tb.querySelectorAll('.mn[data-z="bd"]').forEach(e => { const m = (V.me.bd || [])[+e.dataset.i]; e.classList.toggle('nk-in', !!(m && act.has(m.c))); });
+  const mark = (e, m) => { const gs = m && !m.sp && !have.has(m.c) ? (NK_GOF[m.c] || []).filter(g => g.m.some(c => c !== m.c && have.has(c))) : []; let t = e.querySelector(':scope > .nk-tag');
+    if (!gs.length) { if (t) t.remove(); return; }
+    const done = gs.some(g => { const n = g.m.filter(c => have.has(c)).length + 1; return g.th.includes(n); }), tx = (done ? '★ ' : '') + gs[0].n + (gs.length > 1 ? ' +' + (gs.length - 1) : '');
+    if (!t) { t = document.createElement('span'); t.className = 'nk-tag'; e.appendChild(t); } t.classList.toggle('done', done); if (t.textContent !== tx) t.textContent = tx; };
+  tb.querySelectorAll('.mn[data-z="sh"]').forEach(e => mark(e, (V.me.sh || [])[+e.dataset.i]));
+  tb.querySelectorAll('.cd[data-z="hd"]').forEach(e => mark(e, (V.me.hd || [])[+e.dataset.i]));
+}
+(function () { const r0 = render; render = function () { const out = r0.apply(this, arguments); try { nkGroupsSync(); } catch (e) {} return out; };
+  const st = document.createElement('style'); st.id = 'nk-groups-css'; st.textContent = `
+#nk-groups{position:absolute;right:1.2%;top:19%;z-index:6;display:flex;flex-direction:column;align-items:flex-end;gap:5px;pointer-events:auto}
+#nk-groups .nkg{display:flex;align-items:center;gap:7px;padding:3px 10px 3px 12px;border-radius:99px;font:700 clamp(10px,1.35vh,14px) var(--f-label),serif;color:#cdbfa6;background:rgba(20,14,10,.72);border:1px solid rgba(160,130,90,.5);cursor:help;white-space:nowrap}
+#nk-groups .nkg i{font-style:normal;font-family:var(--f-num);opacity:.85}
+#nk-groups .nkg.on{color:#2a1606;background:linear-gradient(180deg,#ffe28a,#d09a2a);border-color:#fff3c0;box-shadow:0 0 10px rgba(255,200,60,.65)}
+.table.fighting #nk-groups{display:none}
+@media (max-width:900px){#nk-groups{display:none}}
+.mn.nk-in > svg{filter:drop-shadow(0 0 5px #ffd65a) drop-shadow(0 0 11px rgba(255,170,40,.75))}
+.nk-tag{position:absolute;left:50%;bottom:-13%;transform:translateX(-50%);z-index:8;padding:1px 8px;border-radius:99px;font:700 clamp(8px,1.1vh,12px) var(--f-label),serif;white-space:nowrap;pointer-events:none;color:#fff3c0;background:rgba(40,24,10,.9);border:1px solid #c8a04a}
+.nk-tag.done{color:#2a1606;background:linear-gradient(180deg,#ffe28a,#d09a2a);border-color:#fff3c0;box-shadow:0 0 9px rgba(255,200,60,.8)}
+.cd > .nk-tag{bottom:auto;top:-4%}
+`; document.head.appendChild(st); })();

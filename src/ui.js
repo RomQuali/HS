@@ -414,6 +414,7 @@ function chakraLawH(big) {
   const sec = (ic, t, body) => `<div class="njl-s"><b class="njl-h"><span>${ic}</span>${t}</b>${body}</div>`;
   const fam = (tb, ic, x) => sec(ic, esc((TRIBES[tb] || {}).n || ''), `<small>${x}</small>`);
   return `<span class="ban-law ck-law njl${big ? ' big' : ''}">
+    ${sec('🤝', 'Groupes emblématiques', `<small><b>La mécanique principale.</b> Réunis sur ton plateau les duos, trios et équipes de l'animé : Équipe 7, les Sannin, les binômes de l'Akatsuki, la Fratrie du Sable, les Cinq du Son, les Épéistes de la Brume… Chaque groupe réuni donne un gros bonus, plus fort à chaque membre ajouté, et les bonus se cumulent. La liste s'affiche à droite du plateau ; la taverne signale les cartes qui complètent tes groupes.</small>`)}
     ${sec('💧', 'Chakra', `<small>Chaque serviteur de ton plateau (invocations comprises) donne 1 chakra au début du tour. Il se garde, 10 au plus.</small>`)}
     ${sec('🌀', 'Jutsus', `<small>Chaque ninja porte son jutsu : clique sur la goutte bleue au-dessus de lui. Une fois par tour, pour un coût égal à son niveau.</small>`)}
     ${sec('⭐', 'Transformations', `<small>Certains ninjas se transforment une seule fois (étoile dorée, 5 à 10 chakra) : caractéristiques, mot-clé, et un jutsu plus fort.</small>`)}
