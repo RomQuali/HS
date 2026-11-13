@@ -1,0 +1,4 @@
+from playwright.sync_api import sync_playwright
+with sync_playwright() as p:
+    b=p.chromium.launch(); pg=b.new_page(); pg.goto('file:///home/claude/taverne.html'); pg.wait_for_timeout(1000)
+    print(pg.evaluate("""()=>{window.CS_NOANIM=1; const out=[]; for(const [U,id] of [['South Park','sp_perenoel'],['Les Simpson','si_docnick']]){ V.mp=null; V.univSel=[U]; startSolo(); H.G.ps.forEach(q=>{q.hero=q.hero||q.ho[0];}); finishHero(); clearInterval(H.tick); let p=H.G.ps[0]; p.bd=[mk(id,0)]; p.hd=[]; const r=[]; for(let i=0;i<3;i++){ H.G.ps.forEach(q=>{q.hp=40;}); endRecruit(); clearInterval(H.tick); p=H.G.ps[0]; const afterEnd=p.hd.filter(x=>x.tmpc).length; endCombat(); clearInterval(H.tick); p=H.G.ps[0]; r.push([afterEnd,p.hd.filter(x=>x.tmpc).map(x=>SPELLS[x.sp].n)]); } out.push(CD(id).n+' : '+JSON.stringify(r)); } return out}""")); b.close()
