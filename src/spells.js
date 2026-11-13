@@ -47,6 +47,11 @@ const SPELLS = {
   so_cape:{ spk:1, n:'Cape de Mysterion', t:5, c:3, ty:'obj', tg:1, fx:[{ k:'tkwp', kw:'r' }, { k:'tbuff', a:3, h:3 }], tx:'Le héros qui ne meurt jamais : le serviteur ciblé gagne Réincarnation et +3/+3.' },
   // ----- objets de Springfield (univers Les Simpson) : achetés et utilisés en or, à l'étagère de la taverne ; plusieurs font grandir les gags -----
   hs_gem:{ gem:1, item:1, n:'Gemme de sang', t:1, c:0, ty:'spr', tg:1, fx:[{ k:'tgem' }], tx:'Le serviteur ciblé gagne +1/+1 pour toute la partie (plus tes bonus de Gemme de sang).' },
+  hs_cadeau:{ craft:1, item:1, n:'Cadeau', t:1, c:0, ty:'spr', tg:1, fx:[{ k:'tbuff', a:2, h:2 }], tx:'Sort temporaire : le serviteur ciblé gagne +2/+2.' },
+  hs_sauce:{ craft:1, item:1, n:'Sauce', t:1, c:0, ty:'spr', tg:1, fx:[{ k:'tbuff', a:1, h:1 }], tx:'Sort temporaire : le serviteur ciblé gagne +1/+1.' },
+  hs_ordo:{ craft:1, item:1, n:'Ordonnance', t:1, c:0, ty:'spr', tg:1, fx:[{ k:'tbuff', a:2, h:2 }], tx:'Sort temporaire : le serviteur ciblé gagne +2/+2.' },
+  hs_senzu:{ craft:1, item:1, n:'Senzu', t:1, c:0, ty:'spr', tg:1, fx:[{ k:'tbuff', a:0, h:3 }], tx:'Sort temporaire : le serviteur ciblé gagne +3 PV.' },
+  hs_rouleau:{ craft:1, item:1, n:'Rouleau', t:1, c:0, ty:'spr', tg:1, fx:[{ k:'tbuff', a:2, h:2 }], tx:'Sort temporaire : le serviteur ciblé gagne +2/+2.' },
   si_don:{ sim:1, don:1, item:1, n:'Donut', t:1, c:0, ty:'spr', tg:1, fx:[{ k:'tdonut' }], tx:'Mmmh… donut : le serviteur ciblé gagne +1/+1 pour toute la partie (plus tes bonus de Donut).' },
   si_donut:{ sim:1, n:'Boîte de donuts', t:1, c:1, ty:'spr', fx:[{ k:'donut', n:2 }], tx:'Reçois 2 Donuts : chacun donne +1/+1 à un de tes serviteurs.' },
   si_duff:{ sim:1, n:'Bière Duff', t:1, c:2, ty:'spr', fx:[{ k:'shopbuff', a:1, h:2 }], tx:'Tournée générale : les serviteurs de la taverne gagnent +1/+2.' },
@@ -305,7 +310,7 @@ function castSpell0(G, p, hi, tg) {
   if (S.nin && (HX(p) && HX(p).pw && HX(p).pw.k === 'ptechc') && !(p.rsv || []).length) p.g += 1;
   p.lastCast = id;
   if (S.db && S.fx) { techSteps(G, p, S.fx, tgt, tg, 1); if (tgt && S.sig && S.sig.includes(tgt.c)) withSrc('Signature · ' + S.n, () => techSteps(G, p, S.sgx, tgt, tg, 1)); }
-  else if ((S.rm || S.spk || S.sim || S.gem) && S.fx) techSteps(G, p, S.fx, tgt, tg, 1);
+  else if ((S.rm || S.spk || S.sim || S.gem || S.craft) && S.fx) techSteps(G, p, S.fx, tgt, tg, 1);
   else if (S.nin && S.fx) techRun(G, p, S, it0, tgt, tg, sage0);
   else switch (id) {
     case '__db': break;
@@ -576,6 +581,11 @@ Object.assign(SPART, {
   so_cape: () => softGlow(50, 54, 32, '#b48cff', .35) + P('M30 26 Q50 14 70 26 L84 88 Q50 78 16 88 Z', '#2a1a4a', so()) + P('M36 26 Q50 18 64 26 L58 42 L42 42 Z', '#1a1030', so(1.4)) + P('M44 60 Q50 54 56 60 Q56 66 50 66 L50 72', 'none', 'stroke="#9fe36a" stroke-width="3" stroke-linecap="round"') + Ci(50, 78, 2, '#9fe36a') + Ln('M30 26 L22 40 M70 26 L78 40', '#5a3a8a', 3),
   // ----- objets de Springfield : objets abstraits, jamais de personnage -----
   hs_gem: () => softGlow(50, 54, 32, '#ff5a6a', .4) + P('M50 20 L74 44 L50 90 L26 44 Z', '#c8182e', so()) + P('M50 20 L60 44 L50 90 L40 44 Z', '#ff5a6a', so(1.2)) + P('M26 44 L74 44', 'none', so(1.4)) + Ci(43, 36, 3, '#ffd0d6'),
+  hs_cadeau: () => softGlow(50, 52, 34, '#ff8a8a', .45) + `<image href="assets/hs/k-sorcellerie-rune.webp" x="12" y="14" width="76" height="76"/>`,
+  hs_sauce: () => softGlow(50, 52, 34, '#9be36a', .45) + `<image href="assets/hs/k-sorcellerie-rune.webp" x="12" y="14" width="76" height="76"/>`,
+  hs_ordo: () => softGlow(50, 52, 34, '#8ad0ff', .45) + `<image href="assets/hs/k-sorcellerie-rune.webp" x="12" y="14" width="76" height="76"/>`,
+  hs_senzu: () => softGlow(50, 52, 34, '#b8e86a', .45) + `<image href="assets/hs/k-sorcellerie-rune.webp" x="12" y="14" width="76" height="76"/>`,
+  hs_rouleau: () => softGlow(50, 52, 34, '#c8a0ff', .45) + `<image href="assets/hs/k-sorcellerie-rune.webp" x="12" y="14" width="76" height="76"/>`,
   si_don: () => softGlow(50, 54, 32, '#ff9ac8', .35) + Ci(50, 54, 22, '#e8a060', so()) + P('M28 54 Q30 40 50 35 Q70 40 72 54 Q66 59 58 56 Q50 63 42 56 Q34 59 28 54 Z', '#ff7ab8', so(1.6)) + Ci(50, 54, 7, '#2a1a10'),
   si_donut: () => softGlow(50, 54, 32, '#ff9ac8', .35) + Ci(50, 54, 28, '#e8a060', so()) + Ci(50, 54, 9, '#2a1a10', so(1.4)) + P('M22 54 Q24 36 50 30 Q76 36 78 54 Q70 60 60 56 Q50 66 40 56 Q30 60 22 54 Z', '#ff7ab8', so(1.6)) + Ci(50, 54, 9, '#2a1a10') + [[36, 44, 20], [50, 38, -30], [62, 46, 60], [42, 54, 70], [58, 56, -20], [30, 52, -60]].map(([x, y, r]) => `<rect x="${x - 3}" y="${y - 1}" width="6" height="2.4" rx="1.2" fill="${['#fff36a', '#6ad8ff', '#ffffff', '#8aff8a'][(x + y) % 4]}" transform="rotate(${r} ${x} ${y})"/>`).join(''),
   si_duff: () => softGlow(50, 54, 32, '#ff6a6a', .3) + `<rect x="34" y="22" width="32" height="62" rx="6" fill="#d83a3a" ${so()}/>` + `<rect x="34" y="22" width="32" height="10" rx="5" fill="#c8c8d0" ${so(1.6)}/>` + `<rect x="34" y="76" width="32" height="8" rx="4" fill="#c8c8d0" ${so(1.6)}/>` + `<rect x="34" y="44" width="32" height="18" fill="#fff6c8" ${so(1.4)}/>` + Ln('M40 53 H60', '#d83a3a', 3) + Ci(50, 27, 2.5, '#6a6a72'),

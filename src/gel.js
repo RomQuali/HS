@@ -405,6 +405,7 @@ function hsBadges(m) {
   if (has('dr')) L.push(['rale-d-agonie', 'Râle d\'agonie', 1]);
   if (f.includes('v')) L.push(['toxicite', 'Toxicité', 1.05]); else if (f.includes('n')) L.push(['venimosite', 'Venimosité', 1.05]);
   if (f.includes('l')) L.push(['vol-de-vie', 'Vol de vie', 1]);
+  if ((by.bc || []).concat(xs).some(e => e.k === 'craft')) L.push(['sorcellerie-rune', 'Sorcellerie : donne un sort temporaire à chaque tour', 1.05]);
   if (has('atk') || has('aatk')) L.push(['ralliement', 'Ralliement : se déclenche quand il attaque', 1]);
   if (['soc', 'eot', 'sot', 'surv', 'die', 'cast', 'shield', 'roll', 'up', 'pow', 'sell', 'buy', 'play', 'reborn', 'don', 'donc', 'spend', 'hand', 'combo', 'win'].some(has)) L.push(['declenchement', 'Capacité déclenchée', .8]);
   const B = L.slice(0, 2), n = B.length, sz = n > 1 ? 21 : 25;
