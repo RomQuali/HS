@@ -175,9 +175,9 @@ const playerSym = p => p && p.h && HART[p.h] ? heroArt(p.h, p.haw) : avatarSym(p
 const tierStars = (t, only) => `<span class="ts" aria-label="Niveau ${t}">${Array.from({ length:only ? t : 6 }, (_, k) => `<i class="${k < t ? 'on' : ''}"></i>`).join('')}</span>`;
 const dataAttrs = m => `data-c="${m.c}" data-a="${m.a}" data-h="${m.h}" data-g="${m.g ? 1 : 0}" data-f="${esc(m.f || '')}"${m.u ? ` data-u="${m.u}"` : ''}`;
 const ariaM = m => `${CD(m.c).n}${m.g ? ' doré' : ''}, ${m.a} attaque, ${m.h} vie`;
-const demo = (id, g) => { const b = CD(id); return { c:id, a:b.a * (g ? 3 : 1), h:b.h * (g ? 3 : 1), g:g ? 1 : 0, f:b.f }; };
+const demo = (id, g) => { const b = CD(id); return { c:id, a:b.a * (g ? GOLD_K : 1), h:b.h * (g ? GOLD_K : 1), g:g ? 1 : 0, f:b.f }; };
 const hpGem = hp => `<svg class="hpg" viewBox="0 0 40 40" aria-label="${hp} points de vie"><use href="#gem-h" width="40" height="40"/><text class="gt" x="20" y="25" dy=".36em">${hp}</text></svg>`;
-const KWI = { t:['k_taunt', '#d8c8a8', 'Provocation'], s:['k_div', '#ffe58a', 'Bouclier divin'], v:['drop', '#8fe36a', 'Toxique'], n:['drop', '#c88aff', 'Venimeux'], r:['k_reborn', '#9fe8ff', 'Renaissance'], w:['wind', '#cdeeff', 'Furie des vents'],
+const KWI = { t:['k_taunt', '#d8c8a8', 'Provocation'], s:['k_div', '#ffe58a', 'Bouclier divin'], v:['drop', '#8fe36a', 'Toxicité'], n:['drop', '#c88aff', 'Venimosité'], r:['k_reborn', '#9fe8ff', 'Réincarnation'], w:['wind', '#cdeeff', 'Furie des vents'],
   bc:['k_horn', '#ffcf7a', 'Cri de guerre'], play:['k_spark', '#ffd54a', 'Quand vous jouez'], dr:['skull', '#efe2c2', 'Râle d\'agonie'], soc:['k_cross', '#ffb27a', 'Début du combat'], eot:['k_glass', '#ffe39a', 'Fin de tour'], sot:['k_sun', '#ffe39a', 'Début de tour'],
   atk:['sword', '#ff9a8a', 'Après avoir attaqué'], surv:['k_heart', '#ff7a8a', 'Survit à des dégâts'], sell:['k_coin', '#f2c14e', 'Vente'], die:['k_tomb', '#c8c0d8', 'Quand un allié meurt'], aura:['twin', '#e9d5ff', 'Aura'],
   cast:['star', '#b48cff', 'Quand vous lancez un sort'], shield:['k_div', '#ffe58a', 'Bouclier perdu'], roll:['roll', '#9ad8ff', 'Actualisation'], up:['up', '#a6e07a', 'Amélioration'], pow:['crown', '#ffd86a', 'Pouvoir héroïque'] };
@@ -222,7 +222,7 @@ function tokenH(m, z, i, o = {}) {
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
   const cls = ['mn', z === 'f' && C[m.c] && (C[m.c].comp || /^nb_/.test(m.c)) && 'cp-join', ...['s', 't', 'r', 'w', 'v'].filter(k => f.includes(k)).map(k => 'kw-' + k), o.trip && 'tripok', o.pair && 'pairok', m.awk && !isComp(m) && 'mn-awk', g && 'g', ufOf(m) && 'rf', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
   const ics = kwIcons(m);
-  const up = (v, base) => v > base * (g ? 3 : 1) ? ' up' : '';
+  const up = (v, base) => v > base * (g ? GOLD_K : 1) ? ' up' : '';
   const uf = ufOf(m);
   const svg = `<svg class="mn-svg" viewBox="-4 -6 108 132" aria-hidden="true">`
     + (f.includes('t') ? '<use href="#tk-taunt"/>' : '')
@@ -262,7 +262,7 @@ const MINION_COST = 3;
 function cardH(m, z, i, o = {}) {
   const b = CD(m.c), g = !!m.g;
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
-  const up = (v, base) => v > base * (g ? 3 : 1) ? ' up' : '';
+  const up = (v, base) => v > base * (g ? GOLD_K : 1) ? ' up' : '';
   return `<div class="cd${g ? ' g' : ''}${sel ? ' sel' : ''}${m.tr ? ' newgold' : ''}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">`
     + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-${artOf(m)}" y="-4" width="100" height="100"/></svg></div>`
     + (g ? '<i class="cd-dr" aria-hidden="true"></i>' : '') + (b.t ? `<div class="cd-tier" aria-label="Niveau ${b.t}"><b>${b.t}</b></div>` : '')
@@ -415,7 +415,7 @@ function chakraLawH(big) {
     ${sec('🪙', 'Ressources', `<small><b>Or</b> : acheter les serviteurs, monter la taverne et certains pouvoirs de héros.</small><small><b>Chakra</b> : chaque ninja en jeu en donne 1 par tour (10 au plus). Il lance les <b>sorts</b>, <b>éveille</b> les serviteurs (une seule fois : la goutte bleue au-dessus d'eux) et paie certains pouvoirs de héros.</small>`)}
     ${vil('n_feu', '🔥', 'Konoha', 'petits dégâts au début du combat.', 'ils s\'additionnent : 1 dégât par allié de Konoha.', 'grandes explosions qui touchent tous les ennemis.')}
     ${vil('n_vent', '🏜️', 'Suna', 'invoque des marionnettes 1/1.', 'les marionnettes se renforcent chaque tour.', 'bouclier de sable sur tout le plateau.')}
-    ${vil('n_eau', '🌫️', 'Kiri', 'beaucoup de PV, ils grandissent en survivant.', 'Bouclier divin et soins de fin de tour.', 'Renaissance pour toute Kiri.')}
+    ${vil('n_eau', '🌫️', 'Kiri', 'beaucoup de PV, ils grandissent en survivant.', 'Bouclier divin et soins de fin de tour.', 'Réincarnation pour toute Kiri.')}
     ${vil('n_foudre', '⚡', 'Kumo', 'des jinchūriki faibles.', 'ils grandissent à chaque combat gagné.', 'en mourant, ils libèrent une Bijū 8/8.')}
     ${vil('n_terre', '⛰️', 'Iwa', 'Provocation et gros PV.', 'ils invoquent des Doryūheki.', 'Avalanche : un quart de leur vie en dégâts au début du combat.')}
     ${sec('🧬', 'Kekkei genkai', `<small>Quelques serviteurs appartiennent à <b>deux villages</b> : ils profitent des bonus des deux et grandissent quand un combo du réservoir contient une de leurs natures.</small>`)}
@@ -460,7 +460,7 @@ function simCardH() {
     ${row('◍', '#7a2a5a', 'Les Donuts', 'Un Donut est un sort gratuit qui arrive dans ta main : pose-le sur un de tes serviteurs, il gagne +1/+1 pour toute la partie. Des serviteurs en donnent, en posent tout seuls en fin de tour, ou font grossir tous tes Donuts.')}
     ${row('✦', '#3a2a5a', 'Les objets de Springfield', 'Boîte de donuts, Bière Duff, Squishee, Flaming Moe, Ticket de monorail… s\'achètent en or à l\'étagère de la taverne, comme les sorts de taverne de Champs de bataille.')}
     ${row('⚙', '#1e4a6a', 'Deux mots-clés', 'Magnétisme : joué juste à gauche d\'une Autorité, le serviteur fusionne avec elle. Vengeance (X) : l\'effet se déclenche après la mort de X alliés pendant le combat.')}
-    ${row('★', '#1e4a6a', 'Cinq familles', `${fam('si_fam', 'Donuts')} · ${fam('si_moe', 'Cris de guerre en chaîne')} · ${fam('si_cra', 'or gagné et dépensé')} · ${fam('si_aut', 'Bouclier divin, Provocation, Magnétisme')} · ${fam('si_hor', 'Renaissance et attaque qui grandit')}.`)}
+    ${row('★', '#1e4a6a', 'Cinq familles', `${fam('si_fam', 'Donuts')} · ${fam('si_moe', 'Cris de guerre en chaîne')} · ${fam('si_cra', 'or gagné et dépensé')} · ${fam('si_aut', 'Bouclier divin, Provocation, Magnétisme')} · ${fam('si_hor', 'Réincarnation et attaque qui grandit')}.`)}
   </span>`;
 }
 function ninjaCardH() {
@@ -818,7 +818,7 @@ function ckGauge(d, me) {
   return `<div class="purse ckp" aria-label="${ck} chakra sur 10" data-tip="Chakra : il lance tes techniques ninja et le pouvoir de ton héros. Chaque serviteur Ninja en génère 1 au début de ton tour (10 au plus).${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ck}<small>/10</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:10 }, (_, k) => `<i class="ckc${k < ck ? '' : ' off'}"></i>`).join('')}</span></div>`;
 }
 // compteurs de clan (braises, marée, charge) sous le chakra
-const clanCtrH = me => { const c = [['braise', 'Braises', '#ff9a5a', 'Braises (Clan Katon) : chaque technique les attise. Après l\'Éveil, Phénix : tes serviteurs Katon gagnent +1/+1 par paire de braises et Renaissance.'], ['maree', 'Marée', '#6fc8ff', 'Marée (Clan Suiton) : elle monte à chaque fin de tour. Après l\'Éveil, raz-de-marée : tous tes serviteurs gagnent +1/+1 par tranche de 4.'], ['charge', 'Charge', '#ffe14a', 'Charge (Clan Raiton) : elle s\'accumule à chaque fin de tour. Après l\'Éveil, orage total : la moitié frappe l\'ennemi au début de chaque combat.']].filter(([k]) => me[k]);
+const clanCtrH = me => { const c = [['braise', 'Braises', '#ff9a5a', 'Braises (Clan Katon) : chaque technique les attise. Après l\'Éveil, Phénix : tes serviteurs Katon gagnent +1/+1 par paire de braises et Réincarnation.'], ['maree', 'Marée', '#6fc8ff', 'Marée (Clan Suiton) : elle monte à chaque fin de tour. Après l\'Éveil, raz-de-marée : tous tes serviteurs gagnent +1/+1 par tranche de 4.'], ['charge', 'Charge', '#ffe14a', 'Charge (Clan Raiton) : elle s\'accumule à chaque fin de tour. Après l\'Éveil, orage total : la moitié frappe l\'ennemi au début de chaque combat.']].filter(([k]) => me[k]);
   return c.length ? `<span class="ctrs">${c.map(([k, n, col, tip]) => `<span class="ctr" style="--cc:${col}" data-tip="${esc(tip)}">${n} <b>${me[k]}</b></span>`).join('')}</span>` : ''; };
 const medal = (act, ic, label, cost, dis, on) => `<button class="medal${on ? ' on' : ''}" data-act="${act}" ${dis ? 'disabled' : ''} title="${label}">${icon(ic)}${cost != null ? `<span class="cost">${cost}</span>` : ''}<small>${label}</small></button>`;
 // Cinq Nations : le compagnon, déjà triplé, se tient à côté du héros (hors plateau)
@@ -1031,7 +1031,7 @@ function detailH(canAct) {
   let acts = '';
   if (canAct) {
     if (s.z === 'sh') acts = `<button class="btn pri" data-act="buy" ${me.g < 3 || me.hd.length >= 10 ? 'disabled' : ''}>Acheter · 3 or</button>`;
-    if (s.z === 'hd') acts = `<button class="btn pri" data-act="play" ${me.bd.length >= 7 ? 'disabled' : ''}>Jouer sur le plateau</button>`;
+    if (s.z === 'hd') acts = `<button class="btn pri" data-act="play" ${me.bd.length >= 7 && !(me.hd[s.i] && C[me.hd[s.i].c] && (CD(me.hd[s.i].c).fxAll || []).some(e => e.k === 'magnet')) ? 'disabled' : ''}>Jouer sur le plateau</button>`;
     if (s.z === 'bd') acts = `<button class="btn" data-act="mvl" ${s.i === 0 ? 'disabled' : ''} aria-label="Déplacer à gauche">◀</button><button class="btn" data-act="mvr" ${s.i >= me.bd.length - 1 ? 'disabled' : ''} aria-label="Déplacer à droite">▶</button><button class="btn" data-act="sell">Vendre · +${sellValue(m)} or</button>`;
   }
   const where = s.z === 'sh' ? 'Dans la taverne' : s.z === 'bd' ? `Sur ton plateau, position ${s.i + 1}` : 'Dans ta main';
@@ -1975,7 +1975,7 @@ const sgn = v => (v >= 0 ? '+' : '') + v;
 const kwNames = k => (k || '').split('').map(x => (SET.kw[x] || {}).n).filter(Boolean).join(', ');
 function bonusTipH(m) {
   if (!m || m.sp) return '';
-  const b = CD(m.c), g = m.g ? 3 : 1, ba = b.a * g, bh = b.h * g;
+  const b = CD(m.c), g = m.g ? GOLD_K : 1, ba = b.a * g, bh = b.h * g;
   const rows = []; let la = 0, lh = 0;
   (m.bn || []).forEach(e => {
     la += e.a; lh += e.h;
@@ -2569,14 +2569,14 @@ svg.ck-gem.aff{box-shadow:none;filter:drop-shadow(0 0 5px rgba(155,227,106,.95))
 @keyframes kwShield{50%{transform:scale(1.04);opacity:.8}}
 /* Provocation : rempart de pierre lumineux */
 .mn.kw-t .mn-svg{filter:drop-shadow(0 0 0 #000) drop-shadow(0 0 6px rgba(200,180,140,.9))}
-/* Renaissance : esprit vert qui monte */
+/* Réincarnation : esprit vert qui monte */
 .mn.kw-r::after{left:15%;right:15%;top:-8%;bottom:30%;border-radius:50%;background:radial-gradient(circle at 30% 80%,rgba(160,255,220,.9) 0 3%,transparent 4%),radial-gradient(circle at 70% 70%,rgba(160,255,220,.8) 0 2.5%,transparent 3.5%),radial-gradient(circle at 50% 40%,rgba(160,255,220,.7) 0 2%,transparent 3%);animation:kwReborn 2.2s linear infinite}
 @keyframes kwReborn{from{transform:translateY(20%);opacity:0}30%{opacity:1}to{transform:translateY(-25%);opacity:0}}
 /* Furie des vents : tourbillon */
 .mn.kw-w::after{left:-10%;right:-10%;top:4%;bottom:18%;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 20%,rgba(200,255,230,.7) 24%,transparent 30% 70%,rgba(200,255,230,.6) 74%,transparent 80%);
   -webkit-mask:radial-gradient(circle,transparent 60%,#000 66%,transparent 74%);mask:radial-gradient(circle,transparent 60%,#000 66%,transparent 74%);animation:kwWind 1.6s linear infinite}
 @keyframes kwWind{to{transform:rotate(360deg)}}
-/* Toxique : halo vert */
+/* Toxicité : halo vert */
 .mn.kw-v .mn-svg{filter:drop-shadow(0 0 8px rgba(120,230,60,.9)) drop-shadow(0 4px 4px rgba(0,0,0,.45))}
 .mn.kw-v.kw-s .mn-svg{filter:drop-shadow(0 0 9px rgba(255,220,100,.95)) drop-shadow(0 0 14px rgba(120,230,60,.8))}
 /* plusieurs effets : pseudo-élément partagé, le bouclier a la priorité visuelle */

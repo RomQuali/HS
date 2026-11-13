@@ -67,12 +67,12 @@ const DEFAULT_SETTINGS = {
   heroFam:{},
   neutral:{ n:'Neutre', col:'#8a5a30', bg:'neu' },
   kw:{
-    t:{ n:'Provocation', d:'Les ennemis doivent l\'attaquer en premier.', c:1 },
-    s:{ n:'Bouclier divin', d:'Ignore la première source de dégâts.', c:3 },
-    v:{ n:'Toxique', d:'Détruit tout serviteur qu\'il blesse.', c:3 },
-    n:{ n:'Venimeux', d:'Détruit le premier serviteur qu\'il blesse, puis perd ce mot-clé.', c:2 },
-    r:{ n:'Renaissance', d:'Revient à la vie avec 1 PV la première fois qu\'il meurt.', c:2 },
-    w:{ n:'Furie des vents', d:'Attaque deux fois.', c:3 },
+    t:{ n:'Provocation', d:'Les attaques ennemies doivent viser ce serviteur en priorité.', c:1 },
+    s:{ n:'Bouclier divin', d:'Annule la prochaine source de dégâts subie, puis le bouclier disparaît.', c:3 },
+    v:{ n:'Toxicité', d:'Détruit tout serviteur blessé par celui-ci.', c:3 },
+    n:{ n:'Venimosité', d:'À chaque combat, détruit le premier serviteur blessé par celui-ci.', c:2 },
+    r:{ n:'Réincarnation', d:'À sa première mort, revient sous la forme d\'une nouvelle copie à 1 PV s\'il reste une place.', c:2 },
+    w:{ n:'Furie des vents', d:'Quand vient son tour d\'attaquer, attaque deux fois de suite.', c:3 },
     k_ferveur:{ n:'Ferveur', d:'Fin de tour : gagne +1/+1.', c:3, fx:{ k:'eot_self', a:1, h:1 } },
   },
   val:{ atk:1, hp:1, allies:3, mode:'block' },
@@ -486,7 +486,7 @@ const DEFAULT_CARD_LIST = [
   ['si_hibbert', 'Dr Hibbert', 4, 'si_aut', 3, 6, '', [{ k:'shield_gain' }]],
   ['si_quimby', 'Maire Quimby', 5, 'si_aut', 4, 6, '', [{ k:'shield_perm', a:3, h:3 }]],
   ['si_chalmers', 'Superintendant Chalmers', 6, 'si_aut', 7, 8, 's', [{ k:'cleave' }]],
-  // Horror Show : Renaissance (Morts-vivants)
+  // Horror Show : Réincarnation (Morts-vivants)
   ['si_zombie', 'Zombie', 1, 'si_hor', 2, 1, 'tr', []],
   ['si_gremlin', 'Gremlin du bus', 1, 'si_hor', 1, 2, 'r', [{ k:'eot_buff_rand', a:1, h:0, n:1, tb:'si_hor' }]],
   ['si_kang', 'Kang', 2, 'si_hor', 2, 3, '', [{ k:'bc_tribe_atk', tb:'si_hor', a:1 }]],
@@ -654,7 +654,7 @@ const HEROES = {
   brok:    {fam:['nain'], n:'Brok Barbe-d\'acier', cost:2, tx:'Donne Provocation à un de vos serviteurs aléatoire qui n\'en a pas.' },
   sylvara: {fam:['elfe', 'elem'], n:'Sylvara l\'archimage', tx:'Passif : le premier sort que vous achetez chaque tour coûte 1 or de moins.' },
   grumbo:  {fam:['ogre', 'gob'], n:'Grumbo le glouton', cost:2, tx:'Donne +3/+3 à votre serviteur qui a le plus d\'attaque.' },
-  vaskor:  {fam:['mort', 'spec'], n:'Vaskor le nécromancien', cost:1, tx:'Invoque un Squelette 1/1 avec Renaissance sur votre plateau.' },
+  vaskor:  {fam:['mort', 'spec'], n:'Vaskor le nécromancien', cost:1, tx:'Invoque un Squelette 1/1 avec Réincarnation sur votre plateau.' },
   // ----- univers Ninja : 8 héros par village (sans élément) -----
   nh_naruto: {diff:3, stars:4, fam:NJV, pv:'n_feu', mc:'tok', n:'Naruto Uzumaki', cost:3, pay:'ck', pwn:'Multi-clonage', pw:{ k:'multi', s:[{ k:'summon', card:'tk_clone', n:2 }, { k:'clones', a:1, h:1 }] }, tr:{ k:'ptrip', ck:2 }, tx:'Invoque 2 Kage bunshin (2/2), puis tes clones gagnent +1/+1.', trx:'Quand tu formes un triple de jetons, gagne 2 chakra.', q:{ k:'tripTok', n:1, tx:'Former un triple de jetons.' }, aw:{ nm:'Mode Ermite', pwn:'Multi-clonage ermite', cost:3, pay:'ck', pw:{ k:'multi', s:[{ k:'summon', card:'tk_clone', n:3 }, { k:'clones', a:2, h:2 }] }, tx:'Invoque 3 Kage bunshin, puis tes clones gagnent +2/+2.' } },
   nh_kakashi: {diff:3, stars:4, fam:NJV, pv:'n_feu', mc:'pact', n:'Kakashi Hatake', cost:1, pay:'g', pwn:'Ninken', pw:{ k:'multi', s:[{ k:'cardset', set:'pact' }] }, tr:{ k:'ppactx' }, tx:'Ajoute à ta main un invocateur de pacte.', trx:'Tes invocateurs de pacte invoquent un animal de plus.', q:{ k:'pactPlay', n:4, tx:'Jouer 4 invocateurs de pacte.' }, aw:{ nm:'Kamui', pwn:'Kamui', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'cardset', set:'pact' }, { k:'pactbuff', a:2, h:1 }] }, tx:'Ajoute à ta main un invocateur de pacte ; tes animaux de pacte gagnent +2/+1.' } },
@@ -709,7 +709,7 @@ const HEROES = {
   sh_cartman: {diff:2, stars:3, fam:SPV, pv:'s_gin', mc:'coh', n:'Cartman', cost:1, pay:'g', pwn:'Respectez mon autoritah', pw:{ k:'multi', s:[{ k:'buffnb', a:1, h:1 }] }, tx:'Tes serviteurs qui ont un voisin de leur famille gagnent +1/+1.', q:{ k:'bandTurns', n:3, tx:'Finir 3 tours avec une bande activée.' }, aw:{ nm:'Le Coon', pwn:'Justice du Coon', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'buffnb', a:2, h:1 }] }, tx:'Tes serviteurs qui ont un voisin de leur famille gagnent +2/+1.' } },
   sh_stan: {diff:1, stars:3, fam:SPV, pv:'s_ani', mc:'tok', n:'Stan', cost:2, pay:'g', pwn:'Viens, Sparky !', pw:{ k:'multi', s:[{ k:'summon', card:'tk_bestiole', n:1 }, { k:'cardbuff', card:'tk_bestiole', a:1, h:1 }] }, tr:{ k:'ptok', card:'tk_bestiole', a:1, h:0 }, tx:'Invoque une Bestiole, puis tes Bestioles gagnent +1/+1.', trx:'Tes Bestioles apparaissent avec +1/+0.', q:{ k:'tokSum', card:'tk_bestiole', n:4, tx:'Invoquer 4 Bestioles.' }, aw:{ nm:'Toolshed', pwn:'Boîte à outils', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'summon', card:'tk_bestiole', n:2 }, { k:'cardbuff', card:'tk_bestiole', a:1, h:1 }] }, tr:{ k:'ptok', card:'tk_bestiole', a:1, h:1 }, trx:'Tes Bestioles apparaissent avec +1/+1.', tx:'Invoque 2 Bestioles, puis tes Bestioles gagnent +1/+1.' } },
   sh_kyle: {diff:1, stars:3, fam:SPV, pv:'s_cel', mc:'sv', n:'Kyle', cost:1, pay:'g', pwn:'J\'ai appris un truc aujourd\'hui', pw:{ k:'multi', s:[{ k:'buffchain', a:1, h:1 }] }, tx:'Un de tes serviteurs et toute sa suite de voisins de la même famille gagnent +1/+1.', q:{ k:'play', n:8, tx:'Jouer 8 serviteurs.' }, aw:{ nm:'Human Kite', pwn:'Vol plané', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'buffchain', a:1, h:1, n:2 }] }, tx:'Deux fois : un de tes serviteurs et toute sa suite de voisins de la même famille gagnent +1/+1.' } },
-  sh_kenny: {diff:2, stars:3, fam:SPV, pv:'s_got', mc:'ral', n:'Kenny', cost:1, pay:'g', pwn:'Oh mon Dieu !', pw:{ k:'multi', s:[{ k:'kw', kw:'r', n:1, a:0, h:1 }] }, tx:'Un de tes serviteurs sans Renaissance gagne Renaissance et +0/+1.', q:{ k:'drDie', n:8, tx:'Voir 8 de tes serviteurs mourir en combat.' }, aw:{ nm:'Mysterion', pwn:'Je ne peux pas mourir', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'kw', kw:'r', n:1, a:1, h:2 }] }, tx:'Un de tes serviteurs sans Renaissance gagne Renaissance et +1/+2.' } },
+  sh_kenny: {diff:2, stars:3, fam:SPV, pv:'s_got', mc:'ral', n:'Kenny', cost:1, pay:'g', pwn:'Oh mon Dieu !', pw:{ k:'multi', s:[{ k:'kw', kw:'r', n:1, a:0, h:1 }] }, tx:'Un de tes serviteurs sans Réincarnation gagne Réincarnation et +0/+1.', q:{ k:'drDie', n:8, tx:'Voir 8 de tes serviteurs mourir en combat.' }, aw:{ nm:'Mysterion', pwn:'Je ne peux pas mourir', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'kw', kw:'r', n:1, a:1, h:2 }] }, tx:'Un de tes serviteurs sans Réincarnation gagne Réincarnation et +1/+2.' } },
   sh_butters: {diff:1, stars:3, fam:SPV, pv:'s_got', mc:'cbt', n:'Butters', cost:1, pay:'g', pwn:'Gentil garçon', pw:{ k:'multi', s:[{ k:'buffr', a:2, h:2, n:1 }, { k:'buffr', a:1, h:1, n:1 }] }, tx:'Un de tes serviteurs aléatoire gagne +2/+2, puis un serviteur aléatoire gagne +1/+1.', q:{ k:'losses', n:3, tx:'Perdre 3 combats.' }, aw:{ nm:'Professeur Chaos', pwn:'Semer le chaos', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'buffr', a:3, h:3, n:1 }, { k:'foechill', a:3, n:2 }] }, tx:'Un de tes serviteurs aléatoire gagne +3/+3 ; prochain combat, 2 ennemis aléatoires perdent 3 attaque.' } },
   sh_randy: {diff:1, stars:3, fam:SPV, pv:'s_adu', mc:'eco', n:'Randy', pwn:'Je suis géologue', pw:{ k:'pturn', g:1 }, tx:'Passif : au début de chaque tour, gagne 1 or de plus.', q:{ k:'buys', n:8, tx:'Acheter 8 serviteurs.' }, aw:{ nm:'Randy Tegridy', pwn:'Récolte Tegridy', pw:{ k:'pturn', g:1, sell:1, roll:1 }, tx:'Passif : au début de chaque tour, gagne 1 or de plus ; ta première actualisation du tour est gratuite et vendre rapporte 1 or de plus.' } },
   sh_garrison: {diff:2, stars:4, fam:SPV, pv:'s_adu', mc:'coh', n:'Mr. Garrison', cost:2, pay:'g', pwn:'En rang, les enfants', pw:{ k:'multi', s:[{ k:'regroup' }, { k:'buffnb', a:1, h:1 }, { k:'bandbuff', a:2, h:1 }] }, tx:'Regroupe tes serviteurs par famille, puis ceux qui ont un voisin de leur famille gagnent +1/+1, et +2/+1 de plus s\'ils sont dans une bande activée.', q:{ k:'regroups', n:5, tx:'Mettre 5 fois la classe en rang (utiliser le pouvoir).' }, aw:{ nm:'Président Garrison', pwn:'Décret présidentiel', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'regroup' }, { k:'buffnb', a:1, h:1 }, { k:'bandbuff', a:2, h:2 }] }, tx:'Regroupe tes serviteurs par famille, puis ceux qui ont un voisin de leur famille gagnent +1/+1, et +2/+2 de plus s\'ils sont dans une bande activée.' } },
@@ -753,8 +753,8 @@ const MECHS = {
   resonance:{ n:'Résonance', ic:'twin', d:'Chaque sort que vous lancez donne +1/+1 à deux de vos serviteurs de l\'univers.' },
   eboulement:{ n:'Éboulement', ic:'up', d:'Quand un de vos serviteurs de l\'univers avec Provocation meurt, il inflige 3 dégâts à un ennemi aléatoire.' },
   fusion:{ n:'Fusion élémentaire', ic:'wind', d:'À la fin du tour, si vous avez au moins 4 éléments Squishy différents, vos serviteurs de l\'univers gagnent +1/+1.' },
-  bande:{ n:'Cohésion de groupe', ic:'users', d:'Au début de chaque combat, chaque serviteur gagne +1/+1 par voisin direct de la même famille (pour ce combat). Trois voisins ou plus de la même famille forment une bande activée, qui déclenche l\'effet de sa famille : Gingers et sectes, chaque membre gagne +1/+1 par autre Ginger ou sectaire allié ; Adultes, la bande gagne +0/+3 et tu gagnes 1 or au prochain tour ; Goths, la bande gagne Venimeux ; Célébrités, la bande gagne Bouclier divin ; Animaux, la bande gagne Renaissance. Déplace tes serviteurs pour former tes bandes. Les objets cultes s\'achètent en or à l\'étagère de la taverne.' },
-  gag:{ n:'Donuts', ic:'donut', d:'Un Donut est un sort gratuit qui arrive dans ta main : pose-le sur un de tes serviteurs, il gagne +1/+1 pour toute la partie. Certains serviteurs en donnent, en posent tout seuls en fin de tour, ou augmentent la valeur de tous tes Donuts. Chaque famille joue comme une tribu de Champs de bataille : Donuts, Cris de guerre, or, Bouclier divin et Magnétisme, Renaissance. Les objets de Springfield s\'achètent en or à l\'étagère de la taverne.' },
+  bande:{ n:'Cohésion de groupe', ic:'users', d:'Au début de chaque combat, chaque serviteur gagne +1/+1 par voisin direct de la même famille (pour ce combat). Trois voisins ou plus de la même famille forment une bande activée, qui déclenche l\'effet de sa famille : Gingers et sectes, chaque membre gagne +1/+1 par autre Ginger ou sectaire allié ; Adultes, la bande gagne +0/+3 et tu gagnes 1 or au prochain tour ; Goths, la bande gagne Venimosité ; Célébrités, la bande gagne Bouclier divin ; Animaux, la bande gagne Réincarnation. Déplace tes serviteurs pour former tes bandes. Les objets cultes s\'achètent en or à l\'étagère de la taverne.' },
+  gag:{ n:'Donuts', ic:'donut', d:'Un Donut est un sort gratuit qui arrive dans ta main : pose-le sur un de tes serviteurs, il gagne +1/+1 pour toute la partie. Certains serviteurs en donnent, en posent tout seuls en fin de tour, ou augmentent la valeur de tous tes Donuts. Chaque famille joue comme une tribu de Champs de bataille : Donuts, Cris de guerre, or, Bouclier divin et Magnétisme, Réincarnation. Les objets de Springfield s\'achètent en or à l\'étagère de la taverne.' },
   portail:{ n:'Portails', ic:'portal', d:'Au début de chaque tour, tu gagnes 1 fluide de portail (3 au plus, il se garde d\'un tour à l\'autre ; certains serviteurs et inventions en donnent). Dépense 1 fluide sur un de tes serviteurs (bouton ◎) : il passe le portail et revient en variante d\'une autre dimension, un personnage aléatoire de sa famille d\'un niveau au-dessus ou au-dessous, en gardant tous ses bonus (stats, mots-clés gagnés, effets, dorure). Les inventions de Rick s\'achètent en or à l\'étagère de la taverne.' },
 };
 // familles concernées par une loi dans la partie en cours
@@ -778,7 +778,7 @@ const rint = n => Math.floor(Math.random() * n);
 const pickR = a => a[rint(a.length)];
 const shuffle = a => { for (let i = a.length - 1; i > 0; i--) { const j = rint(i + 1); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const has = (m, k) => (m.f || '').includes(k);
-const addF = (m, k) => { if (k && k.length > 1) { for (const c of k) addF(m, c); return; } if (k === 'v' && !(m.c && C[m.c] && (C[m.c].f || '').includes('v'))) k = 'n';   // Toxique de base, Venimeux quand il est gagné
+const addF = (m, k) => { if (k && k.length > 1) { for (const c of k) addF(m, c); return; } if (k === 'v' && !(m.c && C[m.c] && (C[m.c].f || '').includes('v'))) k = 'n';   // Toxicité de base, Venimosité quand il est gagné
   if (k === 'n' && has(m, 'v')) return;
   if (!has(m, k)) { m.f = (m.f || '') + k; if (BSRC) { const L = m.bn || (m.bn = []); let e = L.find(x => x.s === BSRC); if (!e) { e = { s:BSRC, a:0, h:0, n:1 }; L.push(e); } if (!(e.k || '').includes(k)) e.k = (e.k || '') + k; } } };
 const remF = (m, k) => { m.f = (m.f || '').split(k).join(''); };
@@ -824,7 +824,9 @@ function rebuildCatalog() {
   CAT_REV = hashStr(JSON.stringify([SET, CARDS]));
   if (typeof rebuildArt === 'function') rebuildArt();
 }
-function mk(id, g) { const b = CD(id); return { c:id, a:b.a * (g ? 3 : 1), h:b.h * (g ? 3 : 1), g:g ? 1 : 0, f:b.f, u:UID++ }; }
+// carte dorée : caractéristiques de base doublées, comme dans Champs de bataille (les bonus des trois exemplaires s'ajoutent)
+const GOLD_K = 2;
+function mk(id, g) { const b = CD(id); return { c:id, a:b.a * (g ? GOLD_K : 1), h:b.h * (g ? GOLD_K : 1), g:g ? 1 : 0, f:b.f, u:UID++ }; }
 // suivi des améliorations : chaque bonus est noté avec sa source (serviteur, sort, pouvoir…)
 let BSRC = null;
 function withSrc(src, fn) { const o = BSRC; BSRC = src; try { return fn(); } finally { BSRC = o; } }
@@ -1049,8 +1051,8 @@ const ET = {
   die_avenge_self:{ tr:'die', l:'Vengeance : grandir', ps:['n', 'a', 'h'], w:1.2, mag:e => (e.a + e.h) * 3, txt:(e, k) => `Vengeance (${e.n}) : gagne ${sign(e.a * k, e.h * k)} définitivement.` },
   bc_tribe_atk:{ tr:'bc', l:'Attaque de la famille pour la partie', ps:['tb', 'a'], w:1.3, mag:e => e.a * 6, txt:(e, k) => `Cri de guerre : tes ${one(e.tb)} ont +${e.a * k} ATQ pour le reste de la partie.` },
   pas_kk:{ tr:'pas', l:'Kang et Kodos', ps:[], w:1, mag:() => 3, txt:(e, k) => `Gagne ${sign(k, k)} pour chaque Kang ou Kodos allié mort cette partie.` },
-  soc_reborn:{ tr:'soc', l:'Donner Renaissance', ps:['tb'], w:1, mag:() => 4, txt:(e, k) => `Début du combat : donne Renaissance à ${k > 1 ? 'deux autres' : 'un autre'} ${one(e.tb, k === 1)}.` },
-  reborn_perm:{ tr:'reborn', l:'Bonus définitif après une Renaissance', ps:['tb', 'a', 'h'], w:1.4, mag:e => (e.a + e.h) * 4, txt:(e, k) => `Après une Renaissance alliée, tes ${one(e.tb)} gagnent ${sign(e.a * k, e.h * k)} définitivement.` },
+  soc_reborn:{ tr:'soc', l:'Donner Réincarnation', ps:['tb'], w:1, mag:() => 4, txt:(e, k) => `Début du combat : donne Réincarnation à ${k > 1 ? 'deux autres' : 'un autre'} ${one(e.tb, k === 1)}.` },
+  reborn_perm:{ tr:'reborn', l:'Bonus définitif après une Réincarnation', ps:['tb', 'a', 'h'], w:1.4, mag:e => (e.a + e.h) * 4, txt:(e, k) => `Après une Réincarnation alliée, tes ${one(e.tb)} gagnent ${sign(e.a * k, e.h * k)} définitivement.` },
   dr_tribe_atk:{ tr:'dr', l:'Attaque de la famille pour la partie (râle)', ps:['tb', 'a'], w:1.3, mag:e => e.a * 6, txt:(e, k) => `Râle d'agonie : tes ${one(e.tb)} ont +${e.a * k} ATQ pour le reste de la partie.` },
 };
 // gags récurrents : texte « Gag « D'oh ! » : effet, et +1 de plus à chaque déclenchement »
@@ -1248,9 +1250,9 @@ function bandsOf(bd) { const out = []; let s = 0; for (let i = 1; i <= bd.length
 const BAND_FX = {
   s_gin:['+1/+1 par autre Ginger ou sectaire allié', 'Bande de Gingers : chaque membre gagne +1/+1 par autre Ginger ou sectaire allié (toute la rangée).'],
   s_adu:['+0/+3 et 1 or au prochain tour', 'Réunion de parents : la bande gagne +0/+3 et tu gagnes 1 or au début du prochain tour.'],
-  s_got:['Venimeux', 'Cercle gothique : la bande gagne Venimeux (détruit le premier serviteur qu\'elle blesse).'],
+  s_got:['Venimosité', 'Cercle gothique : la bande gagne Venimosité (détruit le premier serviteur qu\'elle blesse).'],
   s_cel:['Bouclier divin', 'Tapis rouge : la bande gagne Bouclier divin.'],
-  s_ani:['Renaissance', 'Meute : la bande gagne Renaissance.'],
+  s_ani:['Réincarnation', 'Meute : la bande gagne Réincarnation.'],
 };
 const bandTx = tb => (BAND_FX[tb] || ['', ''])[1] || `Bande de ${tribePl(tb)}.`;
 // nombre de serviteurs de la famille la plus présente, et cette famille
@@ -1341,7 +1343,7 @@ function doPortal(G, p, m, opt = {}) {
   const cl = t => Math.max(1, Math.min(6, t));
   const pick = tt => { for (let k = 0; k < 3; k++) { const c = drawOne(G, 6, tt, tb); if (!c) break; if (c.c !== m.c || k === 2) return c; toPool(G, c); } const ids = POOL_IDS.filter(id => C[id].tr === tb && C[id].t === tt && id !== m.c); return ids.length ? mk(pickR(ids), 0) : null; };
   const nm = pick(cl(t0 + dir)) || pick(cl(t0 - dir)) || pick(cl(t0)) || drawOne(G, 6, cl(t0 + dir)) || drawAny(cl(t0 + dir)); if (!nm) return null;
-  const b0 = CD(m.c), k0 = m.g ? 3 : 1, b1 = CD(nm.c);
+  const b0 = CD(m.c), k0 = m.g ? GOLD_K : 1, b1 = CD(nm.c);
   nm.a += Math.max(0, m.a - b0.a * k0); nm.h += Math.max(0, m.h - b0.h * k0);
   if (m.g) { nm.g = 1; nm.a += b1.a * 2; nm.h += b1.h * 2; }
   for (const f of m.f || '') if (!(b0.f || '').includes(f)) addF(nm, f);   // mots-clés gagnés (pas ceux de base de l'ancienne carte)
@@ -1391,7 +1393,7 @@ function auraTimes(list, k) { let t = 1; for (const m of list) if (m.h > 0 && fx
 function permBuff(S, s, x, a, h) { buff(x, a, h); const u = x.ou || x.u; S.perm = S.perm || [{}, {}]; const o = S.perm[s][u] = S.perm[s][u] || [0, 0]; o[0] += a; o[1] += h; }   // bonus « définitif » gagné en combat : reporté sur le vrai plateau
 function simSummon(S, s, pos, id, g) {
   const arr = S.sides[s]; if (arr.length >= 7 || !C[id]) return null;
-  const b = C[id]; const m = { c:id, a:b.a * (g ? 3 : 1), h:b.h * (g ? 3 : 1), g:g ? 1 : 0, f:b.f, u:S.uid++ };
+  const b = C[id]; const m = { c:id, a:b.a * (g ? GOLD_K : 1), h:b.h * (g ? GOLD_K : 1), g:g ? 1 : 0, f:b.f, u:S.uid++ };
   if (S.hx && S.hx[s] && b.tr === 'si_hor') m.a += S.hx[s];
   arr.splice(Math.min(pos, arr.length), 0, m); return m;
 }
@@ -1471,12 +1473,12 @@ function simDamage(S, m, n, src) {
   if (has(m, 's')) { remF(m, 's'); const s = sideOf(S, m); S.sides[s].forEach(al => { if (al.h > 0) fxOf(al, 'shield').forEach(e => runCombat(S, s, al, e, 0, m)); }); return; }
   m.h -= n;
   if (src && has(src, 'v')) m.h = Math.min(m.h, 0);
-  else if (src && has(src, 'n')) { m.h = Math.min(m.h, 0); remF(src, 'n'); }   // Venimeux : une seule fois
+  else if (src && has(src, 'n')) { m.h = Math.min(m.h, 0); remF(src, 'n'); }   // Venimosité : une seule fois
   if (m.h > 0) { const s = sideOf(S, m); fxOf(m, 'surv').forEach(e => runCombat(S, s, m, e)); }
 }
 // Morts (règle Champs de bataille) : tous les serviteurs à 0 PV quittent le plateau ensemble, puis leurs effets se résolvent
 // camp de l'attaquant d'abord (f), puis l'autre, chaque camp de gauche à droite : « quand un allié meurt », Râle d'agonie
-// (invoqué à la place du mort), puis Renaissance (1 PV, à droite des invocations du râle). Les morts causées par ces effets
+// (invoqué à la place du mort), puis Réincarnation (1 PV, à droite des invocations du râle). Les morts causées par ces effets
 // forment la vague suivante.
 function simDeaths(S, f = 0) {
   for (let guard = 0; guard < 50; guard++) {
@@ -1491,7 +1493,7 @@ function simDeaths(S, f = 0) {
       const before = arr.length, ndr = auraTimes(arr, 'aura_dr');
       for (let r = 0; r < ndr; r++) fxOf(d, 'dr').forEach(e => runCombat(S, s, d, e, pos()));
       const added = Math.max(0, arr.length - before);
-      if (has(d, 'r') && !d.rb && arr.length < 7) { const nm = simSummon(S, s, pos() + added, d.c, d.g); if (nm) { nm.h = 1; remF(nm, 'r'); nm.rb = 1; if (d.gag) nm.gag = d.gag; nm.ou = d.ou || d.u; for (const al of arr.slice()) if (al.h > 0 && al !== nm) fxOf(al, 'reborn').forEach(e => runCombat(S, s, al, e, 0, nm)); } }   // le compteur de gag suit la Renaissance
+      if (has(d, 'r') && !d.rb && arr.length < 7) { const nm = simSummon(S, s, pos() + added, d.c, d.g); if (nm) { nm.h = 1; remF(nm, 'r'); nm.rb = 1; if (d.gag) nm.gag = d.gag; nm.ou = d.ou || d.u; for (const al of arr.slice()) if (al.h > 0 && al !== nm) fxOf(al, 'reborn').forEach(e => runCombat(S, s, al, e, 0, nm)); } }   // le compteur de gag suit la Réincarnation
     }
   }
 }
@@ -1689,7 +1691,7 @@ function checkTriple(G, p) {
     const copies = [];
     for (const zone of [p.hd, p.bd]) for (let i = zone.length - 1; i >= 0 && copies.length < 3; i--) if (zone[i].c === id && !zone[i].g && !zone[i].sp) copies.push(zone.splice(i, 1)[0]);
     const b = CD(id);
-    const gm = { c:id, a:copies.reduce((t, m) => t + m.a, 0), h:copies.reduce((t, m) => t + m.h, 0), g:1, f:b.f, u:UID++, tr:1 }; { const sl = copies.reduce((t, m) => t + (m.sl || 0), 0); if (sl) { gm.sl = sl; if (copies.some(m => m.slf) || sl >= 5) gm.slf = 1; } }
+    const gm = { c:id, a:copies.reduce((t, m) => t + m.a, 0) - (3 - GOLD_K) * b.a, h:Math.max(1, copies.reduce((t, m) => t + m.h, 0) - (3 - GOLD_K) * b.h), g:1, f:b.f, u:UID++, tr:1 }; { const sl = copies.reduce((t, m) => t + (m.sl || 0), 0); if (sl) { gm.sl = sl; if (copies.some(m => m.slf) || sl >= 5) gm.slf = 1; } }
     copies.forEach(m => { for (const k of m.f || '') addF(gm, k); if (m.x) gm.x = (gm.x || []).concat(m.x); (m.bn || []).forEach(e => { const L = gm.bn || (gm.bn = []); const f = L.find(x => x.s === e.s); if (f) { f.a += e.a; f.h += e.h; f.n += e.n; for (const k of e.k || '') if (!(f.k || '').includes(k)) f.k = (f.k || '') + k; } else L.push({ ...e }); }); });
     { const f = copies.find(m => m.fam === '*') || copies.find(m => m.fam); if (f) { gm.fam = f.fam; if (f.famOf) gm.famOf = f.famOf; } }   // la conversion (cohésion) suit le doré
     { const gg = copies.reduce((t, m) => t + (m.gag || 0), 0); if (gg) gm.gag = gg; }   // gags récurrents : les compteurs s'additionnent dans le doré
@@ -1720,7 +1722,7 @@ const MK_STEPS = [5, 10, 20];
 // bonus de palier en combat pour les serviteurs du clan : [attaque, vie, mot-clé au 3e palier]
 const MK_TIER = { feu:[[1, 0], [2, 1], [4, 2, 'r']], vent:[[1, 1], [2, 1], [3, 2, 'w']], eau:[[0, 2], [1, 3], [2, 5, 's']], foudre:[[1, 0], [2, 1], [3, 3, 'n']], terre:[[0, 3], [1, 5], [2, 8, 't']] };
 const MK_TIER_TX = { feu:'Clan Katon', vent:'Clan Fûton', eau:'Clan Suiton', foudre:'Clan Raiton', terre:'Clan Doton' };
-const MK_KW = { r:'Renaissance', w:'Furie des vents', s:'Bouclier divin', v:'Venimeux', t:'Provocation' };
+const MK_KW = { r:'Réincarnation', w:'Furie des vents', s:'Bouclier divin', v:'Venimosité', t:'Provocation' };
 // éclat de résonance (5 marqueurs consommés par un combo)
 const MK_BURST = {
   feu:['Prochain combat : 5 dégâts à l\'ennemi', (G, p) => { p.njf = (p.njf || 0) + 5; }],
@@ -1749,7 +1751,7 @@ const PW_AWK_TX = { rfill:'remplit la moitié et récupère 2 chakra', techel:'a
 const heroAwkTx = h => !h || !h.pw ? '' : PW_AWK_TX[h.pw.k] || 'effet doublé';
 // forme éveillée du compagnon : pouvoir ultime de son clan (sans doublement des stats)
 const COMP_AWK = {
-  feu:{ n:'Phénix de flammes', tx:'Renaissance et début du duel : 4 dégâts au compagnon adverse', fn:c => { addF(c, 'r'); (c.x = c.x || []).push({ k:'soc_dmg', d:4, n:1, src:'Phénix de flammes' }); } },
+  feu:{ n:'Phénix de flammes', tx:'Réincarnation et début du duel : 4 dégâts au compagnon adverse', fn:c => { addF(c, 'r'); (c.x = c.x || []).push({ k:'soc_dmg', d:4, n:1, src:'Phénix de flammes' }); } },
   vent:{ n:'Lame d\'ouragan', tx:'Furie des vents et après avoir attaqué : +2/+0', fn:c => { addF(c, 'w'); (c.x = c.x || []).push({ k:'atk_self', a:2, h:0, src:'Lame d\'ouragan' }); } },
   eau:{ n:'Corps de l\'eau', tx:'+0/+8 et quand il survit à un coup : +3/+3', fn:c => { buff(c, 0, 8); (c.x = c.x || []).push({ k:'surv_self', a:3, h:3, src:'Corps de l\'eau' }); } },
   foudre:{ n:'Chakra de foudre', tx:'+3 attaque et après avoir attaqué : 4 dégâts à l\'ennemi', fn:c => { buff(c, 3, 0); (c.x = c.x || []).push({ k:'atk_zap', d:4, n:1, src:'Chakra de foudre' }); } },
@@ -1804,7 +1806,7 @@ const UPS = {
   // Armure : encaisser
   armure:[['+3 vie', c => buff(c, 0, 3)], ['+6 vie', c => buff(c, 0, 6)],
           ['+2/+9', c => buff(c, 2, 9)],
-          ['+6 vie et Renaissance : se relève une fois pendant le duel', c => { buff(c, 0, 6); addF(c, 'r'); }]],
+          ['+6 vie et Réincarnation : se relève une fois pendant le duel', c => { buff(c, 0, 6); addF(c, 'r'); }]],
   // Bandeau : concentration du ninja
   bandeau:[['+1/+1', c => buff(c, 1, 1)],
            ['Début du duel : gagne +2/+2', c => xAdd(c, { k:'soc_self', a:2, h:2 }, 'Bandeau du maître')],
@@ -1914,7 +1916,9 @@ const OPS = {
   buy(G, p, a) { const i = a.i; if (p.g < 3 || p.hd.length >= 10 || !p.sh[i]) return false; p.g -= 3; qAdd(p, 'buys'); const m0 = p.sh.splice(i, 1)[0]; p.hd.push(m0); if (!m0.sp) { p.bt = p.bt || {}; p.bt[tribe(m0)] = (p.bt[tribe(m0)] || 0) + 1; p.btN = (p.btN || 0) + 1; } p.bd.slice().forEach(x => fxOf(x, 'buy').forEach(e => runRecruit(G, p, x, e, m0))); spent(G, p, 3); handIn(p); checkTriple(G, p); return true; },
   sell(G, p, a) { const m = p.bd[a.i]; if (!m) return false; p.bd.splice(a.i, 1); if (p.ck) p.ck = Math.min(p.ck, ckMax(p)); p.g += 1; if (inMech(G, 'marche', m) && (p.mkt || 0) < 2) { p.g += 1; p.mkt = (p.mkt || 0) + 1; } fxOf(m, 'sell').forEach(e => runRecruit(G, p, m, e)); { const t = htr(p, 'pturn'); if (t && t.sell) p.g += t.sell; } { const w = htr(p, 'psell'); if (w && !(w.once && p.soldT)) { p.inc = p.inc || []; p.inc[0] = (p.inc[0] || 0) + (w.n || 1); } p.soldT = 1; } { const w = htr(p, 'psellshop'); if (w) withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => { for (let i = 0; i < (w.n || 2); i++) { const o = p.sh.filter(x => !x.sp); if (o.length) buff(pickR(o), w.a || 1, w.h || 1); } }); } qAdd(p, 'sells'); toPool(G, m); return true; },
   play(G, p, a) {
-    const m = p.hd[a.i]; if (!m || m.sp || p.bd.length >= 7) return false;
+    const m = p.hd[a.i]; if (!m || m.sp) return false;
+    // plateau plein : seul le Magnétisme reste jouable, à gauche d'un serviteur de sa famille (règle de Champs de bataille)
+    if (p.bd.length >= 7) { const q = Math.max(0, Math.min(a.pos == null ? p.bd.length : a.pos, p.bd.length)); if (!(fxOf(m, 'pas').some(e => e.k === 'magnet') && p.bd[q] && tribeOk(p.bd[q], tribe(m)))) return false; }
     p.hd.splice(a.i, 1);
     const pos = Math.max(0, Math.min(a.pos == null ? p.bd.length : a.pos, p.bd.length));
     // Magnétisme : joué juste à gauche d'un serviteur de sa famille, il fusionne avec lui
@@ -2306,7 +2310,7 @@ function aiTurn(G, p) {
   }
   if (inMechAny(G, 'chakra')) for (let g = 0; g < 7; g++) { const i = p.bd.findIndex(m => !m.awk && (CD(m.c).fxAll || []).some(x => x.k === 'ckm' && (p.ck || 0) >= ckmCost(p, x))); if (i < 0) break; OPS.ckm(G, p, { i }); }
   // Portails : l'IA fait passer son serviteur du plus bas niveau (celui qui a le plus de bonus à garder), sans casser un triple en cours ; elle garde du fluide tant que tout est au niveau de sa taverne, sauf si la jauge est pleine
-  if (inMechAny(G, 'portail')) for (let g = 0; g < 3 && (p.pf || 0) > 0; g++) { const full = (p.pf || 0) >= pfMax(p), bonus = m => m.a + m.h - (CD(m.c).a + CD(m.c).h) * (m.g ? 3 : 1); const c = p.bd.filter(m => !CD(m.c).tok && (tierOf(m) < p.t || full) && p.bd.concat(p.hd).filter(x => x.c === m.c && !x.g).length < 2); if (!c.length) break; c.sort((x, y) => tierOf(x) - tierOf(y) || bonus(y) - bonus(x)); if (!OPS.portal(G, p, { i:p.bd.indexOf(c[0]) })) break; }
+  if (inMechAny(G, 'portail')) for (let g = 0; g < 3 && (p.pf || 0) > 0; g++) { const full = (p.pf || 0) >= pfMax(p), bonus = m => m.a + m.h - (CD(m.c).a + CD(m.c).h) * (m.g ? GOLD_K : 1); const c = p.bd.filter(m => !CD(m.c).tok && (tierOf(m) < p.t || full) && p.bd.concat(p.hd).filter(x => x.c === m.c && !x.g).length < 2); if (!c.length) break; c.sort((x, y) => tierOf(x) - tierOf(y) || bonus(y) - bonus(x)); if (!OPS.portal(G, p, { i:p.bd.indexOf(c[0]) })) break; }
   if (inMechAny(G, 'bande')) aiCohesion(p);
   { const hc = HX(p) && HX(p).cost; if (hc && aiLatePow(p) && !p.pu && p.g >= hc && p.bd.length) OPS.pow(G, p); }
   aiTeams(p);

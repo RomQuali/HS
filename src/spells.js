@@ -14,7 +14,7 @@ const SPELLS = {
   dt_taiyo:{ db:1, n:'Taiyoken', t:1, c:1, kc:1, ty:'nin', tg:1, fx:[{ k:'chill', a:2, n:1 }], sig:['d_tenshin', 'd_krilin'], sgx:[{ k:'chill', a:2, n:2 }], tx:'Flash solaire : prochain combat, un ennemi aléatoire perd 2 attaque.', stx:'2 ennemis de plus' },
   dt_kame:{ db:1, n:'Kaméhaméha', t:1, c:1, kc:2, ty:'nin', tg:1, fx:[{ k:'ttmp', a:3, h:0 }], sig:['d_goku', 'd_gohan', 'd_goten', 'd_kame', 'd_krilin'], sgx:[{ k:'tbuff', a:2, h:2 }], tx:'Le serviteur ciblé gagne +3 attaque au prochain combat.', stx:'+2/+2 définitif' },
   dt_kikoho:{ db:1, n:'Kikoho', t:2, c:1, kc:2, ty:'nin', tg:1, fx:[{ k:'fire', d:4 }], sig:['d_tenshin'], sgx:[{ k:'fire', d:4 }], tx:'Prochain combat : 4 dégâts à l\'ennemi.', stx:'+4 dégâts' },
-  dt_kienzan:{ db:1, n:'Kienzan', t:2, c:1, kc:3, ty:'nin', tg:1, fx:[{ k:'ttmp', a:0, h:0, kw:'n' }], sig:['d_krilin', 'd_cell'], sgx:[{ k:'tbuff', a:2, h:0 }], tx:'Disque tranchant : le serviteur ciblé gagne Venimeux au prochain combat.', stx:'+2 attaque définitive' },
+  dt_kienzan:{ db:1, n:'Kienzan', t:2, c:1, kc:3, ty:'nin', tg:1, fx:[{ k:'ttmp', a:0, h:0, kw:'n' }], sig:['d_krilin', 'd_cell'], sgx:[{ k:'tbuff', a:2, h:0 }], tx:'Disque tranchant : le serviteur ciblé gagne Venimosité au prochain combat.', stx:'+2 attaque définitive' },
   dt_kaioken:{ db:1, n:'Kaioken', t:2, c:1, kc:2, ty:'nin', tg:1, fx:[{ k:'ttmp', a:4, h:-1 }], sig:['d_goku'], sgx:[{ k:'ttmp', a:0, h:0, kw:'w' }], tx:'Le serviteur ciblé gagne +4/-1 au prochain combat.', stx:'Furie des vents' },
   dt_masenko:{ db:1, n:'Masenko', t:3, c:2, kc:3, ty:'nin', tg:1, fx:[{ k:'tbuff', a:3, h:2 }], sig:['d_gohan', 'd_piccolo'], sgx:[{ k:'tbuff', a:3, h:3 }], tx:'Le serviteur ciblé gagne +3/+2.', stx:'+3/+3 de plus' },
   dt_makanko:{ db:1, n:'Makankosappo', t:3, c:2, kc:3, ty:'nin', tg:1, fx:[{ k:'ttmp', a:5, h:0 }], sig:['d_piccolo', 'd_piccolof'], sgx:[{ k:'tbuff', a:3, h:1 }], tx:'Rayon perçant : le serviteur ciblé gagne +5 attaque au prochain combat.', stx:'+3/+1 définitif' },
@@ -44,7 +44,7 @@ const SPELLS = {
   so_coon:{ spk:1, n:'Chapeau du Coon', t:3, c:2, ty:'obj', tg:1, fx:[{ k:'tbuff', a:2, h:2 }, { k:'tkwp', kw:'t' }], tx:'Le justicier masqué : le serviteur ciblé gagne +2/+2 et Provocation.' },
   so_chili:{ spk:1, n:'Chili de Chef', t:4, c:2, ty:'obj', fx:[{ k:'buffnb', a:1, h:1, a2:2, h2:2 }], tx:'Tes serviteurs gagnent +1/+1, ou +2/+2 s\'ils ont un voisin de leur famille.' },
   so_baton:{ spk:1, n:'Bâton de la vérité', t:4, c:3, ty:'obj', tg:1, fx:[{ k:'tfamall' }, { k:'tbuff', a:2, h:2 }], tx:'Le serviteur ciblé compte comme toutes les familles pour la cohésion et gagne +2/+2.' },
-  so_cape:{ spk:1, n:'Cape de Mysterion', t:5, c:3, ty:'obj', tg:1, fx:[{ k:'tkwp', kw:'r' }, { k:'tbuff', a:3, h:3 }], tx:'Le héros qui ne meurt jamais : le serviteur ciblé gagne Renaissance et +3/+3.' },
+  so_cape:{ spk:1, n:'Cape de Mysterion', t:5, c:3, ty:'obj', tg:1, fx:[{ k:'tkwp', kw:'r' }, { k:'tbuff', a:3, h:3 }], tx:'Le héros qui ne meurt jamais : le serviteur ciblé gagne Réincarnation et +3/+3.' },
   // ----- objets de Springfield (univers Les Simpson) : achetés et utilisés en or, à l'étagère de la taverne ; plusieurs font grandir les gags -----
   si_don:{ sim:1, don:1, item:1, n:'Donut', t:1, c:0, ty:'spr', tg:1, fx:[{ k:'tdonut' }], tx:'Mmmh… donut : le serviteur ciblé gagne +1/+1 pour toute la partie (plus tes bonus de Donut).' },
   si_donut:{ sim:1, n:'Boîte de donuts', t:1, c:1, ty:'spr', fx:[{ k:'donut', n:2 }], tx:'Reçois 2 Donuts : chacun donne +1/+1 à un de tes serviteurs.' },
@@ -56,7 +56,7 @@ const SPELLS = {
   si_tetine:{ sim:1, n:'Tétine de Maggie', t:3, c:1, ty:'spr', fx:[{ k:'rollfam' }], tx:'Chut : actualise la taverne avec des serviteurs de ta famille la plus présente.' },
   si_ticket:{ sim:1, n:'Ticket de monorail', t:4, c:2, ty:'spr', fx:[{ k:'uc', n:3 }], tx:'Mono… rail ! Ta prochaine amélioration de taverne coûte 3 or de moins.' },
   si_bonbon:{ sim:1, n:'Bonbon Krusty', t:4, c:3, ty:'spr', tg:1, fx:[{ k:'ttier', a:1, h:1 }], tx:'Hey hey ! Le serviteur ciblé gagne +1/+1 par niveau de ta taverne.' },
-  si_plutonium:{ sim:1, n:'Barre de plutonium', t:5, c:3, ty:'spr', tg:1, fx:[{ k:'tkwp', kw:'n' }], tx:'Radioactif : le serviteur ciblé gagne Venimeux.' },
+  si_plutonium:{ sim:1, n:'Barre de plutonium', t:5, c:3, ty:'spr', tg:1, fx:[{ k:'tkwp', kw:'n' }], tx:'Radioactif : le serviteur ciblé gagne Venimosité.' },
   sp_pinte:{ n:'Pinte offerte', t:1, c:1, ty:'renf', tg:1, tx:'Donne +2/+1 à un de tes serviteurs.' },
   sp_tournee:{ n:'Nouvelle tournée', t:1, c:0, ty:'eco', tx:'Rafraîchit la taverne gratuitement.' },
   sp_placement:{ n:'Placement prudent', t:1, c:1, ty:'eco', tx:'Au début de ton prochain tour, gagne 2 or.' },
@@ -64,7 +64,7 @@ const SPELLS = {
   sp_chopes:{ n:'Échange de chopes', t:2, c:1, ty:'arc', tg:1, tx:'Échange l\'attaque et la vie d\'un de tes serviteurs.' },
   sp_graine:{ n:'Graine de vigueur', t:2, c:2, ty:'nat', tg:1, tx:'Enchante un serviteur : « Fin de tour : gagne +1/+1 ». L\'enchantement reste pour toute la partie.' },
   sp_rabot:{ n:'Coup de rabot', t:2, c:1, ty:'eco', tx:'Améliorer la taverne coûte 3 or de moins.' },
-  sp_souffle:{ n:'Souffle d\'outre-tombe', t:3, c:2, ty:'ombre', tg:1, tx:'Donne Renaissance à un de tes serviteurs.' },
+  sp_souffle:{ n:'Souffle d\'outre-tombe', t:3, c:2, ty:'ombre', tg:1, tx:'Donne Réincarnation à un de tes serviteurs.' },
   sp_berserk:{ n:'Rage du berserker', t:3, c:2, ty:'comb', tg:1, tx:'Prochain combat seulement : un de tes serviteurs gagne +4 attaque et Furie des vents.' },
   sp_meta:{ n:'Métamorphose ascendante', t:3, c:2, ty:'arc', tg:1, tx:'Transforme un de tes serviteurs en un serviteur aléatoire d\'un niveau au-dessus.' },
   sp_meute:{ n:'Sang de la meute', t:3, c:3, ty:'renf', tg:1, tx:'Donne +1/+1 à un serviteur et à tous tes serviteurs de sa tribu.' },
@@ -96,7 +96,7 @@ const SPELLS = {
   nj_ehiden:{ el:'eau', n:'Hiden : Suikōdan', t:6, c:5, ck:6, uses:2, hid:3, nin:1, ty:'nin', fx:[{ k:'fire', d:5 }, { k:'buffall', a:2, h:2, tb:'n_eau' }], awk:{ tx:'+3 dégâts', fx:[{ k:'fire', d:3 }] }, tx:'Hiden : il faut 3 serviteurs Suiton. Rouleau à 2 usages : requins d\'eau, 5 dégâts à l\'ennemi au prochain combat et +2/+2 à tes Suiton.' },
   // Raiton : jutsu combinés (bonus si une technique d'une autre nature a été lancée ce tour)
   nj_decharge:{ el:'foudre', n:'Raikyū', t:1, c:1, ck:1, nin:1, ty:'nin', fx:[{ k:'ck', n:2 }], comb:[{ k:'g', n:1 }], awk:{ tx:'+1 chakra', fx:[{ k:'ck', n:1 }] }, tx:'Sphère de foudre : gagne 2 chakra. Combiné : +1 or.' },
-  nj_foudre:{ el:'foudre', n:'Chidori', t:2, c:2, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'ttmp', a:3, h:0, kw:'n' }], comb:[{ k:'tbuff', a:2, h:0 }], awk:{ tx:'+2 attaque définitive', fx:[{ k:'tbuff', a:2, h:0 }] }, tx:'Mille oiseaux : prochain combat, le serviteur ciblé gagne +3 attaque et Venimeux. Combiné : +2 attaque définitive.' },
+  nj_foudre:{ el:'foudre', n:'Chidori', t:2, c:2, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'ttmp', a:3, h:0, kw:'n' }], comb:[{ k:'tbuff', a:2, h:0 }], awk:{ tx:'+2 attaque définitive', fx:[{ k:'tbuff', a:2, h:0 }] }, tx:'Mille oiseaux : prochain combat, le serviteur ciblé gagne +3 attaque et Venimosité. Combiné : +2 attaque définitive.' },
   nj_oyoroi:{ el:'foudre', n:'Raiton no yoroi', t:3, c:2, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'tbuff', a:2, h:2 }, { k:'ttmp', a:0, h:0, kw:'w' }], comb:[{ k:'tkwp', kw:'w' }], awk:{ tx:'+2/+2 de plus', fx:[{ k:'tbuff', a:2, h:2 }] }, tx:'Armure de foudre : le serviteur ciblé gagne +2/+2 et Furie des vents au prochain combat. Combiné : Furie définitive.' },
   nj_sceau:{ el:'foudre', n:'Kirin', t:5, c:4, ck:5, nin:1, ty:'nin', fx:[{ k:'fire', d:6 }], comb:[{ k:'fire', d:4 }], awk:{ tx:'+3 dégâts', fx:[{ k:'fire', d:3 }] }, tx:'Dragon de foudre : prochain combat, 6 dégâts à l\'ennemi. Combiné : +4 dégâts.' },
   nj_ohiden:{ el:'foudre', n:'Hiden : Kuropansā', t:6, c:5, ck:6, hid:3, nin:1, ty:'nin', fx:[{ k:'buffall', a:3, h:1, tb:'n_foudre' }, { k:'tkwn', kw:'w', n:2 }], comb:[{ k:'fire', d:4 }], awk:{ tx:'+1/+1 de plus aux Raiton', fx:[{ k:'buffall', a:1, h:1, tb:'n_foudre' }] }, tx:'Hiden : il faut 3 serviteurs Raiton. Panthère noire : tes Raiton gagnent +3/+1, deux de tes serviteurs ont Furie des vents au prochain combat. Combiné : 4 dégâts à l\'ennemi.' },
@@ -124,7 +124,7 @@ const SPELLS = {
   cs_suikodan:{ cs:1, rare:1, bg:'eau', el:'eau', n:'Suikōdan', t:6, c:1, ck:6, nin:1, ty:'nin', fx:[{ k:'tma', a:2, h:3 }, { k:'tkwn', kw:'s', n:3 }], tx:'Rare. Requins d\'eau : prochain combat, tes serviteurs gagnent +2/+3 et trois d\'entre eux Bouclier divin.' },
   // Nuage
   cs_raikyu:{ cs:1, bg:'foudre', el:'foudre', n:'Raikyū', t:1, c:1, ck:1, nin:1, ty:'nin', fx:[{ k:'g', n:2 }], tx:'Sphère de foudre : gagne 2 or.' },
-  cs_chidori:{ cs:1, bg:'foudre', el:'foudre', n:'Chidori', t:2, c:1, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'ttmp', a:4, h:0, kw:'n' }], tx:'Mille oiseaux : prochain combat, le serviteur ciblé gagne +4/+0 et Venimeux.' },
+  cs_chidori:{ cs:1, bg:'foudre', el:'foudre', n:'Chidori', t:2, c:1, ck:3, nin:1, ty:'nin', tg:1, fx:[{ k:'ttmp', a:4, h:0, kw:'n' }], tx:'Mille oiseaux : prochain combat, le serviteur ciblé gagne +4/+0 et Venimosité.' },
   cs_bijuchakra:{ cs:1, bg:'foudre', el:'foudre', n:'Bijū no chakra', t:3, c:1, ck:4, nin:1, ty:'nin', fx:[{ k:'winup' }], tx:'Chakra de la bête : tes jinchūriki grandissent comme après une victoire.' },
   cs_bijudama:{ cs:1, rare:1, bg:'foudre', el:'foudre', n:'Bijūdama', t:6, c:1, ck:6, nin:1, ty:'nin', fx:[{ k:'winup' }, { k:'winup' }, { k:'fire', d:6 }], tx:'Rare. Orbe de la bête : tes jinchūriki grandissent deux fois comme après une victoire, et 6 dégâts frappent l\'ennemi.' },
   // Roche
@@ -147,7 +147,7 @@ const SPELLS = {
   eq_armure:{ n:'Armure de mailles', t:1, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : +6 vie et Provocation.' },
   eq_gants:{ n:'Gantelets du vent', t:1, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : +2/+2 et Furie des vents.' },
   eq_bandeau:{ n:'Bandeau du maître', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : « Fin de tour : gagnez 2 chakra ».' },
-  eq_cape:{ n:'Cape d\'ombre', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : Bouclier divin et Renaissance.' },
+  eq_cape:{ n:'Cape d\'ombre', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : Bouclier divin et Réincarnation.' },
   eq_parchemin:{ n:'Parchemin jumeau', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : chaque combo lui donne aussi +2/+2.' },
   eq_talisman:{ n:'Talisman des cycles', t:2, c:0, item:1, eq:1, ty:'eq', tg:1, tx:'Équipe ton compagnon : ses bonus d\'élément sont doublés.' },
   cf_bois:{ n:'Coffre de bois', t:1, c:0, ck:2, item:1, ty:'cof', tx:'Coffre mineur, reçu après une égalité ou une défaite (taverne de niveau 1 à 4). Ouvre-le avec 2 chakra : un équipement commun.' },
@@ -210,7 +210,7 @@ const EQ_MAXLV = 5;
 function eqUpgrade(tgt, id) { const u = EQ_UP[id] || {}; if (u.a || u.h) buff(tgt, u.a || 0, u.h || 0); if (u.ck) (tgt.x = tgt.x || []).push({ k:'eot_chakra', n:u.ck, src:'Amélioration · ' + SPELLS[id].n }); }
 // bonus total d'un équipement à un niveau donné (affiché au survol du compagnon)
 function eqBonusTx(id, lv) {
-  const u = EQ_UP[id] || {}, n = Math.max(0, (lv || 1) - 1), base = { eq_lame:'+4 attaque', eq_armure:'+6 vie et Provocation', eq_gants:'+2/+2 et Furie des vents', eq_bandeau:'Fin de tour : +2 chakra', eq_cape:'Bouclier divin et Renaissance', eq_parchemin:'Chaque combo : +2/+2', eq_talisman:'Bonus d\'élément doublés' }[id] || '';
+  const u = EQ_UP[id] || {}, n = Math.max(0, (lv || 1) - 1), base = { eq_lame:'+4 attaque', eq_armure:'+6 vie et Provocation', eq_gants:'+2/+2 et Furie des vents', eq_bandeau:'Fin de tour : +2 chakra', eq_cape:'Bouclier divin et Réincarnation', eq_parchemin:'Chaque combo : +2/+2', eq_talisman:'Bonus d\'élément doublés' }[id] || '';
   const extra = []; if (n && (u.a || u.h)) extra.push(`+${u.a * n}/+${u.h * n}`); if (n && u.ck) extra.push(`+${u.ck * n} chakra par tour`);
   return base + (extra.length ? ' · amélioration ' + extra.join(', ') : '');
 }
@@ -249,7 +249,7 @@ function techSteps(G, p, steps, tgt, tg, x) {
       case 'marx': { const v = Math.min(3, Math.floor((p.maree || 0) / 3)) * x; if (v) p.bd.filter(m => tribeOk(m, 'n_eau')).forEach(m => buff(m, v, v)); break; }
       case 'seal': p.foe = p.foe || {}; p.foe.seal = (p.foe.seal || 0) + s.n * x; break;
       case 'chill': p.foe = p.foe || {}; p.foe.chill = (p.foe.chill || []).concat(Array(s.n * x).fill(s.a)); break;
-      case 'henge': if (tgt) { const i = p.bd.indexOf(tgt), t = Math.min(6, tierOf(tgt) + 1), tb = tribe(tgt); const nm = drawOne(G, 6, t, tb) || drawOne(G, 6, t) || drawAny(t); if (nm && i >= 0) { const b0 = CD(tgt.c); nm.a += Math.max(0, tgt.a - b0.a * (tgt.g ? 3 : 1)); nm.h += Math.max(0, tgt.h - b0.h * (tgt.g ? 3 : 1)); if (tgt.g) { nm.g = 1; nm.a += CD(nm.c).a * 2; nm.h += CD(nm.c).h * 2; } toPool(G, tgt); p.bd[i] = nm; tgt = nm; } } break;
+      case 'henge': if (tgt) { const i = p.bd.indexOf(tgt), t = Math.min(6, tierOf(tgt) + 1), tb = tribe(tgt); const nm = drawOne(G, 6, t, tb) || drawOne(G, 6, t) || drawAny(t); if (nm && i >= 0) { const b0 = CD(tgt.c); nm.a += Math.max(0, tgt.a - b0.a * (tgt.g ? GOLD_K : 1)); nm.h += Math.max(0, tgt.h - b0.h * (tgt.g ? GOLD_K : 1)); if (tgt.g) { nm.g = 1; nm.a += CD(nm.c).a * (GOLD_K - 1); nm.h += CD(nm.c).h * (GOLD_K - 1); } toPool(G, tgt); p.bd[i] = nm; tgt = nm; } } break;
       case 'comp': comps(p).forEach(c => buff(c, a, h)); break;
       case 'winup': winUp(p); break;
       case 'uc': p.uc = Math.max(0, (p.uc || 0) - s.n); break;
@@ -427,7 +427,7 @@ function aiTarget(p, id) {
   if (S.sig && p.bd.some(m => S.sig.includes(m.c) && !m.med)) return by(m => m.a + m.h, m => S.sig.includes(m.c) && !m.med);
   if (S.db) return by(m => m.a + m.h + tierOf(m) * 2, m => !m.med);
   if (st.includes('henge')) return by(m => -tierOf(m) * 10 + m.a + m.h, m => tierOf(m) < 6 && !CD(m.c).tok);
-  if (st.includes('portal')) return by(m => -tierOf(m) * 10 + m.a + m.h - (CD(m.c).a + CD(m.c).h) * (m.g ? 3 : 1), m => !CD(m.c).tok && !isComp(m));
+  if (st.includes('portal')) return by(m => -tierOf(m) * 10 + m.a + m.h - (CD(m.c).a + CD(m.c).h) * (m.g ? GOLD_K : 1), m => !CD(m.c).tok && !isComp(m));
   if (st.includes('tfam')) { const cnt = {}; p.bd.forEach(m => { cnt[tribe(m)] = (cnt[tribe(m)] || 0) + 1; }); return by(m => (cnt[tribe(m)] || 0) * 10 + m.a + m.h); }
   if (st.includes('trm')) return by(m => (isRM(m) ? 10 : 0) + m.a + m.h + tierOf(m) * 2, m => !CD(m.c).tok);
   if (st.includes('tfamall')) return by(m => m.a + m.h + tierOf(m) * 2 - nbFam(p.bd, p.bd.indexOf(m)) * 6, m => !CD(m.c).tok && m.fam !== '*');
@@ -678,7 +678,7 @@ for (const id in SPELLS) if (SPELLS[id].awk) AWK_TECH[id] = [SPELLS[id].awk.tx, 
 const PURES = {
   feu:{ n:'Grande explosion', col:'#ff5a1a', fx:{ k:'soc_dmg', d:4, n:2 } },
   vent:{ n:'Suna no tate géant', col:'#d8b878', fx:{ k:'atk_self', a:2, h:2 } },
-  eau:{ n:'Renaissance de Kiri', col:'#4ab0e8', fx:{ k:'surv_self', a:3, h:3 } },
+  eau:{ n:'Réincarnation de Kiri', col:'#4ab0e8', fx:{ k:'surv_self', a:3, h:3 } },
   foudre:{ n:'Libération du Bijū', col:'#8a7ad8', fx:{ k:'atk_zap', d:3, n:2 } },
   terre:{ n:'Avalanche', col:'#c8a878', fx:{ k:'eot_self', a:1, h:3 } },
 };
@@ -704,7 +704,7 @@ const COMBO_BD = {
   'Jiton':        ['Iwa + Suna : invoque 1 Kugutsu (×niveau − 1, au moins 1) ; tes Kugutsu gagnent +0/+2 et Provocation.', (G, p) => { cSum(p, 'tk_puppet', Math.max(1, cmx(p) - 1)); p.bd.filter(m => m.c === 'tk_puppet').forEach(m => { buff(m, 0, 2); addF(m, 't'); }); }],
   'Grande explosion':['Ultime de Konoha : prochain combat, 5 dégâts (×niveau) répartis sur l\'ennemi.', (G, p) => { p.njf = (p.njf || 0) + 5 * cmx(p); }],
   'Suna no tate géant':['Ultime de Suna : invoque 1 Kugutsu, puis tes serviteurs gagnent +0/+2 (×niveau).', (G, p) => { cSum(p, 'tk_puppet', 1); p.bd.forEach(m => buff(m, 0, 2 * cmx(p))); }],
-  'Renaissance de Kiri':['Ultime de Kiri : prochain combat, Renaissance pour 1 serviteur (+1 par niveau), Kiri d\'abord.', (G, p) => { const n = 1 + cmx(p), o = p.bd.slice().sort((a, b) => (tribeOk(b, 'n_eau') ? 1 : 0) - (tribeOk(a, 'n_eau') ? 1 : 0)).filter(m => !has(m, 'r')); o.slice(0, n).forEach(m => cTmp(m, 'r')); }],
+  'Réincarnation de Kiri':['Ultime de Kiri : prochain combat, Réincarnation pour 1 serviteur (+1 par niveau), Kiri d\'abord.', (G, p) => { const n = 1 + cmx(p), o = p.bd.slice().sort((a, b) => (tribeOk(b, 'n_eau') ? 1 : 0) - (tribeOk(a, 'n_eau') ? 1 : 0)).filter(m => !has(m, 'r')); o.slice(0, n).forEach(m => cTmp(m, 'r')); }],
   'Libération du Bijū':['Ultime de Kumo : invoque une Bijū (6/6) ; tes jinchūriki grandissent (×niveau).', (G, p) => { cSum(p, 'tk_bijuu', 1); for (let i = 0; i < cmx(p); i++) winUp(p); }],
   'Avalanche':    ['Ultime d’Iwa : invoque 1 Doryūheki ; tes serviteurs d’Iwa gagnent +1/+2 (×niveau).', (G, p) => { const x = cmx(p); cSum(p, 'tk_mur', 1); cVil(p, 'n_terre', x, 2 * x); }],
 };

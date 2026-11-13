@@ -27,6 +27,7 @@ function applyLive() {
   DATA.pending = false;
   const saved = DATA.liveSet ? clone(DATA.liveSet) : {};
   SET = fillDefaults(saved, DEFAULT_SETTINGS);
+  for (const k of 'tsvnrw') if (SET.kw && SET.kw[k] && DEFAULT_SETTINGS.kw[k]) { SET.kw[k].n = DEFAULT_SETTINGS.kw[k].n; SET.kw[k].d = DEFAULT_SETTINGS.kw[k].d; }   // mots-clés : noms et définitions de Champs de bataille, même si une ancienne version est enregistrée
   const delT = SET.delTribes || [];
   for (const t of DEFAULT_SETTINGS.tribes) if (!SET.tribes.some(x => x.id === t.id) && !delT.includes(t.id)) SET.tribes.push(clone(t));
   SET.univ = SET.univ || [];

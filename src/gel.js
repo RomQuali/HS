@@ -344,8 +344,11 @@ html:root:root:root:root:root:root:root:root body.rn[class] .rn-tb,html:root:roo
       + `<image class="hsf-f" href="assets/hs/f-cadre-${m.g ? 'dore' : 'serviteur'}.webp" x="-3.75" y="-6" width="107.5" height="132" preserveAspectRatio="none"/>`
       + (b.t ? `<g class="hsf-t"><title>Niveau ${b.t}</title><image href="assets/hs/b-blason-niveau.webp" x="34" y="-13" width="32" height="32.5"/>${Array.from({ length:b.t }, (_, k) => { const row = b.t > 3 ? (k < Math.ceil(b.t / 2) ? 0 : 1) : 0, n = b.t > 3 ? (row ? b.t - Math.ceil(b.t / 2) : Math.ceil(b.t / 2)) : b.t, i = b.t > 3 && row ? k - Math.ceil(b.t / 2) : k, sz = b.t > 3 ? 7 : b.t > 1 ? 8.4 : 11; return `<image href="assets/hs/b-etoile-niveau.webp" x="${f1(50 - n * sz / 2 + i * sz)}" y="${f1((b.t > 3 ? -5.5 + row * 6.6 : 2.2 - sz / 2))}" width="${sz}" height="${sz}"/>`; }).join('')}</g>` : '')
       + `<image href="assets/hs/f-gemme-attaque.webp" x="3" y="87" width="31" height="31"/><image href="assets/hs/f-gemme-vie.webp" x="69" y="85" width="22" height="33"/>`
-      + `<text class="gt uf-s${up(m.a, b.a)}" x="18.5" y="103" dy=".36em">${m.a}</text><text class="gt uf-s${up(m.h, b.h)}" x="80" y="104" dy=".36em">${m.h}</text>`;
+      + `<text class="gt uf-s${up(m.a, b.a)}" x="18.5" y="103" dy=".36em">${m.a}</text><text class="gt uf-s${up(m.h, b.h)}" x="80" y="104" dy=".36em">${m.h}</text>`
+      + hsBadges(m);
   };
+  // mots-clés façon Champs de bataille : un insigne sous le serviteur (crâne, fiole, cor, éclair) à la place des pastilles rondes
+  const k0 = kwIcons; kwIcons = function (m) { return ufOf(m) === 'hs' ? [] : k0(m); };
   const st = document.createElement('style'); st.id = 'hs-frame-css'; st.textContent = `
 .mn-svg .hsf-t .uf-r{font-size:9px;fill:#3a2206;stroke:none;paint-order:normal}
 .mn-svg .hsf-f{pointer-events:none}
@@ -391,4 +394,35 @@ function tipSync() {
   });
   document.addEventListener('pointerout', e => { const t = e.target.closest ? e.target.closest('[data-xt],[data-tip]') : null; if (t && t === peekFor && !t.contains(e.relatedTarget)) hidePeek(); });
   const st = document.createElement('style'); st.textContent = '.hov > button:disabled{pointer-events:none}#peek .tip{max-width:300px}'; document.head.appendChild(st);
+})();
+
+// insignes de mots-clés (pack Atlas, dossier mots-cles) : Râle d'agonie, Toxicité, Venimosité, Ralliement, capacité déclenchée ; rubans de Furie des vents
+function hsBadges(m) {
+  const by = CD(m.c).by || {}, f = m.f || '', xs = m.x || [], has = tr => (by[tr] && by[tr].length) || xs.some(e => ET[e.k] && ET[e.k].tr === tr), L = [];
+  if (has('dr')) L.push(['rale-d-agonie', 'Râle d\'agonie', 1]);
+  if (f.includes('v')) L.push(['toxicite', 'Toxicité', 1.05]); else if (f.includes('n')) L.push(['venimosite', 'Venimosité', 1.05]);
+  if (has('atk') || has('aatk')) L.push(['ralliement', 'Ralliement : se déclenche quand il attaque', 1]);
+  if (['soc', 'eot', 'sot', 'surv', 'die', 'cast', 'shield', 'roll', 'up', 'pow', 'sell', 'buy', 'play', 'reborn', 'don', 'donc', 'spend', 'hand', 'combo', 'win'].some(has)) L.push(['declenchement', 'Capacité déclenchée', .8]);
+  const B = L.slice(0, 2), n = B.length, sz = n > 1 ? 21 : 25;
+  return (f.includes('w') ? '<g class="hs-wind"><title>Furie des vents</title><image href="assets/hs/k-furie-des-vents-filage.webp" x="-6" y="30" width="112" height="26" preserveAspectRatio="none"/><image href="assets/hs/k-furie-des-vents-filage.webp" x="-6" y="62" width="112" height="22" preserveAspectRatio="none"/></g>' : '')
+    + B.map(([img, nm, k], i) => { const w = sz * k, x = 50 + (n > 1 ? (i ? 11.5 : -11.5) : 0) - w / 2; return `<g class="hs-bdg"><title>${nm}</title><image href="assets/hs/k-${img}.webp" x="${f1(x)}" y="${f1(112.5 - w / 2)}" width="${f1(w)}" height="${f1(w)}"/></g>`; }).join('');
+}
+(function () { const st = document.createElement('style'); st.id = 'hs-kw-css'; st.textContent = `
+.mn-svg .hs-bdg{filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.8))}
+.mn-svg .hs-wind{mix-blend-mode:screen;opacity:.55;pointer-events:none}
+.mn-svg .hs-wind image{animation:hsWind 1.3s linear infinite}
+.mn-svg .hs-wind image + image{animation-duration:1.7s;animation-direction:reverse;opacity:.7}
+@keyframes hsWind{0%{transform:translateX(-14px);opacity:0}25%{opacity:1}75%{opacity:1}100%{transform:translateX(14px);opacity:0}}
+html.lite .mn-svg .hs-wind image{animation:none}
+/* activations : crâne rouge quand un Râle d'agonie se résout, coquille brisée quand un Bouclier divin saute, éclat vert du Cri de guerre */
+.arena .mn.dying.dr .dmg.mort::before{inset:-18%!important;background-image:url(assets/hs/k-rale-d-agonie-activation.webp)!important}
+.arena .mn.shbreak::after{content:'';position:absolute;left:-12%;right:-12%;top:-6%;bottom:8%;z-index:6;pointer-events:none;background:url(assets/hs/k-bouclier-divin-rupture.webp) center/contain no-repeat;animation:hsShb .55s ease-out both}
+@keyframes hsShb{0%{opacity:1;transform:scale(.8)}100%{opacity:0;transform:scale(1.35)}}
+.hs-bc{position:fixed;z-index:60;pointer-events:none;background:url(assets/hs/k-cri-de-guerre-eclat.webp) center/contain no-repeat;animation:hsBc .7s ease-out both}
+@keyframes hsBc{0%{opacity:0;transform:scale(.6)}25%{opacity:1}100%{opacity:0;transform:scale(1.5)}}
+`; document.head.appendChild(st);
+  // Cri de guerre : éclat autour du serviteur qui vient d'être posé
+  const a0 = sfxAct; sfxAct = function (a) {
+    try { if (a && a.t === 'play' && V.me && V.me.hd && V.me.hd[a.i] && !FX_OFF()) { const c = V.me.hd[a.i].c, bc = C[c] && ((CD(c).by || {}).bc || []).length; if (bc) { const pos = a.pos == null ? (V.me.bd || []).length : a.pos; setTimeout(() => { const el = document.querySelectorAll('#bdrow .mn')[pos]; if (!el || el.dataset.c !== c) return; const r = el.getBoundingClientRect(), e = document.createElement('i'); e.className = 'hs-bc'; const s = r.width * 1.9; e.style.cssText = `left:${r.left + r.width / 2 - s / 2}px;top:${r.top + r.height * .46 - s / 2}px;width:${s}px;height:${s}px`; document.body.appendChild(e); setTimeout(() => e.remove(), 750); }, 220); } } } catch (e) {}
+    return a0.apply(this, arguments); };
 })();
