@@ -1129,7 +1129,7 @@ const ET = {
   bc_bought:{ tr:'bc', l:'Bonus par achat du tour', ps:['tb', 'a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Cri de guerre : une autre ${one(e.tb, 1)} gagne ${sign(e.a * k, e.h * k)} par ${one(e.tb, 1)} achetée ce tour.` },
   hand_buff:{ tr:'hand', l:'Bonus quand une carte arrive en main', ps:['tb', 'a', 'h'], w:1.3, mag:e => (e.a + e.h) * 3, txt:(e, k) => `Quand une carte arrive dans ta main, une autre ${one(e.tb, 1)} gagne ${sign(e.a * k, e.h * k)}.` },
   buy_gold:{ tr:'buy', l:'Or à l\'achat', ps:['tb', 'n'], w:1.5, mag:e => e.n * 6, txt:(e, k) => `Après avoir acheté une ${one(e.tb, 1)}, gagne ${e.n * k} or.` },
-  aatk_perm:{ tr:'aatk', l:'Bonus définitif à chaque attaque', ps:['tb', 'a', 'h'], w:1.5, mag:e => (e.a + e.h) * 6, txt:(e, k) => `Quand une de tes ${one(e.tb)} attaque, tes ${one(e.tb)} gagnent ${sign(e.a * k, e.h * k)} définitivement.` },
+  aatk_perm:{ tr:'aatk', l:'Bonus définitif à chaque attaque', ps:['tb', 'a', 'h'], w:1.5, mag:e => (e.a + e.h) * 6, txt:(e, k) => `Quand ${/^nk_/.test(e.tb) ? 'un' : 'une'} de tes ${one(e.tb)} attaque, tes ${one(e.tb)} gagnent ${sign(e.a * k, e.h * k)} définitivement.` },
   magnet:{ tr:'pas', l:'Magnétisme', ps:[], w:1, mag:() => 2, txt:() => `Magnétisme : joué juste à gauche d'une Autorité, il fusionne avec elle (stats, mots-clés et effets).` },
   cleave:{ tr:'pas', l:'Attaque les voisins', ps:[], w:1, mag:() => 6, txt:() => `Attaque aussi les voisins de sa cible.` },
   shield_self:{ tr:'shield', l:'Grandir quand un Bouclier divin tombe', ps:['a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Quand un allié perd son Bouclier divin, gagne ${sign(e.a * k, e.h * k)} pour ce combat.` },
