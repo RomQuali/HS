@@ -228,7 +228,7 @@ function tokenH(m, z, i, o = {}) {
     + (f.includes('t') ? '<use href="#tk-taunt"/>' : '')
     + (uf ? ufIn(m, uf, up) : `<ellipse cx="50" cy="56.2" rx="37.6" ry="45.4" fill="#1a110a"/><g clip-path="url(#fr-clip)"><use href="#art-${artOf(m)}" x="12" y="10.5" width="76" height="91.5"/></g>`
     + (g ? '<use class="fr-f" href="#fr-oval-g" x="1.35" y="-12.2" width="97.6" height="135.9"/><use class="fr-dr" href="#fr-dragon" x="45" y="-17" width="60" height="69"/>' : '<use class="fr-f" href="#fr-oval" x="2.9" y="-11" width="94.2" height="134"/>'))
-    + (f.includes('r') ? '<image class="hs-rb" href="assets/hs/c-reincarnation.webp" x="-3" y="-10" width="106" height="134" preserveAspectRatio="none"/>' : '')
+    + (f.includes('r') ? '<g class="hs-rb"><title>Réincarnation</title><image href="assets/hs/k-reincarnation.webp" x="-13" y="-17" width="126" height="154" preserveAspectRatio="none"/></g>' : '')
     + (f.includes('s') ? `<g class="bubg"><use class="bub" href="#tk-shield"/><path class="bub-run" pathLength="100" d="${SHIELD_D}"/></g>` : '')
     + (b.t && z === 'sh' && !uf ? `<g class="tflag"><title>Niveau ${b.t}</title><use href="#fr-star" x="32.5" y="-15" width="35" height="33.1"/><text class="gt st" x="50" y="2.8" dy=".36em">${b.t}</text></g>` : '')
     + ics.map(([ic, col, nm], k) => { const a = KW_ANG[k] * Math.PI / 180; return `<g class="kwi" transform="translate(${f1(50 + 51 * Math.sin(a))} ${f1(55 - 58 * Math.cos(a))})"><title>${nm}</title><circle r="8.4" fill="#1b120b" stroke="${col}" stroke-width="1.8"/><use href="#ic-${ic}" x="-5.6" y="-5.6" width="11.2" height="11.2" style="color:${col}"/></g>`; }).join('')
