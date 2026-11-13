@@ -202,6 +202,12 @@ html.lite .mn-svg .hs-rb{animation:none}
 .hp-pop{position:absolute;z-index:8;left:66%;top:-9%;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(8px) scale(.94);transform-origin:0 40%;transition:opacity .14s,transform .14s,visibility .14s}
 .hp-col:last-child .hp-pop,.hp-col:nth-child(n+3):nth-last-child(-n+2) .hp-pop{left:auto;right:66%;transform-origin:100% 40%}
 .hp-col:hover .hp-pop{opacity:1;visibility:visible;transform:none}
+/* la bulle du pouvoir ne recouvre plus les portraits : vers l'extérieur pour les héros des bords, décalée hors de la goutte de vie pour ceux du milieu */
+.hp-row .hp-col .hp-pop{left:94%;right:auto;transform-origin:0 40%}
+.hp-row .hp-col:nth-child(n+3):nth-last-child(-n+2) .hp-pop{left:auto;right:94%;transform-origin:100% 40%}
+@media (min-width:1000px){.hp-row.hp-row .hp-col.hp-col:first-child .hp-pop{left:auto;right:98%;transform-origin:100% 40%}.hp-row.hp-row .hp-col.hp-col:last-child .hp-pop{left:104%;right:auto;transform-origin:0 40%}}
+@media (min-width:1000px){.hp-row.hp-row.hp-row .hp-col.hp-col:nth-child(2):nth-last-child(2) .hp-pop,.hp-row.hp-row.hp-row .hp-col.hp-col:nth-child(3):nth-last-child(2) .hp-pop{left:calc(204% + clamp(8px,2.6vw,52px));right:auto;transform-origin:0 40%}.hp-row.hp-row.hp-row .hp-col.hp-col:nth-child(2):nth-last-child(3) .hp-pop{left:auto;right:calc(198% + clamp(8px,2.6vw,52px));transform-origin:100% 40%}}
+.hp-row .hp-col:hover{z-index:9}
 .hpc-pw{margin:0 0 4px;font-size:clamp(12px,1.7vh,15px);line-height:1.3;color:#f3e6c8}.hpc-pw b{color:#ffd86a;margin-right:6px}
 .hp-pop .pwb{width:clamp(168px,min(15vw,30vh),236px)}
 .hp-ok{margin-top:clamp(2px,1vh,10px);min-width:clamp(120px,12vw,196px);height:clamp(44px,8.6vh,92px);padding:0 30px;border:0;border-radius:30px/46%;cursor:pointer;
