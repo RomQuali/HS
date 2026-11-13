@@ -178,9 +178,9 @@ const ariaM = m => `${CD(m.c).n}${m.g ? ' doré' : ''}, ${m.a} attaque, ${m.h} v
 const demo = (id, g) => { const b = CD(id); return { c:id, a:b.a * (g ? GOLD_K : 1), h:b.h * (g ? GOLD_K : 1), g:g ? 1 : 0, f:b.f }; };
 const hpGem = hp => `<svg class="hpg" viewBox="0 0 40 40" aria-label="${hp} points de vie"><use href="#gem-h" width="40" height="40"/><text class="gt" x="20" y="25" dy=".36em">${hp}</text></svg>`;
 const KWI = { t:['k_taunt', '#d8c8a8', 'Provocation'], s:['k_div', '#ffe58a', 'Bouclier divin'], v:['drop', '#8fe36a', 'Toxicité'], n:['drop', '#c88aff', 'Venimosité'], r:['k_reborn', '#9fe8ff', 'Réincarnation'], w:['wind', '#cdeeff', 'Furie des vents'], c:['k_glass', '#b9c2d8', 'Camouflage'], l:['k_heart', '#d08aff', 'Vol de vie'], i:['k_div', '#fff2b0', 'Insensible'],
-  bc:['k_horn', '#ffcf7a', 'Cri de guerre'], play:['k_spark', '#ffd54a', 'Quand vous jouez'], dr:['skull', '#efe2c2', 'Râle d\'agonie'], soc:['k_cross', '#ffb27a', 'Début du combat'], eot:['k_glass', '#ffe39a', 'Fin de tour'], sot:['k_sun', '#ffe39a', 'Début de tour'],
+  bc:['k_horn', '#ffcf7a', 'Cri de guerre'], play:['k_spark', '#ffd54a', 'Quand tu joues'], dr:['skull', '#efe2c2', 'Râle d\'agonie'], soc:['k_cross', '#ffb27a', 'Début du combat'], eot:['k_glass', '#ffe39a', 'Fin de tour'], sot:['k_sun', '#ffe39a', 'Début de tour'],
   atk:['sword', '#ff9a8a', 'Ralliement'], surv:['k_heart', '#ff7a8a', 'Survit à des dégâts'], sell:['k_coin', '#f2c14e', 'Vente'], die:['k_tomb', '#c8c0d8', 'Quand un allié meurt'], aura:['twin', '#e9d5ff', 'Aura'],
-  cast:['star', '#b48cff', 'Quand vous lancez un sort'], shield:['k_div', '#ffe58a', 'Bouclier perdu'], roll:['roll', '#9ad8ff', 'Actualisation'], up:['up', '#a6e07a', 'Amélioration'], pow:['crown', '#ffd86a', 'Pouvoir héroïque'] };
+  cast:['star', '#b48cff', 'Quand tu lances un sort'], shield:['k_div', '#ffe58a', 'Bouclier perdu'], roll:['roll', '#9ad8ff', 'Actualisation'], up:['up', '#a6e07a', 'Amélioration'], pow:['crown', '#ffd86a', 'Pouvoir héroïque'] };
 function kwIcons(m) {
   const by = CD(m.c).by || {}, out = [], f = m.f || '';
   for (const k of ['t', 's', 'v', 'n', 'r', 'w', 'c', 'l', 'i']) if (f.includes(k)) out.push(KWI[k]);
@@ -1144,7 +1144,7 @@ function heroPickRowH(d, me) {
     return `<div class="hp-col${on ? ' on' : ''}" style="--c:${col};--k:${i}">
       <button class="hp-card" data-act="hsel" data-h="${h}" aria-pressed="${on}" aria-label="${esc(x.n + ' : ' + pw + '. ' + main)}">
         ${heroArchHS('art-h-' + h, +RU().hp || 40)}
-        <span class="hp-nm"><i>${esc(x.n)}</i></span>
+        <span class="hp-nm${x.n.length > 14 ? ' lg' : ''}"><i>${esc(x.n)}</i></span>
         ${x.stars || x.diff ? `<span class="hp-st">${'★'.repeat(x.stars || x.diff)}</span>` : ''}
       </button>
       <div class="hp-pop" aria-hidden="true">${powBannerH(x, h, nin)}</div>

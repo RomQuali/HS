@@ -80,6 +80,8 @@ function cardOptions(sel) {
 const kwBaseOptions = sel => BASE_KW.map(k => `<option value="${k}" ${k === sel ? 'selected' : ''}>${esc(SET.kw[k].n)}</option>`).join('');
 function paramH(e, p, idp, attr, set) {
   const P = PARAMS[p], v = e[p], d = dis();
+  // paramètre sans réglage dans l'atelier (nom d'un jutsu, sort donné, choix…) : affiché en lecture seule
+  if (!P) { const lab = { nm:'Nom', sp:'Sort donné', o:'Choix proposés', fx:'Effet', card:'Carte' }[p] || p, txt = typeof v === 'string' ? ((typeof SPELLS !== 'undefined' && SPELLS[v] && SPELLS[v].n) || v) : Array.isArray(v) ? v.map(x => x && x.k && ET[x.k] ? ET[x.k].txt(x, 1) : '').join(' / ') : v == null ? '' : String(v); return `<label class="pf wide"><span>${esc(lab)}</span><input type="text" value="${esc(txt)}" disabled></label>`; }
   let ctl;
   if (P.sel === 'tribe') ctl = `<select id="${idp}-${p}" ${attr} data-p="${p}" ${d}>${tribeOptions(v, true)}</select>`;
   else if (P.sel === 'card') ctl = `<select id="${idp}-${p}" ${attr} data-p="${p}" ${d}>${cardOptions(v)}</select>`;

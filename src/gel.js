@@ -189,6 +189,7 @@ html.lite .mn-svg .hs-rb{animation:none}
 .hp-col.on .hsarch .hsa-fr{background-image:url(assets/hs/heros-cadre.webp)!important}
 .hp-card .hp-nm{position:absolute!important;top:86%!important;bottom:auto!important;left:-7%!important;right:-7%!important;margin:0!important;padding:0!important;height:30%;display:grid!important;place-items:center;z-index:3;border-radius:0!important;box-shadow:none!important;
   background:linear-gradient(180deg,#8a3fc4,#6a2aa6 45%,#4a1a7c)!important;clip-path:polygon(0 0,6% 6%,94% 6%,100% 0,100% 62%,95% 74%,90% 70%,84% 84%,74% 78%,62% 92%,50% 84%,38% 94%,26% 80%,16% 86%,10% 72%,5% 76%,0 64%);filter:drop-shadow(0 4px 4px rgba(0,0,0,.6))}
+.hp-card .hp-nm.lg i{font-size:clamp(10px,min(1.55vw,2.7vh),23px)!important;white-space:nowrap;padding:0 2%!important}
 .hp-card .hp-nm i{display:block;margin-top:-10%;padding:0 8%;font:800 clamp(12px,min(1.9vw,3.2vh),28px)/1.05 var(--f-label),serif;font-style:normal;color:#fff;text-shadow:0 0 2px #000,0 2px 0 #1c0830,0 0 6px #1c0830;text-wrap:balance}
 .hp-card .hp-st{top:-4%!important;z-index:4}
 .hp-card .hsarch .harch-hp{right:-9%!important;top:44%!important;bottom:auto!important;width:29%!important;z-index:4}
@@ -471,7 +472,7 @@ function nkGroupsSync() {
   const L = nkLv(V.me), rows = NK_GROUPS.filter(g => L[g.id] && (L[g.id].l || L[g.id].n >= 1)).sort((a, b) => (L[b.id].l - L[a.id].l) || (L[b.id].n - L[a.id].n));
   const h = rows.slice(0, 9).map(g => { const x = L[g.id], next = g.th[x.l], names = g.m.map(c => CD(c).n.split(' ')[0]).join(', ');
     const tip = g.n + ' (' + names + '). ' + g.th.map((t, i) => (g.th.length > 1 ? t + ' : ' : '') + g.tx[i]).join(' ') + (x.l ? '' : ' Il te manque ' + (g.th[0] - x.n) + ' membre' + (g.th[0] - x.n > 1 ? 's' : '') + '.');
-    return `<span class="nkg${x.l ? ' on' : ''}" data-tip="${esc(tip)}"><b>${esc(g.n)}</b><i>${x.n}/${next || g.th[g.th.length - 1]}</i></span>`; }).join('');
+    return `<span class="nkg${x.l ? ' on' : ''}" data-tip="${esc(tip)}"><b>${esc(g.n + (g.el ? ' · ' + CD(g.el).n.split(' ')[0] : ''))}</b><i>${x.n}/${next || g.th[g.th.length - 1]}</i></span>`; }).join('');
   if (!el) { el = document.createElement('div'); el.id = 'nk-groups'; }
   if (el.parentNode !== tb) tb.appendChild(el);
   if (el.innerHTML !== h) el.innerHTML = h;
@@ -481,7 +482,7 @@ function nkGroupsSync() {
   tb.querySelectorAll('.mn[data-z="bd"]').forEach(e => { const m = (V.me.bd || [])[+e.dataset.i]; e.classList.toggle('nk-in', !!(m && act.has(m.c))); });
   const mark = (e, m) => { const gs = m && !m.sp && !have.has(m.c) ? (NK_GOF[m.c] || []).filter(g => g.m.some(c => c !== m.c && have.has(c))) : []; let t = e.querySelector(':scope > .nk-tag');
     if (!gs.length) { if (t) t.remove(); return; }
-    const done = gs.some(g => { const n = g.m.filter(c => have.has(c)).length + 1; return g.th.includes(n); }), tx = (done ? '★ ' : '') + gs[0].n + (gs.length > 1 ? ' +' + (gs.length - 1) : '');
+    const done = gs.some(g => { const n = g.m.filter(c => have.has(c)).length + 1; return g.th.includes(n); }), tx = (done ? '★ ' : '') + gs[0].n + (gs[0].el ? ' · ' + CD(gs[0].el).n.split(' ')[0] : '') + (gs.length > 1 ? ' +' + (gs.length - 1) : '');
     if (!t) { t = document.createElement('span'); t.className = 'nk-tag'; e.appendChild(t); } t.classList.toggle('done', done); if (t.textContent !== tx) t.textContent = tx; };
   tb.querySelectorAll('.mn[data-z="sh"]').forEach(e => mark(e, (V.me.sh || [])[+e.dataset.i]));
   tb.querySelectorAll('.cd[data-z="hd"]').forEach(e => mark(e, (V.me.hd || [])[+e.dataset.i]));
@@ -499,3 +500,18 @@ function nkGroupsSync() {
 .nk-tag.done{color:#2a1606;background:linear-gradient(180deg,#ffe28a,#d09a2a);border-color:#fff3c0;box-shadow:0 0 9px rgba(255,200,60,.8)}
 .cd > .nk-tag{bottom:auto;top:-4%}
 `; document.head.appendChild(st); })();
+
+/* ===== texte des cartes : réduit la police tant que le texte dépasse de son cadre (fiches au survol, main, découvertes) ===== */
+function fitCdTx(root) {
+  if (!root) return;
+  root.querySelectorAll('.cd-tx').forEach(tx => {
+    if (!tx.offsetParent) return;
+    tx.style.fontSize = ''; let fs = parseFloat(getComputedStyle(tx).fontSize) || 12, n = 0;
+    while (tx.scrollHeight > tx.clientHeight + 1 && fs > 6.5 && n++ < 16) { fs *= 0.95; tx.style.fontSize = fs + 'px'; }
+  });
+}
+(function () {
+  const r0 = render; render = function () { const out = r0.apply(this, arguments); try { fitCdTx(document.getElementById('app')); } catch (e) {} return out; };
+  const arm = () => { try { if (typeof peekEl !== 'undefined' && peekEl && !peekEl._fit) { peekEl._fit = 1; new MutationObserver(() => { try { fitCdTx(peekEl); } catch (e) {} }).observe(peekEl, { childList:true, subtree:true, attributes:true, attributeFilter:['hidden'] }); } } catch (e) {} };
+  arm(); document.addEventListener('pointerover', arm, { once:true });
+})();
