@@ -304,7 +304,7 @@ function morphChildren(oldP, newP) {
 }
 function render() {
   if (DRAG) { V.pendingRender = true; return; }
-  V.pendingRender = false; const hadPeek = !peekEl.hidden && peekFor && peekFor.matches('.mn,.cd,.spt'); hidePeek();
+  V.pendingRender = false; const hadPeek = !peekEl.hidden && peekFor && peekFor.matches('.mn,.cd,.spt,.eqm,[data-hov]'); hidePeek();
   const act = document.activeElement, fid = act && act !== document.body ? act.id : '';
   let keep = null; try { if (fid && typeof act.selectionStart === 'number') keep = [act.selectionStart, act.selectionEnd]; } catch (e) {}
   const ks = {}; document.querySelectorAll('[data-ks]').forEach(el => { if (el.id) ks[el.id] = el.scrollTop; });
@@ -329,7 +329,7 @@ function render() {
   for (const id in ks) { const el = document.getElementById(id); if (el) el.scrollTop = ks[id]; }
   if (fid) { const n = document.getElementById(fid); if (n) { try { n.focus({ preventScroll:true }); if (keep) n.setSelectionRange(keep[0], keep[1]); } catch (e) {} } }
   // le survol reste ouvert quand l'écran se redessine (combat animé) : on le recalcule sous la souris
-  if (hadPeek && PTR.x != null && !DRAG) { const el = document.elementFromPoint(PTR.x, PTR.y), n = el && el.closest ? el.closest('.mn,.cd,.spt') : null; if (n && !n.closest('#peek')) showPeek(n, false); }
+  if (hadPeek && PTR.x != null && !DRAG) { const el = document.elementFromPoint(PTR.x, PTR.y), n = el && el.closest ? el.closest('.mn,.cd,.spt,.eqm,[data-hov]') : null; if (n && !n.closest('#peek')) { V.peekKey = (n.dataset.u || '') + '|' + (n.dataset.c || n.dataset.sp || '') + '|' + (n.dataset.a || '') + '|' + (n.dataset.h || ''); showPeek(n, false); } }
 }
 
 const STEPS = [
@@ -1539,7 +1539,7 @@ function showPeek(t, touch) {
   if (t.matches('.mn,.cd')) {
     if (t.dataset.sp) { peekFor = t; peekEl.innerHTML = spellCardH(t.dataset.sp, 'p', 0); peekEl.hidden = false; const [pw, ph] = peekSize(); placePeek(r, pw, ph, touch); return true; }
     const c = t.dataset.c; if (!c || (!C[c] && c !== '__edit')) return false;
-    if (!touch && t.classList.contains('cd') && r.width >= 150) return false;
+    if (!touch && t.classList.contains('cd') && r.width >= 200) return false;   // carte déjà grande (découverte, atelier) : pas d'agrandissement
     peekFor = t; peekEl.innerHTML = cardH({ c, a:+t.dataset.a, h:+t.dataset.h, g:+t.dataset.g, f:t.dataset.f || '' }, 'p', 0); peekEl.hidden = false;
     { const mc = findMine(t.dataset.u); if (mc && isComp(mc)) { const lv = (V.me && V.me.eqlv) || {}; const eq = mc.eq || [];
       peekEl.insertAdjacentHTML('beforeend', compSheetH(mc, lv, eq)); } }
@@ -1583,7 +1583,10 @@ document.addEventListener('pointerover', e => {
   if (e.pointerType && e.pointerType !== 'mouse') return;
   const t = e.target.closest ? e.target.closest('.mn,.cd,.spt,.eqm,[data-hov]') : null;
   if (!t || DRAG || t.closest('#peek') || t.closest('.det') || t.closest('.parade') || t.closest('.atl') || t.closest('.ed')) { if (!t) hidePeek(); return; }
-  if (t === peekFor) return;
+  // le DOM est recyclé d'un rendu à l'autre : le même élément peut porter une autre carte, on compare donc aussi son contenu
+  const pk = (t.dataset.u || '') + '|' + (t.dataset.c || t.dataset.sp || '') + '|' + (t.dataset.a || '') + '|' + (t.dataset.h || '');
+  if (t === peekFor && pk === V.peekKey) return;
+  V.peekKey = pk;
   if (!showPeek(t, false)) hidePeek();
 });
 /* téléphone : appui long = aperçu (carte, créature, pouvoir, compagnon, héros, adversaire…) */

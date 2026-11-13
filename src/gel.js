@@ -359,3 +359,36 @@ html:root:root:root:root:root:root:root:root body.rn[class] .rn-tb,html:root:roo
 `) + `
 `; document.head.appendChild(st);
 })();
+
+// ----- bulles au survol des éléments qui n'en avaient pas (boutons de taverne, Prêt, or, tavernier, chrono, vie, héros adverse) -----
+function tipSync() {
+  try {
+    if (V.screen !== 'game' || !V.pub) return; const me = V.me || {}, q = s => document.querySelector('.table ' + s), set = (el, tx) => { if (el && tx) { el.dataset.tip = tx; el.dataset.xt = '1'; if (el.hasAttribute('title')) { if (!el.getAttribute('aria-label')) el.setAttribute('aria-label', el.getAttribute('title')); el.removeAttribute('title'); } } };
+    const up = q('.keeper .medal[data-act="up"]'), cost = up && up.querySelector('.cost') ? up.querySelector('.cost').textContent.trim() : '';
+    set(up, (me.t || 1) >= 6 ? 'Améliorer : ta taverne est au niveau maximum.' : `Améliorer : passe la taverne au niveau ${(me.t || 1) + 1} pour ${cost || '?'} or. Tu y trouveras des serviteurs plus forts ; le prix baisse de 1 à chaque tour.`);
+    const roll = q('.keeper .medal[data-act="roll"]'), rc = roll && roll.querySelector('.cost') ? roll.querySelector('.cost').textContent.trim() : '1';
+    set(roll, `Actualiser : remplace les serviteurs proposés par la taverne pour ${rc} or.`);
+    set(q('.keeper .medal[data-act="frz"]'), me.fz ? 'Dégeler : la taverne sera de nouveau renouvelée au prochain tour.' : 'Geler : garde les serviteurs de la taverne pour le prochain tour. Gratuit.');
+    const bell = q('.hero-zone .bell'); set(bell, V.pub.ph === 'combat' ? 'Combat : le combat se joue tout seul. Le recrutement reprend juste après.' : bell && bell.classList.contains('rung') ? 'Prêt : tu attends les autres joueurs. Clique pour reprendre ton tour.' : 'Prêt : termine ton tour. Le combat commence quand tout le monde est prêt ou à la fin du chrono.');
+    const pu = q('.hero-zone .purses .purse:not(.ckp):not(.kip):not(.pfp)'); set(pu, `Or : ${me.g != null ? me.g : '?'} pièce${me.g > 1 ? 's' : ''} à dépenser ce tour. Tu en reçois une de plus à chaque tour, jusqu'à 10. L'or non dépensé est perdu.`);
+    set(q('.keeper .kc'), `Tavernier : taverne de niveau ${me.t || 1}. Il propose de nouveaux serviteurs à chaque tour ; fais glisser un serviteur vers lui pour le vendre 1 or.`);
+    set(q('.hud .timer'), V.pub.ph === 'combat' ? 'Temps avant la fin du combat.' : 'Temps restant pour ce tour. À la fin du chrono, le combat démarre.');
+    set(q('.hz-hero .hpg'), `Points de vie : ${me.hp != null ? Math.max(0, me.hp) : '?'}. À 0, tu es éliminé.`);
+    const ek = q('.keeper-zone.enemy .keeper'); if (ek) { const b = ek.querySelector('.kn-en b'); if (b && b.textContent) { ek.dataset.hov = 'op'; ek.dataset.n = b.textContent; } }
+  } catch (e) {}
+}
+(function () {
+  const r0 = render; render = function () {
+    const had = !peekEl.hidden && peekFor && peekFor.matches && peekFor.matches('[data-xt],[data-tip]');
+    const out = r0.apply(this, arguments); tipSync();
+    // un rendu ferme la bulle : on la rouvre si la souris est toujours sur l'élément
+    try { if (had && peekEl.hidden && PTR.x != null && !DRAG) { const el = document.elementFromPoint(PTR.x, PTR.y), n = el && el.closest ? el.closest('[data-xt],[data-tip]') : null; if (n && !n.closest('.mn,.cd,.spt,[data-hov]')) showPeek(n, false); } } catch (e) {}
+    return out; };
+  document.addEventListener('pointerover', e => {
+    if (e.pointerType && e.pointerType !== 'mouse') return; if (typeof DRAG !== 'undefined' && DRAG) return;
+    const t = e.target.closest ? e.target.closest('[data-xt],[data-tip]') : null; if (!t || t.closest('.mn,.cd,.spt,[data-hov]')) return;
+    if (t === peekFor) return; showPeek(t, false);
+  });
+  document.addEventListener('pointerout', e => { const t = e.target.closest ? e.target.closest('[data-xt],[data-tip]') : null; if (t && t === peekFor && !t.contains(e.relatedTarget)) hidePeek(); });
+  const st = document.createElement('style'); st.textContent = '.hov > button:disabled{pointer-events:none}#peek .tip{max-width:300px}'; document.head.appendChild(st);
+})();

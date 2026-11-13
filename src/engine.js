@@ -2363,7 +2363,7 @@ function endRecruit() {
   for (const p of G.ps) if (p.al) {
     qSet(p, 'drBoard', p.bd.filter(m => fxOf(m, 'dr').length).length);
     if (p.pendChest) OPS.chest(G, p);
-    if (p.choice) { const b = p.choice.reduce((bi, o, i) => o.r > p.choice[bi].r ? i : bi, 0); OPS.upick(G, p, { i:b }); }
+    if (p.choice) { const b = p.bot ? p.choice.reduce((bi, o, i) => o.r > p.choice[bi].r ? i : bi, 0) : 0; OPS.upick(G, p, { i:b }); }
     if (p.bot && p.cp) for (let g = 0; g < 8 && (p.ups || []).length && (p.ck || 0) >= upgCost(p.ups[0]); g++) OPS.uapply(G, p, { i:0 });
     { const w = pwOf(p); if (w && w.k === 'prsv' && (p.rsv || []).length === 1) p.maree = (p.maree || 0) + w.n; }
     const neot = auraTimes(p.bd, 'aura_eot');
@@ -2372,7 +2372,8 @@ function endRecruit() {
     if (p.hero === 'maelle' && p.bd[0]) withSrc('Passif de Maëlle', () => buff(p.bd[0], 1, 1));
     if (inMechAny(G, 'fusion') && elems(p.bd) >= 4) withSrc('Fusion élémentaire', () => p.bd.forEach(m => { if (inMech(G, 'fusion', m)) buff(m, 1, 1); }));
     if (p.hero === 'nono' && G.rd >= 3 && !p.pu) p.fb = (p.fb || 3) + 1;
-    if (p.disc) OPS.pick(G, p, { i:aiBestIndex(p, p.disc) });
+    // chrono écoulé pendant un choix de carte : un joueur prend la première proposée (les IA gardent leur meilleur choix) ; on vide aussi les choix en file
+    for (let g = 0; g < 6 && p.disc; g++) OPS.pick(G, p, { i:p.bot ? aiBestIndex(p, p.disc) : 0 });
     // Rick et Morty : passif de Rick Cop (Provocation) et quêtes « finir un tour avec… »
     { const w = htr(p, 'ptaunt'); if (w) withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => p.bd.forEach(m => { if (has(m, 't')) buff(m, w.a || 0, w.h || 0); })); }
     qSet(p, 'lowBoard', p.bd.filter(m => tierOf(m) <= 3).length >= 5 ? 1 : 0); qSet(p, 'tauntBoard', p.bd.filter(m => has(m, 't')).length >= 4 ? 1 : 0);
