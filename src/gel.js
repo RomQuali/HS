@@ -461,6 +461,7 @@ html.lite .mn-svg .hs-wind image{animation:none}
 .mn .tf-b.nk-tf{right:-17%;top:-13%;width:clamp(30px,43%,58px);aspect-ratio:1;clip-path:none;background:url(assets/hs/n-etoile-chakra.webp) center/contain no-repeat;filter:brightness(.82) saturate(.8);animation:none}
 .mn .tf-b.nk-tf b{margin-top:6%;font:800 clamp(13px,2vh,22px) var(--f-num),var(--f-disp),serif;color:#fbefd2;-webkit-text-stroke:.9px #2a1404;paint-order:stroke fill;text-shadow:0 1px 0 #2a1404,0 0 3px #2a1404}
 /* assez de chakra : halo bleu qui pulse, sur l'étoile d'évolution comme sur la goutte du jutsu */
+.mn .tf-b.nk-tf.lock{filter:grayscale(.9) brightness(.7);cursor:help}.mn .tf-b.nk-tf.lock b{font-size:clamp(10px,1.5vh,16px);-webkit-text-stroke:0}
 .mn .tf-b.nk-tf.ok{filter:drop-shadow(0 0 4px #bfeaff) drop-shadow(0 0 9px #2f9bff) drop-shadow(0 0 16px rgba(47,155,255,.85));animation:nkBlue 1.15s ease-in-out infinite alternate}
 .mn .jut-b.ok{filter:drop-shadow(0 0 4px #bfeaff) drop-shadow(0 0 9px #2f9bff) drop-shadow(0 0 16px rgba(47,155,255,.85));animation:nkBlueJ 1.15s ease-in-out infinite alternate}
 .mn .jut-b:not(.ok):not(.used):not(.prep){filter:brightness(.85) saturate(.8)}

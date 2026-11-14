@@ -4,7 +4,7 @@ window.CS_NOANIM=1; V.mp=null; V.univSel=['Naruto']; startSolo(); try{finishHero
 const D=(a,h,f)=>{const m=fullM(mk('tk_crapaud',0)); m.a=a; m.h=h; m.f=f||''; return m;};
 const set=(...ids)=>{ p.bd=ids.map(c=>typeof c==='string'?mk(c,0):c); p.hd=[]; p.ck=10; p.ld=null; p.bd.forEach(m=>{delete m.tmp; delete m.gx;}); G.rd++; return p.bd; };
 const prep=(m)=>{ p.ck=10; return doJutsu(G,p,m); };
-const tf=(m)=>{ let ok=false; for(let i=0;i<4;i++){ p.ck=10; if(doNkTf(G,p,m)) ok=true; } return ok; };   // tous les paliers
+const tf=(m)=>{ let ok=false; for(let i=0;i<4;i++){ p.ck=10; const lk=!m.g&&nkTfLock(m), k=lk&&tfSt(jutOf(m))[m.tf]; if(lk) m.g=1; if(doNkTf(G,p,m)){ ok=true; if(lk) buff(m,-k.a,-k.h); } if(lk) m.g=0; } return ok; };   // tous les paliers
 const run=(en,seed)=>{ const b=combatBoard(p); const r=simulate(b,en,seed||7,1,1,[0,0],G.mx); r.b=b; return r; };
 const fin=(r,u,side)=>{ for(let i=r.frames.length-1;i>=0;i--){ const m=r.frames[i].s[side||0].find(x=>x.u===u); if(m) return m; } return null; };
 const post=(r)=>{ const i=r.frames.findIndex(f=>f.at||f.gj); return r.frames[i<0?r.frames.length-1:Math.max(0,i-1)]; };

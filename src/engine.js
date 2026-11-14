@@ -1437,10 +1437,12 @@ const jutBody = (fx, k) => fx.map(o => ET[o.k] ? ET[o.k].txt(o, k).replace(/^(Cr
 function jutTxt(e, k) {
   const ST = tfSt(e), cb = e.cb && e.cb.length, fx = e.fx && e.fx.length;
   const j = e.none ? '' : (cb && !fx ? `Jutsu de combat · ${e.nm} : ${jutBody(e.cb, k)}.` : `Jutsu · ${e.nm} : ${jutBody(e.fx || [], k)}${cb ? ' ; au combat : ' + jutBody(e.cb, k) : ''}.`);
-  return j + (ST.length ? `${j ? ' ' : ''}${ST.length > 1 ? 'Transformations' : 'Transformation'} · ${ST.map(T => tfStTxt(T, k)).join(' → ')}.` : '');
+  return j + (ST.length ? `${j ? ' ' : ''}${ST.length > 1 ? 'Transformations' : 'Transformation'} · ${ST.map((T, i) => (ST.length > 1 && i === ST.length - 1 ? 'carte dorée seulement · ' : '') + tfStTxt(T, k)).join(' → ')}.` : '');
 }
 function jutCost(p, m) { const J = jutOf(m); if (!J || J.none) return null; return Math.max(1, tierOf(m) - ((htr(p, 'pjutc') || {}).n || 0)); }
-function nkTfCost(p, m) { const T = tfSt(jutOf(m))[m.tf || 0]; if (!T) return null; return Math.max(1, T.c - ((htr(p, 'pnktf') || {}).n || 0)); }
+// le dernier palier d'un ninja à plusieurs transformations est réservé à la carte dorée (triple)
+const nkTfLock = m => { const st = tfSt(jutOf(m)), i = m.tf || 0; return st.length > 1 && i === st.length - 1 && !m.g; };
+function nkTfCost(p, m) { const T = tfSt(jutOf(m))[m.tf || 0]; if (!T || nkTfLock(m)) return null; return Math.max(1, T.c - ((htr(p, 'pnktf') || {}).n || 0)); }
 function jutBlock(G, p, m) { const J = jutOf(m), c = jutCost(p, m); if (!J || c == null) return 'Pas de jutsu.'; if (m.ju === G.rd) return jutCb(J, m.tf).length ? 'Jutsu prêt : il partira au début du combat.' : 'Jutsu déjà lancé ce tour.'; if ((p.ck || 0) < c) return `Il te faut ${c} chakra (tu en as ${p.ck || 0}).`; const fx = jutFx(J, m.tf); if (fx.length && !jutCb(J, m.tf).length && fx.every(o => /^bc_(summon|summon_of|clone)$/.test(o.k)) && p.bd.length >= 7) return 'Ton plateau est plein.'; { const ft = fx.find(o => o.k === 'bc_fill_tok'); if (ft && (p.bd.length >= 7 || ft.cards.every(c => p.bd.some(x => x.c === c)))) return p.bd.length >= 7 ? 'Ton plateau est plein.' : 'Ses invocations sont déjà toutes là.'; } return null; }
 function doJutsu(G, p, m) {
   if (jutBlock(G, p, m)) return false; const J = jutOf(m), c = jutCost(p, m);
@@ -1448,7 +1450,7 @@ function doJutsu(G, p, m) {
   withSrc('Jutsu · ' + J.nm, () => jutFx(J, m.tf).forEach(o => runRecruit0(G, p, m, o)));
   qAdd(p, 'jutsus'); p.bd.slice().forEach(x => fxOf(x, 'jut').forEach(e => runRecruit(G, p, x, e, m))); checkTriple(G, p); return true;
 }
-function doNkTf(G, p, m, free) { const T = tfSt(jutOf(m))[m.tf || 0], c = !T ? null : free ? 0 : nkTfCost(p, m); if (!T || c == null || (p.ck || 0) < c) return false; const k = mult(m); p.ck -= c; m.tf = (m.tf || 0) + 1; m.tfn = T.nm; withSrc('Transformation · ' + T.nm, () => buff(m, T.a * k, T.h * k)); if (T.kw && !has(m, T.kw)) addF(m, T.kw); (T.x || []).forEach(o => (m.x = m.x || []).push(Object.assign({ src:T.nm }, o))); qAdd(p, 'nktf'); return true; }
+function doNkTf(G, p, m, free) { const T = nkTfLock(m) ? null : tfSt(jutOf(m))[m.tf || 0], c = !T ? null : free ? 0 : nkTfCost(p, m); if (!T || c == null || (p.ck || 0) < c) return false; const k = mult(m); p.ck -= c; m.tf = (m.tf || 0) + 1; m.tfn = T.nm; withSrc('Transformation · ' + T.nm, () => buff(m, T.a * k, T.h * k)); if (T.kw && !has(m, T.kw)) addF(m, T.kw); (T.x || []).forEach(o => (m.x = m.x || []).push(Object.assign({ src:T.nm }, o))); qAdd(p, 'nktf'); return true; }
 // ----- groupes emblématiques : duos, trios et plus. Actifs quand les membres sont ensemble sur le plateau ; les effets se cumulent -----
 const NK_GROUPS = [
   { id:'immortels', n:'Duo immortel', m:['nk_hidan', 'nk_kakuzu'], th:[2], tx:['Les immortels : tant que l\'un des deux est en vie, l\'autre revient à la vie à chaque mort (3 fois par combat au plus). Il faut les abattre ensemble.'] },
@@ -1833,7 +1835,7 @@ function runCombat(S, s, m, e, pos, ctx) {
     case 'die_revive': if (ctx && ctx !== m && !m.rvd && m.h > 0 && al.length < 7) { m.rvd = 1; const nm = simSummon(S, s, al.indexOf(m) + 1, ctx.c, ctx.g); if (nm) { nm.hm = nm.h; nm.ou = ctx.ou || ctx.u; nm.rb = 1; } } break;
     case 'die_rage': if (ctx && ctx.c === e.card && !m.rgd) { m.rgd = 1; m.a *= 2; if (!has(m, 'w')) m.f = (m.f || '') + 'w'; } break;
     case 'die_inherit': if (ctx && ctx.c === e.card && !m.inh) { m.inh = 1; buff(m, ctx.a, ctx.hm || 1); for (const c of (ctx.f || '')) if (!has(m, c)) m.f = (m.f || '') + c; } break;
-    case 'die_tf': if (ctx && ctx.c === e.card && !m.dtf) { const T = tfSt(jutOf(m))[m.tf || 0]; if (T) { m.dtf = 1; m.tf = (m.tf || 0) + 1; buff(m, T.a * k, T.h * k); if (T.kw && !has(m, T.kw)) m.f = (m.f || '') + T.kw; (T.x || []).forEach(o => { if (ET[o.k] && ET[o.k].tr !== 'soc') (m.x = m.x || []).push(o); }); } } break;
+    case 'die_tf': if (ctx && ctx.c === e.card && !m.dtf) { const T = nkTfLock(m) ? null : tfSt(jutOf(m))[m.tf || 0]; if (T) { m.dtf = 1; m.tf = (m.tf || 0) + 1; buff(m, T.a * k, T.h * k); if (T.kw && !has(m, T.kw)) m.f = (m.f || '') + T.kw; (T.x || []).forEach(o => { if (ET[o.k] && ET[o.k].tr !== 'soc') (m.x = m.x || []).push(o); }); } } break;
     case 'die_aoe': if (ctx && ctx.c === e.card) en.filter(x => x.h > 0).forEach(x => simDamage(S, x, e.d * k, null)); break;
     case 'dr_twin': { const nm = simSummon(S, s, pos, e.card, m.g); if (nm) { nm.a = m.a; nm.h = m.hm || nm.h; nm.hm = nm.h; nm.f = (m.f || '').replace('r', ''); } break; }
     case 'kill_perm': permBuff(S, s, m, A, Hh); break;
