@@ -457,9 +457,15 @@ html.lite .mn-svg .hs-wind image{animation:none}
 
 /* ===== Naruto (refonte) : goutte du jutsu, étoile de transformation, nom de la forme ===== */
 (function () { const st = document.createElement('style'); st.id = 'nk-css'; st.textContent = `
-.mn .tf-b.nk-tf{right:-12%;top:-8%;width:clamp(26px,36%,46px);filter:grayscale(.55) brightness(.8)}
-.mn .tf-b.nk-tf.ok{filter:drop-shadow(0 0 7px #ffd84a)}
-.mn .tf-b.nk-tf b{font-size:clamp(12px,1.7vh,18px)}
+.mn .tf-b.nk-tf{right:-17%;top:-13%;width:clamp(30px,43%,58px);aspect-ratio:1;clip-path:none;background:url(assets/hs/n-etoile-evolution.webp) center/contain no-repeat;filter:brightness(.82) saturate(.8);animation:none}
+.mn .tf-b.nk-tf b{margin-top:6%;font:800 clamp(13px,2vh,22px) var(--f-num),var(--f-disp),serif;color:#fbefd2;-webkit-text-stroke:.9px #2a1404;paint-order:stroke fill;text-shadow:0 1px 0 #2a1404,0 0 3px #2a1404}
+/* assez de chakra : halo bleu qui pulse, sur l'étoile d'évolution comme sur la goutte du jutsu */
+.mn .tf-b.nk-tf.ok{filter:drop-shadow(0 0 4px #bfeaff) drop-shadow(0 0 9px #2f9bff) drop-shadow(0 0 16px rgba(47,155,255,.85));animation:nkBlue 1.15s ease-in-out infinite alternate}
+.mn .jut-b.ok{filter:drop-shadow(0 0 4px #bfeaff) drop-shadow(0 0 9px #2f9bff) drop-shadow(0 0 16px rgba(47,155,255,.85));animation:nkBlueJ 1.15s ease-in-out infinite alternate}
+.mn .jut-b:not(.ok):not(.used){filter:brightness(.85) saturate(.8)}
+@keyframes nkBlue{from{filter:drop-shadow(0 0 2px #bfeaff) drop-shadow(0 0 5px #2f9bff)}to{filter:drop-shadow(0 0 5px #e4f6ff) drop-shadow(0 0 12px #2f9bff) drop-shadow(0 0 22px rgba(47,155,255,.95));transform:scale(1.08)}}
+@keyframes nkBlueJ{from{filter:drop-shadow(0 0 2px #bfeaff) drop-shadow(0 0 5px #2f9bff)}to{filter:drop-shadow(0 0 5px #e4f6ff) drop-shadow(0 0 12px #2f9bff) drop-shadow(0 0 22px rgba(47,155,255,.95))}}
+html.lite .mn .tf-b.nk-tf.ok,html.lite .mn .jut-b.ok{animation:none}
 .mn .jut-b.used{opacity:.35;filter:grayscale(1);cursor:default;animation:none}
 body.u-nj .mn .tf-n{top:auto;bottom:-11%;font-size:clamp(8px,1.05vh,11px);padding:1px 7px;z-index:8}
 `; document.head.appendChild(st); })();
