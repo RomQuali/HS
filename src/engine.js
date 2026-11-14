@@ -600,33 +600,39 @@ const DEFAULT_CARD_LIST = [
   ['tk_pere', 'Père', 0, 'nk_sun', 3, 3, '', []],
   ['tk_mere', 'Mère', 0, 'nk_sun', 3, 3, '', []],
   ['tk_argile', 'Araignée d’argile', 0, 'nk_aka', 1, 1, '', [{ k:'dr_dmg', d:3, n:1 }]],
-  ['tk_doki', 'Doki', 0, 'nk_inv', 2, 2, '', []],
+  ['tk_doki', 'Doki au gourdin', 0, 'nk_inv', 2, 2, '', []],
+  ['tk_doki2', 'Doki aux griffes', 0, 'nk_inv', 3, 1, '', []],
+  ['tk_doki3', 'Doki enchaîné', 0, 'nk_inv', 1, 3, 't', []],
   ['tk_ukon', 'Ukon', 0, 'nk_oto', 3, 3, '', []],
-  ['tk_ninken', 'Meute de ninken', 0, 'nk_inv', 4, 4, '', []],
-  ['tk_katsuyu', 'Katsuyu', 0, 'nk_inv', 3, 10, 't', []],
-  ['tk_gamabunta', 'Gamabunta', 0, 'nk_inv', 8, 8, '', []],
-  ['tk_manda', 'Manda', 0, 'nk_inv', 10, 7, '', []],
-  ['tk_kamatari', 'Kamatari', 0, 'nk_inv', 5, 3, 'w', []],
-  ['tk_cerbere', 'Chien géant de Pain', 0, 'nk_inv', 7, 7, 'r', []],
+  ['tk_ninken', 'Meute de ninken', 0, 'nk_inv', 4, 4, '', [{ k:'soc_bind', who:'face' }]],
+  ['tk_katsuyu', 'Katsuyu', 0, 'nk_inv', 3, 10, 't', [{ k:'surv_heal', n:2 }, { k:'dr_summon2', card:'tk_katsuyu2', n:2 }]],
+  ['tk_katsuyu2', 'Petite Katsuyu', 0, 'nk_inv', 1, 5, 't', []],
+  ['tk_rashomon', 'Rashōmon', 0, 'nk_inv', 0, 12, 't', []],
+  ['tk_aoda', 'Aoda', 0, 'nk_inv', 5, 5, '', []],
+  ['tk_requin', 'Requin d’eau', 0, 'nk_inv', 3, 2, '', []],
+  ['tk_gamabunta', 'Gamabunta', 0, 'nk_inv', 8, 8, '', [{ k:'cleave' }, { k:'soc_aoe_if', card:'nk_jiraiya', d:3 }]],
+  ['tk_manda', 'Manda', 0, 'nk_inv', 10, 7, '', [{ k:'soc_kwself', kw:'n' }]],
+  ['tk_kamatari', 'Kamatari', 0, 'nk_inv', 5, 3, 'w', [{ k:'sickle' }]],
+  ['tk_cerbere', 'Chien géant de Pain', 0, 'nk_inv', 7, 7, '', [{ k:'surv_split', n:3 }]],
   ['nk_konohamaru', 'Konohamaru', 1, 'nk_kon', 1, 2, '', [{ k:'jut_self', a:1, h:1, tb:'nk_kon' }, { k:'jutsu', nm:'Rasengan', cb:[{ k:'soc_face', d:3 }] }]],
-  ['nk_sakura', 'Sakura Haruno', 1, 'nk_kon', 1, 3, '', [{ k:'aft_heal', n:2 }, { k:'jutsu', nm:'Ninjutsu médical', fx:[{ k:'bc_buff_rand', a:0, h:2, tb:'' }], tf:{ c:5, nm:'Sceau du Byakugō', a:2, h:3, kw:'r', x:[{ k:'cleave' }] } }]],
-  ['nk_lee', 'Rock Lee', 2, 'nk_kon', 3, 2, '', [{ k:'jut_self', a:1, h:1, tb:'nk_kon' }, { k:'atk_self', a:2, h:0 }, { k:'jutsu', nm:'', none:1, tf:{ c:6, nm:'Huit Portes', a:3, h:2, kw:'w', x:[{ k:'aft_selfdmg', d:2 }] } }]],
+  ['nk_sakura', 'Sakura Haruno', 1, 'nk_kon', 1, 3, '', [{ k:'aft_heal', n:2 }, { k:'jutsu', nm:'Ninjutsu médical', fx:[{ k:'bc_buff_rand', a:0, h:2, tb:'' }], tf:[{ c:3, nm:'Force de Tsunade', a:1, h:1, x:[{ k:'cleave' }] }, { c:5, nm:'Sceau du Byakugō', a:1, h:2, kw:'r' }] }]],
+  ['nk_lee', 'Rock Lee', 2, 'nk_kon', 3, 2, '', [{ k:'jut_self', a:1, h:1, tb:'nk_kon' }, { k:'atk_self', a:2, h:0 }, { k:'jutsu', nm:'', none:1, tf:[{ c:4, nm:'Lotus recto', a:1, h:1, kw:'w' }, { c:6, nm:'Lotus verso', a:2, h:1, x:[{ k:'soc_first', x:2 }, { k:'aft_selfdmg', d:2 }] }] }]],
   ['nk_shikamaru', 'Shikamaru Nara', 2, 'nk_kon', 2, 3, '', [{ k:'jutsu', nm:'Manipulation des ombres', cb:[{ k:'soc_bind', who:'top' }] }]],
   ['nk_neji', 'Neji Hyūga', 3, 'nk_kon', 3, 4, '', [{ k:'jut_self', a:1, h:1, tb:'nk_kon' }, { k:'pierce' }, { k:'jutsu', nm:'64 poings', cb:[{ k:'soc_seal', who:'face' }] }]],
-  ['nk_kakashi', 'Kakashi Hatake', 4, 'nk_kon', 4, 5, '', [{ k:'soc_copykw' }, { k:'jutsu', nm:'Raikiri', cb:[{ k:'soc_face', d:6 }], tf:{ c:8, nm:'Kamui', a:4, h:4, x:[{ k:'soc_kill_low' }] } }]],
-  ['nk_gai', 'Gaï Maito', 4, 'nk_kon', 5, 4, '', [{ k:'jutsu', nm:'Paon du matin', cb:[{ k:'soc_aoe', d:2 }], tf:{ c:9, nm:'Huitième Porte', a:6, h:3, x:[{ k:'soc_first', x:3 }] } }]],
+  ['nk_kakashi', 'Kakashi Hatake', 4, 'nk_kon', 4, 5, '', [{ k:'soc_copykw' }, { k:'jutsu', nm:'Raikiri', cb:[{ k:'soc_face', d:6 }], tf:[{ c:4, nm:'Meute de ninken', a:1, h:1, x:[{ k:'soc_summon', card:'tk_ninken', n:1 }] }, { c:6, nm:'Kamui', a:2, h:2, x:[{ k:'soc_kill_low' }] }, { c:9, nm:'Double Sharingan', a:3, h:3, x:[{ k:'soc_copyall' }] }] }]],
+  ['nk_gai', 'Gaï Maito', 4, 'nk_kon', 5, 4, '', [{ k:'jutsu', nm:'Paon du matin', cb:[{ k:'soc_aoe', d:2 }], tf:[{ c:5, nm:'Sixième Porte', a:2, h:2, cb:[{ k:'soc_aoe', d:4 }] }, { c:7, nm:'Septième Porte', a:3, h:1, x:[{ k:'soc_first', x:3 }] }, { c:9, nm:'Huitième Porte', a:10, h:0, kw:'w', x:[{ k:'aft_burnout', n:3 }] }] }]],
   ['nk_tsunade', 'Tsunade', 5, 'nk_kon', 4, 7, '', [{ k:'aft_heal', n:4 }, { k:'jutsu', nm:'Invocation : Katsuyu', fx:[{ k:'bc_summon', card:'tk_katsuyu', n:1 }], tf:{ c:8, nm:'Création et renaissance', a:3, h:6, kw:'r' } }]],
   ['nk_jiraiya', 'Jiraiya', 5, 'nk_kon', 5, 6, '', [{ k:'jutsu', nm:'Invocation : Gamabunta', fx:[{ k:'bc_summon', card:'tk_gamabunta', n:1 }], tf:{ c:9, nm:'Ermite des crapauds', a:5, h:5, x:[{ k:'soc_face', d:8 }] } }]],
-  ['nk_naruto', 'Naruto Uzumaki', 6, 'nk_kon', 6, 6, '', [{ k:'jut_self', a:2, h:2, tb:'nk_kon' }, { k:'jutsu', nm:'Multi-clonage', fx:[{ k:'bc_clone', n:2 }], tf:{ c:10, nm:'Mode Ermite', a:8, h:8, x:[{ k:'soc_aoe', d:4 }] } }]],
+  ['nk_naruto', 'Naruto Uzumaki', 6, 'nk_kon', 6, 6, '', [{ k:'jut_self', a:2, h:2, tb:'nk_kon' }, { k:'jutsu', nm:'Multi-clonage', fx:[{ k:'bc_clone', n:2 }], tf:[{ c:6, nm:'Mode Ermite', a:3, h:3, x:[{ k:'soc_aoe', d:4 }] }, { c:8, nm:'Manteau de Kyūbi', a:6, h:6, kw:'w' }, { c:10, nm:'Mode Rikudō', a:3, h:3, fx:[{ k:'bc_clone', n:2, full:1 }] }] }]],
   ['nk_zetsu', 'Zetsu', 1, 'nk_aka', 2, 2, 'c', [{ k:'eot_few', n:4, a:1, h:1 }, { k:'jutsu', nm:'Spores', cb:[{ k:'soc_steal', a:2, h:2 }] }]],
-  ['nk_tobi', 'Tobi', 1, 'nk_aka', 1, 3, '', [{ k:'soc_kwself', kw:'s' }, { k:'jutsu', nm:'Kamui', fx:[{ k:'bc_self', a:0, h:2 }], tf:{ c:10, nm:'Obito démasqué', a:7, h:7, x:[{ k:'soc_genj', who:'top', n:1 }] } }]],
+  ['nk_tobi', 'Tobi', 1, 'nk_aka', 1, 3, '', [{ k:'soc_kwself', kw:'s' }, { k:'jutsu', nm:'Kamui', fx:[{ k:'bc_self', a:0, h:2 }], tf:[{ c:5, nm:'Masque', a:2, h:2, x:[{ k:'soc_i1' }] }, { c:10, nm:'Obito démasqué', a:5, h:5, x:[{ k:'soc_genj', who:'top', n:1 }] }] }]],
   ['nk_deidara', 'Deidara', 2, 'nk_aka', 3, 2, '', [{ k:'dr_dmg', d:3, n:1 }, { k:'jutsu', nm:'Argile C1', fx:[{ k:'bc_summon', card:'tk_argile', n:1 }], tf:{ c:6, nm:'C4 Karura', a:2, h:2, x:[{ k:'dr_aoe', d:4 }] } }]],
   ['nk_hidan', 'Hidan', 2, 'nk_aka', 2, 3, 'r', [{ k:'immortal', card:'nk_kakuzu', n:3 }, { k:'jutsu', nm:'Rituel de Jashin', cb:[{ k:'soc_link' }], tf:{ c:6, nm:'Malédiction sanglante', a:3, h:3, kw:'l' } }]],
   ['nk_sasori', 'Sasori', 3, 'nk_aka', 3, 4, 'v', [{ k:'jutsu', nm:'Troisième Kazekage', cb:[{ k:'soc_summon', card:'tk_kazekage3', n:1 }], tf:{ c:7, nm:'Cent marionnettes', a:3, h:3, x:[{ k:'soc_fill', card:'tk_pantin' }] } }]],
   ['nk_kakuzu', 'Kakuzu', 3, 'nk_aka', 3, 5, '', [{ k:'lives', n:4 }, { k:'kill_perm', a:2, h:2 }, { k:'jutsu', nm:'Jiongu', fx:[{ k:'bc_self', a:0, h:3 }], tf:{ c:7, nm:'Masques élémentaires', a:3, h:4, x:[{ k:'soc_aoe', d:2 }] } }]],
-  ['nk_kisame', 'Kisame Hoshigaki', 4, 'nk_aka', 5, 5, 'l', [{ k:'hit_steal', a:1, h:1 }, { k:'jutsu', nm:'Prison aqueuse', cb:[{ k:'soc_bind', who:'face' }], tf:{ c:8, nm:'Fusion avec Samehada', a:4, h:5, x:[{ k:'hit_steal', a:1, h:1 }] } }]],
+  ['nk_kisame', 'Kisame Hoshigaki', 4, 'nk_aka', 5, 5, 'l', [{ k:'hit_steal', a:1, h:1 }, { k:'jutsu', nm:'Prison aqueuse', cb:[{ k:'soc_bind', who:'face' }], tf:{ c:8, nm:'Fusion avec Samehada', a:4, h:5, x:[{ k:'hit_steal', a:1, h:1 }, { k:'soc_summon', card:'tk_requin', n:2 }] } }]],
   ['nk_konan', 'Konan', 4, 'nk_aka', 4, 5, 's', [{ k:'dr_aoe', d:5 }, { k:'jutsu', nm:'Danse de papier', fx:[{ k:'bc_kw', kw:'s', n:1 }] }]],
-  ['nk_itachi', 'Itachi Uchiha', 5, 'nk_aka', 6, 5, '', [{ k:'eot_few', n:4, a:2, h:2 }, { k:'soc_copykw' }, { k:'jutsu', nm:'Tsukuyomi', cb:[{ k:'soc_genj', who:'top', n:2 }], tf:{ c:9, nm:'Susano’o', a:5, h:6, x:[{ k:'burn', d:3 }, { k:'hit_seal' }] } }]],
+  ['nk_itachi', 'Itachi Uchiha', 5, 'nk_aka', 6, 5, '', [{ k:'eot_few', n:4, a:2, h:2 }, { k:'soc_copykw' }, { k:'jutsu', nm:'Tsukuyomi', cb:[{ k:'soc_genj', who:'top', n:2 }], tf:[{ c:6, nm:'Mangekyō', a:2, h:2, x:[{ k:'burn', d:3 }] }, { c:9, nm:'Susano’o', a:3, h:4, kw:'s', x:[{ k:'hit_seal' }] }] }]],
   ['nk_pain', 'Pain', 6, 'nk_aka', 7, 7, '', [{ k:'jutsu', nm:'Shinra Tensei', cb:[{ k:'soc_aoe', d:3 }], tf:{ c:10, nm:'Six chemins de Pain', a:6, h:6, x:[{ k:'soc_summon', card:'tk_cerbere', n:1 }, { k:'die_revive' }] } }]],
   ['nk_matsuri', 'Matsuri', 1, 'nk_sun', 1, 2, '', [{ k:'sell_gold', n:1 }, { k:'jutsu', nm:'Jōhyō', fx:[{ k:'bc_self', a:1, h:0 }] }]],
   ['nk_yashamaru', 'Yashamaru', 1, 'nk_sun', 2, 1, '', [{ k:'dr_dmg', d:4, n:1 }, { k:'jutsu', nm:'Soins', fx:[{ k:'bc_buff_rand', a:0, h:1, tb:'' }] }]],
@@ -637,17 +643,17 @@ const DEFAULT_CARD_LIST = [
   ['nk_temari', 'Temari', 4, 'nk_sun', 5, 4, 'w', [{ k:'cleave' }, { k:'jutsu', nm:'Invocation : Kamatari', fx:[{ k:'bc_summon', card:'tk_kamatari', n:1 }] }]],
   ['nk_chiyo', 'Chiyo', 4, 'nk_sun', 3, 6, '', [{ k:'die_swap' }, { k:'jutsu', nm:'Transfert de vie', fx:[{ k:'bc_kw', kw:'r', n:1 }] }]],
   ['nk_rasa', 'Rasa', 5, 'nk_sun', 4, 7, '', [{ k:'osell_gold', n:1 }, { k:'jutsu', nm:'Sable d’or', cb:[{ k:'soc_bind', who:'top' }] }]],
-  ['nk_gaara', 'Gaara', 6, 'nk_sun', 6, 8, 't', [{ k:'soc_kwself', kw:'s' }, { k:'osell_tribe', a:1, h:1, tb:'nk_sun' }, { k:'jutsu', nm:'Sarcophage de sable', cb:[{ k:'soc_crush' }], tf:{ c:10, nm:'Tsunami de sable', a:8, h:8, x:[{ k:'soc_aoe', d:3 }] } }]],
+  ['nk_gaara', 'Gaara', 6, 'nk_sun', 6, 8, 't', [{ k:'soc_kwself', kw:'s' }, { k:'osell_tribe', a:1, h:1, tb:'nk_sun' }, { k:'jutsu', nm:'Sarcophage de sable', cb:[{ k:'soc_crush' }], tf:[{ c:6, nm:'Demi-Shukaku', a:4, h:4, x:[{ k:'riposte', d:2 }] }, { c:10, nm:'Shukaku', a:4, h:4, x:[{ k:'soc_aoe', d:3 }] }] }]],
   ['nk_zaku', 'Zaku Abumi', 1, 'nk_oto', 2, 1, '', [{ k:'jutsu', nm:'Zankūha', cb:[{ k:'soc_dmg', d:2, n:2 }] }]],
   ['nk_dosu', 'Dosu Kinuta', 1, 'nk_oto', 1, 3, '', [{ k:'dev_self', a:1, h:1 }, { k:'jutsu', nm:'Onde sonore', cb:[{ k:'soc_weak', a:3 }] }]],
-  ['nk_tayuya', 'Tayuya', 2, 'nk_oto', 2, 3, '', [{ k:'soc_genj', who:'face', n:1 }, { k:'dev_self', a:1, h:1 }, { k:'jutsu', nm:'Doki', fx:[{ k:'bc_summon', card:'tk_doki', n:1 }] }]],
-  ['nk_kidomaru', 'Kidōmaru', 2, 'nk_oto', 3, 2, 'i', [{ k:'jutsu', nm:'Toile d’araignée', cb:[{ k:'soc_bind', who:'face' }] }]],
-  ['nk_jirobo', 'Jirōbō', 3, 'nk_oto', 3, 5, 't', [{ k:'jutsu', nm:'Dévoreur de chakra', fx:[{ k:'bc_devour' }] }]],
-  ['nk_sakon', 'Sakon et Ukon', 3, 'nk_oto', 3, 3, '', [{ k:'dr_twin', card:'tk_ukon' }, { k:'jutsu', nm:'Parasite', fx:[{ k:'bc_self', a:1, h:1 }], tf:{ c:7, nm:'Marque maudite', a:3, h:3, kw:'w' } }]],
-  ['nk_kabuto', 'Kabuto Yakushi', 4, 'nk_oto', 3, 6, '', [{ k:'aft_full' }, { k:'jutsu', nm:'Expérience interdite', fx:[{ k:'bc_devour' }], tf:{ c:8, nm:'Edo Tensei', a:4, h:4, x:[{ k:'soc_edo' }] } }]],
-  ['nk_kimimaro', 'Kimimaro', 4, 'nk_oto', 5, 4, '', [{ k:'riposte', d:2 }, { k:'jutsu', nm:'Danse des os', fx:[{ k:'bc_self', a:2, h:1 }], tf:{ c:7, nm:'Forêt d’os', a:4, h:4, x:[{ k:'riposte', d:2 }, { k:'cleave' }] } }]],
-  ['nk_sasuke', 'Sasuke Uchiha', 5, 'nk_oto', 5, 5, '', [{ k:'soc_copykw' }, { k:'jutsu', nm:'Chidori', cb:[{ k:'soc_face', d:5 }], tf:{ c:9, nm:'Mangekyō éternel', a:5, h:5, x:[{ k:'burn', d:3 }] } }]],
-  ['nk_orochimaru', 'Orochimaru', 6, 'nk_oto', 6, 7, 'r', [{ k:'bc_devour' }, { k:'jutsu', nm:'Invocation : Manda', fx:[{ k:'bc_summon', card:'tk_manda', n:1 }], tf:{ c:10, nm:'Yamata no Orochi', a:7, h:7, fx:[{ k:'bc_summon', card:'tk_manda', n:1 }, { k:'bc_devour' }] } }]],
+  ['nk_tayuya', 'Tayuya', 2, 'nk_oto', 2, 3, '', [{ k:'soc_genj', who:'face', n:1 }, { k:'dev_self', a:1, h:1 }, { k:'dr_kill_tok', cards:['tk_doki', 'tk_doki2', 'tk_doki3'] }, { k:'jutsu', nm:'Doki', fx:[{ k:'bc_fill_tok', cards:['tk_doki', 'tk_doki2', 'tk_doki3'] }], tf:{ c:5, nm:'Marque maudite', a:3, h:3 } }]],
+  ['nk_kidomaru', 'Kidōmaru', 2, 'nk_oto', 3, 2, 'i', [{ k:'jutsu', nm:'Toile d’araignée', cb:[{ k:'soc_bind', who:'face' }], tf:{ c:5, nm:'Marque maudite', a:4, h:2 } }]],
+  ['nk_jirobo', 'Jirōbō', 3, 'nk_oto', 3, 5, 't', [{ k:'jutsu', nm:'Dévoreur de chakra', fx:[{ k:'bc_devour' }], tf:{ c:5, nm:'Marque maudite', a:3, h:4 } }]],
+  ['nk_sakon', 'Sakon et Ukon', 3, 'nk_oto', 3, 3, '', [{ k:'dr_twin', card:'tk_ukon' }, { k:'jutsu', nm:'Parasite', fx:[{ k:'bc_self', a:1, h:1 }], tf:[{ c:4, nm:'Marque de niveau 1', a:2, h:2 }, { c:7, nm:'Marque de niveau 2', a:2, h:2, kw:'w' }] }]],
+  ['nk_kabuto', 'Kabuto Yakushi', 4, 'nk_oto', 3, 6, '', [{ k:'aft_full' }, { k:'jutsu', nm:'Expérience interdite', fx:[{ k:'bc_devour' }], tf:[{ c:6, nm:'Mode serpent', a:4, h:4 }, { c:8, nm:'Edo Tensei', a:0, h:0, x:[{ k:'soc_edo' }] }] }]],
+  ['nk_kimimaro', 'Kimimaro', 4, 'nk_oto', 5, 4, '', [{ k:'riposte', d:2 }, { k:'jutsu', nm:'Danse des os', fx:[{ k:'bc_self', a:2, h:1 }], tf:[{ c:4, nm:'Marque de niveau 1', a:2, h:2 }, { c:7, nm:'Marque de niveau 2', a:2, h:2, x:[{ k:'riposte', d:2 }, { k:'cleave' }] }] }]],
+  ['nk_sasuke', 'Sasuke Uchiha', 5, 'nk_oto', 5, 5, '', [{ k:'soc_copykw' }, { k:'jutsu', nm:'Chidori', cb:[{ k:'soc_face', d:5 }], tf:[{ c:5, nm:'Marque maudite', a:3, h:3 }, { c:7, nm:'Mangekyō', a:2, h:2, x:[{ k:'burn', d:3 }, { k:'soc_summon', card:'tk_aoda', n:1 }] }, { c:9, nm:'Susano’o', a:2, h:2, x:[{ k:'aft_shield' }] }] }]],
+  ['nk_orochimaru', 'Orochimaru', 6, 'nk_oto', 6, 7, 'r', [{ k:'bc_devour' }, { k:'jutsu', nm:'Invocation : Manda', fx:[{ k:'bc_summon', card:'tk_manda', n:1 }, { k:'bc_manda' }], tf:[{ c:7, nm:'Serpent blanc', a:3, h:3, kw:'n', x:[{ k:'soc_summon', card:'tk_rashomon', n:1 }] }, { c:10, nm:'Yamata no Orochi', a:4, h:4, fx:[{ k:'bc_summon', card:'tk_manda', n:1 }, { k:'bc_manda' }, { k:'bc_devour' }] }] }]],
   ['nk_chojuro', 'Chōjūrō', 1, 'nk_kir', 2, 2, '', [{ k:'atk_self', a:1, h:0 }, { k:'jutsu', nm:'Hiramekarei', cb:[{ k:'soc_first', x:2 }] }]],
   ['nk_suigetsu', 'Suigetsu Hōzuki', 1, 'nk_kir', 1, 3, '', [{ k:'armor', d:2 }, { k:'jutsu', nm:'Corps liquide', fx:[{ k:'bc_self', a:0, h:1 }] }]],
   ['nk_ao', 'Ao', 2, 'nk_kir', 2, 3, '', [{ k:'see_camo' }, { k:'jutsu', nm:'Byakugan', fx:[{ k:'bc_buff_rand', a:2, h:0, tb:'nk_kir' }] }]],
@@ -657,7 +663,7 @@ const DEFAULT_CARD_LIST = [
   ['nk_zabuza', 'Zabuza Momochi', 4, 'nk_kir', 5, 4, 'c', [{ k:'soc_kw', kw:'c', tb:'' }, { k:'tgt_weak' }, { k:'jutsu', nm:'Kubikiribōchō', fx:[{ k:'bc_self', a:2, h:1 }], tf:{ c:8, nm:'Démon de Kiri', a:5, h:3, kw:'l' } }]],
   ['nk_mangetsu', 'Mangetsu Hōzuki', 4, 'nk_kir', 4, 5, '', [{ k:'soc_copyfx' }, { k:'jutsu', nm:'Les sept épées', fx:[{ k:'bc_buff_tribe', a:1, h:0, tb:'nk_kir' }] }]],
   ['nk_mei', 'Mei Terumi', 5, 'nk_kir', 5, 6, '', [{ k:'burn', d:2 }, { k:'jutsu', nm:'Yōton', fx:[{ k:'bc_buff_tribe', a:1, h:1, tb:'nk_kir' }], tf:{ c:9, nm:'Futton', a:4, h:5, x:[{ k:'soc_aoe', d:2 }] } }]],
-  ['nk_yagura', 'Yagura', 6, 'nk_kir', 6, 8, '', [{ k:'riposte', d:3 }, { k:'jutsu', nm:'Miroir d’eau', fx:[{ k:'bc_self', a:2, h:3 }], tf:{ c:10, nm:'Sanbi', a:8, h:8, kw:'t' } }]],
+  ['nk_yagura', 'Yagura', 6, 'nk_kir', 6, 8, '', [{ k:'riposte', d:3 }, { k:'jutsu', nm:'Miroir d’eau', fx:[{ k:'bc_self', a:2, h:3 }], tf:[{ c:6, nm:'Manteau de chakra', a:4, h:4 }, { c:10, nm:'Sanbi', a:4, h:4, kw:'t', x:[{ k:'riposte', d:2 }] }] }]],
   ['c_nj_kurama', 'Mini Kurama', 3, 'n_feu', 6, 5, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:2, h:1 }]],
   ['c_nj_shukaku', 'Shukaku (tanuki)', 3, 'n_vent', 5, 4, 'w', [{ k:'atk_self', a:2, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
   ['c_nj_glaces', 'Esprit des glaces', 3, 'n_eau', 3, 8, '', [{ k:'surv_self', a:1, h:1 }, { k:'combo_self', a:1, h:2 }]],
@@ -1171,7 +1177,7 @@ const ET = {
   kill_perm:{ tr:'kill', l:'Voleur de cœurs', ps:[], w:1, mag:e => 3 * (e.a + e.h), txt:(e, k) => `Quand il tue un ennemi en attaquant, gagne ${sign(e.a * k, e.h * k)} définitivement.` },
   atk_team:{ tr:'atk', l:'Travail d\'équipe', ps:[], w:1, mag:e => e.a + e.h, txt:(e, k) => `Quand il attaque, un coéquipier gagne ${sign(e.a * k, e.h * k)}.` },
   surv_once:{ tr:'surv', l:'Marque maudite', ps:[], w:1, mag:e => e.a + e.h, txt:(e, k) => `Marque maudite : la première fois qu'il est blessé, gagne ${sign(e.a * k, e.h * k)}.` },
-  bc_clone:{ tr:'bc', l:'Clone', ps:[], w:1, mag:e => 3 * e.n, txt:e => `Cri de guerre : Clone. Invoque ${e.n > 1 ? e.n + ' copies' : 'une copie'} 1/1 de lui-même avec ses mots-clés.` },
+  bc_clone:{ tr:'bc', l:'Clone', ps:[], w:1, mag:e => 3 * e.n, txt:e => e.full ? `Cri de guerre : Clone parfait. Invoque ${e.n > 1 ? e.n + ' copies' : 'une copie'} de lui-même avec ses caractéristiques et ses mots-clés.` : `Cri de guerre : Clone. Invoque ${e.n > 1 ? e.n + ' copies' : 'une copie'} 1/1 de lui-même avec ses mots-clés.` },
   bc_summon_of:{ tr:'bc', l:'Marionnette au hasard', ps:[], w:1, mag:e => 4 * e.n, txt:e => `Cri de guerre : invoque ${e.n > 1 ? e.n + ' marionnettes' : 'une marionnette'} au hasard : Karasu (Venimosité), Kuroari (Entrave) ou Sanshōuo (Provocation).` },
   osell_gold:{ tr:'osell', l:'Or à chaque vente', ps:[], w:1, mag:e => 6 * e.n, txt:(e, k) => `Poussière d'or : quand tu vends un autre serviteur, gagne ${e.n * k} or.` },
   jutsu:{ tr:'jutsu', l:'Jutsu (et transformation)', ps:['nm'], w:1.2, mag:() => 5, txt:(e, k) => jutTxt(e, k) },
@@ -1200,6 +1206,17 @@ const ET = {
   buy_gold:{ tr:'buy', l:'Or à l\'achat', ps:['tb', 'n'], w:1.5, mag:e => e.n * 6, txt:(e, k) => `Après avoir acheté une ${one(e.tb, 1)}, gagne ${e.n * k} or.` },
   aatk_perm:{ tr:'aatk', l:'Bonus définitif à chaque attaque', ps:['tb', 'a', 'h'], w:1.5, mag:e => (e.a + e.h) * 6, txt:(e, k) => `Quand ${/^nk_/.test(e.tb) ? 'un' : 'une'} de tes ${one(e.tb)} attaque, tes ${one(e.tb)} gagnent ${sign(e.a * k, e.h * k)} définitivement.` },
   magnet:{ tr:'pas', l:'Magnétisme', ps:[], w:1, mag:() => 2, txt:() => `Magnétisme : joué juste à gauche d'une Autorité, il fusionne avec elle (stats, mots-clés et effets).` },
+  aft_shield:{ tr:'aft', l:'Susano’o', ps:[], w:1, mag:() => 6, txt:() => `Susano’o : regagne Bouclier divin après chacune de ses attaques.` },
+  soc_copyall:{ tr:'soc', l:'Double Sharingan', ps:[], w:1, mag:() => 5, txt:() => `Double Sharingan : au début du combat, copie aussi les effets de combat de l'ennemi d'en face.` },
+  aft_burnout:{ tr:'aft', l:'Huitième Porte', ps:[], w:1, mag:() => -4, txt:e => `Gaï de la nuit : il s'effondre après sa ${e.n}e attaque du combat.` },
+  soc_aoe_if:{ tr:'soc', l:'Huile enflammée', ps:[], w:1, mag:e => 2 * e.d, txt:(e, k) => `Huile enflammée : si ${CD(e.card).n} est à tes côtés, inflige ${e.d * k} dégâts à tous les ennemis au début du combat.` },
+  surv_heal:{ tr:'surv', l:'Soin de Katsuyu', ps:[], w:1, mag:e => 2 * e.n, txt:(e, k) => `Quand elle est blessée et survit, rend ${e.n * k} PV à tes autres serviteurs.` },
+  surv_split:{ tr:'surv', l:'Cerbère', ps:[], w:1, mag:() => 8, txt:e => `Cerbère : chaque fois qu'il est blessé et survit, une nouvelle tête naît (une copie, ${e.n} par combat au plus).` },
+  dr_summon2:{ tr:'dr', l:'Division', ps:[], w:1, mag:() => 5, txt:e => `Râle d'agonie : se divise en ${e.n} ${CD(e.card).n}.` },
+  dr_kill_tok:{ tr:'dr', l:'Flûte brisée', ps:[], w:1, mag:() => -2, txt:() => `Si elle meurt en combat, ses Doki disparaissent.` },
+  sickle:{ tr:'pas', l:'Faucille', ps:[], w:1, mag:() => 4, txt:() => `Faucille : ses attaques ignorent la Provocation et tranchent le Bouclier divin.` },
+  bc_manda:{ tr:'bc', l:'Sacrifice à Manda', ps:[], w:1, mag:() => 2, txt:() => `Manda exige un sacrifice : il dévore ton serviteur le plus faible et gagne ses caractéristiques.` },
+  bc_fill_tok:{ tr:'bc', l:'Invoquer jusqu’à N', ps:[], w:1, mag:e => 3 * e.cards.length, txt:e => `Cri de guerre : invoque ceux de ses ${e.cards.length} Doki qui manquent sur ton plateau.` },
   cleave:{ tr:'pas', l:'Attaque les voisins', ps:[], w:1, mag:() => 6, txt:() => `Attaque aussi les voisins de sa cible.` },
   shield_self:{ tr:'shield', l:'Grandir quand un Bouclier divin tombe', ps:['a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Quand un allié perd son Bouclier divin, gagne ${sign(e.a * k, e.h * k)} pour ce combat.` },
   shield_gain:{ tr:'shield', l:'Reprendre un Bouclier divin', ps:[], w:1, mag:() => 5, txt:() => `Quand un autre allié perd son Bouclier divin, gagne Bouclier divin.` },
@@ -1373,7 +1390,9 @@ function runRecruit0(G, p, m, e, ctx) {
     case 'bc_donut_up': p.donA = (p.donA || 0) + A; p.donH = (p.donH || 0) + Hh; break;
     case 'hplay_self': if (tribeOk(ctx, e.tb)) buff(m, A, Hh); break;
     case 'bc_self': buff(m, A, Hh); break;
-    case 'bc_clone': nkClone(p, m, e.n); break;
+    case 'bc_clone': nkClone(p, m, e.n, e.full); break;
+    case 'bc_manda': { const md = p.bd.filter(x => x.c === 'tk_manda' && !x.fed).pop(), o = md && p.bd.filter(x => x !== md && x !== m && x.c !== 'tk_manda').sort((a, b) => (a.a + a.h) - (b.a + b.h))[0]; if (md) md.fed = 1; if (md && o) { p.bd.splice(p.bd.indexOf(o), 1); buff(md, o.a, o.h); toPool(G, o); } break; }
+    case 'bc_fill_tok': e.cards.filter(c => !p.bd.some(x => x.c === c)).forEach(c => { if (p.bd.length < 7) recruitSummon(p, c, m.g, m); }); break;
     case 'bc_summon_of': for (let i = 0; i < e.n; i++) recruitSummon(p, pickR(['tk_karasu', 'tk_kuroari', 'tk_sanshouo']), m.g, m); break;
     case 'osell_gold': p.g += e.n * k; break;
     case 'jut_self': if (ctx && ctx !== m && tribeOk(ctx, e.tb)) buff(m, A, Hh); break;
@@ -1406,27 +1425,30 @@ const LS_CAP = 5;
 // Un jutsu de soutien (fx) agit tout de suite ; un jutsu de combat (cb) se paie au recrutement et part au début du prochain combat.
 const NJ_RSV = false;      // plus de réservoir ni de combos de villages
 const NJ_SPELLS = false;   // plus de sorts en taverne : chaque ninja porte son jutsu
-const INV_T = { tk_ninken:4, tk_kamatari:4, tk_katsuyu:5, tk_gamabunta:5, tk_cerbere:6, tk_manda:6 };   // les grosses invocations frappent le héros adverse comme leur invocateur
+const INV_T = { tk_katsuyu2:2, tk_requin:2, tk_aoda:4, tk_rashomon:4, tk_ninken:4, tk_kamatari:4, tk_katsuyu:5, tk_gamabunta:5, tk_cerbere:6, tk_manda:6 };   // les grosses invocations frappent le héros adverse comme leur invocateur
 const dmgTier = m => INV_T[m.c] || tierOf(m);
 const jutOf = m => (m && C[m.c] && (CD(m.c).fxAll || []).find(e => e.k === 'jutsu')) || null;
-const jutFx = (J, tf) => (tf && J.tf && J.tf.fx ? J.tf.fx : J.fx) || [];
-const jutCb = (J, tf) => (tf && J.tf && J.tf.cb ? J.tf.cb : J.cb) || [];
+const tfSt = J => !J || !J.tf ? [] : Array.isArray(J.tf) ? J.tf : [J.tf];   // paliers de transformation (un ou plusieurs)
+const jutLast = (J, tf, key) => { const st = tfSt(J); for (let i = Math.min(tf || 0, st.length) - 1; i >= 0; i--) if (st[i][key]) return st[i][key]; return J[key] || []; };
+const jutFx = (J, tf) => jutLast(J, tf, 'fx');
+const jutCb = (J, tf) => jutLast(J, tf, 'cb');
+const tfStTxt = (T, k) => `${T.nm} (${T.c} chakra) : ${T.a || T.h ? sign(T.a * k, T.h * k) : ''}${T.kw ? (T.a || T.h ? ', ' : '') + ((SET.kw[T.kw] || {}).n || '') : ''}${(T.x || []).map(o => ET[o.k] ? ' · ' + ET[o.k].txt(o, k).replace(/\.$/, '') : '').join('')}${T.fx ? ' · son jutsu devient : ' + jutBody(T.fx, k) : ''}${T.cb ? ' · son jutsu de combat devient : ' + jutBody(T.cb, k) : ''}`.replace(' :  · ', ' : ');
 const jutBody = (fx, k) => fx.map(o => ET[o.k] ? ET[o.k].txt(o, k).replace(/^(Cri de guerre|Début du combat) : /, '').replace(' : au début du combat, ', ' : ').replace(/\.$/, '') : '?').join(' ; ');
 function jutTxt(e, k) {
-  const T = e.tf, cb = e.cb && e.cb.length, fx = e.fx && e.fx.length;
+  const ST = tfSt(e), cb = e.cb && e.cb.length, fx = e.fx && e.fx.length;
   const j = e.none ? '' : (cb && !fx ? `Jutsu de combat · ${e.nm} : ${jutBody(e.cb, k)}.` : `Jutsu · ${e.nm} : ${jutBody(e.fx || [], k)}${cb ? ' ; au combat : ' + jutBody(e.cb, k) : ''}.`);
-  return j + (T ? `${j ? ' ' : ''}Transformation · ${T.nm} (${T.c} chakra) : ${sign(T.a * k, T.h * k)}${T.kw ? ', ' + ((SET.kw[T.kw] || {}).n || '') : ''}${(T.x || []).map(o => ET[o.k] ? ' · ' + ET[o.k].txt(o, k).replace(/\.$/, '') : '').join('')}${T.fx || T.cb ? ' · jutsu renforcé' : ''}.` : '');
+  return j + (ST.length ? `${j ? ' ' : ''}${ST.length > 1 ? 'Transformations' : 'Transformation'} · ${ST.map(T => tfStTxt(T, k)).join(' → ')}.` : '');
 }
 function jutCost(p, m) { const J = jutOf(m); if (!J || J.none) return null; return Math.max(1, tierOf(m) - ((htr(p, 'pjutc') || {}).n || 0)); }
-function nkTfCost(p, m) { const J = jutOf(m); if (!J || !J.tf || m.tf) return null; return Math.max(1, J.tf.c - ((htr(p, 'pnktf') || {}).n || 0)); }
-function jutBlock(G, p, m) { const J = jutOf(m), c = jutCost(p, m); if (!J || c == null) return 'Pas de jutsu.'; if (m.ju === G.rd) return jutCb(J, m.tf).length ? 'Jutsu prêt : il partira au début du combat.' : 'Jutsu déjà lancé ce tour.'; if ((p.ck || 0) < c) return `Il te faut ${c} chakra (tu en as ${p.ck || 0}).`; const fx = jutFx(J, m.tf); if (fx.length && !jutCb(J, m.tf).length && fx.every(o => /^bc_(summon|summon_of|clone)$/.test(o.k)) && p.bd.length >= 7) return 'Ton plateau est plein.'; return null; }
+function nkTfCost(p, m) { const T = tfSt(jutOf(m))[m.tf || 0]; if (!T) return null; return Math.max(1, T.c - ((htr(p, 'pnktf') || {}).n || 0)); }
+function jutBlock(G, p, m) { const J = jutOf(m), c = jutCost(p, m); if (!J || c == null) return 'Pas de jutsu.'; if (m.ju === G.rd) return jutCb(J, m.tf).length ? 'Jutsu prêt : il partira au début du combat.' : 'Jutsu déjà lancé ce tour.'; if ((p.ck || 0) < c) return `Il te faut ${c} chakra (tu en as ${p.ck || 0}).`; const fx = jutFx(J, m.tf); if (fx.length && !jutCb(J, m.tf).length && fx.every(o => /^bc_(summon|summon_of|clone)$/.test(o.k)) && p.bd.length >= 7) return 'Ton plateau est plein.'; { const ft = fx.find(o => o.k === 'bc_fill_tok'); if (ft && (p.bd.length >= 7 || ft.cards.every(c => p.bd.some(x => x.c === c)))) return p.bd.length >= 7 ? 'Ton plateau est plein.' : 'Ses invocations sont déjà toutes là.'; } return null; }
 function doJutsu(G, p, m) {
   if (jutBlock(G, p, m)) return false; const J = jutOf(m), c = jutCost(p, m);
   p.ck -= c; m.ju = G.rd; if (jutCb(J, m.tf).length) m.jp = G.rd;   // jutsu de combat : préparé pour le prochain combat
   withSrc('Jutsu · ' + J.nm, () => jutFx(J, m.tf).forEach(o => runRecruit0(G, p, m, o)));
   qAdd(p, 'jutsus'); p.bd.slice().forEach(x => fxOf(x, 'jut').forEach(e => runRecruit(G, p, x, e, m))); checkTriple(G, p); return true;
 }
-function doNkTf(G, p, m, free) { const J = jutOf(m), c = free ? 0 : nkTfCost(p, m); if (!J || !J.tf || m.tf || c == null || (p.ck || 0) < c) return false; const T = J.tf, k = mult(m); p.ck -= c; m.tf = 1; m.tfn = T.nm; withSrc('Transformation · ' + T.nm, () => buff(m, T.a * k, T.h * k)); if (T.kw && !has(m, T.kw)) addF(m, T.kw); (T.x || []).forEach(o => (m.x = m.x || []).push(Object.assign({ src:T.nm }, o))); qAdd(p, 'nktf'); return true; }
+function doNkTf(G, p, m, free) { const T = tfSt(jutOf(m))[m.tf || 0], c = !T ? null : free ? 0 : nkTfCost(p, m); if (!T || c == null || (p.ck || 0) < c) return false; const k = mult(m); p.ck -= c; m.tf = (m.tf || 0) + 1; m.tfn = T.nm; withSrc('Transformation · ' + T.nm, () => buff(m, T.a * k, T.h * k)); if (T.kw && !has(m, T.kw)) addF(m, T.kw); (T.x || []).forEach(o => (m.x = m.x || []).push(Object.assign({ src:T.nm }, o))); qAdd(p, 'nktf'); return true; }
 // ----- groupes emblématiques : duos, trios et plus. Actifs quand les membres sont ensemble sur le plateau ; les effets se cumulent -----
 const NK_GROUPS = [
   { id:'immortels', n:'Duo immortel', m:['nk_hidan', 'nk_kakuzu'], th:[2], tx:['Les immortels : tant que l\'un des deux est en vie, l\'autre revient à la vie à chaque mort (3 fois par combat au plus). Il faut les abattre ensemble.'] },
@@ -1506,7 +1528,7 @@ function nkGroupsEot(G, p) {
     if (k > 2) sw.forEach((m, i) => { const pv = sw[(i - 1 + sw.length) % sw.length]; if (pv !== m && pv.c !== m.c) m.gx = (m.gx || []).concat([{ k:'follow', card:pv.c, src:name('epees') }]); }); }
 }
 // Clone : copie 1/1 du ninja, avec ses mots-clés
-function nkClone(p, m, n) { for (let i = 0; i < n && p.bd.length < 7; i++) { const c = mk('tk_kclone', m.g); c.f = m.f || ''; c.of = m.c; p.bd.splice(p.bd.indexOf(m) + 1, 0, c); } }
+function nkClone(p, m, n, full) { for (let i = 0; i < n && p.bd.length < 7; i++) { const c = mk('tk_kclone', m.g); c.f = m.f || ''; c.of = m.c; if (full) { c.a = m.a; c.h = m.h; } p.bd.splice(p.bd.indexOf(m) + 1, 0, c); } }
 // ----- combat : aides des mots-clés Naruto -----
 const nkHas = (m, k) => !!m && !m.sld && fxOf(m, 'pas').some(e => e.k === k);
 const nkVal = (m, k, f = 'd') => (!m || m.sld) ? 0 : fxOf(m, 'pas').filter(e => e.k === k).reduce((t, e) => t + (e[f] || 0) * mult(m), 0);
@@ -1798,12 +1820,20 @@ function runCombat(S, s, m, e, pos, ctx) {
     case 'aft_heal': { const o = al.filter(x => x.h > 0 && (nkHas(m, 'heal2') || x.h < (x.hm || x.h))).sort((a, b) => (a.h - (a.hm || a.h)) - (b.h - (b.hm || b.h)))[0]; if (o) { const n = e.n * k * (nkHas(m, 'heal2') ? 2 : 1); o.h = nkHas(m, 'heal2') ? o.h + n : Math.min(o.hm || o.h, o.h + n); } break; }
     case 'aft_full': if (m.h < (m.hm || m.h)) m.h = m.hm; break;
     case 'aft_selfdmg': simDamage(S, m, e.d * k, null); break;
+    case 'aft_shield': if (m.h > 0 && !has(m, 's')) m.f = (m.f || '') + 's'; break;
+    case 'aft_burnout': m.bo = (m.bo || 0) + 1; if (m.bo >= e.n && m.h > 0) { remF(m, 's'); m.h = 0; } break;
+    case 'soc_copyall': { const t = nkFace(S, s, m); if (t && !t.sld) { const fx = nkSword(t.c).concat((t.x || []).filter(o => ET[o.k] && ['pas', 'atk', 'aft', 'dr', 'surv'].includes(ET[o.k].tr) && o.k !== 'guard')); if (fx.length) m.x = (m.x || []).concat(fx.map(o => Object.assign({}, o, { src:'Double Sharingan' }))); } break; }
+    case 'soc_aoe_if': if (al.some(x => x.c === e.card && x.h > 0)) en.filter(x => x.h > 0).forEach(x => simDamage(S, x, e.d * k, null)); break;
+    case 'surv_heal': al.filter(x => x !== m && x.h > 0 && x.h < (x.hm || x.h)).forEach(x => { x.h = Math.min(x.hm || x.h, x.h + e.n * k); }); break;
+    case 'surv_split': { S.spl = S.spl || [0, 0]; if (S.spl[s] < e.n && al.length < 7) { S.spl[s]++; const nm = simSummon(S, s, al.indexOf(m) + 1, m.c, m.g); if (nm) { nm.a = m.a; nm.h = m.h; nm.hm = m.h; nm.f = m.f || ''; } } break; }
+    case 'dr_summon2': for (let i = 0; i < e.n; i++) { const nm = simSummon(S, s, pos + i, e.card, m.g); if (nm) nm.hm = nm.h; } break;
+    case 'dr_kill_tok': al.filter(x => e.cards.includes(x.c) && x.h > 0).forEach(x => { remF(x, 's'); x.h = 0; }); break;
     case 'aft_aoe': en.filter(x => x.h > 0).forEach(x => simDamage(S, x, e.d * k, null)); break;
     case 'die_swap': if (ctx && ctx !== m && !m.swp && m.h > 0 && ctx.c !== 'tk_kclone' && al.length < 7) { m.swp = 1; const nm = simSummon(S, s, al.indexOf(m), ctx.c, ctx.g); if (nm) { nm.a = ctx.a; nm.h = ctx.hm || nm.h; nm.hm = nm.h; nm.f = ctx.f || ''; if (ctx.x) nm.x = ctx.x.slice(); nm.ou = ctx.ou || ctx.u; nm.tf = ctx.tf; nm.rb = 1; remF(m, 'r'); remF(m, 's'); m.h = 0; } } break;
     case 'die_revive': if (ctx && ctx !== m && !m.rvd && m.h > 0 && al.length < 7) { m.rvd = 1; const nm = simSummon(S, s, al.indexOf(m) + 1, ctx.c, ctx.g); if (nm) { nm.hm = nm.h; nm.ou = ctx.ou || ctx.u; nm.rb = 1; } } break;
     case 'die_rage': if (ctx && ctx.c === e.card && !m.rgd) { m.rgd = 1; m.a *= 2; if (!has(m, 'w')) m.f = (m.f || '') + 'w'; } break;
     case 'die_inherit': if (ctx && ctx.c === e.card && !m.inh) { m.inh = 1; buff(m, ctx.a, ctx.hm || 1); for (const c of (ctx.f || '')) if (!has(m, c)) m.f = (m.f || '') + c; } break;
-    case 'die_tf': if (ctx && ctx.c === e.card && !m.tf) { const J = jutOf(m); if (J && J.tf) { m.tf = 1; buff(m, J.tf.a * k, J.tf.h * k); if (J.tf.kw && !has(m, J.tf.kw)) m.f = (m.f || '') + J.tf.kw; } } break;
+    case 'die_tf': if (ctx && ctx.c === e.card && !m.dtf) { const T = tfSt(jutOf(m))[m.tf || 0]; if (T) { m.dtf = 1; m.tf = (m.tf || 0) + 1; buff(m, T.a * k, T.h * k); if (T.kw && !has(m, T.kw)) m.f = (m.f || '') + T.kw; (T.x || []).forEach(o => { if (ET[o.k] && ET[o.k].tr !== 'soc') (m.x = m.x || []).push(o); }); } } break;
     case 'die_aoe': if (ctx && ctx.c === e.card) en.filter(x => x.h > 0).forEach(x => simDamage(S, x, e.d * k, null)); break;
     case 'dr_twin': { const nm = simSummon(S, s, pos, e.card, m.g); if (nm) { nm.a = m.a; nm.h = m.hm || nm.h; nm.hm = nm.h; nm.f = (m.f || '').replace('r', ''); } break; }
     case 'kill_perm': permBuff(S, s, m, A, Hh); break;
@@ -1933,7 +1963,7 @@ function simulate0(bA, bB, seed, tA, tB, fire, mx) {
     for (let w = 0; w < swings; w++) {
       if (att.h <= 0 || !arr.includes(att) || !en.length) break;
       const seeAll = nkHas(att, 'pierce') || arr.some(x => x.h > 0 && nkHas(x, 'see_camo')), seen = seeAll ? en : en.filter(x => !has(x, 'c')), vis = seen.length ? seen : en;   // Camouflage : invisible aux attaques tant qu'il n'a pas attaqué (sauf s'il ne reste que des camouflés)
-      const taunts = vis.filter(x => has(x, 't')); const pool = taunts.length ? taunts : vis;
+      const taunts = nkHas(att, 'sickle') ? [] : vis.filter(x => has(x, 't')); const pool = taunts.length ? taunts : vis;
       const tgt = nkPick(S, cur, att, pool);
       if (has(att, 'c') && !nkHas(att, 'camo_keep')) remF(att, 'c');
       S.frames.push({ s:snap(S), at:att.u, tg:tgt.u });
@@ -1942,7 +1972,7 @@ function simulate0(bA, bB, seed, tA, tB, fire, mx) {
       fxOf(att, 'atk').forEach(e => runCombat(S, cur, att, e, 0, tgt));
       for (const al of arr.slice()) if (al.h > 0) fxOf(al, 'aatk').forEach(e => runCombat(S, cur, al, e, 0, att));
       if (att.h <= 0 || !en.includes(tgt) || tgt.h <= 0) { simDeaths(S, cur); if (att.h <= 0 || !arr.includes(att)) break; if (!en.includes(tgt) || tgt.h <= 0) continue; }
-      let aa = att.a; const ta = tgt.a; if (att.mul1) { aa *= att.mul1; delete att.mul1; } if (tgt.ent && nkHas(att, 'x3bound')) aa *= 3; const noRet = has(att, 'i') || !!att.i1; delete att.i1; if (nkHas(att, 'pierce')) remF(tgt, 's');
+      let aa = att.a; const ta = tgt.a; if (att.mul1) { aa *= att.mul1; delete att.mul1; } if (tgt.ent && nkHas(att, 'x3bound')) aa *= 3; const noRet = has(att, 'i') || !!att.i1; delete att.i1; if (nkHas(att, 'pierce') || nkHas(att, 'sickle')) remF(tgt, 's');
       const cl = fxOf(att, 'pas').some(e => e.k === 'cleave') ? [en[en.indexOf(tgt) - 1], en[en.indexOf(tgt) + 1]].filter(Boolean) : [];
       if (nkHas(att, 'chain')) { const o = en.filter(x => x !== tgt && x.h > 0 && !cl.includes(x)); if (o.length) cl.push(o[Math.floor(S.rng() * o.length)]); }   // attaque aussi les voisins de la cible
       simDamage(S, tgt, aa, att); cl.forEach(x => simDamage(S, x, aa, att)); if (!(S.mx.first && tgt.h <= 0) && !noRet) simDamage(S, att, ta, tgt);   // duel : la cible abattue ne riposte pas ; Insensible : aucun dégât pendant son attaque
