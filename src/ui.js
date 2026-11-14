@@ -3490,7 +3490,7 @@ html.lite:root:root body.rn .stage::before{filter:none;transform:none;background
 §.u-lo .rn-surf,§.u-nj .rn-surf,§.u-db .rn-surf,§.u-rm .rn-surf,§.u-sp .rn-surf,html.has-board-sim:root§.u-sim .rn-surf{display:block;position:absolute;left:200u;top:296u;width:1250u;height:521u;pointer-events:none;z-index:0;background-repeat:no-repeat;background-size:100% auto;background-color:#1a1410;
   clip-path:polygon(4.6% 49.2%,7.7% 21.2%,13.4% 10.9%,50.7% 7.5%,86.6% 10.9%,92.4% 21.2%,95.5% 49.2%,92.4% 69.6%,86.6% 77.6%,50.7% 78.4%,13.4% 77.6%,7.7% 69.6%)}
 §.u-nj .rn-surf{background-image:var(--board-nj);background-position:50% 30%}
-§.u-lo .rn-surf{background-image:url(assets/plateaux/seigneur-des-anneaux.webp);background-size:150% auto;background-position:50% 50%}
+§.u-lo .rn-surf{background-image:url(assets/plateaux/seigneur-des-anneaux.webp);background-position:50% 30%}
 §.u-db .rn-surf{background-image:var(--board-db);background-position:50% 22%}
 §.u-rm .rn-surf{background-image:var(--board-rm);background-position:50% 22%}
 §.u-sp .rn-surf{background-image:var(--board-sp);background-position:50% 22%}

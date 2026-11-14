@@ -588,6 +588,7 @@ const SPART = {
   const K = { lo_anneau:'ring', lo_dard:'blade', lo_anduril:'blade', lo_glamdring:'blade', lo_morgul:'blade', lo_herugrim:'blade', lo_hache:'blade', lo_grond:'blade', lo_arc:'blade', lo_baton:'blade',
     lo_mithril:'shield', lo_cape:'shield', lo_couronne:'gem', lo_fiole:'gem', lo_arkenstone:'gem', lo_palantir:'gem', lo_lembas:'gem', lo_cor:'horn', lo_feux:'horn', lo_charge:'horn',
     lo_balrog:'beast', lo_ents:'beast', lo_morts:'beast', lo_aigles:'beast', lo_gripoil:'beast', lo_ombre:'beast' };
+  ["lo_anneau", "lo_dard", "lo_anduril", "lo_glamdring", "lo_mithril", "lo_fiole", "lo_cor", "lo_palantir", "lo_lembas", "lo_arc", "lo_hache", "lo_arkenstone", "lo_cape", "lo_gripoil", "lo_herugrim", "lo_morgul", "lo_baton", "lo_grond", "lo_balrog", "lo_charge", "lo_ents", "lo_feux", "lo_morts", "lo_aigles", "lo_couronne", "lo_ombre"].forEach(id => { SPART[id] = () => `<image href="assets/sda/sp_${id}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`; });   // images fournies le 14/11/2026
   for (const id in SPELLS) if (SPELLS[id].lo && !SPART[id]) SPART[id] = NJA(id === 'lo_anneau' ? '#ffd24a' : '#e8c878', G[K[id] || 'gem']); })();
 Object.assign(SPART, {
   dt_taiyo: () => softGlow(50, 52, 36, '#fff6c0', .55) + Ci(50, 52, 14, '#fffbe6', 'filter="url(#fx-glow)"') + Array.from({ length:12 }, (_, i) => { const a = i * Math.PI / 6; return Ln(`M${50 + Math.cos(a) * 18} ${52 + Math.sin(a) * 18} L${50 + Math.cos(a) * 32} ${52 + Math.sin(a) * 32}`, '#ffe36a', 3); }).join(''),
