@@ -268,6 +268,8 @@ function costGemH(c, base) {
   return `<svg class="cd-gem cost${d ? ' disc' : ''}" viewBox="0 0 40 40" aria-label="Coût ${c} or"><circle cx="20" cy="20" r="16" fill="url(#gr-atk)" ${so(2.4)}/><circle cx="20" cy="20" r="11.6" fill="none" stroke="#8a5a12" stroke-width="1.3" opacity=".75"/><text class="gt" x="20" y="20" dy=".36em">${c}</text></svg>${d ? `<span class="cost-was" aria-hidden="true">${base}</span>` : ''}`;
 }
 const MINION_COST = 3;
+// Le Seigneur des Anneaux : fiche d'un objet légendaire dans le choix d'étape
+function loObjH(id) { const S = SPELLS[id] || {}; return `<span class="lo-obj"><svg class="lo-obj-a" viewBox="0 0 100 100"><use href="#sp-${id}"/></svg><b>${esc(S.n || id)}</b><i>${esc(S.tx || '')}</i>${S.stx ? `<em>${esc(S.stx)}.</em>` : ''}</span>`; }
 function cardH(m, z, i, o = {}) {
   const b = CD(m.c), g = !!m.g;
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
@@ -1200,8 +1202,8 @@ function overlayH() {
   const d = V.pub, me = V.me;
   if (me && me.cho && d.ph === 'recruit') return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Choix des armes</h2><p class="ov-s">${esc(C[me.cho.c] ? CD(me.cho.c).n : '')} : choisis un des deux effets. À la fin du chrono, le premier est pris.</p>
     <div class="cho">${me.cho.o.map((o, i) => `<button class="cho-b" data-act="choose" data-i="${i}">${esc(ET[o.k] ? ET[o.k].txt(o, 1).replace(/^Cri de guerre : /, '').replace(/^./, c => c.toUpperCase()) : '?')}</button>`).join('')}</div></div></div>`;
-  if (me && me.disc && d.ph === 'recruit') return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Découverte</h2><p class="ov-s">Choisis un serviteur. Les deux autres retournent dans la réserve.</p>
-    <div class="disc">${me.disc.map((m, i) => `<button class="disc-b" data-act="pick" data-i="${i}" aria-label="Choisir ${esc(CD(m.c).n)}">${cardH(m, 'disc', i)}</button>`).join('')}</div></div></div>`;
+  if (me && me.disc && d.ph === 'recruit') return `<div class="ov"><div class="ov-box"><h2 class="ov-t">${me.dsc ? 'Étape du voyage · ' + esc(me.dsc) : 'Découverte'}</h2><p class="ov-s">${me.dsc ? 'Tu as atteint ' + esc(me.dsc) + ' : choisis une récompense. Les objets sont plus forts sur leur porteur du film.' : 'Choisis un serviteur. Les deux autres retournent dans la réserve.'}</p>
+    <div class="disc">${me.disc.map((m, i) => `<button class="disc-b" data-act="pick" data-i="${i}" aria-label="Choisir ${esc(m.sp ? (SPELLS[m.sp] || {}).n : CD(m.c).n)}">${m.sp ? loObjH(m.sp) : cardH(m, 'disc', i)}</button>`).join('')}</div></div></div>`;
   if (d.ph === 'hero' && me) {
     if (!me.hero) return heroPickRowH(d, me);
     if (!me.hero && (d.laws || []).some(l => l.k === 'chakra')) return heroPickNinjaH(d, me);
@@ -2096,6 +2098,7 @@ function sceneMode() {
   if (!document.body.classList.contains(m)) { document.body.classList.remove('sc-menu', 'sc-lobby', 'sc-atl', 'sc-game'); document.body.classList.add(m); }
   if (V.screen === 'menu' && !V.mp && typeof csLeave === 'function') csLeave();
   document.body.classList.toggle('u-nj', V.screen === 'game' && !!(V.pub && (V.pub.laws || []).some(l => l.k === 'chakra')));
+  document.body.classList.toggle('u-lo', V.screen === 'game' && !!(V.pub && (V.pub.laws || []).some(l => l.k === 'voyage')));
   { const law = k => V.screen === 'game' && !!(V.pub && (V.pub.laws || []).some(l => l.k === k)); document.body.classList.toggle('u-db', law('ki')); document.body.classList.toggle('u-rm', law('portail')); document.body.classList.toggle('u-sp', law('bande')); document.body.classList.toggle('u-sim', law('gag')); }
   document.body.classList.toggle('cs-still', (V.screen === 'menu' && !!V.mp) || V.screen === 'lobby' || !!V.waitTable);
 }
@@ -3483,10 +3486,11 @@ html.lite:root:root body.rn .stage::before{filter:none;transform:none;background
 § .table{position:absolute;inset:0;display:block;margin:0;padding:0;background:none;box-shadow:none;border-radius:0;border:0;overflow:visible;container-type:normal;min-height:0;height:auto;width:auto;grid-template:none;animation:none}
 § .table::before,§ .table::after{content:none}
 § .rn-tb{display:block;position:absolute;left:200u;top:296u;width:1250u;height:521u;background:url(assets/plateau/table-grande.webp) 0 0/100% 100% no-repeat;pointer-events:none;z-index:0}
-§.u-nj .rn-tb,§.u-db .rn-tb,§.u-rm .rn-tb,§.u-sp .rn-tb,html.has-board-sim:root§.u-sim .rn-tb{background-image:url(assets/plateau/table-grande-univers.webp)}
-§.u-nj .rn-surf,§.u-db .rn-surf,§.u-rm .rn-surf,§.u-sp .rn-surf,html.has-board-sim:root§.u-sim .rn-surf{display:block;position:absolute;left:200u;top:296u;width:1250u;height:521u;pointer-events:none;z-index:0;background-repeat:no-repeat;background-size:100% auto;background-color:#1a1410;
+§.u-lo .rn-tb,§.u-nj .rn-tb,§.u-db .rn-tb,§.u-rm .rn-tb,§.u-sp .rn-tb,html.has-board-sim:root§.u-sim .rn-tb{background-image:url(assets/plateau/table-grande-univers.webp)}
+§.u-lo .rn-surf,§.u-nj .rn-surf,§.u-db .rn-surf,§.u-rm .rn-surf,§.u-sp .rn-surf,html.has-board-sim:root§.u-sim .rn-surf{display:block;position:absolute;left:200u;top:296u;width:1250u;height:521u;pointer-events:none;z-index:0;background-repeat:no-repeat;background-size:100% auto;background-color:#1a1410;
   clip-path:polygon(4.6% 49.2%,7.7% 21.2%,13.4% 10.9%,50.7% 7.5%,86.6% 10.9%,92.4% 21.2%,95.5% 49.2%,92.4% 69.6%,86.6% 77.6%,50.7% 78.4%,13.4% 77.6%,7.7% 69.6%)}
 §.u-nj .rn-surf{background-image:var(--board-nj);background-position:50% 30%}
+§.u-lo .rn-surf{background-image:url(assets/plateaux/seigneur-des-anneaux.webp);background-size:150% auto;background-position:50% 50%}
 §.u-db .rn-surf{background-image:var(--board-db);background-position:50% 22%}
 §.u-rm .rn-surf{background-image:var(--board-rm);background-position:50% 22%}
 §.u-sp .rn-surf{background-image:var(--board-sp);background-position:50% 22%}

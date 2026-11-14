@@ -6,7 +6,7 @@
    ===================================================================== */
 const SP_TYPES = {
   renf:{ n:'Renfort', col:'#c8963e' }, eco:{ n:'Économie', col:'#4f8a3a' }, arc:{ n:'Arcane', col:'#3f6fb0' },
-  ombre:{ n:'Ombre', col:'#5a3d7a' }, comb:{ n:'Combat', col:'#a8322a' }, nat:{ n:'Nature', col:'#3f8a6a' }, nin:{ n:'Technique', col:'#2a5a9a' }, inv:{ n:'Invention', col:'#2f8a5a' }, obj:{ n:'Objet culte', col:'#8a4a9a' }, spr:{ n:'Objet de Springfield', col:'#e8508a' }, eq:{ n:'Équipement', col:'#8a6a3a' }, cof:{ n:'Coffre', col:'#a8742a' },
+  ombre:{ n:'Ombre', col:'#5a3d7a' }, comb:{ n:'Combat', col:'#a8322a' }, nat:{ n:'Nature', col:'#3f8a6a' }, nin:{ n:'Technique', col:'#2a5a9a' }, inv:{ n:'Invention', col:'#2f8a5a' }, obj:{ n:'Objet culte', col:'#8a4a9a' }, spr:{ n:'Objet de Springfield', col:'#e8508a' }, eq:{ n:'Équipement', col:'#8a6a3a' }, leg:{ n:'Objet légendaire', col:'#b08a2e' }, cof:{ n:'Coffre', col:'#a8742a' },
 };
 const SPELLS = {
   // objets de l'univers Dragon Ball
@@ -23,6 +23,33 @@ const SPELLS = {
   dt_final:{ db:1, n:'Final Flash', t:5, c:3, kc:5, ty:'nin', tg:1, fx:[{ k:'fire', d:8 }, { k:'tbuff', a:2, h:0 }], sig:['d_vegeta', 'd_roivegeta'], sgx:[{ k:'tbuff', a:4, h:4 }], tx:'Prochain combat : 8 dégâts à l\'ennemi ; le serviteur ciblé gagne +2 attaque.', stx:'+4/+4 de plus' },
   dt_death:{ db:1, n:'Death Ball', t:5, c:3, kc:5, ty:'nin', tg:1, fx:[{ k:'fire', d:7 }, { k:'buffall', a:1, h:0, tb:'d_fre' }], sig:['d_freezer', 'd_cooler', 'd_cold'], sgx:[{ k:'tbuff', a:4, h:4 }], tx:'Prochain combat : 7 dégâts à l\'ennemi ; tes Freezer gagnent +1/+0.', stx:'+4/+4' },
   dt_genki:{ db:1, n:'Genkidama', t:6, c:3, kc:6, ty:'nin', tg:1, fx:[{ k:'buffall', a:2, h:2 }], sig:['d_goku', 'd_uub'], sgx:[{ k:'buffall', a:1, h:1 }], tx:'L\'énergie de tous : tes serviteurs gagnent +2/+2.', stx:'+1/+1 de plus pour tous' },
+  // ----- Le Seigneur des Anneaux : l'Anneau unique, armes et objets légendaires (récompenses d'étape, liés à leur porteur du film) -----
+  lo_anneau:{ lo:1, n:'L’Anneau unique', t:1, c:3, ty:'leg', tg:1, ring:1, fx:[{ k:'tring' }], tx:'Un Anneau pour les gouverner tous. Le porteur devient invisible (Camouflage qui ne tombe pas) et gagne +2/+2 à chaque tour, mais il se corrompt : au bout de 4 tours il succombe et tu le perds (7 tours pour un Hobbit). Les Nazgûl te traquent tant que tu détiens l’Anneau, de plus en plus forts, et à deux dès le 4e tour. Porte-le jusqu’au Mont du Destin pour gagner la partie.' },
+  lo_dard:{ lo:1, n:'Dard', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:2, h:1, lo:1 }], sig:['lo_frodon', 'lo_bilbon'], sgx:[{ k:'tfx', fx:[{ k:'soc_i1' }] }], stx:'Frodon, Bilbon : sa première attaque de chaque combat est Insensible', tx:'Le serviteur ciblé gagne +2/+1.' },
+  lo_anduril:{ lo:1, n:'Andúril, Flamme de l’Ouest', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:4, h:2, lo:1 }], sig:['lo_aragorn', 'lo_isildur'], sgx:[{ k:'tfx', fx:[{ k:'soc_first', x:2 }] }], stx:'Aragorn, Isildur : sa première attaque de chaque combat inflige le double', tx:'Le serviteur ciblé gagne +4/+2.' },
+  lo_glamdring:{ lo:1, n:'Glamdring', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:3, h:3, lo:1 }], sig:['lo_gandalf'], sgx:[{ k:'tfx', fx:[{ k:'burn', d:2 }] }], stx:'Gandalf : Brûlure de 2', tx:'Le serviteur ciblé gagne +3/+3.' },
+  lo_mithril:{ lo:1, n:'Cotte de mithril', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:0, h:4, lo:1 }], sig:['lo_frodon', 'lo_bilbon', 'lo_thorin'], sgx:[{ k:'tfx', fx:[{ k:'armor', d:2 }] }], stx:'Frodon, Bilbon, Thorin : chaque coup reçu lui fait 2 dégâts de moins', tx:'Le serviteur ciblé gagne +0/+4.' },
+  lo_fiole:{ lo:1, n:'Fiole de Galadriel', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tkwp', kw:'s' }], sig:['lo_frodon', 'lo_sam'], sgx:[{ k:'tfx', fx:[{ k:'soc_genj', who:'face', n:1 }] }], stx:'Frodon, Sam : la lumière aveugle l’ennemi d’en face, qui saute sa première attaque', tx:'Le serviteur ciblé gagne Bouclier divin.' },
+  lo_cor:{ lo:1, n:'Cor du Gondor', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:2, h:2, lo:1 }, { k:'tfx', fx:[{ k:'dr_buff_all', a:1, h:1, tb:'' }] }], sig:['lo_boromir', 'lo_faramir', 'lo_denethor'], sgx:[{ k:'buffall', a:1, h:1 }], stx:'Boromir, Faramir, Denethor : tous tes serviteurs gagnent +1/+1', tx:'Le serviteur ciblé gagne +2/+2 et « Râle d’agonie : donne +1/+1 à tes autres serviteurs ».' },
+  lo_palantir:{ lo:1, n:'Palantír', t:1, c:0, ty:'leg', fx:[{ k:'disc' }], tx:'Regarde dans la pierre : découvre un serviteur d’un niveau au-dessus de ta taverne.' },
+  lo_lembas:{ lo:1, n:'Lembas', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:1, h:3, lo:1 }], sig:['lo_frodon', 'lo_sam', 'lo_merry', 'lo_pippin', 'lo_bilbon'], sgx:[{ k:'tbuff', a:1, h:3, lo:1 }], stx:'Hobbits : +1/+3 de plus', tx:'Le serviteur ciblé gagne +1/+3.' },
+  lo_arc:{ lo:1, n:'Arc de la Lórien', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:2, h:0, lo:1 }, { k:'tfx', fx:[{ k:'soc_dmg', d:3, n:1 }] }], sig:['lo_legolas', 'lo_tauriel', 'lo_haldir'], sgx:[{ k:'tfx', fx:[{ k:'chain' }] }], stx:'Legolas, Tauriel, Haldir : ses attaques touchent aussi un autre ennemi', tx:'Le serviteur ciblé gagne +2/+0 et « Début du combat : inflige 3 dégâts à un ennemi aléatoire ».' },
+  lo_hache:{ lo:1, n:'Hache de Durin', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:3, h:1, lo:1 }], sig:['lo_gimli', 'lo_balin', 'lo_dain'], sgx:[{ k:'tfx', fx:[{ k:'riposte', d:2 }] }], stx:'Gimli, Balin, Dáin : Riposte 2', tx:'Le serviteur ciblé gagne +3/+1.' },
+  lo_arkenstone:{ lo:1, n:'Arkenstone', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:2, h:4, lo:1 }], sig:['lo_thorin'], sgx:[{ k:'buffall', a:2, h:2, tb:'lo_nah' }], stx:'Thorin : tes Nains et Hobbits gagnent +2/+2', tx:'Le serviteur ciblé gagne +2/+4.' },
+  lo_cape:{ lo:1, n:'Cape elfique', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tkwp', kw:'c' }], sig:['lo_frodon', 'lo_sam', 'lo_merry', 'lo_pippin'], sgx:[{ k:'tbuff', a:2, h:2, lo:1 }], stx:'Hobbits : +2/+2', tx:'Le serviteur ciblé gagne Camouflage.' },
+  lo_gripoil:{ lo:1, n:'Gripoil', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:3, h:2, lo:1 }], sig:['lo_gandalf'], sgx:[{ k:'tkwp', kw:'w' }], stx:'Gandalf : Furie des vents', tx:'Le serviteur ciblé gagne +3/+2.' },
+  lo_herugrim:{ lo:1, n:'Herugrim', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:3, h:2, lo:1 }], sig:['lo_theoden', 'lo_eomer', 'lo_eowyn'], sgx:[{ k:'tfx', fx:[{ k:'atk_self', a:2, h:0 }] }], stx:'Théoden, Éomer, Éowyn : +2 ATQ à chacune de ses attaques', tx:'Le serviteur ciblé gagne +3/+2.' },
+  lo_morgul:{ lo:1, n:'Lame de Morgul', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:3, h:0, lo:1 }, { k:'tfx', fx:[{ k:'burn', d:2 }] }], sig:['lo_roisorcier', 'lo_khamul'], sgx:[{ k:'tkwp', kw:'n' }], stx:'Roi-Sorcier, Khamûl : Venimosité', tx:'Le serviteur ciblé gagne +3/+0 et Brûlure de 2.' },
+  lo_baton:{ lo:1, n:'Bâton de Saroumane', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:2, h:3, lo:1 }], sig:['lo_saroumane', 'lo_gandalf'], sgx:[{ k:'tfx', fx:[{ k:'soc_dmg', d:4, n:2 }] }], stx:'Saroumane, Gandalf : au début du combat, 4 dégâts à 2 ennemis', tx:'Le serviteur ciblé gagne +2/+3.' },
+  lo_grond:{ lo:1, n:'Grond', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:5, h:0, lo:1 }], sig:['lo_gothmog', 'lo_troll'], sgx:[{ k:'tfx', fx:[{ k:'sickle' }] }], stx:'Gothmog, Troll : ses attaques ignorent la Provocation et tranchent le Bouclier divin', tx:'Le serviteur ciblé gagne +5/+0.' },
+  lo_balrog:{ lo:1, n:'Le Fléau de Durin', t:1, c:0, ty:'leg', fx:[{ k:'summon', card:'tl_balrog', n:1 }], tx:'Tu réveilles ce qui dormait sous la Moria : invoque un Balrog 6/6 avec Brûlure de 2.' },
+  lo_charge:{ lo:1, n:'Charge des Rohirrim', t:1, c:0, ty:'leg', fx:[{ k:'buffall', a:2, h:1 }], tx:'Tous tes serviteurs gagnent +2/+1.' },
+  lo_ents:{ lo:1, n:'La marche des Ents', t:1, c:0, ty:'leg', fx:[{ k:'summon', card:'tl_ent', n:1 }], tx:'Invoque un Ent 4/6 avec Provocation.' },
+  lo_feux:{ lo:1, n:'Les feux d’alarme', t:1, c:0, ty:'leg', fx:[{ k:'summon', card:'tl_cavalier', n:2 }], tx:'Le Gondor appelle à l’aide : invoque 2 Rohirrim 3/2.' },
+  lo_morts:{ lo:1, n:'Le serment des Morts', t:1, c:0, ty:'leg', fx:[{ k:'summon', card:'tl_morts', n:2 }], tx:'Invoque 2 Soldats de l’Armée des Morts 4/4 avec Camouflage.' },
+  lo_aigles:{ lo:1, n:'Les Aigles arrivent !', t:1, c:0, ty:'leg', fx:[{ k:'summon', card:'tl_aigle', n:2 }], tx:'Invoque 2 Aigles géants 5/5.' },
+  lo_couronne:{ lo:1, n:'Couronne du Gondor', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:6, h:6, lo:1 }], sig:['lo_aragorn'], sgx:[{ k:'buffall', a:2, h:2 }], stx:'Aragorn : tous tes serviteurs gagnent +2/+2', tx:'Le serviteur ciblé gagne +6/+6.' },
+  lo_ombre:{ lo:1, n:'L’Ombre du Mordor', t:1, c:0, ty:'leg', fx:[{ k:'buffall', a:3, h:3 }], tx:'Tous tes serviteurs gagnent +3/+3.' },
   // ----- inventions de Rick (univers Rick et Morty) : achetées et lancées en or, à l'étagère de la taverne -----
   ri_cornichon:{ rm:1, n:'Cornichon', t:1, c:1, ty:'inv', tg:1, fx:[{ k:'tbuff', a:1, h:3 }], tx:'Le serviteur ciblé se change un instant en cornichon : il gagne +1/+3.' },
   ri_batterie:{ rm:1, n:'Batterie du microvers', t:1, c:1, ty:'inv', fx:[{ k:'pf', n:1 }, { k:'inc', n:1 }], tx:'Un microvers travaille pour toi : gagne 1 fluide de portail et 1 or au début de ton prochain tour.' },
@@ -161,7 +188,7 @@ const SPELLS = {
   cf_or:{ n:'Coffre d\'or', t:1, c:0, ck:6, item:1, ty:'cof', tx:'Reçu après une victoire avec une taverne de niveau 4 ou plus. Ouvre-le avec 6 chakra : deux équipements rares.' },
 };
 const SPELL_IDS = Object.keys(SPELLS);
-function drawSpell(t, el) { if (typeof NJ_SPELLS !== 'undefined' && !NJ_SPELLS && typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra')) return null; const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra');
+function drawSpell(t, el) { if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'voyage')) return null; if (typeof NJ_SPELLS !== 'undefined' && !NJ_SPELLS && typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra')) return null; const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra');
   if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'ki')) { const ids = SPELL_IDS.filter(id => SPELLS[id].db && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
   if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'portail')) { const ids = SPELL_IDS.filter(id => SPELLS[id].rm && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }   // Rick et Morty : seulement les inventions
   if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'bande')) { const ids = SPELL_IDS.filter(id => SPELLS[id].spk && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }   // South Park : seulement les objets cultes
@@ -230,6 +257,7 @@ function techRun(G, p, S, it, tgt, tg, sage) {
   if (S.comb && (p.castEls || []).some(e => e !== S.el)) withSrc('Jutsu combiné', () => techSteps(G, p, S.comb, tgt, tg, 1));
   if (S.sage && sage && !S.sagePre) withSrc('Mode ermite', () => techSteps(G, p, S.sage, tgt, tg, 1));
 }
+const S0lo = s => !!s.lo;
 function techSteps(G, p, steps, tgt, tg, x) {
   const tmp = (m, a, h, kw) => { m.tmp = { a:((m.tmp && m.tmp.a) || 0) + a, h:((m.tmp && m.tmp.h) || 0) + h, f:((m.tmp && m.tmp.f) || '') + (kw || ''), s:BSRC || 'Technique' }; };
   for (const s of steps || []) {
@@ -246,7 +274,9 @@ function techSteps(G, p, steps, tgt, tg, x) {
       case 'buffall': p.bd.filter(m => tribeOk(m, s.tb)).forEach(m => buff(m, a, h)); break;
       case 'buffcard': p.bd.filter(m => m.c === s.card).forEach(m => buff(m, a, h)); break;
       case 'clones': p.bd.filter(m => m.c === 'tk_clone').forEach(m => buff(m, a, h)); break;
-      case 'tbuff': if (tgt) buff(tgt, a, h); break;
+      case 'tbuff': if (tgt) buff(tgt, a * (S0lo(s) ? mult(tgt) : 1), h * (S0lo(s) ? mult(tgt) : 1)); break;
+      case 'tfx': if (tgt) s.fx.forEach(o => (tgt.x = tgt.x || []).push(Object.assign({ src:BSRC || 'Objet' }, o))); break;
+      case 'tring': if (tgt) { tgt.ring = 1; tgt.rc = 0; } break;
       case 'ttmp': if (tgt) tmp(tgt, a, h, s.kw); break;
       case 'tkwp': if (tgt) addF(tgt, s.kw); break;
       case 'tkwn': shuffle(p.bd.filter(m => !has(m, s.kw))).slice(0, s.n).forEach(m => tmp(m, 0, 0, s.kw)); break;
@@ -313,7 +343,8 @@ function castSpell0(G, p, hi, tg) {
   if (S.hp) p.hp = Math.max(1, p.hp - S.hp);
   if (S.nin && (HX(p) && HX(p).pw && HX(p).pw.k === 'ptechc') && !(p.rsv || []).length) p.g += 1;
   p.lastCast = id;
-  if (S.db && S.fx) { techSteps(G, p, S.fx, tgt, tg, 1); if (tgt && S.sig && S.sig.includes(tgt.c)) withSrc('Signature · ' + S.n, () => techSteps(G, p, S.sgx, tgt, tg, 1)); }
+  if (S.lo) { techSteps(G, p, S.fx || [], tgt, tg, 1); if (tgt && S.sig && S.sig.includes(tgt.c)) withSrc('Porteur légitime · ' + S.n, () => techSteps(G, p, S.sgx || [], tgt, tg, 1)); }
+  else if (S.db && S.fx) { techSteps(G, p, S.fx, tgt, tg, 1); if (tgt && S.sig && S.sig.includes(tgt.c)) withSrc('Signature · ' + S.n, () => techSteps(G, p, S.sgx, tgt, tg, 1)); }
   else if ((S.rm || S.spk || S.sim || S.gem || S.craft) && S.fx) techSteps(G, p, S.fx, tgt, tg, 1);
   else if (S.nin && S.fx) techRun(G, p, S, it0, tgt, tg, sage0);
   else switch (id) {
@@ -405,7 +436,8 @@ function combatBoard(p) {
     const c = { ...m }; delete c.tmp;
     if (m.tmp) { c.a += m.tmp.a || 0; c.h = Math.max(1, c.h + (m.tmp.h || 0)); if (m.tmp.f) addF(c, m.tmp.f); }
     if (p.tma) { c.a += p.tma.a; c.h += p.tma.h; }
-    if (ninja) { if (m.jp && G && m.jp === G.rd) c.jp = 1; else delete c.jp; if (m.gx) c.x = (c.x || []).concat(m.gx); delete c.gx; if (m.nhx) c.x = (c.x || []).concat(m.nhx); delete c.nhx; if (p.ld) c.edo = p.ld; }
+    if (m.ring) { addF(c, 'c'); c.x = (c.x || []).concat([{ k:'camo_keep', src:'L’Anneau unique' }]); }
+    if (ninja || (G && inMechAny(G, 'voyage'))) { if (m.jp && G && m.jp === G.rd) c.jp = 1; else delete c.jp; if (m.gx) c.x = (c.x || []).concat(m.gx); delete c.gx; if (m.nhx) c.x = (c.x || []).concat(m.nhx); delete c.nhx; if (p.ld) c.edo = p.ld; }
     if (ninja) {
       { const el = CLAN_EL[CD(m.c).tr], t = el && NJ_MK ? mkTier(p, el) : 0; if (t && !(C[m.c] && C[m.c].comp)) { const B = MK_TIER[el][t - 1]; c.a += B[0]; c.h += B[1]; if (B[2]) addF(c, B[2]); } }
       const tr = CD(m.c).tr, k = m.g ? 2 : 1, x = c.x = (c.x || []).slice();
@@ -545,6 +577,18 @@ const SPART = {
   sp_reflet: () => ['#c8963e', '#3f6fb0'].map((col, k) => `<g transform="translate(${k ? 60 : 40} 50) rotate(${k ? 10 : -10})">` + E(0, -6, 17, 22, col, so()) + E(0, -6, 13, 18, '#cfe9f2', so(1.6)) + E(-4, -14, 4, 7, '#fff', 'opacity=".6"') + `<rect x="-3.6" y="16" width="7.2" height="22" rx="2" fill="${col}" ${so(1.6)}/>` + P(starD(0, -6, 6, 2.6, 5), k ? '#7fb8ff' : '#f2c14e', GLOW) + '</g>').join(''),
   sp_ascension: () => softGlow(50, 46, 34, '#fff1b8', .45) + ['M50 52 C 36 40, 20 42, 8 30 C 14 50, 24 60, 46 62 Z', 'M50 52 C 64 40, 80 42, 92 30 C 86 50, 76 60, 54 62 Z'].map(d => P(d, '#f6f0e0', so(1.8))).join('') + Ln('M14 36 C 24 46, 34 50, 46 56 M86 36 C 76 46, 66 50, 54 56 M20 44 C 28 50, 36 54, 46 58 M80 44 C 72 50, 64 54, 54 58', '#c8b89a', 1.1) + P(starD(50, 40, 14, 5.6, 5), '#f2c14e', so(1.8) + ' ' + GLOW) + Ln('M50 64 L50 92 M42 72 L50 64 L58 72', '#fff1b8', 3),
 };
+// Le Seigneur des Anneaux : pictogrammes d'attente des objets légendaires (anneau d'or, lame, écu, cor, créature)
+(function () { const so = w => `stroke="#2a1a08" stroke-width="${w}"`;
+  const G = { ring:`<circle r="17" fill="none" stroke="#ffd24a" stroke-width="7"/><circle r="17" fill="none" stroke="#fff3b0" stroke-width="1.6" opacity=".8"/>`,
+    blade:`<path d="M0 -30 L6 8 L0 14 L-6 8 Z" fill="#e8eef6" ${so(1.6)}/><rect x="-12" y="12" width="24" height="5" rx="2" fill="#c8963e" ${so(1.4)}/><rect x="-3" y="17" width="6" height="12" rx="2" fill="#6a4a2a" ${so(1.4)}/>`,
+    shield:`<path d="M-18 -22 H18 V2 C18 16 8 24 0 28 C-8 24 -18 16 -18 2 Z" fill="#b8c4d2" ${so(2)}/><path d="M0 -14 V18 M-10 -4 H10" stroke="#fff" stroke-width="3" opacity=".7"/>`,
+    horn:`<path d="M-24 -6 C-8 -14 10 -8 22 10 L12 18 C4 6 -8 2 -22 6 Z" fill="#f0e2c0" ${so(2)}/><circle cx="18" cy="14" r="7" fill="#c8963e" ${so(1.6)}/>`,
+    beast:`<path d="M-24 10 C-20 -14 -4 -22 0 -8 C4 -22 20 -14 24 10 C12 2 6 8 0 20 C-6 8 -12 2 -24 10 Z" fill="#c8502a" ${so(2)}/>`,
+    gem:`<path d="M0 -24 L18 -6 L0 26 L-18 -6 Z" fill="#9fe0ff" ${so(2)}/><path d="M-18 -6 H18 M0 -24 L-6 -6 L0 26 L6 -6 Z" stroke="#fff" stroke-width="1.4" fill="none" opacity=".8"/>` };
+  const K = { lo_anneau:'ring', lo_dard:'blade', lo_anduril:'blade', lo_glamdring:'blade', lo_morgul:'blade', lo_herugrim:'blade', lo_hache:'blade', lo_grond:'blade', lo_arc:'blade', lo_baton:'blade',
+    lo_mithril:'shield', lo_cape:'shield', lo_couronne:'gem', lo_fiole:'gem', lo_arkenstone:'gem', lo_palantir:'gem', lo_lembas:'gem', lo_cor:'horn', lo_feux:'horn', lo_charge:'horn',
+    lo_balrog:'beast', lo_ents:'beast', lo_morts:'beast', lo_aigles:'beast', lo_gripoil:'beast', lo_ombre:'beast' };
+  for (const id in SPELLS) if (SPELLS[id].lo && !SPART[id]) SPART[id] = NJA(id === 'lo_anneau' ? '#ffd24a' : '#e8c878', G[K[id] || 'gem']); })();
 Object.assign(SPART, {
   dt_taiyo: () => softGlow(50, 52, 36, '#fff6c0', .55) + Ci(50, 52, 14, '#fffbe6', 'filter="url(#fx-glow)"') + Array.from({ length:12 }, (_, i) => { const a = i * Math.PI / 6; return Ln(`M${50 + Math.cos(a) * 18} ${52 + Math.sin(a) * 18} L${50 + Math.cos(a) * 32} ${52 + Math.sin(a) * 32}`, '#ffe36a', 3); }).join(''),
   dt_kame: () => softGlow(50, 52, 34, '#6ad0ff', .4) + P('M18 70 L50 46 L86 30 L86 74 L50 58 Z', '#9fe4ff', 'opacity=".8"') + Ci(32, 64, 14, '#e8f8ff', 'filter="url(#fx-glow)"') + Ci(32, 64, 8, '#6ad0ff', ''),

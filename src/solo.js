@@ -10,6 +10,8 @@ window.RoniUnivers = [
    regles:["La loi active de Springfield est « Donuts ». Les cinq familles participent à la partie."]},
   {id:"dragon-ball",nom:"Dragon Ball",heros:10,theme:"Ki",symbole:"etoile",couleur:"#eda658",familles:["Saiyans","Terriens","Namekiens","Armée de Freezer","Androïdes"],
    regles:["Médite, charge ton ki et transforme tes guerriers."]},
+  {id:"seigneur-des-anneaux",nom:"Le Seigneur des Anneaux",heros:20,theme:"Voyage et Anneau",symbole:"etoile",couleur:"#d8b45a",familles:["Hommes","Elfes","Nains et Hobbits","Mordor","Isengard"],
+   regles:["Chaque victoire te fait avancer vers le Mordor ; chaque étape offre un objet légendaire. Porte l’Anneau unique jusqu’au Mont du Destin pour gagner."]},
   {id:"naruto",nom:"Naruto",heros:20,theme:"Chakra",symbole:"kunai",couleur:"#dba26d",familles:["Konoha","Akatsuki","Suna","Oto","Kiri"],
    regles:["Charge ton chakra : lance le jutsu de chaque ninja, puis transforme-le."]}
 ];
@@ -102,7 +104,7 @@ window.RoniUnivers = [
 
 
 // raccord : « Jouer solo » de l'accueil ouvre cet écran ; « Lancer la partie » démarre la partie solo dans l'univers choisi
-const SOLO_IDS = { 'south-park':'South Park', 'rick-et-morty':'Rick et Morty', 'les-simpson':'Les Simpson', 'dragon-ball':'Dragon Ball', 'naruto':'Naruto' };
+const SOLO_IDS = { 'seigneur-des-anneaux':'Le Seigneur des Anneaux', 'south-park':'South Park', 'rick-et-morty':'Rick et Morty', 'les-simpson':'Les Simpson', 'dragon-ball':'Dragon Ball', 'naruto':'Naruto' };
 function soloOpen() {
   try {
     const cur = Object.keys(SOLO_IDS).find(k => SOLO_IDS[k] === (V.univSel || [])[0]) || 'les-simpson';
