@@ -326,6 +326,9 @@ html:root:root:root:root:root:root:root:root body.rn[class] .rn-tb,html:root:roo
 § .hero-zone .bell:disabled .bell-t{display:grid;place-items:center;padding:0;font-size:0;background:url(assets/hs/b-fin-inactive.webp) 0 0/100% 100% no-repeat}
 § .hero-zone .bell:disabled .bell-t::after{content:'Combat';position:static;inset:auto;background:none;font-size:fs(21,9);color:#fff;text-shadow:0 0 2u #000,0 2u 0 #222,0 0 5u #000}
 § .hero-zone .bell.rung .bell-t::before{right:-16u;top:-22u;width:54u;height:54u}
+/* ===== interface v2 (éléments fournis le 14/11/2026) : plaque de bois derrière « Manche · phase » ===== */
+§ .hud::before{content:'';position:absolute;left:4u;top:10u;width:232u;height:50u;z-index:0;pointer-events:none;background:url(assets/hs/v2/rec-synergie.webp) 0 0/100% 100% no-repeat;filter:drop-shadow(0 3u 4u rgba(0,0,0,.55))}
+§ .hud .round,§ .hud .phase{position:relative;z-index:1}
 § .hud .timer{left:1336u;top:404u;width:134u;height:40u;font-size:fs(27,11);color:#fff;text-shadow:0 0 2u #000,0 2u 0 #3a2a06,0 0 6u rgba(0,0,0,.9)}
 /* bannière de résultat du combat : entre le classement et la plaque du chrono */
 § .table-banner{left:336u;width:920u}
@@ -525,3 +528,24 @@ function fitCdTx(root) {
   const arm = () => { try { if (typeof peekEl !== 'undefined' && peekEl && !peekEl._fit) { peekEl._fit = 1; new MutationObserver(() => { try { fitCdTx(peekEl); } catch (e) {} }).observe(peekEl, { childList:true, subtree:true, attributes:true, attributeFilter:['hidden'] }); } } catch (e) {} };
   arm(); document.addEventListener('pointerover', arm, { once:true });
 })();
+
+/* ===== interface v2 (éléments fournis le 14/11/2026) : sélection du héros, groupes, chakra ===== */
+(function () { const st = document.createElement('style'); st.textContent = `
+.hp-head{background:url(assets/hs/v2/sel-bandeau.webp) center/100% 100% no-repeat!important;clip-path:none!important;filter:drop-shadow(0 6px 12px rgba(0,0,0,.65))!important;padding-top:clamp(12px,2.4vh,26px)!important;padding-bottom:clamp(14px,2.8vh,30px)!important}
+.hp-card .hp-nm{background:url(assets/hs/v2/sel-nom.webp) center/100% 100% no-repeat!important;clip-path:none!important;height:27%!important;left:-10%!important;right:-10%!important}
+.hp-card .hp-nm i{margin-top:-3%!important;padding:0 14%!important}
+.hp-card .hp-st{background:url(assets/hs/v2/sel-rang.webp) center/100% 100% no-repeat!important;box-shadow:none!important;border-radius:0!important;padding:5px 20px 6px!important;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))}
+.hp-rr{background:url(assets/hs/v2/sel-relancer.webp) center/100% 100% no-repeat!important;box-shadow:none!important;border-radius:0!important;filter:drop-shadow(0 4px 6px rgba(0,0,0,.6))}
+.hp-rr.off{filter:grayscale(.9) brightness(.62)}
+.hp-rrn{background:url(assets/hs/v2/sel-jeton.webp) center/100% 100% no-repeat!important;box-shadow:none!important;border-radius:0!important}
+.hp-ok{background:url(assets/hs/v2/sel-ok.webp) center/100% 100% no-repeat!important;box-shadow:none!important;border-radius:0!important;animation:none!important;min-width:clamp(130px,13vw,210px)!important}
+.hp-ok:not(:disabled){filter:sepia(1) saturate(3.2) hue-rotate(-12deg) brightness(1.12) drop-shadow(0 0 14px rgba(255,210,90,.75));text-shadow:0 0 2px #000,0 3px 0 #5a3a08!important}
+.hp-ok:not(:disabled):hover{transform:scale(1.04)}
+.hp-ok:disabled{filter:brightness(.92)}
+.hp-rb{background:url(assets/hs/v2/sel-aide.webp) center/100% 100% no-repeat!important;border:0!important;box-shadow:none!important;border-radius:0!important;padding:8px 22px!important;color:#fff3d6!important;text-shadow:0 1px 0 #2a1404}
+#nk-groups{gap:3px}
+#nk-groups .nkg{background:url(assets/hs/v2/rec-synergie.webp) center/100% 100% no-repeat!important;border:0!important;border-radius:0!important;padding:6px 18px 7px 20px!important;color:#f3e2bf!important;text-shadow:0 1px 0 #1c0d04;opacity:.82;filter:saturate(.75) drop-shadow(0 2px 3px rgba(0,0,0,.5))}
+#nk-groups .nkg.on{background-image:url(assets/hs/v2/rec-etiquette.webp)!important;color:#2a1606!important;text-shadow:none;opacity:1;box-shadow:none!important;filter:drop-shadow(0 0 7px rgba(255,205,70,.75))}
+.ckp .coinrow .ckc{background:url(assets/hs/v2/ic-ck.webp) center/contain no-repeat!important;box-shadow:none!important;border:0!important;border-radius:0!important}
+.ckp .coinrow .ckc.off{background-image:url(assets/hs/v2/ic-ck0.webp)!important;filter:none!important;opacity:1!important}
+`; document.head.appendChild(st); })();
