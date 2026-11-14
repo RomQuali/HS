@@ -58,7 +58,8 @@ html.lite .keeper-zone .mn.tripok > .ptag::before{animation:none}
 @media (hover:hover){.table:not([class*="awk-"]) .fan .cd:hover::after{content:'';position:absolute;inset:-76% -104%;z-index:-1;pointer-events:none;background:url(assets/hs/lueur-carte.webp) center/100% 100% no-repeat;animation:hsLu 1.4s ease-in-out infinite}}
 @keyframes hsLu{50%{opacity:.65}}
 ` + rnCss(`
-§ .hero-zone .bell:not(:disabled):hover .bell-t::after{content:'';position:absolute;left:-9%;right:-11%;top:-28%;bottom:-27%;background:url(assets/hs/lueur-bouton.webp) center/100% 100% no-repeat;pointer-events:none}
+/* surbrillance du bouton Prêt : un halo qui épouse la forme du bouton (l'ancien cadre lumineux était plus grand que lui) */
+§ .hero-zone .bell:not(:disabled):hover .bell-t{filter:drop-shadow(0 0 3u #fff) drop-shadow(0 0 7u #fff6c0) drop-shadow(0 0 14u rgba(255,236,150,.85))}
 § .hero-zone .bell.rung .bell-t::before{content:'';position:absolute;right:-22u;top:-28u;width:76u;height:76u;background:url(assets/hs/coche.webp) center/contain no-repeat;pointer-events:none;animation:hsCo .45s cubic-bezier(.2,.9,.3,1.4) both¤}
 § .keeper .kc::after{content:'Niveau ' attr(data-t);position:absolute;left:-150u;top:30u;width:164u;height:46u;padding:6u 26u 0 0;box-sizing:border-box;background:url(assets/hs/niveau-banniere.webp) 0 0/100% 100% no-repeat;font:800 fs(17,7)/30u var(--ft, Georgia, serif);color:#3a2206;text-align:center;text-shadow:0 1px 0 rgba(255,240,190,.7);pointer-events:none}
 `) + '@keyframes hsCo{0%{opacity:0;transform:scale(.3) rotate(-25deg)}100%{opacity:1;transform:none}}';
