@@ -653,7 +653,7 @@ const DEFAULT_CARD_LIST = [
   ['nk_kabuto', 'Kabuto Yakushi', 4, 'nk_oto', 3, 6, '', [{ k:'aft_full' }, { k:'jutsu', nm:'Expérience interdite', fx:[{ k:'bc_devour' }], tf:[{ c:6, nm:'Mode serpent', a:4, h:4 }, { c:8, nm:'Edo Tensei', a:0, h:0, x:[{ k:'soc_edo' }] }] }]],
   ['nk_kimimaro', 'Kimimaro', 4, 'nk_oto', 5, 4, '', [{ k:'riposte', d:2 }, { k:'jutsu', nm:'Danse des os', fx:[{ k:'bc_self', a:2, h:1 }], tf:[{ c:4, nm:'Marque de niveau 1', a:2, h:2 }, { c:7, nm:'Marque de niveau 2', a:2, h:2, x:[{ k:'riposte', d:2 }, { k:'cleave' }] }] }]],
   ['nk_sasuke', 'Sasuke Uchiha', 5, 'nk_oto', 5, 5, '', [{ k:'soc_copykw' }, { k:'jutsu', nm:'Chidori', cb:[{ k:'soc_face', d:5 }], tf:[{ c:5, nm:'Marque maudite', a:3, h:3 }, { c:7, nm:'Mangekyō', a:2, h:2, x:[{ k:'burn', d:3 }, { k:'soc_summon', card:'tk_aoda', n:1 }] }, { c:9, nm:'Susano’o', a:2, h:2, x:[{ k:'aft_shield' }] }] }]],
-  ['nk_orochimaru', 'Orochimaru', 6, 'nk_oto', 6, 7, 'r', [{ k:'bc_devour' }, { k:'jutsu', nm:'Invocation : Manda', fx:[{ k:'bc_summon', card:'tk_manda', n:1 }, { k:'bc_manda' }], tf:[{ c:7, nm:'Serpent blanc', a:3, h:3, kw:'n', x:[{ k:'soc_summon', card:'tk_rashomon', n:1 }] }, { c:10, nm:'Yamata no Orochi', a:4, h:4, fx:[{ k:'bc_summon', card:'tk_manda', n:1 }, { k:'bc_manda' }, { k:'bc_devour' }] }] }]],
+  ['nk_orochimaru', 'Orochimaru', 6, 'nk_oto', 6, 7, 'r', [{ k:'bc_devour' }, { k:'jutsu', nm:'Invocation : Manda', fx:[{ k:'bc_manda' }], tf:[{ c:7, nm:'Serpent blanc', a:3, h:3, kw:'n', x:[{ k:'soc_summon', card:'tk_rashomon', n:1 }] }, { c:10, nm:'Yamata no Orochi', a:4, h:4, fx:[{ k:'bc_manda' }, { k:'bc_devour' }] }] }]],
   ['nk_chojuro', 'Chōjūrō', 1, 'nk_kir', 2, 2, '', [{ k:'atk_self', a:1, h:0 }, { k:'jutsu', nm:'Hiramekarei', cb:[{ k:'soc_first', x:2 }] }]],
   ['nk_suigetsu', 'Suigetsu Hōzuki', 1, 'nk_kir', 1, 3, '', [{ k:'armor', d:2 }, { k:'jutsu', nm:'Corps liquide', fx:[{ k:'bc_self', a:0, h:1 }] }]],
   ['nk_ao', 'Ao', 2, 'nk_kir', 2, 3, '', [{ k:'see_camo' }, { k:'jutsu', nm:'Byakugan', fx:[{ k:'bc_buff_rand', a:2, h:0, tb:'nk_kir' }] }]],
@@ -1215,7 +1215,7 @@ const ET = {
   dr_summon2:{ tr:'dr', l:'Division', ps:[], w:1, mag:() => 5, txt:e => `Râle d'agonie : se divise en ${e.n} ${CD(e.card).n}.` },
   dr_kill_tok:{ tr:'dr', l:'Flûte brisée', ps:[], w:1, mag:() => -2, txt:() => `Si elle meurt en combat, ses Doki disparaissent.` },
   sickle:{ tr:'pas', l:'Faucille', ps:[], w:1, mag:() => 4, txt:() => `Faucille : ses attaques ignorent la Provocation et tranchent le Bouclier divin.` },
-  bc_manda:{ tr:'bc', l:'Sacrifice à Manda', ps:[], w:1, mag:() => 2, txt:() => `Manda exige un sacrifice : il dévore ton serviteur le plus faible et gagne ses caractéristiques.` },
+  bc_manda:{ tr:'bc', l:'Sacrifice à Manda', ps:[], w:1, mag:() => 2, txt:() => `Invoque Manda, qui exige un sacrifice : il dévore ton serviteur le plus faible et gagne ses caractéristiques.` },
   bc_fill_tok:{ tr:'bc', l:'Invoquer jusqu’à N', ps:[], w:1, mag:e => 3 * e.cards.length, txt:e => `Cri de guerre : invoque ceux de ses ${e.cards.length} Doki qui manquent sur ton plateau.` },
   cleave:{ tr:'pas', l:'Attaque les voisins', ps:[], w:1, mag:() => 6, txt:() => `Attaque aussi les voisins de sa cible.` },
   shield_self:{ tr:'shield', l:'Grandir quand un Bouclier divin tombe', ps:['a', 'h'], w:1.2, mag:e => (e.a + e.h) * 2, txt:(e, k) => `Quand un allié perd son Bouclier divin, gagne ${sign(e.a * k, e.h * k)} pour ce combat.` },
@@ -1391,7 +1391,7 @@ function runRecruit0(G, p, m, e, ctx) {
     case 'hplay_self': if (tribeOk(ctx, e.tb)) buff(m, A, Hh); break;
     case 'bc_self': buff(m, A, Hh); break;
     case 'bc_clone': nkClone(p, m, e.n, e.full); break;
-    case 'bc_manda': { const md = p.bd.filter(x => x.c === 'tk_manda' && !x.fed).pop(), o = md && p.bd.filter(x => x !== md && x !== m && x.c !== 'tk_manda').sort((a, b) => (a.a + a.h) - (b.a + b.h))[0]; if (md) md.fed = 1; if (md && o) { p.bd.splice(p.bd.indexOf(o), 1); buff(md, o.a, o.h); toPool(G, o); } break; }
+    case 'bc_manda': { const o = p.bd.filter(x => x !== m && x.c !== 'tk_manda').sort((a, b) => (a.a + a.h) - (b.a + b.h))[0]; if (!o && p.bd.length >= 7) break; let at = m; if (o) { const i = p.bd.indexOf(o); p.bd.splice(i, 1); toPool(G, o); } recruitSummon(p, 'tk_manda', m.g, at); const md = p.bd.filter(x => x.c === 'tk_manda' && !x.fed).pop(); if (md) { md.fed = 1; if (o) buff(md, o.a, o.h); } break; }   // Manda arrive en dévorant le serviteur le plus faible (même sur un plateau plein)
     case 'bc_fill_tok': e.cards.filter(c => !p.bd.some(x => x.c === c)).forEach(c => { if (p.bd.length < 7) recruitSummon(p, c, m.g, m); }); break;
     case 'bc_summon_of': for (let i = 0; i < e.n; i++) recruitSummon(p, pickR(['tk_karasu', 'tk_kuroari', 'tk_sanshouo']), m.g, m); break;
     case 'osell_gold': p.g += e.n * k; break;
@@ -1443,7 +1443,7 @@ function jutCost(p, m) { const J = jutOf(m); if (!J || J.none) return null; retu
 // le dernier palier d'un ninja à plusieurs transformations est réservé à la carte dorée (triple)
 const nkTfLock = m => { const st = tfSt(jutOf(m)), i = m.tf || 0; return st.length > 1 && i === st.length - 1 && !m.g; };
 function nkTfCost(p, m) { const T = tfSt(jutOf(m))[m.tf || 0]; if (!T || nkTfLock(m)) return null; return Math.max(1, T.c - ((htr(p, 'pnktf') || {}).n || 0)); }
-function jutBlock(G, p, m) { const J = jutOf(m), c = jutCost(p, m); if (!J || c == null) return 'Pas de jutsu.'; if (m.ju === G.rd) return jutCb(J, m.tf).length ? 'Jutsu prêt : il partira au début du combat.' : 'Jutsu déjà lancé ce tour.'; if ((p.ck || 0) < c) return `Il te faut ${c} chakra (tu en as ${p.ck || 0}).`; const fx = jutFx(J, m.tf); if (fx.length && !jutCb(J, m.tf).length && fx.every(o => /^bc_(summon|summon_of|clone)$/.test(o.k)) && p.bd.length >= 7) return 'Ton plateau est plein.'; { const ft = fx.find(o => o.k === 'bc_fill_tok'); if (ft && (p.bd.length >= 7 || ft.cards.every(c => p.bd.some(x => x.c === c)))) return p.bd.length >= 7 ? 'Ton plateau est plein.' : 'Ses invocations sont déjà toutes là.'; } return null; }
+function jutBlock(G, p, m) { const J = jutOf(m), c = jutCost(p, m); if (!J || c == null) return 'Pas de jutsu.'; if (m.ju === G.rd) return jutCb(J, m.tf).length ? 'Jutsu prêt : il partira au début du combat.' : 'Jutsu déjà lancé ce tour.'; if ((p.ck || 0) < c) return `Il te faut ${c} chakra (tu en as ${p.ck || 0}).`; const fx = jutFx(J, m.tf); if (fx.length && !jutCb(J, m.tf).length && fx.every(o => /^bc_(summon|summon_of|clone)$/.test(o.k)) && p.bd.length >= 7) return 'Ton plateau est plein.'; if (fx.some(o => o.k === 'bc_manda') && p.bd.length >= 7 && !p.bd.some(x => x !== m && x.c !== 'tk_manda')) return 'Ton plateau est plein.'; { const ft = fx.find(o => o.k === 'bc_fill_tok'); if (ft && (p.bd.length >= 7 || ft.cards.every(c => p.bd.some(x => x.c === c)))) return p.bd.length >= 7 ? 'Ton plateau est plein.' : 'Ses invocations sont déjà toutes là.'; } return null; }
 function doJutsu(G, p, m) {
   if (jutBlock(G, p, m)) return false; const J = jutOf(m), c = jutCost(p, m);
   p.ck -= c; m.ju = G.rd; if (jutCb(J, m.tf).length) m.jp = G.rd;   // jutsu de combat : préparé pour le prochain combat
