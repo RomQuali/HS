@@ -294,6 +294,10 @@ function foeApply(p, board) {
   const f = p && p.foe; if (!f || !board) return;
   if (f.aoe) board.forEach(m => { if (has(m, 's')) remF(m, 's'); else m.h -= f.aoe; });   // Maggie : dégâts à tous les ennemis avant le combat
   const live = () => board.filter(m => m.h > 0);
+  { const top = () => live().sort((a, b) => (b.a + b.h) - (a.a + a.h))[0];   // héros Naruto : Chidori, Tsukuyomi, flammes de Matatabi
+    if (f.top) { const t = top(); if (t) { if (has(t, 's')) remF(t, 's'); else t.h -= f.top; } }
+    if (f.genj) { const t = top(); if (t) t.gj = (t.gj || 0) + f.genj; }
+    if (f.burn) shuffle(live()).slice(0, f.burn.n).forEach(t => { t.brn = Math.max(t.brn || 0, f.burn.d); }); }
   for (let i = 0; i < (f.seal || 0); i++) { const o = live().filter(m => (m.f || '').length); if (!o.length) break; pickR(o).f = ''; }
   { const used = new Set(); (f.chill || []).forEach(v => { let o = live().filter(m => !used.has(m)); if (!o.length) { used.clear(); o = live(); } if (o.length) { const t = pickR(o); used.add(t); t.a = Math.max(0, t.a - v); } }); }   // cibles différentes tant que possible
 }
@@ -401,7 +405,7 @@ function combatBoard(p) {
     const c = { ...m }; delete c.tmp;
     if (m.tmp) { c.a += m.tmp.a || 0; c.h = Math.max(1, c.h + (m.tmp.h || 0)); if (m.tmp.f) addF(c, m.tmp.f); }
     if (p.tma) { c.a += p.tma.a; c.h += p.tma.h; }
-    if (ninja) { if (m.jp && G && m.jp === G.rd) c.jp = 1; else delete c.jp; if (m.gx) c.x = (c.x || []).concat(m.gx); delete c.gx; if (p.ld) c.edo = p.ld; }
+    if (ninja) { if (m.jp && G && m.jp === G.rd) c.jp = 1; else delete c.jp; if (m.gx) c.x = (c.x || []).concat(m.gx); delete c.gx; if (m.nhx) c.x = (c.x || []).concat(m.nhx); delete c.nhx; if (p.ld) c.edo = p.ld; }
     if (ninja) {
       { const el = CLAN_EL[CD(m.c).tr], t = el && NJ_MK ? mkTier(p, el) : 0; if (t && !(C[m.c] && C[m.c].comp)) { const B = MK_TIER[el][t - 1]; c.a += B[0]; c.h += B[1]; if (B[2]) addF(c, B[2]); } }
       const tr = CD(m.c).tr, k = m.g ? 2 : 1, x = c.x = (c.x || []).slice();

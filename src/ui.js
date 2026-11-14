@@ -420,7 +420,7 @@ function chakraLawH(big) {
     ${sec('🤝', 'Groupes emblématiques', `<small><b>La mécanique principale.</b> Réunis sur ton plateau les duos, trios et équipes de l'animé : Équipe 7, les Sannin, les binômes de l'Akatsuki, la Fratrie du Sable, les Cinq du Son, les Épéistes de la Brume… Chaque groupe réuni donne un gros bonus, plus fort à chaque membre ajouté, et les bonus se cumulent. La liste s'affiche à droite du plateau ; la taverne signale les cartes qui complètent tes groupes.</small>`)}
     ${sec('💧', 'Chakra', `<small>Chaque serviteur de ton plateau (invocations comprises) donne 1 chakra au début du tour. Il se garde, 10 au plus.</small>`)}
     ${sec('🌀', 'Jutsus', `<small>Chaque ninja porte son jutsu : clique sur la goutte bleue au-dessus de lui. Une fois par tour, pour un coût égal à son niveau.</small>`)}
-    ${sec('⭐', 'Transformations', `<small>Certains ninjas se transforment une seule fois (étoile dorée, 5 à 10 chakra) : caractéristiques, mot-clé, et un jutsu plus fort.</small>`)}
+    ${sec('⭐', 'Transformations', `<small>Certains ninjas se transforment une seule fois (étoile bleue, 5 à 10 chakra) : caractéristiques, mot-clé, et un jutsu plus fort.</small>`)}
     ${fam('nk_kon', '🍃', 'Maîtres et élèves : les élèves grandissent quand un autre ninja de Konoha lance un jutsu.')}
     ${fam('nk_aka', '☁️', 'Peu nombreux mais énormes, en binôme : bonus si le partenaire est sur le plateau.')}
     ${fam('nk_sun', '🏜️', 'Vente et revente : or, chakra et bonus à chaque serviteur vendu.')}
@@ -824,8 +824,8 @@ function pfGauge(d, me) {
 }
 function ckGauge(d, me) {
   const law = (d.laws || []).find(l => l.k === 'chakra'); if (!law) return '';
-  const ck = me.ck || 0, inc = (me.bd || []).length;
-  return `<div class="purse ckp" aria-label="${ck} chakra sur 10" data-tip="Chakra : il lance les jutsus de tes ninjas (goutte bleue) et paie leur transformation (étoile dorée). Chaque serviteur de ton plateau en génère 1 au début de ton tour (10 au plus, il se garde).${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ck}<small>/10</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:10 }, (_, k) => `<i class="ckc${k < ck ? '' : ' off'}"></i>`).join('')}</span></div>`;
+  const ck = me.ck || 0, inc = (me.bd || []).length, cx = ckMax(me);
+  return `<div class="purse ckp" aria-label="${ck} chakra sur ${cx}" data-tip="Chakra : il lance les jutsus de tes ninjas (goutte bleue) et paie leur transformation (étoile bleue). Chaque serviteur de ton plateau en génère 1 au début de ton tour (${cx} au plus, il se garde).${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ck}<small>/${cx}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:cx }, (_, k) => `<i class="ckc${k < ck ? '' : ' off'}"></i>`).join('')}</span></div>`;
 }
 // compteurs de clan (braises, marée, charge) sous le chakra
 const clanCtrH = me => { const c = [['braise', 'Braises', '#ff9a5a', 'Braises (Clan Katon) : chaque technique les attise. Après l\'Éveil, Phénix : tes serviteurs Katon gagnent +1/+1 par paire de braises et Réincarnation.'], ['maree', 'Marée', '#6fc8ff', 'Marée (Clan Suiton) : elle monte à chaque fin de tour. Après l\'Éveil, raz-de-marée : tous tes serviteurs gagnent +1/+1 par tranche de 4.'], ['charge', 'Charge', '#ffe14a', 'Charge (Clan Raiton) : elle s\'accumule à chaque fin de tour. Après l\'Éveil, orage total : la moitié frappe l\'ennemi au début de chaque combat.']].filter(([k]) => me[k]);

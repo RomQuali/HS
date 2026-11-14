@@ -734,25 +734,25 @@ const HEROES = {
   grumbo:  {fam:['ogre', 'gob'], n:'Grumbo le glouton', cost:2, tx:'Donne +3/+3 à ton serviteur qui a le plus d\'attaque.' },
   vaskor:  {fam:['mort', 'spec'], n:'Vaskor le nécromancien', cost:1, tx:'Invoque un Squelette 1/1 avec Réincarnation sur ton plateau.' },
   // ----- univers Ninja : 8 héros par village (sans élément) -----
-  nh_naruto: {diff:1, stars:4, fam:NJV, pv:'nk_kon', mc:'tok', n:'Naruto Uzumaki', pwn:'Multi-clonage', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'summon', card:'tk_kclone', n:1 }] }, tx:'Invoque un Clone de l’ombre 1/1 : il génère du chakra comme tes autres serviteurs.' },
-  nh_kakashi: {diff:1, stars:4, fam:NJV, pv:'nk_kon', mc:'jut', n:'Kakashi Hatake', pwn:'Ninja copieur', pw:{ k:'pjutc', n:1 }, tx:'Passif : tes jutsus coûtent 1 chakra de moins (1 au minimum).' },
-  nh_jiraiya: {diff:1, stars:4, fam:NJV, pv:'nk_kon', mc:'tok', n:'Jiraiya', pwn:'Ermite des crapauds', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'summon', card:'tk_crapaud', n:1 }] }, tx:'Invoque un Crapaud 2/3.' },
-  nh_itachi: {diff:1, stars:5, fam:NJV, pv:'nk_aka', mc:'cbt', n:'Itachi Uchiha', pwn:'Tsukuyomi', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'foechill', n:2, a:2 }] }, tx:'Au prochain combat, 2 serviteurs ennemis perdent 2 ATQ.' },
-  nh_sasuke: {diff:1, stars:4, fam:NJV, pv:'nk_oto', mc:'cbt', n:'Sasuke Uchiha', pwn:'Chidori', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'buffhi', a:2, h:1 }] }, tx:'Ton serviteur le plus fort gagne +2/+1.' },
-  nh_shikamaru: {diff:1, stars:3, fam:NJV, pv:'nk_kon', mc:'chk', n:'Shikamaru Nara', pwn:'Stratège', pw:{ k:'pturn', ck:2 }, tx:'Passif : au début de chaque tour, gagne 2 chakra de plus.' },
+  nh_naruto: {diff:1, stars:4, fam:NJV, pv:'nk_kon', mc:'tok', n:'Naruto Uzumaki', pwn:'Multi-clonage', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'nclone' }] }, tx:'Clone : invoque une copie 1/1 de ton serviteur le plus fort, avec ses mots-clés.' },
+  nh_kakashi: {diff:1, stars:4, fam:NJV, pv:'nk_kon', mc:'cbt', n:'Kakashi Hatake', pwn:'Ninja copieur', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'hx', who:'top', fx:[{ k:'soc_copykw' }] }] }, tx:'Prochain combat : ton serviteur le plus fort gagne Sharingan (il copie les mots-clés de l’ennemi d’en face).' },
+  nh_jiraiya: {diff:1, stars:4, fam:NJV, pv:'nk_kon', mc:'tok', n:'Jiraiya', pwn:'Invocation', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'toad' }] }, tx:'Invoque un Crapaud : ses caractéristiques grandissent avec le niveau de ta taverne (2/3 au niveau 1, 7/8 au niveau 6).' },
+  nh_itachi: {diff:1, stars:5, fam:NJV, pv:'nk_aka', mc:'cbt', n:'Itachi Uchiha', pwn:'Tsukuyomi', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'foegenj', n:1 }] }, tx:'Genjutsu : au prochain combat, l’ennemi le plus fort saute sa première attaque.' },
+  nh_sasuke: {diff:1, stars:4, fam:NJV, pv:'nk_oto', mc:'cbt', n:'Sasuke Uchiha', pwn:'Chidori', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'foetop', d:4 }] }, tx:'Au début du prochain combat, inflige 4 dégâts à l’ennemi le plus fort.' },
+  nh_shikamaru: {diff:1, stars:3, fam:NJV, pv:'nk_kon', mc:'cbt', n:'Shikamaru Nara', pwn:'Manipulation des ombres', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'hx', who:'hp', fx:[{ k:'soc_bind', who:'face' }] }] }, tx:'Entrave : au prochain combat, ton serviteur qui a le plus de PV empêche l’ennemi d’en face d’attaquer tant qu’il est en vie.' },
   nh_hashirama: {diff:1, stars:5, fam:NJV, pv:'nk_kon', mc:'cbt', n:'Hashirama Senju', pwn:'Mokuton', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'kw', kw:'t', n:1, a:1, h:3 }] }, tx:'Un de tes serviteurs sans Provocation gagne Provocation et +1/+3.' },
-  nh_kushina: {diff:1, stars:5, fam:NJV, pv:'nk_kon', mc:'cbt', n:'Kushina Uzumaki', pwn:'Chaînes de scellement', cost:4, pay:'ck', pw:{ k:'multi', s:[{ k:'kw', kw:'s', n:1 }] }, tx:'Un de tes serviteurs sans Bouclier divin gagne Bouclier divin.' },
+  nh_kushina: {diff:1, stars:5, fam:NJV, pv:'nk_kon', mc:'chk', n:'Kushina Uzumaki', pwn:'Chakra des Uzumaki', ckx:5, pw:{ k:'pturn', ck:1 }, tx:'Passif : ton chakra peut monter jusqu’à 15, et tu gagnes 1 chakra de plus au début de chaque tour.' },
   nh_gaara: {diff:1, stars:4, fam:NJV, pv:'nk_sun', mc:'cbt', n:'Gaara', pwn:'Bouclier de sable', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'tkw', kw:'t', n:1, a:0, h:5 }, { k:'tkw', kw:'s', n:1 }] }, tx:'Prochain combat : un de tes serviteurs gagne +0/+5 et Provocation, un autre Bouclier divin.' },
-  nh_kankuro: {diff:1, stars:3, fam:NJV, pv:'nk_sun', mc:'tok', n:'Kankurō', pwn:'Kugutsu', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'summon', card:'tk_karasu', n:1 }] }, tx:'Invoque une marionnette Karasu 2/2.' },
+  nh_kankuro: {diff:1, stars:3, fam:NJV, pv:'nk_sun', mc:'tok', n:'Kankurō', pwn:'Kugutsu', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'summonr', cards:['tk_karasu', 'tk_kuroari', 'tk_sanshouo'] }] }, tx:'Invoque une marionnette au hasard : Karasu (Venimosité), Kuroari (Entrave) ou Sanshōuo (Provocation).' },
   nh_sasori: {diff:1, stars:4, fam:NJV, pv:'nk_aka', mc:'cbt', n:'Sasori', pwn:'Poison de Sasori', cost:3, pay:'g', pw:{ k:'multi', s:[{ k:'kw', kw:'n', n:1 }] }, tx:'Un de tes serviteurs gagne Venimosité.' },
   nh_rasa: {diff:1, stars:4, fam:NJV, pv:'nk_sun', mc:'eco', n:'Rasa', pwn:'Poussière d’or', pw:{ k:'pturn', g:1 }, tx:'Passif : au début de chaque tour, gagne 1 or de plus.' },
-  nh_mei: {diff:1, stars:4, fam:NJV, pv:'nk_kir', mc:'cbt', n:'Mei Terumi', pwn:'Futton', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'foeaoe', d:1 }] }, tx:'Au début du prochain combat, inflige 1 dégât à tous les serviteurs ennemis.' },
-  nh_haku: {diff:1, stars:4, fam:NJV, pv:'nk_kir', mc:'cbt', n:'Haku', pwn:'Miroirs de glace', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'kw', kw:'s', n:1 }] }, tx:'Un de tes serviteurs sans Bouclier divin gagne Bouclier divin.' },
-  nh_bee: {diff:1, stars:4, fam:NJV, pv:'nk_kir', mc:'cbt', n:'Killer Bee', pwn:'Rap du Hachibi', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'buffr', a:1, h:1, n:2 }] }, tx:'Deux fois : un de tes serviteurs aléatoire gagne +1/+1.' },
-  nh_kakuzu: {diff:1, stars:4, fam:NJV, pv:'nk_aka', mc:'eco', n:'Kakuzu', pwn:'Chasseur de primes', pw:{ k:'pturn', sell:1 }, tx:'Passif : vendre un serviteur rapporte 1 or de plus.' },
-  nh_yugito: {diff:1, stars:4, fam:NJV, pv:'nk_kir', mc:'cbt', n:'Yugito Nii', pwn:'Flammes de Matatabi', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'fire', d:3 }] }, tx:'Au début du prochain combat, 3 dégâts frappent un serviteur ennemi.' },
-  nh_omoi: {diff:1, stars:3, fam:NJV, pv:'nk_kir', mc:'chk', n:'Omoi', pwn:'Concentration', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'ck', n:2 }] }, tx:'Gagne 2 chakra.' },
-  nh_deidara: {diff:1, stars:5, fam:NJV, pv:'nk_aka', mc:'ral', n:'Deidara', pwn:'Art explosif', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'drgive', n:1, fx:{ k:'dr_dmg', d:3, n:1 } }] }, tx:'Un de tes serviteurs gagne « Râle d’agonie : inflige 3 dégâts à un ennemi aléatoire ».' },
+  nh_mei: {diff:1, stars:4, fam:NJV, pv:'nk_kir', mc:'cbt', n:'Mei Terumi', pwn:'Brume acide', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'hx', who:'atk', fx:[{ k:'burn', d:2 }] }] }, tx:'Prochain combat : ton serviteur qui a le plus d’ATQ gagne Brûlure de 2 (l’ennemi qu’il frappe perd 2 PV après chacune de ses attaques).' },
+  nh_haku: {diff:1, stars:4, fam:NJV, pv:'nk_kir', mc:'cbt', n:'Haku', pwn:'Garde du corps', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'hguard' }] }, tx:'Prochain combat : ton serviteur qui a le plus de PV encaisse les attaques qui visent ton serviteur qui a le plus d’ATQ.' },
+  nh_bee: {diff:1, stars:4, fam:NJV, pv:'nk_kir', mc:'cbt', n:'Killer Bee', pwn:'Style des sept lames', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'hbee', a:2 }] }, tx:'Prochain combat : ton serviteur qui a le plus d’ATQ gagne +2 ATQ et Furie des vents.' },
+  nh_kakuzu: {diff:1, stars:4, fam:NJV, pv:'nk_aka', mc:'eco', n:'Kakuzu', pwn:'Chasseur de primes', hearts:5, pw:{ k:'pturn', sell:1 }, tx:'Passif : vendre un serviteur rapporte 1 or de plus. Cinq cœurs : la première fois que ton héros devrait mourir, il revient à 5 PV.' },
+  nh_yugito: {diff:1, stars:4, fam:NJV, pv:'nk_kir', mc:'cbt', n:'Yugito Nii', pwn:'Flammes de Matatabi', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'foeburn', n:2, d:2 }] }, tx:'Au prochain combat, 2 ennemis subissent une Brûlure de 2 (ils perdent 2 PV après chacune de leurs attaques).' },
+  nh_omoi: {diff:1, stars:3, fam:NJV, pv:'nk_kir', mc:'cbt', n:'Omoi', pwn:'Lame de foudre', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'hx', who:'atk', fx:[{ k:'soc_first', x:2 }] }] }, tx:'Prochain combat : la première attaque de ton serviteur qui a le plus d’ATQ inflige le double.' },
+  nh_deidara: {diff:1, stars:5, fam:NJV, pv:'nk_aka', mc:'tok', n:'Deidara', pwn:'Argile explosive', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'summon', card:'tk_argile', n:1 }] }, tx:'Invoque une Araignée d’argile 1/1 avec « Râle d’agonie : inflige 3 dégâts à un ennemi aléatoire ».' },
   nh_roshi: {diff:1, stars:4, fam:NJV, pv:'nk_kon', mc:'tf', n:'Rōshi', pwn:'Armure de lave', pw:{ k:'pnktf', n:3 }, tx:'Passif : tes transformations coûtent 3 chakra de moins.' },
   pyra:    {fam:['drag'], n:'Pyra la chevaucheuse', tx:'Passif : au début de chaque combat, ton dragon souffle 2 dégâts sur un ennemi aléatoire (le surplus touche d\'autres ennemis).' },
   paul:    {fam:['sq_feu'], n:'Paul', cost:2, el:'sq_feu', tx:'Ami du feu · Attise : un Flammou aléatoire gagne +2/+1 et tes autres Flammous gagnent +1 attaque.' },
@@ -827,7 +827,7 @@ const MECHS = {
   ruee:{ n:'Ruée sauvage', ic:'leaf', d:'Au début du combat, si tu as au moins 3 serviteurs de l\'univers, ils gagnent +2/+0 pour ce combat.' },
   pillage:{ n:'Pillage', ic:'drop', d:'Quand tu gagnes un combat avec un serviteur de l\'univers encore debout, tu reçois un sort aléatoire de ton niveau.' },
   ki:{ n:'Ki et transformations', ic:'k_spark', d:'Mets un serviteur en méditation : il ne combat pas au prochain combat et te rapporte du ki au début du tour suivant (autant que son niveau, le double s\'il est doré ; 15 au plus). Le ki paie les transformations, les fusions et les techniques (achetées en or à la taverne) ; une technique lancée sur son propriétaire (Signature) a un bonus.' },
-  chakra:{ n:'Groupes emblématiques, jutsus et transformations', ic:'k_spark', d:'Réunis les duos, trios et équipes de l\'animé sur ton plateau : chaque groupe réuni débloque un pouvoir tiré de l\'animé, et ils se cumulent. Chaque serviteur génère 1 chakra par tour (10 au plus). Jutsu de soutien (soin, invocation, clone) : effet immédiat. Jutsu de combat (Chidori, Rasengan, Shinra Tensei…) : tu le paies pendant le recrutement, il part au début du prochain combat. Une fois par tour, coût = niveau du ninja. Certains ninjas se transforment une seule fois (étoile dorée). Mots-clés : Genjutsu (un ennemi saute une attaque), Entrave (un ennemi ne peut plus attaquer tant que le lanceur vit), Brûlure (PV perdus après chaque attaque), Scellement (plus de mots-clés ni d\'effets), Clone, Riposte, Sharingan (copie les mots-clés d\'en face), Soin.' },
+  chakra:{ n:'Groupes emblématiques, jutsus et transformations', ic:'k_spark', d:'Réunis les duos, trios et équipes de l\'animé sur ton plateau : chaque groupe réuni débloque un pouvoir tiré de l\'animé, et ils se cumulent. Chaque serviteur génère 1 chakra par tour (10 au plus). Jutsu de soutien (soin, invocation, clone) : effet immédiat. Jutsu de combat (Chidori, Rasengan, Shinra Tensei…) : tu le paies pendant le recrutement, il part au début du prochain combat. Une fois par tour, coût = niveau du ninja. Certains ninjas se transforment une seule fois (étoile bleue). Mots-clés : Genjutsu (un ennemi saute une attaque), Entrave (un ennemi ne peut plus attaquer tant que le lanceur vit), Brûlure (PV perdus après chaque attaque), Scellement (plus de mots-clés ni d\'effets), Clone, Riposte, Sharingan (copie les mots-clés d\'en face), Soin.' },
   resonance:{ n:'Résonance', ic:'twin', d:'Chaque sort que tu lances donne +1/+1 à deux de tes serviteurs de l\'univers.' },
   eboulement:{ n:'Éboulement', ic:'up', d:'Quand un de tes serviteurs de l\'univers avec Provocation meurt, il inflige 3 dégâts à un ennemi aléatoire.' },
   fusion:{ n:'Fusion élémentaire', ic:'wind', d:'À la fin du tour, si tu as au moins 4 éléments Squishy différents, tes serviteurs de l\'univers gagnent +1/+1.' },
@@ -2102,7 +2102,7 @@ const NJ_COMP = false;
 const NJ_AWK = false;    // pas d'Éveil
 const NJ_TECH = false;   // pas de techniques
 const CK_MAX = 10;
-const ckMax = p => CK_MAX + ((p && p.bd) || []).reduce((t, m) => t + ((CD(m.c).fxAll || []).filter(e => e.k === 'pas_ckx').reduce((u, e) => u + e.n, 0)) * (m.g ? 2 : 1), 0);
+const ckMax = p => CK_MAX + ((p && HEROES[p.hero] && HEROES[p.hero].ckx) || 0) + ((p && p.bd) || []).reduce((t, m) => t + ((CD(m.c).fxAll || []).filter(e => e.k === 'pas_ckx').reduce((u, e) => u + e.n, 0)) * (m.g ? 2 : 1), 0);
 const pureX = (p, tr) => p && p.pure === tr ? 2 : 1;
 const awake = G => !!(G && G.eveil && G.rd >= G.eveil);
 var AWK_JOIN = true;
@@ -2447,6 +2447,12 @@ function powCanW(p, w) {
 // pouvoirs à étapes (héros Ninja) : chaque étape est un petit effet
 function powStepCan(p, s) {
   switch (s.k) {
+    case 'nclone': return (p.bd || []).length < 7 && (p.bd || []).some(x => x.c !== 'tk_kclone');
+    case 'toad': case 'summonr': return (p.bd || []).length < 7;
+    case 'hx': return !!nhPick(p, s.who, x => !(x.nhx || []).some(e => e.k === s.fx[0].k));
+    case 'hguard': { const a = nhPick(p, 'atk'); return !!(a && nhPick(p, 'hp', x => x !== a && x.c !== a.c)); }
+    case 'hbee': return (p.bd || []).length > 0;
+    case 'foegenj': case 'foetop': case 'foeburn': return true;
     case 'buffr': case 'buffall': case 'buffhi': return pwPool(p, s).length > 0;
     case 'kw': return pwPool(p, s).some(m => !has(m, s.kw));
     case 'tkw': return (p.bd || []).some(m => !has(m, s.kw) && !(m.tmp && (m.tmp.f || '').includes(s.kw)));
@@ -2486,6 +2492,8 @@ function powStepCan(p, s) {
   }
   return true;
 }
+// héros Naruto : serviteur visé par le pouvoir (le plus fort, le plus d'ATQ, le plus de PV)
+function nhPick(p, who, ok) { const o = (p.bd || []).filter(m => !ok || ok(m)); if (!o.length) return null; const v = m => who === 'atk' ? m.a * 1000 + m.h : who === 'hp' ? m.h * 1000 + m.a : m.a + m.h; return o.reduce((b, x) => v(x) > v(b) ? x : b); }
 function powStep(G, p, s) {
   const N = s.n || 1;
   switch (s.k) {
@@ -2493,6 +2501,16 @@ function powStep(G, p, s) {
     case 'g': p.g += s.n; break;
     case 'mk': mkAdd(p, s.el, s.n); break;
     case 'fire': p.njf = (p.njf || 0) + s.d; break;
+    // ----- héros Naruto : pouvoirs fidèles à l'animé -----
+    case 'nclone': { const m = nhPick(p, 'top', x => x.c !== 'tk_kclone'); if (m) nkClone(p, m, 1); break; }
+    case 'toad': { const b = p.bd.length; recruitSummon(p, 'tk_crapaud', 0, p.bd[b - 1]); const m = p.bd.length > b ? p.bd[p.bd.length - 1] : null; if (m && m.c === 'tk_crapaud') { m.a = p.t + 1; m.h = p.t + 2; } break; }
+    case 'summonr': if (p.bd.length < 7) recruitSummon(p, pickR(s.cards), 0, p.bd[p.bd.length - 1]); break;
+    case 'hx': { const m = nhPick(p, s.who, x => !(x.nhx || []).some(e => e.k === s.fx[0].k)); if (m) m.nhx = (m.nhx || []).concat(s.fx.map(o => Object.assign({ src:BSRC || 'Pouvoir du héros' }, o))); break; }
+    case 'hguard': { const a = nhPick(p, 'atk'), g = a && nhPick(p, 'hp', x => x !== a && x.c !== a.c); if (g) g.nhx = (g.nhx || []).concat([{ k:'guard', card:a.c, n:99, src:BSRC || 'Pouvoir du héros' }]); break; }
+    case 'hbee': { const m = nhPick(p, 'atk'); if (m) nkTmp(m, s.a / mult(m), 0, 'w', BSRC || 'Pouvoir du héros'); break; }
+    case 'foegenj': p.foe = p.foe || {}; p.foe.genj = (p.foe.genj || 0) + (s.n || 1); break;
+    case 'foetop': p.foe = p.foe || {}; p.foe.top = (p.foe.top || 0) + s.d; break;
+    case 'foeburn': p.foe = p.foe || {}; p.foe.burn = { n:s.n, d:s.d }; break;
     case 'tma': p.tma = { a:((p.tma && p.tma.a) || 0) + (s.a || 0), h:((p.tma && p.tma.h) || 0) + (s.h || 0) }; break;
     case 'buffr': for (let i = 0; i < N; i++) { const o = pwPool(p, s); if (o.length) buff(pickR(o), s.a || 0, s.h || 0); } break;
     case 'buffall': pwPool(p, s).forEach(m => buff(m, s.a || 0, s.h || 0)); break;
@@ -2750,7 +2768,7 @@ function startRecruit() {
     // pureté : 5 serviteurs ou plus d'un même clan → +1 chakra
     if (inMechAny(G, 'chakra')) { const n = {}; p.bd.forEach(m => { const t = CD(m.c).tr; if (CLAN_EL[t]) n[t] = (n[t] || 0) + 1; }); const pure = Object.keys(n).find(t => n[t] >= 5) || null; p.pure = pure; if (pure) p.ck = Math.min(ckMax(p), (p.ck || 0) + 1); if ((p.ck || 0) >= 10) qAdd(p, 'ckFull'); }
     { const w = HEROES[p.hero] && HEROES[p.hero].pw; if (w && w.k === 'pck') p.ck = Math.min(ckMax(p), (p.ck || 0) + w.n); if (w && w.k === 'ptech' && G.rd % 2 === 0 && p.hd.length < 10) { const sp = drawSpell(p.t); if (sp) p.hd.push(sp); } }
-    p.bd.forEach(m => { delete m.tmp; delete m.gx; delete m.jp; }); p.tma = null; p.foe = null;
+    p.bd.forEach(m => { delete m.tmp; delete m.gx; delete m.nhx; delete m.jp; }); p.tma = null; p.foe = null;
     // serviteurs éveillés : leur effet se répète (après la remise à zéro des bonus « prochain combat », sinon feu et bouclier seraient perdus)
     p.bd.slice().forEach(x => { if (x.awk && !C[x.c].comp) { const md = (CD(x.c).fxAll || []).find(f => f.k === 'ckm'); if (md) withSrc('Éveil · ' + CD(x.c).n, () => runMode(G, p, x, md.m)); } }); checkTriple(G, p);
   }
@@ -2900,6 +2918,7 @@ const inMechAny = (G, k) => !!(G && G.mx && G.mx[k]);
 function endCombat() {
   const G = H.G;
   for (const x of G.pend) G.ps[x.pid].hp -= x.d;
+  G.ps.forEach(p => { const hh = HEROES[p.hero]; if (p.al && p.hp <= 0 && hh && hh.hearts && !p.k5) { p.k5 = 1; p.hp = hh.hearts; } });   // Kakuzu : Cinq cœurs
   const dead = G.ps.filter(p => p.al && p.hp <= 0).sort((a, b) => b.hp - a.hp);
   let alive = G.ps.filter(p => p.al && p.hp > 0).length;
   dead.forEach((p, k) => { p.al = false; p.place = alive + 1 + k; p.sh.forEach(m => toPool(G, m)); p.bd.forEach(m => toPool(G, m)); p.sh = []; });
