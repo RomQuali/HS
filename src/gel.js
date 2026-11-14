@@ -463,7 +463,9 @@ html.lite .mn-svg .hs-wind image{animation:none}
 /* assez de chakra : halo bleu qui pulse, sur l'étoile d'évolution comme sur la goutte du jutsu */
 .mn .tf-b.nk-tf.ok{filter:drop-shadow(0 0 4px #bfeaff) drop-shadow(0 0 9px #2f9bff) drop-shadow(0 0 16px rgba(47,155,255,.85));animation:nkBlue 1.15s ease-in-out infinite alternate}
 .mn .jut-b.ok{filter:drop-shadow(0 0 4px #bfeaff) drop-shadow(0 0 9px #2f9bff) drop-shadow(0 0 16px rgba(47,155,255,.85));animation:nkBlueJ 1.15s ease-in-out infinite alternate}
-.mn .jut-b:not(.ok):not(.used){filter:brightness(.85) saturate(.8)}
+.mn .jut-b:not(.ok):not(.used):not(.prep){filter:brightness(.85) saturate(.8)}
+/* jutsu de combat préparé : la goutte reste allumée en doré jusqu'au combat */
+.mn .jut-b.prep{opacity:1;filter:hue-rotate(185deg) saturate(1.6) drop-shadow(0 0 6px #ffd84a);cursor:default;animation:none}
 @keyframes nkBlue{from{filter:drop-shadow(0 0 2px #bfeaff) drop-shadow(0 0 5px #2f9bff)}to{filter:drop-shadow(0 0 5px #e4f6ff) drop-shadow(0 0 12px #2f9bff) drop-shadow(0 0 22px rgba(47,155,255,.95));transform:scale(1.08)}}
 @keyframes nkBlueJ{from{filter:drop-shadow(0 0 2px #bfeaff) drop-shadow(0 0 5px #2f9bff)}to{filter:drop-shadow(0 0 5px #e4f6ff) drop-shadow(0 0 12px #2f9bff) drop-shadow(0 0 22px rgba(47,155,255,.95))}}
 html.lite .mn .tf-b.nk-tf.ok,html.lite .mn .jut-b.ok{animation:none}
