@@ -2862,7 +2862,7 @@ const OPS = {
     withSrc('Inventaire · ' + SPELLS[id].n, () => { applyEquip(comp, id); for (let l = 1; l < ((p.eqlv || {})[id] || 1); l++) eqUpgrade(comp, id); });
     return true;
   },
-  buysp(G, p, a) { const k = a && +a.k === 1 ? 'sp2' : 'sp', it = p[k], S = it && SPELLS[it.sp]; const c = S ? spCost(p, S) : 0; if (!S || p.g < c || p.hd.length >= 10) return false; p.g -= c; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(it); p[k] = null; spent(G, p, c); handIn(p); return true; },
+  buysp(G, p, a) { const k = a && +a.k === 1 ? 'sp2' : 'sp', it = p[k], S = it && SPELLS[it.sp]; const c = S ? spCost(p, S) : 0; if (!S || p.g < c || p.hd.length >= 10) return false; if (S.ni && (itHave(p, it.sp) || !itOwnerIn(p, it.sp))) return false; /* Naruto : pas un objet déjà en main ou déjà porté, ni sans un de ses propriétaires sur le plateau ou dans la main */ p.g -= c; if (p.hero === 'sylvara') p.sylv = true; p.hd.push(it); p[k] = null; spent(G, p, c); handIn(p); return true; },
   med(G, p, a) { const m = p.bd[a.i]; if (!m || !inMechAny(G, 'ki')) return false; m.med = m.med ? 0 : 1; return true; },
   portal(G, p, a) { const m = p.bd[a.i]; if (!m || !inMechAny(G, 'portail') || (p.pf || 0) < 1) return false; if (!doPortal(G, p, m)) return false; p.pf -= 1; return true; },
   fuse(G, p, a) { const m = p.bd[a.i], F = DB_FUS.find(f => f.id === a.f); if (!m || !F || !inMechAny(G, 'ki') || (p.ki || 0) < F.c || !fusPartner(p, m, F)) return false; p.ki -= F.c; qAdd(p, 'kiSpent', F.c); return doFusion(G, p, m, F); },

@@ -95,6 +95,7 @@ const seen=(r,side,c)=>r.frames.some(f=>f.s[side].some(x=>x.c===c));
 { const [m,o]=set('nk_kisame','nk_naruto'); m.it='ni_samehada'; o.it='ni_bandeau'; t('objets : production (Samehada sur Kisame 6, Bandeau sur Naruto 2)', itProd(m)===6&&itProd(o)===2); o.c='nk_sasuke'; t('objets : hors propriétaire, aucune production', itProd(o)===0); const [x]=set('nk_gaara'); p.hd=[{sp:'ni_bandeau',u:998}]; t('objets : seul un propriétaire peut le porter', castSpell(G,p,0,0)===false&&!x.it); }
 { const [o]=set('nk_orochimaru'); o.it='ni_kusanagi'; t('Kusanagi : jutsu gratuit pour Orochimaru', jutCost(p,o)===0); }
 { const R=itRes(G); const n0=R.ni_bague; const [m]=set('nk_pain'); p.hd=[{sp:'ni_bague',u:999}]; castSpell(G,p,0,0); t('objet posé sur un serviteur', m.it==='ni_bague'); OPS.sell(G,p,{i:0}); t('objet vendu : retourne dans la réserve', R.ni_bague===n0+1, [R.ni_bague,n0]); }
+{ const [n]=set('nk_naruto'); p.g=10; p.hd=[{sp:'ni_bandeau',u:997}]; p.sp={sp:'ni_bandeau',u:996}; t('objet déjà en main : achat bloqué', OPS.buysp(G,p)===false); p.hd=[]; n.it='ni_bandeau'; t('objet déjà porté : achat bloqué', OPS.buysp(G,p)===false); n.it=null; p.bd=[mk('nk_gaara',0)]; t('sans propriétaire : achat bloqué', OPS.buysp(G,p)===false); p.hd=[mk('nk_sakura',0)]; t('propriétaire dans la main : l\'achat passe', OPS.buysp(G,p)===true); }
 return T}"""
 with sync_playwright() as p:
     b=p.chromium.launch(); pg=b.new_page(); errs=[]; pg.on('pageerror',lambda e:errs.append(str(e)))
