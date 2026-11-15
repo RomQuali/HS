@@ -1941,7 +1941,6 @@ body.u-db .counter-line,body.u-db .board-zone,body.u-rm .counter-line,body.u-rm 
 .hp-camp.o{background:linear-gradient(#5a1410,#2a0806);color:#ffd9b0;border:1px solid #c8502a}
 
 /* ===== Naruto (15/11/2026) : carte du héros verrouillée, objets ===== */
-.cd.lkd{filter:grayscale(.85) brightness(.7)}
 .cd .hk-tag,.cd .it-tag{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;font:700 10px/1.2 system-ui,sans-serif;padding:2px 7px;border-radius:8px;z-index:5;pointer-events:none}
 .cd .hk-tag{top:68%;background:#1b120b;color:#ffe39a;border:1.5px solid #c89a52}
 .cd .hk-tag.on{background:#1e4a2a;color:#c8ffb0;border-color:#6fd08a}
@@ -1961,3 +1960,7 @@ html body .mn .tf-b.nk-tf.ok:hover{filter:drop-shadow(0 0 4px #7dff8a) drop-shad
 @keyframes tfUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-14%)}}
 @keyframes tfGlow{0%,100%{filter:drop-shadow(0 0 3px #38ff4a) drop-shadow(0 0 6px rgba(60,255,90,.7))}50%{filter:drop-shadow(0 0 5px #7dff8a) drop-shadow(0 0 11px rgba(60,255,90,.95))}}
 html.lite .mn .tf-b.nk-tf.ok,html.lite .mn .tf-b.nk-tf.ok .tf-up{animation:none}
+/* carte du héros verrouillée : chaînes et cadenas (pas de gris) ; au survol, les chaînes s'effacent pour lire la carte */
+.cd .lk-ch{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;transition:opacity .18s}
+.cd .hk-tag{transition:opacity .18s}
+.cd.lkd:hover .lk-ch,.cd.lkd:focus .lk-ch,.cd.lkd:hover .hk-tag,.cd.lkd:focus .hk-tag{opacity:0}
