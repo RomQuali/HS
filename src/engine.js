@@ -75,7 +75,7 @@ const DEFAULT_SETTINGS = {
     { n:'Montagnes', col:'#6a5038', ic:'mount', lore:'Ils tombent… et tout s\'effondre.', mech:'eboulement', tribes:['nain', 'ogre', 'gob', 'drag', 'garou'] },
     { n:'Dragon Ball', col:'#e8701a', ic:'star', lore:'Médite, charge ton ki, transforme tes guerriers.', mech:'ki', tribes:['d_sai', 'd_ter', 'd_nam', 'd_fre', 'd_and'] },
     { n:'Naruto', col:'#a8402a', ic:'sword', lore:'Charge ton chakra : lance les jutsus de tes ninjas, puis transforme-les.', mech:'chakra', tribes:['nk_kon', 'nk_aka', 'nk_sun', 'nk_oto', 'nk_kir'] },
-    { n:'Le Seigneur des Anneaux', col:'#b08a2e', ic:'crown', lore:'Choisis ton camp : Peuples libres ou Ombre. Un seul porte l’Anneau vers le Mont du Destin ; tous les autres le veulent.', mech:'voyage', tribes:['lo_hom', 'lo_elf', 'lo_nah', 'lo_mor', 'lo_ise', 'lo_omb'] },
+    { n:'Le Seigneur des Anneaux', col:'#b08a2e', ic:'crown', lore:'Les camps sont tirés au sort : 4 joueurs pour les Peuples libres, 4 pour l’Ombre. Un seul porte l’Anneau vers le Mont du Destin ; tous les autres le veulent.', mech:'voyage', tribes:['lo_hom', 'lo_elf', 'lo_nah', 'lo_mor', 'lo_ise', 'lo_omb'] },
     { n:'Squishys', col:'#b04a6a', ic:'blob', lore:'Une grosse boule de câlins.', mech:'fusion', tribes:['sq_feu', 'sq_eau', 'sq_terre', 'sq_vent', 'sq_foudre'] },
   ],
   heroFam:{},
@@ -843,7 +843,7 @@ const HEROES = {
   nh_omoi: {diff:1, stars:3, fam:NJV, pv:'nk_kir', mc:'cbt', n:'Omoi', pwn:'Lame de foudre', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'hx', who:'atk', fx:[{ k:'soc_first', x:2 }] }] }, tx:'Prochain combat : la première attaque de ton serviteur qui a le plus d’ATQ inflige le double.' },
   nh_deidara: {diff:1, stars:5, fam:NJV, pv:'nk_aka', mc:'tok', n:'Deidara', pwn:'Argile explosive', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'summon', card:'tk_argile', n:1 }] }, tx:'Invoque une Araignée d’argile 1/1 avec « Râle d’agonie : inflige 3 dégâts à un ennemi aléatoire ».' },
   nh_roshi: {diff:1, stars:4, fam:NJV, pv:'nk_kon', mc:'tf', n:'Rōshi', pwn:'Armure de lave', pw:{ k:'pnktf', n:3 }, tx:'Passif : tes transformations coûtent 3 chakra de moins.' },
-  // ----- Le Seigneur des Anneaux : 20 héros des deux camps -----
+  // ----- Le Seigneur des Anneaux : 27 héros (15 Peuples libres, 12 Ombre) -----
   lh_frodon: {diff:1, stars:5, fam:LOV, pv:'lo_nah', mc:'ann', n:'Frodon Sacquet', pwn:'Porteur de l’Anneau', pw:{ k:'pring' }, tx:'Passif : c’est toi qui reçois l’Anneau à la manche 3. Le porter ne te coûte aucun PV.' },
   lh_sam: {diff:1, stars:4, fam:LOV, pv:'lo_nah', mc:'cbt', n:'Sam Gamegie', pwn:'Fidèle compagnon', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'hguard' }] }, tx:'Prochain combat : ton serviteur qui a le plus de PV encaisse les attaques qui visent ton serviteur qui a le plus d’ATQ.' },
   lh_bilbon: {diff:1, stars:4, fam:LOV, pv:'lo_nah', mc:'ann', n:'Bilbon Sacquet', pwn:'Invisible', pw:{ k:'pbilbon' }, tx:'Passif : quand tu portes l’Anneau, un seul Nazgûl te traque, jamais deux.' },
@@ -864,6 +864,14 @@ const HEROES = {
   lh_roisorcier: {diff:1, stars:4, fam:LOV, pv:'lo_mor', mc:'cbt', n:'Roi-Sorcier d’Angmar', pwn:'Cri du Nazgûl', shadow:1, cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'hx', who:'top', fx:[{ k:'soc_genj', who:'face', n:1 }] }] }, tx:'Prochain combat : l’ennemi en face de ton serviteur le plus fort saute sa première attaque.' },
   lh_gollum: {diff:1, stars:3, fam:LOV, pv:'lo_mor', mc:'ann', n:'Gollum', pwn:'Mon précieux', shadow:1, pw:{ k:'pgollum' }, tx:'Passif : tu prends aussi l’Anneau sur une égalité contre son porteur. Quand tu le prends, tes serviteurs gagnent +2/+2.' },
   lh_smaug: {diff:1, stars:5, fam:LOV, pv:'lo_mor', mc:'cbt', n:'Smaug', pwn:'Feu du dragon', shadow:1, cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'foeburn', n:3, d:2 }] }, tx:'Au prochain combat, 3 ennemis subissent une Brûlure de 2 (ils perdent 2 PV après chacune de leurs attaques).' },
+  // 7 héros de l'Ombre ajoutés le 15/11/2026 (12 au total : 3 choix uniques pour chacun des 4 joueurs de l'Ombre) ; pouvoirs en miroir de ceux des Peuples libres
+  lh_gothmog: {diff:1, stars:3, fam:LOV, pv:'lo_mor', mc:'tok', n:'Gothmog', pwn:'Légions du Mordor', shadow:1, cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'summon', card:'tl_snaga', n:1 }] }, tx:'Invoque un Snaga 1/1.' },
+  lh_lurtz: {diff:1, stars:4, fam:LOV, pv:'lo_ise', mc:'cbt', n:'Lurtz', pwn:'Flèche noire', shadow:1, cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'foetop', d:4 }] }, tx:'Au début du prochain combat, inflige 4 dégâts à l’ennemi le plus fort.' },
+  lh_arachne: {diff:1, stars:4, fam:LOV, pv:'lo_mor', mc:'cbt', n:'Arachne', pwn:'Toile d’Arachne', shadow:1, cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'hx', who:'hp', fx:[{ k:'soc_bind', who:'face' }] }] }, tx:'Entrave : au prochain combat, ton serviteur qui a le plus de PV empêche l’ennemi d’en face d’attaquer tant qu’il est en vie.' },
+  lh_khamul: {diff:1, stars:3, fam:LOV, pv:'lo_mor', mc:'cbt', n:'Khamûl', pwn:'Ombre de l’Est', shadow:1, cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'hx', who:'atk', fx:[{ k:'soc_first', x:2 }] }] }, tx:'Prochain combat : la première attaque de ton serviteur qui a le plus d’ATQ inflige le double.' },
+  lh_balrog: {diff:1, stars:5, fam:LOV, pv:'lo_omb', mc:'cbt', n:'Le Balrog', pwn:'Fouet de flammes', shadow:1, cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'hx', who:'atk', fx:[{ k:'burn', d:2 }] }] }, tx:'Prochain combat : ton serviteur qui a le plus d’ATQ gagne Brûlure de 2 (l’ennemi qu’il frappe perd 2 PV après chacune de ses attaques).' },
+  lh_sharku: {diff:1, stars:3, fam:LOV, pv:'lo_ise', mc:'cbt', n:'Sharku', pwn:'Charge des wargs', shadow:1, cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'hbee', a:2 }] }, tx:'Prochain combat : ton serviteur qui a le plus d’ATQ gagne +2 ATQ et Furie des vents.' },
+  lh_grima: {diff:1, stars:3, fam:LOV, pv:'lo_ise', mc:'cbt', n:'Gríma Langue-de-Serpent', pwn:'Paroles empoisonnées', shadow:1, cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'foegenj', n:1 }] }, tx:'Au prochain combat, l’ennemi le plus fort, envoûté, saute sa première attaque.' },
   pyra:    {fam:['drag'], n:'Pyra la chevaucheuse', tx:'Passif : au début de chaque combat, ton dragon souffle 2 dégâts sur un ennemi aléatoire (le surplus touche d\'autres ennemis).' },
   paul:    {fam:['sq_feu'], n:'Paul', cost:2, el:'sq_feu', tx:'Ami du feu · Attise : un Flammou aléatoire gagne +2/+1 et tes autres Flammous gagnent +1 attaque.' },
   leon:    {fam:['sq_terre'], n:'Léon', el:'sq_terre', tx:'Ami de la terre · Passif : quand tu joues un Mottu, il gagne Provocation et +1/+2.' },
@@ -938,7 +946,7 @@ const MECHS = {
   pillage:{ n:'Pillage', ic:'drop', d:'Quand tu gagnes un combat avec un serviteur de l\'univers encore debout, tu reçois un sort aléatoire de ton niveau.' },
   ki:{ n:'Ki et transformations', ic:'k_spark', d:'Mets un serviteur en méditation : il ne combat pas au prochain combat et te rapporte du ki au début du tour suivant (autant que son niveau, le double s\'il est doré ; 15 au plus). Le ki paie les transformations, les fusions et les techniques (achetées en or à la taverne) ; une technique lancée sur son propriétaire (Signature) a un bonus.' },
   chakra:{ n:'Groupes emblématiques, jutsus et transformations', ic:'k_spark', d:'Réunis les duos, trios et équipes de l\'animé sur ton plateau : chaque groupe réuni débloque un pouvoir tiré de l\'animé, et ils se cumulent. Chaque serviteur génère 1 chakra par tour (10 au plus). Jutsu de soutien (soin, invocation, clone) : effet immédiat. Jutsu de combat (Chidori, Rasengan, Shinra Tensei…) : tu le paies pendant le recrutement, il part au début du prochain combat. Une fois par tour, coût = niveau du ninja. Certains ninjas se transforment une seule fois (étoile bleue). Mots-clés : Genjutsu (un ennemi saute une attaque), Entrave (un ennemi ne peut plus attaquer tant que le lanceur vit), Brûlure (PV perdus après chaque attaque), Scellement (plus de mots-clés ni d\'effets), Clone, Riposte, Sharingan (copie les mots-clés d\'en face), Soin.' },
-  voyage:{ n:'La guerre de l’Anneau', ic:'k_spark', d:'Ton héros fixe ton camp : les Peuples libres ne recrutent que des Hommes, des Elfes, des Nains et des Hobbits ; l’Ombre que le Mordor, Isengard et ses alliés. À la manche 3, un héros des Peuples libres reçoit l’Anneau unique (Frodon en priorité). Le porteur gagne +1/+1 sur tout son plateau à chaque tour, mais son héros perd 1 PV par tour et des Nazgûl de plus en plus forts rejoignent ses adversaires. Tant qu’il n’est pas battu, l’Anneau avance d’une étape par combat vers le Mont du Destin ; s’il perd, l’Anneau recule d’une étape et passe au vainqueur. Celui qui amène l’Anneau au Mont du Destin gagne la partie : il le détruit (Peuples libres) ou le rend à Sauron (Ombre). Aux manches 4, 7, 10 et 13 se livrent les grandes batailles (la Moria, le Gouffre de Helm, Minas Tirith, la Porte Noire) : chaque camp reçoit des renforts et les vainqueurs choisissent un objet légendaire parmi trois, plus fort sur son porteur du film. Certains personnages se transforment après la bataille de leur histoire. Réunis aussi les duos et trios célèbres sur ton plateau.' },
+  voyage:{ n:'La guerre de l’Anneau', ic:'k_spark', d:'Ton camp est tiré au sort avant le choix du héros (4 contre 4) : les Peuples libres ne recrutent que des Hommes, des Elfes, des Nains et des Hobbits ; l’Ombre que le Mordor, Isengard et ses alliés. À la manche 3, un héros des Peuples libres reçoit l’Anneau unique (Frodon en priorité). Le porteur gagne +1/+1 sur tout son plateau à chaque tour, mais son héros perd 1 PV par tour et des Nazgûl de plus en plus forts rejoignent ses adversaires. Tant qu’il n’est pas battu, l’Anneau avance d’une étape par combat vers le Mont du Destin ; s’il perd, l’Anneau recule d’une étape et passe au vainqueur. Celui qui amène l’Anneau au Mont du Destin gagne la partie : il le détruit (Peuples libres) ou le rend à Sauron (Ombre). Aux manches 4, 7, 10 et 13 se livrent les grandes batailles (la Moria, le Gouffre de Helm, Minas Tirith, la Porte Noire) : chaque camp reçoit des renforts et les vainqueurs choisissent un objet légendaire parmi trois, plus fort sur son porteur du film. Certains personnages se transforment après la bataille de leur histoire. Réunis aussi les duos et trios célèbres sur ton plateau.' },
   resonance:{ n:'Résonance', ic:'twin', d:'Chaque sort que tu lances donne +1/+1 à deux de tes serviteurs de l\'univers.' },
   eboulement:{ n:'Éboulement', ic:'up', d:'Quand un de tes serviteurs de l\'univers avec Provocation meurt, il inflige 3 dégâts à un ennemi aléatoire.' },
   fusion:{ n:'Fusion élémentaire', ic:'wind', d:'À la fin du tour, si tu as au moins 4 éléments Squishy différents, tes serviteurs de l\'univers gagnent +1/+1.' },
@@ -1608,7 +1616,7 @@ const LO_HV = [4, 6];   // traqueurs : caractéristiques de base et gain par ét
 const loOn = G => inMechAny(G, 'voyage');
 const loHero = (p, k) => { const h = HEROES[p.hero]; return !!(h && h.pw && h.pw.k === k); };
 // camp fixé par le héros : Peuples libres (L) ou Ombre (O). Chacun ne voit que les cartes de son camp (Sméagol et Saroumane vont des deux côtés).
-const loCamp = p => (HEROES[p && p.hero] || {}).shadow ? 'O' : 'L';
+const loCamp = p => { const h = HEROES[p && p.hero]; return h ? (h.shadow ? 'O' : 'L') : (p && p.camp) || 'L'; };   // avant le choix du héros : le camp tiré au sort
 const loSee = (p, id) => { const tr = C[id] && C[id].tr; if (!tr || !/^lo_/.test(tr) || LO_BOTH.includes(id)) return true; return LO_SHADOW_TR.includes(tr) === (loCamp(p) === 'O'); };
 let DRAWP = null;   // joueur pour qui on tire des cartes (taverne, découverte)
 const loHas = p => !!(p && p.ring);
@@ -2346,7 +2354,16 @@ function hostStart(humans, opt) {
     if (!h) h = pickR(Object.keys(HEROES).filter(x => !p.ho.includes(x)));
     if (h) p.ho.push(h);
   }
-  G.ps.forEach(p => { p.hrr = univ3(G) ? 2 : HERO_ROLLS; p.hrm = p.hrr; });
+  // Le Seigneur des Anneaux : avant le choix du héros, 4 joueurs tirés au sort pour les Peuples libres et 4 pour l'Ombre ;
+  // chacun ne se voit proposer que des héros de son camp, et aucun héros n'est proposé deux fois dans un camp (donc pas de relance)
+  if (loOn(G)) {
+    shuffle(G.ps.slice()).forEach((p, k) => { p.camp = k < 4 ? 'L' : 'O'; p.ho = []; });
+    for (const c of ['L', 'O']) {
+      const hs = shuffle(Object.keys(HEROES).filter(h => /^lh_/.test(h) && ok(h) && (HEROES[h].shadow ? 'O' : 'L') === c)), team = G.ps.filter(p => p.camp === c);
+      for (let k = 0; k < 3; k++) for (const p of team) { const h = hs.shift(); if (h) p.ho.push(h); }
+    }
+  }
+  G.ps.forEach(p => { p.hrr = loOn(G) ? 0 : univ3(G) ? 2 : HERO_ROLLS; p.hrm = p.hrr; });
   G.ps.forEach(p => { if (p.bot) p.hero = pickR(p.ho); });
   H.G = G;
   clearInterval(H.tick); H.tick = setInterval(hostTick, 200);
@@ -3253,7 +3270,7 @@ function pubData() {
 }
 function privData(p) {
   return { to:p.peer, pid:p.pid, ring:p.ring ? 1 : 0, camp:H.G && loOn(H.G) ? loCamp(p) : null, rh:p.rh || 0, dsc:p.dsc || null, fell:p.fell || null, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
-    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, sp2:p.sp2 ? p.sp2.sp : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, cho:p.cho || null, gem:[p.gemA || 0, p.gemH || 0], inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ki:p.ki || 0, kiGain:p.kiGain || 0, pf:p.pf || 0, pfn:p.pfNext || 0, dbDied:p.dbDied || 0, dbRes:p.dbRes || '', njf:p.njf || 0, spd:p.spd || 0, castN:p.castN || 0, ckm:ckMax(p), ckPay:heroCk(H.G, p) ? 1 : 0, kiPay:heroKi(p) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, mkl:(mkSync(p), p.mkl) || {}, souffle:p.souffle || 0, roche:p.roche || 0, choice:p.choice || null, chFav:p.chFav || 0, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, hrr:p.hrr || 0, hrm:p.hrm || HERO_ROLLS, haw:p.haw || 0, hawId:p.hawId || 0, qp:p.qp || 0, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
+    fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, sp2:p.sp2 ? p.sp2.sp : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, cho:p.cho || null, gem:[p.gemA || 0, p.gemH || 0], inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ki:p.ki || 0, kiGain:p.kiGain || 0, pf:p.pf || 0, pfn:p.pfNext || 0, dbDied:p.dbDied || 0, dbRes:p.dbRes || '', njf:p.njf || 0, spd:p.spd || 0, castN:p.castN || 0, ckm:ckMax(p), ckPay:heroCk(H.G, p) ? 1 : 0, kiPay:heroKi(p) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, mkl:(mkSync(p), p.mkl) || {}, souffle:p.souffle || 0, roche:p.roche || 0, choice:p.choice || null, chFav:p.chFav || 0, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, hrr:p.hrr || 0, hrm:p.hrm == null ? HERO_ROLLS : p.hrm, haw:p.haw || 0, hawId:p.hawId || 0, qp:p.qp || 0, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
   if (!H.nr) return;

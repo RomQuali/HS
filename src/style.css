@@ -1933,3 +1933,9 @@ body.u-nj .hand{background:linear-gradient(180deg,rgba(6,10,14,0),rgba(6,10,14,.
 :root body.u-sp .table{background:linear-gradient(180deg,rgba(8,10,16,.1),rgba(8,10,16,0) 20%,rgba(8,10,16,0) 70%,rgba(8,10,16,.5)),var(--board-sp,none) center top/cover no-repeat,#22242c!important}
 :root.has-board-sim body.u-sim .table{background:linear-gradient(180deg,rgba(20,12,4,.1),rgba(20,12,4,0) 20%,rgba(20,12,4,0) 70%,rgba(20,12,4,.5)),var(--board-sim,none) center top/cover no-repeat,#2a2018!important}
 body.u-db .counter-line,body.u-db .board-zone,body.u-rm .counter-line,body.u-rm .board-zone,body.u-sp .counter-line,body.u-sp .board-zone,body.u-sim .counter-line,body.u-sim .board-zone{border-radius:18px;background:rgba(8,12,18,.32);box-shadow:inset 0 0 0 1.5px rgba(220,220,230,.18),0 8px 24px rgba(0,0,0,.3)}
+
+/* Le Seigneur des Anneaux : camp tiré au sort, affiché au choix du héros */
+.hp-camp{margin:4px auto 0;padding:5px 16px;border-radius:999px;font:700 clamp(13px,1.6vw,17px)/1.2 'Grenze',Georgia,serif;letter-spacing:.02em;width:max-content;max-width:92%;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.hp-camp small{font:500 .78em 'Alegreya Sans',system-ui,sans-serif;opacity:.85;margin-left:8px}
+.hp-camp.l{background:linear-gradient(#e9e2c4,#cdbf8a);color:#2a2010;border:1px solid #fff3c4}
+.hp-camp.o{background:linear-gradient(#5a1410,#2a0806);color:#ffd9b0;border:1px solid #c8502a}

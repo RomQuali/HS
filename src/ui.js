@@ -1130,7 +1130,7 @@ function ruleTabH(k) {
 }
 // relance d'un héros : 3 par partie, sur n'importe lequel des héros proposés
 const rollH = (me, i) => `<span class="h-roll${(me.hrr || 0) > 0 ? '' : ' off'}" role="button" tabindex="0" data-act="hroll" data-i="${i}" aria-label="Relancer ce héros" data-tip="${(me.hrr || 0) > 0 ? 'Relancer ce héros (' + me.hrr + ' restante' + (me.hrr > 1 ? 's' : '') + ')' : 'Plus de relance'}">${icon('roll')}</span>`;
-const rollInfoH = me => `<p class="h-rolls">${icon('roll')} Relances : ${Array.from({ length:me.hrm || 3 }, (_, k) => `<i class="${k < (me.hrr || 0) ? 'on' : ''}"></i>`).join('')}<small>clique sur ${icon('roll')} pour changer un héros</small></p>`;
+const rollInfoH = me => me.hrm === 0 ? '' : `<p class="h-rolls">${icon('roll')} Relances : ${Array.from({ length:me.hrm || 3 }, (_, k) => `<i class="${k < (me.hrr || 0) ? 'on' : ''}"></i>`).join('')}<small>clique sur ${icon('roll')} pour changer un héros</small></p>`;
 // choix du héros façon auto-battler : grands portraits en rangée, pouvoir en médaillon sous chaque héros
 function heroPickRowH(d, me) {
   const nin = (d.laws || []).some(l => l.k === 'chakra' || l.k === 'ki'), sel = me.ho.includes(V.heroSel) ? V.heroSel : null;
@@ -1154,12 +1154,12 @@ function heroPickRowH(d, me) {
         ${x.stars || x.diff ? `<span class="hp-st">${'★'.repeat(x.stars || x.diff)}</span>` : ''}
       </button>
       <div class="hp-pop" aria-hidden="true">${powBannerH(x, h, nin)}</div>
-      <button class="hp-rr${left ? '' : ' off'}" data-act="hroll" data-i="${i}" ${left ? '' : 'disabled'} aria-label="Relancer ce héros (${me.hrr || 0} relance${(me.hrr || 0) > 1 ? 's' : ''} restante${(me.hrr || 0) > 1 ? 's' : ''})"><span class="hp-rrn">${me.hrr || 0}</span><b>Relancer</b></button>
+      ${me.hrm === 0 ? '' : `<button class="hp-rr${left ? '' : ' off'}" data-act="hroll" data-i="${i}" ${left ? '' : 'disabled'} aria-label="Relancer ce héros (${me.hrr || 0} relance${(me.hrr || 0) > 1 ? 's' : ''} restante${(me.hrr || 0) > 1 ? 's' : ''})"><span class="hp-rrn">${me.hrr || 0}</span><b>Relancer</b></button>`}
     </div>`; };
-  const fams = [...new Set((Array.isArray(d.univ) ? d.univ : d.univ ? [d.univ] : d.us || []).flatMap(nm => ((SET.univ || []).find(u => u.n === (nm && nm.n || nm)) || {}).tribes || []).map(t => TRIBES[t] && TRIBES[t].n).filter(Boolean))];
+  const fams = [...new Set((Array.isArray(d.univ) ? d.univ : d.univ ? [d.univ] : d.us || []).flatMap(nm => ((SET.univ || []).find(u => u.n === (nm && nm.n || nm)) || {}).tribes || []).filter(t => !me.camp || !/^lo_/.test(t) || LO_SHADOW_TR.includes(t) === (me.camp === 'O')).map(t => TRIBES[t] && TRIBES[t].n).filter(Boolean))];
   const tab = V.ruleTab || 'tour', rules = false, por = (d.laws || []).some(l => l.k === 'chakra') ? njCardH : (d.laws || []).some(l => l.k === 'portail') ? rmCardH : (d.laws || []).some(l => l.k === 'bande') ? spCardH : (d.laws || []).some(l => l.k === 'gag') ? simCardH : null;
   return `<div class="ov hp-ov"><div class="hp-wrap">
-    <header class="hp-head"><h2 class="hp-t">Choisis ton héros</h2>${fams.length ? `<p class="hp-fams">${esc(fams.join(', '))}</p>` : ''}</header>
+    <header class="hp-head"><h2 class="hp-t">Choisis ton héros</h2>${me.camp ? `<p class="hp-camp ${me.camp === 'O' ? 'o' : 'l'}">${me.camp === 'O' ? 'Tu combats pour l’Ombre' : 'Tu combats pour les Peuples libres'} <small>4 contre 4, camps tirés au sort</small></p>` : ''}${fams.length ? `<p class="hp-fams">${esc(fams.join(', '))}</p>` : ''}</header>
     <div class="hp-row">${me.ho.map(card).join('')}</div>
     <button class="hp-ok" data-act="hero" data-h="${sel || ''}" ${sel ? '' : 'disabled'}>OK</button>
     <div class="hp-infos">${pcs.join('')}</div>
