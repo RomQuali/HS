@@ -75,7 +75,7 @@ const DEFAULT_SETTINGS = {
     { n:'Montagnes', col:'#6a5038', ic:'mount', lore:'Ils tombent… et tout s\'effondre.', mech:'eboulement', tribes:['nain', 'ogre', 'gob', 'drag', 'garou'] },
     { n:'Dragon Ball', col:'#e8701a', ic:'star', lore:'Médite, charge ton ki, transforme tes guerriers.', mech:'ki', tribes:['d_sai', 'd_ter', 'd_nam', 'd_fre', 'd_and'] },
     { n:'Naruto', col:'#a8402a', ic:'sword', lore:'Charge ton chakra : lance les jutsus de tes ninjas, puis transforme-les.', mech:'chakra', tribes:['nk_kon', 'nk_aka', 'nk_sun', 'nk_oto', 'nk_kir'] },
-    { n:'Le Seigneur des Anneaux', col:'#b08a2e', ic:'crown', lore:'Les camps sont tirés au sort : 4 joueurs pour les Peuples libres, 4 pour l’Ombre. Un seul porte l’Anneau vers le Mont du Destin ; tous les autres le veulent.', mech:'voyage', tribes:['lo_hom', 'lo_elf', 'lo_nah', 'lo_mor', 'lo_ise', 'lo_omb'] },
+    { n:'Le Seigneur des Anneaux', col:'#b08a2e', ic:'crown', lore:'Les camps sont tirés au sort : 4 joueurs pour les Peuples libres, 4 pour l’Ombre, et chaque combat oppose les deux camps. Un seul porte l’Anneau vers le Mont du Destin ; tous les autres le veulent.', mech:'voyage', tribes:['lo_hom', 'lo_elf', 'lo_nah', 'lo_mor', 'lo_ise', 'lo_omb'] },
     { n:'Squishys', col:'#b04a6a', ic:'blob', lore:'Une grosse boule de câlins.', mech:'fusion', tribes:['sq_feu', 'sq_eau', 'sq_terre', 'sq_vent', 'sq_foudre'] },
   ],
   heroFam:{},
@@ -3124,6 +3124,14 @@ function endRecruit() {
     let ok = true; for (let i = 0; i + 1 < order.length; i += 2) if (order[i].lastOpp === order[i + 1].pid) ok = false;
     if (ok) break; order = shuffle(alive.slice());
   }
+  // Le Seigneur des Anneaux : les combats opposent toujours un joueur des Peuples libres à un joueur de l'Ombre.
+  // Camps inégaux : les joueurs en trop du camp le plus nombreux affrontent le fantôme du dernier éliminé du camp d'en face (à défaut, la copie d'un adversaire vivant).
+  // Un camp entièrement éliminé : les survivants s'affrontent entre eux, comme dans les autres univers.
+  let loPairs = null;
+  if (loOn(G)) { const L = alive.filter(p => loCamp(p) === 'L'), O = alive.filter(p => loCamp(p) === 'O');
+    if (L.length && O.length) { let a = shuffle(L.slice()), b = shuffle(O.slice()); const n = Math.min(a.length, b.length);
+      for (let t = 0; t < 12; t++) { let ok = true; for (let i = 0; i < n; i++) if (a[i].lastOpp === b[i].pid) ok = false; if (ok) break; a = shuffle(L.slice()); b = shuffle(O.slice()); }
+      loPairs = { duo:Array.from({ length:n }, (_, i) => [a[i], b[i]]), solo:(a.length > n ? a : b).slice(n) }; } }
   G.pend = []; let maxFrames = 0;
   // plafond de dégâts (Champs de bataille, saison 9) : 5 jusqu'à la manche 3, 10 jusqu'à la 7, 15 ensuite ; plus de plafond dans le Top 4
   const cap = alive.length <= 4 ? 99 : G.rd <= 3 ? 5 : G.rd <= 7 ? 10 : 15;
@@ -3173,9 +3181,13 @@ function endRecruit() {
     if (!ghost && q.human && !q.bot) { deliverFight(q, Object.assign({ me:1, on:p.n }, base)); maxFrames = Math.max(maxFrames, r.frames.length); }
     p.lastOpp = ghost ? null : q.pid; if (!ghost) q.lastOpp = p.pid;
   };
+  if (loPairs) { loPairs.duo.forEach(([p, q]) => fight(p, q));
+    loPairs.solo.forEach(p => { const foe = loCamp(p) === 'L' ? 'O' : 'L', gone = G.ps.filter(x => !x.al && x.place && loCamp(x) === foe).sort((x, y) => x.place - y.place); fight(p, null, gone[0] || pickR(alive.filter(x => loCamp(x) === foe))); }); }
+  else {
   for (let i = 0; i + 1 < order.length; i += 2) fight(order[i], order[i + 1]);
   // joueur impair : il affronte le fantôme du dernier joueur éliminé (son plateau et son niveau de taverne) ; à défaut, un vivant au hasard
   if (order.length % 2) { const p = order[order.length - 1]; const gone = G.ps.filter(x => !x.al && x.place).sort((a, b) => a.place - b.place), others = alive.filter(x => x !== p); fight(p, null, gone[0] || (others.length ? pickR(others) : p)); }
+  }
   G.ph = 'combat';
   const anyWatcher = G.ps.some(p => p.human && !p.bot && p.peer);
   G.end = Date.now() + (anyWatcher ? Math.min(50000, 3500 + maxFrames * 700) : 800);

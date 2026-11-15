@@ -29,6 +29,15 @@ t('le camp est connu avant le choix du héros', !bad.priv, bad.priv);
   t('après le choix, le camp reste celui tiré au sort', G.ps.every(q=>loCamp(q)===q.camp)&&loCamp(p)===c);
   t('la taverne ne propose que des cartes du camp', p.sh.every(m=>loSee(p,m.c)), p.sh.map(m=>m.c)); }
 { V.univSel=['Naruto']; startSolo(); clearInterval(H.tick); const G=H.G; t('Naruto inchangé : pas de camp, 3 héros, 2 relances', G.ps.every(p=>!p.camp&&p.ho.length===3&&p.hrr===2)); }
+{ let bad=0, fights=0, ghosts=0, mixed=0, ended=0, same=0; const camp2=h=>HEROES[h]&&HEROES[h].shadow?'O':'L';
+  for(let g=0;g<12;g++){ V.univSel=['Le Seigneur des Anneaux']; startSolo(); clearInterval(H.tick); const G=H.G; G.ps.forEach(p=>{ p.hero=p.hero||p.ho[0]; p.bot=1; }); finishHero(); clearInterval(H.tick); let k=0;
+    while(G.ph!=='end'&&k++<200){ if(G.ph==='recruit'){ const al=G.ps.filter(p=>p.al), both=al.some(p=>loCamp(p)==='L')&&al.some(p=>loCamp(p)==='O'); endRecruit(); clearInterval(H.tick);
+        al.forEach(p=>{ const h=p.hist&&p.hist[0]; if(!h) return; fights++; if(p.vfoe==null) ghosts++; if(both){ mixed++; if(camp2(h.h)===loCamp(p)) bad++; } else if(camp2(h.h)===loCamp(p)) same++; }); }
+      else if(G.ph==='combat'){ endCombat(); clearInterval(H.tick); } else break; }
+    if(G.ph==='end') ended++; }
+  t('12 parties : tant que les deux camps sont en vie, chaque combat oppose Peuples libres et Ombre', mixed>300&&bad===0, [mixed,bad]);
+  t('camps inégaux : des fantômes du camp d’en face complètent', ghosts>0, ghosts);
+  t('un camp éliminé : les survivants s’affrontent entre eux et la partie se termine', ended===12, [ended,same]); }
 return T; }"""
 with sync_playwright() as pw:
     b=pw.chromium.launch(); pg=b.new_page(viewport={'width':1280,'height':800}); errs=[]
