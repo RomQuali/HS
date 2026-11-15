@@ -1964,3 +1964,5 @@ html.lite .mn .tf-b.nk-tf.ok,html.lite .mn .tf-b.nk-tf.ok .tf-up{animation:none}
 .cd .lk-ch{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;transition:opacity .18s}
 .cd .hk-tag{transition:opacity .18s}
 .cd.lkd:hover .lk-ch,.cd.lkd:focus .lk-ch,.cd.lkd:hover .hk-tag,.cd.lkd:focus .hk-tag{opacity:0}
+/* choix du héros confirmé : le bouton reste actif (vert) en attendant les autres joueurs */
+.hp-ok.done{filter:hue-rotate(70deg) saturate(1.2)}

@@ -1155,7 +1155,7 @@ const rollH = (me, i) => `<span class="h-roll${(me.hrr || 0) > 0 ? '' : ' off'}"
 const rollInfoH = me => me.hrm === 0 ? '' : `<p class="h-rolls">${icon('roll')} Relances : ${Array.from({ length:me.hrm || 3 }, (_, k) => `<i class="${k < (me.hrr || 0) ? 'on' : ''}"></i>`).join('')}<small>clique sur ${icon('roll')} pour changer un héros</small></p>`;
 // choix du héros façon auto-battler : grands portraits en rangée, pouvoir en médaillon sous chaque héros
 function heroPickRowH(d, me) {
-  const nin = (d.laws || []).some(l => l.k === 'chakra' || l.k === 'ki'), sel = me.ho.includes(V.heroSel) ? V.heroSel : null;
+  const nin = (d.laws || []).some(l => l.k === 'chakra' || l.k === 'ki'), chosen = me.hero || ((V.pub && (V.pub.pl || []).find(x => x.pid === me.pid)) || {}).h || null, sel = me.ho.includes(V.heroSel) ? V.heroSel : chosen && me.ho.includes(chosen) ? chosen : null;
   const pcs = [];
   const card = (h, i) => { const x = HEROES[h], on = h === sel, cid = compOf(h) || COMPANIONS[h], c = cid && C[cid], el = x.clan, vt = (x.fam || [])[0], col = x.mc && NJ_MC[x.mc] ? NJ_MC[x.mc][1] : el && ELS[el] ? ELS[el].col : TRIBES[vt] && TRIBES[vt].col || '#d8a84a';
     const pw = x.pwn || (x.cost ? 'Pouvoir héroïque' : 'Pouvoir passif'), cap = t => (t || '').charAt(0).toUpperCase() + (t || '').slice(1);
@@ -1183,7 +1183,7 @@ function heroPickRowH(d, me) {
   return `<div class="ov hp-ov"><div class="hp-wrap">
     <header class="hp-head"><h2 class="hp-t">${me.camp ? 'Choisis ton duo' : 'Choisis ton héros'}</h2>${me.camp ? `<p class="hp-camp ${me.camp === 'O' ? 'o' : 'l'}">${me.camp === 'O' ? 'Ton duo combat pour l’Ombre' : 'Ton duo combat pour les Peuples libres'} <small>${me.ally ? 'avec ' + esc(me.ally.n) + ' · ' : ''}choisis ton héros, ton allié prend l’autre</small></p>` : ''}${fams.length ? `<p class="hp-fams">${esc(fams.join(', '))}</p>` : ''}</header>
     <div class="hp-row${me.camp && typeof LO_DUOS !== 'undefined' ? ' hp-duos' : ''}">${me.camp && typeof LO_DUOS !== 'undefined' ? loDuoRowH(me, card) : me.ho.map(card).join('')}</div>
-    <button class="hp-ok" data-act="hero" data-h="${sel || ''}" ${sel ? '' : 'disabled'}>OK</button>
+    <button class="hp-ok${chosen && sel === chosen ? ' done' : ''}" data-act="hero" data-h="${sel || ''}" ${sel ? '' : 'disabled'}>${chosen && sel === chosen ? 'Prêt ✓' : 'OK'}</button>
     <div class="hp-infos">${pcs.join('')}</div>
     ${false ? `<button class="btn sm hp-rb" data-act="hprules">${rules ? 'Masquer les règles' : 'Comment on joue ?'}</button>` : ''}
     ${por ? `<button class="btn sm hp-rb" data-act="hprules">${V.hpRules ? 'Masquer les règles' : 'Comment on joue ?'}</button>${V.hpRules ? `<div class="hpick-r hp-rules hp-rm">${por()}</div>` : ''}` : ''}
