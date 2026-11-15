@@ -327,6 +327,9 @@ html:root:root:root:root:root:root:root:root body.rn[class] .rn-tb,html:root:roo
 § .hero-zone .bell:disabled .bell-t{display:grid;place-items:center;padding:0;font-size:0;background:url(assets/hs/b-fin-inactive.webp) 0 0/100% 100% no-repeat}
 § .hero-zone .bell:disabled .bell-t::after{content:'Combat';position:static;inset:auto;background:none;font-size:fs(21,9);color:#fff;text-shadow:0 0 2u #000,0 2u 0 #222,0 0 5u #000}
 § .hero-zone .bell.rung .bell-t::before{right:-16u;top:-22u;width:54u;height:54u}
+§ .hero-zone .bell .bell-t,§ .hero-zone .bell:disabled .bell-t{place-items:center;padding:0;font-size:0}
+§ .hero-zone .bell .bell-t::after,§ .hero-zone .bell:disabled .bell-t::after{content:attr(data-l);position:absolute;inset:auto;left:50%;top:100%;transform:translateX(-50%);margin-top:3u;white-space:nowrap;background:none;font-size:fs(16,9);line-height:1;color:#ffe9a8;text-shadow:0 0 2u #000,0 1u 0 #000,0 0 6u #000;pointer-events:none}
+§ .hero-zone .bell:disabled .bell-t::after{content:'Combat';color:#fff}
 /* ===== interface v2 (éléments fournis le 14/11/2026) : plaque de bois derrière « Manche · phase » ===== */
 § .hud::before{content:'';position:absolute;left:4u;top:10u;width:232u;height:50u;z-index:0;pointer-events:none;background:url(assets/hs/v2/rec-synergie.webp) 0 0/100% 100% no-repeat;filter:drop-shadow(0 3u 4u rgba(0,0,0,.55))}
 § .hud .round,§ .hud .phase{position:relative;z-index:1}

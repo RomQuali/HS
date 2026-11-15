@@ -320,7 +320,14 @@ function render() {
   if (V.allyView && !obsView()) V.allyView = false;
   const real = V.me; if (obsView()) V.me = Object.assign({}, real.av, { ally:real.ally, passfree:real.passfree, obs:1 });
   try { render0(); } finally { V.me = real; }
+  requestAnimationFrame(timerSync);
 }
+// le chrono se place exactement au centre de la plaque « Prêt » à droite, quelle que soit la taille de l'écran
+function timerSync() { const t = document.querySelector('.hud .timer'), b = document.querySelector('.hero-zone .bell'); if (!t || !b || !t.offsetParent) return;
+  if (getComputedStyle(t).position !== 'absolute') return; const P = t.offsetParent.getBoundingClientRect(), B = b.getBoundingClientRect(); if (!B.width) return;
+  const v = { left:(B.left - P.left) + 'px', top:(B.top - P.top) + 'px', width:B.width + 'px', height:B.height + 'px', right:'auto', bottom:'auto', 'min-width':'0', margin:'0', padding:'0', transform:'none', 'text-align':'center', 'line-height':'1', 'pointer-events':'none' };
+  for (const k in v) t.style.setProperty(k, v[k], 'important'); }
+addEventListener('resize', () => requestAnimationFrame(timerSync));
 function render0() {
   V.pendingRender = false; const hadPeek = !peekEl.hidden && peekFor && peekFor.matches('.mn,.cd,.spt,.eqm,[data-hov]'); hidePeek();
   const act = document.activeElement, fid = act && act !== document.body ? act.id : '';
@@ -652,7 +659,7 @@ function gameH() {
       <div class="hz-left">${trainH(d, me, canAct)}${me.cp || (!NJ_COMP && (d.laws || []).some(l => l.k === 'chakra')) ? '' : `<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span>`}</div>
       <div class="hz-hero${me.haw ? ' haw' : ''}${me.haw && V.hawSeen !== me.hawId ? ' haw-new' : ''}" data-hov="hero">${me.haw ? hawFrameH(hero) : ''}<span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? heroArt(me.hero, me.haw) : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}${mkOrbsH(d, me)}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span>${HQ ? (me.haw ? `<span class="hq done">${esc(hero.awn || 'Éveillé')}</span>` : `<span class="hq" data-tip="${esc('Quête d\'éveil : ' + HQ.tx + ' Récompense : ' + HEROES[me.hero].aw.nm + ' (nouveau pouvoir).')}"><i style="--p:${Math.min(1, (me.qp || 0) / HQ.n)}"></i>${Math.min(me.qp || 0, HQ.n)}/${HQ.n}</span>`) : ''}</div>
       <div class="hz-right"><span class="hov" data-hov="pow">${power}</span><span class="purses">${coins}${canAct ? ckGauge(d, me) + kiGauge(d, me) + pfGauge(d, me) : ''}</span>${rsvH(d, me)}</div>
-      <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}"><span class="bell-shine" aria-hidden="true"></span>${icon('bell')}<span class="bell-t">${me.rdy ? 'Prêt !' : 'Prêt'}</span><small class="bell-s">${me.rdy ? 'en attente' : 'fin du tour'}</small></button></div></section>`;
+      <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}"><span class="bell-shine" aria-hidden="true"></span>${icon('bell')}<span class="bell-t" data-l="${me.rdy ? 'Prêt !' : 'Prêt'}">${me.rdy ? 'Prêt !' : 'Prêt'}</span><small class="bell-s">${me.rdy ? 'en attente' : 'fin du tour'}</small></button></div></section>`;
     const n = me.hd.length;
     const hand = fighting ? '' : `<section class="hand" data-drop="hd" aria-label="Ta main · ${n}/10"><div class="fan${n > 7 ? ' many' : n > 4 ? ' some' : ''}" style="--n:${n}">${n ? me.hd.map((m, i) => { const o = i - (n - 1) / 2, op = { drag:canAct, style:`--o:${f1(o)};--o2:${f1(o * o)}` }; return m.sp ? spellCardH(m.sp, 'hd', i, op) : cardH(m, 'hd', i, op); }).join('') : ''}</div></section>`;
     const det = !fighting && V.sel && !me.obs ? `<div class="detail-pop">${detailH(canAct)}<button class="dp-x" data-act="unsel" aria-label="Fermer">×</button></div>` : '';
