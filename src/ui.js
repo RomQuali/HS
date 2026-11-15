@@ -1202,7 +1202,7 @@ function overlayH() {
   const d = V.pub, me = V.me;
   if (me && me.cho && d.ph === 'recruit') return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Choix des armes</h2><p class="ov-s">${esc(C[me.cho.c] ? CD(me.cho.c).n : '')} : choisis un des deux effets. À la fin du chrono, le premier est pris.</p>
     <div class="cho">${me.cho.o.map((o, i) => `<button class="cho-b" data-act="choose" data-i="${i}">${esc(ET[o.k] ? ET[o.k].txt(o, 1).replace(/^Cri de guerre : /, '').replace(/^./, c => c.toUpperCase()) : '?')}</button>`).join('')}</div></div></div>`;
-  if (me && me.disc && d.ph === 'recruit') return `<div class="ov"><div class="ov-box"><h2 class="ov-t">${me.dsc ? 'Étape du voyage · ' + esc(me.dsc) : 'Découverte'}</h2><p class="ov-s">${me.dsc ? 'Tu as atteint ' + esc(me.dsc) + ' : choisis une récompense. Les objets sont plus forts sur leur porteur du film.' : 'Choisis un serviteur. Les deux autres retournent dans la réserve.'}</p>
+  if (me && me.disc && d.ph === 'recruit') return `<div class="ov"><div class="ov-box"><h2 class="ov-t">${me.dsc ? 'Butin de bataille · ' + esc(me.dsc) : 'Découverte'}</h2><p class="ov-s">${me.dsc ? 'Tu as gagné la bataille : choisis un objet légendaire. Il est plus fort sur son porteur du film.' : 'Choisis un serviteur. Les deux autres retournent dans la réserve.'}</p>
     <div class="disc">${me.disc.map((m, i) => `<button class="disc-b" data-act="pick" data-i="${i}" aria-label="Choisir ${esc(m.sp ? (SPELLS[m.sp] || {}).n : CD(m.c).n)}">${m.sp ? loObjH(m.sp) : cardH(m, 'disc', i)}</button>`).join('')}</div></div></div>`;
   if (d.ph === 'hero' && me) {
     if (!me.hero) return heroPickRowH(d, me);

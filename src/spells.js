@@ -24,7 +24,7 @@ const SPELLS = {
   dt_death:{ db:1, n:'Death Ball', t:5, c:3, kc:5, ty:'nin', tg:1, fx:[{ k:'fire', d:7 }, { k:'buffall', a:1, h:0, tb:'d_fre' }], sig:['d_freezer', 'd_cooler', 'd_cold'], sgx:[{ k:'tbuff', a:4, h:4 }], tx:'Prochain combat : 7 dégâts à l\'ennemi ; tes Freezer gagnent +1/+0.', stx:'+4/+4' },
   dt_genki:{ db:1, n:'Genkidama', t:6, c:3, kc:6, ty:'nin', tg:1, fx:[{ k:'buffall', a:2, h:2 }], sig:['d_goku', 'd_uub'], sgx:[{ k:'buffall', a:1, h:1 }], tx:'L\'énergie de tous : tes serviteurs gagnent +2/+2.', stx:'+1/+1 de plus pour tous' },
   // ----- Le Seigneur des Anneaux : l'Anneau unique, armes et objets légendaires (récompenses d'étape, liés à leur porteur du film) -----
-  lo_anneau:{ lo:1, n:'L’Anneau unique', t:1, c:3, ty:'leg', tg:1, ring:1, fx:[{ k:'tring' }], tx:'Un Anneau pour les gouverner tous. Le porteur devient invisible (Camouflage qui ne tombe pas) et gagne +2/+2 à chaque tour, mais il se corrompt : au bout de 4 tours il succombe et tu le perds (7 tours pour un Hobbit). Les Nazgûl te traquent tant que tu détiens l’Anneau, de plus en plus forts, et à deux dès le 4e tour. Porte-le jusqu’au Mont du Destin pour gagner la partie.' },
+  lo_anneau:{ lo:1, n:'L’Anneau unique', t:1, c:3, ty:'leg', ring:1, fx:[{ k:'tring' }], tx:'Un Anneau pour les gouverner tous. Il ne s’achète pas : il est confié à un héros à la manche 3, puis passe à quiconque bat son porteur.' },
   lo_dard:{ lo:1, n:'Dard', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:2, h:1, lo:1 }], sig:['lo_frodon', 'lo_bilbon'], sgx:[{ k:'tfx', fx:[{ k:'soc_i1' }] }], stx:'Frodon, Bilbon : sa première attaque de chaque combat est Insensible', tx:'Le serviteur ciblé gagne +2/+1.' },
   lo_anduril:{ lo:1, n:'Andúril, Flamme de l’Ouest', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:4, h:2, lo:1 }], sig:['lo_aragorn', 'lo_isildur'], sgx:[{ k:'tfx', fx:[{ k:'soc_first', x:2 }] }], stx:'Aragorn, Isildur : sa première attaque de chaque combat inflige le double', tx:'Le serviteur ciblé gagne +4/+2.' },
   lo_glamdring:{ lo:1, n:'Glamdring', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:3, h:3, lo:1 }], sig:['lo_gandalf'], sgx:[{ k:'tfx', fx:[{ k:'burn', d:2 }] }], stx:'Gandalf : Brûlure de 2', tx:'Le serviteur ciblé gagne +3/+3.' },
@@ -49,6 +49,12 @@ const SPELLS = {
   lo_morts:{ lo:1, n:'Le serment des Morts', t:1, c:0, ty:'leg', fx:[{ k:'summon', card:'tl_morts', n:2 }], tx:'Invoque 2 Soldats de l’Armée des Morts 4/4 avec Camouflage.' },
   lo_aigles:{ lo:1, n:'Les Aigles arrivent !', t:1, c:0, ty:'leg', fx:[{ k:'summon', card:'tl_aigle', n:2 }], tx:'Invoque 2 Aigles géants 5/5.' },
   lo_couronne:{ lo:1, n:'Couronne du Gondor', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:6, h:6, lo:1 }], sig:['lo_aragorn'], sgx:[{ k:'buffall', a:2, h:2 }], stx:'Aragorn : tous tes serviteurs gagnent +2/+2', tx:'Le serviteur ciblé gagne +6/+6.' },
+  lo_gobelins:{ lo:1, n:'Les tambours de la Moria', t:1, c:0, ty:'leg', fx:[{ k:'summon', card:'tl_snaga', n:2 }, { k:'summon', card:'tl_warg', n:1 }], tx:'Ils arrivent : invoque 2 Snagas 1/1 et un Warg 2/2.' },
+  lo_uruks:{ lo:1, n:'Dix mille Uruk-hai', t:1, c:0, ty:'leg', fx:[{ k:'summon', card:'tl_uruk', n:2 }], tx:'Invoque 2 Uruk-hai 3/3.' },
+  lo_mine:{ lo:1, n:'Mine d’Orthanc', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tfx', fx:[{ k:'dr_aoe', d:3 }] }], sig:['lo_berserker'], sgx:[{ k:'tbuff', a:3, h:3, lo:1 }], stx:'Berserker uruk : +3/+3', tx:'Le serviteur ciblé gagne « Râle d’agonie : inflige 3 dégâts à tous les ennemis ».' },
+  lo_mumakil:{ lo:1, n:'Les Mûmakil du Harad', t:1, c:0, ty:'leg', fx:[{ k:'summon', card:'tl_mumak', n:1 }], tx:'Invoque un Mûmak 4/5 qui attaque aussi les voisins de sa cible.' },
+  lo_bete:{ lo:1, n:'Bête ailée', t:1, c:0, ty:'leg', fx:[{ k:'summon', card:'tl_beteailee', n:1 }], tx:'Invoque une Bête ailée 5/4 avec Furie des vents.' },
+  lo_masse:{ lo:1, n:'Masse de Sauron', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:5, h:3, lo:1 }], sig:['lo_sauron', 'lo_roisorcier'], sgx:[{ k:'tfx', fx:[{ k:'soc_first', x:2 }] }], stx:'Sauron, Roi-Sorcier : sa première attaque de chaque combat inflige le double', tx:'Le serviteur ciblé gagne +5/+3.' },
   lo_ombre:{ lo:1, n:'L’Ombre du Mordor', t:1, c:0, ty:'leg', fx:[{ k:'buffall', a:3, h:3 }], tx:'Tous tes serviteurs gagnent +3/+3.' },
   // ----- inventions de Rick (univers Rick et Morty) : achetées et lancées en or, à l'étagère de la taverne -----
   ri_cornichon:{ rm:1, n:'Cornichon', t:1, c:1, ty:'inv', tg:1, fx:[{ k:'tbuff', a:1, h:3 }], tx:'Le serviteur ciblé se change un instant en cornichon : il gagne +1/+3.' },
@@ -426,7 +432,7 @@ function castSpell0(G, p, hi, tg) {
   return true;
 }
 // un serviteur hors réserve (si la réserve est vide pour ce niveau)
-function drawAny(t) { const ids = POOL_IDS.filter(id => C[id].t === t); return ids.length ? mk(pickR(ids), 0) : null; }
+function drawAny(t) { const lo = DRAWP && typeof H !== 'undefined' && H.G && loOn(H.G); const ids = POOL_IDS.filter(id => C[id].t === t && (!lo || loSee(DRAWP, id))); return ids.length ? mk(pickR(ids), 0) : null; }
 // plateau de combat : on ajoute les bonus « prochain combat » sans toucher au vrai plateau
 function combatBoard(p) {
   const G = typeof H !== 'undefined' ? H.G : null, aw = awake(G), ninja = G && inMechAny(G, 'chakra');
@@ -589,6 +595,8 @@ const SPART = {
     lo_mithril:'shield', lo_cape:'shield', lo_couronne:'gem', lo_fiole:'gem', lo_arkenstone:'gem', lo_palantir:'gem', lo_lembas:'gem', lo_cor:'horn', lo_feux:'horn', lo_charge:'horn',
     lo_balrog:'beast', lo_ents:'beast', lo_morts:'beast', lo_aigles:'beast', lo_gripoil:'beast', lo_ombre:'beast' };
   ["lo_anneau", "lo_dard", "lo_anduril", "lo_glamdring", "lo_mithril", "lo_fiole", "lo_cor", "lo_palantir", "lo_lembas", "lo_arc", "lo_hache", "lo_arkenstone", "lo_cape", "lo_gripoil", "lo_herugrim", "lo_morgul", "lo_baton", "lo_grond", "lo_balrog", "lo_charge", "lo_ents", "lo_feux", "lo_morts", "lo_aigles", "lo_couronne", "lo_ombre"].forEach(id => { SPART[id] = () => `<image href="assets/sda/sp_${id}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`; });   // images fournies le 14/11/2026
+  Object.entries({ lo_gobelins:'tl_snaga', lo_uruks:'tl_uruk', lo_mumakil:'tl_mumak', lo_bete:'tl_beteailee' }).forEach(([id, f]) => { SPART[id] = () => `<image href="assets/sda/${f}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`; });
+  K.lo_mine = 'beast'; K.lo_masse = 'blade';
   for (const id in SPELLS) if (SPELLS[id].lo && !SPART[id]) SPART[id] = NJA(id === 'lo_anneau' ? '#ffd24a' : '#e8c878', G[K[id] || 'gem']); })();
 Object.assign(SPART, {
   dt_taiyo: () => softGlow(50, 52, 36, '#fff6c0', .55) + Ci(50, 52, 14, '#fffbe6', 'filter="url(#fx-glow)"') + Array.from({ length:12 }, (_, i) => { const a = i * Math.PI / 6; return Ln(`M${50 + Math.cos(a) * 18} ${52 + Math.sin(a) * 18} L${50 + Math.cos(a) * 32} ${52 + Math.sin(a) * 32}`, '#ffe36a', 3); }).join(''),

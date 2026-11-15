@@ -10,8 +10,8 @@ window.RoniUnivers = [
    regles:["La loi active de Springfield est « Donuts ». Les cinq familles participent à la partie."]},
   {id:"dragon-ball",nom:"Dragon Ball",heros:10,theme:"Ki",symbole:"etoile",couleur:"#eda658",familles:["Saiyans","Terriens","Namekiens","Armée de Freezer","Androïdes"],
    regles:["Médite, charge ton ki et transforme tes guerriers."]},
-  {id:"seigneur-des-anneaux",nom:"Le Seigneur des Anneaux",heros:20,theme:"Voyage et Anneau",symbole:"etoile",couleur:"#d8b45a",familles:["Hommes","Elfes","Nains et Hobbits","Mordor","Isengard"],
-   regles:["Chaque victoire te fait avancer vers le Mordor ; chaque étape offre un objet légendaire. Porte l’Anneau unique jusqu’au Mont du Destin pour gagner."]},
+  {id:"seigneur-des-anneaux",nom:"Le Seigneur des Anneaux",heros:20,theme:"Voyage et Anneau",symbole:"etoile",couleur:"#d8b45a",familles:["Hommes","Elfes","Nains et Hobbits","Mordor","Isengard","Alliés de l’Ombre"],
+   regles:["Ton héros fixe ton camp : Peuples libres ou Ombre. Un seul joueur porte l’Anneau vers le Mont du Destin ; bats-le pour le lui prendre. Grandes batailles aux manches 4, 7, 10 et 13."]},
   {id:"naruto",nom:"Naruto",heros:20,theme:"Chakra",symbole:"kunai",couleur:"#dba26d",familles:["Konoha","Akatsuki","Suna","Oto","Kiri"],
    regles:["Charge ton chakra : lance le jutsu de chaque ninja, puis transforme-le."]}
 ];

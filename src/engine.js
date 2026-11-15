@@ -40,6 +40,7 @@ const DEFAULT_SETTINGS = {
     { id:'lo_nah', n:'Nains et Hobbits', sg:'Nain ou Hobbit', pl:'Nains et Hobbits', col:'#c89a4a', bg:'mine', on:true },
     { id:'lo_mor', n:'Mordor', sg:'serviteur du Mordor', pl:'serviteurs du Mordor', col:'#c8402a', bg:'volcan', on:true },
     { id:'lo_ise', n:'Isengard', sg:'serviteur d’Isengard', pl:'serviteurs d’Isengard', col:'#8a8f98', bg:'mine', on:true },
+    { id:'lo_omb', n:'Alliés de l’Ombre', sg:'allié de l’Ombre', pl:'alliés de l’Ombre', col:'#7a3a8a', bg:'volcan', on:true },
     { id:'lo_cre', n:'Créatures', sg:'Créature', pl:'Créatures', col:'#7a6a9a', bg:'colline', on:true },
     { id:'d_sai', n:'Saiyans', col:'#e0a020', bg:'volcan', on:true },
     { id:'d_ter', n:'Terriens', col:'#e8701a', bg:'colline', on:true },
@@ -74,7 +75,7 @@ const DEFAULT_SETTINGS = {
     { n:'Montagnes', col:'#6a5038', ic:'mount', lore:'Ils tombent… et tout s\'effondre.', mech:'eboulement', tribes:['nain', 'ogre', 'gob', 'drag', 'garou'] },
     { n:'Dragon Ball', col:'#e8701a', ic:'star', lore:'Médite, charge ton ki, transforme tes guerriers.', mech:'ki', tribes:['d_sai', 'd_ter', 'd_nam', 'd_fre', 'd_and'] },
     { n:'Naruto', col:'#a8402a', ic:'sword', lore:'Charge ton chakra : lance les jutsus de tes ninjas, puis transforme-les.', mech:'chakra', tribes:['nk_kon', 'nk_aka', 'nk_sun', 'nk_oto', 'nk_kir'] },
-    { n:'Le Seigneur des Anneaux', col:'#b08a2e', ic:'crown', lore:'Marche vers le Mordor : chaque victoire te rapproche du Mont du Destin. Et l’Anneau unique attend son porteur.', mech:'voyage', tribes:['lo_hom', 'lo_elf', 'lo_nah', 'lo_mor', 'lo_ise'] },
+    { n:'Le Seigneur des Anneaux', col:'#b08a2e', ic:'crown', lore:'Choisis ton camp : Peuples libres ou Ombre. Un seul porte l’Anneau vers le Mont du Destin ; tous les autres le veulent.', mech:'voyage', tribes:['lo_hom', 'lo_elf', 'lo_nah', 'lo_mor', 'lo_ise', 'lo_omb'] },
     { n:'Squishys', col:'#b04a6a', ic:'blob', lore:'Une grosse boule de câlins.', mech:'fusion', tribes:['sq_feu', 'sq_eau', 'sq_terre', 'sq_vent', 'sq_foudre'] },
   ],
   heroFam:{},
@@ -637,9 +638,9 @@ const DEFAULT_CARD_LIST = [
   ['lo_faramir', 'Faramir', 2, 'lo_hom', 2, 4, '', [{ k:'soc_dmg', d:2, n:1 }]],
   ['lo_eomer', 'Éomer', 3, 'lo_hom', 4, 3, '', [{ k:'atk_self', a:2, h:0, nm:'Charge' }]],
   ['lo_boromir', 'Boromir', 3, 'lo_hom', 3, 6, 't', [{ k:'dr_buff_all', a:2, h:2, tb:'' }]],
-  ['lo_theoden', 'Théoden', 4, 'lo_hom', 3, 5, '', [{ k:'voy_tf', st:[{ et:4, nm:'Théoden, roi du Rohan', a:3, h:3, x:[{ k:'soc_buff', tb:'lo_hom', a:2, h:1 }] }] }]],
+  ['lo_theoden', 'Théoden', 4, 'lo_hom', 3, 5, '', [{ k:'voy_tf', st:[{ et:2, nm:'Théoden, roi du Rohan', a:3, h:3, x:[{ k:'soc_buff', tb:'lo_hom', a:2, h:1 }] }] }]],
   ['lo_denethor', 'Denethor', 4, 'lo_hom', 2, 7, '', [{ k:'eot_buff_taunt', a:1, h:1 }]],
-  ['lo_aragorn', 'Grands-Pas', 5, 'lo_hom', 5, 5, '', [{ k:'voy_tf', st:[{ et:2, nm:'Aragorn', a:3, h:3, x:[{ k:'cleave', nm:'Lame du Rôdeur' }] }, { et:5, nm:'Roi Elessar', a:5, h:5, kw:'s', x:[{ k:'soc_summon', card:'tl_morts', n:2 }] }] }]],
+  ['lo_aragorn', 'Grands-Pas', 5, 'lo_hom', 5, 5, '', [{ k:'voy_tf', st:[{ et:1, nm:'Aragorn', a:3, h:3, x:[{ k:'cleave', nm:'Lame du Rôdeur' }] }, { et:3, nm:'Roi Elessar', a:5, h:5, kw:'s', x:[{ k:'soc_summon', card:'tl_morts', n:2 }] }] }]],
   ['lo_isildur', 'Isildur', 6, 'lo_hom', 6, 6, 's', [{ k:'kill_perm', a:2, h:2 }]],
   ['lo_archer', 'Archer de la Lórien', 1, 'lo_elf', 1, 2, '', [{ k:'soc_dmg', d:1, n:1 }]],
   ['lo_haldir', 'Haldir', 1, 'lo_elf', 2, 2, '', [{ k:'see_camo', nm:'Sentinelle' }]],
@@ -648,8 +649,8 @@ const DEFAULT_CARD_LIST = [
   ['lo_legolas', 'Legolas', 3, 'lo_elf', 3, 3, 'w', [{ k:'soc_dmg', d:2, n:2 }]],
   ['lo_thranduil', 'Thranduil', 3, 'lo_elf', 3, 5, '', [{ k:'riposte', d:2, nm:'Lames du roi' }]],
   ['lo_elrond', 'Elrond', 4, 'lo_elf', 4, 5, '', [{ k:'eot_buff_all', a:1, h:1, tb:'lo_elf' }]],
-  ['lo_galadriel', 'Galadriel', 5, 'lo_elf', 4, 7, '', [{ k:'soc_genj', who:'top', n:1, nm:'Miroir de Galadriel' }, { k:'voy_tf', st:[{ et:3, nm:'Dame de Lumière', a:2, h:2, kw:'s' }] }]],
-  ['lo_gandalf', 'Gandalf le Gris', 5, 'lo_elf', 4, 6, '', [{ k:'soc_bind', who:'top', nm:'Vous ne passerez pas !' }, { k:'voy_tf', st:[{ et:4, nm:'Gandalf le Blanc', a:4, h:4, kw:'s', x:[{ k:'soc_summon', card:'tl_aigle', n:1 }] }] }]],
+  ['lo_galadriel', 'Galadriel', 5, 'lo_elf', 4, 7, '', [{ k:'soc_genj', who:'top', n:1, nm:'Miroir de Galadriel' }, { k:'voy_tf', st:[{ et:1, nm:'Dame de Lumière', a:2, h:2, kw:'s' }] }]],
+  ['lo_gandalf', 'Gandalf le Gris', 5, 'lo_elf', 4, 6, '', [{ k:'soc_bind', who:'top', nm:'Vous ne passerez pas !' }, { k:'voy_tf', st:[{ et:2, nm:'Gandalf le Blanc', a:4, h:4, kw:'s', x:[{ k:'soc_summon', card:'tl_aigle', n:1 }] }] }]],
   ['lo_gilgalad', 'Gil-galad', 6, 'lo_elf', 7, 7, 's', [{ k:'cleave', nm:'Aeglos' }]],
   ['lo_sam', 'Sam Gamegie', 1, 'lo_nah', 1, 3, '', [{ k:'guard', card:'lo_frodon', n:99, nm:'Fidèle jardinier' }]],
   ['lo_merry', 'Merry', 1, 'lo_nah', 1, 2, '', [{ k:'kill_perm', a:1, h:1 }]],
@@ -659,13 +660,13 @@ const DEFAULT_CARD_LIST = [
   ['lo_gimli', 'Gimli', 3, 'lo_nah', 3, 5, 't', [{ k:'kill_perm', a:1, h:1 }]],
   ['lo_balin', 'Balin', 3, 'lo_nah', 2, 6, 't', [{ k:'eot_buff_taunt', a:1, h:1 }]],
   ['lo_dain', 'Dáin Pied-d’Acier', 4, 'lo_nah', 4, 6, '', [{ k:'armor', d:2, nm:'Pied-d’Acier' }]],
-  ['lo_thorin', 'Thorin Écu-de-Chêne', 5, 'lo_nah', 5, 6, '', [{ k:'riposte', d:2, nm:'Écu-de-Chêne' }, { k:'voy_tf', st:[{ et:2, nm:'Roi sous la Montagne', a:3, h:3, x:[{ k:'soc_buff', tb:'lo_nah', a:2, h:2 }] }] }]],
+  ['lo_thorin', 'Thorin Écu-de-Chêne', 5, 'lo_nah', 5, 6, '', [{ k:'riposte', d:2, nm:'Écu-de-Chêne' }, { k:'voy_tf', st:[{ et:1, nm:'Roi sous la Montagne', a:3, h:3, x:[{ k:'soc_buff', tb:'lo_nah', a:2, h:2 }] }] }]],
   ['lo_sylvebarbe', 'Sylvebarbe', 6, 'lo_nah', 6, 9, 't', [{ k:'bc_summon', card:'tl_ent', n:1 }, { k:'cleave', nm:'Colère des Ents' }]],
-  ['lo_orque', 'Orque du Mordor', 1, 'lo_mor', 2, 1, '', [{ k:'dr_summon', card:'tl_snaga', n:1 }]],
-  ['lo_gollum', 'Sméagol', 1, 'lo_mor', 1, 2, '', [{ k:'voy_tf', st:[{ et:2, nm:'Gollum', a:2, h:1, kw:'c', x:[{ k:'tgt_weak', nm:'Sournois' }] }] }]],
-  ['lo_troll', 'Troll des cavernes', 2, 'lo_mor', 2, 5, 't', []],
+  ['lo_orque', 'Orque du Mordor', 1, 'lo_mor', 2, 2, '', [{ k:'dr_summon', card:'tl_snaga', n:1 }]],
+  ['lo_gollum', 'Sméagol', 1, 'lo_mor', 1, 2, '', [{ k:'voy_tf', st:[{ et:1, nm:'Gollum', a:2, h:1, kw:'c', x:[{ k:'tgt_weak', nm:'Sournois' }] }] }]],
+  ['lo_troll', 'Troll des cavernes', 2, 'lo_mor', 3, 5, 't', []],
   ['lo_bouche', 'Bouche de Sauron', 2, 'lo_mor', 2, 3, '', [{ k:'soc_chill', a:2, n:1 }]],
-  ['lo_gothmog', 'Gothmog', 3, 'lo_mor', 3, 4, '', [{ k:'soc_buff', tb:'lo_mor', a:1, h:1 }]],
+  ['lo_gothmog', 'Gothmog', 3, 'lo_mor', 3, 4, '', [{ k:'eot_buff_all', a:1, h:1, tb:'lo_mor' }]],
   ['lo_khamul', 'Khamûl', 3, 'lo_mor', 3, 3, '', [{ k:'soc_genj', who:'face', n:1, nm:'Souffle noir' }]],
   ['lo_arachne', 'Arachne', 4, 'lo_mor', 3, 6, '', [{ k:'soc_kwself', kw:'n' }, { k:'soc_bind', who:'face', nm:'Toile d’Arachne' }]],
   ['lo_suladan', 'Suladân', 4, 'lo_mor', 3, 3, '', [{ k:'bc_summon', card:'tl_mumak', n:1 }]],
@@ -676,11 +677,21 @@ const DEFAULT_CARD_LIST = [
   ['lo_warg', 'Chevaucheur de warg', 2, 'lo_ise', 3, 2, '', [{ k:'atk_self', a:1, h:0, nm:'Charge' }]],
   ['lo_dunlending', 'Homme du Pays de Dun', 2, 'lo_ise', 2, 3, '', [{ k:'dr_dmg', d:2, n:1 }]],
   ['lo_berserker', 'Berserker uruk', 3, 'lo_ise', 4, 2, '', [{ k:'dr_aoe', d:2, nm:'Mine explosive' }]],
-  ['lo_mauhur', 'Mauhúr', 3, 'lo_ise', 3, 4, '', [{ k:'soc_buff', tb:'lo_ise', a:1, h:1 }]],
-  ['lo_ugluk', 'Uglúk', 4, 'lo_ise', 4, 5, '', [{ k:'atk_self', a:2, h:0, nm:'Marche forcée' }]],
+  ['lo_mauhur', 'Mauhúr', 3, 'lo_ise', 3, 4, '', [{ k:'eot_buff_all', a:1, h:1, tb:'lo_ise' }]],
+  ['lo_ugluk', 'Uglúk', 4, 'lo_ise', 4, 6, '', [{ k:'atk_self', a:2, h:0, nm:'Marche forcée' }, { k:'kill_perm', a:1, h:1 }]],
   ['lo_sharku', 'Sharku', 4, 'lo_ise', 4, 4, '', [{ k:'bc_summon', card:'tl_warg', n:2 }]],
   ['lo_lurtz', 'Lurtz', 5, 'lo_ise', 5, 5, '', [{ k:'soc_dmg', d:4, n:1 }, { k:'kill_perm', a:1, h:1 }]],
-  ['lo_saroumane', 'Saroumane le Blanc', 6, 'lo_ise', 5, 7, '', [{ k:'bc_summon', card:'tl_uruk', n:1 }, { k:'voy_tf', st:[{ et:3, nm:'Saroumane le Multicolore', a:2, h:2, x:[{ k:'soc_genj', who:'top', n:1, nm:'Voix de Saroumane' }] }] }]],
+  ['lo_saroumane', 'Saroumane le Blanc', 6, 'lo_ise', 5, 7, '', [{ k:'bc_summon', card:'tl_uruk', n:1 }, { k:'voy_tf', st:[{ et:2, nm:'Saroumane le Multicolore', a:2, h:2, x:[{ k:'soc_genj', who:'top', n:1, nm:'Voix de Saroumane' }] }] }]],
+  ['lo_gobelin', 'Gobelin de la Moria', 1, 'lo_omb', 1, 1, '', [{ k:'bc_summon', card:'tl_snaga', n:1 }]],
+  ['lo_oriental', 'Guerrier oriental', 1, 'lo_omb', 1, 3, 't', []],
+  ['lo_haradrim', 'Archer haradrim', 2, 'lo_omb', 2, 2, '', [{ k:'soc_dmg', d:2, n:1 }]],
+  ['lo_wargsauv', 'Warg sauvage', 2, 'lo_omb', 3, 1, '', [{ k:'tgt_weak', nm:'Meute' }]],
+  ['lo_bolg', 'Bolg', 3, 'lo_omb', 4, 3, '', [{ k:'kill_perm', a:1, h:1 }]],
+  ['lo_grandgob', 'Le Grand Gobelin', 3, 'lo_omb', 2, 6, 't', [{ k:'soc_summon', card:'tl_snaga', n:2 }, { k:'eot_buff_all', a:1, h:1, tb:'lo_omb' }]],
+  ['lo_azog', 'Azog le Profanateur', 4, 'lo_omb', 5, 4, '', [{ k:'riposte', d:2, nm:'Bras de fer' }, { k:'kill_perm', a:1, h:1 }]],
+  ['lo_trollg', 'Troll de guerre', 4, 'lo_omb', 4, 7, 't', [{ k:'armor', d:1, nm:'Cuir épais' }]],
+  ['lo_fleau', 'Balrog de Morgoth', 5, 'lo_omb', 6, 7, '', [{ k:'burn', d:3, nm:'Fouet de flammes' }]],
+  ['lo_smaug', 'Smaug', 6, 'lo_omb', 8, 7, '', [{ k:'soc_aoe', d:3, nm:'Souffle de feu' }, { k:'armor', d:2, nm:'Écailles' }]],
   ['tk_gamabunta', 'Gamabunta', 0, 'nk_inv', 8, 8, '', [{ k:'cleave' }, { k:'soc_aoe_if', card:'nk_jiraiya', d:3 }]],
   ['tk_manda', 'Manda', 0, 'nk_inv', 10, 7, '', [{ k:'soc_kwself', kw:'n' }]],
   ['tk_kamatari', 'Kamatari', 0, 'nk_inv', 5, 3, 'w', [{ k:'sickle' }]],
@@ -789,7 +800,7 @@ const DBV = ['d_sai', 'd_ter', 'd_nam', 'd_fre', 'd_and'];   // héros Dragon Ba
 const RMV = ['r_smi', 'r_cit', 'r_ali', 'r_mon', 'r_mec'];   // héros Rick et Morty : rattachés à l'univers
 const SPV = ['s_gin', 's_adu', 's_got', 's_cel', 's_ani'];   // héros South Park : rattachés à l'univers
 const SIV = ['si_fam', 'si_moe', 'si_cra', 'si_aut', 'si_hor'];   // héros Les Simpson : rattachés à l'univers
-const LOV = ['lo_hom', 'lo_elf', 'lo_nah', 'lo_mor', 'lo_ise'];
+const LOV = ['lo_hom', 'lo_elf', 'lo_nah', 'lo_mor', 'lo_ise', 'lo_omb'];
 const NJV = ['nk_kon', 'nk_aka', 'nk_sun', 'nk_oto', 'nk_kir'];   // héros Ninja : rattachés à l'univers, à aucun village
 const COMPANIONS = { nh_kushina:'c_nj_kurama', nh_jiraiya:'c_nj_gamabunta', nh_sasuke:'c_nj_aigle', nh_mikoto:'c_nj_chatnoir', nh_itachi:'c_nj_corbeau', nh_temari:'c_nj_shukaku', nh_naruto:'c_nj_grenouille', nh_kankuro:'c_nj_sasori', nh_shikamaru:'c_nj_cerfvolant', nh_gaara:'c_nj_tanuki', nh_haku:'c_nj_glaces', nh_zabuza:'c_nj_requin', nh_suigetsu:'c_nj_bulle', nh_mangetsu:'c_nj_hiramekarei', nh_mei:'c_nj_meduse', nh_omoi:'c_nj_lapin', nh_darui:'c_nj_nuage', nh_samui:'c_nj_renardblanc', nh_bee:'c_nj_gyuki', nh_kakashi:'c_nj_ninken', nh_roshi:'c_nj_songoku', nh_akatsuchi:'c_nj_geant', nh_hashirama:'c_nj_dragonbois', nh_deidara:'c_nj_argile', nh_kurotsuchi:'c_nj_dragonpierre', nh_karin:'c_nj_renard1', nh_asuma:'c_nj_katoncrow', nh_madara:'c_nj_zetsu', nh_konohamaru:'c_nj_singe', nh_pakura:'c_nj_espritvent', nh_baki:'c_nj_faucon', nh_chojuro:'c_nj_poissonscie', nh_ao:'c_nj_tortue', nh_kisame:'c_nj_samehada', nh_yugito:'c_nj_matatabi', nh_raikage:'c_nj_puma', nh_c:'c_nj_hibou', nh_kitsuchi:'c_nj_rocher', nh_onoki:'c_nj_golem', nh_yamato:'c_nj_arbre', paul:'c_pouf', leon:'c_caillou', zoe:'c_gloup', jeanne:'c_frisouille', selene:'c_nyx', brok:'c_enclume', sylvara:'c_lys', grumbo:'c_miette', vaskor:'c_osbrise', pyra:'c_etincelle', rivet:'c_bricole', egide:'c_lumen', ondine:'c_fiole', barnabe:'c_sou', maelle:'c_croc', oren:'c_plume', gor:'c_bastion', ilka:'c_truelle', nono:'c_braise' };
 for (const h in COMPANIONS) DEFAULT_CARDS[COMPANIONS[h]].comp = h;
@@ -833,9 +844,9 @@ const HEROES = {
   nh_deidara: {diff:1, stars:5, fam:NJV, pv:'nk_aka', mc:'tok', n:'Deidara', pwn:'Argile explosive', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'summon', card:'tk_argile', n:1 }] }, tx:'Invoque une Araignée d’argile 1/1 avec « Râle d’agonie : inflige 3 dégâts à un ennemi aléatoire ».' },
   nh_roshi: {diff:1, stars:4, fam:NJV, pv:'nk_kon', mc:'tf', n:'Rōshi', pwn:'Armure de lave', pw:{ k:'pnktf', n:3 }, tx:'Passif : tes transformations coûtent 3 chakra de moins.' },
   // ----- Le Seigneur des Anneaux : 20 héros des deux camps -----
-  lh_frodon: {diff:1, stars:5, fam:LOV, pv:'lo_nah', mc:'ann', n:'Frodon Sacquet', pwn:'Porteur de l’Anneau', pw:{ k:'pring' }, tx:'Passif : au tour 3, si personne ne détient l’Anneau, tu le reçois. Tes porteurs résistent 2 tours de plus à la corruption.' },
+  lh_frodon: {diff:1, stars:5, fam:LOV, pv:'lo_nah', mc:'ann', n:'Frodon Sacquet', pwn:'Porteur de l’Anneau', pw:{ k:'pring' }, tx:'Passif : c’est toi qui reçois l’Anneau à la manche 3. Le porter ne te coûte aucun PV.' },
   lh_sam: {diff:1, stars:4, fam:LOV, pv:'lo_nah', mc:'cbt', n:'Sam Gamegie', pwn:'Fidèle compagnon', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'hguard' }] }, tx:'Prochain combat : ton serviteur qui a le plus de PV encaisse les attaques qui visent ton serviteur qui a le plus d’ATQ.' },
-  lh_bilbon: {diff:1, stars:4, fam:LOV, pv:'lo_nah', mc:'ann', n:'Bilbon Sacquet', pwn:'Cambrioleur', pw:{ k:'pbilbon' }, tx:'Passif : l’Anneau apparaît deux fois plus souvent dans ta taverne et ne te coûte rien.' },
+  lh_bilbon: {diff:1, stars:4, fam:LOV, pv:'lo_nah', mc:'ann', n:'Bilbon Sacquet', pwn:'Invisible', pw:{ k:'pbilbon' }, tx:'Passif : quand tu portes l’Anneau, un seul Nazgûl te traque, jamais deux.' },
   lh_gandalf: {diff:1, stars:5, fam:LOV, pv:'lo_elf', mc:'cbt', n:'Gandalf', pwn:'Lumière d’Istari', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'foegenj', n:1 }] }, tx:'Au prochain combat, l’ennemi le plus fort, aveuglé, saute sa première attaque.' },
   lh_aragorn: {diff:1, stars:5, fam:LOV, pv:'lo_hom', mc:'cbt', n:'Aragorn', pwn:'Flamme de l’Ouest', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'hx', who:'top', fx:[{ k:'cleave' }] }] }, tx:'Prochain combat : ton serviteur le plus fort attaque aussi les voisins de sa cible.' },
   lh_legolas: {diff:1, stars:4, fam:LOV, pv:'lo_elf', mc:'cbt', n:'Legolas', pwn:'Tir d’élite', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'foetop', d:4 }] }, tx:'Au début du prochain combat, inflige 4 dégâts à l’ennemi le plus fort.' },
@@ -848,10 +859,10 @@ const HEROES = {
   lh_sylvebarbe: {diff:1, stars:4, fam:LOV, pv:'lo_nah', mc:'tok', n:'Sylvebarbe', pwn:'Éveil de la forêt', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'summon', card:'tl_huorn', n:1 }] }, tx:'Invoque un Huorn 2/4 avec Provocation.' },
   lh_arwen: {diff:1, stars:3, fam:LOV, pv:'lo_elf', mc:'eco', n:'Arwen', pwn:'Étoile du soir', hearts:5, pw:{ k:'pturn', sell:0 }, tx:'Passif : la première fois que ton héros devrait mourir, il revient à 5 PV.' },
   lh_boromir: {diff:1, stars:3, fam:LOV, pv:'lo_hom', mc:'cbt', n:'Boromir', pwn:'Bouclier du Gondor', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'tkw', kw:'t', n:1, a:0, h:5 }] }, tx:'Prochain combat : un de tes serviteurs gagne +0/+5 et Provocation.' },
-  lh_sauron: {diff:1, stars:5, fam:LOV, pv:'lo_mor', mc:'ann', n:'Sauron', pwn:'Maître de l’Anneau', shadow:1, pw:{ k:'psauron' }, tx:'Passif : tes porteurs de l’Anneau ne se corrompent jamais et les Nazgûl ne te traquent pas.' },
+  lh_sauron: {diff:1, stars:5, fam:LOV, pv:'lo_mor', mc:'ann', n:'Sauron', pwn:'Maître de l’Anneau', shadow:1, pw:{ k:'psauron' }, tx:'Passif : quand tu portes l’Anneau, il ne te coûte aucun PV et ton plateau gagne +2/+2 par tour au lieu de +1/+1.' },
   lh_saroumane: {diff:1, stars:4, fam:LOV, pv:'lo_ise', mc:'tok', n:'Saroumane', pwn:'Fosses d’Isengard', shadow:1, cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'summon', card:'tl_urukj', n:1 }] }, tx:'Invoque un Jeune Uruk 2/3.' },
   lh_roisorcier: {diff:1, stars:4, fam:LOV, pv:'lo_mor', mc:'cbt', n:'Roi-Sorcier d’Angmar', pwn:'Cri du Nazgûl', shadow:1, cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'hx', who:'top', fx:[{ k:'soc_genj', who:'face', n:1 }] }] }, tx:'Prochain combat : l’ennemi en face de ton serviteur le plus fort saute sa première attaque.' },
-  lh_gollum: {diff:1, stars:3, fam:LOV, pv:'lo_mor', mc:'ann', n:'Gollum', pwn:'Mon précieux', shadow:1, pw:{ k:'pgollum' }, tx:'Passif : si tu bats en combat le joueur qui détient l’Anneau, tu le lui voles.' },
+  lh_gollum: {diff:1, stars:3, fam:LOV, pv:'lo_mor', mc:'ann', n:'Gollum', pwn:'Mon précieux', shadow:1, pw:{ k:'pgollum' }, tx:'Passif : tu prends aussi l’Anneau sur une égalité contre son porteur. Quand tu le prends, tes serviteurs gagnent +2/+2.' },
   lh_smaug: {diff:1, stars:5, fam:LOV, pv:'lo_mor', mc:'cbt', n:'Smaug', pwn:'Feu du dragon', shadow:1, cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'foeburn', n:3, d:2 }] }, tx:'Au prochain combat, 3 ennemis subissent une Brûlure de 2 (ils perdent 2 PV après chacune de leurs attaques).' },
   pyra:    {fam:['drag'], n:'Pyra la chevaucheuse', tx:'Passif : au début de chaque combat, ton dragon souffle 2 dégâts sur un ennemi aléatoire (le surplus touche d\'autres ennemis).' },
   paul:    {fam:['sq_feu'], n:'Paul', cost:2, el:'sq_feu', tx:'Ami du feu · Attise : un Flammou aléatoire gagne +2/+1 et tes autres Flammous gagnent +1 attaque.' },
@@ -927,7 +938,7 @@ const MECHS = {
   pillage:{ n:'Pillage', ic:'drop', d:'Quand tu gagnes un combat avec un serviteur de l\'univers encore debout, tu reçois un sort aléatoire de ton niveau.' },
   ki:{ n:'Ki et transformations', ic:'k_spark', d:'Mets un serviteur en méditation : il ne combat pas au prochain combat et te rapporte du ki au début du tour suivant (autant que son niveau, le double s\'il est doré ; 15 au plus). Le ki paie les transformations, les fusions et les techniques (achetées en or à la taverne) ; une technique lancée sur son propriétaire (Signature) a un bonus.' },
   chakra:{ n:'Groupes emblématiques, jutsus et transformations', ic:'k_spark', d:'Réunis les duos, trios et équipes de l\'animé sur ton plateau : chaque groupe réuni débloque un pouvoir tiré de l\'animé, et ils se cumulent. Chaque serviteur génère 1 chakra par tour (10 au plus). Jutsu de soutien (soin, invocation, clone) : effet immédiat. Jutsu de combat (Chidori, Rasengan, Shinra Tensei…) : tu le paies pendant le recrutement, il part au début du prochain combat. Une fois par tour, coût = niveau du ninja. Certains ninjas se transforment une seule fois (étoile bleue). Mots-clés : Genjutsu (un ennemi saute une attaque), Entrave (un ennemi ne peut plus attaquer tant que le lanceur vit), Brûlure (PV perdus après chaque attaque), Scellement (plus de mots-clés ni d\'effets), Clone, Riposte, Sharingan (copie les mots-clés d\'en face), Soin.' },
-  voyage:{ n:'Le voyage vers le Mordor', ic:'k_spark', d:'Chaque combat gagné te fait avancer d’une lieue. À chaque étape (Fondcombe, la Moria, la Lórien, le Rohan, le Gondor, le Mont du Destin), choisis une récompense parmi trois : des armes et objets légendaires, plus forts sur leur porteur du film. Certains personnages se transforment quand tu atteins l’étape de leur histoire. L’Anneau unique apparaît parfois dans la taverne : son porteur est invisible et grandit à chaque tour, mais il se corrompt et finit par succomber, et les Nazgûl traquent celui qui le détient. Porte l’Anneau jusqu’au Mont du Destin et tu gagnes la partie sur-le-champ. Réunis aussi les duos et trios célèbres sur ton plateau : chacun débloque un pouvoir.' },
+  voyage:{ n:'La guerre de l’Anneau', ic:'k_spark', d:'Ton héros fixe ton camp : les Peuples libres ne recrutent que des Hommes, des Elfes, des Nains et des Hobbits ; l’Ombre que le Mordor, Isengard et ses alliés. À la manche 3, un héros des Peuples libres reçoit l’Anneau unique (Frodon en priorité). Le porteur gagne +1/+1 sur tout son plateau à chaque tour, mais son héros perd 1 PV par tour et des Nazgûl de plus en plus forts rejoignent ses adversaires. Tant qu’il n’est pas battu, l’Anneau avance d’une étape par combat vers le Mont du Destin ; s’il perd, l’Anneau recule d’une étape et passe au vainqueur. Celui qui amène l’Anneau au Mont du Destin gagne la partie : il le détruit (Peuples libres) ou le rend à Sauron (Ombre). Aux manches 4, 7, 10 et 13 se livrent les grandes batailles (la Moria, le Gouffre de Helm, Minas Tirith, la Porte Noire) : chaque camp reçoit des renforts et les vainqueurs choisissent un objet légendaire parmi trois, plus fort sur son porteur du film. Certains personnages se transforment après la bataille de leur histoire. Réunis aussi les duos et trios célèbres sur ton plateau.' },
   resonance:{ n:'Résonance', ic:'twin', d:'Chaque sort que tu lances donne +1/+1 à deux de tes serviteurs de l\'univers.' },
   eboulement:{ n:'Éboulement', ic:'up', d:'Quand un de tes serviteurs de l\'univers avec Provocation meurt, il inflige 3 dégâts à un ennemi aléatoire.' },
   fusion:{ n:'Fusion élémentaire', ic:'wind', d:'À la fin du tour, si tu as au moins 4 éléments Squishy différents, tes serviteurs de l\'univers gagnent +1/+1.' },
@@ -1577,79 +1588,92 @@ const NK_GROUPS = [
 ];
 // libellé propre à l'univers : un effet peut porter son nom (nm) à la place de celui d'origine
 Object.keys(ET).forEach(k => { const t0 = ET[k].txt; ET[k].txt = (e, x) => { const t = t0(e, x); if (!e || !e.nm) return t; const i = t.indexOf(' : '), head = i > 0 ? t.slice(0, i) : ''; return e.nm + ' : ' + (i > 0 && !/^(Cri de guerre|Début du combat|Râle d'agonie|Fin de tour|Début de tour)$/.test(head) ? t.slice(i + 3) : t.charAt(0).toLowerCase() + t.slice(1)); }; });
-ET.voy_tf = { tr:'voy', l:'Transformation du voyage', ps:[], w:1, mag:() => 4, txt:(e, k) => 'Voyage · ' + e.st.map((T, i) => `${e.st.length > 1 && i === e.st.length - 1 ? 'carte dorée seulement · ' : ''}${(LO_ETAPES[T.et - 1] || {}).n} : devient ${T.nm} (${sign((T.a || 0) * k, (T.h || 0) * k)}${T.kw ? ', ' + [...T.kw].map(f => (SET.kw[f] || {}).n).join(', ') : ''}${(T.x || []).map(o => ET[o.k] ? ' · ' + ET[o.k].txt(o, k).replace(/\.$/, '') : '').join('')})`).join(' → ') + '.' };
+ET.voy_tf = { tr:'voy', l:'Transformation du voyage', ps:[], w:1, mag:() => 4, txt:(e, k) => e.st.map((T, i) => `${e.st.length > 1 && i === e.st.length - 1 ? 'carte dorée seulement · ' : ''}Après ${(LO_BAT[T.et - 1] || {}).n} : devient ${T.nm} (${sign((T.a || 0) * k, (T.h || 0) * k)}${T.kw ? ', ' + [...T.kw].map(f => (SET.kw[f] || {}).n).join(', ') : ''}${(T.x || []).map(o => ET[o.k] ? ' · ' + ET[o.k].txt(o, k).replace(/\.$/, '') : '').join('')})`).join(' → ') + '.' };
 // ===================== Le Seigneur des Anneaux : voyage vers le Mordor, Anneau unique, objets légendaires =====================
-const LO_ETAPES = [
-  { id:'fondcombe', n:'Fondcombe', lg:1, rw:['lo_dard', 'lo_anduril', 'lo_hache', 'lo_arc', 'lo_morgul', 'lo_lembas'] },
-  { id:'moria', n:'La Moria', lg:3, rw:['lo_mithril', 'lo_glamdring', 'lo_arkenstone', 'lo_grond', 'lo_balrog'] },
-  { id:'lorien', n:'La Lórien', lg:5, rw:['lo_fiole', 'lo_cape', 'lo_lembas', 'lo_arc', 'lo_palantir'] },
-  { id:'rohan', n:'Le Rohan', lg:7, rw:['lo_herugrim', 'lo_gripoil', 'lo_baton', 'lo_charge', 'lo_ents'] },
-  { id:'gondor', n:'Le Gondor', lg:10, rw:['lo_cor', 'lo_feux', 'lo_morts', 'lo_anduril', 'lo_palantir'] },
-  { id:'mordor', n:'Le Mont du Destin', lg:13, rw:['lo_aigles', 'lo_couronne', 'lo_ombre'] },
+const LO_ETAPES = [{ n:'Fondcombe' }, { n:'La Moria' }, { n:'La Lórien' }, { n:'Le Rohan' }, { n:'Le Gondor' }, { n:'Le Mont du Destin' }];   // route de l'Anneau (6 étapes après la Comté)
+// grandes batailles : à manche fixe, chaque camp reçoit ses renforts ; les vainqueurs choisissent un butin parmi trois
+const LO_BAT = [
+  { rd:4, n:'La Moria', L:{ buff:[0, 2], tx:'les Peuples libres tiennent le pont : +0/+2 pour ce combat' }, O:{ tok:['tl_snaga', 'tl_snaga', 'tl_snaga'], tx:'3 gobelins rejoignent l’Ombre' },
+    rwL:['lo_dard', 'lo_mithril', 'lo_glamdring', 'lo_hache', 'lo_lembas'], rwO:['lo_balrog', 'lo_morgul', 'lo_palantir', 'lo_gobelins'] },
+  { rd:7, n:'Le Gouffre de Helm', L:{ tok:['tl_cavalier', 'tl_cavalier'], tx:'2 Rohirrim chargent avec les Peuples libres' }, O:{ tok:['tl_uruk', 'tl_uruk', 'tl_uruk'], tx:'3 Uruk-hai rejoignent l’Ombre' },
+    rwL:['lo_herugrim', 'lo_anduril', 'lo_arc', 'lo_cape', 'lo_charge'], rwO:['lo_baton', 'lo_uruks', 'lo_mine', 'lo_grond'] },
+  { rd:10, n:'Minas Tirith', L:{ tok:['tl_morts', 'tl_morts'], tx:'2 soldats de l’Armée des Morts rejoignent les Peuples libres' }, O:{ tok:['tl_mumak', 'tl_mumak', 'tl_beteailee'], tx:'2 Mûmakil et une Bête ailée rejoignent l’Ombre' },
+    rwL:['lo_cor', 'lo_feux', 'lo_morts', 'lo_gripoil', 'lo_fiole', 'lo_palantir'], rwO:['lo_grond', 'lo_mumakil', 'lo_bete', 'lo_morgul'] },
+  { rd:13, n:'La Porte Noire', L:{ tok:['tl_aigle', 'tl_aigle'], tx:'2 Aigles géants rejoignent les Peuples libres' }, O:{ tok:['tl_beteailee', 'tl_beteailee', 'tl_mumak'], tx:'2 Bêtes ailées et un Mûmak rejoignent l’Ombre' },
+    rwL:['lo_aigles', 'lo_couronne', 'lo_arkenstone', 'lo_ents'], rwO:['lo_ombre', 'lo_masse', 'lo_bete'] },
 ];
 const LO_HOBBITS = ['lo_frodon', 'lo_sam', 'lo_merry', 'lo_pippin', 'lo_bilbon'];
-const LO_RING = 'lo_anneau', LO_RING_TURNS = 4;
+const LO_RING = 'lo_anneau', LO_SHADOW_TR = ['lo_mor', 'lo_ise', 'lo_omb'], LO_BOTH = ['lo_gollum', 'lo_saroumane'];
+const LO_HV = [4, 6];   // traqueurs : caractéristiques de base et gain par étape
 const loOn = G => inMechAny(G, 'voyage');
 const loHero = (p, k) => { const h = HEROES[p.hero]; return !!(h && h.pw && h.pw.k === k); };
-// qui détient l'Anneau : en main, porté par un serviteur, ou encore à l'étagère d'une taverne
-const loHas = p => !!(p && p.al !== false && ((p.hd || []).some(x => x.sp === LO_RING || x.ring) || (p.bd || []).some(m => m.ring)));
-const loShelfHas = p => !!(p && ((p.sp && p.sp.sp === LO_RING) || (p.sp2 && p.sp2.sp === LO_RING)));
-const loOwner = G => G.ps.find(p => p.al && loHas(p)) || null;
-const loBearer = p => (p.bd || []).find(m => m.ring) || null;
-const loLimit = (p, m) => loHero(p, 'psauron') ? 99 : LO_RING_TURNS + (LO_HOBBITS.includes(m.c) ? 3 : 0) + (loHero(p, 'pring') ? 2 : 0);
-const loNext = p => LO_ETAPES[p.et || 0] || null;
-// étagère de la taverne : elle ne vend que l'Anneau unique, tant que personne ne l'a
-function loShelf(G, p) {
-  if (!loOn(G)) return; if (p.sp && p.sp.sp !== LO_RING) p.sp = null; p.sp2 = null;
-  if (p.sp || G.rd < 3 || loOwner(G) || G.ps.some(q => q.al && loShelfHas(q))) return;
-  if (Math.random() < (loHero(p, 'pbilbon') ? 0.4 : 0.18)) p.sp = { sp:LO_RING, u:UID++ };
+// camp fixé par le héros : Peuples libres (L) ou Ombre (O). Chacun ne voit que les cartes de son camp (Sméagol et Saroumane vont des deux côtés).
+const loCamp = p => (HEROES[p && p.hero] || {}).shadow ? 'O' : 'L';
+const loSee = (p, id) => { const tr = C[id] && C[id].tr; if (!tr || !/^lo_/.test(tr) || LO_BOTH.includes(id)) return true; return LO_SHADOW_TR.includes(tr) === (loCamp(p) === 'O'); };
+let DRAWP = null;   // joueur pour qui on tire des cartes (taverne, découverte)
+const loHas = p => !!(p && p.ring);
+const loOwner = G => (G.rg && G.ps.find(p => p.pid === G.rg.pid && p.al)) || null;
+const loChap = G => LO_BAT.filter(b => G.rd > b.rd).length;   // batailles déjà livrées : les transformations suivent l'histoire
+const loBatNow = G => LO_BAT.findIndex(b => b.rd === G.rd);
+function loShelf(G, p) { if (loOn(G)) { p.sp = null; p.sp2 = null; } }   // l'Anneau ne s'achète plus : l'étagère reste vide
+// l'Anneau change de mains
+function loGive(G, p) { G.ps.forEach(x => { x.ring = 0; }); p.ring = 1; p.rh = 0; G.rg.pid = p.pid; if (loHero(p, 'pgollum')) withSrc('Mon précieux', () => p.bd.forEach(m => buff(m, 2 * mult(m), 2 * mult(m)))); }
+// une fois par manche : au tour 3 un porteur est désigné (Frodon d'abord, sinon un héros des Peuples libres) ; si le porteur est mort, l'Anneau trouve un autre maître
+function loRound(G) {
+  const alive = G.ps.filter(p => p.al); if (!alive.length) return;
+  const choose = () => { const fr = alive.filter(p => loHero(p, 'pring')), fp = alive.filter(p => loCamp(p) === 'L'); return fr.length ? pickR(fr) : fp.length ? pickR(fp) : pickR(alive); };
+  if (!G.rg && G.rd >= 3) { G.rg = { pid:-1, et:0 }; loGive(G, choose()); }
+  else if (G.rg && !loOwner(G)) loGive(G, choose());
 }
-// récompense d'étape : un choix parmi trois
+// butin d'une grande bataille gagnée : un choix parmi trois objets de son camp
 function loOffer(G, p) {
-  if (p.disc || !(p.vq || []).length) return; const e = LO_ETAPES[p.vq.shift()]; if (!e) return;
-  const opts = shuffle(e.rw.slice()).slice(0, 3).map(id => ({ sp:id, u:UID++ })); p.disc = opts; p.dsc = e.n;
+  if (p.disc || !(p.vq || []).length) return; const e = LO_BAT[p.vq.shift()]; if (!e) return;
+  p.disc = shuffle((loCamp(p) === 'O' ? e.rwO : e.rwL).slice()).slice(0, 3).map(id => ({ sp:id, u:UID++ })); p.dsc = e.n;
 }
-// transformations du voyage : un personnage change quand tu atteins l'étape de son histoire
+// transformations : un personnage change quand la bataille de son histoire a été livrée
 const voyOf = m => (CD(m.c).fxAll || []).find(e => e.k === 'voy_tf');
 const loTfLock = (m, st) => st.length > 1 && (m.tf || 0) === st.length - 1 && !m.g;
-function loTf(p, m) { const V0 = voyOf(m); if (!V0) return; const st = V0.st;
-  while ((m.tf || 0) < st.length && (p.et || 0) >= st[m.tf || 0].et && !loTfLock(m, st)) { const T = st[m.tf || 0], k = mult(m);
-    withSrc('Voyage · ' + T.nm, () => buff(m, (T.a || 0) * k, (T.h || 0) * k)); if (T.kw) for (const f of T.kw) addF(m, f);
+function loTf(ch, m) { const V0 = voyOf(m); if (!V0) return; const st = V0.st;
+  while ((m.tf || 0) < st.length && ch >= st[m.tf || 0].et && !loTfLock(m, st)) { const T = st[m.tf || 0], k = mult(m);
+    withSrc(T.nm, () => buff(m, (T.a || 0) * k, (T.h || 0) * k)); if (T.kw) for (const f of T.kw) addF(m, f);
     (T.x || []).forEach(o => (m.x = m.x || []).push(Object.assign({ src:T.nm }, o))); m.tf = (m.tf || 0) + 1; m.tfn = T.nm; } }
-const loTfAll = p => p.bd.concat(p.hd.filter(x => !x.sp)).forEach(m => loTf(p, m));
-// début du tour : lieues, étapes, corruption du porteur, victoire par l'Anneau
+const loTfAll = (G, p) => { const ch = loChap(G); p.bd.concat(p.hd.filter(x => !x.sp)).forEach(m => loTf(ch, m)); };
+// début du tour
 function loTurn(G, p) {
-  if (p.lg == null) { p.lg = 0; p.et = 0; p.vq = []; }
-  loTfAll(p);
-  if (loHero(p, 'pring') && G.rd === 3 && !loOwner(G) && p.hd.length < 10) { G.ps.forEach(q => { if (loShelfHas(q)) q.sp = null; }); p.hd.push({ sp:LO_RING, u:UID++ }); }
-  if (loHas(p)) { p.rh = (p.rh || 0) + 1; const m = loBearer(p);
-    if (m) { m.rc = (m.rc || 0) + 1; withSrc('L’Anneau unique', () => buff(m, 2 * mult(m), 2 * mult(m)));
-      if (m.rc > loLimit(p, m)) { p.bd.splice(p.bd.indexOf(m), 1); p.fell = CD(m.c).n; delete m.ring; delete m.rc; toPool(G, m); if (p.hd.length < 10) p.hd.push({ sp:LO_RING, u:UID++ }); } } }
-  else p.rh = 0;
+  if (G.lor !== G.rd) { G.lor = G.rd; loRound(G); }
+  p.vq = p.vq || []; loTfAll(G, p);
+  if (p.ring) { p.rh = (p.rh || 0) + 1; const n = loHero(p, 'psauron') ? 2 : 1;
+    withSrc('L’Anneau unique', () => p.bd.forEach(m => buff(m, n * mult(m), n * mult(m))));
+    if (!loHero(p, 'pring') && !loHero(p, 'psauron')) p.hp = Math.max(1, p.hp - 1); }   // le fardeau : 1 PV par tour (jamais mortel)
   loOffer(G, p);
 }
-// après le combat : une victoire = une lieue ; les étapes franchies attendent leur récompense
-function loMarch(G, p) {
-  if (p.lg == null) { p.lg = 0; p.et = 0; p.vq = []; }
-  if (p.vres === 'win') p.lg++; p.vres = null;
-  while (loNext(p) && p.lg >= loNext(p).lg) { p.vq.push(p.et); p.et++; }
-}
-// combat : les Nazgûl traquent celui qui détient l'Anneau (sauf Sauron)
+// combat : renforts des grandes batailles
+function loBattle(G, p, board) { const b = LO_BAT[loBatNow(G)]; if (!b || !p) return; const s = b[loCamp(p)];
+  (s.tok || []).forEach(c => { if (board.length < 7) board.push(fullM(mk(c, 0))); }); if (s.buff) board.forEach(m => { m.a += s.buff[0]; m.h += s.buff[1]; }); }
+// combat : les Nazgûl traquent le porteur des Peuples libres ; les Rohirrim pourchassent le porteur de l'Ombre
+function loHunters(G, p) { const et = G.rg ? G.rg.et : 0; return { v:LO_HV[0] + LO_HV[1] * et, n:Math.min(loHero(p, 'pbilbon') ? 1 : 3, 1 + Math.floor(et / 2)) }; }   // plus l'Anneau approche du Mordor, plus la traque est féroce
 function loNazgul(p, foeBoard) {
-  if (!p || !loHas(p) || loHero(p, 'psauron') || foeBoard.length >= 7) return; const v = Math.min(40, 2 + 3 * (p.rh || 1));
-  for (let i = 0; i < ((p.rh || 0) >= 4 ? 2 : 1) && foeBoard.length < 7; i++) { const n = fullM(mk('tl_nazgul', 0)); n.a = v; n.h = v; foeBoard.push(n); }   // dès le 4e tour, ils viennent à deux
+  if (!p || !p.ring || typeof H === 'undefined' || !H.G) return; const hu = loHunters(H.G, p), c = loCamp(p) === 'O' ? 'tl_cavalier' : 'tl_nazgul';
+  for (let i = 0; i < hu.n; i++) { const n = fullM(mk(c, 0)); n.a = hu.v; n.h = hu.v;
+    if (foeBoard.length < 7) { foeBoard.push(n); continue; }
+    const w = foeBoard.filter(m => m.c !== c).sort((x, y) => (x.a + x.h) - (y.a + y.h))[0]; if (w && w.a + w.h < 2 * hu.v) foeBoard[foeBoard.indexOf(w)] = n; }   // plateau plein : le traqueur prend la place du plus faible pour ce combat
 }
-// Gollum : vainqueur du porteur, il lui vole l'Anneau
-function loSteal(G, w, l) {
-  if (!w || !l || !loHero(w, 'pgollum') || !loHas(l) || w.hd.length >= 10) return;
-  const m = loBearer(l); if (m) { delete m.ring; delete m.rc; } l.hd = l.hd.filter(x => x.sp !== LO_RING); l.rh = 0; w.hd.push({ sp:LO_RING, u:UID++ });
+// fin du combat : butin des batailles, marche de l'Anneau (il avance si son porteur n'est pas battu, recule sinon et passe au vainqueur)
+function loAfter(G) {
+  const bi = loBatNow(G); G.ps.forEach(p => { if (p.al && bi >= 0 && p.vres === 'win') (p.vq = p.vq || []).push(bi); });
+  let won = null;
+  if (G.rg) { const h = G.ps.find(p => p.pid === G.rg.pid), f = h && h.vfoe != null ? G.ps.find(x => x.pid === h.vfoe && x.al) : null;
+    if (h && h.vres === 'loss') { G.rg.et = Math.max(0, G.rg.et - 1); if (f) loGive(G, f); }
+    else if (h && h.vres === 'draw' && f && loHero(f, 'pgollum')) loGive(G, f);
+    else if (h && h.vres) G.rg.et++;
+    const o = loOwner(G); if (o && G.rg.et >= LO_ETAPES.length) won = o; }
+  G.ps.forEach(p => { p.vres = null; p.vfoe = null; });
+  return won;
 }
-// IA : prend l'Anneau, équipe ses objets sur leur porteur du film (sinon sur le plus fort)
+// IA : pose ses objets sur leur porteur du film (sinon sur le plus fort)
 function loBot(G, p) {
-  if (p.sp && p.sp.sp === LO_RING && p.g >= spCost(p, SPELLS[LO_RING]) && p.hd.length < 10) OPS.buysp(G, p, {});
   for (let g = 0; g < 10; g++) { const i = p.hd.findIndex(x => x.sp && SPELLS[x.sp] && SPELLS[x.sp].lo); if (i < 0) break; const S = SPELLS[p.hd[i].sp]; let tg = -1;
-    if (S.tg) { if (!p.bd.length) break; if (S.ring) { if (loBearer(p)) break; const hb = p.bd.filter(m => LO_HOBBITS.includes(m.c)); const t = (hb.length ? hb : p.bd).reduce((b, x) => x.a + x.h > b.a + b.h ? x : b); tg = p.bd.indexOf(t); }
-      else { const sg = p.bd.filter(m => (S.sig || []).includes(m.c)); const t = (sg.length ? sg : p.bd).reduce((b, x) => x.a + x.h > b.a + b.h ? x : b); tg = p.bd.indexOf(t); } }
+    if (S.tg) { if (!p.bd.length) break; const sg = p.bd.filter(m => (S.sig || []).includes(m.c)); const t = (sg.length ? sg : p.bd).reduce((b, x) => x.a + x.h > b.a + b.h ? x : b); tg = p.bd.indexOf(t); }
     if (!castSpell(G, p, i, tg)) break; }
 }
 const LO_GROUPS = [
@@ -1676,6 +1700,9 @@ const LO_GROUPS = [
   { id:'lo_meute', n:'La meute d’Isengard', m:['lo_sharku', 'lo_warg', 'lo_pisteur'], th:[2, 3], tx:['+2 ATQ en combat.', 'En plus, Furie des vents.'] },
   { id:'lo_ungol', n:'Cirith Ungol', m:['lo_arachne', 'lo_gollum'], th:[2], tx:['« Elle a toujours faim » : Arachne vise toujours l’ennemi le plus faible et gagne +3 ATQ en combat.'] },
   { id:'lo_ents', n:'Les Ents et les Hobbits', m:['lo_sylvebarbe', 'lo_merry', 'lo_pippin'], th:[2, 3], tx:['Sylvebarbe gagne +4/+4 en combat.', 'La dernière marche des Ents : un Ent rejoint chaque combat.'] },
+  { id:'lo_azbo', n:'Azog et Bolg', m:['lo_azog', 'lo_bolg'], th:[2], tx:['La lignée du Profanateur : +3/+3 en combat.'] },
+  { id:'lo_gobs', n:'Les profondeurs de la Moria', m:['lo_gobelin', 'lo_grandgob', 'lo_fleau'], th:[2, 3], tx:['Les tambours : 2 Snagas rejoignent chaque combat.', 'En plus, le Balrog inflige 3 dégâts à tous les ennemis au début du combat.'] },
+  { id:'lo_est', n:'Les armées de l’Est et du Sud', m:['lo_oriental', 'lo_haradrim', 'lo_suladan', 'lo_trollg'], th:[2, 3], tx:['+2/+2 en combat.', 'En plus, Riposte : 2 dégâts à ceux qui les attaquent.'] },
   { id:'lo_harad', n:'Les Suderons', m:['lo_suladan', 'lo_bouche'], th:[2], tx:['Les Mûmakil de Suladân gagnent +3/+3 en combat.'] },
 ];
 NK_GROUPS.push(...LO_GROUPS);
@@ -1704,6 +1731,9 @@ function loGroupsEot(G, p, H0) {
   if (lv('lo_meute')) tmp('lo_meute', 2, 0, lv('lo_meute') > 1 ? 'w' : '');
   if (lv('lo_ungol')) { p.bd.filter(m => m.c === 'lo_arachne').forEach(m => nkTmp(m, 3, 0, '', name('lo_ungol'))); gx('lo_ungol', 'lo_arachne', { k:'tgt_weak' }); }
   if (lv('lo_ents')) { p.bd.filter(m => m.c === 'lo_sylvebarbe').forEach(m => nkTmp(m, 4, 4, '', name('lo_ents'))); if (lv('lo_ents') > 1) gx('lo_ents', 'lo_sylvebarbe', { k:'soc_summon', card:'tl_ent', n:1 }); }
+  if (lv('lo_azbo')) tmp('lo_azbo', 3, 3);
+  if (lv('lo_gobs')) { const g = mem('lo_gobs')[0]; if (g) g.gx = (g.gx || []).concat([{ k:'soc_summon', card:'tl_snaga', n:2, src:name('lo_gobs') }]); if (lv('lo_gobs') > 1) gx('lo_gobs', 'lo_fleau', { k:'soc_aoe', d:3 }); }
+  if (lv('lo_est')) { tmp('lo_est', 2, 2); if (lv('lo_est') > 1) all('lo_est', { k:'riposte', d:2 }); }
   if (lv('lo_harad')) p.bd.filter(m => m.c === 'tl_mumak').forEach(m => nkTmp(m, 3, 3, '', name('lo_harad')));
 }
 const NK_GOF = {}; NK_GROUPS.forEach(g => g.m.forEach(c => (NK_GOF[c] = NK_GOF[c] || []).push(g)));
@@ -1831,7 +1861,7 @@ function putDonut(G, p, m, played) {
 }
 // or dépensé dans le tour : les compteurs « chaque fois que tu as dépensé N or » avancent
 function spent(G, p, n) { if (n > 0) p.bd.slice().forEach(m => fxOf(m, 'spend').forEach(e => { m.spc = (m.spc || 0) + n; while (m.spc >= e.n) { m.spc -= e.n; runRecruit(G, p, m, e); } })); }
-function discTier(G, p, t) { const opts = []; for (let i = 0; i < 3; i++) { const c = drawOne(G, 6, t) || drawAny(t); if (c) opts.push(c); } if (opts.length) p.disc = opts; }
+function discTier(G, p, t) { DRAWP = p; const opts = []; for (let i = 0; i < 3; i++) { const c = drawOne(G, 6, t) || drawAny(t); if (c) opts.push(c); } if (opts.length) p.disc = opts; }
 // ----- univers South Park : cohésion de groupe -----
 // famille « de cohésion » d'un serviteur : sa tribu, ou celle qu'on lui a donnée (converti) ; '*' = compte pour toutes les familles
 const famOf = m => m.fam || tribe(m);
@@ -2324,7 +2354,8 @@ function hostStart(humans, opt) {
 }
 
 function drawOne(G, maxT, exactT, tb) {
-  const cands = G.ids.filter(id => (exactT ? C[id].t === exactT : C[id].t <= maxT) && G.pool[id] > 0 && (!tb || C[id].tr === tb));
+  const see = DRAWP && loOn(G) ? id => loSee(DRAWP, id) : null;
+  const cands = G.ids.filter(id => (exactT ? C[id].t === exactT : C[id].t <= maxT) && G.pool[id] > 0 && (!tb || C[id].tr === tb) && (!see || see(id)));
   if (!cands.length) return null;
   let tot = cands.reduce((t, id) => t + G.pool[id], 0), r = Math.random() * tot;
   for (const id of cands) { r -= G.pool[id]; if (r <= 0) { G.pool[id]--; return mk(id, 0); } }
@@ -2333,8 +2364,8 @@ function drawOne(G, maxT, exactT, tb) {
 function toPool(G, m) { if (G.pool[m.c] != null) G.pool[m.c] += m.g ? 3 : 1; }
 // taverne gelée : on garde ce qui reste et on complète les places vides (et l'étagère à sorts si elle est vide)
 const sp2On = (G, p) => !!(G && inMechAny(G, 'chakra') && !NJ_TECH && p.t >= 4);
-function topUpShop(G, p) { if (!p.sp) p.sp = drawSpell(p.t); if (sp2On(G, p) && !p.sp2) p.sp2 = drawSpell(p.t); loShelf(G, p); for (let k = p.sh.length; k < SLOTS[p.t]; k++) { const m = drawOne(G, p.t); if (m) p.sh.push(m); else break; } }
-function fillShop(G, p) { const ring0 = loOn(G) && p.sp && p.sp.sp === LO_RING ? p.sp : null; p.sp = drawSpell(p.t); p.sp2 = sp2On(G, p) ? drawSpell(p.t) : null; if (ring0) p.sp = ring0; loShelf(G, p); p.sh.forEach(m => toPool(G, m)); p.sh = []; for (let k = 0; k < SLOTS[p.t]; k++) { const m = drawOne(G, p.t); if (m) p.sh.push(m); } }
+function topUpShop(G, p) { DRAWP = p; if (!p.sp) p.sp = drawSpell(p.t); if (sp2On(G, p) && !p.sp2) p.sp2 = drawSpell(p.t); loShelf(G, p); for (let k = p.sh.length; k < SLOTS[p.t]; k++) { const m = drawOne(G, p.t); if (m) p.sh.push(m); else break; } }
+function fillShop(G, p) { DRAWP = p; const ring0 = loOn(G) && p.sp && p.sp.sp === LO_RING ? p.sp : null; p.sp = drawSpell(p.t); p.sp2 = sp2On(G, p) ? drawSpell(p.t) : null; if (ring0) p.sp = ring0; loShelf(G, p); p.sh.forEach(m => toPool(G, m)); p.sh = []; for (let k = 0; k < SLOTS[p.t]; k++) { const m = drawOne(G, p.t); if (m) p.sh.push(m); } }
 
 function checkTriple(G, p) {
   const all = p.hd.concat(p.bd).filter(m => !m.sp && !m.g && !isComp(m));   // jetons compris (marionnettes, clones…)
@@ -3052,7 +3083,7 @@ function endRecruit() {
     { const w = pwOf(p); if (w && w.k === 'prsv' && (p.rsv || []).length === 1) p.maree = (p.maree || 0) + w.n; }
     const neot = auraTimes(p.bd, 'aura_eot');
     for (const m of p.bd.concat(p.cp ? [p.cp] : [])) for (let r = 0; r < neot; r++) fxOf(m, 'eot').forEach(e => runRecruit(G, p, m, e));
-    if (loOn(G)) loTfAll(p);
+    if (loOn(G)) loTfAll(G, p);
     if (inMechAny(G, 'chakra') || loOn(G)) nkGroupsEot(G, p);
     mkSync(p);
     if (p.hero === 'maelle' && p.bd[0]) withSrc('Passif de Maëlle', () => buff(p.bd[0], 1, 1));
@@ -3086,7 +3117,7 @@ function endRecruit() {
     const pb = combatBoard(p), qcb = combatBoard(ghost || q);
     if (p.horA) pb.forEach(m => { m.hx = p.horA; }); if ((ghost || q).horA) qcb.forEach(m => { m.hx = (ghost || q).horA; });
     foeApply(p, qcb); if (!ghost) foeApply(q, pb);
-    if (loOn(G)) { loNazgul(p, qcb); if (!ghost) loNazgul(q, pb); }
+    if (loOn(G)) { loBattle(G, p, pb); if (!ghost) loBattle(G, q, qcb); loNazgul(p, qcb); if (!ghost) loNazgul(q, pb); }
     // après l'Éveil (Ninja) : compagnon et bête d'invocation rejoignent la bataille, en tête de rangée
     const join = awake(G) && inMechAny(G, 'chakra') && (typeof AWK_JOIN === 'undefined' || AWK_JOIN);
     const lead = x => x && x.cp ? [resonate(x, Object.assign({}, x.cp, { duo:1 }))].concat(x.bst ? [Object.assign({}, x.bst, { duo:1 })] : []) : [];
@@ -3094,7 +3125,7 @@ function endRecruit() {
     elementDuel(pb, qcb);
     const r = simulate(pb, qcb, seed, p.t, qt, fire, G.mx);
     lawsAfterFight(G, p, r, 0); if (!ghost) lawsAfterFight(G, q, r, 1);
-    if (loOn(G)) { p.vres = r.w === 0 ? 'win' : r.w === 1 ? 'loss' : 'draw'; if (!ghost) { q.vres = r.w === 1 ? 'win' : r.w === 0 ? 'loss' : 'draw'; if (r.w === 0) loSteal(G, p, q); else if (r.w === 1) loSteal(G, q, p); } }
+    if (loOn(G)) { p.vres = r.w === 0 ? 'win' : r.w === 1 ? 'loss' : 'draw'; p.vfoe = ghost ? null : q.pid; if (!ghost) { q.vres = r.w === 1 ? 'win' : r.w === 0 ? 'loss' : 'draw'; q.vfoe = p.pid; } }
     const stl = !ghost ? chakraSteal(p, q, pb, qcb, r) : [0, 0];
     const d = Math.min(cap, r.dmg);
     if (r.w === 1) G.pend.push({ pid:p.pid, d });
@@ -3185,9 +3216,8 @@ function endCombat() {
   const dead = G.ps.filter(p => p.al && p.hp <= 0).sort((a, b) => b.hp - a.hp);
   let alive = G.ps.filter(p => p.al && p.hp > 0).length;
   dead.forEach((p, k) => { p.al = false; p.place = alive + 1 + k; p.sh.forEach(m => toPool(G, m)); p.bd.forEach(m => toPool(G, m)); p.sh = []; });
-  if (loOn(G)) { G.ps.forEach(p => { if (p.al) loMarch(G, p); });
-    const w = G.ps.filter(p => p.al && loHas(p) && (p.et || 0) >= LO_ETAPES.length).sort((a, b) => b.lg - a.lg)[0];   // l'Anneau arrive au Mont du Destin : détruit (Peuples libres) ou rendu à Sauron (Ombre)
-    if (w) { G.ringWin = { pid:w.pid, shadow:!!(HEROES[w.hero] || {}).shadow }; const rest = G.ps.filter(x => x.al && x !== w).sort((a, b) => b.hp - a.hp); rest.forEach((x, k) => { x.al = false; x.place = 2 + k; x.sh.forEach(m => toPool(G, m)); x.bd.forEach(m => toPool(G, m)); x.sh = []; }); alive = 1; } }
+  if (loOn(G)) { const w = loAfter(G);   // l'Anneau est arrivé au Mont du Destin : détruit (Peuples libres) ou rendu à Sauron (Ombre)
+    if (w) { G.ringWin = { pid:w.pid, shadow:loCamp(w) === 'O' }; const rest = G.ps.filter(x => x.al && x !== w).sort((a, b) => b.hp - a.hp); rest.forEach((x, k) => { x.al = false; x.place = 2 + k; x.sh.forEach(m => toPool(G, m)); x.bd.forEach(m => toPool(G, m)); x.sh = []; }); alive = 1; } }
   if (NJ_AWK && inMechAny(G, 'chakra') && !G.eveil) { const al = G.ps.filter(p => p.al), low = al.filter(p => p.hp <= ((+RU().hp || 40) / 2)).length; if (low * 2 >= al.length || alive <= 3) G.eveil = G.rd + 1; }
   if (alive <= 1) {
     const w = G.ps.find(p => p.al); if (w) w.place = 1;
@@ -3218,11 +3248,11 @@ const fullM = m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g || 0, f:m.f || '', u
 function pubData() {
   const G = H.G;
   if (!G) return { ph:'lobby', code:H.code, cv:CAT_REV, us:(V.univSel || []).slice(), pl:H.roster.map(r => ({ n:r.n, pe:r.peer })), last:H.last || null };
-  return { ph:G.ph, rd:G.rd, rem:Math.max(0, G.end - Date.now()), code:H.code, cv:CAT_REV, trs:G.trs, ban:G.ban, univ:G.univ, laws:G.laws || [], ev:G.eveil || 0, mhp:(+RU().hp || 40) + 10,
+  return { ph:G.ph, rd:G.rd, rem:Math.max(0, G.end - Date.now()), code:H.code, cv:CAT_REV, trs:G.trs, ban:G.ban, univ:G.univ, laws:G.laws || [], rg:G.rg ? { pid:G.rg.pid, et:G.rg.et } : null, ev:G.eveil || 0, mhp:(+RU().hp || 40) + 10,
     pl:G.ps.map(p => ({ pid:p.pid, haw:p.haw || 0, hs:p.hist || [], tc:p.trc || 0, ws:p.wst || 0, n:p.n, hp:p.hp, t:p.t, ai:!p.human, bot:p.bot, al:p.al, pl:p.place, r:p.rdy, h:p.hero, pe:p.peer, nb:p.bd.length, el:p.cp ? compEl(p.cp) : null, mk:p.cp ? p[MK[compEl(p.cp)]] || 0 : 0 })) };
 }
 function privData(p) {
-  return { to:p.peer, pid:p.pid, lg:p.lg || 0, et:p.et || 0, rh:p.rh || 0, dsc:p.dsc || null, fell:p.fell || null, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
+  return { to:p.peer, pid:p.pid, ring:p.ring ? 1 : 0, camp:H.G && loOn(H.G) ? loCamp(p) : null, rh:p.rh || 0, dsc:p.dsc || null, fell:p.fell || null, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
     fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, sp2:p.sp2 ? p.sp2.sp : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, cho:p.cho || null, gem:[p.gemA || 0, p.gemH || 0], inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ki:p.ki || 0, kiGain:p.kiGain || 0, pf:p.pf || 0, pfn:p.pfNext || 0, dbDied:p.dbDied || 0, dbRes:p.dbRes || '', njf:p.njf || 0, spd:p.spd || 0, castN:p.castN || 0, ckm:ckMax(p), ckPay:heroCk(H.G, p) ? 1 : 0, kiPay:heroKi(p) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, mkl:(mkSync(p), p.mkl) || {}, souffle:p.souffle || 0, roche:p.roche || 0, choice:p.choice || null, chFav:p.chFav || 0, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, hrr:p.hrr || 0, hrm:p.hrm || HERO_ROLLS, haw:p.haw || 0, hawId:p.hawId || 0, qp:p.qp || 0, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {
@@ -3241,3 +3271,6 @@ function deliverFight(p, d) {
   else { netEmit('fight', d); setTimeout(() => netEmit('fight', d), 600); }
 }
 function broadcast() { sendPub(); if (H.G) H.G.ps.forEach(sendPriv); }
+
+// Le Seigneur des Anneaux : toute action d'un joueur fixe le camp des cartes qu'on lui tire
+Object.keys(OPS).forEach(k => { const f = OPS[k]; if (typeof f === 'function') OPS[k] = function (G, p, a) { DRAWP = p; return f.call(OPS, G, p, a); }; });

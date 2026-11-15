@@ -481,14 +481,17 @@ body.u-nj .mn .tf-n{top:auto;bottom:-11%;font-size:clamp(8px,1.05vh,11px);paddin
 /* ===== Le Seigneur des Anneaux : route du voyage, porteur de l'Anneau, nom des formes transformées ===== */
 function loSync(tb, on) {
   let el = document.getElementById('lo-route'); if (!on) { if (el) el.remove(); return; }
-  const me = V.me, et = me.et || 0, lg = me.lg || 0, nx = LO_ETAPES[et], ring = (me.hd || []).some(x => x.sp === 'lo_anneau') || (me.bd || []).some(m => m.ring);
-  const steps = [{ n:'La Comté', lg:0 }].concat(LO_ETAPES).map((e, i) => `<span class="lr-s${i <= et ? ' done' : ''}${i === et ? ' cur' : ''}" data-tip="${esc(e.n + (i ? ' : ' + e.lg + ' lieue' + (e.lg > 1 ? 's' : '') + '. Une récompense au choix parmi trois.' : ' : le départ.'))}"><i></i><b>${esc(e.n.replace(/^(La |Le )/, ''))}</b></span>`).join('');
-  const h = `<div class="lr-t" data-tip="Chaque combat gagné te fait avancer d'une lieue. À chaque étape, choisis une récompense parmi trois.">Voyage · <b>${lg}</b> lieue${lg > 1 ? 's' : ''}${nx ? ` <small>(${esc(nx.n)} à ${nx.lg})</small>` : ' <small>(arrivé)</small>'}</div><div class="lr-r">${steps}</div>${ring ? `<div class="lr-ring" data-tip="Tu détiens l'Anneau unique : les Nazgûl te traquent à chaque combat. Atteins le Mont du Destin avec lui et tu gagnes la partie.">💍 Tu détiens l'Anneau${nx ? '' : ''}</div>` : ''}`;
+  const me = V.me, pub = V.pub || {}, rg = pub.rg, et = rg ? rg.et : -1, holder = rg ? (pub.pl || []).find(x => x.pid === rg.pid) : null, mine = !!me.ring;
+  const hn = holder ? ((HEROES[holder.h] || {}).n || holder.n || '?') : '';
+  const steps = [{ n:'La Comté' }].concat(LO_ETAPES).map((e, i) => `<span class="lr-s${rg && i <= et ? ' done' : ''}${rg && i === et ? ' cur' : ''}" data-tip="${esc(e.n + (i === LO_ETAPES.length ? ' : celui qui y amène l\'Anneau gagne la partie.' : ''))}"><i></i><b>${esc(e.n.replace(/^(La |Le )/, ''))}</b>${rg && i === et ? '<u>💍</u>' : ''}</span>`).join('');
+  const nb = LO_BAT.find(b => b.rd >= (pub.rd || 0)), camp = me.camp === 'O' ? 'O' : 'L';
+  const bat = nb ? `<div class="lr-b${nb.rd === pub.rd ? ' now' : ''}" data-tip="${esc('Grande bataille · ' + nb.n + ' (manche ' + nb.rd + ') : ' + nb[camp].tx + '. Si tu gagnes ce combat, tu choisis un objet légendaire parmi trois.')}">${nb.rd === pub.rd ? 'Bataille ce tour' : 'Bataille manche ' + nb.rd} · <b>${esc(nb.n)}</b></div>` : '';
+  const head = !rg ? `<div class="lr-t" data-tip="À la manche 3, un héros des Peuples libres reçoit l'Anneau unique.">L'Anneau dort encore <small>(manche 3)</small></div>`
+    : `<div class="lr-t${mine ? ' me' : ''}" data-tip="${esc(mine ? 'Tu portes l\'Anneau : ton plateau gagne des caractéristiques à chaque tour, mais le fardeau use ton héros et tes adversaires reçoivent des renforts qui te traquent. Si tu n\'es pas battu, l\'Anneau avance d\'une étape ; si tu perds, il recule et passe à ton vainqueur.' : 'Bats le porteur en combat pour lui prendre l\'Anneau. S\'il atteint le Mont du Destin, il gagne la partie.')}">${mine ? '💍 Tu portes l\'Anneau' : 'Porteur : <b>' + esc(hn) + '</b>'}</div>`;
+  const h = `<div class="lr-c">${camp === 'O' ? 'Camp de l\'Ombre' : 'Peuples libres'}</div>${head}<div class="lr-r">${steps}</div>${bat}`;
   if (!el) { el = document.createElement('div'); el.id = 'lo-route'; } if (el.parentNode !== tb) tb.appendChild(el); if (el.innerHTML !== h) el.innerHTML = h;
-  const tag = (e, m) => { let r = e.querySelector(':scope > .lo-ring'), t = e.querySelector(':scope > .tf-n');
-    if (m && m.ring) { const left = Math.max(0, (typeof loLimit === 'function' ? loLimit(me, m) : 4) - (m.rc || 0)), tx = '💍 ' + (left > 50 ? '∞' : left); if (!r) { r = document.createElement('span'); r.className = 'lo-ring'; e.appendChild(r); } if (r.textContent !== tx) r.textContent = tx; r.dataset.tip = 'Porteur de l\'Anneau : invisible en combat, +2/+2 à chaque tour. Il succombe dans ' + (left > 50 ? 'jamais' : left + ' tour' + (left > 1 ? 's' : '')) + '.'; } else if (r) r.remove();
-    if (m && m.tfn) { if (!t) { t = document.createElement('span'); t.className = 'tf-n'; e.appendChild(t); } if (t.textContent !== m.tfn) t.textContent = m.tfn; } else if (t) t.remove(); };
-  tb.querySelectorAll('.mn[data-z="bd"]').forEach(e => tag(e, (me.bd || [])[+e.dataset.i]));
+  tb.querySelectorAll('.mn[data-z="bd"]').forEach(e => { const m = (me.bd || [])[+e.dataset.i]; let t = e.querySelector(':scope > .tf-n');
+    if (m && m.tfn) { if (!t) { t = document.createElement('span'); t.className = 'tf-n'; e.appendChild(t); } if (t.textContent !== m.tfn) t.textContent = m.tfn; } else if (t) t.remove(); });
 }
 (function () { const st = document.createElement('style'); st.textContent = `
 #lo-route{position:absolute;left:1.1%;top:11.5%;z-index:6;display:flex;flex-direction:column;gap:4px;padding:8px 12px 9px;border-radius:10px;background:linear-gradient(180deg,rgba(58,38,20,.94),rgba(28,18,8,.94));box-shadow:inset 0 0 0 2px #8a6a2c,inset 0 0 0 3px rgba(255,230,160,.18);color:#f3e2bf;font:700 clamp(10px,1.3vh,14px) var(--f-label),serif;filter:drop-shadow(0 3px 5px rgba(0,0,0,.55))}
@@ -498,7 +501,7 @@ function loSync(tb, on) {
 #lo-route .lr-s i{width:9px;height:9px;border-radius:50%;border:2px solid #cdbfa6;box-sizing:border-box;flex:none}
 #lo-route .lr-s.done{opacity:.9}#lo-route .lr-s.done i{background:#ffd24a;border-color:#fff3c0}
 #lo-route .lr-s.cur{opacity:1;color:#ffe9a0}#lo-route .lr-s.cur i{box-shadow:0 0 8px #ffd24a}
-#lo-route .lr-t{white-space:nowrap}#lo-route .lr-ring{margin-top:2px;white-space:nowrap;color:#ffd24a;text-shadow:0 0 6px rgba(255,200,60,.7);cursor:help}
+#lo-route .lr-t{white-space:nowrap}#lo-route .lr-t.me{color:#ffd24a;text-shadow:0 0 6px rgba(255,200,60,.7)}#lo-route .lr-c{font-size:.82em;letter-spacing:.06em;text-transform:uppercase;opacity:.75}#lo-route .lr-s u{text-decoration:none;margin-left:2px}#lo-route .lr-b{margin-top:3px;padding-top:4px;border-top:1px solid rgba(255,230,160,.25);white-space:nowrap;cursor:help}#lo-route .lr-b.now{color:#ffb060}#lo-route .lr-b b{color:#ffe08a}#lo-route .lr-ring{margin-top:2px;white-space:nowrap;color:#ffd24a;text-shadow:0 0 6px rgba(255,200,60,.7);cursor:help}
 .table.fighting #lo-route{display:none}
 @media (max-width:900px){#lo-route{display:none}}
 .mn .lo-ring{position:absolute;left:50%;top:-12%;transform:translateX(-50%);z-index:9;padding:1px 7px;border-radius:99px;background:#1a1206;color:#ffd24a;font:800 clamp(9px,1.2vh,13px) var(--f-num),serif;box-shadow:0 0 0 1.5px #ffd24a,0 0 10px rgba(255,200,60,.8);white-space:nowrap;cursor:help}
