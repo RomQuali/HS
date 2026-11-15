@@ -75,7 +75,7 @@ t('10 parties d’IA terminées, gagnées par les deux alliés d’un même duo'
   G.tm[p.tm].duo='frodsam'; p.g=0; p.hd.push(mk('lo_garde',0)); const n1=al.hd.length; t('Frodon et Sam : le portail est gratuit', OPS.pass(G,p,{i:p.hd.length-1})&&al.hd.length===n1+1&&p.g===0);
   p.g=0; G.tm[p.tm].duo='leggim'; p.hd.push(mk('lo_garde',0)); t('portail payant sans or : refusé', !OPS.pass(G,p,{i:p.hd.length-1}));
   p.t=2; p.uc=5; const c2=upCost(p); p.t=3; const c3=upCost(p); t('taverne : passer aux niveaux 4, 5 et 6 coûte 2 or de plus', c2===5&&c3===7, [c2,c3]); }
-{ V.univSel=['Naruto']; startSolo(); clearInterval(H.tick); const G=H.G; t('Naruto inchangé : pas de duo, 3 héros, 2 relances', !G.tm&&G.ps.every(p=>p.tm==null&&p.ho.length===3&&p.hrr===2)); }
+{ V.univSel=['Naruto']; startSolo(); clearInterval(H.tick); const G=H.G; t('Naruto : pas de duo, 2 héros sans relance', !G.tm&&G.ps.every(p=>p.tm==null&&p.ho.length===2&&p.hrr===0)); }
 return T; }"""
 with sync_playwright() as pw:
     b=pw.chromium.launch(); pg=b.new_page(viewport={'width':1280,'height':800}); errs=[]

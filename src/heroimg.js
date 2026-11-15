@@ -579,3 +579,9 @@ const NK_PACK2 = {
   ['lo_azog', 'lo_bolg', 'lo_grandgob', 'lo_haradrim', 'lo_oriental', 'lo_trollg', 'lo_fleau', 'lo_gobelin', 'lo_smaug', 'lo_wargsauv'].forEach(id => { ART[id] = pic(id); });
   if (typeof HART !== 'undefined') ['lh_merry', 'lh_pippin', 'lh_faramir', 'lh_bouche', 'lh_khamul', 'lh_grima', 'lh_arachne', 'lh_azog', 'lh_bolg'].forEach(id => { HART[id] = pic(id); });
 })();
+
+// ===== Naruto (15/11/2026) : Orochimaru et Zabuza héros — portrait repris de leur carte en attendant de vrais portraits =====
+(function () { if (typeof HART === 'undefined' || typeof ART === 'undefined') return;
+  if (ART.nk_zetsu) ART.tk_zetsub = ART.nk_zetsu;   // Zetsu blanc : image d'attente
+  [['nh_orochimaru', 'nk_orochimaru'], ['nh_zabuza', 'nk_zabuza']].forEach(([h, c]) => { if (ART[c]) HART[h] = ART[c]; if (ART[c + '_tf1']) HART[h + '_aw'] = ART[c + '_tf1']; });
+})();

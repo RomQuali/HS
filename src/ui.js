@@ -217,6 +217,8 @@ function ufIn(m, id, up) {
   Promise.all(ids.flatMap(id => [id, id + '-masque']).map(f => new Promise((ok, ko) => { const im = new Image(); im.onload = ok; im.onerror = ko; im.src = UF_DIR + f + '.webp'; })))
     .then(() => { UF_OK = true; if (V.screen === 'game') render(); }, () => {});
 } catch (e) {} })();
+// Naruto : objet porté par un serviteur (pastille en haut à droite, avec le chakra produit)
+const itBadgeH = m => { const S = SPELLS[m.it], n = S.pr[m.c === S.own ? 1 : 0]; return `<g class="itb${S.ex ? ' ex' : ''}"><title>${esc(S.n)} : +${n} chakra à chaque début de tour${m.c === S.own ? ' (porté par son vrai propriétaire)' : ''}</title><circle cx="86" cy="10" r="12" fill="#10283e" stroke="${S.ex ? '#ffd86a' : '#6fd0ff'}" stroke-width="2.4"/><svg x="76" y="0" width="20" height="20" viewBox="0 0 100 100"><use href="#sp-${m.it}"/></svg><text x="86" y="27" dy=".36em" text-anchor="middle" font-size="9" font-weight="800" fill="#bfefff" stroke="#08131f" stroke-width="2.4" paint-order="stroke">+${n}</text></g>`; };
 function tokenH(m, z, i, o = {}) {
   const b = CD(m.c), f = (m.f || '') + (m.tmp && m.tmp.f ? m.tmp.f : ''), g = !!m.g;   // mots-clés permanents + ceux du prochain combat
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
@@ -236,6 +238,7 @@ function tokenH(m, z, i, o = {}) {
     + (isComp(m) ? `<g><title>Niveau d'entraînement ${compLv(m)} · ${m.xp || 0} expérience${compLv(m) < 5 ? ' (prochain niveau à ' + XP_LV[compLv(m)] + ')' : ''}</title><rect x="38" y="113" width="24" height="12" rx="6" fill="#2a6ad8" stroke="#120a06" stroke-width="1.8"/><text x="50" y="119" dy=".36em" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff">Nv ${compLv(m)}</text></g>` : '')
     + (hasGag(m) || m.gag ? gagBadgeH(m) : '')
     + (m.sl ? `<g class="slb"><title>${m.sl} sceau${m.sl > 1 ? 'x' : ''}${m.sl >= 5 ? ' : Bouclier divin obtenu' : ' (5 : Bouclier divin)'}</title><path d="M4 4 h20 v14 l-10 7 l-10 -7 Z" fill="${m.sl >= 5 ? '#ffd86a' : '#c8304a'}" stroke="#120a06" stroke-width="2"/><text x="14" y="13" dy=".36em" text-anchor="middle" font-size="10" font-weight="700" fill="${m.sl >= 5 ? '#120a06' : '#fff3c0'}">${m.sl}</text></g>` : '')
+    + (m.it && SPELLS[m.it] ? itBadgeH(m) : '')
     + (m.eq && m.eq.length ? `<g><title>Équipements : ${m.eq.map(e => SPELLS[e] ? SPELLS[e].n : e).join(', ')}</title><rect x="72" y="4" width="22" height="14" rx="7" fill="#8a6a3a" stroke="#120a06" stroke-width="2"/><text x="83" y="11" dy=".36em" text-anchor="middle" font-size="9" font-weight="700" fill="#fff3c0">⚒${m.eq.length}</text></g>` : '')
     + (uf ? '</svg>' : `<use href="#fr-atk" x="-9" y="76" width="41" height="50.3"/><text class="gt${up(m.a, b.a)}" x="15.6" y="103" dy=".36em">${m.a}</text>`
     + `<use href="#fr-hp" x="67" y="80" width="36" height="44.5"/><text class="gt${up(m.h, b.h)}" x="85" y="103.4" dy=".36em">${m.h}</text></svg>`);
@@ -274,7 +277,8 @@ function cardH(m, z, i, o = {}) {
   const b = CD(m.c), g = !!m.g;
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
   const up = (v, base) => v > base * (g ? GOLD_K : 1) ? ' up' : '';
-  return `<div class="cd${g ? ' g' : ''}${sel ? ' sel' : ''}${m.tr ? ' newgold' : ''}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">`
+  const lk = m.lk && V.me && V.me.t < b.t;
+  return `<div class="cd${g ? ' g' : ''}${sel ? ' sel' : ''}${m.tr ? ' newgold' : ''}${lk ? ' lkd' : ''}" data-z="${z}" data-i="${i}" ${dataAttrs(m)}${o.drag ? ' data-drag="1"' : ''}${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="${esc(ariaM(m))}">`
     + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-${artOf(m)}" y="-4" width="100" height="100"/></svg></div>`
     + (g ? '<i class="cd-dr" aria-hidden="true"></i>' : '') + (b.t ? `<div class="cd-tier" aria-label="Niveau ${b.t}"><b>${b.t}</b></div>` : '')
     + `<div class="cd-nm${b.n.length > 15 ? ' l' : ''}"><span>${esc(b.n)}</span></div>${(() => { const t = cardTextH(m.c, g), n = t.replace(/<[^>]+>/g, '').length; return `<div class="cd-tx${n > 185 ? ' xlong xxl x3 x4' : n > 135 ? ' xlong xxl' : n > 95 ? ' xlong' : n > 62 ? ' long' : ''}"><span>${t}</span></div>`; })()}`
@@ -282,7 +286,7 @@ function cardH(m, z, i, o = {}) {
     + `<svg class="cd-gem a" viewBox="0 0 40 49" aria-hidden="true"><use href="#fr-atk" width="40" height="49"/><text class="gt${up(m.a, b.a)}" x="24" y="26" dy=".36em">${m.a}</text></svg>`
     + `<svg class="cd-gem h" viewBox="0 0 40 49" aria-hidden="true"><use href="#fr-hp" width="40" height="49"/><text class="gt${up(m.h, b.h)}" x="20" y="25.6" dy=".36em">${m.h}</text></svg>`
     + (m.gag ? `<span class="cd-gag" data-tip="${esc(gagTip(m))}">Gag ×${m.gag}</span>` : '')
-    + (m.tr ? '<span class="tri">Triple !</span>' : '') + (z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : '') + '</div>';
+    + (m.tr ? '<span class="tri">Triple !</span>' : '') + (m.lk ? `<span class="hk-tag${lk ? '' : ' on'}">${lk ? 'Ton héros · taverne ' + b.t : 'Ton héros · jouable'}</span>` : '') + (m.it && SPELLS[m.it] ? `<span class="it-tag">${esc(SPELLS[m.it].n)}</span>` : '') + (z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : '') + '</div>';
 }
 const med = (act, ic, label, cost, dis, on) => `<button class="med${on ? ' on' : ''}" data-act="${act}" ${dis ? 'disabled' : ''}><span class="disc">${icon(ic)}</span>${cost != null ? `<span class="cost">${cost}</span>` : ''}<span class="ml">${label}</span></button>`;
 
@@ -435,14 +439,11 @@ function chakraLawH(big) {
   const fam = (tb, ic, x) => sec(ic, esc((TRIBES[tb] || {}).n || ''), `<small>${x}</small>`);
   return `<span class="ban-law ck-law njl${big ? ' big' : ''}">
     ${sec('🤝', 'Groupes emblématiques', `<small><b>La mécanique principale.</b> Réunis sur ton plateau les duos, trios et équipes de l'animé : Équipe 7, les Sannin, les binômes de l'Akatsuki, la Fratrie du Sable, les Cinq du Son, les Épéistes de la Brume… Chaque groupe réuni donne un gros bonus, plus fort à chaque membre ajouté, et les bonus se cumulent. La liste s'affiche à droite du plateau ; la taverne signale les cartes qui complètent tes groupes.</small>`)}
-    ${sec('💧', 'Chakra', `<small>Chaque serviteur de ton plateau (invocations comprises) donne 1 chakra au début du tour. Il se garde, 10 au plus.</small>`)}
+    ${sec('💧', 'Chakra', `<small>Chaque serviteur de ton plateau (invocations comprises) donne 1 chakra au début du tour, les objets en donnent davantage. Il se garde, 15 au plus.</small>`)}
     ${sec('🌀', 'Jutsus', `<small>Chaque ninja porte son jutsu : clique sur la goutte bleue au-dessus de lui. Une fois par tour, pour un coût égal à son niveau.</small>`)}
     ${sec('⭐', 'Transformations', `<small>Certains ninjas se transforment une seule fois (étoile bleue, 5 à 10 chakra) : caractéristiques, mot-clé, et un jutsu plus fort.</small>`)}
-    ${fam('nk_kon', '🍃', 'Maîtres et élèves : les élèves grandissent quand un autre ninja de Konoha lance un jutsu.')}
-    ${fam('nk_aka', '☁️', 'Peu nombreux mais énormes, en binôme : bonus si le partenaire est sur le plateau.')}
-    ${fam('nk_sun', '🏜️', 'Vente et revente : or, chakra et bonus à chaque serviteur vendu.')}
-    ${fam('nk_oto', '🐍', 'Les expériences d\'Orochimaru : Engloutir les serviteurs de la taverne.')}
-    ${fam('nk_kir', '🌫️', 'Les épéistes de la Brume : Ralliement, Vol de vie et Camouflage.')}
+    ${sec('🎴', 'Carte de ton héros', `<small>Ton personnage t'attend dans ta main, grisé. Il se pose gratuitement dès que ta taverne atteint son niveau, et compte pour les triples comme une carte de la taverne.</small>`)}
+    ${sec('🗡️', 'Objets', `<small>La taverne propose 2 objets de l'animé. Pose-en un sur un serviteur : il produit du chakra en plus à chaque tour, et davantage sur son vrai propriétaire. Les plus forts sont rares ; Samehada et Kusanagi n'existent qu'en un exemplaire par partie. Quand tu élimines un joueur, tu choisis un de ses 3 meilleurs objets.</small>`)}
     ${sec('🐸', 'Invocations', `<small>Gamabunta, Manda, Katsuyu… n'apparaissent pas en taverne : seuls les jutsus de leurs invocateurs les appellent.</small>`)}
   </span>`;
 }
@@ -631,7 +632,7 @@ function gameH() {
         <div class="keeper">${medal('up', 'up', me.t >= 6 ? 'Niveau max' : 'Améliorer', me.t >= 6 ? null : me.uc, !canAct || me.t >= 6 || me.g < me.uc)}
           <div class="kc" data-t="${me.t}"><span class="face kf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-h-keeper" width="100" height="100"/></svg></span><div class="kname"><b>Bastien, tavernier</b><span class="lv">${tierStars(me.t)}</span></div></div>
           <div class="kr">${medal('roll', 'roll', 'Actualiser', freeRoll ? 0 : 1, !canAct || (me.g < 1 && !freeRoll))}${medal('frz', 'frz', me.fz ? 'Gelée' : 'Geler', null, !canAct, me.fz)}</div></div>
-        <div class="line counter-line">${me.sh.length ? me.sh.map((m, i) => tokenH(m, 'sh', i, { drag:canAct, trip:(own[m.c] || 0) >= 2, pair:(own[m.c] || 0) === 1 })).join('') : '<p class="hint">La taverne est vide. Actualise pour faire entrer du monde.</p>'}${me.sp || me.sp2 ? `<div class="shelf${me.sp2 ? ' two' : ''}" title="Étagère à sorts"><span class="shelf-l">Sort${me.sp2 ? 's' : ''}</span><span class="shelf-row">${me.sp ? spellTokenH(me.sp, 'ss', 0, { drag:canAct }) : ''}${me.sp2 ? spellTokenH(me.sp2, 'ss', 1, { drag:canAct }) : ''}</span></div>` : ''}</div>
+        <div class="line counter-line">${me.sh.length ? me.sh.map((m, i) => tokenH(m, 'sh', i, { drag:canAct, trip:(own[m.c] || 0) >= 2, pair:(own[m.c] || 0) === 1 })).join('') : '<p class="hint">La taverne est vide. Actualise pour faire entrer du monde.</p>'}${me.sp || me.sp2 ? `<div class="shelf${me.sp2 ? ' two' : ''}" title="Étagère à sorts"><span class="shelf-l">${SPELLS[me.sp || me.sp2] && SPELLS[me.sp || me.sp2].ni ? 'Objets' : 'Sort' + (me.sp2 ? 's' : '')}</span><span class="shelf-row">${me.sp ? spellTokenH(me.sp, 'ss', 0, { drag:canAct }) : ''}${me.sp2 ? spellTokenH(me.sp2, 'ss', 1, { drag:canAct }) : ''}</span></div>` : ''}</div>
         ${d.trs ? `<span class="trs ktrs">${d.trs.map(t => `<i style="--c:${esc((TRIBES[t] || {}).col || '#888')}">${esc(trName(t) || t)}</i>`).join('')}</span>` : ''}</section>`;
       // South Park : maillons de cohésion entre voisins de la même famille, ruban « Bande ! » sur les suites de 3 ou plus
       const coh = (d.laws || []).some(l => l.k === 'bande'), bands = coh ? bandsOf(me.bd) : [];
@@ -842,8 +843,8 @@ function pfGauge(d, me) {
 }
 function ckGauge(d, me) {
   const law = (d.laws || []).find(l => l.k === 'chakra'); if (!law) return '';
-  const ck = me.ck || 0, inc = (me.bd || []).length, cx = ckMax(me);
-  return `<div class="purse ckp" aria-label="${ck} chakra sur ${cx}" data-tip="Chakra : il lance les jutsus de tes ninjas (goutte bleue) et paie leur transformation (étoile bleue). Chaque serviteur de ton plateau en génère 1 au début de ton tour (${cx} au plus, il se garde).${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ck}<small>/${cx}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:cx }, (_, k) => `<i class="ckc${k < ck ? '' : ' off'}"></i>`).join('')}</span></div>`;
+  const ck = me.ck || 0, inc = (me.bd || []).length + (me.bd || []).reduce((t, m) => t + itProd(m), 0), cx = ckMax(me);
+  return `<div class="purse ckp" aria-label="${ck} chakra sur ${cx}" data-tip="Chakra : il lance les jutsus de tes ninjas (goutte bleue) et paie leur transformation (étoile bleue). Chaque serviteur de ton plateau en génère 1 au début de ton tour, et les objets en ajoutent (${cx} au plus, il se garde).${inc ? ' +' + inc + ' au prochain tour.' : ''}"><b>${ck}<small>/${cx}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:cx }, (_, k) => `<i class="ckc${k < ck ? '' : ' off'}"></i>`).join('')}</span></div>`;
 }
 // compteurs de clan (braises, marée, charge) sous le chakra
 const clanCtrH = me => { const c = [['braise', 'Braises', '#ff9a5a', 'Braises (Clan Katon) : chaque technique les attise. Après l\'Éveil, Phénix : tes serviteurs Katon gagnent +1/+1 par paire de braises et Réincarnation.'], ['maree', 'Marée', '#6fc8ff', 'Marée (Clan Suiton) : elle monte à chaque fin de tour. Après l\'Éveil, raz-de-marée : tous tes serviteurs gagnent +1/+1 par tranche de 4.'], ['charge', 'Charge', '#ffe14a', 'Charge (Clan Raiton) : elle s\'accumule à chaque fin de tour. Après l\'Éveil, orage total : la moitié frappe l\'ennemi au début de chaque combat.']].filter(([k]) => me[k]);
@@ -1054,7 +1055,7 @@ function detailH(canAct) {
     if (canAct && s.z === 'hd' && id === 'lo_anneau') acts = ''; else
     if (canAct && s.z === 'hd') acts = S.tg && (me.bd.length || !dbNoTgt(S)) ? `<button class="btn pri" data-act="aim" ${me.bd.length ? '' : 'disabled'}>${S.db ? 'Choisir le lanceur' : 'Lancer sur un serviteur'}</button>` : `<button class="btn pri" data-act="cast">${S.db ? 'Lancer la technique' : 'Lancer le sort'}</button>`;
     if (canAct && s.z === 'hd') acts += passBtnH(me, id === 'lo_anneau');
-    return `<div class="det">${spellCardH(id, 'd', 0)}<div class="det-s"><b>${esc(S.n)}</b><span class="meta">Sort · ${esc(SP_TYPES[S.ty].n)} · ${s.z === 'ss' ? 'sur l\'étagère de la taverne' : 'dans ta main'}</span><div class="acts">${acts}</div></div></div>`;
+    return `<div class="det">${spellCardH(id, 'd', 0)}<div class="det-s"><b>${esc(S.n)}</b><span class="meta">${S.ni ? 'Objet' : 'Sort'} · ${esc(SP_TYPES[S.ty].n)} · ${s.z === 'ss' ? 'sur l\'étagère de la taverne' : 'dans ta main'}</span><div class="acts">${acts}</div></div></div>`;
   }
   const z = s.z === 'sh' ? me.sh : s.z === 'bd' ? me.bd : me.hd, m = z[s.i]; if (!m) return '';
   const b = CD(m.c);
@@ -1220,7 +1221,7 @@ function overlayH() {
   const d = V.pub, me = V.me;
   if (me && me.cho && d.ph === 'recruit') return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Choix des armes</h2><p class="ov-s">${esc(C[me.cho.c] ? CD(me.cho.c).n : '')} : choisis un des deux effets. À la fin du chrono, le premier est pris.</p>
     <div class="cho">${me.cho.o.map((o, i) => `<button class="cho-b" data-act="choose" data-i="${i}">${esc(ET[o.k] ? ET[o.k].txt(o, 1).replace(/^Cri de guerre : /, '').replace(/^./, c => c.toUpperCase()) : '?')}</button>`).join('')}</div></div></div>`;
-  if (me && me.disc && d.ph === 'recruit') return `<div class="ov"><div class="ov-box"><h2 class="ov-t">${me.dsc ? 'Butin de bataille · ' + esc(me.dsc) : 'Découverte'}</h2><p class="ov-s">${me.dsc ? 'Tu as gagné la bataille : choisis un objet légendaire. Il est plus fort sur son porteur du film.' : 'Choisis un serviteur. Les deux autres retournent dans la réserve.'}</p>
+  if (me && me.disc && d.ph === 'recruit') return `<div class="ov"><div class="ov-box"><h2 class="ov-t">${me.dsc && /^Ninja vaincu/.test(me.dsc) ? 'Butin · ' + esc(me.dsc.replace(/^Ninja vaincu : /, '')) : me.dsc ? 'Butin de bataille · ' + esc(me.dsc) : 'Découverte'}</h2><p class="ov-s">${me.dsc && /^Ninja vaincu/.test(me.dsc) ? 'Tu as éliminé ce joueur : prends un de ses trois meilleurs objets. Les autres retournent dans la taverne.' : me.dsc ? 'Tu as gagné la bataille : choisis un objet légendaire. Il est plus fort sur son porteur du film.' : 'Choisis un serviteur. Les deux autres retournent dans la réserve.'}</p>
     <div class="disc">${me.disc.map((m, i) => `<button class="disc-b" data-act="pick" data-i="${i}" aria-label="Choisir ${esc(m.sp ? (SPELLS[m.sp] || {}).n : CD(m.c).n)}">${m.sp ? loObjH(m.sp) : cardH(m, 'disc', i)}</button>`).join('')}</div></div></div>`;
   if (d.ph === 'hero' && me) {
     if (!me.hero) return heroPickRowH(d, me);
