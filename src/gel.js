@@ -481,18 +481,21 @@ body.u-nj .mn .tf-n{top:auto;bottom:-11%;font-size:clamp(8px,1.05vh,11px);paddin
 /* ===== Le Seigneur des Anneaux : route du voyage, porteur de l'Anneau, nom des formes transformées ===== */
 function loSync(tb, on) {
   let el = document.getElementById('lo-route'); if (!on) { if (el) el.remove(); return; }
-  const me = V.me, pub = V.pub || {}, rg = pub.rg, et = rg ? rg.et : -1, holder = rg ? (pub.pl || []).find(x => x.pid === rg.pid) : null, mine = !!me.ring;
-  const hn = holder ? ((HEROES[holder.h] || {}).n || holder.n || '?') : '';
-  const steps = [{ n:'La Comté' }].concat(LO_ETAPES).map((e, i) => `<span class="lr-s${rg && i <= et ? ' done' : ''}${rg && i === et ? ' cur' : ''}" data-tip="${esc(e.n + (i === LO_ETAPES.length ? ' : celui qui y amène l\'Anneau gagne la partie.' : ''))}"><i></i><b>${esc(e.n.replace(/^(La |Le )/, ''))}</b>${rg && i === et ? '<u>💍</u>' : ''}</span>`).join('');
-  const nb = LO_BAT.find(b => b.rd >= (pub.rd || 0)), camp = me.camp === 'O' ? 'O' : 'L';
-  const bat = nb ? `<div class="lr-b${nb.rd === pub.rd ? ' now' : ''}" data-tip="${esc('Grande bataille · ' + nb.n + ' (manche ' + nb.rd + ') : ' + nb[camp].tx + '. Si tu gagnes ce combat, tu choisis un objet légendaire parmi trois.')}">${nb.rd === pub.rd ? 'Bataille ce tour' : 'Bataille manche ' + nb.rd} · <b>${esc(nb.n)}</b></div>` : '';
-  const head = !rg ? `<div class="lr-t" data-tip="À la manche 3, un héros des Peuples libres reçoit l'Anneau unique.">L'Anneau dort encore <small>(manche 3)</small></div>`
-    : `<div class="lr-t${mine ? ' me' : ''}" data-tip="${esc(mine ? 'Tu portes l\'Anneau : ton plateau gagne des caractéristiques à chaque tour, mais le fardeau use ton héros et tes adversaires reçoivent des renforts qui te traquent. Si tu n\'es pas battu, l\'Anneau avance d\'une étape ; si tu perds, il recule et passe à ton vainqueur.' : 'Bats le porteur en combat pour lui prendre l\'Anneau. S\'il atteint le Mont du Destin, il gagne la partie.')}">${mine ? '💍 Tu portes l\'Anneau' : 'Porteur : <b>' + esc(hn) + '</b>'}</div>`;
-  const h = `<div class="lr-c">${camp === 'O' ? 'Camp de l\'Ombre' : 'Peuples libres'}</div>${head}<div class="lr-r">${steps}</div>${bat}`;
+  const me = V.me, pub = V.pub || {}, camp = me.camp === 'O' ? 'O' : 'L', d = me.duo && typeof loDuoId === 'function' ? loDuoId(me.duo) : null, al = me.ally;
+  const hold = pub.ringp != null ? (pub.pl || []).find(x => x.pid === pub.ringp) : null, mine = !!me.ring, ours = mine || !!(al && al.ring);
+  const ring = !hold ? `<div class="lr-t" data-tip="À la manche 3, l'Anneau arrive dans la main d'un joueur des Peuples libres.">L'Anneau dort encore <small>(manche 3)</small></div>`
+    : `<div class="lr-t${ours ? ' me' : ''}" data-tip="${esc('Celui qui tient l\'Anneau utilise son pouvoir héroïque deux fois par tour. On le passe à son allié par le portail. Si son duo perd un combat, l\'Anneau passe au duo vainqueur.')}">💍 ${mine ? 'Tu tiens l\'Anneau' : ours ? 'Ton allié tient l\'Anneau' : 'Anneau : <b>' + esc(hold.n) + '</b>'}</div>`;
+  const ab = al ? `<div class="lr-al" data-tip="${esc('Plateau de ton allié. Passe-lui une carte de ta main par le portail (bouton « Passer » sur la carte).')}"><span>${esc(al.n)}${al.hero && HEROES[al.hero] ? ' · ' + esc(HEROES[al.hero].n) : ''} · taverne ${al.t || 1}</span><div class="lr-ab">${(al.bd || []).map(m => `<i><svg viewBox="0 0 100 100">${ART[m.c] ? ART[m.c]() : ''}</svg><u>${m.a}/${m.h}</u></i>`).join('') || '<small>plateau vide</small>'}</div></div>` : '';
+  const nb = LO_BAT.find(b => b.rd >= (pub.rd || 0));
+  const bat = nb ? `<div class="lr-b${nb.rd === pub.rd ? ' now' : ''}" data-tip="${esc('Grande bataille · ' + nb.n + ' (manche ' + nb.rd + ') : ' + nb[camp].tx + '. Si ton duo gagne ce combat, chacun choisit un objet légendaire parmi trois.')}">${nb.rd === pub.rd ? 'Bataille ce tour' : 'Bataille manche ' + nb.rd} · <b>${esc(nb.n)}</b></div>` : '';
+  const h = `<div class="lr-c">${camp === 'O' ? 'Camp de l\'Ombre' : 'Peuples libres'}${d ? ` · <b data-tip="${esc(d.bn + ' : ' + d.tx)}">${esc(d.n)}</b>` : ''}</div>${ring}${ab}${bat}`;
   if (!el) { el = document.createElement('div'); el.id = 'lo-route'; } if (el.parentNode !== tb) tb.appendChild(el); if (el.innerHTML !== h) el.innerHTML = h;
   tb.querySelectorAll('.mn[data-z="bd"]').forEach(e => { const m = (me.bd || [])[+e.dataset.i]; let t = e.querySelector(':scope > .tf-n');
     if (m && m.tfn) { if (!t) { t = document.createElement('span'); t.className = 'tf-n'; e.appendChild(t); } if (t.textContent !== m.tfn) t.textContent = m.tfn; } else if (t) t.remove(); });
 }
+(function () { const st = document.createElement('style'); st.textContent = `#lo-route .lr-al{display:flex;flex-direction:column;gap:3px;max-width:clamp(160px,17vw,260px)}#lo-route .lr-al span{font-size:.9em;opacity:.9}
+#lo-route .lr-ab{display:flex;flex-wrap:wrap;gap:2px}#lo-route .lr-ab i{position:relative;width:clamp(22px,2.6vh,30px);aspect-ratio:1;border-radius:50%;overflow:hidden;box-shadow:0 0 0 1px #8a6a2c}#lo-route .lr-ab svg{width:100%;height:100%;display:block}
+#lo-route .lr-ab u{position:absolute;left:0;right:0;bottom:0;text-decoration:none;text-align:center;font:800 8px/1.2 var(--f-num),sans-serif;background:rgba(0,0,0,.6)}#lo-route .lr-ab small{opacity:.7;font-weight:500}`; document.head.appendChild(st); })();
 (function () { const st = document.createElement('style'); st.textContent = `
 #lo-route{position:absolute;left:1.1%;top:11.5%;z-index:6;display:flex;flex-direction:column;gap:4px;padding:8px 12px 9px;border-radius:10px;background:linear-gradient(180deg,rgba(58,38,20,.94),rgba(28,18,8,.94));box-shadow:inset 0 0 0 2px #8a6a2c,inset 0 0 0 3px rgba(255,230,160,.18);color:#f3e2bf;font:700 clamp(10px,1.3vh,14px) var(--f-label),serif;filter:drop-shadow(0 3px 5px rgba(0,0,0,.55))}
 #lo-route .lr-t b{font-family:var(--f-num);font-size:1.25em;color:#ffe08a}#lo-route .lr-t small{opacity:.8;font-weight:600}

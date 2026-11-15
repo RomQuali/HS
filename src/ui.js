@@ -637,7 +637,7 @@ function gameH() {
       ${!fighting && V.cohSum ? V.cohSum : ''}
       <div class="line" id="bdrow">${boardRow}</div></section>`;
     const nono = me.hero === 'nono', locked = nono && (me.rd || 0) < 3;
-    const powSub = nono ? `${me.fb} dégât${me.fb > 1 ? 's' : ''}` : me.pu ? 'Utilisé' : '';
+    const powSub = nono ? `${me.fb} dégât${me.fb > 1 ? 's' : ''}` : me.pu ? 'Utilisé' : (me.pmax > 1 ? `${me.pmax - (me.pun || 0)} sur 2 · Anneau` : '');
     const power = hero && hero.cost ? `<button class="powm pwh-${me.hero}${me.pu ? ' used' : ''}${canAct && !locked && powCan(me, me.rd || (V.pub && V.pub.rd)) ? ' can' : ''}" data-act="pow" ${!canAct || me.pu || locked || (me.kiPay ? (me.ki || 0) : me.ckPay ? (me.ck || 0) : me.g) < hero.cost ? 'disabled' : ''} aria-label="${esc(hero.n + ' : ' + hero.tx + ' Coût : ' + hero.cost + (me.ckPay ? ' chakra.' : ' or.'))}"><span class="pcost${me.ckPay ? ' ck' : ''}">${me.ckPay ? ckMarkH(hero.cost, 'pc-ck', 'Coût : ' + hero.cost + ' chakra') : hero.cost}</span>${powArtH(me.hero, me.haw)}<small>${locked ? 'Manche 3' : powSub || powerTitle(hero)[0] || 'Pouvoir'}</small><span class="pc-tx">${esc(powerTitle(hero)[1])}</span></button>`
       : `<span class="powm passive pwh-${me.hero || 'x'}" aria-label="${esc(hero ? hero.tx : '')}">${hero ? powArtH(me.hero, me.haw) : icon('crown')}<small>Passif</small>${hero ? `<span class="pc-tx">${esc(hero.tx)}</span>` : ''}</span>`;
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
@@ -1036,7 +1036,9 @@ function detailH(canAct) {
     let acts = '';
     if (canAct && s.z === 'ss') { const c = me.spc != null ? me.spc : S.c;
       acts = `<button class="btn pri" data-act="buysp" data-k="${s.i || 0}" ${me.g < c || me.hd.length >= 10 ? 'disabled' : ''}>Acheter · ${c} or</button>`; }
+    if (canAct && s.z === 'hd' && id === 'lo_anneau') acts = ''; else
     if (canAct && s.z === 'hd') acts = S.tg && (me.bd.length || !dbNoTgt(S)) ? `<button class="btn pri" data-act="aim" ${me.bd.length ? '' : 'disabled'}>${S.db ? 'Choisir le lanceur' : 'Lancer sur un serviteur'}</button>` : `<button class="btn pri" data-act="cast">${S.db ? 'Lancer la technique' : 'Lancer le sort'}</button>`;
+    if (canAct && s.z === 'hd') acts += passBtnH(me, id === 'lo_anneau');
     return `<div class="det">${spellCardH(id, 'd', 0)}<div class="det-s"><b>${esc(S.n)}</b><span class="meta">Sort · ${esc(SP_TYPES[S.ty].n)} · ${s.z === 'ss' ? 'sur l\'étagère de la taverne' : 'dans ta main'}</span><div class="acts">${acts}</div></div></div>`;
   }
   const z = s.z === 'sh' ? me.sh : s.z === 'bd' ? me.bd : me.hd, m = z[s.i]; if (!m) return '';
@@ -1045,6 +1047,7 @@ function detailH(canAct) {
   if (canAct) {
     if (s.z === 'sh') acts = `<button class="btn pri" data-act="buy" ${me.g < 3 || me.hd.length >= 10 ? 'disabled' : ''}>Acheter · 3 or</button>`;
     if (s.z === 'hd') acts = `<button class="btn pri" data-act="play" ${me.bd.length >= 7 && !(me.hd[s.i] && C[me.hd[s.i].c] && (CD(me.hd[s.i].c).fxAll || []).some(e => e.k === 'magnet')) ? 'disabled' : ''}>Jouer sur le plateau</button>`;
+    if (s.z === 'hd') acts += passBtnH(me, false);
     if (s.z === 'bd') acts = `<button class="btn" data-act="mvl" ${s.i === 0 ? 'disabled' : ''} aria-label="Déplacer à gauche">◀</button><button class="btn" data-act="mvr" ${s.i >= me.bd.length - 1 ? 'disabled' : ''} aria-label="Déplacer à droite">▶</button><button class="btn" data-act="sell">Vendre · +${sellValue(m)} or</button>`;
   }
   const where = s.z === 'sh' ? 'Dans la taverne' : s.z === 'bd' ? `Sur ton plateau, position ${s.i + 1}` : 'Dans ta main';
@@ -1159,8 +1162,8 @@ function heroPickRowH(d, me) {
   const fams = [...new Set((Array.isArray(d.univ) ? d.univ : d.univ ? [d.univ] : d.us || []).flatMap(nm => ((SET.univ || []).find(u => u.n === (nm && nm.n || nm)) || {}).tribes || []).filter(t => !me.camp || !/^lo_/.test(t) || LO_SHADOW_TR.includes(t) === (me.camp === 'O')).map(t => TRIBES[t] && TRIBES[t].n).filter(Boolean))];
   const tab = V.ruleTab || 'tour', rules = false, por = (d.laws || []).some(l => l.k === 'chakra') ? njCardH : (d.laws || []).some(l => l.k === 'portail') ? rmCardH : (d.laws || []).some(l => l.k === 'bande') ? spCardH : (d.laws || []).some(l => l.k === 'gag') ? simCardH : null;
   return `<div class="ov hp-ov"><div class="hp-wrap">
-    <header class="hp-head"><h2 class="hp-t">Choisis ton héros</h2>${me.camp ? `<p class="hp-camp ${me.camp === 'O' ? 'o' : 'l'}">${me.camp === 'O' ? 'Tu combats pour l’Ombre' : 'Tu combats pour les Peuples libres'} <small>4 contre 4, camps tirés au sort</small></p>` : ''}${fams.length ? `<p class="hp-fams">${esc(fams.join(', '))}</p>` : ''}</header>
-    <div class="hp-row">${me.ho.map(card).join('')}</div>
+    <header class="hp-head"><h2 class="hp-t">${me.camp ? 'Choisis ton duo' : 'Choisis ton héros'}</h2>${me.camp ? `<p class="hp-camp ${me.camp === 'O' ? 'o' : 'l'}">${me.camp === 'O' ? 'Ton duo combat pour l’Ombre' : 'Ton duo combat pour les Peuples libres'} <small>${me.ally ? 'avec ' + esc(me.ally.n) + ' · ' : ''}choisis ton héros, ton allié prend l’autre</small></p>` : ''}${fams.length ? `<p class="hp-fams">${esc(fams.join(', '))}</p>` : ''}</header>
+    <div class="hp-row${me.camp && typeof LO_DUOS !== 'undefined' ? ' hp-duos' : ''}">${me.camp && typeof LO_DUOS !== 'undefined' ? loDuoRowH(me, card) : me.ho.map(card).join('')}</div>
     <button class="hp-ok" data-act="hero" data-h="${sel || ''}" ${sel ? '' : 'disabled'}>OK</button>
     <div class="hp-infos">${pcs.join('')}</div>
     ${false ? `<button class="btn sm hp-rb" data-act="hprules">${rules ? 'Masquer les règles' : 'Comment on joue ?'}</button>` : ''}
@@ -1365,6 +1368,7 @@ function doAct(act, btn) {
     case 'upick': sendAct({ t:'upick', i:+btn.dataset.i }); hidePeek(); break;
     case 'chest': V.chestRev = { eq:(V.me && V.me.eqs || []).slice(), hd:(V.me && V.me.hd || []).map(x => x.u), at:Date.now() }; fxChest(btn); { const o = btn.closest('.bigchest'); if (o) o.remove(); } sendAct({ t:'chest' }); break;
     case 'equip': if (btn.getAttribute('aria-disabled') === 'true') { toast(btn.dataset.why || ''); break; } sendAct({ t:'equip', i:+btn.dataset.i }); hidePeek(); break;
+    case 'pass': if (s) { sendAct({ t:'pass', i:s.i }); V.sel = null; } break;
     case 'cast': if (s) { sendAct({ t:'cast', i:s.i }); V.sel = null; } break;
     case 'aim': if (s) { V.aim = s.i; V.sel = null; sfx('cible_debut'); render(); } break;
     case 'aimcancel': V.aim = null; sfx('cible_annuler'); render(); break;
@@ -3679,3 +3683,19 @@ html.has-board-sim:root§.u-sim .rn-surf{background-image:var(--board-sim);backg
 § .keeper-zone .hint,§ .board-zone .hint{pointer-events:none}
 § .keeper-zone .hint,§ .board-zone .hint{width:100%;max-width:none;display:block;justify-self:auto}
 /*RN-END*/`); document.head.appendChild(st); })();
+
+/* ===== Le Seigneur des Anneaux en duos : portail et choix des duos célèbres ===== */
+function passBtnH(me, ring) { if (!me.ally) return ''; const free = me.passfree || (ring && HEROES[me.hero] && (HEROES[me.hero].pw || {}).k === 'pring');
+  return `<button class="btn${ring ? ' pri' : ''}" data-act="pass" ${(!free && me.g < 1) || (me.ally.hn || 0) >= 10 ? 'disabled' : ''}>Passer à ${esc(me.ally.n)} · ${free ? 'gratuit' : '1 or'}</button>`; }
+function loDuoRowH(me, card) { const out = []; let i = 0;
+  for (let k = 0; k + 1 < me.ho.length; k += 2) { const d = loDuoOf(me.ho[k]); const a = card(me.ho[k], i++), b = card(me.ho[k + 1], i++);
+    out.push(`<div class="hp-duo"><p class="hp-duo-n"><b>${esc(d ? d.n : '')}</b>${d ? `<small><em>${esc(d.bn)}</em> · ${esc(d.tx)}</small>` : ''}</p><div class="hp-duo-r">${a}${b}</div></div>`); }
+  return out.join(''); }
+(function () { const st = document.createElement('style'); st.textContent = `
+.hp-row.hp-duos{display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(10px,2vw,28px);align-items:flex-start}
+.hp-duo{display:flex;flex-direction:column;align-items:center;gap:4px;padding:6px 8px 4px;border-radius:14px;background:rgba(20,12,6,.55);box-shadow:inset 0 0 0 1.5px rgba(214,170,80,.45)}
+.hp-duo-n{margin:0;text-align:center;max-width:clamp(220px,26vw,360px);color:#f3e2bf;font:700 clamp(12px,1.5vw,16px)/1.25 'Grenze',Georgia,serif}
+.hp-duo-n small{display:block;font:500 clamp(10px,1.1vw,13px)/1.3 'Alegreya Sans',system-ui,sans-serif;opacity:.9}.hp-duo-n em{font-style:normal;color:#ffe08a}
+.hp-duo-r{display:flex;gap:clamp(4px,.8vw,12px);padding-top:clamp(10px,2vh,22px)}.hp-duo-r .hp-col{flex:0 0 clamp(92px,min(12vw,19vh),176px)!important;width:clamp(92px,min(12vw,19vh),176px)}
+.hp-duo-r .hp-card .hp-nm i{font-size:clamp(10px,min(1.3vw,2.3vh),19px)!important}
+`; document.head.appendChild(st); })();
