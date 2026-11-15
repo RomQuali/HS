@@ -3754,3 +3754,17 @@ function allyViewH(me) { const a = me.ally, h = HEROES[a.hero];
 .obs-b b{color:#ffe08a;font-family:var(--f-label),serif}.obs-b svg{width:1.1em;height:1.1em}
 body:has(.obs-b) #app .table{box-shadow:inset 0 0 0 4px rgba(127,77,255,.55)}
 `; document.head.appendChild(st); })();
+
+// choix du héros : la bulle de pouvoir au survol reste toujours dans l'écran (elle passe de l'autre côté de la carte si elle déborde)
+document.addEventListener('mouseover', e => { const col = e.target.closest && e.target.closest('.hp-col'); if (!col) return; const pop = col.querySelector(':scope .hp-pop'); if (!pop || pop.dataset.fit === '1') return;
+  pop.dataset.fit = '1'; ['left', 'right', 'margin-left', 'transform-origin'].forEach(k => pop.style.removeProperty(k));
+  const W = innerWidth, pad = 6; let r = pop.getBoundingClientRect();
+  if (r.left < pad) { pop.style.setProperty('left', '104%', 'important'); pop.style.setProperty('right', 'auto', 'important'); pop.style.setProperty('transform-origin', '0 40%', 'important'); }
+  else if (r.right > W - pad) { pop.style.setProperty('left', 'auto', 'important'); pop.style.setProperty('right', '98%', 'important'); pop.style.setProperty('transform-origin', '100% 40%', 'important'); }
+  r = pop.getBoundingClientRect(); const dx = r.left < pad ? pad - r.left : r.right > W - pad ? W - pad - r.right : 0; if (dx) pop.style.setProperty('margin-left', dx + 'px', 'important'); });
+document.addEventListener('mouseout', e => { const col = e.target.closest && e.target.closest('.hp-col'); if (col && !col.contains(e.relatedTarget)) { const pop = col.querySelector(':scope .hp-pop'); if (pop) delete pop.dataset.fit; } });
+// choix du duo : la fiche du bas suit la carte survolée (les cartes sont rangées par duo, la règle « n-ième carte » ne suffit plus)
+document.addEventListener('mouseover', e => { const col = e.target.closest && e.target.closest('.hp-duos .hp-col'); if (!col) return; const w = col.closest('.hp-wrap'); if (!w) return;
+  w.classList.add('hpd'); w.dataset.hk = [...w.querySelectorAll('.hp-col')].indexOf(col); });
+document.addEventListener('mouseout', e => { const col = e.target.closest && e.target.closest('.hp-duos .hp-col'); if (!col || col.contains(e.relatedTarget)) return; const w = col.closest('.hp-wrap'); if (w) delete w.dataset.hk; });
+(function () { const st = document.createElement('style'); st.textContent = '.hp-wrap.hpd .hp-pc{opacity:0!important;visibility:hidden!important;display:none!important}.hp-wrap.hpd:not([data-hk]) .hp-pc.on' + [0, 1, 2, 3, 4, 5, 6, 7].map(k => `,.hp-wrap.hpd[data-hk="${k}"] .hp-pc.k${k}`).join('') + '{opacity:1!important;visibility:visible!important;display:grid!important}.hp-wrap.hpd[data-hk] .hp-ph{opacity:0}'; document.head.appendChild(st); })();
