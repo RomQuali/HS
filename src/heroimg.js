@@ -573,3 +573,9 @@ const NK_PACK2 = {
   for (const id in LO_CARDS) if (!ART[id]) ART[id] = ph(COL[LO_CARDS[id][0]] || '#888', ini(LO_CARDS[id][1]));
   if (typeof HEROES !== 'undefined' && typeof HART !== 'undefined') for (const id in HEROES) if (/^lh_/.test(id) && !HART[id]) HART[id] = ph(COL[HEROES[id].pv] || '#888', ini(HEROES[id].n));
 })();
+
+// ===== Le Seigneur des Anneaux : 26 images fournies le 15/11/2026 (héros des duos, cartes de l'Ombre), servies depuis assets/sda/ =====
+(function () { const pic = f => () => `<rect width="100" height="100" fill="#15110d"/><image href="assets/sda/${f}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`;
+  ['lo_azog', 'lo_bolg', 'lo_grandgob', 'lo_haradrim', 'lo_oriental', 'lo_trollg', 'lo_fleau', 'lo_gobelin', 'lo_smaug', 'lo_wargsauv'].forEach(id => { ART[id] = pic(id); });
+  if (typeof HART !== 'undefined') ['lh_merry', 'lh_pippin', 'lh_faramir', 'lh_bouche', 'lh_khamul', 'lh_grima', 'lh_arachne', 'lh_azog', 'lh_bolg'].forEach(id => { HART[id] = pic(id); });
+})();

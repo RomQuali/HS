@@ -313,8 +313,15 @@ function morphChildren(oldP, newP) {
   }
   while (oldP.childNodes.length > i) oldP.removeChild(oldP.lastChild);
 }
+// Duos : en vue d'observateur (portail), tout l'écran est rendu avec les données de l'allié, sans pouvoir agir
+function obsView() { const r = V.me, P = V.pub; return !!(V.screen === 'game' && V.allyView && r && r.av && P && P.ph === 'recruit' && !(V.fight && !V.fight.done)); }
 function render() {
   if (DRAG) { V.pendingRender = true; return; }
+  if (V.allyView && !obsView()) V.allyView = false;
+  const real = V.me; if (obsView()) V.me = Object.assign({}, real.av, { ally:real.ally, passfree:real.passfree, obs:1 });
+  try { render0(); } finally { V.me = real; }
+}
+function render0() {
   V.pendingRender = false; const hadPeek = !peekEl.hidden && peekFor && peekFor.matches('.mn,.cd,.spt,.eqm,[data-hov]'); hidePeek();
   const act = document.activeElement, fid = act && act !== document.body ? act.id : '';
   let keep = null; try { if (fid && typeof act.selectionStart === 'number') keep = [act.selectionStart, act.selectionEnd]; } catch (e) {}
@@ -594,7 +601,7 @@ function gameH() {
   const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span>${d.ev && d.rd >= d.ev ? '<span class="eveil" data-tip="Éveil : la moitié des ninjas sont tombés à 20 PV ou moins. Les clans libèrent leur pouvoir ultime, ton compagnon prend sa forme éveillée, le pouvoir de ton héros est renforcé, chaque technique gagne son effet d\'Éveil et des techniques interdites apparaissent.">Éveil</span>' : ''}${d.laws && d.laws.length && d.ph !== 'end' ? `<span class="hud-laws">${d.laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<span class="hl" data-hov="law" data-tip="${esc(M.n + ' : ' + M.d)}">${icon(M.ic)}</span>`; }).join('')}${V.me && V.me.souls ? `<span class="souls" data-tip="Âmes récoltées : toutes les 3 âmes, tes serviteurs des Ténèbres gagnent +1/+1 au début du tour.">${icon('skull')}<b>${V.me.souls}</b></span>` : ''}</span>` : ''}<span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerTxt()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran" title="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm lv-b" data-act="leave" title="Quitter la partie">Quitter</button></div>`;
   let table;
   if (me && alive) {
-    const canAct = d.ph === 'recruit';
+    const canAct = d.ph === 'recruit' && !me.obs;
     const fighting = !!(V.fight && (d.ph === 'combat' || !V.fight.done));
     const own = {}; me.hd.concat(me.bd).forEach(m => { if (!m.sp && !m.g && m.c) own[m.c] = (own[m.c] || 0) + 1; });
     const freeRoll = me.hero === 'rivet' && me.rr === 0;
@@ -648,10 +655,9 @@ function gameH() {
       <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}"><span class="bell-shine" aria-hidden="true"></span>${icon('bell')}<span class="bell-t">${me.rdy ? 'Prêt !' : 'Prêt'}</span><small class="bell-s">${me.rdy ? 'en attente' : 'fin du tour'}</small></button></div></section>`;
     const n = me.hd.length;
     const hand = fighting ? '' : `<section class="hand" data-drop="hd" aria-label="Ta main · ${n}/10"><div class="fan${n > 7 ? ' many' : n > 4 ? ' some' : ''}" style="--n:${n}">${n ? me.hd.map((m, i) => { const o = i - (n - 1) / 2, op = { drag:canAct, style:`--o:${f1(o)};--o2:${f1(o * o)}` }; return m.sp ? spellCardH(m.sp, 'hd', i, op) : cardH(m, 'hd', i, op); }).join('') : ''}</div></section>`;
-    const det = !fighting && V.sel ? `<div class="detail-pop">${detailH(canAct)}<button class="dp-x" data-act="unsel" aria-label="Fermer">×</button></div>` : '';
+    const det = !fighting && V.sel && !me.obs ? `<div class="detail-pop">${detailH(canAct)}<button class="dp-x" data-act="unsel" aria-label="Fermer">×</button></div>` : '';
     const duelCol = fighting && V.fight.duel && me.cp ? `<div class="duel-col" aria-label="Duel des compagnons">${cpSideH(me, V.fight, 1)}<span class="duel-vs">VS</span>${cpSideH(me, V.fight, 0)}</div>` : '';
-    const portal = !fighting && me.ally ? duoPortalH(me) : '', allyV = !fighting && me.ally && V.allyView ? allyViewH(me) : '';
-    if (fighting) V.allyView = false;
+    const portal = !fighting && me.ally ? duoPortalH(me) : '', allyV = me.obs ? `<div class="obs-b" role="status">👁 Tu observes <b>${esc(me.ally.n)}</b><button class="btn sm" data-act="aview">Revenir à mon plateau</button></div>` : '';
     table = `<div class="table${fighting ? ' fighting arena' + (V.fight.duel ? '' : (me.cp ? ' joined' : '')) : ''}${awakeUI() && (d.laws || []).some(l => l.k === 'chakra') ? ' awakened' + awkElCls(me) : ''}">${RN_LAYERS}${duelCol}${hud}${topZone}${board}${allyV}${portal}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}${choiceH(d, me)}`;
   } else if (myInfo) {
     table = `<div class="table">${RN_LAYERS}${hud}<section class="plaque solo-msg"><h2>Éliminé · ${myInfo.pl}e place</h2><p class="note">Tu peux suivre la fin de la partie à gauche ou retourner au menu.</p><div class="btns"><button class="btn" data-act="leave">Retour au menu</button></div></section></div>`;
@@ -1304,7 +1310,7 @@ document.addEventListener('click', e => {
   }
 });
 document.addEventListener('dblclick', e => {
-  const card = e.target.closest('.mn,.cd,.spt'); if (!card || !V.me || !V.pub || V.pub.ph !== 'recruit') return;
+  const card = e.target.closest('.mn,.cd,.spt'); if (!card || !V.me || !V.pub || V.pub.ph !== 'recruit' || V.allyView) return;
   const z = card.dataset.z, i = +card.dataset.i;
   if (z === 'sh') sendAct({ t:'buy', i }); else if (z === 'ss') sendAct({ t:'buysp', k:i }); else if (z === 'hd' && !card.dataset.sp) sendAct({ t:'play', i });
   V.sel = null;
@@ -3704,12 +3710,13 @@ function loDuoRowH(me, card) { const out = []; let i = 0;
 .hp-duo-n small{display:block;font:500 clamp(10px,1.1vw,13px)/1.3 'Alegreya Sans',system-ui,sans-serif;opacity:.9}.hp-duo-n em{font-style:normal;color:#ffe08a}
 .hp-duo-r{display:flex;gap:clamp(4px,.8vw,12px);padding-top:clamp(10px,2vh,22px)}.hp-duo-r .hp-col{flex:0 0 clamp(92px,min(12vw,19vh),176px)!important;width:clamp(92px,min(12vw,19vh),176px)}
 .hp-duo-r .hp-card .hp-nm i{font-size:clamp(10px,min(1.3vw,2.3vh),19px)!important}
+.hp-duo-r .hp-card .hp-nm.lg i{font-size:clamp(8px,min(.95vw,1.75vh),14px)!important;white-space:normal!important;line-height:1!important}
 `; document.head.appendChild(st); })();
 
 /* ===== Duos (Le Seigneur des Anneaux) : le portail, comme dans Hearthstone Duos ===== */
 // clic : voir la vue de son allié (taverne, plateau, main) ; glisser une carte de sa main dessus : la lui passer (1 or)
 function duoPortalH(me) { const a = me.ally, free = me.passfree ? 1 : 0;
-  return `<button class="duo-portal${V.allyView ? ' on' : ''}" data-act="aview" data-drop="pt" aria-pressed="${V.allyView ? 'true' : 'false'}" data-tip="${esc('Portail · clique pour ' + (V.allyView ? 'revenir à ton plateau' : 'voir la vue de ' + a.n) + '. Glisse une carte de ta main sur le portail pour la passer à ' + a.n + (free ? ' (gratuit pour votre duo).' : ' (1 or).'))}">
+  return `<button class="duo-portal${V.allyView ? ' on' : ''}" data-act="aview" data-drop="pt" aria-pressed="${V.allyView ? 'true' : 'false'}" data-tip="${esc('Portail · clique pour ' + (V.allyView ? 'revenir à ton plateau' : 'passer sur le plateau de ' + a.n + ' en observateur') + '. Glisse une carte de ta main sur le portail pour la passer à ' + a.n + (free ? ' (gratuit pour votre duo).' : ' (1 or).'))}">
     <span class="dp-ring" aria-hidden="true"><i></i></span><b>${V.allyView ? 'Ma vue' : esc(a.n.split(' ').slice(-1)[0])}</b><small>${free ? 'gratuit' : '1 or'} · ${a.hn || 0}/10</small></button>`; }
 function allyViewH(me) { const a = me.ally, h = HEROES[a.hero];
   const row = (arr, z) => (arr || []).map((m, i) => m.sp ? spellCardH(m.sp, 'av', i, {}) : tokenH(m, 'av', i, {})).join('');
@@ -3720,10 +3727,10 @@ function allyViewH(me) { const a = me.ally, h = HEROES[a.hero];
     <div class="av-z"><span>Sa main · ${(a.hd || []).length}/10</span><div class="line av-hand">${row(a.hd) || '<p class="hint">vide</p>'}</div></div>
     <p class="note">Glisse une carte de ta main sur le portail pour la lui passer.</p></section>`; }
 (function () { const st = document.createElement('style'); st.textContent = `
-.duo-portal{position:absolute;right:5.2%;top:57%;z-index:9;width:clamp(78px,8.4vh,112px);aspect-ratio:1;border:0;border-radius:50%;padding:0;cursor:pointer;display:grid;place-items:center;align-content:center;gap:0;color:#eaf6ff;background:radial-gradient(circle at 50% 50%,#1b0f3a 0 38%,#3d1f86 52%,#7f4dff 64%,#1a0d33 70%);box-shadow:0 0 0 3px #b08a2e,0 0 0 5px #3a2410,0 0 22px rgba(140,90,255,.75),inset 0 0 18px rgba(170,130,255,.8);font:800 clamp(10px,1.3vh,14px) var(--f-label),serif;text-shadow:0 1px 2px #000}
-.duo-portal .dp-ring{position:absolute;inset:14%;border-radius:50%;background:conic-gradient(from 0deg,transparent,rgba(190,160,255,.9),transparent 40%,rgba(120,220,255,.8),transparent 75%);animation:dpspin 3.2s linear infinite;opacity:.75;pointer-events:none}
+.duo-portal{position:absolute;right:5.2%;top:57%;z-index:9;width:clamp(86px,10vh,128px);aspect-ratio:1;border:0;border-radius:50%;padding:0;cursor:pointer;display:grid;place-items:center;align-content:center;gap:0;color:#eaf6ff;background:url(assets/sda/portail.webp) center/100% no-repeat;box-shadow:0 0 22px rgba(140,90,255,.7);font:800 clamp(10px,1.3vh,14px) var(--f-label),serif;text-shadow:0 1px 2px #000}
+.duo-portal .dp-ring{position:absolute;inset:22%;border-radius:50%;background:conic-gradient(from 0deg,transparent,rgba(190,160,255,.9),transparent 40%,rgba(120,220,255,.8),transparent 75%);animation:dpspin 3.2s linear infinite;opacity:.75;pointer-events:none}
 .duo-portal b,.duo-portal small{position:relative;z-index:1}.duo-portal small{font:600 clamp(8px,1vh,11px) 'Alegreya Sans',sans-serif;opacity:.9}
-.duo-portal:hover,.duo-portal.on{box-shadow:0 0 0 3px #ffe08a,0 0 0 5px #3a2410,0 0 30px rgba(170,130,255,1),inset 0 0 22px rgba(200,170,255,1)}
+.duo-portal:hover,.duo-portal.on{box-shadow:0 0 34px rgba(190,150,255,1);filter:brightness(1.15)}
 .duo-portal.drop-ok,#dzl .dz.on{outline:none}
 @keyframes dpspin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.duo-portal .dp-ring{animation:none}}
@@ -3733,4 +3740,10 @@ function allyViewH(me) { const a = me.ally, h = HEROES[a.hero];
 .ally-view .line{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;min-height:clamp(54px,9vh,96px);pointer-events:none}
 .ally-view .mn{width:clamp(56px,8.2vh,92px)!important;height:auto}.ally-view .spt,.ally-view .cd{transform:scale(.62);margin:-18px -14px}
 .ally-view .note{margin:0;text-align:center;font-size:clamp(11px,1.3vh,13px);opacity:.8}
+`; document.head.appendChild(st); })();
+
+(function () { const st = document.createElement('style'); st.textContent = `
+.obs-b{position:absolute;left:50%;top:1.2%;transform:translateX(-50%);z-index:12;display:flex;align-items:center;gap:8px;padding:5px 8px 5px 14px;border-radius:999px;background:linear-gradient(180deg,rgba(60,30,120,.95),rgba(26,12,56,.95));box-shadow:0 0 0 2px #7f4dff,0 0 18px rgba(127,77,255,.6);color:#f0e8ff;font:600 clamp(12px,1.6vh,16px) 'Alegreya Sans',sans-serif;white-space:nowrap}
+.obs-b b{color:#ffe08a;font-family:var(--f-label),serif}.obs-b svg{width:1.1em;height:1.1em}
+body:has(.obs-b) #app .table{box-shadow:inset 0 0 0 4px rgba(127,77,255,.55)}
 `; document.head.appendChild(st); })();

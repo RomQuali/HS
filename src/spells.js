@@ -798,3 +798,6 @@ function rsvFill(G, p, el) {
   [...new Set([a, b])].forEach(e => { const k = MK[e]; if ((p[k] || 0) >= 5) { p[k] -= 5; mkSync(p); withSrc('Éclat · ' + MK_N[e], () => MK_BURST[e][1](G, p)); bursts.push(e); } });
   p.combo = { n:F.n, col:F.col, a, b, pure:a === b ? 1 : 0, id:UID++, bursts };
 }
+
+// Le Seigneur des Anneaux : 6 objets de l'Ombre illustrés le 15/11/2026
+(function () { ['lo_mine', 'lo_masse', 'lo_gobelins', 'lo_uruks', 'lo_mumakil', 'lo_bete'].forEach(id => { SPART[id] = () => `<image href="assets/sda/sp_${id}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`; }); })();
