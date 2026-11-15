@@ -26,20 +26,20 @@ const SPELLS = {
   // ----- Naruto (15/11/2026) : objets de personnages. Posés sur un serviteur, ils produisent du chakra à chaque début de tour, davantage sur leur vrai propriétaire.
   // Prix (15/11/2026) : chakra produit − 1, +1 or s'il a plusieurs propriétaires, +1 or s'il est exceptionnel.
   // Réserve commune à la partie (cp exemplaires) : un objet tiré dans une taverne en sort, il y revient si la taverne est actualisée sans l'acheter.
-  ni_bandeau:{ ni:1, n:'Bandeau de Konoha', t:1, c:2, ty:'nobj', tg:1, ow:['nk_naruto', 'nk_sakura', 'nk_kakashi'], v:2, cp:4, tx:'Seuls Naruto, Sakura ou Kakashi peuvent le porter : +2 chakra à chaque début de tour.' },
-  ni_poids:{ ni:1, n:'Poids d’entraînement', t:1, c:2, ty:'nobj', tg:1, ow:['nk_lee', 'nk_gai'], v:2, cp:4, tx:'Seuls Rock Lee ou Gaï peuvent le porter : +2 chakra à chaque début de tour.' },
-  ni_eventail:{ ni:1, n:'Grand éventail', t:1, c:1, ty:'nobj', tg:1, ow:['nk_temari'], v:2, cp:4, tx:'Seul Temari peut le porter : +2 chakra à chaque début de tour.' },
-  ni_hirame:{ ni:1, n:'Hiramekarei', t:1, c:1, ty:'nobj', tg:1, ow:['nk_chojuro'], v:2, cp:4, tx:'Seul Chōjūrō peut le porter : +2 chakra à chaque début de tour.' },
-  ni_argile:{ ni:1, n:'Argile explosive', t:1, c:1, ty:'nobj', tg:1, ow:['nk_deidara'], v:2, cp:4, tx:'Seul Deidara peut le porter : +2 chakra à chaque début de tour.' },
-  ni_karasu:{ ni:1, n:'Karasu', t:1, c:2, ty:'nobj', tg:1, ow:['nk_kankuro'], v:3, cp:2, tx:'Seul Kankurō peut le porter : +3 chakra à chaque début de tour.' },
-  ni_kubiki:{ ni:1, n:'Kubikiribōchō', t:1, c:3, ty:'nobj', tg:1, ow:['nk_zabuza', 'nk_suigetsu'], v:3, cp:2, tx:'Seuls Zabuza ou Suigetsu peuvent le porter : +3 chakra à chaque début de tour.' },
-  ni_flute:{ ni:1, n:'Flûte démoniaque', t:1, c:2, ty:'nobj', tg:1, ow:['nk_tayuya'], v:3, cp:2, tx:'Seul Tayuya peut le porter : +3 chakra à chaque début de tour.' },
-  ni_gourde:{ ni:1, n:'Gourde de sable', t:3, c:3, ty:'nobj', tg:1, ow:['nk_gaara'], v:4, cp:1, tx:'Seul Gaara peut le porter : +4 chakra à chaque début de tour.' },
-  ni_crapauds:{ ni:1, n:'Parchemin des crapauds', t:3, c:5, ty:'nobj', tg:1, ow:['nk_jiraiya', 'nk_naruto'], v:5, cp:1, tx:'Seuls Jiraiya ou Naruto peuvent le porter : +5 chakra à chaque début de tour.' },
-  ni_bague:{ ni:1, n:'Bague de l’Akatsuki', t:3, c:5, ty:'nobj', tg:1, ow:['nk_pain', 'nk_konan', 'nk_itachi'], v:5, cp:1, tx:'Seuls Pain, Konan ou Itachi peuvent le porter : +5 chakra à chaque début de tour.' },
-  ni_byakugo:{ ni:1, n:'Sceau du Byakugō', t:3, c:5, ty:'nobj', tg:1, ow:['nk_tsunade', 'nk_sakura'], v:5, cp:1, tx:'Seuls Tsunade ou Sakura peuvent le porter : +5 chakra à chaque début de tour.' },
-  ni_samehada:{ ni:1, n:'Samehada', t:5, c:6, ty:'nobj', tg:1, ow:['nk_kisame'], v:6, cp:1, ex:1, tx:'Seul Kisame peut le porter : +6 chakra à chaque début de tour. Au début de chaque combat, Kisame vole aussi 2 chakra à l’adversaire.' },
-  ni_kusanagi:{ ni:1, n:'Épée de Kusanagi', t:5, c:7, ty:'nobj', tg:1, ow:['nk_orochimaru', 'nk_sasuke'], v:6, cp:1, ex:1, tx:'Seuls Orochimaru ou Sasuke peuvent le porter : +6 chakra à chaque début de tour. Son porteur lance son jutsu sans chakra.' },
+  ni_bandeau:{ ni:1, n:'Bandeau de Konoha', t:1, c:2, ty:'nobj', tg:1, ow:['nk_naruto', 'nk_sakura', 'nk_kakashi'], v:2, cp:4, tx:'+2 chakra à chaque début de tour.' },
+  ni_poids:{ ni:1, n:'Poids d’entraînement', t:1, c:2, ty:'nobj', tg:1, ow:['nk_lee', 'nk_gai'], v:2, cp:4, tx:'+2 chakra à chaque début de tour.' },
+  ni_eventail:{ ni:1, n:'Grand éventail', t:1, c:1, ty:'nobj', tg:1, ow:['nk_temari'], v:2, cp:4, tx:'+2 chakra à chaque début de tour.' },
+  ni_hirame:{ ni:1, n:'Hiramekarei', t:1, c:1, ty:'nobj', tg:1, ow:['nk_chojuro'], v:2, cp:4, tx:'+2 chakra à chaque début de tour.' },
+  ni_argile:{ ni:1, n:'Argile explosive', t:1, c:1, ty:'nobj', tg:1, ow:['nk_deidara'], v:2, cp:4, tx:'+2 chakra à chaque début de tour.' },
+  ni_karasu:{ ni:1, n:'Karasu', t:1, c:2, ty:'nobj', tg:1, ow:['nk_kankuro'], v:3, cp:2, tx:'+3 chakra à chaque début de tour.' },
+  ni_kubiki:{ ni:1, n:'Kubikiribōchō', t:1, c:3, ty:'nobj', tg:1, ow:['nk_zabuza', 'nk_suigetsu'], v:3, cp:2, tx:'+3 chakra à chaque début de tour.' },
+  ni_flute:{ ni:1, n:'Flûte démoniaque', t:1, c:2, ty:'nobj', tg:1, ow:['nk_tayuya'], v:3, cp:2, tx:'+3 chakra à chaque début de tour.' },
+  ni_gourde:{ ni:1, n:'Gourde de sable', t:3, c:3, ty:'nobj', tg:1, ow:['nk_gaara'], v:4, cp:1, tx:'+4 chakra à chaque début de tour.' },
+  ni_crapauds:{ ni:1, n:'Parchemin des crapauds', t:3, c:5, ty:'nobj', tg:1, ow:['nk_jiraiya', 'nk_naruto'], v:5, cp:1, tx:'+5 chakra à chaque début de tour.' },
+  ni_bague:{ ni:1, n:'Bague de l’Akatsuki', t:3, c:5, ty:'nobj', tg:1, ow:['nk_pain', 'nk_konan', 'nk_itachi'], v:5, cp:1, tx:'+5 chakra à chaque début de tour.' },
+  ni_byakugo:{ ni:1, n:'Sceau du Byakugō', t:3, c:5, ty:'nobj', tg:1, ow:['nk_tsunade', 'nk_sakura'], v:5, cp:1, tx:'+5 chakra à chaque début de tour.' },
+  ni_samehada:{ ni:1, n:'Samehada', t:5, c:6, ty:'nobj', tg:1, ow:['nk_kisame'], v:6, cp:1, ex:1, tx:'+6 chakra à chaque début de tour. Au début de chaque combat, Kisame vole aussi 2 chakra à l’adversaire.' },
+  ni_kusanagi:{ ni:1, n:'Épée de Kusanagi', t:5, c:7, ty:'nobj', tg:1, ow:['nk_orochimaru', 'nk_sasuke'], v:6, cp:1, ex:1, tx:'+6 chakra à chaque début de tour. Son porteur lance son jutsu sans chakra.' },
   // ----- Le Seigneur des Anneaux : l'Anneau unique, armes et objets légendaires (récompenses d'étape, liés à leur porteur du film) -----
   lo_anneau:{ lo:1, n:'L’Anneau unique', t:1, c:3, ty:'leg', ring:1, fx:[{ k:'tring' }], tx:'Un Anneau pour les gouverner tous. Tant qu’il est dans ta main, chaque serviteur que tu poses réagit à l’Anneau à sa façon. Il ne se joue pas : passe-le à ton allié par le portail. Si ton duo perd un combat, il passe au duo vainqueur.' },
   lo_dard:{ lo:1, n:'Dard', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:2, h:1, lo:1 }], sig:['lo_frodon', 'lo_bilbon'], sgx:[{ k:'tfx', fx:[{ k:'soc_i1' }] }], stx:'Frodon, Bilbon : sa première attaque de chaque combat est Insensible', tx:'Le serviteur ciblé gagne +2/+1.' },
@@ -747,7 +747,7 @@ function spellCardH(id, z, i, o = {}) {
     + `<div class="cd-art"><svg viewBox="0 0 100 92" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#sp-${id}" y="-4" width="100" height="100"/></svg></div>`
     + `<div class="cd-tier" aria-label="Niveau ${S.t}"><b>${S.t}</b></div>`
     + `<div class="cd-nm${S.n.length > 15 ? ' l' : ''}"><span>${esc(S.n)}</span></div><div class="cd-tx${n + (AWK_TECH[id] ? 30 : 0) > 95 ? ' xlong' : n + (AWK_TECH[id] ? 30 : 0) > 62 ? ' long' : ''}"><span>${badge}${esc(S.tx)}${AWK_TECH[id] ? `<span class="tx-awk${awakeUI() ? ' on' : ''}"><b>Éveil :</b> ${esc(AWK_TECH[id][0])}</span>` : ''}${S.sig ? `<span class="tx-awk on tx-sig"><b>${S.ni ? 'Sur' : 'Signature'}</b> ${S.ni ? '' : 'si le lanceur est '}${esc(S.sig.slice(0, 3).map(c => C[c] ? C[c].n : c).join(', '))} : ${esc(S.stx)}</span>` : ''}</span></div>`
-    + (S.ex ? '<i class="lg-card" aria-hidden="true"></i>' : '') + `<div class="cd-tb" style="--tc:${ty.col}">${esc(ty.n)}</div>`
+    + (S.ex ? '<i class="lg-card" aria-hidden="true"></i>' : '') + `<div class="cd-tb${S.ni ? ' cd-ow' : ''}" style="--tc:${ty.col}">${esc(S.ni ? itOwners(id).join(' · ') : ty.n)}</div>`
     + (S.item ? '' : costGemH(spellCostFor(id, z), S.c)) + (S.kc != null ? ckMarkH(V.me ? kiCost(V.me, S) : S.kc, 'ck-gem ki-gem' + (V.me && kiCost(V.me, S) < S.kc ? ' aff' : ''), 'Coût en ki') : '') + (S.ck ? ckMarkH(V.me ? ckCost(V.me, S) : S.ck, 'ck-gem' + (V.me && ckCost(V.me, S) < S.ck ? ' aff' : ''), 'Coût en chakra' + (V.me && ckCost(V.me, S) < S.ck ? ' (réduit)' : '')) : '') + (S.el ? `<span class="el-tag" style="--ec:${ELS[S.el].col}">${elBadgeH(S.el)}${ELS[S.el].n}</span>` : '') + `${z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : ''}</div>`;
 }
 

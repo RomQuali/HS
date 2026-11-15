@@ -1983,3 +1983,4 @@ html body .hp-ok:not(:disabled):hover,html body .hp-ok.done{box-shadow:0 0 14px 
 @keyframes lgCardSw{0%,35%{left:-40%}75%,100%{left:120%}}
 html.lite .spt.spx .lg-fr,html.lite .spt.spx .lg-sw,html.lite .cd.spc.spx .lg-card,html.lite .cd.spc.spx .lg-card::after{animation:none}
 .spt .it-own.no{background:#3a1410;color:#ffd0c0;border-color:#c8604a;box-shadow:0 0 6px rgba(200,96,74,.5)}
+.cd.spc .cd-tb.cd-ow{font-size:.92em;letter-spacing:0;white-space:nowrap}
