@@ -1998,3 +1998,9 @@ html.lite .spt.spx .lg-fr,html.lite .spt.spx .lg-sw,html.lite .cd.spc.spx .lg-ca
 #peek .cd-full .cdf-h{display:block;color:#7a2c08;font:700 14px var(--f-label),serif;margin-bottom:4px}
 #peek .cd-full p{margin:4px 0}
 #peek .cd-full.left{left:auto;right:calc(100% + 10px)}
+/* objet de la taverne : lueur verte s'il est achetable (propriétaire présent, pas déjà possédé, or suffisant), rouge sinon */
+.spt.it-ok .spt-svg{filter:drop-shadow(0 0 3px #38ff4a) drop-shadow(0 0 7px rgba(60,255,90,.75))}
+.spt.it-no .spt-svg{filter:drop-shadow(0 0 3px #ff4a3a) drop-shadow(0 0 6px rgba(255,70,50,.6)) saturate(.8)}
+.spt.spx.it-ok .spt-svg{filter:drop-shadow(0 0 3px #38ff4a) drop-shadow(0 0 8px rgba(255,170,50,.9))}
+html body .spt.spx.it-no .spt-svg{animation:none;filter:drop-shadow(0 0 3px #ff4a3a) drop-shadow(0 0 6px rgba(255,70,50,.6)) saturate(.8)}
+html body .spt.spx.it-ok .spt-svg{animation:none;filter:drop-shadow(0 0 3px #38ff4a) drop-shadow(0 0 8px rgba(60,255,90,.8))}
