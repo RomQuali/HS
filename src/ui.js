@@ -1175,7 +1175,7 @@ function heroPickRowH(d, me) {
         <span class="hp-nm${x.n.length > 14 ? ' lg' : ''}"><i>${esc(x.n)}</i></span>
         ${x.stars || x.diff ? `<span class="hp-st">${'★'.repeat(x.stars || x.diff)}</span>` : ''}
       </button>
-      <div class="hp-pop" aria-hidden="true">${powBannerH(x, h, nin)}</div>
+      <div class="hp-pop" aria-hidden="true">${powBannerH(x, h, nin)}${typeof nhCard === 'function' && nhCard(h) ? (cc => `<div class="hp-hcards"><small>Ta carte de héros · jouable en taverne ${C[cc].t}</small><div>${cardH({ c:cc, a:C[cc].a, h:C[cc].h, f:C[cc].f || '' }, 'p', 0)}${cardH({ c:cc, a:C[cc].a * GOLD_K, h:C[cc].h * GOLD_K, g:1, f:C[cc].f || '' }, 'p', 1)}</div></div>`)(nhCard(h)) : ''}</div>
       ${me.hrm === 0 ? '' : `<button class="hp-rr${left ? '' : ' off'}" data-act="hroll" data-i="${i}" ${left ? '' : 'disabled'} aria-label="Relancer ce héros (${me.hrr || 0} relance${(me.hrr || 0) > 1 ? 's' : ''} restante${(me.hrr || 0) > 1 ? 's' : ''})"><span class="hp-rrn">${me.hrr || 0}</span><b>Relancer</b></button>`}
     </div>`; };
   const fams = [...new Set((Array.isArray(d.univ) ? d.univ : d.univ ? [d.univ] : d.us || []).flatMap(nm => ((SET.univ || []).find(u => u.n === (nm && nm.n || nm)) || {}).tribes || []).filter(t => !me.camp || !/^lo_/.test(t) || LO_SHADOW_TR.includes(t) === (me.camp === 'O')).map(t => TRIBES[t] && TRIBES[t].n).filter(Boolean))];
@@ -1584,7 +1584,7 @@ function showPeek(t, touch) {
     if (t.dataset.sp) { peekFor = t; peekEl.innerHTML = spellCardH(t.dataset.sp, 'p', 0); peekEl.hidden = false; const [pw, ph] = peekSize(); placePeek(r, pw, ph, touch); return true; }
     const c = t.dataset.c; if (!c || (!C[c] && c !== '__edit')) return false;
     if (!touch && t.classList.contains('cd') && r.width >= 200) return false;   // carte déjà grande (découverte, atelier) : pas d'agrandissement
-    peekFor = t; peekEl.innerHTML = cardH({ c, a:+t.dataset.a, h:+t.dataset.h, g:+t.dataset.g, f:t.dataset.f || '', tf:+t.dataset.tf || 0, tfn:t.dataset.tfn || '', it:t.dataset.it || '' }, 'p', 0);   // la grande carte suit la transformation (image et nom de la forme) peekEl.hidden = false;
+    peekFor = t; peekEl.innerHTML = cardH({ c, a:+t.dataset.a, h:+t.dataset.h, g:+t.dataset.g, f:t.dataset.f || '', tf:+t.dataset.tf || 0, tfn:t.dataset.tfn || '', it:t.dataset.it || '' }, 'p', 0); peekEl.hidden = false;   // la grande carte suit la transformation (image et nom de la forme)
     { const mc = findMine(t.dataset.u); if (mc && isComp(mc)) { const lv = (V.me && V.me.eqlv) || {}; const eq = mc.eq || [];
       peekEl.insertAdjacentHTML('beforeend', compSheetH(mc, lv, eq)); } }
     const [pw, ph] = peekSize(); placePeek(r, pw, ph + (peekEl.querySelector('.peq') ? peekEl.querySelector('.peq').offsetHeight + 8 : 0), touch);

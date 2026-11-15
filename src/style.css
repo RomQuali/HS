@@ -1984,3 +1984,8 @@ html body .hp-ok:not(:disabled):hover,html body .hp-ok.done{box-shadow:0 0 14px 
 html.lite .spt.spx .lg-fr,html.lite .spt.spx .lg-sw,html.lite .cd.spc.spx .lg-card,html.lite .cd.spc.spx .lg-card::after{animation:none}
 .spt .it-own.no{background:#3a1410;color:#ffd0c0;border-color:#c8604a;box-shadow:0 0 6px rgba(200,96,74,.5)}
 .cd.spc .cd-tb.cd-ow{font-size:.92em;letter-spacing:0;white-space:nowrap}
+/* choix du héros : au survol, la carte du héros en version normale et dorée */
+.hp-pop .hp-hcards{margin-top:8px;display:grid;justify-items:center;gap:4px}
+.hp-pop .hp-hcards small{font:700 12px/1.2 var(--f-label),serif;color:#ffe9b0;text-shadow:0 1px 2px #000;background:rgba(20,12,6,.8);padding:2px 10px;border-radius:99px}
+.hp-pop .hp-hcards>div{display:flex;gap:10px}
+.hp-pop .hp-hcards .cd{position:relative;width:clamp(140px,11vw,190px);flex:none}
