@@ -1943,10 +1943,21 @@ body.u-db .counter-line,body.u-db .board-zone,body.u-rm .counter-line,body.u-rm 
 /* ===== Naruto (15/11/2026) : carte du héros verrouillée, objets ===== */
 .cd.lkd{filter:grayscale(.85) brightness(.7)}
 .cd .hk-tag,.cd .it-tag{position:absolute;left:50%;transform:translateX(-50%);white-space:nowrap;font:700 10px/1.2 system-ui,sans-serif;padding:2px 7px;border-radius:8px;z-index:5;pointer-events:none}
-.cd .hk-tag{top:42%;background:#1b120b;color:#ffe39a;border:1.5px solid #c89a52}
+.cd .hk-tag{top:68%;background:#1b120b;color:#ffe39a;border:1.5px solid #c89a52}
 .cd .hk-tag.on{background:#1e4a2a;color:#c8ffb0;border-color:#6fd08a}
 .cd .it-tag{top:4px;background:#10283e;color:#bfefff;border:1.5px solid #6fd0ff}
 .spt.spx .spt-svg,.cd.spc.spx{filter:drop-shadow(0 0 6px #ffd86a) drop-shadow(0 0 12px rgba(255,200,80,.6));animation:spxGlow 2.4s ease-in-out infinite}
 @keyframes spxGlow{50%{filter:drop-shadow(0 0 10px #ffe9a0) drop-shadow(0 0 20px rgba(255,210,90,.8))}}
 .itb.ex circle{filter:drop-shadow(0 0 3px #ffd86a)}
 .op-face .op-ar{position:absolute;right:-6px;top:-4px;min-width:20px;height:20px;padding:0 3px;display:grid;place-items:center;font:700 11px/1 var(--f-num),sans-serif;color:#fff;background:linear-gradient(180deg,#b8c2cc,#5a6470);border:1.5px solid #1a1a1a;border-radius:5px 5px 10px 10px;z-index:3;text-shadow:0 1px 1px #000}
+/* objet de la taverne déjà porté par un de tes serviteurs */
+.spt .it-own{position:absolute;left:50%;top:-6px;transform:translateX(-50%);white-space:nowrap;font:800 10px/1.2 system-ui,sans-serif;padding:2px 7px;border-radius:8px;background:#10283e;color:#bfefff;border:1.5px solid #6fd0ff;box-shadow:0 0 6px rgba(111,208,255,.6);z-index:6;pointer-events:none}
+/* étoile de transformation : flèche « monter » */
+.mn .tf-b.nk-tf .tf-up{position:absolute;left:50%;top:-30%;width:46%;aspect-ratio:1;transform:translateX(-50%);background:linear-gradient(180deg,#e8fcff,#4ab0ff 60%,#1a5ad0);clip-path:polygon(50% 0,100% 55%,70% 55%,70% 100%,30% 100%,30% 55%,0 55%);filter:drop-shadow(0 0 1px #08131f) drop-shadow(0 1px 1px #08131f);opacity:.75;pointer-events:none}
+.mn .tf-b.nk-tf.ok .tf-up{opacity:1;animation:tfUp .9s ease-in-out infinite}
+@keyframes tfUp{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-28%)}}
+.mn .tf-b.nk-tf.ok::after{content:"";position:absolute;inset:-12%;border-radius:50%;border:2px solid rgba(120,200,255,.85);animation:tfRing 1.4s ease-out infinite;pointer-events:none}
+@keyframes tfRing{0%{transform:scale(.7);opacity:.9}100%{transform:scale(1.35);opacity:0}}
+html.lite .mn .tf-b.nk-tf.ok .tf-up,html.lite .mn .tf-b.nk-tf.ok::after{animation:none}
+.cd .lk-ch{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none}
+.cd.lkd{filter:grayscale(1) brightness(.62) contrast(.95)}

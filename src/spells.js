@@ -729,7 +729,7 @@ function spellTokenH(id, z, i, o = {}) {
     <rect x="14.5" y="14" width="71" height="76" rx="4" fill="none" stroke="#3a2410" stroke-width="3.4"/><rect x="14.5" y="14" width="71" height="76" rx="4" fill="none" stroke="#c89a52" stroke-width="1.4"/>
     <circle cx="14" cy="104" r="12" fill="url(#gr-badge)" stroke="#e2b452" stroke-width="2.2"/><text class="gt" x="14" y="104" dy=".36em" style="fill:${spellCostFor(id, z) < S.c ? '#b8ff8a' : '#ffe39a'}">${spellCostFor(id, z)}</text>
     <g><title>Niveau ${S.t}</title><use href="#fr-star" x="35" y="-13" width="30" height="28.4"/><text class="gt st" x="50" y="2.2" dy=".36em">${S.t}</text></g>${S.el ? elBadgeG(S.el, 50, 102, 13) : ''}${S.kc != null ? ckMarkG(V.me ? kiCost(V.me, S) : S.kc, 86, 101, 13, '#fff') : ''}${S.ck ? ckMarkG(V.me ? ckCost(V.me, S) : S.ck, 86, 101, 13, V.me && ckCost(V.me, S) < S.ck ? '#b8ff8a' : '#fff') : ''}</svg>
-    <span class="mn-nm">${esc(S.n)}</span></div>`;
+    <span class="mn-nm">${esc(S.n)}</span>${S.ni && z === 'ss' && V.me && (V.me.bd || []).some(m => m.it === id) ? '<span class="it-own">Déjà équipé</span>' : ''}</div>`;
 }
 // coût réel pour le joueur (réductions actives), et coût de base
 function spellCostFor(id, z) { const S = SPELLS[id]; if (V.me && V.me.sp === id && V.me.spc != null && (z === 'ss' || z === 'p')) return V.me.spc; return S.c; }
