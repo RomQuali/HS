@@ -1952,12 +1952,12 @@ body.u-db .counter-line,body.u-db .board-zone,body.u-rm .counter-line,body.u-rm 
 .op-face .op-ar{position:absolute;right:-6px;top:-4px;min-width:20px;height:20px;padding:0 3px;display:grid;place-items:center;font:700 11px/1 var(--f-num),sans-serif;color:#fff;background:linear-gradient(180deg,#b8c2cc,#5a6470);border:1.5px solid #1a1a1a;border-radius:5px 5px 10px 10px;z-index:3;text-shadow:0 1px 1px #000}
 /* objet de la taverne déjà porté par un de tes serviteurs */
 .spt .it-own{position:absolute;left:50%;top:-6px;transform:translateX(-50%);white-space:nowrap;font:800 10px/1.2 system-ui,sans-serif;padding:2px 7px;border-radius:8px;background:#10283e;color:#bfefff;border:1.5px solid #6fd0ff;box-shadow:0 0 6px rgba(111,208,255,.6);z-index:6;pointer-events:none}
-/* étoile de transformation : flèche « monter » */
-.mn .tf-b.nk-tf .tf-up{position:absolute;left:50%;top:-30%;width:46%;aspect-ratio:1;transform:translateX(-50%);background:linear-gradient(180deg,#e8fcff,#4ab0ff 60%,#1a5ad0);clip-path:polygon(50% 0,100% 55%,70% 55%,70% 100%,30% 100%,30% 55%,0 55%);filter:drop-shadow(0 0 1px #08131f) drop-shadow(0 1px 1px #08131f);opacity:.75;pointer-events:none}
-.mn .tf-b.nk-tf.ok .tf-up{opacity:1;animation:tfUp .9s ease-in-out infinite}
-@keyframes tfUp{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-28%)}}
-.mn .tf-b.nk-tf.ok::after{content:"";position:absolute;inset:-12%;border-radius:50%;border:2px solid rgba(120,200,255,.85);animation:tfRing 1.4s ease-out infinite;pointer-events:none}
-@keyframes tfRing{0%{transform:scale(.7);opacity:.9}100%{transform:scale(1.35);opacity:0}}
-html.lite .mn .tf-b.nk-tf.ok .tf-up,html.lite .mn .tf-b.nk-tf.ok::after{animation:none}
-.cd .lk-ch{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none}
-.cd.lkd{filter:grayscale(1) brightness(.62) contrast(.95)}
+/* étoile de transformation : comme le bouton « Améliorer » de la taverne (flèche verte en haut à droite, lueur verte quand c'est possible) */
+.mn .tf-b.nk-tf .tf-up{position:absolute;right:-6%;top:-8%;width:44%;aspect-ratio:1;background:linear-gradient(180deg,#b6ff7a,#3fcf3a 55%,#1d7a1e);clip-path:polygon(50% 0,100% 52%,72% 52%,72% 100%,28% 100%,28% 52%,0 52%);filter:drop-shadow(0 0 .6px #0c2a08) drop-shadow(0 1px 0 #0c2a08);pointer-events:none}
+.mn .tf-b.nk-tf:not(.ok):not(.lock) .tf-up{filter:grayscale(.7) brightness(.8)}
+html body .mn .tf-b.nk-tf.ok{filter:drop-shadow(0 0 3px #38ff4a) drop-shadow(0 0 6px rgba(60,255,90,.75));animation:tfGlow 1.6s ease-in-out infinite}
+html body .mn .tf-b.nk-tf.ok:hover{filter:drop-shadow(0 0 4px #7dff8a) drop-shadow(0 0 10px rgba(60,255,90,.95)) brightness(1.15);animation:none}
+.mn .tf-b.nk-tf.ok .tf-up{animation:tfUp 1.1s ease-in-out infinite}
+@keyframes tfUp{0%,100%{transform:translateY(0)}50%{transform:translateY(-14%)}}
+@keyframes tfGlow{0%,100%{filter:drop-shadow(0 0 3px #38ff4a) drop-shadow(0 0 6px rgba(60,255,90,.7))}50%{filter:drop-shadow(0 0 5px #7dff8a) drop-shadow(0 0 11px rgba(60,255,90,.95))}}
+html.lite .mn .tf-b.nk-tf.ok,html.lite .mn .tf-b.nk-tf.ok .tf-up{animation:none}
