@@ -1972,3 +1972,13 @@ html body .hp-ok.done{filter:sepia(1) saturate(3.2) hue-rotate(-12deg) brightnes
 html body .hp-ok.done{transform:scale(1.04)}
 html body .hp-ok:not(:disabled):hover{filter:sepia(1) saturate(3.2) hue-rotate(-12deg) brightness(1.2) drop-shadow(0 0 14px #6dff7a) drop-shadow(0 0 28px rgba(60,255,90,.9))!important}
 html body .hp-ok:not(:disabled):hover,html body .hp-ok.done{box-shadow:0 0 14px 4px rgba(70,255,90,.85),0 0 34px 10px rgba(60,255,90,.55)!important;border-radius:22%/48%!important}
+/* objets exceptionnels : cadre légendaire orangé et reflet de lumière qui passe */
+.spt.spx .lg-fr{filter:drop-shadow(0 0 2px #ffb02e) drop-shadow(0 0 5px rgba(255,150,40,.8));animation:lgPulse 2.2s ease-in-out infinite}
+.spt.spx .lg-sw{animation:lgSweep 2.8s ease-in-out infinite}
+@keyframes lgPulse{50%{filter:drop-shadow(0 0 4px #ffd86a) drop-shadow(0 0 10px rgba(255,170,50,.95))}}
+@keyframes lgSweep{0%,35%{transform:skewX(-18deg) translateX(0)}75%,100%{transform:skewX(-18deg) translateX(150px)}}
+.cd.spc.spx .lg-card{position:absolute;inset:3%;border-radius:10px;pointer-events:none;z-index:3;box-shadow:inset 0 0 0 3px #ffb02e,inset 0 0 14px rgba(255,170,50,.8),0 0 14px rgba(255,160,40,.85);overflow:hidden;animation:lgCard 2.2s ease-in-out infinite}
+.cd.spc.spx .lg-card::after{content:"";position:absolute;top:-10%;bottom:-10%;width:30%;left:-40%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent);transform:skewX(-18deg);animation:lgCardSw 2.8s ease-in-out infinite}
+@keyframes lgCard{50%{box-shadow:inset 0 0 0 3px #ffd86a,inset 0 0 20px rgba(255,190,70,.95),0 0 22px rgba(255,170,50,1)}}
+@keyframes lgCardSw{0%,35%{left:-40%}75%,100%{left:120%}}
+html.lite .spt.spx .lg-fr,html.lite .spt.spx .lg-sw,html.lite .cd.spc.spx .lg-card,html.lite .cd.spc.spx .lg-card::after{animation:none}
