@@ -1638,7 +1638,7 @@ function jutTxt(e, k) {
   const j = e.none ? '' : (cb && !fx ? `Jutsu de combat · ${e.nm} : ${jutBody(e.cb, k)}.` : `Jutsu · ${e.nm} : ${jutBody(e.fx || [], k)}${cb ? ' ; au combat : ' + jutBody(e.cb, k) : ''}.`);
   return j + (ST.length ? `${j ? ' ' : ''}${ST.length > 1 ? 'Transformations' : 'Transformation'} · ${ST.map((T, i) => (i === ST.length - 1 ? 'carte dorée seulement · ' : '') + tfStTxt(T, k)).join(' → ')}.` : '');
 }
-function jutCost(p, m) { const J = jutOf(m); if (!J || J.none) return null; if (m.it === 'ni_kusanagi' && m.c === 'nk_orochimaru') return 0; if ((m.c === 'nk_dosu' || m.c === 'nk_zaku') && p && p.bd && nkOn(p, 'genins')) return 0; return Math.max(1, tierOf(m) - ((htr(p, 'pjutc') || {}).n || 0)); }
+function jutCost(p, m) { const J = jutOf(m); if (!J || J.none) return null; if (m.it === 'ni_kusanagi' && itProd(m)) return 0; if ((m.c === 'nk_dosu' || m.c === 'nk_zaku') && p && p.bd && nkOn(p, 'genins')) return 0; return Math.max(1, tierOf(m) - ((htr(p, 'pjutc') || {}).n || 0)); }
 // le dernier palier d'un ninja à plusieurs transformations est réservé à la carte dorée (triple)
 const nkTfLock = m => { const st = tfSt(jutOf(m)), i = m.tf || 0; return st.length >= 1 && i === st.length - 1 && !m.g; };   // la dernière transformation (ou l'unique) demande la carte dorée
 function nkTfCost(p, m) { const T = tfSt(jutOf(m))[m.tf || 0]; if (!T || nkTfLock(m)) return null; return Math.max(1, T.c - ((htr(p, 'pnktf') || {}).n || 0)); }
@@ -2525,7 +2525,7 @@ function drawOne(G, maxT, exactT, tb) {
 }
 function toPool(G, m) { if (G.pool[m.c] != null) G.pool[m.c] += m.g ? 3 : 1; }
 // taverne gelée : on garde ce qui reste et on complète les places vides (et l'étagère à sorts si elle est vide)
-const sp2On = (G, p) => !!(G && inMechAny(G, 'chakra') && !NJ_TECH);   // Naruto : 2 objets proposés à chaque fois
+const sp2On = (G, p) => false;   // Naruto : un seul objet proposé à chaque actualisation (16/11/2026)
 function topUpShop(G, p) { DRAWP = p; if (!p.sp) p.sp = drawSpell(p.t); if (sp2On(G, p) && !p.sp2) p.sp2 = drawSpell(p.t); loShelf(G, p); for (let k = p.sh.length; k < SLOTS[p.t]; k++) { const m = drawOne(G, p.t); if (m) p.sh.push(m); else break; } }
 function fillShop(G, p) { DRAWP = p; if (inMechAny(G, 'chakra')) [p.sp, p.sp2].forEach(x => { if (x) itBack(G, x.sp); }); const ring0 = loOn(G) && p.sp && p.sp.sp === LO_RING ? p.sp : null; p.sp = drawSpell(p.t); p.sp2 = sp2On(G, p) ? drawSpell(p.t) : null; if (ring0) p.sp = ring0; loShelf(G, p); p.sh.forEach(m => toPool(G, m)); p.sh = []; for (let k = 0; k < SLOTS[p.t]; k++) { const m = drawOne(G, p.t); if (m) p.sh.push(m); } }
 

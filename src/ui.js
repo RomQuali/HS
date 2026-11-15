@@ -173,7 +173,7 @@ const icon = (name, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" ari
 const faceH = (sym, cls = 'face') => `<span class="${cls}"><svg viewBox="12 8 76 76" aria-hidden="true"><use href="#${sym}" width="100" height="100"/></svg></span>`;
 const playerSym = p => p && p.h && HART[p.h] ? heroArt(p.h, p.haw) : avatarSym(p ? p.n : '?');
 const tierStars = (t, only) => `<span class="ts" aria-label="Niveau ${t}">${Array.from({ length:only ? t : 6 }, (_, k) => `<i class="${k < t ? 'on' : ''}"></i>`).join('')}</span>`;
-const dataAttrs = m => `data-c="${m.c}" data-a="${m.a}" data-h="${m.h}" data-g="${m.g ? 1 : 0}" data-f="${esc(m.f || '')}"${m.u ? ` data-u="${m.u}"` : ''}`;
+const dataAttrs = m => `data-c="${m.c}" data-a="${m.a}" data-h="${m.h}" data-g="${m.g ? 1 : 0}" data-f="${esc(m.f || '')}"${m.u ? ` data-u="${m.u}"` : ''}${m.tf ? ` data-tf="${m.tf}"` : ''}${m.tfn ? ` data-tfn="${esc(m.tfn)}"` : ''}${m.it ? ` data-it="${m.it}"` : ''}`;
 const ariaM = m => `${CD(m.c).n}${m.g ? ' doré' : ''}, ${m.a} attaque, ${m.h} vie`;
 const demo = (id, g) => { const b = CD(id); return { c:id, a:b.a * (g ? GOLD_K : 1), h:b.h * (g ? GOLD_K : 1), g:g ? 1 : 0, f:b.f }; };
 const hpGem = hp => `<svg class="hpg" viewBox="0 0 40 40" aria-label="${hp} points de vie"><use href="#gem-h" width="40" height="40"/><text class="gt" x="20" y="25" dy=".36em">${hp}</text></svg>`;
@@ -218,7 +218,7 @@ function ufIn(m, id, up) {
     .then(() => { UF_OK = true; if (V.screen === 'game') render(); }, () => {});
 } catch (e) {} })();
 // Naruto : objet porté par un serviteur (pastille en haut à droite, avec le chakra produit)
-const itBadgeH = m => { const S = SPELLS[m.it], n = S.pr[m.c === S.own ? 1 : 0]; return `<g class="itb${S.ex ? ' ex' : ''}"><title>${esc(S.n)} : +${n} chakra à chaque début de tour${m.c === S.own ? ' (porté par son vrai propriétaire)' : ''}</title><circle cx="50" cy="110" r="12" fill="#10283e" stroke="${S.ex ? '#ffd86a' : '#6fd0ff'}" stroke-width="2.4"/><clipPath id="itc-${m.u}"><circle cx="50" cy="110" r="10.8"/></clipPath><g clip-path="url(#itc-${m.u})"><svg x="39" y="99" width="22" height="22" viewBox="0 0 100 100"><use href="#sp-${m.it}"/></svg></g><text x="50" y="122" dy=".36em" text-anchor="middle" font-size="9" font-weight="800" fill="#bfefff" stroke="#08131f" stroke-width="2.4" paint-order="stroke">+${n}</text></g>`; };
+const itBadgeH = m => { const S = SPELLS[m.it], n = itProd(m); return `<g class="itb${S.ex ? ' ex' : ''}"><title>${esc(S.n)} : +${n} chakra à chaque début de tour</title><circle cx="50" cy="110" r="12" fill="#10283e" stroke="${S.ex ? '#ffd86a' : '#6fd0ff'}" stroke-width="2.4"/><clipPath id="itc-${m.u}"><circle cx="50" cy="110" r="10.8"/></clipPath><g clip-path="url(#itc-${m.u})"><svg x="39" y="99" width="22" height="22" viewBox="0 0 100 100"><use href="#sp-${m.it}"/></svg></g><text x="50" y="122" dy=".36em" text-anchor="middle" font-size="9" font-weight="800" fill="#bfefff" stroke="#08131f" stroke-width="2.4" paint-order="stroke">+${n}</text></g>`; };
 function tokenH(m, z, i, o = {}) {
   const b = CD(m.c), f = (m.f || '') + (m.tmp && m.tmp.f ? m.tmp.f : ''), g = !!m.g;   // mots-clés permanents + ceux du prochain combat
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
@@ -289,7 +289,7 @@ function cardH(m, z, i, o = {}) {
     + `<svg class="cd-gem a" viewBox="0 0 40 49" aria-hidden="true"><use href="#fr-atk" width="40" height="49"/><text class="gt${up(m.a, b.a)}" x="24" y="26" dy=".36em">${m.a}</text></svg>`
     + `<svg class="cd-gem h" viewBox="0 0 40 49" aria-hidden="true"><use href="#fr-hp" width="40" height="49"/><text class="gt${up(m.h, b.h)}" x="20" y="25.6" dy=".36em">${m.h}</text></svg>`
     + (m.gag ? `<span class="cd-gag" data-tip="${esc(gagTip(m))}">Gag ×${m.gag}</span>` : '')
-    + (m.tr ? '<span class="tri">Triple !</span>' : '') + (lk ? lkChainsH() : '') + (m.lk ? `<span class="hk-tag${lk ? '' : ' on'}">${lk ? 'Ton héros · taverne ' + b.t : 'Ton héros · jouable'}</span>` : '') + (m.it && SPELLS[m.it] ? `<span class="it-tag">${esc(SPELLS[m.it].n)}</span>` : '') + (z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : '') + '</div>';
+    + (m.tr ? '<span class="tri">Triple !</span>' : '') + (lk ? lkChainsH() : '') + (m.lk ? `<span class="hk-tag${lk ? '' : ' on'}">${lk ? 'Ton héros · taverne ' + b.t : 'Ton héros · jouable'}</span>` : '') + (m.tfn ? `<span class="it-tag tf-tag">${esc(m.tfn)}</span>` : '') + (m.it && SPELLS[m.it] ? `<span class="it-tag"${m.tfn ? ' style="top:26px"' : ''}>${esc(SPELLS[m.it].n)}</span>` : '') + (z === 'hd' ? '<i class="hx" aria-hidden="true"></i>' : '') + '</div>';
 }
 const med = (act, ic, label, cost, dis, on) => `<button class="med${on ? ' on' : ''}" data-act="${act}" ${dis ? 'disabled' : ''}><span class="disc">${icon(ic)}</span>${cost != null ? `<span class="cost">${cost}</span>` : ''}<span class="ml">${label}</span></button>`;
 
@@ -446,7 +446,7 @@ function chakraLawH(big) {
     ${sec('🌀', 'Jutsus', `<small>Chaque ninja porte son jutsu : clique sur la goutte bleue au-dessus de lui. Une fois par tour, pour un coût égal à son niveau.</small>`)}
     ${sec('⭐', 'Transformations', `<small>Certains ninjas se transforment une seule fois (étoile bleue, 5 à 10 chakra) : caractéristiques, mot-clé, et un jutsu plus fort.</small>`)}
     ${sec('🎴', 'Carte de ton héros', `<small>Ton personnage t'attend dans ta main, grisé. Il se pose gratuitement dès que ta taverne atteint son niveau, et compte pour les triples comme une carte de la taverne.</small>`)}
-    ${sec('🗡️', 'Objets', `<small>La taverne propose 2 objets de l'animé. Pose-en un sur un serviteur : il produit du chakra en plus à chaque tour, et davantage sur son vrai propriétaire. Les plus forts sont rares ; Samehada et Kusanagi n'existent qu'en un exemplaire par partie. Quand tu élimines un joueur, tu choisis un de ses 3 meilleurs objets.</small>`)}
+    ${sec('🗡️', 'Objets', `<small>La taverne propose un objet de l'animé à chaque actualisation. Seuls ses propriétaires (1 à 3 personnages) peuvent le porter : il leur fait produire du chakra en plus à chaque tour. Plus il est fort et rare, plus il coûte cher ; Samehada et Kusanagi n'existent qu'en un exemplaire par partie. Quand tu élimines un joueur, tu choisis un de ses 3 meilleurs objets.</small>`)}
     ${sec('🐸', 'Invocations', `<small>Gamabunta, Manda, Katsuyu… n'apparaissent pas en taverne : seuls les jutsus de leurs invocateurs les appellent.</small>`)}
   </span>`;
 }
@@ -1584,7 +1584,7 @@ function showPeek(t, touch) {
     if (t.dataset.sp) { peekFor = t; peekEl.innerHTML = spellCardH(t.dataset.sp, 'p', 0); peekEl.hidden = false; const [pw, ph] = peekSize(); placePeek(r, pw, ph, touch); return true; }
     const c = t.dataset.c; if (!c || (!C[c] && c !== '__edit')) return false;
     if (!touch && t.classList.contains('cd') && r.width >= 200) return false;   // carte déjà grande (découverte, atelier) : pas d'agrandissement
-    peekFor = t; peekEl.innerHTML = cardH({ c, a:+t.dataset.a, h:+t.dataset.h, g:+t.dataset.g, f:t.dataset.f || '' }, 'p', 0); peekEl.hidden = false;
+    peekFor = t; peekEl.innerHTML = cardH({ c, a:+t.dataset.a, h:+t.dataset.h, g:+t.dataset.g, f:t.dataset.f || '', tf:+t.dataset.tf || 0, tfn:t.dataset.tfn || '', it:t.dataset.it || '' }, 'p', 0);   // la grande carte suit la transformation (image et nom de la forme) peekEl.hidden = false;
     { const mc = findMine(t.dataset.u); if (mc && isComp(mc)) { const lv = (V.me && V.me.eqlv) || {}; const eq = mc.eq || [];
       peekEl.insertAdjacentHTML('beforeend', compSheetH(mc, lv, eq)); } }
     const [pw, ph] = peekSize(); placePeek(r, pw, ph + (peekEl.querySelector('.peq') ? peekEl.querySelector('.peq').offsetHeight + 8 : 0), touch);

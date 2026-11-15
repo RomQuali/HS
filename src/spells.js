@@ -24,21 +24,22 @@ const SPELLS = {
   dt_death:{ db:1, n:'Death Ball', t:5, c:3, kc:5, ty:'nin', tg:1, fx:[{ k:'fire', d:7 }, { k:'buffall', a:1, h:0, tb:'d_fre' }], sig:['d_freezer', 'd_cooler', 'd_cold'], sgx:[{ k:'tbuff', a:4, h:4 }], tx:'Prochain combat : 7 dégâts à l\'ennemi ; tes Freezer gagnent +1/+0.', stx:'+4/+4' },
   dt_genki:{ db:1, n:'Genkidama', t:6, c:3, kc:6, ty:'nin', tg:1, fx:[{ k:'buffall', a:2, h:2 }], sig:['d_goku', 'd_uub'], sgx:[{ k:'buffall', a:1, h:1 }], tx:'L\'énergie de tous : tes serviteurs gagnent +2/+2.', stx:'+1/+1 de plus pour tous' },
   // ----- Naruto (15/11/2026) : objets de personnages. Posés sur un serviteur, ils produisent du chakra à chaque début de tour, davantage sur leur vrai propriétaire.
+  // Prix (15/11/2026) : chakra produit − 1, +1 or s'il a plusieurs propriétaires, +1 or s'il est exceptionnel.
   // Réserve commune à la partie (cp exemplaires) : un objet tiré dans une taverne en sort, il y revient si la taverne est actualisée sans l'acheter.
-  ni_bandeau:{ ni:1, n:'Bandeau de Konoha', t:1, c:1, ty:'nobj', tg:1, own:'nk_naruto', pr:[1, 2], cp:4, sig:['nk_naruto'], tx:'Le serviteur qui le porte produit 1 chakra de plus à chaque début de tour.', stx:'2 chakra par tour' },
-  ni_poids:{ ni:1, n:'Poids d’entraînement', t:1, c:1, ty:'nobj', tg:1, own:'nk_lee', pr:[1, 2], cp:4, sig:['nk_lee'], tx:'Le serviteur qui le porte produit 1 chakra de plus à chaque début de tour.', stx:'2 chakra par tour' },
-  ni_eventail:{ ni:1, n:'Grand éventail', t:1, c:1, ty:'nobj', tg:1, own:'nk_temari', pr:[1, 2], cp:4, sig:['nk_temari'], tx:'Le serviteur qui le porte produit 1 chakra de plus à chaque début de tour.', stx:'2 chakra par tour' },
-  ni_hirame:{ ni:1, n:'Hiramekarei', t:1, c:1, ty:'nobj', tg:1, own:'nk_chojuro', pr:[1, 2], cp:4, sig:['nk_chojuro'], tx:'Le serviteur qui le porte produit 1 chakra de plus à chaque début de tour.', stx:'2 chakra par tour' },
-  ni_argile:{ ni:1, n:'Argile explosive', t:1, c:1, ty:'nobj', tg:1, own:'nk_deidara', pr:[1, 2], cp:4, sig:['nk_deidara'], tx:'Le serviteur qui le porte produit 1 chakra de plus à chaque début de tour.', stx:'2 chakra par tour' },
-  ni_karasu:{ ni:1, n:'Karasu', t:1, c:2, ty:'nobj', tg:1, own:'nk_kankuro', pr:[2, 3], cp:2, sig:['nk_kankuro'], tx:'Le serviteur qui le porte produit 2 chakra de plus à chaque début de tour.', stx:'3 chakra par tour' },
-  ni_kubiki:{ ni:1, n:'Kubikiribōchō', t:1, c:2, ty:'nobj', tg:1, own:'nk_zabuza', pr:[2, 3], cp:2, sig:['nk_zabuza'], tx:'Le serviteur qui le porte produit 2 chakra de plus à chaque début de tour.', stx:'3 chakra par tour' },
-  ni_flute:{ ni:1, n:'Flûte démoniaque', t:1, c:2, ty:'nobj', tg:1, own:'nk_tayuya', pr:[2, 3], cp:2, sig:['nk_tayuya'], tx:'Le serviteur qui le porte produit 2 chakra de plus à chaque début de tour.', stx:'3 chakra par tour' },
-  ni_gourde:{ ni:1, n:'Gourde de sable', t:3, c:3, ty:'nobj', tg:1, own:'nk_gaara', pr:[2, 4], cp:1, sig:['nk_gaara'], tx:'Le serviteur qui le porte produit 2 chakra de plus à chaque début de tour.', stx:'4 chakra par tour' },
-  ni_crapauds:{ ni:1, n:'Parchemin des crapauds', t:3, c:4, ty:'nobj', tg:1, own:'nk_jiraiya', pr:[3, 5], cp:1, sig:['nk_jiraiya'], tx:'Le serviteur qui le porte produit 3 chakra de plus à chaque début de tour.', stx:'5 chakra par tour' },
-  ni_bague:{ ni:1, n:'Bague de l’Akatsuki', t:3, c:4, ty:'nobj', tg:1, own:'nk_pain', pr:[3, 5], cp:1, sig:['nk_pain'], tx:'Le serviteur qui le porte produit 3 chakra de plus à chaque début de tour.', stx:'5 chakra par tour' },
-  ni_byakugo:{ ni:1, n:'Sceau du Byakugō', t:3, c:4, ty:'nobj', tg:1, own:'nk_tsunade', pr:[3, 5], cp:1, sig:['nk_tsunade'], tx:'Le serviteur qui le porte produit 3 chakra de plus à chaque début de tour.', stx:'5 chakra par tour' },
-  ni_samehada:{ ni:1, n:'Samehada', t:5, c:5, ty:'nobj', tg:1, own:'nk_kisame', pr:[3, 6], cp:1, ex:1, sig:['nk_kisame'], tx:'Le serviteur qui le porte produit 3 chakra de plus à chaque début de tour.', stx:'6 chakra par tour, et au début de chaque combat il vole 2 chakra à l’adversaire' },
-  ni_kusanagi:{ ni:1, n:'Épée de Kusanagi', t:5, c:5, ty:'nobj', tg:1, own:'nk_orochimaru', pr:[3, 6], cp:1, ex:1, sig:['nk_orochimaru'], tx:'Le serviteur qui le porte produit 3 chakra de plus à chaque début de tour.', stx:'6 chakra par tour, et son jutsu ne coûte plus de chakra' },
+  ni_bandeau:{ ni:1, n:'Bandeau de Konoha', t:1, c:2, ty:'nobj', tg:1, ow:['nk_naruto', 'nk_sakura', 'nk_kakashi'], v:2, cp:4, tx:'Seuls Naruto, Sakura ou Kakashi peuvent le porter : +2 chakra à chaque début de tour.' },
+  ni_poids:{ ni:1, n:'Poids d’entraînement', t:1, c:2, ty:'nobj', tg:1, ow:['nk_lee', 'nk_gai'], v:2, cp:4, tx:'Seuls Rock Lee ou Gaï peuvent le porter : +2 chakra à chaque début de tour.' },
+  ni_eventail:{ ni:1, n:'Grand éventail', t:1, c:1, ty:'nobj', tg:1, ow:['nk_temari'], v:2, cp:4, tx:'Seul Temari peut le porter : +2 chakra à chaque début de tour.' },
+  ni_hirame:{ ni:1, n:'Hiramekarei', t:1, c:1, ty:'nobj', tg:1, ow:['nk_chojuro'], v:2, cp:4, tx:'Seul Chōjūrō peut le porter : +2 chakra à chaque début de tour.' },
+  ni_argile:{ ni:1, n:'Argile explosive', t:1, c:1, ty:'nobj', tg:1, ow:['nk_deidara'], v:2, cp:4, tx:'Seul Deidara peut le porter : +2 chakra à chaque début de tour.' },
+  ni_karasu:{ ni:1, n:'Karasu', t:1, c:2, ty:'nobj', tg:1, ow:['nk_kankuro'], v:3, cp:2, tx:'Seul Kankurō peut le porter : +3 chakra à chaque début de tour.' },
+  ni_kubiki:{ ni:1, n:'Kubikiribōchō', t:1, c:3, ty:'nobj', tg:1, ow:['nk_zabuza', 'nk_suigetsu'], v:3, cp:2, tx:'Seuls Zabuza ou Suigetsu peuvent le porter : +3 chakra à chaque début de tour.' },
+  ni_flute:{ ni:1, n:'Flûte démoniaque', t:1, c:2, ty:'nobj', tg:1, ow:['nk_tayuya'], v:3, cp:2, tx:'Seul Tayuya peut le porter : +3 chakra à chaque début de tour.' },
+  ni_gourde:{ ni:1, n:'Gourde de sable', t:3, c:3, ty:'nobj', tg:1, ow:['nk_gaara'], v:4, cp:1, tx:'Seul Gaara peut le porter : +4 chakra à chaque début de tour.' },
+  ni_crapauds:{ ni:1, n:'Parchemin des crapauds', t:3, c:5, ty:'nobj', tg:1, ow:['nk_jiraiya', 'nk_naruto'], v:5, cp:1, tx:'Seuls Jiraiya ou Naruto peuvent le porter : +5 chakra à chaque début de tour.' },
+  ni_bague:{ ni:1, n:'Bague de l’Akatsuki', t:3, c:5, ty:'nobj', tg:1, ow:['nk_pain', 'nk_konan', 'nk_itachi'], v:5, cp:1, tx:'Seuls Pain, Konan ou Itachi peuvent le porter : +5 chakra à chaque début de tour.' },
+  ni_byakugo:{ ni:1, n:'Sceau du Byakugō', t:3, c:5, ty:'nobj', tg:1, ow:['nk_tsunade', 'nk_sakura'], v:5, cp:1, tx:'Seuls Tsunade ou Sakura peuvent le porter : +5 chakra à chaque début de tour.' },
+  ni_samehada:{ ni:1, n:'Samehada', t:5, c:6, ty:'nobj', tg:1, ow:['nk_kisame'], v:6, cp:1, ex:1, tx:'Seul Kisame peut le porter : +6 chakra à chaque début de tour. Au début de chaque combat, Kisame vole aussi 2 chakra à l’adversaire.' },
+  ni_kusanagi:{ ni:1, n:'Épée de Kusanagi', t:5, c:7, ty:'nobj', tg:1, ow:['nk_orochimaru', 'nk_sasuke'], v:6, cp:1, ex:1, tx:'Seuls Orochimaru ou Sasuke peuvent le porter : +6 chakra à chaque début de tour. Son porteur lance son jutsu sans chakra.' },
   // ----- Le Seigneur des Anneaux : l'Anneau unique, armes et objets légendaires (récompenses d'étape, liés à leur porteur du film) -----
   lo_anneau:{ lo:1, n:'L’Anneau unique', t:1, c:3, ty:'leg', ring:1, fx:[{ k:'tring' }], tx:'Un Anneau pour les gouverner tous. Tant qu’il est dans ta main, chaque serviteur que tu poses réagit à l’Anneau à sa façon. Il ne se joue pas : passe-le à ton allié par le portail. Si ton duo perd un combat, il passe au duo vainqueur.' },
   lo_dard:{ lo:1, n:'Dard', t:1, c:0, ty:'leg', tg:1, fx:[{ k:'tbuff', a:2, h:1, lo:1 }], sig:['lo_frodon', 'lo_bilbon'], sgx:[{ k:'tfx', fx:[{ k:'soc_i1' }] }], stx:'Frodon, Bilbon : sa première attaque de chaque combat est Insensible', tx:'Le serviteur ciblé gagne +2/+1.' },
@@ -212,11 +213,13 @@ const SPELLS = {
 const SPELL_IDS = Object.keys(SPELLS);
 // réserve d'objets Naruto
 function itRes(G) { if (!G.itr) { G.itr = {}; SPELL_IDS.forEach(id => { if (SPELLS[id].ni) G.itr[id] = SPELLS[id].cp; }); } return G.itr; }
-function itDraw(G, t) { const R = itRes(G), ids = Object.keys(R).filter(id => R[id] > 0 && SPELLS[id].t <= t); const tot = ids.reduce((a, id) => a + R[id], 0); if (!tot) return null; let r = Math.random() * tot; for (const id of ids) { r -= R[id]; if (r <= 0) { R[id]--; return { sp:id, u:UID++ }; } } const id = ids[ids.length - 1]; R[id]--; return { sp:id, u:UID++ }; }
+// un objet dont tu as un propriétaire (plateau ou main) sort 3 fois plus souvent
+function itDraw(G, t) { const R = itRes(G), P = typeof DRAWP !== 'undefined' ? DRAWP : null, ids = Object.keys(R).filter(id => R[id] > 0 && SPELLS[id].t <= t); const w = id => R[id] * (P && (P.bd || []).concat(P.hd || []).some(m => SPELLS[id].ow.includes(m.c)) ? 3 : 1); const tot = ids.reduce((a, id) => a + w(id), 0); if (!tot) return null; let r = Math.random() * tot; for (const id of ids) { r -= w(id); if (r <= 0) { R[id]--; return { sp:id, u:UID++ }; } } const id = ids[ids.length - 1]; R[id]--; return { sp:id, u:UID++ }; }
 function itBack(G, id) { if (id && SPELLS[id] && SPELLS[id].ni) { const R = itRes(G); R[id] = (R[id] || 0) + 1; } }
 // chakra produit par un objet : plus sur son vrai propriétaire
-const itProd = m => { const S = m && m.it && SPELLS[m.it]; return !S ? 0 : S.pr[m.c === S.own ? 1 : 0]; };
-const itPow = id => { const S = SPELLS[id]; return S ? S.pr[1] * 10 + S.pr[0] + (S.ex ? 50 : 0) : 0; };
+const itProd = m => { const S = m && m.it && SPELLS[m.it]; return !S || !S.ow.includes(m.c) ? 0 : S.v; };   // seuls ses propriétaires peuvent porter un objet
+const itPow = id => { const S = SPELLS[id]; return S ? S.v * 10 + (S.ex ? 50 : 0) : 0; };
+const itOwners = id => { const S = SPELLS[id]; return S && S.ow ? S.ow.map(c => C[c] ? C[c].n.split(' ')[0] : c) : []; };
 function drawSpell(t, el) { if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'voyage')) return null; if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra')) return itDraw(H.G, t); const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra');
   if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'ki')) { const ids = SPELL_IDS.filter(id => SPELLS[id].db && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
   if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'portail')) { const ids = SPELL_IDS.filter(id => SPELLS[id].rm && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }   // Rick et Morty : seulement les inventions
@@ -240,6 +243,7 @@ function spellBlock(p, id, tgt) {
   if (S.rm && S.fx && S.fx.some(s => s.k === 'portal') && tgt && (CD(tgt.c).tok || isComp(tgt))) return 'Un jeton ne peut pas passer le portail.';
   if ((id === 'nj_doubles' || id === 'nj_invoc') && p.bd.length >= 7) return 'Ton plateau est plein.';
   if (S.eq && !(C[tgt.c] && C[tgt.c].comp)) return 'Un équipement se pose sur ton compagnon.';
+  if (S.ni && tgt && !S.ow.includes(tgt.c)) return `Seul${S.ow.length > 1 ? 's' : ''} ${itOwners(Object.keys(SPELLS).find(k => SPELLS[k] === S)).join(', ')} ${S.ow.length > 1 ? 'peuvent' : 'peut'} porter cet objet.`;
 
   if (S.eq && (tgt.eq || []).includes(id)) return 'Ton compagnon porte déjà cet équipement.';
   if (id.startsWith('cf_') && p.hd.length > 10) return 'Ta main est pleine.';
@@ -498,7 +502,7 @@ function aiTarget(p, id) {
   const pool = p.bd.map((m, i) => ({ m, i }));
   const by = (f, ok = () => true) => { const c = pool.filter(x => ok(x.m)); if (!c.length) return null; c.sort((a, b) => f(b.m) - f(a.m)); return c[0].i; };
   const S = SPELLS[id] || {}, st = (S.fx || []).map(x => x.k);
-  if (S.ni) { const i = by(m => (m.c === S.own ? 100 : 0) + tierOf(m) * 5 + m.a + m.h, m => !m.it); return i != null ? i : by(m => itPow(id) - itPow(m.it) + tierOf(m), m => itPow(m.it) < itPow(id)); }
+  if (S.ni) { const i = by(m => tierOf(m) * 5 + m.a + m.h, m => S.ow.includes(m.c) && !m.it); return i != null ? i : by(m => itPow(id) - itPow(m.it), m => S.ow.includes(m.c) && itPow(m.it) < itPow(id)); }
   if (S.sig && p.bd.some(m => S.sig.includes(m.c) && !m.med)) return by(m => m.a + m.h, m => S.sig.includes(m.c) && !m.med);
   if (S.db) return by(m => m.a + m.h + tierOf(m) * 2, m => !m.med);
   if (st.includes('henge')) return by(m => -tierOf(m) * 10 + m.a + m.h, m => tierOf(m) < 6 && !CD(m.c).tok);
@@ -540,7 +544,7 @@ function aiCanCast(G, p, it) {
 // ordre : mode ermite d'abord (avant de dépenser), techniques combinées en dernier
 function aiCastPrio(G, p, it) { const S = SPELLS[it.sp] || {}; return (S.sage && sageOn(p) ? 30 : 0) + (S.comb ? ((p.castEls || []).some(e => e !== S.el) ? 25 : -10) : 0) + (S.t || 0); }
 // achat : pas de hiden sans clan, pas de kinjutsu à petite vie
-function aiWantSpell(p, S) { if (S.ni) { const id = SPELL_IDS.find(k => SPELLS[k] === S); return p.bd.some(m => !m.it) || p.bd.some(m => itPow(m.it) < itPow(id)); } if (S.sim && (S.fx || []).some(s => s.k === 'gagnow') && !p.bd.some(m => fxOf(m, 'eot').some(isGag))) return false; if (S.hid && p.bd.filter(m => tribeOk(m, 'n_' + S.el)).length < Math.max(1, S.hid - 1)) return false; if (S.hp && p.hp <= S.hp + 10) return false; return true; }
+function aiWantSpell(p, S) { if (S.ni) { const id = SPELL_IDS.find(k => SPELLS[k] === S); return p.bd.some(m => S.ow.includes(m.c) && itPow(m.it) < itPow(id)); } if (S.sim && (S.fx || []).some(s => s.k === 'gagnow') && !p.bd.some(m => fxOf(m, 'eot').some(isGag))) return false; if (S.hid && p.bd.filter(m => tribeOk(m, 'n_' + S.el)).length < Math.max(1, S.hid - 1)) return false; if (S.hp && p.hp <= S.hp + 10) return false; return true; }
 function aiSpells(G, p) {
   const bad = new Set();
   for (let guard = 0; guard < 8; guard++) {
@@ -831,5 +835,5 @@ function rsvFill(G, p, el) {
 (function () {
   const IC = { ni_bandeau:'🍃', ni_poids:'🏋️', ni_eventail:'🪭', ni_hirame:'⚔️', ni_argile:'💥', ni_karasu:'🎭', ni_kubiki:'🗡️', ni_flute:'🎶', ni_gourde:'🏺', ni_crapauds:'🐸', ni_bague:'💍', ni_byakugo:'💠', ni_samehada:'🦈', ni_kusanagi:'🐍' };
   for (const id in IC) if (SPELLS[id]) SPART[id] = () => `<image href="assets/naruto/jeu/${id}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>${SPELLS[id].ex ? '<circle cx="50" cy="50" r="47" fill="none" stroke="#ffd86a" stroke-width="2.4" opacity=".85"/>' : ''}`;   // images fournies le 15/11/2026
-  if (0) for (const id in IC) if (SPELLS[id]) SPART[id] = () => { const o = SPELLS[id].own, a = typeof ART !== 'undefined' && ART[o] ? ART[o]() : ''; return `<g opacity=".5">${a}</g><rect width="100" height="100" fill="#06121e" opacity=".35"/><text x="50" y="56" dy=".36em" text-anchor="middle" font-size="44">${IC[id]}</text>${SPELLS[id].ex ? '<circle cx="50" cy="50" r="46" fill="none" stroke="#ffd86a" stroke-width="3" opacity=".8"/>' : ''}`; };
+  if (0) for (const id in IC) if (SPELLS[id]) SPART[id] = () => { const o = SPELLS[id].ow[0], a = typeof ART !== 'undefined' && ART[o] ? ART[o]() : ''; return `<g opacity=".5">${a}</g><rect width="100" height="100" fill="#06121e" opacity=".35"/><text x="50" y="56" dy=".36em" text-anchor="middle" font-size="44">${IC[id]}</text>${SPELLS[id].ex ? '<circle cx="50" cy="50" r="46" fill="none" stroke="#ffd86a" stroke-width="3" opacity=".8"/>' : ''}`; };
 })();
