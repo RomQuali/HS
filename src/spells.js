@@ -827,8 +827,9 @@ function rsvFill(G, p, el) {
 // Le Seigneur des Anneaux : 6 objets de l'Ombre illustrés le 15/11/2026
 (function () { ['lo_mine', 'lo_masse', 'lo_gobelins', 'lo_uruks', 'lo_mumakil', 'lo_bete'].forEach(id => { SPART[id] = () => `<image href="assets/sda/sp_${id}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`; }); })();
 
-// ===== Naruto (15/11/2026) : illustrations d'attente des objets (portrait du vrai propriétaire + symbole), en attendant les images =====
+// ===== Naruto (15/11/2026) : objets de personnages (images fournies, servies depuis assets/naruto/jeu/) =====
 (function () {
   const IC = { ni_bandeau:'🍃', ni_poids:'🏋️', ni_eventail:'🪭', ni_hirame:'⚔️', ni_argile:'💥', ni_karasu:'🎭', ni_kubiki:'🗡️', ni_flute:'🎶', ni_gourde:'🏺', ni_crapauds:'🐸', ni_bague:'💍', ni_byakugo:'💠', ni_samehada:'🦈', ni_kusanagi:'🐍' };
-  for (const id in IC) if (SPELLS[id]) SPART[id] = () => { const o = SPELLS[id].own, a = typeof ART !== 'undefined' && ART[o] ? ART[o]() : ''; return `<g opacity=".5">${a}</g><rect width="100" height="100" fill="#06121e" opacity=".35"/><text x="50" y="56" dy=".36em" text-anchor="middle" font-size="44">${IC[id]}</text>${SPELLS[id].ex ? '<circle cx="50" cy="50" r="46" fill="none" stroke="#ffd86a" stroke-width="3" opacity=".8"/>' : ''}`; };
+  for (const id in IC) if (SPELLS[id]) SPART[id] = () => `<image href="assets/naruto/jeu/${id}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>${SPELLS[id].ex ? '<circle cx="50" cy="50" r="47" fill="none" stroke="#ffd86a" stroke-width="2.4" opacity=".85"/>' : ''}`;   // images fournies le 15/11/2026
+  if (0) for (const id in IC) if (SPELLS[id]) SPART[id] = () => { const o = SPELLS[id].own, a = typeof ART !== 'undefined' && ART[o] ? ART[o]() : ''; return `<g opacity=".5">${a}</g><rect width="100" height="100" fill="#06121e" opacity=".35"/><text x="50" y="56" dy=".36em" text-anchor="middle" font-size="44">${IC[id]}</text>${SPELLS[id].ex ? '<circle cx="50" cy="50" r="46" fill="none" stroke="#ffd86a" stroke-width="3" opacity=".8"/>' : ''}`; };
 })();

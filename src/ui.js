@@ -603,7 +603,7 @@ function gameH() {
   const players = d.pl.slice().sort((a, b) => (b.al - a.al) || (b.hp - a.hp) || (a.pl - b.pl));
   const fightOpp = V.fight ? V.fight.on : null;
   const opps = players.map(p => `<li class="op${p.pid === myPid ? ' me' : ''}${p.al ? '' : ' dead'}${fightOpp && p.n === fightOpp ? ' vs' : ''}" data-hov="op" data-n="${esc(p.n)}">
-      <span class="op-face${p.haw ? ' haw' : ''}">${faceH(playerSym(p))}<b class="op-hp">${p.al ? Math.max(0, p.hp) : p.pl + 'e'}</b><span class="op-t">${p.t}</span>${d.ph === 'recruit' && p.r && p.al ? '<span class="op-r">✓</span>' : ''}${p.el && ELS[p.el] && p.al ? `<span class="op-el" style="--c:${ELS[p.el].col}" title="${esc('Compagnon ' + ELS[p.el].n + ' · ' + p.mk + ' ' + MK_N[p.el].toLowerCase())}"><svg viewBox="-12 -12 24 24">${EL_ICON[p.el]}</svg></span>` : ''}</span>
+      <span class="op-face${p.haw ? ' haw' : ''}">${faceH(playerSym(p))}<b class="op-hp">${p.al ? Math.max(0, p.hp) : p.pl + 'e'}</b>${p.al && p.ar ? `<b class="op-ar" title="Armure">${p.ar}</b>` : ''}<span class="op-t">${p.t}</span>${d.ph === 'recruit' && p.r && p.al ? '<span class="op-r">✓</span>' : ''}${p.el && ELS[p.el] && p.al ? `<span class="op-el" style="--c:${ELS[p.el].col}" title="${esc('Compagnon ' + ELS[p.el].n + ' · ' + p.mk + ' ' + MK_N[p.el].toLowerCase())}"><svg viewBox="-12 -12 24 24">${EL_ICON[p.el]}</svg></span>` : ''}</span>
       <span class="op-n">${esc(p.n)}</span></li>`).join('');
   const myInfo = d.pl.find(p => p.pid === myPid), alive = !!(myInfo && myInfo.al);
   const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span>${d.ev && d.rd >= d.ev ? '<span class="eveil" data-tip="Éveil : la moitié des ninjas sont tombés à 20 PV ou moins. Les clans libèrent leur pouvoir ultime, ton compagnon prend sa forme éveillée, le pouvoir de ton héros est renforcé, chaque technique gagne son effet d\'Éveil et des techniques interdites apparaissent.">Éveil</span>' : ''}${d.laws && d.laws.length && d.ph !== 'end' ? `<span class="hud-laws">${d.laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<span class="hl" data-hov="law" data-tip="${esc(M.n + ' : ' + M.d)}">${icon(M.ic)}</span>`; }).join('')}${V.me && V.me.souls ? `<span class="souls" data-tip="Âmes récoltées : toutes les 3 âmes, tes serviteurs des Ténèbres gagnent +1/+1 au début du tour.">${icon('skull')}<b>${V.me.souls}</b></span>` : ''}</span>` : ''}<span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerTxt()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran" title="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm lv-b" data-act="leave" title="Quitter la partie">Quitter</button></div>`;
@@ -625,7 +625,7 @@ function gameH() {
       boardRow = fightRow(F, mine);
       if (F.done) {
         const won = F.r.w === mine, lost = F.r.w === 1 - mine, dmg = Math.min(F.cap || 99, F.r.dmg);
-        banner = `<div class="table-banner"><div class="banner ${won ? 'win' : lost ? 'loss' : 'draw'}">${won ? 'Victoire !' : lost ? 'Défaite' : 'Égalité'}</div><p class="banner-s">${won ? `Tu infliges ${dmg} dégâts à ${esc(F.on)}.` : lost ? `Tu subis ${dmg} dégâts.` : 'Personne ne perd de points de vie.'}</p>${duelLine(F)}${d.ph === 'combat' ? '<p class="mute">Les autres tables terminent leur combat…</p>' : ''}</div>`;
+        banner = '';   // plus de bandeau Victoire / Défaite après chaque combat (15/11/2026)
       } else banner = `<div class="table-skip"><button class="btn sm" data-act="skip">Passer l'animation</button></div>`;
     } else {
       topZone = `<section class="keeper-zone${me.fz ? ' frozen' : ''}" data-drop="sh" aria-label="Taverne">
@@ -658,7 +658,7 @@ function gameH() {
     const coins = canAct ? `<div class="purse" aria-label="${me.g} or sur ${me.mg}"><b>${me.g}<small>/${me.mg}</small></b><span class="coinrow" aria-hidden="true">${Array.from({ length:Math.max(me.mg, me.g) }, (_, k) => `<i class="coin${k < me.g ? '' : ' off'}"></i>`).join('')}</span>${me.inc ? `<span class="inc">+${me.inc} au prochain tour</span>` : ''}</div>` : '';
     const heroZone = `<section class="hero-zone">
       <div class="hz-left">${trainH(d, me, canAct)}${me.cp || (!NJ_COMP && (d.laws || []).some(l => l.k === 'chakra')) ? '' : `<span class="hov" data-hov="comp">${compMedal(canAct, own)}</span>`}</div>
-      <div class="hz-hero${me.haw ? ' haw' : ''}${me.haw && V.hawSeen !== me.hawId ? ' haw-new' : ''}" data-hov="hero">${me.haw ? hawFrameH(hero) : ''}<span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? heroArt(me.hero, me.haw) : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}${mkOrbsH(d, me)}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span>${HQ ? (me.haw ? `<span class="hq done">${esc(hero.awn || 'Éveillé')}</span>` : `<span class="hq" data-tip="${esc('Quête d\'éveil : ' + HQ.tx + ' Récompense : ' + HEROES[me.hero].aw.nm + ' (nouveau pouvoir).')}"><i style="--p:${Math.min(1, (me.qp || 0) / HQ.n)}"></i>${Math.min(me.qp || 0, HQ.n)}/${HQ.n}</span>`) : ''}</div>
+      <div class="hz-hero${me.haw ? ' haw' : ''}${me.haw && V.hawSeen !== me.hawId ? ' haw-new' : ''}" data-hov="hero">${me.haw ? hawFrameH(hero) : ''}<span class="face hf arch"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${me.hero ? heroArt(me.hero, me.haw) : avatarSym(V.name)}" width="100" height="100"/></svg></span>${hpGem(Math.max(0, me.hp))}${me.ar && !HQ ? `<span class="hq har" data-tip="${esc('Armure : elle encaisse les dégâts avant tes points de vie et ne revient pas.')}">${me.ar}</span>` : ''}${mkOrbsH(d, me)}<span class="hname">${hero ? esc(hero.n) : esc(V.name)}</span>${HQ ? (me.haw ? `<span class="hq done">${esc(hero.awn || 'Éveillé')}</span>` : `<span class="hq" data-tip="${esc('Quête d\'éveil : ' + HQ.tx + ' Récompense : ' + HEROES[me.hero].aw.nm + ' (nouveau pouvoir).')}"><i style="--p:${Math.min(1, (me.qp || 0) / HQ.n)}"></i>${Math.min(me.qp || 0, HQ.n)}/${HQ.n}</span>`) : ''}</div>
       <div class="hz-right"><span class="hov" data-hov="pow">${power}</span><span class="purses">${coins}${canAct ? ckGauge(d, me) + kiGauge(d, me) + pfGauge(d, me) : ''}</span>${rsvH(d, me)}</div>
       <div class="bellwrap" id="bellw" style="--p:${ringP()}"><button class="bell${me.rdy ? ' rung' : ''}" data-act="rdy" ${canAct ? '' : 'disabled'} aria-pressed="${me.rdy ? 'true' : 'false'}"><span class="bell-shine" aria-hidden="true"></span>${icon('bell')}<span class="bell-t" data-l="${me.rdy ? 'Prêt !' : 'Prêt'}">${me.rdy ? 'Prêt !' : 'Prêt'}</span><small class="bell-s">${me.rdy ? 'en attente' : 'fin du tour'}</small></button></div></section>`;
     const n = me.hd.length;
@@ -1283,7 +1283,7 @@ function fightH() {
   let res = '';
   if (F.done) {
     const won = F.r.w === mine, lost = F.r.w === 1 - mine, dmg = Math.min(F.cap || 99, F.r.dmg);
-    res = `<div class="banner ${won ? 'win' : lost ? 'loss' : 'draw'}">${won ? 'Victoire !' : lost ? 'Défaite' : 'Égalité'}</div><p class="banner-s">${won ? `Tu infliges ${dmg} dégâts à ${esc(F.on)}.` : lost ? `Tu subis ${dmg} dégâts.` : 'Personne ne perd de points de vie.'}</p>`;
+    res = '';
   }
   return `<div class="ov"><div class="ov-box">
     <div class="felt arena">
@@ -1612,7 +1612,7 @@ function showPeek(t, touch) {
   }
   // héros, pouvoir, adversaires, boutons : une bulle d'explication
   let tt = t.dataset.tip || t.getAttribute('title') || t.getAttribute('aria-label') || '';
-  if (t.matches('.op') && V.pub) { const p = V.pub.pl.find(x => x.n === t.getAttribute('title')); if (p) { const h = HEROES[p.h]; tt = `${p.n}${h ? ' · ' + h.n : ''} : ${Math.max(0, p.hp)} PV, taverne ${p.t}${h ? '. ' + h.tx : ''}`; } }
+  if (t.matches('.op') && V.pub) { const p = V.pub.pl.find(x => x.n === t.getAttribute('title')); if (p) { const h = HEROES[p.h]; tt = `${p.n}${h ? ' · ' + h.n : ''} : ${Math.max(0, p.hp)} PV${p.ar ? ' + ' + p.ar + ' armure' : ''}, taverne ${p.t}${h ? '. ' + h.tx : ''}`; } }
   if (!tt) return false;
   const i = tt.indexOf(' : ');
   peekFor = t; peekEl.innerHTML = `<div class="tip">${i > 0 && i < 40 ? `<b>${esc(tt.slice(0, i))}</b>${esc(tt.slice(i + 3))}` : esc(tt)}</div>`; peekEl.hidden = false;

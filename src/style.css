@@ -1949,3 +1949,4 @@ body.u-db .counter-line,body.u-db .board-zone,body.u-rm .counter-line,body.u-rm 
 .spt.spx .spt-svg,.cd.spc.spx{filter:drop-shadow(0 0 6px #ffd86a) drop-shadow(0 0 12px rgba(255,200,80,.6));animation:spxGlow 2.4s ease-in-out infinite}
 @keyframes spxGlow{50%{filter:drop-shadow(0 0 10px #ffe9a0) drop-shadow(0 0 20px rgba(255,210,90,.8))}}
 .itb.ex circle{filter:drop-shadow(0 0 3px #ffd86a)}
+.op-face .op-ar{position:absolute;right:-6px;top:-4px;min-width:20px;height:20px;padding:0 3px;display:grid;place-items:center;font:700 11px/1 var(--f-num),sans-serif;color:#fff;background:linear-gradient(180deg,#b8c2cc,#5a6470);border:1.5px solid #1a1a1a;border-radius:5px 5px 10px 10px;z-index:3;text-shadow:0 1px 1px #000}

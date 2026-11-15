@@ -1000,6 +1000,8 @@ const HEROES = {
 };
 // Naruto (15/11/2026) : pool réduit à 16 héros, tous membres d'un groupe emblématique
 ['nh_hashirama', 'nh_kushina', 'nh_roshi', 'nh_bee', 'nh_yugito', 'nh_omoi'].forEach(h => delete HEROES[h]);
+// armure de départ (à la Hearthstone), réglée sur 300 parties d'IA le 15/11/2026 : les héros les plus faibles en ont le plus
+Object.entries({ nh_kakuzu:0, nh_deidara:0, nh_zabuza:2, nh_sasori:2, nh_jiraiya:3, nh_orochimaru:4, nh_haku:5, nh_kankuro:5, nh_rasa:6, nh_naruto:6, nh_kakashi:6, nh_gaara:7, nh_mei:7, nh_shikamaru:7, nh_sasuke:8, nh_itachi:10 }).forEach(([h, a]) => { if (HEROES[h]) HEROES[h].ar = a; });
 // héros Ninja : le bonus (trx) s'ajoute au texte du pouvoir
 for (const h in HEROES) if (HEROES[h].trx && !HEROES[h].tx.includes(HEROES[h].trx)) HEROES[h].tx += ' Bonus : ' + HEROES[h].trx;
 // éveil des héros (quête) : version du héros avec son nouveau pouvoir (le bonus reste, sauf s'il est remplacé)
@@ -3424,7 +3426,7 @@ function nkLootOffer(G, p) {
 }
 function endCombat() {
   const G = H.G;
-  for (const x of G.pend) G.ps[x.pid].hp -= x.d;
+  for (const x of G.pend) { const q = G.ps[x.pid], a = Math.min(q.ar || 0, x.d); q.ar = (q.ar || 0) - a; q.hp -= x.d - a; }   // l'armure du héros encaisse d'abord
   duoSync(G);
   G.ps.forEach(p => { const hh = HEROES[p.hero]; if (p.al && p.hp <= 0 && hh && hh.hearts && !p.k5) { p.k5 = 1; p.hp = hh.hearts; } });   // Kakuzu : Cinq cœurs
   duoSync(G);
@@ -3450,6 +3452,7 @@ function finishHero() {
     const d = loDuoId(t.duo); ps.forEach(p => { if (!d.h.includes(p.hero)) p.hero = null; }); ps.forEach(p => { if (!p.hero) p.hero = d.h.find(x => !ps.some(q => q.hero === x)) || d.h[0]; });
     const hp = (+RU().hp || 40) + (d.b.hp || 0); t.hp = hp; t.set = 1; ps.forEach(p => { p.hp = hp; }); });
   G.ps.forEach(p => { if (!p.hero) p.hero = p.ho[0]; if (p.hero === 'gor') p.hp += 5; });
+  G.ps.forEach(p => { const a = HEROES[p.hero] && HEROES[p.hero].ar; if (a) p.ar = a; });   // armure de départ du héros (équilibrage à la Hearthstone)
   if (inMechAny(G, 'chakra')) G.ps.forEach(p => { const c = nhCard(p.hero); if (!c) return; if ((G.pool[c] || 0) > 0) G.pool[c]--; const m = mk(c, 0); m.lk = 1; p.hd.push(m); });   // Naruto : la carte du héros attend dans la main
   startRecruit();
 }
@@ -3469,10 +3472,10 @@ function pubData() {
   const G = H.G;
   if (!G) return { ph:'lobby', code:H.code, cv:CAT_REV, us:(V.univSel || []).slice(), pl:H.roster.map(r => ({ n:r.n, pe:r.peer })), last:H.last || null };
   return { ph:G.ph, rd:G.rd, rem:Math.max(0, G.end - Date.now()), code:H.code, cv:CAT_REV, trs:G.trs, ban:G.ban, univ:G.univ, laws:G.laws || [], ringp:(p => p ? p.pid : null)(G.ps.find(x => x.ring)), rg:G.rg ? { pid:G.rg.pid, et:G.rg.et } : null, ev:G.eveil || 0, mhp:(+RU().hp || 40) + 10,
-    pl:G.ps.map(p => ({ pid:p.pid, haw:p.haw || 0, hs:p.hist || [], tc:p.trc || 0, ws:p.wst || 0, n:p.n, tm:p.tm == null ? null : p.tm, hp:p.hp, t:p.t, ai:!p.human, bot:p.bot, al:p.al, pl:p.place, r:p.rdy, h:p.hero, pe:p.peer, nb:p.bd.length, el:p.cp ? compEl(p.cp) : null, mk:p.cp ? p[MK[compEl(p.cp)]] || 0 : 0 })) };
+    pl:G.ps.map(p => ({ pid:p.pid, ar:p.ar || 0, haw:p.haw || 0, hs:p.hist || [], tc:p.trc || 0, ws:p.wst || 0, n:p.n, tm:p.tm == null ? null : p.tm, hp:p.hp, t:p.t, ai:!p.human, bot:p.bot, al:p.al, pl:p.place, r:p.rdy, h:p.hero, pe:p.peer, nb:p.bd.length, el:p.cp ? compEl(p.cp) : null, mk:p.cp ? p[MK[compEl(p.cp)]] || 0 : 0 })) };
 }
 function privData(p, noAv) {
-  return { to:p.peer, pid:p.pid, av:!noAv && H.G && H.G.tm ? (a => a && a.al ? privData(a, 1) : null)(loAlly(H.G, p)) : null, ally:(a => a ? { pid:a.pid, n:a.n, hero:a.hero, t:a.t, g:a.g, mg:a.mg, bd:a.bd.map(smallM), sh:a.sh.map(smallM), hd:a.hd.map(smallM), hn:a.hd.length, fz:a.fz ? 1 : 0, rdy:a.rdy ? 1 : 0, ring:a.ring ? 1 : 0 } : null)(H.G ? loAlly(H.G, p) : null), duo:H.G && H.G.tm && p.tm != null ? H.G.tm[p.tm].duo : null, pmax:H.G ? loPowMax(H.G, p) : 1, pun:p.pun || 0, passfree:H.G && H.G.tm && p.tm != null && loDuoB(H.G, p).pass ? 1 : 0, ring:p.ring ? 1 : 0, camp:H.G && loOn(H.G) ? loCamp(p) : null, rh:p.rh || 0, dsc:p.dsc || null, fell:p.fell || null, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
+  return { to:p.peer, pid:p.pid, ar:p.ar || 0, av:!noAv && H.G && H.G.tm ? (a => a && a.al ? privData(a, 1) : null)(loAlly(H.G, p)) : null, ally:(a => a ? { pid:a.pid, n:a.n, hero:a.hero, t:a.t, g:a.g, mg:a.mg, bd:a.bd.map(smallM), sh:a.sh.map(smallM), hd:a.hd.map(smallM), hn:a.hd.length, fz:a.fz ? 1 : 0, rdy:a.rdy ? 1 : 0, ring:a.ring ? 1 : 0 } : null)(H.G ? loAlly(H.G, p) : null), duo:H.G && H.G.tm && p.tm != null ? H.G.tm[p.tm].duo : null, pmax:H.G ? loPowMax(H.G, p) : 1, pun:p.pun || 0, passfree:H.G && H.G.tm && p.tm != null && loDuoB(H.G, p).pass ? 1 : 0, ring:p.ring ? 1 : 0, camp:H.G && loOn(H.G) ? loCamp(p) : null, rh:p.rh || 0, dsc:p.dsc || null, fell:p.fell || null, g:p.g, mg:p.mg, t:p.t, uc:upCost(p), sh:p.sh.map(smallM), bd:p.bd.map(smallM), hd:p.hd.map(smallM),
     fz:p.fz, pu:p.pu, fb:p.fb || 3, spc:p.sp && SPELLS[p.sp.sp] ? spCost(p, SPELLS[p.sp.sp]) : null, sp2:p.sp2 ? p.sp2.sp : null, cb:p.cb || 0, cid:compOf(p.hero), cp:p.cp || null, bst:p.bst || null, sp:p.sp ? p.sp.sp : null, disc:p.disc ? p.disc.map(smallM) : null, cho:p.cho || null, gem:[p.gemA || 0, p.gemH || 0], inc:(p.inc && p.inc[0]) || 0, tma:p.tma || null, souls:p.souls || 0, braise:p.braise || 0, maree:p.maree || 0, charge:p.charge || 0, ck:p.ck || 0, ki:p.ki || 0, kiGain:p.kiGain || 0, pf:p.pf || 0, pfn:p.pfNext || 0, dbDied:p.dbDied || 0, dbRes:p.dbRes || '', njf:p.njf || 0, spd:p.spd || 0, castN:p.castN || 0, ckm:ckMax(p), ckPay:heroCk(H.G, p) ? 1 : 0, kiPay:heroKi(p) ? 1 : 0, pend:p.pendChest || null, rsv:p.rsv || [], combo:p.combo || null, mkl:(mkSync(p), p.mkl) || {}, souffle:p.souffle || 0, roche:p.roche || 0, choice:p.choice || null, chFav:p.chFav || 0, ups:p.ups || [], pure:p.pure || null, eqs:p.eqs || [], eqlv:p.eqlv || {}, loot:p.loot || null, mkt:p.mkt || 0, rd:H.G ? H.G.rd : 0, hero:p.hero, ho:p.ho, hrr:p.hrr || 0, hrm:p.hrm == null ? HERO_ROLLS : p.hrm, haw:p.haw || 0, hawId:p.hawId || 0, qp:p.qp || 0, rdy:p.rdy, rr:p.rr, res:p.res, hp:p.hp };
 }
 function netEmit(topic, data) {

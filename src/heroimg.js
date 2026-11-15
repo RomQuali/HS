@@ -580,8 +580,8 @@ const NK_PACK2 = {
   if (typeof HART !== 'undefined') ['lh_merry', 'lh_pippin', 'lh_faramir', 'lh_bouche', 'lh_khamul', 'lh_grima', 'lh_arachne', 'lh_azog', 'lh_bolg'].forEach(id => { HART[id] = pic(id); });
 })();
 
-// ===== Naruto (15/11/2026) : Orochimaru et Zabuza héros — portrait repris de leur carte en attendant de vrais portraits =====
-(function () { if (typeof HART === 'undefined' || typeof ART === 'undefined') return;
-  if (ART.nk_zetsu) ART.tk_zetsub = ART.nk_zetsu;   // Zetsu blanc : image d'attente
-  [['nh_orochimaru', 'nk_orochimaru'], ['nh_zabuza', 'nk_zabuza']].forEach(([h, c]) => { if (ART[c]) HART[h] = ART[c]; if (ART[c + '_tf1']) HART[h + '_aw'] = ART[c + '_tf1']; });
+// ===== Naruto (15/11/2026) : Orochimaru et Zabuza héros (portrait + éveil) et jeton Zetsu blanc, images fournies, servies depuis assets/naruto/jeu/ =====
+(function () { const pic = f => () => `<rect width="100" height="100" fill="#1a120c"/><image href="assets/naruto/jeu/${f}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`;
+  if (typeof ART !== 'undefined') ART.tk_zetsub = pic('tk_zetsub');
+  if (typeof HART !== 'undefined') ['nh_orochimaru', 'nh_orochimaru_aw', 'nh_zabuza', 'nh_zabuza_aw'].forEach(id => { HART[id] = pic(id); });
 })();

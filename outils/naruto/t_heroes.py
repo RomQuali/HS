@@ -3,7 +3,7 @@ JS=r"""()=>{ const T=[]; const t=(n,ok,v)=>T.push((ok?'ok':'KO')+' · '+n+(ok?''
 window.CS_NOANIM=1; V.mp=null; V.univSel=['Naruto']; startSolo(); try{finishHero()}catch(e){} clearInterval(H.tick); const G=H.G,p=G.ps[0];
 const D=(a,h,f)=>{const m=fullM(mk('tk_crapaud',0)); m.a=a; m.h=h; m.f=f||''; return m;};
 const W=(a,h,f)=>{const m=mk('tk_crapaud',0); m.a=a; m.h=h; m.f=f||''; return m;};
-const set=(hero,...ms)=>{ p.hero=hero; p.bd=ms; p.hd=[]; p.g=10; p.ck=0; p.pu=false; p.foe=null; p.t=1; p.k5=0; G.rd++; return ms; };
+const set=(hero,...ms)=>{ p.hero=hero; p.ar=0; p.bd=ms; p.hd=[]; p.g=10; p.ck=0; p.pu=false; p.foe=null; p.t=1; p.k5=0; G.rd++; return ms; };
 const pow=()=>OPS.pow(G,p);
 const run=(en,seed)=>{ const b=combatBoard(p); const e=en.map(x=>Object.assign({},x)); foeApply(p,e); const r=simulate(b,e,seed||7,1,1,[0,0],G.mx); r.b=b; r.e=e; return r; };
 const fin=(r,u,side)=>{ for(let i=r.frames.length-1;i>=0;i--){ const m=r.frames[i].s[side||0].find(x=>x.u===u); if(m) return m; } return null; };
@@ -26,6 +26,7 @@ const all=Object.keys(HEROES).filter(k=>/^nh_/.test(k)&&HEROES[k].pv); t('16 hé
 { const [a,b]=set('nh_zabuza',W(1,9),W(2,9)); pow(); const r=run([D(1,900)]); t('Zabuza · Brume cachée (1 or) : Camouflage pour tous au prochain combat', p.g===9&&r.frames[0].s[0].every(m=>(m.f||'').includes('c')), r.frames[0].s[0].map(m=>m.f)); }
 { set('nh_naruto'); t('chakra maximum 15', ckMax(p)===15, ckMax(p)); }
 { const h=p.hd.slice(); p.hd=[Object.assign(mk('nk_kakashi',0),{lk:1})]; p.bd=[]; p.t=3; t('carte du héros : injouable avant son niveau', OPS.play(G,p,{i:0})===false&&p.hd.length===1); p.t=4; t('carte du héros : jouable au niveau de sa carte', OPS.play(G,p,{i:0})===true&&p.bd.length===1&&!p.bd[0].lk); }
+{ set('nh_itachi',W(1,1)); p.hp=40; p.ar=10; p.al=true; G.pend=[{pid:0,d:14}]; G.ph='combat'; try{ endCombat(); }catch(e){} t('armure : encaisse avant les PV', p.ar===0&&p.hp===36, [p.ar,p.hp]); t('armure de départ : Itachi 10, Kakuzu 0', HEROES.nh_itachi.ar===10&&!HEROES.nh_kakuzu.ar); }
 // textes
 all.forEach(k=>{ const h=HEROES[k]; if(/\bvous\b|votre/.test(h.tx)) T.push('KO · vouvoiement '+k); });
 return T}"""
