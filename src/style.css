@@ -1989,3 +1989,7 @@ html.lite .spt.spx .lg-fr,html.lite .spt.spx .lg-sw,html.lite .cd.spc.spx .lg-ca
 .hp-pop .hp-hcards small{font:700 12px/1.2 var(--f-label),serif;color:#ffe9b0;text-shadow:0 1px 2px #000;background:rgba(20,12,6,.8);padding:2px 10px;border-radius:99px}
 .hp-pop .hp-hcards>div{display:flex;gap:10px}
 .hp-pop .hp-hcards .cd{position:relative;width:clamp(140px,11vw,190px);flex:none}
+#peek .hp-hcards{margin-top:8px;display:grid;justify-items:center;gap:4px}
+#peek .hp-hcards small{font:700 12px/1.2 var(--f-label),serif;color:#ffe9b0;text-shadow:0 1px 2px #000;background:rgba(20,12,6,.85);padding:2px 10px;border-radius:99px}
+#peek .hp-hcards>div{display:flex;gap:10px}
+#peek .hp-hcards .cd{position:relative;width:clamp(130px,10vw,170px);flex:none}

@@ -1175,7 +1175,7 @@ function heroPickRowH(d, me) {
         <span class="hp-nm${x.n.length > 14 ? ' lg' : ''}"><i>${esc(x.n)}</i></span>
         ${x.stars || x.diff ? `<span class="hp-st">${'★'.repeat(x.stars || x.diff)}</span>` : ''}
       </button>
-      <div class="hp-pop" aria-hidden="true">${powBannerH(x, h, nin)}${typeof nhCard === 'function' && nhCard(h) ? (cc => `<div class="hp-hcards"><small>Ta carte de héros · jouable en taverne ${C[cc].t}</small><div>${cardH({ c:cc, a:C[cc].a, h:C[cc].h, f:C[cc].f || '' }, 'p', 0)}${cardH({ c:cc, a:C[cc].a * GOLD_K, h:C[cc].h * GOLD_K, g:1, f:C[cc].f || '' }, 'p', 1)}</div></div>`)(nhCard(h)) : ''}</div>
+      <div class="hp-pop" aria-hidden="true">${powBannerH(x, h, nin)}${nhPairH(h, 'Ta carte de héros')}</div>
       ${me.hrm === 0 ? '' : `<button class="hp-rr${left ? '' : ' off'}" data-act="hroll" data-i="${i}" ${left ? '' : 'disabled'} aria-label="Relancer ce héros (${me.hrr || 0} relance${(me.hrr || 0) > 1 ? 's' : ''} restante${(me.hrr || 0) > 1 ? 's' : ''})"><span class="hp-rrn">${me.hrr || 0}</span><b>Relancer</b></button>`}
     </div>`; };
   const fams = [...new Set((Array.isArray(d.univ) ? d.univ : d.univ ? [d.univ] : d.us || []).flatMap(nm => ((SET.univ || []).find(u => u.n === (nm && nm.n || nm)) || {}).tribes || []).filter(t => !me.camp || !/^lo_/.test(t) || LO_SHADOW_TR.includes(t) === (me.camp === 'O')).map(t => TRIBES[t] && TRIBES[t].n).filter(Boolean))];
@@ -1576,6 +1576,8 @@ function placePeek(r, pw, ph, touch) {
   if (b.width && b.right > innerWidth - 8) peekEl.style.left = Math.max(8, innerWidth - 8 - b.width) + 'px';
 }
 function peekSize() { const c = peekEl.firstElementChild, w = c ? c.getBoundingClientRect().width : 0, v = w || parseFloat(getComputedStyle(peekEl).getPropertyValue('--hw')) || 176; return [v, v * 1.66]; }   // --hw peut être un clamp() : on mesure la carte réellement affichée
+// Naruto : la carte du héros, en version normale et dorée (choix du héros, survol des héros en partie)
+const nhPairH = (h, lab) => { const cc = typeof nhCard === 'function' && nhCard(h); if (!cc) return ''; const b = C[cc]; return `<div class="hp-hcards"><small>${esc(lab)} · jouable en taverne ${b.t}</small><div>${cardH({ c:cc, a:b.a, h:b.h, f:b.f || '' }, 'p', 0)}${cardH({ c:cc, a:b.a * GOLD_K, h:b.h * GOLD_K, g:1, f:b.f || '' }, 'p', 1)}</div></div>`; };
 function showPeek(t, touch) {
   const r = t.getBoundingClientRect();
   if (t.classList.contains('eqm') && t.dataset.sp) { peekFor = t; peekEl.innerHTML = spellCardH(t.dataset.sp, 'p', 0) + `<div class="peek-note">${esc(t.dataset.why || '')}</div>`; peekEl.hidden = false; const [pw, ph] = peekSize(); placePeek(r, pw, ph + 40, touch); return true; }
@@ -1605,8 +1607,8 @@ function showPeek(t, touch) {
   const hv = t.dataset.hov;
   if (hv && hv !== 'law' && (V.me || hv === 'op')) {
     let html = '';
-    if (hv === 'op' && V.pub) { const p = V.pub.pl.find(x => x.n === t.dataset.n); if (p && HEROES[p.h]) html = oppPeekH(p); }
-    else if ((hv === 'pow' || hv === 'hero') && HEROES[V.me.hero]) { const h = HX(V.me); html = heroCardH(V.me.hero, { aw:V.me.haw, qp:V.me.qp, foot:h.cost ? (V.me.pu ? 'Déjà utilisé ce tour' : h.minRound && (V.me.rd || 0) < h.minRound ? `Disponible dès la manche ${h.minRound}` : 'Disponible') : 'Toujours actif' }); }
+    if (hv === 'op' && V.pub) { const p = V.pub.pl.find(x => x.n === t.dataset.n); if (p && HEROES[p.h]) html = oppPeekH(p) + nhPairH(p.h, 'Sa carte de héros'); }
+    else if ((hv === 'pow' || hv === 'hero') && HEROES[V.me.hero]) { const h = HX(V.me); html = heroCardH(V.me.hero, { aw:V.me.haw, qp:V.me.qp, foot:h.cost ? (V.me.pu ? 'Déjà utilisé ce tour' : h.minRound && (V.me.rd || 0) < h.minRound ? `Disponible dès la manche ${h.minRound}` : 'Disponible') : 'Toujours actif' }) + (hv === 'hero' ? nhPairH(V.me.hero, 'Ta carte de héros') : ''); }
     else if (hv === 'comp' && compOf(V.me.hero) && C[compOf(V.me.hero)]) html = compCardH(V.me.hero, compOf(V.me.hero), V.me);
     else if (hv === 'rsv') html = rsvPeekH(V.me);
     else if (hv === 'mk') html = mkPeekH(V.me);
@@ -1615,6 +1617,7 @@ function showPeek(t, touch) {
   }
   // héros, pouvoir, adversaires, boutons : une bulle d'explication
   let tt = t.dataset.tip || t.getAttribute('title') || t.getAttribute('aria-label') || '';
+  if (t.matches('.op') && V.pub) { const p0 = V.pub.pl.find(x => x.n === t.getAttribute('title')); const pr = p0 && nhPairH(p0.h, 'Sa carte de héros'); if (pr) { peekFor = t; peekEl.innerHTML = oppPeekH(p0) + pr; peekEl.hidden = false; const q = peekEl.firstElementChild.getBoundingClientRect(); placePeek(r, q.width, q.height + 300, touch); return true; } }
   if (t.matches('.op') && V.pub) { const p = V.pub.pl.find(x => x.n === t.getAttribute('title')); if (p) { const h = HEROES[p.h]; tt = `${p.n}${h ? ' · ' + h.n : ''} : ${Math.max(0, p.hp)} PV${p.ar ? ' + ' + p.ar + ' armure' : ''}, taverne ${p.t}${h ? '. ' + h.tx : ''}`; } }
   if (!tt) return false;
   const i = tt.indexOf(' : ');
