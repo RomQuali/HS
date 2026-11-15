@@ -26,7 +26,7 @@ const SPELLS = {
   // ----- Naruto (15/11/2026) : objets de personnages. Posés sur un serviteur, ils produisent du chakra à chaque début de tour, davantage sur leur vrai propriétaire.
   // Prix (15/11/2026) : chakra produit − 1, +1 or s'il a plusieurs propriétaires, +1 or s'il est exceptionnel.
   // Réserve commune à la partie (cp exemplaires) : un objet tiré dans une taverne en sort, il y revient si la taverne est actualisée sans l'acheter.
-  ni_bandeau:{ ni:1, n:'Bandeau de Konoha', t:1, c:2, ty:'nobj', tg:1, ow:['nk_naruto', 'nk_sakura', 'nk_kakashi'], v:2, cp:4, tx:'+2 chakra à chaque début de tour.' },
+  ni_bandeau:{ ni:1, n:'Bandeau de Konoha', t:1, c:1, ty:'nobj', tg:1, ow:['nk_konohamaru'], v:2, cp:4, tx:'+2 chakra à chaque début de tour.' },
   ni_poids:{ ni:1, n:'Poids d’entraînement', t:1, c:2, ty:'nobj', tg:1, ow:['nk_lee', 'nk_gai'], v:2, cp:4, tx:'+2 chakra à chaque début de tour.' },
   ni_eventail:{ ni:1, n:'Grand éventail', t:1, c:1, ty:'nobj', tg:1, ow:['nk_temari'], v:2, cp:4, tx:'+2 chakra à chaque début de tour.' },
   ni_hirame:{ ni:1, n:'Hiramekarei', t:1, c:1, ty:'nobj', tg:1, ow:['nk_chojuro'], v:2, cp:4, tx:'+2 chakra à chaque début de tour.' },
