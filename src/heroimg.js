@@ -556,6 +556,9 @@ const NK_PACK2 = {
 };
 (function () { const img = src => () => `<rect width="100" height="100" fill="#1a120c"/><image href="${src}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`; for (const id in NK_PACK2) ART[id] = img(NK_PACK2[id]); ['tk_doki2', 'tk_doki3'].forEach(t => { ART[t] = ART.tk_doki; }); })();
 
+// ===== Naruto : 9 images fournies le 15/11/2026 (Rashōmon, Aoda, Requin d'eau, Petite Katsuyu, Doki aux griffes, Doki enchaîné, formes transformées de Jirōbō, Kidōmaru, Tayuya), servies depuis assets/naruto/jeu/ =====
+(function () { const pic = f => () => `<rect width="100" height="100" fill="#1a120c"/><image href="assets/naruto/jeu/${f}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`; ['tk_rashomon', 'tk_aoda', 'tk_requin', 'tk_katsuyu2', 'tk_doki2', 'tk_doki3', 'nk_jirobo_tf1', 'nk_kidomaru_tf1', 'nk_tayuya_tf1'].forEach(id => { ART[id] = pic(id); }); })();
+
 // ===== Le Seigneur des Anneaux : illustrations d'attente (silhouette aux couleurs de la famille + initiales), en attendant les images de l'utilisateur =====
 (function () {
   const COL = { lo_hom:'#8f9ab0', lo_elf:'#4fa878', lo_nah:'#b8863a', lo_mor:'#b8402a', lo_ise:'#7a808a', lo_omb:'#7a3a8a', lo_cre:'#6a5a8a' };
