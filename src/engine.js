@@ -75,7 +75,7 @@ const DEFAULT_SETTINGS = {
     { n:'Montagnes', col:'#6a5038', ic:'mount', lore:'Ils tombent… et tout s\'effondre.', mech:'eboulement', tribes:['nain', 'ogre', 'gob', 'drag', 'garou'] },
     { n:'Dragon Ball', col:'#e8701a', ic:'star', lore:'Médite, charge ton ki, transforme tes guerriers.', mech:'ki', tribes:['d_sai', 'd_ter', 'd_nam', 'd_fre', 'd_and'] },
     { n:'Naruto', col:'#a8402a', ic:'sword', lore:'Charge ton chakra : lance les jutsus de tes ninjas, puis transforme-les.', mech:'chakra', tribes:['nk_kon', 'nk_aka', 'nk_sun', 'nk_oto', 'nk_kir'] },
-    { n:'Le Seigneur des Anneaux', col:'#b08a2e', ic:'crown', lore:'On joue en duo : 2 duos des Peuples libres contre 2 duos de l’Ombre. Vie commune, combat en relais, et l’Anneau qu’on se passe entre alliés. Un seul porte l’Anneau vers le Mont du Destin ; tous les autres le veulent.', mech:'voyage', tribes:['lo_hom', 'lo_elf', 'lo_nah', 'lo_mor', 'lo_ise', 'lo_omb'] },
+    { n:'Le Seigneur des Anneaux', col:'#b08a2e', ic:'crown', lore:'On joue en duo : 2 duos des Peuples libres contre 2 duos de l’Ombre. Vie commune, combat en relais, et l’Anneau qu’on se passe entre alliés et auquel chaque serviteur réagit. Un seul porte l’Anneau vers le Mont du Destin ; tous les autres le veulent.', mech:'voyage', tribes:['lo_hom', 'lo_elf', 'lo_nah', 'lo_mor', 'lo_ise', 'lo_omb'] },
     { n:'Squishys', col:'#b04a6a', ic:'blob', lore:'Une grosse boule de câlins.', mech:'fusion', tribes:['sq_feu', 'sq_eau', 'sq_terre', 'sq_vent', 'sq_foudre'] },
   ],
   heroFam:{},
@@ -793,6 +793,70 @@ DEFAULT_CARD_LIST.forEach(([id, n, t, tr, a, h, kw, fx]) => { DEFAULT_CARDS[id] 
 // kekkei genkai : seconde nature (compte pour les deux clans)
 const TR2 = { n_k1:'n_terre', n_k2:'n_vent', n_k3:'n_eau', n_k4:'n_foudre', n_k5:'n_vent' };
 for (const id in TR2) DEFAULT_CARDS[id].tr2 = TR2[id];
+// Le Seigneur des Anneaux (duos) : réaction de chaque serviteur à l'Anneau, quand on le pose alors qu'on tient l'Anneau (doublée sur une carte dorée)
+const LO_REACT = {
+  lo_cavalier:{"a": 1, "h": 1, "kw": "", "sp": "", "tx": "Garde de la route : gagne +1/+1."},
+  lo_garde:{"a": 0, "h": 3, "kw": "", "sp": "", "tx": "Sentinelle de Minas Tirith : gagne +0/+3."},
+  lo_eowyn:{"a": 2, "h": 0, "kw": "", "sp": "", "tx": "Elle défie l’Ombre : gagne +2/+0."},
+  lo_faramir:{"a": 2, "h": 3, "kw": "", "sp": "", "tx": "« Je ne le prendrais pas » : gagne +2/+3."},
+  lo_boromir:{"a": 3, "h": 0, "kw": "", "sp": "boromir", "tx": "« Donne-le-moi ! » : gagne +3/+0 et son Râle d’agonie se déclenche deux fois (sa rédemption)."},
+  lo_eomer:{"a": 2, "h": 1, "kw": "", "sp": "", "tx": "Il charge pour gagner du temps : gagne +2/+1."},
+  lo_denethor:{"a": 4, "h": 0, "kw": "", "sp": "", "tx": "Il aurait voulu s’en servir : gagne +4/+0."},
+  lo_theoden:{"a": 2, "h": 2, "kw": "", "sp": "", "tx": "Délivré de Saroumane : gagne +2/+2."},
+  lo_aragorn:{"a": 2, "h": 2, "kw": "s", "sp": "", "tx": "Il refuse l’Anneau : gagne +2/+2 et Bouclier divin."},
+  lo_isildur:{"a": 4, "h": 4, "kw": "", "sp": "isildur", "tx": "« Je le garde » : gagne +4/+4 mais il perd son Bouclier divin."},
+  lo_archer:{"a": 1, "h": 1, "kw": "", "sp": "", "tx": "Les gardes laissent passer le porteur : gagne +1/+1."},
+  lo_haldir:{"a": 1, "h": 2, "kw": "", "sp": "", "tx": "Il guide la Communauté : gagne +1/+2."},
+  lo_arwen:{"a": 0, "h": 0, "kw": "", "sp": "arwen", "tx": "Elle donne sa grâce : un autre serviteur aléatoire gagne Bouclier divin."},
+  lo_tauriel:{"a": 1, "h": 1, "kw": "", "sp": "", "tx": "Elle garde la forêt : gagne +1/+1."},
+  lo_legolas:{"a": 2, "h": 1, "kw": "", "sp": "", "tx": "Membre de la Communauté : gagne +2/+1."},
+  lo_thranduil:{"a": 0, "h": 3, "kw": "", "sp": "", "tx": "Roi méfiant : gagne +0/+3."},
+  lo_elrond:{"a": 0, "h": 0, "kw": "", "sp": "elrond", "tx": "Le Conseil d’Elrond : tes autres Elfes gagnent +1/+1."},
+  lo_galadriel:{"a": 3, "h": 3, "kw": "", "sp": "", "tx": "« J’ai passé l’épreuve » : gagne +3/+3."},
+  lo_gandalf:{"a": 0, "h": 0, "kw": "s", "sp": "", "tx": "« Ne me tente pas ! » : gagne Bouclier divin."},
+  lo_gilgalad:{"a": 3, "h": 3, "kw": "", "sp": "", "tx": "La Dernière Alliance contre l’Anneau : gagne +3/+3."},
+  lo_merry:{"a": 1, "h": 1, "kw": "", "sp": "", "tx": "Membre de la Communauté : gagne +1/+1."},
+  lo_pippin:{"a": 1, "h": 1, "kw": "", "sp": "", "tx": "Membre de la Communauté : gagne +1/+1."},
+  lo_sam:{"a": 2, "h": 2, "kw": "t", "sp": "", "tx": "« Je vais vous porter » : gagne +2/+2 et Provocation."},
+  lo_bilbon:{"a": 0, "h": 0, "kw": "c", "sp": "", "tx": "Il disparaît comme à sa fête : gagne Camouflage."},
+  lo_frodon:{"a": 1, "h": 2, "kw": "c", "sp": "", "tx": "Le porteur se cache : gagne +1/+2 et Camouflage."},
+  lo_balin:{"a": 1, "h": 3, "kw": "", "sp": "", "tx": "Il rêvait de reprendre la Moria : gagne +1/+3."},
+  lo_gimli:{"a": 2, "h": 1, "kw": "", "sp": "", "tx": "Membre de la Communauté : gagne +2/+1."},
+  lo_dain:{"a": 2, "h": 3, "kw": "", "sp": "", "tx": "Il a chassé le messager de Sauron : gagne +2/+3."},
+  lo_thorin:{"a": 3, "h": 1, "kw": "", "sp": "", "tx": "Le mal du dragon : gagne +3/+1."},
+  lo_sylvebarbe:{"a": 0, "h": 0, "kw": "", "sp": "none", "tx": "Les Ents ne s’en soucient pas : aucune réaction."},
+  lo_gollum:{"a": 3, "h": 3, "kw": "", "sp": "", "tx": "« Mon précieux » : gagne +3/+3."},
+  lo_orque:{"a": 2, "h": 2, "kw": "", "sp": "dispute", "tx": "Ils se disputent le butin : inflige 1 dégât à un autre allié (sans le tuer), puis gagne +2/+2."},
+  lo_bouche:{"a": 2, "h": 2, "kw": "", "sp": "", "tx": "Le héraut du Maître : gagne +2/+2."},
+  lo_troll:{"a": 1, "h": 3, "kw": "", "sp": "", "tx": "Sauron rassemble ses armées : gagne +1/+3."},
+  lo_gothmog:{"a": 0, "h": 0, "kw": "", "sp": "gothmog", "tx": "Les légions se mettent en marche : tes autres serviteurs du Mordor gagnent +1/+1."},
+  lo_khamul:{"a": 0, "h": 0, "kw": "w", "sp": "", "tx": "L’Anneau appelle les Nazgûl : gagne Furie des vents."},
+  lo_arachne:{"a": 0, "h": 0, "kw": "", "sp": "none", "tx": "Elle ne veut que des proies : aucune réaction."},
+  lo_suladan:{"a": 2, "h": 2, "kw": "", "sp": "", "tx": "Le Sud répond à l’appel : gagne +2/+2."},
+  lo_roisorcier:{"a": 2, "h": 2, "kw": "w", "sp": "", "tx": "L’Anneau appelle les Nazgûl : gagne +2/+2 et Furie des vents."},
+  lo_sauron:{"a": 5, "h": 5, "kw": "", "sp": "", "tx": "Il retrouve sa puissance : gagne +5/+5."},
+  lo_grima:{"a": 1, "h": 2, "kw": "", "sp": "", "tx": "Il espionne pour son maître : gagne +1/+2."},
+  lo_pisteur:{"a": 2, "h": 1, "kw": "", "sp": "", "tx": "Il traque les Semi-Hommes : gagne +2/+1."},
+  lo_dunlending:{"a": 1, "h": 2, "kw": "", "sp": "", "tx": "Les hommes des collines suivent Saroumane : gagne +1/+2."},
+  lo_warg:{"a": 2, "h": 1, "kw": "", "sp": "", "tx": "La meute flaire le porteur : gagne +2/+1."},
+  lo_berserker:{"a": 3, "h": 3, "kw": "", "sp": "dispute", "tx": "Ils se disputent le butin : inflige 1 dégât à un autre allié (sans le tuer), puis gagne +3/+3."},
+  lo_mauhur:{"a": 2, "h": 2, "kw": "", "sp": "", "tx": "Les Uruk-hai se rassemblent : gagne +2/+2."},
+  lo_sharku:{"a": 2, "h": 2, "kw": "", "sp": "", "tx": "La meute flaire le porteur : gagne +2/+2."},
+  lo_ugluk:{"a": 3, "h": 3, "kw": "", "sp": "dispute", "tx": "« Vivants et intacts ! » : inflige 1 dégât à un autre allié (sans le tuer), puis gagne +3/+3."},
+  lo_lurtz:{"a": 3, "h": 2, "kw": "", "sp": "", "tx": "Il chasse la Communauté : gagne +3/+2."},
+  lo_saroumane:{"a": 3, "h": 3, "kw": "", "sp": "", "tx": "Il le convoite pour lui-même : gagne +3/+3."},
+  lo_gobelin:{"a": 1, "h": 1, "kw": "", "sp": "", "tx": "Les tambours de la Moria : gagne +1/+1."},
+  lo_oriental:{"a": 1, "h": 2, "kw": "", "sp": "", "tx": "L’Est répond à l’appel : gagne +1/+2."},
+  lo_haradrim:{"a": 2, "h": 1, "kw": "", "sp": "", "tx": "Le Sud répond à l’appel : gagne +2/+1."},
+  lo_wargsauv:{"a": 2, "h": 1, "kw": "", "sp": "", "tx": "La meute flaire le porteur : gagne +2/+1."},
+  lo_bolg:{"a": 2, "h": 2, "kw": "", "sp": "", "tx": "La lignée du Profanateur : gagne +2/+2."},
+  lo_grandgob:{"a": 2, "h": 3, "kw": "", "sp": "", "tx": "L’Anneau a dormi sous ses montagnes : gagne +2/+3."},
+  lo_azog:{"a": 2, "h": 2, "kw": "", "sp": "", "tx": "La lignée du Profanateur : gagne +2/+2."},
+  lo_trollg:{"a": 1, "h": 3, "kw": "", "sp": "", "tx": "Les trolls de guerre marchent : gagne +1/+3."},
+  lo_fleau:{"a": 0, "h": 0, "kw": "", "sp": "none", "tx": "Il sert Morgoth, pas Sauron : aucune réaction."},
+  lo_smaug:{"a": 3, "h": 3, "kw": "", "sp": "", "tx": "La convoitise de l’or : gagne +3/+3."},
+};
+for (const id in LO_REACT) if (DEFAULT_CARDS[id]) DEFAULT_CARDS[id].fx = (DEFAULT_CARDS[id].fx || []).concat([{ k:'ring_r', tx:LO_REACT[id].tx }]);
 const NJ_MC = { ann:['L’Anneau', '#ffd24a'], voy:['Voyage', '#7ac04a'], tf:['Transformations', '#ffcf3a'], med:['Méditation', '#7ad8f0'], tk:['Techniques', '#5ab8f0'], mt:['Mentor', '#7ac04a'], sd:['Soldats', '#a86ad8'], ct:['Contrôle', '#8a7ad8'], ds:['Destruction', '#c85a8a'], zk:['Zenkai', '#ff7a3a'], fu:['Fusion', '#7ac04a'], ab:['Absorption', '#e86aa8'], kiu:['Ki', '#5ab8f0'], sv:['Soutien', '#f2c14e'], ob:['Objets', '#b48cff'], ad:['Autodestruction', '#ff5a3a'], tok:['Jetons', '#d8b45a'], seal:['Sceaux', '#e8607a'], pact:['Pacte', '#7ac04a'], dr:['Sacrifice', '#a898d0'], eco:['Économie', '#f2c14e'], don:['Donuts', '#ff8ac0'], spl:['Sorts', '#b48cff'], cbt:['Combat', '#ff7a5a'], ckm:['Éveil et chakra', '#5ab8f0'], jut:['Jutsus', '#5ab8f0'], chk:['Chakra', '#5ab8f0'], cmb:['Combos', '#ff9a4a'], kg:['Kekkei genkai', '#6fd08a'], por:['Portails', '#3fbf6f'], inv:['Inventions', '#b48cff'], coh:['Cohésion', '#6fb8e0'], pet:['Petits serviteurs', '#d8b45a'], vol:['Vol', '#e05a5a'], prov:['Provocation', '#c8a040'], nb:['Nombre', '#6fb8e0'], soc:['Début du combat', '#b06ae8'], ral:['Râles d\'agonie', '#7ac04a'], gag:['Gags récurrents', '#f2c230'], fam:['Famille', '#e0b020'] };
 // trait passif d'un héros : son pouvoir (pw) ou son bonus (tr) de ce type
 function htr(p, k) { const H0 = HX(p); if (!H0) return null; if (H0.pw && H0.pw.k === k) return H0.pw; const t = H0.tr; return t && t.k === k ? t : null; }
@@ -859,7 +923,7 @@ const HEROES = {
   lh_sylvebarbe: {diff:1, stars:4, fam:LOV, pv:'lo_nah', mc:'tok', n:'Sylvebarbe', pwn:'Éveil de la forêt', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'summon', card:'tl_huorn', n:1 }] }, tx:'Invoque un Huorn 2/4 avec Provocation.' },
   lh_arwen: {diff:1, stars:3, fam:LOV, pv:'lo_elf', mc:'eco', n:'Arwen', pwn:'Étoile du soir', hearts:5, pw:{ k:'pturn', sell:0 }, tx:'Passif : la première fois que ton duo devrait tomber, il revient à 5 PV. Quand tu tiens l’Anneau : 1 or de plus par tour.' },
   lh_boromir: {diff:1, stars:3, fam:LOV, pv:'lo_hom', mc:'cbt', n:'Boromir', pwn:'Bouclier du Gondor', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'tkw', kw:'t', n:1, a:0, h:5 }] }, tx:'Prochain combat : un de tes serviteurs gagne +0/+5 et Provocation.' },
-  lh_sauron: {diff:1, stars:5, fam:LOV, pv:'lo_mor', mc:'ann', n:'Sauron', pwn:'Maître de l’Anneau', shadow:1, pw:{ k:'psauron' }, tx:'Passif : quand ton duo tient l’Anneau, ton allié utilise lui aussi son pouvoir deux fois par tour, même si c’est toi qui le tiens.' },
+  lh_sauron: {diff:1, stars:5, fam:LOV, pv:'lo_mor', mc:'ann', n:'Sauron', pwn:'Maître de l’Anneau', shadow:1, pw:{ k:'psauron' }, tx:'Passif : quand ton duo tient l’Anneau, les réactions des serviteurs posés se déclenchent deux fois.' },
   lh_saroumane: {diff:1, stars:4, fam:LOV, pv:'lo_ise', mc:'tok', n:'Saroumane', pwn:'Fosses d’Isengard', shadow:1, cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'summon', card:'tl_urukj', n:1 }] }, tx:'Invoque un Jeune Uruk 2/3.' },
   lh_roisorcier: {diff:1, stars:4, fam:LOV, pv:'lo_mor', mc:'cbt', n:'Roi-Sorcier d’Angmar', pwn:'Cri du Nazgûl', shadow:1, cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'hx', who:'top', fx:[{ k:'soc_genj', who:'face', n:1 }] }] }, tx:'Prochain combat : l’ennemi en face de ton serviteur le plus fort saute sa première attaque.' },
   lh_gollum: {diff:1, stars:3, fam:LOV, pv:'lo_mor', mc:'ann', n:'Gollum', pwn:'Mon précieux', shadow:1, pw:{ k:'pgollum' }, tx:'Passif : ton duo prend aussi l’Anneau sur une égalité contre le duo qui le tient.' },
@@ -953,7 +1017,7 @@ const MECHS = {
   pillage:{ n:'Pillage', ic:'drop', d:'Quand tu gagnes un combat avec un serviteur de l\'univers encore debout, tu reçois un sort aléatoire de ton niveau.' },
   ki:{ n:'Ki et transformations', ic:'k_spark', d:'Mets un serviteur en méditation : il ne combat pas au prochain combat et te rapporte du ki au début du tour suivant (autant que son niveau, le double s\'il est doré ; 15 au plus). Le ki paie les transformations, les fusions et les techniques (achetées en or à la taverne) ; une technique lancée sur son propriétaire (Signature) a un bonus.' },
   chakra:{ n:'Groupes emblématiques, jutsus et transformations', ic:'k_spark', d:'Réunis les duos, trios et équipes de l\'animé sur ton plateau : chaque groupe réuni débloque un pouvoir tiré de l\'animé, et ils se cumulent. Chaque serviteur génère 1 chakra par tour (10 au plus). Jutsu de soutien (soin, invocation, clone) : effet immédiat. Jutsu de combat (Chidori, Rasengan, Shinra Tensei…) : tu le paies pendant le recrutement, il part au début du prochain combat. Une fois par tour, coût = niveau du ninja. Certains ninjas se transforment une seule fois (étoile bleue). Mots-clés : Genjutsu (un ennemi saute une attaque), Entrave (un ennemi ne peut plus attaquer tant que le lanceur vit), Brûlure (PV perdus après chaque attaque), Scellement (plus de mots-clés ni d\'effets), Clone, Riposte, Sharingan (copie les mots-clés d\'en face), Soin.' },
-  voyage:{ n:'La guerre de l’Anneau', ic:'k_spark', d:'On joue en duo, comme dans Duos : ton allié et toi partagez la même vie, vos plateaux combattent en relais et vous pouvez vous passer des cartes par le portail pour 1 or. Ton camp est tiré au sort : les Peuples libres ne recrutent que des Hommes, des Elfes, des Nains et des Hobbits ; l’Ombre que le Mordor, Isengard et ses alliés. À la manche 3, l’Anneau arrive dans la main d’un joueur des Peuples libres : tant qu’on le tient, le pouvoir héroïque s’utilise deux fois par tour. Si ton duo perd un combat, l’Anneau passe au duo vainqueur. Le dernier duo en vie gagne.' },
+  voyage:{ n:'La guerre de l’Anneau', ic:'k_spark', d:'On joue en duo, comme dans Duos : ton allié et toi partagez la même vie, vos plateaux combattent en relais et vous pouvez vous passer des cartes par le portail pour 1 or. Ton camp est tiré au sort : les Peuples libres ne recrutent que des Hommes, des Elfes, des Nains et des Hobbits ; l’Ombre que le Mordor, Isengard et ses alliés. À la manche 3, l’Anneau arrive dans la main d’un joueur des Peuples libres : tant qu’on le tient, chaque serviteur qu’on pose réagit à l’Anneau à sa façon (Gandalf le refuse, Boromir le convoite, les orques se le disputent…). Si ton duo perd un combat, l’Anneau passe au duo vainqueur. Le dernier duo en vie gagne.' },
   resonance:{ n:'Résonance', ic:'twin', d:'Chaque sort que tu lances donne +1/+1 à deux de tes serviteurs de l\'univers.' },
   eboulement:{ n:'Éboulement', ic:'up', d:'Quand un de tes serviteurs de l\'univers avec Provocation meurt, il inflige 3 dégâts à un ennemi aléatoire.' },
   fusion:{ n:'Fusion élémentaire', ic:'wind', d:'À la fin du tour, si tu as au moins 4 éléments Squishy différents, tes serviteurs de l\'univers gagnent +1/+1.' },
@@ -1278,6 +1342,7 @@ const ET = {
   camo_keep:{ tr:'pas', l:'Camouflage durable', ps:[], w:1, mag:() => 3, txt:() => `Son Camouflage ne disparaît pas quand il attaque.` },
   rip_burn:{ tr:'pas', l:'Barrière de flammes', ps:[], w:1, mag:e => e.d, txt:(e, k) => `Les ennemis qui l'attaquent subissent une Brûlure de ${e.d * k}.` },
   wide:{ tr:'pas', l:'Jutsu de zone', ps:[], w:1, mag:() => 3, txt:() => `Son jutsu de combat touche tous les ennemis.` },
+  ring_r:{ tr:'pas', l:'Réaction à l’Anneau', ps:[], w:0, mag:() => 0, txt:e => '💍 Si tu tiens l’Anneau quand tu le poses · ' + (e.tx || '') },
   dr2:{ tr:'pas', l:'Râles doublés', ps:[], w:1, mag:() => 4, txt:() => `Ses Râles d'agonie se déclenchent deux fois.` },
   pup_r:{ tr:'pas', l:'Marionnettes éternelles', ps:[], w:1, mag:() => 3, txt:() => `Les marionnettes qu'il invoque ont Réincarnation.` },
   imm:{ tr:'pas', l:'Insensible aux illusions', ps:[], w:1, mag:() => 2, txt:() => `Insensible au Genjutsu, à l'Entrave et au Scellement.` },
@@ -1638,8 +1703,8 @@ const loDuoId = id => LO_DUOS.find(d => d.id === id) || null;
 const loAlly = (G, p) => (G && G.tm && p && p.tm != null ? G.ps.find(x => x !== p && x.tm === p.tm) : null) || null;
 const loDuoB = (G, p) => { const t = G && G.tm && p && p.tm != null ? G.tm[p.tm] : null, d = t && t.duo ? loDuoId(t.duo) : null; return d ? d.b : {}; };
 const loRingIn = p => !!(p && p.hd && p.hd.some(x => x.sp === 'lo_anneau'));
-// l'Anneau en main : le pouvoir héroïque s'utilise deux fois par tour (Sauron : son allié aussi, quel que soit celui des deux qui le tient)
-const loPowMax = (G, p) => { if (!G || !G.tm || !inMechAny(G, 'voyage')) return 1; if (loRingIn(p)) return 2; const al = loAlly(G, p); return al && loRingIn(al) && ((HEROES[p.hero] || {}).pw || {}).k !== 'psauron' && ((HEROES[al.hero] || {}).pw || {}).k === 'psauron' ? 2 : 1; };
+// (ancienne règle, désactivée le 15/11/2026 : l'Anneau doublait le pouvoir héroïque ; ce sont maintenant les serviteurs qui y réagissent)
+const loPowMax = (G, p) => { return 1; if (!G || !G.tm || !inMechAny(G, 'voyage')) return 1; if (loRingIn(p)) return 2; const al = loAlly(G, p); return al && loRingIn(al) && ((HEROES[p.hero] || {}).pw || {}).k !== 'psauron' && ((HEROES[al.hero] || {}).pw || {}).k === 'psauron' ? 2 : 1; };
 const LO_RING = 'lo_anneau', LO_SHADOW_TR = ['lo_mor', 'lo_ise', 'lo_omb'], LO_BOTH = ['lo_gollum', 'lo_saroumane'];
 const LO_HV = [4, 6];   // traqueurs : caractéristiques de base et gain par étape
 const loOn = G => inMechAny(G, 'voyage');
@@ -1655,6 +1720,16 @@ function loShelf(G, p) { if (loOn(G)) { p.sp = null; p.sp2 = null; } }   // pas 
 // l'Anneau est une carte en main : on tient à jour le témoin « porteur » et le nombre d'utilisations du pouvoir
 function loRingSync(G) { G.ps.forEach(p => { p.ring = p.al && loRingIn(p) ? 1 : 0; if (G.ph === 'recruit') p.pu = (p.pun || 0) >= loPowMax(G, p); }); }
 function loRingMove(G, from, to) { const i = from.hd.findIndex(x => x.sp === LO_RING); if (i < 0 || !to) return false; to.hd.push(from.hd.splice(i, 1)[0]); loRingSync(G); return true; }
+// réaction du serviteur posé par celui qui tient l'Anneau (Sauron : deux fois, si lui ou son allié est Sauron)
+function loReact(G, p, m) { const R = LO_REACT[m.c]; if (!R || R.sp === 'none') return; const al = loAlly(G, p), n = [p, al].some(x => x && loHero(x, 'psauron')) ? 2 : 1;
+  withSrc('L’Anneau unique', () => { for (let r = 0; r < n; r++) { const k = mult(m);
+    if (R.sp === 'dispute') { const o = p.bd.filter(x => x !== m && x.h >= 2); if (o.length) pickR(o).h -= 1; }
+    if (R.a || R.h) buff(m, R.a * k, R.h * k); if (R.kw) addF(m, R.kw);
+    if (R.sp === 'boromir' && !(m.x || []).some(e => e.k === 'dr2')) (m.x = m.x || []).push({ k:'dr2', src:'L’Anneau unique' });
+    if (R.sp === 'isildur') remF(m, 's');
+    if (R.sp === 'arwen') { const o = p.bd.filter(x => x !== m && !has(x, 's')); if (o.length) addF(pickR(o), 's'); }
+    if (R.sp === 'elrond' || R.sp === 'gothmog') { const tb = R.sp === 'elrond' ? 'lo_elf' : 'lo_mor'; p.bd.forEach(x => { if (x !== m && tribeOk(x, tb)) buff(x, k, k); }); } } });
+  m.rr = 1; }
 // une fois par manche : à la manche 3, l'Anneau arrive dans la main d'un joueur des Peuples libres (Frodon d'abord) ; s'il n'est plus dans aucune main, il revient de la même façon
 function loRound(G) {
   const alive = G.ps.filter(p => p.al); if (G.rd < 3 || !alive.length) return;
@@ -1684,7 +1759,6 @@ function loTurn(G, p) {
     if (b.gold && G.rd % b.gold[0] === 0) p.g += b.gold[1];
     if (b.turn) { const [k, a, h] = b.turn, c = p.bd.filter(m => k === 't' ? has(m, 't') : tribeOk(m, k)); if (c.length) withSrc(d.bn, () => { const m = pickR(c); buff(m, a * mult(m), h * mult(m)); }); }
     if (loRingIn(p) && (HEROES[p.hero] || {}).hearts) p.g += 1;
-    { const al = loAlly(G, p); if (p.bot && al && al.al && loRingIn(p) && !(HEROES[p.hero] || {}).cost && (HEROES[al.hero] || {}).cost && al.hd.length < 10 && (p.g >= 1 || loHero(p, 'pring'))) { if (!loHero(p, 'pring') && !loDuoB(G, p).pass) p.g -= 1; loRingMove(G, p, al); } }   // IA   // Arwen (pouvoir passif) : l'Anneau lui rapporte 1 or par tour
     p.pu = (p.pun || 0) >= loPowMax(G, p);
   }
   loOffer(G, p);
@@ -2685,6 +2759,7 @@ const OPS = {
       return true;
     }
     p.bd.splice(pos, 0, m);
+    if (loOn(G) && G.tm && loRingIn(p)) loReact(G, p, m);
     if (p.horA && tribeOk(m, 'si_hor')) withSrc('Horror Show', () => buff(m, p.horA, 0));
     if (p.kk && fxOf(m, 'pas').some(e => e.k === 'pas_kk')) withSrc('Kang et Kodos', () => buff(m, p.kk * mult(m), p.kk * mult(m)));
     p.hd.forEach(x => { if (!x.sp) fxOf(x, 'hplay').forEach(e => runRecruit(G, p, x, e, m)); });
