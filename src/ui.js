@@ -650,7 +650,9 @@ function gameH() {
     const hand = fighting ? '' : `<section class="hand" data-drop="hd" aria-label="Ta main · ${n}/10"><div class="fan${n > 7 ? ' many' : n > 4 ? ' some' : ''}" style="--n:${n}">${n ? me.hd.map((m, i) => { const o = i - (n - 1) / 2, op = { drag:canAct, style:`--o:${f1(o)};--o2:${f1(o * o)}` }; return m.sp ? spellCardH(m.sp, 'hd', i, op) : cardH(m, 'hd', i, op); }).join('') : ''}</div></section>`;
     const det = !fighting && V.sel ? `<div class="detail-pop">${detailH(canAct)}<button class="dp-x" data-act="unsel" aria-label="Fermer">×</button></div>` : '';
     const duelCol = fighting && V.fight.duel && me.cp ? `<div class="duel-col" aria-label="Duel des compagnons">${cpSideH(me, V.fight, 1)}<span class="duel-vs">VS</span>${cpSideH(me, V.fight, 0)}</div>` : '';
-    table = `<div class="table${fighting ? ' fighting arena' + (V.fight.duel ? '' : (me.cp ? ' joined' : '')) : ''}${awakeUI() && (d.laws || []).some(l => l.k === 'chakra') ? ' awakened' + awkElCls(me) : ''}">${RN_LAYERS}${duelCol}${hud}${topZone}${board}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}${choiceH(d, me)}`;
+    const portal = !fighting && me.ally ? duoPortalH(me) : '', allyV = !fighting && me.ally && V.allyView ? allyViewH(me) : '';
+    if (fighting) V.allyView = false;
+    table = `<div class="table${fighting ? ' fighting arena' + (V.fight.duel ? '' : (me.cp ? ' joined' : '')) : ''}${awakeUI() && (d.laws || []).some(l => l.k === 'chakra') ? ' awakened' + awkElCls(me) : ''}">${RN_LAYERS}${duelCol}${hud}${topZone}${board}${allyV}${portal}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}${choiceH(d, me)}`;
   } else if (myInfo) {
     table = `<div class="table">${RN_LAYERS}${hud}<section class="plaque solo-msg"><h2>Éliminé · ${myInfo.pl}e place</h2><p class="note">Tu peux suivre la fin de la partie à gauche ou retourner au menu.</p><div class="btns"><button class="btn" data-act="leave">Retour au menu</button></div></section></div>`;
   } else {
@@ -1375,6 +1377,7 @@ function doAct(act, btn) {
     case 'pick': sendAct({ t:'pick', i:+btn.dataset.i }); break;
     case 'choose': sendAct({ t:'choose', i:+btn.dataset.i }); break;
     case 'unsel': V.sel = null; render(); break;
+    case 'aview': V.allyView = !V.allyView; V.sel = null; render(); break;
     case 'play': if (s) { sendAct({ t:'play', i:s.i }); V.sel = null; } break;
     case 'sell': if (s) { sendAct({ t:'sell', i:s.i }); V.sel = null; } break;
     case 'mvl': if (s) { sendAct({ t:'move', i:s.i, to:s.i - 1 }); V.sel = { z:'bd', i:s.i - 1 }; } break;
@@ -1386,7 +1389,7 @@ function doAct(act, btn) {
 // glisser-déposer : la carte décolle et suit le pointeur (souris comme doigt)
 let DRAG = null, DC = null;
 // achat : la main ou le plateau ; jouer depuis la main : le plateau ou la taverne
-const dropAllowed = (from, to, sp) => ((from === 'sh' || from === 'ss') && (to === 'hd' || to === 'bd')) || (from === 'hd' && (to === 'bd' || (to === 'sh' && !(sp && SPELLS[sp] && SPELLS[sp].tg)))) || (from === 'bd' && (to === 'bd' || to === 'sh'));
+const dropAllowed = (from, to, sp) => (from === 'hd' && to === 'pt') || ((from === 'sh' || from === 'ss') && (to === 'hd' || to === 'bd')) || (from === 'hd' && (to === 'bd' || (to === 'sh' && !(sp && SPELLS[sp] && SPELLS[sp].tg)))) || (from === 'bd' && (to === 'bd' || to === 'sh'));
 const dragLayer = (() => { const l = document.createElement('div'); l.id = 'dragl'; l.setAttribute('aria-hidden', 'true'); l.hidden = true; document.body.appendChild(l); return l; })();
 document.addEventListener('dragstart', e => { if (V.screen === 'game') e.preventDefault(); });
 document.addEventListener('pointerdown', e => {
@@ -1442,7 +1445,8 @@ function dzRects(from) {
   // une seule zone, taillée selon l'action : acheter → la main (tout sous la taverne) ; jouer → le plateau (tout au-dessus de la main) ; vendre → la taverne
   // zone de prise large, mais le rectangle affiché (v) est posé sur l'endroit où la carte arrive
   if (from === 'sh' || from === 'ss') return [{ drop:'hd', el:hd, l, r, t:b1, b:bot }];
-  if (from === 'hd') return [{ drop:'bd', el:bd, l, r, t:T.top, b:b2, v:[b1, b2] }];
+  const pt = document.querySelector('.duo-portal[data-drop]'), P = pt ? pt.getBoundingClientRect() : null, pz = P ? [{ drop:'pt', el:pt, l:P.left - 14, r:P.right + 14, t:P.top - 14, b:P.bottom + 14 }] : [];
+  if (from === 'hd') return pz.concat([{ drop:'bd', el:bd, l, r, t:T.top, b:b2, v:[b1, b2] }]);
   if (from === 'bd') return [{ drop:'sh', el:sh, l, r, t:T.top, b:b1 }, { drop:'bd', el:bd, l, r, t:b1, b:bot, hide:1 }];
   return [];
 }
@@ -1451,7 +1455,7 @@ const dzLayer = (() => { const l = document.createElement('div'); l.id = 'dzl'; 
 function dzShow(on) {
   if (!DRAG) return dzHide();
   const R = dzRects(DRAG.z).filter(z => !z.hide && dropAllowed(DRAG.z, z.drop, DRAG.sp)); if (!R.length) return dzHide();
-  const lbl = { sh:'Vendre', bd:'Jouer', hd:'Acheter' };
+  const lbl = { sh:'Vendre', bd:'Jouer', hd:'Acheter', pt:'Passer' };
   dzLayer.innerHTML = R.map(z => `<div class="dz${z.drop === on ? ' on' : ''}${z.drop === 'sh' && DRAG.z === 'bd' ? ' sell' : ''}" style="left:${f1(z.l)}px;top:${f1((z.v || [z.t])[0])}px;width:${f1(z.r - z.l)}px;height:${f1(Math.min((z.v || [0, z.b])[1], innerHeight) - (z.v || [z.t])[0])}px"><span>${lbl[z.drop]}</span></div>`).join('');
   dzLayer.hidden = false;
 }
@@ -1486,7 +1490,8 @@ function dragMove(x, y) {
   document.querySelectorAll('.mk-l,.mk-r,.tg-hover').forEach(el => el.classList.remove('mk-l', 'mk-r', 'tg-hover'));
   const to = okz ? okz.drop : null;
   let tag = '';
-  if (to === 'bd' && D.sp) { const tm = t.closest('.mn'); if (SPELLS[D.sp] && SPELLS[D.sp].tg) { if (tm && tm.dataset.z === 'bd') { tm.classList.add('tg-hover'); tag = 'Lancer'; } else tag = 'Vise un serviteur'; } else tag = 'Lancer'; }
+  if (to === 'pt') tag = 'Passer à ' + ((V.me.ally || {}).n || 'ton allié') + (V.me.passfree || (D.sp === 'lo_anneau' && (((HEROES[V.me.hero] || {}).pw || {}).k === 'pring')) ? ' · gratuit' : ' · 1 or');
+  else if (to === 'bd' && D.sp) { const tm = t.closest('.mn'); if (SPELLS[D.sp] && SPELLS[D.sp].tg) { if (tm && tm.dataset.z === 'bd') { tm.classList.add('tg-hover'); tag = 'Lancer'; } else tag = 'Vise un serviteur'; } else tag = 'Lancer'; }
   else if (to === 'bd' && (D.z === 'sh' || D.z === 'ss')) tag = D.z === 'ss' ? 'Acheter le sort' : 'Acheter · 3 or';
   else if (to === 'sh' && D.z === 'hd') tag = D.sp ? 'Lancer' : 'Jouer';
   else if (to === 'bd') { const { cards, pos } = boardPos(ok, x); if (cards[pos - 1]) cards[pos - 1].classList.add('mk-l'); if (cards[pos]) cards[pos].classList.add('mk-r'); tag = D.z === 'hd' ? 'Jouer' : 'Déplacer'; }
@@ -1523,6 +1528,7 @@ function dragEnd(x, y, cancel) {
 }
 function doDrop(to, D, t, x, z) {
   const from = D.z, i = D.i, dsp = D.sp; V.sel = null;
+  if (to === 'pt') { sendAct({ t:'pass', i }); return true; }
   if (from === 'ss') { sendAct({ t:'buysp', k:+(D.i || 0) }); return true; }
   if (from === 'hd' && dsp) {
     const tgEl = t && t.closest('.mn');
@@ -3698,4 +3704,33 @@ function loDuoRowH(me, card) { const out = []; let i = 0;
 .hp-duo-n small{display:block;font:500 clamp(10px,1.1vw,13px)/1.3 'Alegreya Sans',system-ui,sans-serif;opacity:.9}.hp-duo-n em{font-style:normal;color:#ffe08a}
 .hp-duo-r{display:flex;gap:clamp(4px,.8vw,12px);padding-top:clamp(10px,2vh,22px)}.hp-duo-r .hp-col{flex:0 0 clamp(92px,min(12vw,19vh),176px)!important;width:clamp(92px,min(12vw,19vh),176px)}
 .hp-duo-r .hp-card .hp-nm i{font-size:clamp(10px,min(1.3vw,2.3vh),19px)!important}
+`; document.head.appendChild(st); })();
+
+/* ===== Duos (Le Seigneur des Anneaux) : le portail, comme dans Hearthstone Duos ===== */
+// clic : voir la vue de son allié (taverne, plateau, main) ; glisser une carte de sa main dessus : la lui passer (1 or)
+function duoPortalH(me) { const a = me.ally, free = me.passfree ? 1 : 0;
+  return `<button class="duo-portal${V.allyView ? ' on' : ''}" data-act="aview" data-drop="pt" aria-pressed="${V.allyView ? 'true' : 'false'}" data-tip="${esc('Portail · clique pour ' + (V.allyView ? 'revenir à ton plateau' : 'voir la vue de ' + a.n) + '. Glisse une carte de ta main sur le portail pour la passer à ' + a.n + (free ? ' (gratuit pour votre duo).' : ' (1 or).'))}">
+    <span class="dp-ring" aria-hidden="true"><i></i></span><b>${V.allyView ? 'Ma vue' : esc(a.n.split(' ').slice(-1)[0])}</b><small>${free ? 'gratuit' : '1 or'} · ${a.hn || 0}/10</small></button>`; }
+function allyViewH(me) { const a = me.ally, h = HEROES[a.hero];
+  const row = (arr, z) => (arr || []).map((m, i) => m.sp ? spellCardH(m.sp, 'av', i, {}) : tokenH(m, 'av', i, {})).join('');
+  return `<section class="ally-view" aria-label="${esc('Vue de ' + a.n)}"><header><b>${esc(a.n)}</b>${h ? ` · ${esc(h.n)}` : ''} · taverne ${a.t || 1} · ${a.g || 0}/${a.mg || 0} or${a.ring ? ' · 💍 tient l’Anneau' : ''}${a.rdy ? ' · prêt' : ''}
+    <button class="btn sm" data-act="aview">Revenir à mon plateau</button></header>
+    <div class="av-z"><span>Sa taverne${a.fz ? ' (gelée)' : ''}</span><div class="line">${row(a.sh) || '<p class="hint">vide</p>'}</div></div>
+    <div class="av-z"><span>Son plateau</span><div class="line">${row(a.bd) || '<p class="hint">vide</p>'}</div></div>
+    <div class="av-z"><span>Sa main · ${(a.hd || []).length}/10</span><div class="line av-hand">${row(a.hd) || '<p class="hint">vide</p>'}</div></div>
+    <p class="note">Glisse une carte de ta main sur le portail pour la lui passer.</p></section>`; }
+(function () { const st = document.createElement('style'); st.textContent = `
+.duo-portal{position:absolute;right:5.2%;top:57%;z-index:9;width:clamp(78px,8.4vh,112px);aspect-ratio:1;border:0;border-radius:50%;padding:0;cursor:pointer;display:grid;place-items:center;align-content:center;gap:0;color:#eaf6ff;background:radial-gradient(circle at 50% 50%,#1b0f3a 0 38%,#3d1f86 52%,#7f4dff 64%,#1a0d33 70%);box-shadow:0 0 0 3px #b08a2e,0 0 0 5px #3a2410,0 0 22px rgba(140,90,255,.75),inset 0 0 18px rgba(170,130,255,.8);font:800 clamp(10px,1.3vh,14px) var(--f-label),serif;text-shadow:0 1px 2px #000}
+.duo-portal .dp-ring{position:absolute;inset:14%;border-radius:50%;background:conic-gradient(from 0deg,transparent,rgba(190,160,255,.9),transparent 40%,rgba(120,220,255,.8),transparent 75%);animation:dpspin 3.2s linear infinite;opacity:.75;pointer-events:none}
+.duo-portal b,.duo-portal small{position:relative;z-index:1}.duo-portal small{font:600 clamp(8px,1vh,11px) 'Alegreya Sans',sans-serif;opacity:.9}
+.duo-portal:hover,.duo-portal.on{box-shadow:0 0 0 3px #ffe08a,0 0 0 5px #3a2410,0 0 30px rgba(170,130,255,1),inset 0 0 22px rgba(200,170,255,1)}
+.duo-portal.drop-ok,#dzl .dz.on{outline:none}
+@keyframes dpspin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.duo-portal .dp-ring{animation:none}}
+.ally-view{position:absolute;left:14%;right:14%;top:13%;bottom:27%;z-index:8;display:flex;flex-direction:column;gap:6px;padding:10px 16px;border-radius:18px;background:linear-gradient(180deg,rgba(30,16,60,.95),rgba(14,8,30,.95));box-shadow:0 0 0 2px #7f4dff,0 0 26px rgba(127,77,255,.55);color:#f0e8ff;overflow:auto}
+.ally-view header{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font:600 clamp(12px,1.6vh,16px) 'Alegreya Sans',sans-serif}.ally-view header b{font:800 1.15em var(--f-label),serif;color:#ffe08a}.ally-view header .btn{margin-left:auto}
+.ally-view .av-z>span{font:700 clamp(11px,1.4vh,14px) var(--f-label),serif;color:#cdb8ff}
+.ally-view .line{display:flex;gap:6px;flex-wrap:wrap;justify-content:center;min-height:clamp(54px,9vh,96px);pointer-events:none}
+.ally-view .mn{width:clamp(56px,8.2vh,92px)!important;height:auto}.ally-view .spt,.ally-view .cd{transform:scale(.62);margin:-18px -14px}
+.ally-view .note{margin:0;text-align:center;font-size:clamp(11px,1.3vh,13px);opacity:.8}
 `; document.head.appendChild(st); })();
