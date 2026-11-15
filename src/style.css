@@ -1966,5 +1966,7 @@ html.lite .mn .tf-b.nk-tf.ok,html.lite .mn .tf-b.nk-tf.ok .tf-up{animation:none}
 .cd.lkd:hover .lk-ch,.cd.lkd:focus .lk-ch{opacity:.38}
 .cd.lkd:hover .hk-tag,.cd.lkd:focus .hk-tag{opacity:0}
 .cd.lkd:hover .cd-tx,.cd.lkd:focus .cd-tx,.cd.lkd:hover .cd-nm,.cd.lkd:focus .cd-nm{z-index:5}
-/* choix du héros confirmé : le bouton reste actif (vert) en attendant les autres joueurs */
-.hp-ok.done{filter:hue-rotate(70deg) saturate(1.2)}
+/* bouton OK du choix du héros : même aura verte que le héros sélectionné, au survol, et qui reste allumée une fois validé */
+html body .hp-ok:not(:disabled),html body .hp-ok.done{filter:sepia(1) saturate(3.2) hue-rotate(-12deg) brightness(1.12) drop-shadow(0 0 10px #46ff5a) drop-shadow(0 0 22px rgba(60,255,90,.75))!important}
+html body .hp-ok.done{transform:scale(1.04)}
+html body .hp-ok:not(:disabled):hover{filter:sepia(1) saturate(3.2) hue-rotate(-12deg) brightness(1.2) drop-shadow(0 0 14px #6dff7a) drop-shadow(0 0 28px rgba(60,255,90,.9))!important}
