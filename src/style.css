@@ -1993,3 +1993,8 @@ html.lite .spt.spx .lg-fr,html.lite .spt.spx .lg-sw,html.lite .cd.spc.spx .lg-ca
 #peek .hp-hcards small{font:700 12px/1.2 var(--f-label),serif;color:#ffe9b0;text-shadow:0 1px 2px #000;background:rgba(20,12,6,.85);padding:2px 10px;border-radius:99px}
 #peek .hp-hcards>div{display:flex;gap:10px}
 #peek .hp-hcards .cd{position:relative;width:clamp(130px,10vw,170px);flex:none}
+/* texte complet d'une carte Naruto, à côté de la grande carte au survol */
+#peek .cd-full{position:absolute;left:calc(100% + 10px);top:0;width:260px;padding:12px 14px;border-radius:12px;background:linear-gradient(180deg,#f3e3c0,#e2c994);color:#3a2616;box-shadow:inset 0 0 0 2px #8a6a3a,0 6px 18px rgba(0,0,0,.6);font:13px/1.4 system-ui,sans-serif}
+#peek .cd-full .cdf-h{display:block;color:#7a2c08;font:700 14px var(--f-label),serif;margin-bottom:4px}
+#peek .cd-full p{margin:4px 0}
+#peek .cd-full.left{left:auto;right:calc(100% + 10px)}

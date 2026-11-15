@@ -1467,12 +1467,13 @@ function budgetState(raw) {
   const b = SET.budget[raw.t] || [0, 99], v = cardValue(raw).total;
   return { st:v > b[1] ? 'over' : v < b[0] ? 'under' : 'ok', v, b };
 }
-function cardTextH(id, g) {
-  const c = CD(id), k = g ? 2 : 1, parts = [];
+function cardTextH(id, g, full) {
+  const c = CD(id), k = g ? 2 : 1, parts = [], short = !full && /^nk_/.test(id); TX_SHORT = short;
   const kws = (c.kw || []).map(x => `<b>${esc(SET.kw[x].n)}</b>`);
   if (kws.length) parts.push(kws.join(', ') + '.');
-  if (typeof NK_GOF !== 'undefined' && NK_GOF[id]) parts.push('<b>Groupe</b> : ' + [...new Set(NK_GOF[id].map(g => esc(g.n)))].join(', ') + '.');
+  if (!short && typeof NK_GOF !== 'undefined' && NK_GOF[id]) parts.push('<b>Groupe</b> : ' + [...new Set(NK_GOF[id].map(g => esc(g.n)))].join(', ') + '.');
   (c.fx || []).forEach(e => { if (ET[e.k]) { const t = esc(fxText(e, k)); const i = t.indexOf(' : '); parts.push(i > 0 && i < 24 ? `<b>${t.slice(0, i)}</b>${t.slice(i)}` : t); } });
+  TX_SHORT = false;
   return parts.join(' ');
 }
 
@@ -1633,7 +1634,11 @@ const jutFx = (J, tf) => jutLast(J, tf, 'fx');
 const jutCb = (J, tf) => jutLast(J, tf, 'cb');
 const tfStTxt = (T, k) => `${T.nm} (${T.c} chakra) : ${T.a || T.h ? sign(T.a * k, T.h * k) : ''}${T.kw ? (T.a || T.h ? ', ' : '') + ((SET.kw[T.kw] || {}).n || '') : ''}${(T.x || []).map(o => ET[o.k] ? ' · ' + ET[o.k].txt(o, k).replace(/\.$/, '') : '').join('')}${T.fx ? ' · son jutsu devient : ' + jutBody(T.fx, k) : ''}${T.cb ? ' · son jutsu de combat devient : ' + jutBody(T.cb, k) : ''}`.replace(' :  · ', ' : ');
 const jutBody = (fx, k) => fx.map(o => ET[o.k] ? ET[o.k].txt(o, k).replace(/^(Cri de guerre|Début du combat) : /, '').replace(' : au début du combat, ', ' : ').replace(/\.$/, '') : '?').join(' ; ');
+let TX_SHORT = false;   // texte court sur les cartes (les détails s'affichent à côté de la grande carte au survol)
 function jutTxt(e, k) {
+  if (TX_SHORT) { const ST = tfSt(e), cb = e.cb && e.cb.length, fx = e.fx && e.fx.length;
+    const j = e.none ? '' : (cb && !fx ? `Jutsu de combat · ${e.nm} : ${jutBody(e.cb, k)}.` : `Jutsu · ${e.nm} : ${jutBody(e.fx || [], k)}${cb ? ' ; au combat : ' + jutBody(e.cb, k) : ''}.`);
+    return j + (ST.length ? `${j ? ' ' : ''}${ST.length > 1 ? 'Transformations' : 'Transformation'} : ${ST.map((T, i) => `${T.nm} (${T.c}${i === ST.length - 1 ? ', doré' : ''})`).join(' → ')}.` : ''); }
   const ST = tfSt(e), cb = e.cb && e.cb.length, fx = e.fx && e.fx.length;
   const j = e.none ? '' : (cb && !fx ? `Jutsu de combat · ${e.nm} : ${jutBody(e.cb, k)}.` : `Jutsu · ${e.nm} : ${jutBody(e.fx || [], k)}${cb ? ' ; au combat : ' + jutBody(e.cb, k) : ''}.`);
   return j + (ST.length ? `${j ? ' ' : ''}${ST.length > 1 ? 'Transformations' : 'Transformation'} · ${ST.map((T, i) => (i === ST.length - 1 ? 'carte dorée seulement · ' : '') + tfStTxt(T, k)).join(' → ')}.` : '');

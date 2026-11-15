@@ -1589,12 +1589,14 @@ function showPeek(t, touch) {
     peekFor = t; peekEl.innerHTML = cardH({ c, a:+t.dataset.a, h:+t.dataset.h, g:+t.dataset.g, f:t.dataset.f || '', tf:+t.dataset.tf || 0, tfn:t.dataset.tfn || '', it:t.dataset.it || '' }, 'p', 0); peekEl.hidden = false;   // la grande carte suit la transformation (image et nom de la forme)
     { const mc = findMine(t.dataset.u); if (mc && isComp(mc)) { const lv = (V.me && V.me.eqlv) || {}; const eq = mc.eq || [];
       peekEl.insertAdjacentHTML('beforeend', compSheetH(mc, lv, eq)); } }
+    if (/^nk_/.test(c)) { const g0 = +t.dataset.g, full = cardTextH(c, g0, true), grp = typeof NK_GOF !== 'undefined' && NK_GOF[c] ? [...new Set(NK_GOF[c].map(x => x.n))] : []; peekEl.insertAdjacentHTML('beforeend', `<div class="cd-full"><b class="cdf-h">Détails · ${esc(CD(c).n)}</b>${grp.length ? `<p><b>Groupes</b> : ${esc(grp.join(', '))}.</p>` : ''}<p>${full.replace(/<b>Groupe<\/b> : [^.]*\. ?/, '')}</p></div>`); }   // le texte complet à côté de la carte
     const [pw, ph] = peekSize(); placePeek(r, pw, ph + (peekEl.querySelector('.peq') ? peekEl.querySelector('.peq').offsetHeight + 8 : 0), touch);
+    { const cf = peekEl.querySelector('.cd-full'); if (cf) { const pr = peekEl.getBoundingClientRect(); cf.classList.toggle('left', pr.right + cf.offsetWidth + 14 > innerWidth); } }
     // après un instant de survol : la bulle des améliorations
     clearTimeout(TIPT); const mm = findMine(t.dataset.u);
     if (mm) TIPT = setTimeout(() => {
       if (peekFor !== t || peekEl.hidden) return; const h = bonusTipH(mm); if (!h) return;
-      peekEl.insertAdjacentHTML('beforeend', h); const tip = peekEl.querySelector('.btip'), pr = peekEl.getBoundingClientRect();
+      peekEl.insertAdjacentHTML('beforeend', h); const tip = peekEl.querySelector('.btip'), pr = peekEl.getBoundingClientRect(); { const cf = peekEl.querySelector('.cd-full'); if (cf && tip) tip.style.top = (cf.offsetTop + cf.offsetHeight + 10) + 'px'; }
       if (pr.right + tip.offsetWidth + 14 > innerWidth) tip.classList.add('left');
       const tr = tip.getBoundingClientRect(); if (tr.bottom > innerHeight - 8) tip.style.top = f1(innerHeight - 8 - tr.height - pr.top) + 'px';
     }, touch ? 650 : 900);
