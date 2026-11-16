@@ -864,7 +864,7 @@ const niStatus = id => { if (!V.me) return ['Disponible', 'ok']; if (itHave(V.me
   if (!itOwnerIn(V.me, id)) return ['Disponible · à poser sur ' + itOwners(id).join(' ou '), 'ok']; return ['Disponible', 'ok']; };
 function niMedH(id, z, i, o = {}) {
   const S = SPELLS[id], sel = V.sel && V.sel.z === z && V.sel.i === i, c = spellCostFor(id, z);
-  const ok = z === 'ss' && V.me ? (itOwnerIn(V.me, id) && !itHave(V.me, id) ? ' it-ok' : ' it-no') : '';
+  const ok = z === 'ss' && V.me ? (itOwnerIn(V.me, id) && !itHave(V.me, id) ? ((V.me.g || 0) >= c ? ' it-ok' : ' it-ok it-poor') : ' it-no') : '';   // vert = achetable, bleu = propriétaire mais pas assez d'or
   return `<div class="spt nim${sel ? ' sel' : ''}${S.ex ? ' spx lg' : ''}${ok}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="Objet ${esc(S.n)}, coût ${c} or, pour ${esc(itOwners(id).join(', '))}">
     <span class="nim-m"><span class="nim-art"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#sp-${id}" width="100" height="100"/></svg></span><i class="nim-fr"></i>${S.ex ? '' : '<i class="nim-sh"></i>'}
     <span class="nim-rb"><b style="--k:${Math.max(.66, Math.min(1, 9 / S.n.length)).toFixed(2)}">${esc(S.n)}</b></span><span class="nim-pl2">${niFaces(id)}</span><span class="nim-co${c < S.c ? ' aff' : ''}"><b>${c}</b></span></span>

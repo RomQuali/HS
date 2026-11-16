@@ -2311,3 +2311,6 @@ html body #peek .cd-full.nkd{width:340px;padding:0 12px 12px;border-radius:14px;
 #peek .nkd-tfh>b{font:800 15px var(--f-disp),serif;margin-right:auto}
 #peek .nkd-gold{padding:2px 10px;font:800 11.5px var(--f-disp),serif;color:#4a2a04;background:url(assets/naruto/detail/badge-carte-doree.webp) center/100% 100% no-repeat}
 /* fiche de détail : le dépliage (fond + sections) est animé en JS, voir nkdAnim() dans ui.js */
+
+/* objet : propriétaire présent mais pas assez d'or -> halo bleu */
+html body .spt.nim.it-ok.it-poor .nim-m{filter:drop-shadow(0 0 3px #4ab8ff) drop-shadow(0 0 8px rgba(60,150,255,.8))}
