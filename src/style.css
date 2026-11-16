@@ -2355,8 +2355,8 @@ html body .hp-ov.nkv .hp-pwtip .nkpc{width:300px}
 .bt .bt-t{top:7.4%;font:800 4.6cqw/1 var(--f-disp),serif;letter-spacing:.06em;text-transform:uppercase;color:#f8e6b4;-webkit-text-stroke:.5cqw #2a1a06;paint-order:stroke fill;text-shadow:0 .4cqw .6cqw rgba(0,0,0,.45)}
 .bt .bt-s{top:15.6%;font:600 2cqw/1.2 var(--f-disp),serif;color:#f5e6c6}
 .bt .bt-i{top:22.4%;font:italic 600 2.3cqw/1.2 var(--f-disp),serif;color:#3e2a14}
-.bt .bt-row{top:28%;height:54%;display:flex;justify-content:center;align-items:center;gap:calc(14% / var(--n))}
-.bt .bt-c{position:relative;flex:none;width:calc(min(30%, 78% / var(--n)));aspect-ratio:232/321;padding:0;border:0;background:none;cursor:pointer;transition:transform .15s,filter .15s;font:inherit;color:inherit}
+.bt .bt-row{top:27.5%;height:51%;display:flex;justify-content:center;align-items:center;gap:calc(14% / var(--n))}
+.bt .bt-c{position:relative;flex:none;height:100%;max-width:calc(80% / var(--n));aspect-ratio:480/894;padding:0;border:0;background:none;cursor:pointer;transition:transform .15s,filter .15s;font:inherit;color:inherit}
 .bt .bt-c:hover{transform:translateY(-1%) scale(1.02)}
 .bt .bt-c.on{filter:drop-shadow(0 0 .6cqw rgba(255,214,110,.95)) drop-shadow(0 0 1.6cqw rgba(255,190,70,.55))}
 .bt .bt-c.lg .bt-fr{filter:saturate(1.3) brightness(1.08)}
@@ -2375,3 +2375,9 @@ html body .hp-ov.nkv .hp-pwtip .nkpc{width:300px}
 .bt .bt-f i{width:12%;height:.9cqw;background:url(assets/naruto/butin/separateur.webp) center/100% 100% no-repeat}
 .bt .bt-go{top:87.6%;left:31%;right:31%;height:8.4%;padding:0 0 .3cqw;border:0;cursor:pointer;background:url(assets/naruto/butin/bouton-recuperer.webp) center/100% 100% no-repeat;font:800 2.5cqw/1 var(--f-disp),serif;letter-spacing:.05em;text-transform:uppercase;color:#f6e7c4;text-shadow:0 2px 2px rgba(0,0,0,.5);transition:filter .15s}
 .bt .bt-go:hover{filter:brightness(1.18) drop-shadow(0 0 .8cqw rgba(140,230,150,.55))}
+
+.bt .bt-c .cd.spc.nic{--hw:100%;width:100%;pointer-events:none;filter:drop-shadow(0 6px 10px rgba(0,0,0,.45))}
+.bt .bt-c{display:flex;align-items:center}
+.bt .bt-c .bt-ok{right:-4%;top:-1%;width:20%}
+.bt .bt-c .bt-rb{bottom:-5%;height:5%}
+.bt .bt-c .nic-co{display:none}   /* le butin est gratuit : pas de prix */

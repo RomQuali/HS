@@ -4002,14 +4002,8 @@ function butinH(me) {
   const sel = Math.min(V.dsel || 0, me.disc.length - 1), n = me.disc.length;
   const who = me.dsc && /^Ninja vaincu/.test(me.dsc) ? 'Adversaire éliminé · ' + me.dsc.replace(/^Ninja vaincu : /, '') : me.dsc ? 'Bataille gagnée · ' + me.dsc : 'Butin';
   const rich = t => esc(t).replace(/([+-]?\d+ chakra)/gi, '<i class="bt-ck"></i><b>$1</b>').replace(/([+-]\d+\/[+-]\d+)/g, '<b>$1</b>');
-  const cards = me.disc.map((m, i) => { const S = SPELLS[m.sp] || {};
-    return `<button class="bt-c${i === sel ? ' on' : ''}${S.ex ? ' lg' : ''}" data-act="bsel" data-i="${i}" aria-pressed="${i === sel}" aria-label="${esc(S.n || '')}">
-      <span class="bt-art"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#sp-${m.sp}" width="100" height="100"/></svg></span>
-      <i class="bt-fr"></i>
-      <b class="bt-n" style="--k:${Math.min(1, 15 / Math.max(8, (S.n || '').length)).toFixed(2)}">${esc(S.n || m.sp)}</b>
-      <span class="bt-tx">${rich(S.tx || '')}</span>
-      ${i === sel ? '<i class="bt-ok"></i><span class="bt-rb">Sélectionné</span>' : ''}
-    </button>`; }).join('');
+  const cards = me.disc.map((m, i) => { const S = SPELLS[m.sp] || {};   // la vraie carte de l'objet (même visuel qu'en taverne et au survol)
+    return `<div class="bt-c${i === sel ? ' on' : ''}" data-act="bsel" data-i="${i}" role="button" tabindex="0" aria-pressed="${i === sel}" aria-label="${esc(S.n || '')}">${niCardH(m.sp, 'bt', i)}${i === sel ? '<i class="bt-ok"></i><span class="bt-rb">Sélectionné</span>' : ''}</div>`; }).join('');
   return `<div class="ov bt-ov"><section class="bt" role="dialog" aria-label="Butin de victoire" style="--n:${n}">
     <h2 class="bt-t">Butin de victoire</h2>
     <p class="bt-s">${esc(who)}</p>
