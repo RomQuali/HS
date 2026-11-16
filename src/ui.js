@@ -1607,10 +1607,11 @@ function showPeek(t, touch) {
     const [pw, ph] = peekSize(); placePeek(r, pw, ph + 30, touch); return true;
   }
   const hv = t.dataset.hov;
+  if (hv === 'hero') return false;   // survol de son propre héros : rien (le pouvoir se lit sur son bouton)
   if (hv && hv !== 'law' && (V.me || hv === 'op')) {
     let html = '';
-    if (hv === 'op' && V.pub) { const p = V.pub.pl.find(x => x.n === t.dataset.n); if (p && HEROES[p.h]) html = oppPeekH(p) + nhPairH(p.h, 'Sa carte de héros'); }
-    else if ((hv === 'pow' || hv === 'hero') && HEROES[V.me.hero]) { const h = HX(V.me); html = heroCardH(V.me.hero, { aw:V.me.haw, qp:V.me.qp, foot:h.cost ? (V.me.pu ? 'Déjà utilisé ce tour' : h.minRound && (V.me.rd || 0) < h.minRound ? `Disponible dès la manche ${h.minRound}` : 'Disponible') : 'Toujours actif' }) + (hv === 'hero' ? nhPairH(V.me.hero, 'Ta carte de héros') : ''); }
+    if (hv === 'op' && V.pub) { const p = V.pub.pl.find(x => x.n === t.dataset.n); if (p && HEROES[p.h]) html = nhPairH(p.h, 'Sa carte de héros') ? `<div class="hc-only">${nhPairH(p.h, 'Sa carte de héros')}</div>` : oppPeekH(p); }   // Naruto : au survol d'un héros, seulement sa carte (pas son pouvoir)
+    else if ((hv === 'pow' || hv === 'hero') && HEROES[V.me.hero]) { const h = HX(V.me); html = heroCardH(V.me.hero, { aw:V.me.haw, qp:V.me.qp, foot:h.cost ? (V.me.pu ? 'Déjà utilisé ce tour' : h.minRound && (V.me.rd || 0) < h.minRound ? `Disponible dès la manche ${h.minRound}` : 'Disponible') : 'Toujours actif' }); }
     else if (hv === 'comp' && compOf(V.me.hero) && C[compOf(V.me.hero)]) html = compCardH(V.me.hero, compOf(V.me.hero), V.me);
     else if (hv === 'rsv') html = rsvPeekH(V.me);
     else if (hv === 'mk') html = mkPeekH(V.me);
@@ -1619,7 +1620,7 @@ function showPeek(t, touch) {
   }
   // héros, pouvoir, adversaires, boutons : une bulle d'explication
   let tt = t.dataset.tip || t.getAttribute('title') || t.getAttribute('aria-label') || '';
-  if (t.matches('.op') && V.pub) { const p0 = V.pub.pl.find(x => x.n === t.getAttribute('title')); const pr = p0 && nhPairH(p0.h, 'Sa carte de héros'); if (pr) { peekFor = t; peekEl.innerHTML = oppPeekH(p0) + pr; peekEl.hidden = false; const q = peekEl.firstElementChild.getBoundingClientRect(); placePeek(r, q.width, q.height + 300, touch); return true; } }
+  if (t.matches('.op') && V.pub) { const p0 = V.pub.pl.find(x => x.n === t.getAttribute('title')); const pr = p0 && nhPairH(p0.h, 'Sa carte de héros'); if (pr) { peekFor = t; peekEl.innerHTML = `<div class="hc-only">${pr}</div>`; peekEl.hidden = false; const q = peekEl.firstElementChild.getBoundingClientRect(); placePeek(r, q.width, q.height + 300, touch); return true; } }
   if (t.matches('.op') && V.pub) { const p = V.pub.pl.find(x => x.n === t.getAttribute('title')); if (p) { const h = HEROES[p.h]; tt = `${p.n}${h ? ' · ' + h.n : ''} : ${Math.max(0, p.hp)} PV${p.ar ? ' + ' + p.ar + ' armure' : ''}, taverne ${p.t}${h ? '. ' + h.tx : ''}`; } }
   if (!tt) return false;
   const i = tt.indexOf(' : ');
