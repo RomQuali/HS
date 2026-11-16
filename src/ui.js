@@ -3904,7 +3904,19 @@ function nkdFit(cf) {
   if (r.top + dy < 8) dy = 8 - r.top;
   cf.style.top = dy / sc * (sc < 1 ? sc : 1) + 'px';
   if (cf.classList.contains('left')) cf.style.transformOrigin = 'top right';
+  nkdAnim(cf);
 }
 
 /* ce ninja est-il à moi (plateau ou main) ? */
 function nkdHave(x) { return !!V.me && [...(V.me.bd || []), ...(V.me.hd || [])].some(m => m && (m.c || m) === x); }
+
+/* la fiche se déplie comme un tiroir : chaque section pousse le fond vers le bas, une étape à la fois */
+function nkdAnim(cf) {
+  if (cf.dataset.anim || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return; cf.dataset.anim = 1;
+  const steps = [];
+  [...cf.children].forEach(el => { const tfs = el.querySelector('.nkd-tfs'); if (tfs) { steps.push(el.querySelector('.nkd-rb')); steps.push(...tfs.children); } else steps.push(el); });
+  const grow = (el, delay, dur) => { const h = el.offsetHeight, cs = getComputedStyle(el); el.style.overflow = 'hidden';
+    const a = el.animate([{ height: '0px', marginTop: '0px', marginBottom: '0px', paddingTop: '0px', paddingBottom: '0px', opacity: 0 }, { height: h + 'px', marginTop: cs.marginTop, marginBottom: cs.marginBottom, paddingTop: cs.paddingTop, paddingBottom: cs.paddingBottom, opacity: 1 }], { duration: dur, delay, easing: 'cubic-bezier(.3,.7,.3,1)', fill: 'backwards' });
+    a.onfinish = a.oncancel = () => { el.style.overflow = ''; }; };
+  let t = 0; steps.forEach((el, i) => { if (!el) return; grow(el, t, i ? 550 : 350); t += i ? 750 : 400; });
+}
