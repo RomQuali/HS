@@ -601,6 +601,6 @@ const NK_PACK2 = {
 // 5 visuels fournis le 16/11/2026 : Chōji Mode papillon, héros Tsunade (et éveillée), Serpent d'Orochimaru, Obito Jinchūriki de Jūbi
 (function () {
   const pic = id => () => `<rect width="100" height="100" fill="#1a120c"/><image href="assets/naruto/jeu/${id}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`;
-  if (typeof ART !== 'undefined') { ART.nk_choji_tf1 = pic('nk_choji_tf1'); ART.tk_serpent = pic('tk_serpent'); ART.nk_tobi_tf2 = pic('nk_tobi_tf2'); }
+  if (typeof ART !== 'undefined') { ART.nk_choji_tf1 = pic('nk_choji_tf1'); ART.tk_serpent = pic('tk_serpent'); ART.nk_tobi_tf2 = pic('nk_tobi_tf2'); ART.nk_tobi_tf1 = pic('nk_tobi_obito'); }
   if (typeof HART !== 'undefined') { HART.nh_tsunade = pic('nh_tsunade'); HART.nh_tsunade_aw = pic('nh_tsunade_aw'); }
 })();
