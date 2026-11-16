@@ -2290,9 +2290,7 @@ html body #peek .cd-full.nkd{width:340px;padding:0 12px 12px;border-radius:14px;
 #peek .nkd-sub{display:block;text-align:center;font-style:italic;color:#6a4a2a;font-size:12px;margin:1px 0 6px}
 #peek .nkd-names{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 5px;margin-bottom:2px}
 #peek .nkd-nm{display:block;padding:4px 3px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font:700 12px var(--f-disp),serif;color:#5a4028;background:url(assets/naruto/detail/case-nom-ninja.webp) center/100% 100% no-repeat}
-#peek .nkd-nm.on{position:relative;color:#fff;background:linear-gradient(180deg,#5fbf4a,#2f7d22);border-radius:5px;box-shadow:0 0 0 2px #e8c25a,0 0 10px 2px rgba(120,230,90,.75);text-shadow:0 1px 0 #10380a}
-#peek .nkd-nm.on::before{content:'✔';margin-right:4px;color:#f6e27a;font:900 11px sans-serif}
-#peek .nkd-names:has(.on) .nkd-nm:not(.on){opacity:.6}
+#peek .nkd-nm.on{filter:drop-shadow(0 0 3px #38ff4a) drop-shadow(0 0 7px rgba(60,255,90,.75));color:#1e4a10}
 #peek .nkd-sep{display:block;height:10px;margin:4px 0;background:url(assets/naruto/detail/separateur.webp) center/90% 100% no-repeat}
 #peek .nkd-row{display:flex;gap:8px;align-items:flex-start;margin:2px 0}
 #peek .nkd-row+.nkd-row{border-top:1px solid rgba(168,116,58,.35);padding-top:5px}
