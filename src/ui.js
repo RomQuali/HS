@@ -1427,13 +1427,13 @@ document.addEventListener('pointerdown', e => {
   if (DC && e.pointerType === 'mouse') e.preventDefault();
 });
 document.addEventListener('pointermove', e => {
-  if (DRAG) { if (e.pointerId === DRAG.id) dragMove(e.clientX, e.clientY); return; }
+  if (DRAG) { if (e.pointerId === DRAG.id) { DRAG.px = e.clientX; DRAG.py = e.clientY; if (!DRAG.raf) DRAG.raf = requestAnimationFrame(() => { const D = DRAG; if (!D) return; D.raf = 0; dragMove(D.px, D.py); }); } return; }   // perf : un seul traitement par image
   if (!DC || e.pointerId !== DC.id) return;
   if (LP && LP.on) { DC = null; return; }
   if (Math.hypot(e.clientX - DC.x, e.clientY - DC.y) < (DC.type === 'mouse' ? 5 : 9)) return;
   const d = DC; DC = null; dragStart(d, e.clientX, e.clientY);
 });
-document.addEventListener('pointerup', e => { DC = null; if (DRAG && e.pointerId === DRAG.id) dragEnd(e.clientX, e.clientY, false); });
+document.addEventListener('pointerup', e => { DC = null; if (DRAG && e.pointerId === DRAG.id) { if (DRAG.raf) { cancelAnimationFrame(DRAG.raf); DRAG.raf = 0; dragMove(e.clientX, e.clientY); } dragEnd(e.clientX, e.clientY, false); } });
 document.addEventListener('pointercancel', e => { DC = null; if (DRAG && e.pointerId === DRAG.id) dragEnd(0, 0, true); });
 window.addEventListener('blur', () => { if (DRAG) dragEnd(0, 0, true); });
 function dragStart(d, x, y) {
@@ -1456,6 +1456,7 @@ function dragStart(d, x, y) {
     dragLayer.style.transform = `translate(${f1(DRAG.ax)}px,${f1(DRAG.ay)}px)`;
   }
   c.classList.add('drag-src'); document.body.classList.add('dragging');
+  DRAG.zr = dzRects(DRAG.z);   // perf : zones mesurées une seule fois au début du glisser
   dzShow();
   dragMove(x, y);
   const tick = () => { if (!DRAG) return; if (DRAG.aim) { const cc = dragLayer.firstChild; if (cc) cc.style.transform = 'scale(1.12)'; return; } DRAG.vx *= 0.82; const rot = Math.max(-20, Math.min(20, DRAG.vx * 1.4)); DRAG.rot += (rot - DRAG.rot) * 0.35; const cc = dragLayer.firstChild; if (cc) cc.style.transform = `rotate(${f1(DRAG.rot)}deg) scale(1.14)`; requestAnimationFrame(tick); };
@@ -1478,20 +1479,23 @@ function dzRects(from) {
   if (from === 'bd') return [{ drop:'sh', el:sh, l, r, t:T.top, b:b1 }, { drop:'bd', el:bd, l, r, t:b1, b:bot, hide:1 }];
   return [];
 }
-function dzAt(x, y, from) { return dzRects(from).find(z => x >= z.l && x <= z.r && y >= z.t && y < z.b) || null; }
+function dzAt(x, y, from) { return ((DRAG && DRAG.zr) || dzRects(from)).find(z => x >= z.l && x <= z.r && y >= z.t && y < z.b) || null; }
 const dzLayer = (() => { const l = document.createElement('div'); l.id = 'dzl'; l.setAttribute('aria-hidden', 'true'); l.hidden = true; document.body.appendChild(l); return l; })();
 function dzShow(on) {
   if (!DRAG) return dzHide();
-  const R = dzRects(DRAG.z).filter(z => !z.hide && dropAllowed(DRAG.z, z.drop, DRAG.sp)); if (!R.length) return dzHide();
+  if (DRAG.dzOn !== undefined && DRAG.dzOn === (on || null) && !dzLayer.hidden) return;   // perf : rien n'a changé
+  DRAG.dzOn = on || null;
+  const R = (DRAG.zr || dzRects(DRAG.z)).filter(z => !z.hide && dropAllowed(DRAG.z, z.drop, DRAG.sp)); if (!R.length) return dzHide();
   const lbl = { sh:'Vendre', bd:'Jouer', hd:'Acheter', pt:'Passer' };
   dzLayer.innerHTML = R.map(z => `<div class="dz${z.drop === on ? ' on' : ''}${z.drop === 'sh' && DRAG.z === 'bd' ? ' sell' : ''}" style="left:${f1(z.l)}px;top:${f1((z.v || [z.t])[0])}px;width:${f1(z.r - z.l)}px;height:${f1(Math.min((z.v || [0, z.b])[1], innerHeight) - (z.v || [z.t])[0])}px"><span>${lbl[z.drop]}</span></div>`).join('');
   dzLayer.hidden = false;
 }
 function dzHide() { dzLayer.hidden = true; dzLayer.innerHTML = ''; }
 function boardPos(line, x, from, i) {
-  const cards = [...line.querySelectorAll('.mn:not(.drag-src):not(.cp-tok)')]; let pos = 0;   // le compagnon (bord gauche) ne compte pas
-  cards.forEach(c => { const r = c.getBoundingClientRect(); if (x > r.left + r.width / 2) pos++; });
-  return { cards, pos };
+  let bp = DRAG && DRAG.bp && DRAG.bp.line === line ? DRAG.bp : null;
+  if (!bp) { const cards = [...line.querySelectorAll('.mn:not(.drag-src):not(.cp-tok)')]; bp = { line, cards, mid:cards.map(c => { const r = c.getBoundingClientRect(); return r.left + r.width / 2; }) }; if (DRAG) DRAG.bp = bp; }   // perf : positions mesurées une fois
+  let pos = 0; bp.mid.forEach(m => { if (x > m) pos++; });   // le compagnon (bord gauche) ne compte pas
+  return { cards:bp.cards, pos };
 }
 function aimTarget(x, y) {
   let best = null;
@@ -1517,17 +1521,19 @@ function dragMove(x, y) {
   const t = document.elementFromPoint(x, y);
   const zi = dzAt(x, y, D.z), okz = zi && dropAllowed(D.z, zi.drop, D.sp) ? zi : null, ok = okz ? okz.el : null;
   dzShow(okz ? okz.drop : null);
-  document.querySelectorAll('.mk-l,.mk-r,.tg-hover').forEach(el => el.classList.remove('mk-l', 'mk-r', 'tg-hover'));
+  const prevMk = D.mk || []; D.mk = [];
   const to = okz ? okz.drop : null;
   let tag = '';
   if (to === 'pt') tag = 'Passer à ' + ((V.me.ally || {}).n || 'ton allié') + (V.me.passfree || (D.sp === 'lo_anneau' && (((HEROES[V.me.hero] || {}).pw || {}).k === 'pring')) ? ' · gratuit' : ' · 1 or');
-  else if (to === 'bd' && D.sp) { const tm = t.closest('.mn'); if (SPELLS[D.sp] && SPELLS[D.sp].tg) { if (tm && tm.dataset.z === 'bd') { tm.classList.add('tg-hover'); tag = 'Lancer'; } else tag = 'Vise un serviteur'; } else tag = 'Lancer'; }
+  else if (to === 'bd' && D.sp) { const tm = t && t.closest('.mn'); if (SPELLS[D.sp] && SPELLS[D.sp].tg) { if (tm && tm.dataset.z === 'bd') { D.mk.push([tm, 'tg-hover']); tag = 'Lancer'; } else tag = 'Vise un serviteur'; } else tag = 'Lancer'; }
   else if (to === 'bd' && (D.z === 'sh' || D.z === 'ss')) tag = D.z === 'ss' ? 'Acheter le sort' : 'Acheter · 3 or';
   else if (to === 'sh' && D.z === 'hd') tag = D.sp && SPELLS[D.sp] && SPELLS[D.sp].ni ? 'Revendre · +1 or' : D.sp ? 'Lancer' : 'Jouer';
-  else if (to === 'bd') { const { cards, pos } = boardPos(ok, x); if (cards[pos - 1]) cards[pos - 1].classList.add('mk-l'); if (cards[pos]) cards[pos].classList.add('mk-r'); tag = D.z === 'hd' ? 'Jouer' : 'Déplacer'; }
+  else if (to === 'bd') { const { cards, pos } = boardPos(ok, x); if (cards[pos - 1]) D.mk.push([cards[pos - 1], 'mk-l']); if (cards[pos]) D.mk.push([cards[pos], 'mk-r']); tag = D.z === 'hd' ? 'Jouer' : 'Déplacer'; }
   else if (to === 'hd') tag = D.z === 'ss' ? 'Acheter le sort' : 'Acheter · 3 or';
   else if (to === 'sh') tag = 'Vendre · +1 or';
-  const tg = dragLayer.querySelector('.dragtag'); if (tg) { tg.hidden = !tag; tg.textContent = tag; tg.classList.toggle('sell', to === 'sh' && (D.z === 'bd' || (D.z === 'hd' && D.sp && SPELLS[D.sp] && SPELLS[D.sp].ni))); }
+  // perf : on ne touche aux classes des cartes que si les repères ont changé
+  if (prevMk.length !== D.mk.length || prevMk.some((p, k) => p[0] !== D.mk[k][0] || p[1] !== D.mk[k][1])) { prevMk.forEach(([el, k]) => el.classList.remove(k)); D.mk.forEach(([el, k]) => el.classList.add(k)); }
+  const tg = D.tg || (D.tg = dragLayer.querySelector('.dragtag')); if (tg && tg.textContent !== tag) { tg.hidden = !tag; tg.textContent = tag; } if (tg) { tg.classList.toggle('sell', to === 'sh' && (D.z === 'bd' || (D.z === 'hd' && D.sp && SPELLS[D.sp] && SPELLS[D.sp].ni))); }
 }
 function dragEnd(x, y, cancel) {
   const D = DRAG; DRAG = null;
@@ -1594,6 +1600,7 @@ function peekSize() { const c = peekEl.firstElementChild, w = c ? c.getBoundingC
 // Naruto : la carte du héros, en version normale et dorée (choix du héros, survol des héros en partie)
 const nhPairH = (h, lab) => { const cc = typeof nhCard === 'function' && nhCard(h); if (!cc) return ''; const b = C[cc]; return `<div class="hp-hcards"><small>${esc(lab)} · jouable en taverne ${b.t}</small><div>${cardH({ c:cc, a:b.a, h:b.h, f:b.f || '' }, 'p', 0)}${cardH({ c:cc, a:b.a * GOLD_K, h:b.h * GOLD_K, g:1, f:b.f || '' }, 'p', 1)}</div></div>`; };
 function showPeek(t, touch) {
+  if (DRAG) return false;   // pas de bulle pendant qu'on déplace une carte
   const r = t.getBoundingClientRect();
   if (t.classList.contains('owf') && t.dataset.c && C[t.dataset.c]) { const b = C[t.dataset.c]; peekFor = t; peekEl.innerHTML = cardH({ c:t.dataset.c, a:b.a, h:b.h, f:b.f || '' }, 'p', 0); peekEl.hidden = false; const [pw, ph] = peekSize(); placePeek(r, pw, ph, touch); return true; }   // Naruto : survol du visage d'un propriétaire d'objet = sa carte
   if (t.classList.contains('eqm') && t.dataset.sp) { peekFor = t; peekEl.innerHTML = spellCardH(t.dataset.sp, 'p', 0) + `<div class="peek-note">${esc(t.dataset.why || '')}</div>`; peekEl.hidden = false; const [pw, ph] = peekSize(); placePeek(r, pw, ph + 40, touch); return true; }
@@ -3949,3 +3956,36 @@ function nkPowCardH(hid, h0, h, o) {
   </div>`;
 }
 function cap1(t) { t = String(t || ''); return t.charAt(0).toUpperCase() + t.slice(1); }
+
+/* ===== deux boutons sur tous les écrans : plein écran, puis « sortir » à sa droite (16/11/2026) =====
+   En jeu, ce sont les boutons du HUD (repositionnés en CSS) ; ailleurs, une petite barre fixe en haut à droite.
+   Quand une fenêtre modale est ouverte (choix de l'univers, bureau de Tony…), la barre passe dans la fenêtre pour rester au-dessus. */
+(() => {
+  const GB_FS = 'url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22b%22%20cx%3D%2250%25%22%20cy%3D%2240%25%22%20r%3D%2260%25%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%235a3a22%22/%3E%3Cstop%20offset%3D%22.7%22%20stop-color%3D%22%232e1c10%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%231a0f08%22/%3E%3C/radialGradient%3E%3ClinearGradient%20id%3D%22r%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23e8e2d4%22/%3E%3Cstop%20offset%3D%22.5%22%20stop-color%3D%22%238a8378%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%234a463f%22/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%22i%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f6e6c4%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23c8a878%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2247%22%20fill%3D%22url%28%23r%29%22/%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2241%22%20fill%3D%22%231a0f08%22/%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2239%22%20fill%3D%22url%28%23b%29%22/%3E%3Cg%20fill%3D%22url%28%23i%29%22%20stroke%3D%22%232a1608%22%20stroke-width%3D%222.2%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M26%2040%20V26%20H40%20M60%2026%20H74%20V40%20M74%2060%20V74%20H60%20M40%2074%20H26%20V60%22%20fill%3D%22none%22%20stroke%3D%22%232a1608%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3Cpath%20d%3D%22M26%2040%20V26%20H40%20M60%2026%20H74%20V40%20M74%2060%20V74%20H60%20M40%2074%20H26%20V60%22%20fill%3D%22none%22%20stroke%3D%22url%28%23i%29%22%20stroke-width%3D%226%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/g%3E%3C/svg%3E")', GB_OUT = 'url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22b%22%20cx%3D%2250%25%22%20cy%3D%2240%25%22%20r%3D%2260%25%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%235a3a22%22/%3E%3Cstop%20offset%3D%22.7%22%20stop-color%3D%22%232e1c10%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%231a0f08%22/%3E%3C/radialGradient%3E%3ClinearGradient%20id%3D%22r%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23e8e2d4%22/%3E%3Cstop%20offset%3D%22.5%22%20stop-color%3D%22%238a8378%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%234a463f%22/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%22i%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f6e6c4%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23c8a878%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2247%22%20fill%3D%22url%28%23r%29%22/%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2241%22%20fill%3D%22%231a0f08%22/%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2239%22%20fill%3D%22url%28%23b%29%22/%3E%3Cg%20fill%3D%22url%28%23i%29%22%20stroke%3D%22%232a1608%22%20stroke-width%3D%222.2%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M32%2024%20h26%20v52%20h-26%20z%22/%3E%3Cpath%20d%3D%22M58%2024%20l14%206%20v40%20l-14%206%20z%22%20fill%3D%22%23a8835a%22/%3E%3Ccircle%20cx%3D%2262%22%20cy%3D%2252%22%20r%3D%222.6%22%20fill%3D%22%232a1608%22%20stroke%3D%22none%22/%3E%3Cpath%20d%3D%22M44%2050%20h-16%20M34%2044%20l-7%206%20l7%206%22%20fill%3D%22none%22%20stroke%3D%22%23f6e6c4%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22/%3E%3Cpath%20d%3D%22M44%2050%20h-16%20M34%2044%20l-7%206%20l7%206%22%20fill%3D%22none%22%20stroke%3D%22%232a1608%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.0%22/%3E%3C/g%3E%3C/svg%3E")';
+  const bar = document.createElement('div'); bar.id = 'gbar';
+  bar.innerHTML = `<style>#gbar{position:fixed;top:12px;right:14px;z-index:2147483000;display:flex;gap:10px;pointer-events:auto}#gbar[hidden]{display:none}#gbar button{width:56px;height:56px;padding:0;border:0;border-radius:50%;cursor:pointer;background:transparent center/100% 100% no-repeat;filter:drop-shadow(0 3px 5px rgba(0,0,0,.55));transition:filter .12s,transform .12s}#gbar button:hover{filter:drop-shadow(0 3px 5px rgba(0,0,0,.55)) brightness(1.25);transform:scale(1.05)}#gbar .g-fs{background-image:${GB_FS}}#gbar .g-out{background-image:${GB_OUT}}#gbar .g-out[hidden]{display:none}</style><button class="g-fs" type="button" aria-label="Plein écran" title="Plein écran"></button><button class="g-out" type="button" aria-label="Sortir" title="Sortir"></button>`;
+  document.body.appendChild(bar);
+  const fsB = bar.querySelector('.g-fs'), outB = bar.querySelector('.g-out');
+  let dlgs = [];
+  const topDlg = () => { dlgs = dlgs.filter(d => d.open && d.isConnected); return dlgs[dlgs.length - 1] || null; };
+  const sync = () => {
+    const d = topDlg(), inGame = !d && !!document.querySelector('#app .hud') && !document.querySelector('#app .hp-ov');   // sélection du héros : le HUD est caché sous l'écran de choix
+    const home = !d && !V.mp && V.screen !== 'lobby' && V.screen !== 'game';
+    const want = d || document.body; if (bar.parentNode !== want) want.appendChild(bar);
+    bar.hidden = inGame;
+    fsB.hidden = !document.fullscreenEnabled; fsB.title = document.fullscreenElement ? 'Quitter le plein écran' : 'Plein écran';
+    outB.hidden = !d && home;   // sur l'accueil, il n'y a rien à quitter
+  };
+  const sp = HTMLDialogElement.prototype.showModal;
+  HTMLDialogElement.prototype.showModal = function () { const r = sp.apply(this, arguments); dlgs.push(this); this.addEventListener('close', () => setTimeout(sync), { once:true }); sync(); return r; };
+  fsB.addEventListener('click', () => { if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); else document.documentElement.requestFullscreen({ navigationUI:'hide' }).catch(() => {}); });
+  outB.addEventListener('click', () => {
+    const d = topDlg();
+    if (d) { const ev = new Event('cancel', { cancelable:true }); d.dispatchEvent(ev); if (!ev.defaultPrevented && d.open) d.close(); setTimeout(sync, 50); return; }
+    if (V.mp) { V.mp = null; render(); return; }
+    if (V.screen === 'lobby' || V.screen === 'game') doAct('leave', outB);
+  });
+  document.addEventListener('fullscreenchange', sync);
+  const r0 = render; render = function () { const out = r0.apply(this, arguments); try { sync(); } catch (e) {} return out; };
+  setInterval(sync, 700); sync();
+})();
