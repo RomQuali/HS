@@ -3821,3 +3821,33 @@ function hpPowMedH(h, x) {
   const start = () => (window.requestIdleCallback ? requestIdleCallback(go, { timeout:4000 }) : setTimeout(go, 1500));
   if (document.readyState === 'complete') setTimeout(start, 1200); else addEventListener('load', () => setTimeout(start, 1200));
 })();
+
+/* Entrée dans un univers : l'écran de choix du héros (et le plateau) n'apparaît qu'une fois ses images prêtes,
+   avec un fondu court, au lieu de se dessiner morceau par morceau. */
+(() => {
+  const ready = new Set();
+  const imgsOf = root => { const out = new Set();
+    root.querySelectorAll('*').forEach(e => { const bg = getComputedStyle(e).backgroundImage; if (bg && bg !== 'none') (bg.match(/url\(["']?([^"')]+)["']?\)/g) || []).forEach(u => out.add(u.replace(/^url\(["']?|["']?\)$/g, ''))); });
+    root.querySelectorAll('use').forEach(u => { const id = (u.getAttribute('href') || '').slice(1), s = id && document.getElementById(id); if (s) s.querySelectorAll('image').forEach(im => out.add(im.getAttribute('href'))); });
+    return [...out].filter(u => u && !u.startsWith('#')); };
+  const decode = u => { const im = new Image(); im.src = u; return (im.decode ? im.decode() : new Promise(r => { im.onload = im.onerror = r; })).catch(() => {}); };
+  const gate = (el, key) => {
+    if (!el || ready.has(key) || el.dataset.gate) return;
+    el.dataset.gate = '1'; el.classList.add('gate-wait');
+    const list = imgsOf(el), t0 = performance.now();
+    Promise.race([Promise.all(list.map(decode)), new Promise(r => setTimeout(r, 1500))]).then(() => {
+      ready.add(key); requestAnimationFrame(() => { document.querySelectorAll('.gate-wait').forEach(x => { x.classList.remove('gate-wait'); x.classList.add('gate-in'); }); });
+    });
+  };
+  const r0 = render; render = function () { const out = r0.apply(this, arguments);
+    try { const hp = document.querySelector('.hp-ov'); if (hp) gate(hp, 'hp:' + (hp.classList.contains('nkv') ? 'nk' : 'x') + ':' + [...hp.querySelectorAll('.hp-card')].map(c => c.dataset.h).join(','));
+      else { const tb = document.querySelector('.table'); if (tb) gate(tb, 'table:' + (V.pub && (V.pub.us || V.pub.univ) || '')); } } catch (e) {}
+    return out; };
+  const st = document.createElement('style');
+  st.textContent = '.gate-wait{opacity:0!important}.gate-in{animation:gateIn .22s ease-out both}@keyframes gateIn{from{opacity:0}to{opacity:1}}html.lite .gate-in{animation:none}';
+  document.head.appendChild(st);
+  /* sur l'accueil, au repos : décode à l'avance les portraits (images intégrées) des héros et des serviteurs */
+  const pre = () => { const hrefs = new Set(); document.querySelectorAll('symbol[id^="art-h-nh_"] image, symbol[id^="art-nk_"] image').forEach(im => hrefs.add(im.getAttribute('href')));
+    const L = [...hrefs]; let i = 0; const next = () => { if (i < L.length) decode(L[i++]).then(() => setTimeout(next, 20)); }; next(); next(); };
+  addEventListener('load', () => setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(pre, { timeout:5000 }) : pre()), 2500));
+})();

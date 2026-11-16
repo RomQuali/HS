@@ -2198,3 +2198,22 @@ html body .hp-ov.nkv .hp-pc .hpc-mc2{font:700 clamp(10px,1.45vh,15px)/1 var(--f-
 .spt.nim.lg .nim-pl .nif{top:47.5%}
 .nim-pl .owf{cursor:help;pointer-events:auto}
 :root:root:root:root body .table .keeper-zone:has(.spt.nim){z-index:3!important}   /* le bas du médaillon d'objet (plaque des propriétaires) déborde sur le plateau : il doit rester survolable */
+/* médaillon d'objet calé sur la maquette Karasu : ruban et plaque des propriétaires posés sur le bas de l'ovale, pièce à gauche de la plaque */
+html body .spt.nim .nim-m{aspect-ratio:371/500}
+html body .spt.nim .nim-fr,html body .spt.nim .nim-art{top:4%;height:92%}
+html body .spt.nim .nim-art{clip-path:ellipse(36.5% 38.5% at 50% 47.3%)}
+html body .spt.nim.lg .nim-fr{left:-2.5%;top:1.5%;width:105%;height:96%}
+html body .spt.nim .nim-rb{top:63%;width:82%}
+html body .spt.nim .nim-pl,html body .spt.nim .nim-pl.p1,html body .spt.nim .nim-pl.p2{top:auto;bottom:-2%;left:60%;transform:translateX(-50%);z-index:2}
+html body .spt.nim .nim-pl{width:62%}
+html body .spt.nim .nim-pl.p2{width:57%}
+html body .spt.nim .nim-pl.p1{width:52%}
+html body .spt.nim .nim-co{left:17%;top:auto;bottom:-3%;width:26%;transform:translateX(-50%);z-index:3}
+html body .spt.nim .it-own{bottom:-18px}
+html body .spt.nim .nim-pl{width:72%;bottom:-5%;left:58%}
+html body .spt.nim .nim-pl.p2{width:66%}
+html body .spt.nim .nim-pl.p1{width:60%}
+html body .spt.nim .nim-co{width:29%;left:16%;bottom:-6%}
+html body .spt.nim .nim-rb b{font-size:clamp(7px,9.5cqi,13px)}
+html body .nim-pl .nif:not(.on):not(.nif-0){filter:grayscale(.55) brightness(.88)}
+.nic .nic-rb b{font-size:calc(9.5cqi * var(--k,1))!important;white-space:nowrap}

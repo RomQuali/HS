@@ -848,7 +848,7 @@ const niOwnerOn = cid => !!(V.me && [...(V.me.bd || []), ...(V.me.hd || [])].som
 const niFaces = (id, big) => { const ow = (SPELLS[id].ow || []).slice(0, 3); return ow.map((c, k) => {
   const on = niOwnerOn(c), nm = C[c] ? C[c].n.split(' ')[0] : c;
   return big ? `<span class="nio${on ? ' on' : ''}"><span class="nif">${faceH('art-' + c, 'face')}</span><b>${esc(nm)}</b></span>` : `<i class="nif owf${on ? ' on' : ''}" data-c="${c}" aria-label="${esc(nm)}">${faceH('art-' + c, 'face')}</i>`; }).join(''); };
-const niStatus = id => { if (!V.me) return ['Disponible', 'ok']; if (itHave(V.me, id)) return [(V.me.bd || []).some(m => m.it === id) ? 'Déjà équipé' : 'Déjà en main', 'no'];
+const niStatus = id => { if (!V.me) return ['Disponible', 'ok']; if (itHave(V.me, id)) return [(V.me.bd || []).some(m => m.it === id) ? 'Équipé' : 'Dans ta main', 'ok'];
   if (!itOwnerIn(V.me, id)) return ['Il te faut ' + itOwners(id).join(' ou '), 'no']; return ['Disponible', 'ok']; };
 function niMedH(id, z, i, o = {}) {
   const S = SPELLS[id], sel = V.sel && V.sel.z === z && V.sel.i === i, c = spellCostFor(id, z);
@@ -863,7 +863,7 @@ function niCardH(id, z, i, o = {}) {
   return `<div class="cd spc nic${S.ex ? ' spx lg' : ''}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="Objet ${esc(S.n)}">
     <span class="nic-art"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#sp-${id}" width="100" height="100"/></svg></span><i class="nic-fr"></i>
     <span class="nim-co nic-co${c < S.c ? ' aff' : ''}"><b>${c}</b></span>
-    <span class="nic-rb"><b>${esc(S.n)}</b></span><span class="nic-ty">${S.ex ? 'Objet légendaire' : 'Objet'}</span>
+    <span class="nic-rb"><b style="--k:${Math.min(1, 13 / S.n.length).toFixed(2)}">${esc(S.n)}</b></span><span class="nic-ty">${S.ex ? 'Objet légendaire' : 'Objet'}</span>
     <span class="nic-oh">${n > 1 ? 'Propriétaires' : 'Propriétaire'}</span><span class="nic-ow">${niFaces(id, 1)}</span>
     <span class="nic-dh">Effet de l'objet</span><p class="nic-tx">${esc(S.tx)}</p>
     <span class="nic-st ${st[1]}"><i></i>${esc(st[0])}</span></div>`;
