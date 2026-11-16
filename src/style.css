@@ -2007,3 +2007,5 @@ html body .spt.spx.it-ok .spt-svg{animation:none;filter:drop-shadow(0 0 3px #38f
 /* objet de la taverne agrandi */
 .spt[data-sp^="ni_"]{width:calc(var(--tw) * 1.5)}
 .spt[data-sp^="ni_"] .mn-nm{display:none}   /* pas de nom sous l'objet : l'étiquette des propriétaires suffit (le nom est sur la grande carte au survol) */
+/* étiquette des propriétaires posée dans l'objet, en bas de l'image */
+html body .spt .nk-tag.it-ow{position:absolute;top:auto;bottom:27%;left:50%;transform:translateX(-50%);margin:0;z-index:4;max-width:84%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
