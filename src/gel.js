@@ -541,7 +541,9 @@ function nkGroupsSync() {
     if (!t) { t = document.createElement('span'); t.className = 'nk-tag'; e.appendChild(t); } t.classList.toggle('done', done); if (t.textContent !== tx) t.textContent = tx; };
   tb.querySelectorAll('.mn[data-z="sh"]').forEach(e => mark(e, (V.me.sh || [])[+e.dataset.i]));
   tb.querySelectorAll('.cd[data-z="hd"]').forEach(e => mark(e, (V.me.hd || [])[+e.dataset.i]));
-  tb.querySelectorAll('.nk-tag.it-ow').forEach(t => t.remove());   // les propriétaires sont écrits dans la carte de l'objet
+  // objet de la taverne : étiquette des propriétaires, au style des groupes (dorée si tu en as un sur le plateau ou dans la main)
+  tb.querySelectorAll('.spt[data-sp^="ni_"]').forEach(e => { const id = e.dataset.sp; if (!SPELLS[id] || !SPELLS[id].ow) return; let t = e.querySelector(':scope > .nk-tag.it-ow'); const tx = itOwners(id).join(' · '), on = itOwnerIn(V.me, id);
+    if (!t) { t = document.createElement('span'); t.className = 'nk-tag it-ow'; e.appendChild(t); } t.classList.toggle('done', on); if (t.textContent !== tx) t.textContent = tx; });
 }
 (function () { const r0 = render; render = function () { const out = r0.apply(this, arguments); try { nkGroupsSync(); } catch (e) {} return out; };
   const st = document.createElement('style'); st.id = 'nk-groups-css'; st.textContent = `
