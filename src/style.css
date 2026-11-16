@@ -2266,3 +2266,10 @@ html body #peek .hc-only .hp-hcards .cd{width:clamp(200px,16vw,280px)!important}
 html body .mn.it-tgt .mn-svg{filter:drop-shadow(0 0 4px #4ab8ff) drop-shadow(0 0 12px rgba(70,170,255,.9)) drop-shadow(0 0 22px rgba(70,170,255,.55))!important;animation:itTgt 1.2s ease-in-out infinite}
 @keyframes itTgt{50%{filter:drop-shadow(0 0 6px #7fd0ff) drop-shadow(0 0 18px rgba(90,190,255,1)) drop-shadow(0 0 30px rgba(70,170,255,.7))}}
 html.lite .mn.it-tgt .mn-svg{animation:none}
+/* choix du héros Naruto : pouvoir plus grand, écarté du portrait (ne cache plus la goutte de PV) */
+html body .hp-ov.nkv .hp-pwz{top:22%!important;left:-175px!important}
+html body .hp-ov.nkv .hp-col:last-child .hp-pwz{left:auto!important;right:-175px!important}
+:root:root:root:root:root body .hp-ov.nkv .hp-pwz .hpz .powm{width:clamp(96px,8vw,132px)!important;height:clamp(96px,8vw,132px)!important}
+:root:root:root:root:root body .hp-ov.nkv .hp-pwz .hpz .powm small{font-size:13px!important;bottom:-24px!important}
+:root:root:root:root:root body .hp-ov.nkv .hp-pwz .hpz .powm .pcost{transform:translateX(-50%) scale(1.25)!important}
+html body .hp-ov.nkv .hp-col:has(.hp-card:hover) .hp-pwz{opacity:0;pointer-events:none}
