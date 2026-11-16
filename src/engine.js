@@ -1467,13 +1467,13 @@ function budgetState(raw) {
   const b = SET.budget[raw.t] || [0, 99], v = cardValue(raw).total;
   return { st:v > b[1] ? 'over' : v < b[0] ? 'under' : 'ok', v, b };
 }
-function cardTextH(id, g, full) {
-  const c = CD(id), k = g ? 2 : 1, parts = [], short = !full && /^nk_/.test(id); TX_SHORT = short;
+function cardTextH(id, g, full, tf) {
+  const c = CD(id), k = g ? 2 : 1, parts = [], short = !full && /^nk_/.test(id); TX_SHORT = short; TX_TF = tf || 0;   // tf : transformations déjà faites (on ne montre que la forme actuelle et la suite)
   const kws = (c.kw || []).map(x => `<b>${esc(SET.kw[x].n)}</b>`);
   if (kws.length) parts.push(kws.join(', ') + '.');
   if (!short && typeof NK_GOF !== 'undefined' && NK_GOF[id]) parts.push('<b>Groupe</b> : ' + [...new Set(NK_GOF[id].map(g => esc(g.n)))].join(', ') + '.');
   (c.fx || []).forEach(e => { if (ET[e.k]) { const t = esc(fxText(e, k)); const i = t.indexOf(' : '); parts.push(i > 0 && i < 24 ? `<b>${t.slice(0, i)}</b>${t.slice(i)}` : t); } });
-  TX_SHORT = false;
+  TX_SHORT = false; TX_TF = 0;
   return parts.join(' ');
 }
 
@@ -1634,14 +1634,15 @@ const jutFx = (J, tf) => jutLast(J, tf, 'fx');
 const jutCb = (J, tf) => jutLast(J, tf, 'cb');
 const tfStTxt = (T, k) => `${T.nm} (${T.c} chakra) : ${T.a || T.h ? sign(T.a * k, T.h * k) : ''}${T.kw ? (T.a || T.h ? ', ' : '') + ((SET.kw[T.kw] || {}).n || '') : ''}${(T.x || []).map(o => ET[o.k] ? ' · ' + ET[o.k].txt(o, k).replace(/\.$/, '') : '').join('')}${T.fx ? ' · son jutsu devient : ' + jutBody(T.fx, k) : ''}${T.cb ? ' · son jutsu de combat devient : ' + jutBody(T.cb, k) : ''}`.replace(' :  · ', ' : ');
 const jutBody = (fx, k) => fx.map(o => ET[o.k] ? ET[o.k].txt(o, k).replace(/^(Cri de guerre|Début du combat) : /, '').replace(' : au début du combat, ', ' : ').replace(/\.$/, '') : '?').join(' ; ');
-let TX_SHORT = false;   // texte court sur les cartes (les détails s'affichent à côté de la grande carte au survol)
+let TX_SHORT = false, TX_TF = 0;   // texte court sur les cartes (les détails s'affichent à côté de la grande carte au survol)
 function jutTxt(e, k) {
-  if (TX_SHORT) { const ST = tfSt(e), cb = e.cb && e.cb.length, fx = e.fx && e.fx.length;
-    const j = e.none ? '' : (cb && !fx ? `Jutsu de combat · ${e.nm} : ${jutBody(e.cb, k)}.` : `Jutsu · ${e.nm} : ${jutBody(e.fx || [], k)}${cb ? ' ; au combat : ' + jutBody(e.cb, k) : ''}.`);
-    return j + (ST.length ? `${j ? ' ' : ''}${ST.length > 1 ? 'Transformations' : 'Transformation'} : ${ST.map((T, i) => `${T.nm} (${T.c}${i === ST.length - 1 ? ', doré' : ''})`).join(' → ')}.` : ''); }
-  const ST = tfSt(e), cb = e.cb && e.cb.length, fx = e.fx && e.fx.length;
-  const j = e.none ? '' : (cb && !fx ? `Jutsu de combat · ${e.nm} : ${jutBody(e.cb, k)}.` : `Jutsu · ${e.nm} : ${jutBody(e.fx || [], k)}${cb ? ' ; au combat : ' + jutBody(e.cb, k) : ''}.`);
-  return j + (ST.length ? `${j ? ' ' : ''}${ST.length > 1 ? 'Transformations' : 'Transformation'} · ${ST.map((T, i) => (i === ST.length - 1 ? 'carte dorée seulement · ' : '') + tfStTxt(T, k)).join(' → ')}.` : '');
+  /* une fois transformé, la carte montre le jutsu de la forme actuelle et seulement les transformations qui restent */
+  const done = Math.min(TX_TF || 0, tfSt(e).length), ST = tfSt(e).slice(done), n0 = tfSt(e).length, FX = done ? jutFx(e, done) : e.fx || [], CB = done ? jutCb(e, done) : e.cb || [], cb = CB.length, fx = FX.length;
+  const j = e.none ? '' : (cb && !fx ? `Jutsu de combat · ${e.nm} : ${jutBody(CB, k)}.` : `Jutsu · ${e.nm} : ${jutBody(FX, k)}${cb ? ' ; au combat : ' + jutBody(CB, k) : ''}.`);
+  const last = i => done + i === n0 - 1, lab = ST.length > 1 ? (done ? 'Transformations suivantes' : 'Transformations') : (done ? 'Transformation suivante' : 'Transformation');
+  if (TX_SHORT) return j + (ST.length ? `${j ? ' ' : ''}${lab} : ${ST.map((T, i) => `${T.nm} (${T.c}${last(i) ? ', doré' : ''})`).join(' → ')}.` : '');
+  const got = tfSt(e).slice(0, done).flatMap(T => (T.x || []).map(o => ET[o.k] ? ET[o.k].txt(o, k).replace(/\.$/, '') : '').filter(Boolean));   // effets gagnés par les transformations déjà faites
+  return j + (got.length ? ` Pouvoirs acquis : ${got.join(' ; ')}.` : '') + (ST.length ? `${j ? ' ' : ''}${lab} · ${ST.map((T, i) => (last(i) ? 'carte dorée seulement · ' : '') + tfStTxt(T, k)).join(' → ')}.` : '');
 }
 function jutCost(p, m) { const J = jutOf(m); if (!J || J.none) return null; if (m.it === 'ni_kusanagi' && itProd(m)) return 0; if ((m.c === 'nk_dosu' || m.c === 'nk_zaku') && p && p.bd && nkOn(p, 'genins')) return 0; return Math.max(1, tierOf(m) - ((htr(p, 'pjutc') || {}).n || 0)); }
 // le dernier palier d'un ninja à plusieurs transformations est réservé à la carte dorée (triple)
