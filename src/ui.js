@@ -114,7 +114,7 @@ function stepFight() {
   clearTimeout(V.fightT);
   render(); fxFrame();
   const last = F.r.frames.length - 1;
-  if (V.fi >= last) { F.done = true; render(); fxEnd(); return; }
+  if (V.fi >= last) { F.done = true; render(); fxEnd(); fightSeen(F); return; }
   const fr = F.r.frames[V.fi], pa = V.fi > 0 ? F.r.frames[V.fi - 1] : null;
   const hold = V.fi === 0 ? 1050 : pa && pa.at ? 520 : pa && pa.fb ? 650 : 420;
   V.fightT = setTimeout(() => {
@@ -950,6 +950,7 @@ function stepDuel() {
   clearTimeout(V.duelT);
   duelPaint(); duelFx();
   const D = F.dr.frames, last = D.length - 1;
+  if (V.di >= last) { F.ddone = true; fightSeen(F); }
   if (V.di > 0) duelBanter(F, D[V.di], D[V.di - 1]);
   if (V.di >= last && F.duel && F.duel.w === -1) cpSay(0, bPick('draw', F.seed || 0), 'eq');
   if (V.di >= last) { F.ddone = true; duelPaint(); const el = document.getElementById('cps0'); if (el && !FX_OFF()) { const r = el.querySelector('.mn').getBoundingClientRect(), w = duelRes(F) === 'win'; fxRing(r.left + r.width / 2, r.top + r.height / 2, w ? '#ffe39a' : '#9ab0c8', 1.4); if (w) fxBurst(r.left + r.width / 2, r.top + r.height / 2, 'buff', 14, 1.1); } return; }
@@ -4013,3 +4014,6 @@ function butinH(me) {
     <button class="bt-go" data-act="pick" data-i="${sel}">Récupérer l'objet</button>
   </section></div>`;
 }
+
+/* fin du combat vue (et duel des compagnons fini) : on prévient l'hôte pour repasser tout de suite à la taverne */
+function fightSeen(F) { if (!F || F.sent || !F.done || (F.dr && !F.ddone)) return; F.sent = true; setTimeout(() => { if (V.fight === F) sendAct({ t:'fdone', rd:F.rd }); }, 700); }

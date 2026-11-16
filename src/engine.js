@@ -3096,6 +3096,7 @@ function powCan(p, rd) {
 function hostApply(pid, a) {
   const G = H.G; if (!G) return;
   const p = G.ps[pid]; if (!p || !p.al) return;
+  if (a.t === 'fdone') { if (G.ph === 'combat' && +a.rd === G.rd) p.fdone = G.rd; return; }   // ce joueur a fini de regarder son combat
   if (a.t === 'hero') { if (G.ph === 'hero' && !p.hero && p.ho.includes(a.h)) { if (loOn(G) && G.tm) loPick(G, p, a.h); else p.hero = a.h; broadcast(); } return; }
   if (a.t === 'jutsu' || a.t === 'nktf') { if (G.ph === 'recruit' && OPS[a.t](G, p, a)) broadcast(); return; }
   if (a.t === 'ckm') { if (G.ph === 'recruit' && OPS.ckm(G, p, a)) broadcast(); return; }
@@ -3467,7 +3468,8 @@ function hostTick() {
   const now = Date.now();
   if (G.ph === 'hero' && (now >= G.end || G.ps.every(p => p.hero))) finishHero();
   else if (G.ph === 'recruit') { const hl = humansLive(G); if (now >= G.end || (hl.length && hl.every(p => p.rdy))) endRecruit(); }
-  else if (G.ph === 'combat' && now >= G.end) endCombat();
+  else if (G.ph === 'combat') { const hl = humansLive(G); if (hl.length && hl.every(p => p.fdone === G.rd)) G.end = Math.min(G.end, now + 900);   // tout le monde a vu la fin du combat : retour direct à la taverne
+    if (now >= G.end) endCombat(); }
   if (now - H.hb > 2500) { H.hb = now; broadcast(); }
 }
 
