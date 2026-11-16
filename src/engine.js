@@ -702,6 +702,10 @@ const DEFAULT_CARD_LIST = [
   ['nk_sakura', 'Sakura Haruno', 1, 'nk_kon', 1, 3, '', [{ k:'aft_heal', n:2 }, { k:'jutsu', nm:'Ninjutsu médical', fx:[{ k:'bc_buff_rand', a:0, h:2, tb:'' }], tf:[{ c:3, nm:'Force de Tsunade', a:1, h:1, x:[{ k:'cleave' }] }, { c:5, nm:'Sceau du Byakugō', a:1, h:2, kw:'r' }] }]],
   ['nk_lee', 'Rock Lee', 2, 'nk_kon', 3, 3, '', [{ k:'atk_self', a:2, h:0 }, { k:'jutsu', nm:'', none:1, tf:[{ c:4, nm:'Lotus recto', a:1, h:1, kw:'w' }, { c:6, nm:'Lotus verso', a:2, h:1, x:[{ k:'soc_first', x:2 }, { k:'aft_selfdmg', d:2 }] }] }]],
   ['nk_shikamaru', 'Shikamaru Nara', 2, 'nk_kon', 2, 3, '', [{ k:'jutsu', nm:'Manipulation des ombres', cb:[{ k:'soc_bind', who:'top' }] }]],
+  ['nk_ino', 'Ino Yamanaka', 2, 'nk_kon', 2, 2, '', [{ k:'jutsu', nm:'Shintenshin', cb:[{ k:'soc_genj', who:'face', n:1 }] }]],
+  ['nk_choji', 'Chōji Akimichi', 2, 'nk_kon', 2, 4, 't', [{ k:'jutsu', nm:'Baika', fx:[{ k:'bc_self', a:2, h:2 }], tf:{ c:7, nm:'Mode papillon', a:6, h:6 } }]],
+  ['nk_bee', 'Killer Bee', 5, 'nk_kir', 5, 5, 'w', [{ k:'jutsu', nm:'Sept lames', cb:[{ k:'soc_self', a:3, h:0 }], tf:{ c:9, nm:'Hachibi', a:6, h:6 } }]],
+  ['nk_raikage', 'Yondaime Raikage', 6, 'nk_kir', 8, 8, '', [{ k:'atk_self', a:2, h:0, nm:'Armure de foudre' }, { k:'jutsu', nm:'Lariat', cb:[{ k:'soc_first', x:3 }] }]],
   ['nk_neji', 'Neji Hyūga', 3, 'nk_kon', 3, 4, '', [{ k:'soc_kwself', kw:'s', nm:'Hakkeshō Kaiten' }, { k:'pierce' }, { k:'jutsu', nm:'64 poings', cb:[{ k:'soc_seal', who:'face' }] }]],
   ['nk_kakashi', 'Kakashi Hatake', 4, 'nk_kon', 4, 5, '', [{ k:'soc_copykw' }, { k:'jutsu', nm:'Raikiri', cb:[{ k:'soc_face', d:6 }], tf:[{ c:4, nm:'Meute de ninken', a:1, h:1, x:[{ k:'soc_summon', card:'tk_ninken', n:1 }] }, { c:6, nm:'Kamui', a:2, h:2, x:[{ k:'soc_kill_low' }] }, { c:9, nm:'Double Sharingan', a:3, h:3, x:[{ k:'soc_copyall' }] }] }]],
   ['nk_gai', 'Gaï Maito', 4, 'nk_kon', 5, 4, '', [{ k:'jutsu', nm:'Paon du matin', cb:[{ k:'soc_aoe', d:2 }], tf:[{ c:5, nm:'Sixième Porte', a:2, h:2, cb:[{ k:'soc_aoe', d:4 }] }, { c:7, nm:'Septième Porte', a:3, h:1, x:[{ k:'soc_first', x:3 }] }, { c:9, nm:'Huitième Porte', a:10, h:0, kw:'w', x:[{ k:'aft_burnout', n:3 }] }] }]],
@@ -718,18 +722,10 @@ const DEFAULT_CARD_LIST = [
   ['nk_konan', 'Konan', 4, 'nk_aka', 4, 5, 's', [{ k:'dr_aoe', d:5 }, { k:'jutsu', nm:'Danse de papier', fx:[{ k:'bc_kw', kw:'s', n:1 }] }]],
   ['nk_itachi', 'Itachi Uchiha', 5, 'nk_aka', 6, 5, '', [{ k:'crow1', nm:'Clone de corbeaux' }, { k:'soc_copykw' }, { k:'jutsu', nm:'Tsukuyomi', cb:[{ k:'soc_genj', who:'top', n:2 }], tf:[{ c:6, nm:'Mangekyō', a:2, h:2, x:[{ k:'burn', d:3 }] }, { c:9, nm:'Susano’o', a:3, h:4, kw:'s', x:[{ k:'hit_seal' }] }] }]],
   ['nk_pain', 'Pain', 6, 'nk_aka', 7, 7, '', [{ k:'jutsu', nm:'Shinra Tensei', cb:[{ k:'soc_aoe', d:3 }], tf:{ c:10, nm:'Six chemins de Pain', a:6, h:6, x:[{ k:'soc_summon', card:'tk_cerbere', n:1 }, { k:'die_revive' }] } }]],
-  ['nk_maki', 'Maki', 1, 'nk_sun', 1, 3, '', [{ k:'soc_bind', who:'face', nm:'Technique du tissu' }, { k:'jutsu', nm:'Tissu', fx:[{ k:'bc_self', a:0, h:2 }] }]],
-  ['nk_shira', 'Shira', 1, 'nk_sun', 2, 1, '', [{ k:'soc_i1', nm:'Taijutsu' }, { k:'jutsu', nm:'Entraînement', fx:[{ k:'bc_self', a:1, h:1 }] }]],
-  ['nk_baki', 'Baki', 2, 'nk_sun', 2, 3, '', [{ k:'soc_plus1', d:2, nm:'Lame de vent' }, { k:'soc_i1' }, { k:'jutsu', nm:'Lame de vent', fx:[{ k:'bc_self', a:1, h:0 }] }]],
-  ['nk_kazekage3', 'Troisième Kazekage', 2, 'nk_sun', 2, 4, '', [{ k:'soc_kwself', kw:'n', nm:'Sable de fer' }, { k:'jutsu', nm:'Marionnette humaine', fx:[{ k:'bc_self', a:2, h:0 }] }]],
   ['nk_kankuro', 'Kankurō', 3, 'nk_sun', 3, 3, '', [{ k:'jutsu', nm:'Kugutsu', fx:[{ k:'bc_summon_of', n:1 }], tf:{ c:7, nm:'Marionnette Sasori', a:3, h:3, fx:[{ k:'bc_summon_of', n:2 }] } }]],
-  ['nk_pakura', 'Pakura', 3, 'nk_sun', 4, 4, '', [{ k:'burn', d:2 }, { k:'jutsu', nm:'Shakuton', fx:[{ k:'bc_self', a:2, h:0 }] }]],
   ['nk_temari', 'Temari', 4, 'nk_sun', 5, 4, 'w', [{ k:'cleave' }, { k:'jutsu', nm:'Invocation : Kamatari', fx:[{ k:'bc_summon', card:'tk_kamatari', n:1 }] }]],
   ['nk_chiyo', 'Chiyo', 4, 'nk_sun', 3, 6, '', [{ k:'die_swap' }, { k:'jutsu', nm:'Transfert de vie', fx:[{ k:'bc_kw', kw:'r', n:1 }] }]],
-  ['nk_rasa', 'Rasa', 5, 'nk_sun', 4, 7, '', [{ k:'soc_weaktop', a:3, nm:'Poussière d’or' }, { k:'jutsu', nm:'Sable d’or', cb:[{ k:'soc_bind', who:'top' }] }]],
   ['nk_gaara', 'Gaara', 6, 'nk_sun', 6, 8, 't', [{ k:'soc_kwself', kw:'s' }, { k:'jutsu', nm:'Sarcophage de sable', cb:[{ k:'soc_crush' }], tf:[{ c:6, nm:'Demi-Shukaku', a:4, h:4, x:[{ k:'riposte', d:2 }] }, { c:10, nm:'Shukaku', a:4, h:4, x:[{ k:'soc_aoe', d:3 }] }] }]],
-  ['nk_kin', 'Kin Tsuchi', 1, 'nk_oto', 1, 3, '', [{ k:'jutsu', nm:'Clochettes', cb:[{ k:'soc_genj', who:'face', n:1 }] }]],
-  ['nk_dosu', 'Dosu Kinuta', 1, 'nk_oto', 2, 3, '', [{ k:'jutsu', nm:'Onde sonore', cb:[{ k:'soc_weak', a:3 }] }]],
   ['nk_tayuya', 'Tayuya', 2, 'nk_oto', 3, 3, '', [{ k:'soc_genj', who:'face', n:1 }, { k:'dr_kill_tok', cards:['tk_doki', 'tk_doki2', 'tk_doki3'] }, { k:'jutsu', nm:'Doki', fx:[{ k:'bc_fill_tok', cards:['tk_doki', 'tk_doki2', 'tk_doki3'] }], tf:{ c:5, nm:'Marque maudite', a:3, h:3 } }]],
   ['nk_kidomaru', 'Kidōmaru', 2, 'nk_oto', 3, 2, 'i', [{ k:'jutsu', nm:'Toile d’araignée', cb:[{ k:'soc_bind', who:'face' }], tf:{ c:5, nm:'Marque maudite', a:4, h:2 } }]],
   ['nk_jirobo', 'Jirōbō', 3, 'nk_oto', 3, 5, 't', [{ k:'jutsu', nm:'Dévoreur de chakra', cb:[{ k:'soc_steal', a:3, h:0 }], tf:{ c:5, nm:'Marque maudite', a:3, h:4 } }]],
@@ -738,16 +734,13 @@ const DEFAULT_CARD_LIST = [
   ['nk_kimimaro', 'Kimimaro', 4, 'nk_oto', 5, 4, '', [{ k:'riposte', d:2 }, { k:'jutsu', nm:'Danse des os', fx:[{ k:'bc_self', a:2, h:1 }], tf:[{ c:4, nm:'Marque de niveau 1', a:2, h:2 }, { c:7, nm:'Marque de niveau 2', a:2, h:2, x:[{ k:'riposte', d:2 }, { k:'cleave' }] }] }]],
   ['nk_sasuke', 'Sasuke Uchiha', 5, 'nk_oto', 5, 5, '', [{ k:'soc_copykw' }, { k:'jutsu', nm:'Chidori', cb:[{ k:'soc_face', d:5 }], tf:[{ c:5, nm:'Marque maudite', a:3, h:3 }, { c:7, nm:'Mangekyō', a:2, h:2, x:[{ k:'burn', d:3 }, { k:'soc_summon', card:'tk_aoda', n:1 }] }, { c:9, nm:'Susano’o', a:2, h:2, x:[{ k:'aft_shield' }] }] }]],
   ['nk_orochimaru', 'Orochimaru', 6, 'nk_oto', 6, 7, 'r', [{ k:'bc_summon', card:'tk_rashomon', n:1, nm:'Kuchiyose : Rashōmon' }, { k:'jutsu', nm:'Invocation : Manda', fx:[{ k:'bc_manda' }], tf:[{ c:7, nm:'Serpent blanc', a:3, h:3, kw:'n', x:[{ k:'soc_summon', card:'tk_rashomon', n:1 }] }, { c:10, nm:'Yamata no Orochi', a:4, h:4, fx:[{ k:'bc_manda' }, { k:'bc_summon', card:'tk_rashomon', n:1 }] }] }]],
-  ['nk_chojuro', 'Chōjūrō', 1, 'nk_kir', 2, 2, '', [{ k:'atk_self', a:1, h:0 }, { k:'jutsu', nm:'Hiramekarei', cb:[{ k:'soc_first', x:2 }] }]],
   ['nk_suigetsu', 'Suigetsu Hōzuki', 1, 'nk_kir', 1, 3, '', [{ k:'armor', d:2 }, { k:'jutsu', nm:'Corps liquide', fx:[{ k:'bc_self', a:0, h:1 }] }]],
-  ['nk_ao', 'Ao', 2, 'nk_kir', 2, 3, '', [{ k:'see_camo' }, { k:'jutsu', nm:'Byakugan', fx:[{ k:'bc_buff_rand', a:2, h:0, tb:'' }] }]],
   ['nk_ameyuri', 'Ameyuri Ringo', 2, 'nk_kir', 3, 2, 'w', [{ k:'chain' }, { k:'jutsu', nm:'Kiba', fx:[{ k:'bc_self', a:1, h:0 }] }]],
   ['nk_haku', 'Haku', 3, 'nk_kir', 2, 4, 's', [{ k:'guard', card:'nk_zabuza', n:99 }, { k:'jutsu', nm:'Miroirs de glace', fx:[{ k:'bc_kw', kw:'s', n:1 }] }]],
   ['nk_jinpachi', 'Jinpachi Munashi', 3, 'nk_kir', 4, 3, '', [{ k:'cleave' }, { k:'jutsu', nm:'Shibuki', fx:[{ k:'bc_self', a:2, h:0 }] }]],
   ['nk_zabuza', 'Zabuza Momochi', 4, 'nk_kir', 5, 4, 'c', [{ k:'soc_kw', kw:'c', tb:'' }, { k:'tgt_weak' }, { k:'jutsu', nm:'Kubikiribōchō', fx:[{ k:'bc_self', a:2, h:1 }], tf:{ c:8, nm:'Démon de Kiri', a:5, h:3, kw:'l' } }]],
   ['nk_mangetsu', 'Mangetsu Hōzuki', 4, 'nk_kir', 4, 5, '', [{ k:'jutsu', nm:'Les sept épées', fx:[{ k:'bc_buff_it', a:1, h:0 }] }]],
   ['nk_mei', 'Mei Terumi', 5, 'nk_kir', 5, 6, '', [{ k:'burn', d:2 }, { k:'jutsu', nm:'Yōton', fx:[{ k:'bc_buff_tribe', a:1, h:1, tb:'' }], tf:{ c:9, nm:'Futton', a:4, h:5, x:[{ k:'soc_aoe', d:2 }] } }]],
-  ['nk_yagura', 'Yagura', 6, 'nk_kir', 6, 8, '', [{ k:'riposte', d:3 }, { k:'jutsu', nm:'Miroir d’eau', fx:[{ k:'bc_self', a:2, h:3 }], tf:[{ c:6, nm:'Manteau de chakra', a:4, h:4 }, { c:10, nm:'Sanbi', a:4, h:4, kw:'t', x:[{ k:'riposte', d:2 }] }] }]],
   ['c_nj_kurama', 'Mini Kurama', 3, 'n_feu', 6, 5, '', [{ k:'soc_dmg', d:2, n:1 }, { k:'combo_self', a:2, h:1 }]],
   ['c_nj_shukaku', 'Shukaku (tanuki)', 3, 'n_vent', 5, 4, 'w', [{ k:'atk_self', a:2, h:1 }, { k:'combo_gold', n:1 }, { k:'combo_self', a:1, h:1 }]],
   ['c_nj_glaces', 'Esprit des glaces', 3, 'n_eau', 3, 8, '', [{ k:'surv_self', a:1, h:1 }, { k:'combo_self', a:1, h:2 }]],
@@ -1002,6 +995,7 @@ const HEROES = {
 // Naruto (15/11/2026) : pool réduit à 16 héros, tous membres d'un groupe emblématique
 ['nh_hashirama', 'nh_kushina', 'nh_roshi', 'nh_bee', 'nh_yugito', 'nh_omoi'].forEach(h => delete HEROES[h]);
 // armure de départ (à la Hearthstone), réglée sur 300 parties d'IA le 15/11/2026 : les héros les plus faibles en ont le plus
+delete HEROES.nh_rasa;   // retiré le 16/11 (tri des personnages)
 Object.entries({ nh_kakuzu:0, nh_deidara:0, nh_zabuza:2, nh_sasori:2, nh_jiraiya:3, nh_orochimaru:4, nh_haku:5, nh_kankuro:5, nh_rasa:6, nh_naruto:6, nh_kakashi:6, nh_gaara:7, nh_mei:7, nh_shikamaru:7, nh_sasuke:8, nh_itachi:10 }).forEach(([h, a]) => { if (HEROES[h]) HEROES[h].ar = a; });
 // héros Ninja : le bonus (trx) s'ajoute au texte du pouvoir
 for (const h in HEROES) if (HEROES[h].trx && !HEROES[h].tx.includes(HEROES[h].trx)) HEROES[h].tx += ' Bonus : ' + HEROES[h].trx;
@@ -1645,7 +1639,7 @@ function jutTxt(e, k) {
   const got = tfSt(e).slice(0, done).flatMap(T => (T.x || []).map(o => ET[o.k] ? ET[o.k].txt(o, k).replace(/\.$/, '') : '').filter(Boolean));   // effets gagnés par les transformations déjà faites
   return j + (got.length ? ` Pouvoirs acquis : ${got.join(' ; ')}.` : '') + (ST.length ? `${j ? ' ' : ''}${lab} · ${ST.map((T, i) => (last(i) ? 'carte dorée seulement · ' : '') + tfStTxt(T, k)).join(' → ')}.` : '');
 }
-function jutCost(p, m) { const J = jutOf(m); if (!J || J.none) return null; if (m.it === 'ni_kusanagi' && itProd(m)) return 0; if ((m.c === 'nk_dosu' || m.c === 'nk_kin') && p && p.bd && nkOn(p, 'genins')) return 0; return Math.max(1, tierOf(m) - ((htr(p, 'pjutc') || {}).n || 0)); }
+function jutCost(p, m) { const J = jutOf(m); if (!J || J.none) return null; if (m.it === 'ni_kusanagi' && itProd(m)) return 0; if (false) return 0; return Math.max(1, tierOf(m) - ((htr(p, 'pjutc') || {}).n || 0)); }
 // le dernier palier d'un ninja à plusieurs transformations est réservé à la carte dorée (triple)
 const nkTfLock = m => { const st = tfSt(jutOf(m)), i = m.tf || 0; return st.length >= 1 && i === st.length - 1 && !m.g; };   // la dernière transformation (ou l'unique) demande la carte dorée
 function nkTfCost(p, m) { const T = tfSt(jutOf(m))[m.tf || 0]; if (!T || nkTfLock(m)) return null; return Math.max(1, T.c - ((htr(p, 'pnktf') || {}).n || 0)); }
@@ -1664,28 +1658,25 @@ const NK_GROUPS = [
   { id:'itakisa', n:'Itachi et Kisame', m:['nk_itachi', 'nk_kisame'], th:[2], tx:['Chasseurs de Kyūbi : ils visent toujours l\'ennemi le plus fort. Kisame lui vole 3 ATQ à chaque attaque ; les coups d\'Itachi le mettent sous Genjutsu.'] },
   { id:'anges', n:'Les anges d\'Ame', m:['nk_pain', 'nk_konan'], th:[2], tx:['Konan encaisse la première attaque qui vise Pain. Si Konan meurt, Pain lance Shinra Tensei : 3 dégâts à tous les ennemis.'] },
   { id:'espions', n:'Les espions', m:['nk_zetsu', 'nk_tobi'], th:[2], tx:['Dans l\'ombre : Camouflage à chaque combat, et il ne disparaît pas quand ils attaquent. Fin de tour : ils gagnent +0/+1.'] },
-  { id:'demon', n:'Le démon et son arme', m:['nk_zabuza', 'nk_haku'], th:[2], tx:['Haku encaisse les attaques qui visent Zabuza et retrouve son Bouclier divin à chaque combat. À la mort de Haku, Zabuza devient le Démon : attaque doublée et Furie des vents jusqu\'à la fin du combat.'] },
+  { id:'demon', n:'Le démon et son arme', m:['nk_zabuza', 'nk_haku'], th:[2], tx:['Haku encaisse les attaques qui visent Zabuza et retrouve son Bouclier divin à chaque combat. À la mort de Haku, Zabuza devient le Démon : attaque doublée et Furie des vents jusqu\'à la fin du combat. Les deux gagnent +3/+3 au début du combat.'] },
   { id:'uchiha', n:'Frères Uchiha', m:['nk_itachi', 'nk_sasuke'], th:[2], tx:['Mangekyō éternel : quand l\'un meurt, l\'autre reçoit ses yeux et gagne ses caractéristiques et ses mots-clés pour le reste du combat.'] },
   { id:'md1', n:'Maître et disciple', m:['nk_jiraiya', 'nk_naruto'], el:'nk_naruto', th:[2], tx:['Naruto lance un Rasengan géant au début du combat (8 dégâts à l\'ennemi d\'en face). Si Jiraiya meurt, Naruto se transforme pour le reste du combat.'] },
   { id:'md2', n:'Maître et disciple', m:['nk_gai', 'nk_lee'], el:'nk_lee', th:[2], tx:['La fleur de la jeunesse : chaque fois que Gaï attaque, Rock Lee attaque aussitôt après lui.'] },
   { id:'md3', n:'Maître et disciple', m:['nk_orochimaru', 'nk_kabuto'], el:'nk_kabuto', th:[2], tx:['Edo Tensei : au début du combat, Kabuto ressuscite ton serviteur le plus fort mort au combat précédent.'] },
   { id:'md4', n:'Maître et disciple', m:['nk_tsunade', 'nk_sakura'], el:'nk_sakura', th:[2], tx:['Ninjutsu médical : leur Soin rend deux fois plus de PV et peut dépasser les PV de départ.'] },
   { id:'md5', n:'Maître et disciple', m:['nk_naruto', 'nk_konohamaru'], el:'nk_konohamaru', th:[2], tx:['Konohamaru apprend le Multi-clonage : un Clone de lui-même à chaque fin de tour.'] },
-  { id:'md6', n:'Maître et disciple', m:['nk_pakura', 'nk_maki'], el:'nk_maki', th:[2], tx:['Pakura transmet le Shakuton à Maki : Maki gagne Brûlure de 2 à chaque combat.'] },
-  { id:'ombre', n:'Ombre et vent', m:['nk_shikamaru', 'nk_temari'], th:[2], tx:['Stratège et éventail : Temari inflige le triple de dégâts aux ennemis entravés.'] },
-  { id:'genins', n:'Genins du Son', m:['nk_dosu', 'nk_kin'], th:[2], tx:['Attaque sonore : leurs jutsus de combat sont gratuits et touchent tous les ennemis.'] },
+  { id:'ombre', n:'Ombre et vent', m:['nk_shikamaru', 'nk_temari'], th:[2], tx:['Stratège et éventail : Shikamaru entrave l\'ennemi d\'en face au début du combat, et Temari inflige le triple de dégâts aux ennemis entravés.'] },
   { id:'chiyo', n:'Grand-mère et petit-fils', m:['nk_chiyo', 'nk_sasori'], th:[2], tx:['Chiyo invoque Père et Mère, les premières marionnettes de Sasori (3/3 chacune), au début de chaque combat.'] },
-  { id:'anciens', n:'Anciens de Suna', m:['nk_chiyo', 'nk_kazekage3', 'nk_pakura'], th:[2, 3], tx:['Conseil du village : le coût d\'amélioration de la taverne baisse de 1 or de plus à chaque tour, et tu gagnes 1 chakra.', 'En plus, tu découvres un ninja de Suna à chaque amélioration de la taverne.'] },
-  { id:'gardek', n:'Garde du Kazekage', m:['nk_rasa', 'nk_shira', 'nk_baki'], th:[2, 3], tx:['Poussière d\'or : 1 or de plus au prochain tour, et les gardes gagnent +0/+1 à chaque fin de tour.', 'En plus, la poussière d\'or de Rasa entrave l\'ennemi le plus fort au début du combat.'] },
-  { id:'gardem', n:'Garde du Mizukage', m:['nk_mei', 'nk_ao', 'nk_chojuro'], th:[2, 3], tx:['Escorte : Ao et Chōjūrō encaissent les attaques qui visent Mei, qui gagne Bouclier divin à chaque combat ; ses gardes gagnent +0/+4 pendant le combat.', 'En plus, brume acide : 2 dégâts à tous les ennemis après chaque attaque de l\'un des trois.'] },
-  { id:'kage', n:'Les Kage', m:['nk_gaara', 'nk_tsunade', 'nk_mei', 'nk_rasa', 'nk_yagura'], th:[2, 3, 5], tx:['Fin de tour : gagne 2 chakra.', 'Sommet des Kage : en plus, tes serviteurs sont insensibles au Genjutsu et à l\'Entrave.', 'En plus, chacun de tes Kage attaque une fois avant le début du combat.'] },
+  { id:'kage', n:'Les Kage', m:['nk_gaara', 'nk_tsunade', 'nk_mei', 'nk_raikage'], th:[2, 3, 4], tx:['Fin de tour : gagne 2 chakra.', 'Sommet des Kage : en plus, tes serviteurs sont insensibles au Genjutsu et à l\'Entrave.', 'En plus, chacun de tes Kage attaque une fois avant le début du combat.'] },
   { id:'sannin', n:'Les Sannin', m:['nk_jiraiya', 'nk_tsunade', 'nk_orochimaru'], th:[2, 3], tx:['Impasse à trois : leurs invocations arrivent d\'elles-mêmes au début de chaque combat, sans chakra.', 'Gamabunta, Katsuyu et Manda arrivent ensemble, dorés.'] },
   { id:'fratrie', n:'Fratrie du Sable', m:['nk_gaara', 'nk_temari', 'nk_kankuro'], th:[2, 3], tx:['Le sable protège : Bouclier divin à chaque combat pour les membres présents.', 'En plus, quand l\'un des trois est attaqué, les deux autres ripostent.'] },
-  { id:'gai', n:'Équipe Gaï', m:['nk_gai', 'nk_lee', 'nk_neji'], th:[2, 3], tx:['Taijutsu : ils gagnent +5 ATQ à chacune de leurs attaques.', 'Les Portes : en plus, Furie des vents, et la première attaque de chacun inflige le double.'] },
-  { id:'jinchu', n:'Jinchūriki', m:['nk_naruto', 'nk_gaara', 'nk_yagura'], th:[2, 3], tx:['Bijū : ils se transforment gratuitement dès que ton héros a moins de 15 PV.', 'En plus, Bijūdama : 4 dégâts à tous les ennemis au début du combat.'] },
+  { id:'gai', n:'Équipe Gaï', m:['nk_gai', 'nk_lee', 'nk_neji'], th:[2, 3], tx:['Taijutsu : +0/+4 au début du combat, et +5 ATQ à chacune de leurs attaques.', 'Les Portes : en plus, Furie des vents, et la première attaque de chacun inflige le double.'] },
+  { id:'jinchu', n:'Jinchūriki', m:['nk_naruto', 'nk_gaara', 'nk_bee'], th:[2, 3], tx:['Bijū : ils se transforment gratuitement dès que ton héros a moins de 15 PV.', 'En plus, Bijūdama : 3 dégâts à tous les ennemis au début du combat.'] },
   { id:'equipe7', n:'Équipe 7', m:['nk_naruto', 'nk_sasuke', 'nk_sakura', 'nk_kakashi'], th:[2, 3, 4], tx:['Travail d\'équipe : quand l\'un d\'eux attaque, un autre gagne +3/+3.', 'Épreuve des clochettes : en plus, Kakashi copie les jutsus de combat de ses élèves.', 'Rasengan et Chidori : en plus, Naruto et Sasuke frappent ensemble la même cible, sans riposte.'] },
   { id:'son', n:'Les Cinq du Son', m:['nk_jirobo', 'nk_kidomaru', 'nk_sakon', 'nk_tayuya', 'nk_kimimaro'], th:[2, 3, 5], tx:['Marque maudite : ils gagnent +5/+5 la première fois qu\'ils sont blessés à chaque combat.', 'Barrière des quatre flammes : en plus, les ennemis qui les attaquent subissent une Brûlure de 3.', 'Marque de niveau 2 : le bonus passe à +10/+10 et ils gagnent Réincarnation.'] },
-  { id:'epees', n:'Épéistes de la Brume', m:['nk_zabuza', 'nk_chojuro', 'nk_mangetsu', 'nk_ameyuri', 'nk_jinpachi', 'nk_suigetsu', 'nk_kisame'], th:[2, 4, 6], tx:['Brouillard : Camouflage et +3/+3 pour tous tes épéistes à chaque combat.', 'En plus, chaque épéiste gagne l\'effet de l\'épée de son voisin épéiste de droite.', 'Les épées réunies : en plus, chaque attaque d\'un épéiste déclenche l\'attaque du suivant.'] },
+  { id:'inoshika', n:'Ino-Shika-Chō', m:['nk_shikamaru', 'nk_ino', 'nk_choji'], th:[2, 3], tx:['Formation : ils gagnent +2/+2 au début de chaque combat.', 'Ino-Shika-Chō : en plus, au début du combat, l\'ennemi le plus fort est entravé et perd 5 ATQ.'] },
+  { id:'kumo', n:'Frères de Kumo', m:['nk_raikage', 'nk_bee'], th:[2], tx:['Double Lariat : avant le combat, ils frappent tous les deux une fois.'] },
+  { id:'epees', n:'Épéistes de la Brume', m:['nk_zabuza', 'nk_mangetsu', 'nk_ameyuri', 'nk_jinpachi', 'nk_suigetsu', 'nk_kisame'], th:[2, 4, 6], tx:['Brouillard : Camouflage et +3/+3 pour tous tes épéistes à chaque combat.', 'En plus, chaque épéiste gagne l\'effet de l\'épée de son voisin épéiste de droite.', 'Les épées réunies : en plus, chaque attaque d\'un épéiste déclenche l\'attaque du suivant.'] },
 ];
 // libellé propre à l'univers : un effet peut porter son nom (nm) à la place de celui d'origine
 Object.keys(ET).forEach(k => { const t0 = ET[k].txt; ET[k].txt = (e, x) => { const t = t0(e, x); if (!e || !e.nm) return t; const i = t.indexOf(' : '), head = i > 0 ? t.slice(0, i) : ''; return e.nm + ' : ' + (i > 0 && !/^(Cri de guerre|Début du combat|Râle d'agonie|Fin de tour|Début de tour)$/.test(head) ? t.slice(i + 3) : t.charAt(0).toLowerCase() + t.slice(1)); }; });
@@ -1899,25 +1890,22 @@ function nkGroupsEot(G, p) {
   if (lv('itakisa')) { all('itakisa', { k:'tgt_top' }); gx('itakisa', 'nk_kisame', { k:'atk_drain', n:3 }); gx('itakisa', 'nk_itachi', { k:'hit_genj' }); }
   if (lv('anges')) { gx('anges', 'nk_konan', { k:'guard', card:'nk_pain', n:1 }); gx('anges', 'nk_pain', { k:'die_aoe', card:'nk_konan', d:3 }); }
   if (lv('espions')) { kw('espions', 'c'); all('espions', { k:'camo_keep' }); withSrc(name('espions'), () => nkMem(p, 'espions').forEach(m => buff(m, 0, mult(m)))); }
-  if (lv('demon')) { gx('demon', 'nk_zabuza', { k:'die_rage', card:'nk_haku' }); kw('demon', 's', ['nk_haku']); }
+  if (lv('demon')) { gx('demon', 'nk_zabuza', { k:'die_rage', card:'nk_haku' }); kw('demon', 's', ['nk_haku']); all('demon', { k:'soc_self', a:3, h:3 }); }
   if (lv('uchiha')) { gx('uchiha', 'nk_itachi', { k:'die_inherit', card:'nk_sasuke' }); gx('uchiha', 'nk_sasuke', { k:'die_inherit', card:'nk_itachi' }); }
   if (lv('md1')) gx('md1', 'nk_naruto', { k:'soc_face', d:8 }, { k:'die_tf', card:'nk_jiraiya' });
   if (lv('md2')) gx('md2', 'nk_lee', { k:'follow', card:'nk_gai' });
   if (lv('md3')) gx('md3', 'nk_kabuto', { k:'soc_edo' });
   if (lv('md4')) all('md4', { k:'heal2' });
   if (lv('md5') && p.bd.length < 7) by('nk_konohamaru').slice(0, 1).forEach(m => withSrc(name('md5'), () => nkClone(p, m, 1)));
-  if (lv('md6')) gx('md6', 'nk_maki', { k:'burn', d:2 });
-  if (lv('ombre')) gx('ombre', 'nk_temari', { k:'x3bound' });
-  if (lv('genins')) all('genins', { k:'wide' });
+  if (lv('ombre')) { gx('ombre', 'nk_temari', { k:'x3bound' }); gx('ombre', 'nk_shikamaru', { k:'soc_bind', who:'face' }); }
   if (lv('chiyo')) gx('chiyo', 'nk_chiyo', { k:'soc_summon', card:'tk_pere', n:1 }, { k:'soc_summon', card:'tk_mere', n:1 });
-  if (lv('anciens')) { p.uc = Math.max(0, (p.uc || 0) - 1); p.ck = Math.min(ckMax(p), (p.ck || 0) + 1); }
-  if (lv('gardek')) { p.inc = p.inc || []; p.inc[0] = (p.inc[0] || 0) + 1; withSrc(name('gardek'), () => nkMem(p, 'gardek').forEach(m => buff(m, 0, mult(m)))); if (lv('gardek') > 1) gx('gardek', 'nk_rasa', { k:'soc_bind', who:'top' }); }
-  if (lv('gardem')) { kw('gardem', 's', ['nk_mei']); nkMem(p, 'gardem').filter(m => m.c !== 'nk_mei').forEach(m => nkTmp(m, 0, 4, '', name('gardem'))); gx('gardem', 'nk_ao', { k:'guard', card:'nk_mei', n:99 }); gx('gardem', 'nk_chojuro', { k:'guard', card:'nk_mei', n:99 }); if (lv('gardem') > 1) all('gardem', { k:'aft_aoe', d:2 }); }
+  if (lv('inoshika')) { all('inoshika', { k:'soc_self', a:2, h:2 }); if (lv('inoshika') > 1) gx('inoshika', 'nk_shikamaru', { k:'soc_bind', who:'top' }, { k:'soc_weaktop', a:5 }); }
+  if (lv('kumo')) all('kumo', { k:'soc_strike' });
   if (lv('kage')) { p.ck = Math.min(ckMax(p), (p.ck || 0) + 2); if (lv('kage') > 1) p.bd.forEach(m => { m.gx = (m.gx || []).concat([{ k:'imm', src:name('kage') }]); }); if (lv('kage') > 2) all('kage', { k:'soc_strike' }); }
   if (lv('sannin')) nkMem(p, 'sannin').forEach(m => { m.gx = (m.gx || []).concat([{ k:'soc_summon', card:NK_BEAST[m.c], n:1, g:lv('sannin') > 1 ? 1 : 0, src:name('sannin') }]); });
   if (lv('fratrie')) { kw('fratrie', 's'); if (lv('fratrie') > 1) all('fratrie', { k:'fr3' }); }
-  if (lv('gai')) { all('gai', { k:'atk_self', a:5, h:0 }); if (lv('gai') > 1) { kw('gai', 'w'); all('gai', { k:'soc_first', x:2 }); } }
-  if (lv('jinchu')) { if ((p.hp || 0) < 15) nkMem(p, 'jinchu').forEach(m => doNkTf(G, p, m, true)); if (lv('jinchu') > 1) nkMem(p, 'jinchu').slice(0, 1).forEach(m => { m.gx = (m.gx || []).concat([{ k:'soc_aoe', d:4, src:'Bijūdama' }]); }); }
+  if (lv('gai')) { all('gai', { k:'atk_self', a:5, h:0 }, { k:'soc_self', a:0, h:4 }); if (lv('gai') > 1) { kw('gai', 'w'); all('gai', { k:'soc_first', x:2 }); } }
+  if (lv('jinchu')) { if ((p.hp || 0) < 15) nkMem(p, 'jinchu').forEach(m => doNkTf(G, p, m, true)); if (lv('jinchu') > 1) nkMem(p, 'jinchu').slice(0, 1).forEach(m => { m.gx = (m.gx || []).concat([{ k:'soc_aoe', d:3, src:'Bijūdama' }]); }); }
   if (lv('equipe7')) { const k = lv('equipe7'); all('equipe7', { k:'atk_team', a:3, h:3 });
     if (k > 1) by('nk_kakashi').forEach(m => { nkMem(p, 'equipe7').filter(x => x.c !== 'nk_kakashi').forEach(x => { const J = jutOf(x); if (J) m.gx = (m.gx || []).concat(jutCb(J, x.tf).map(o => Object.assign({ src:'Sharingan' }, o))); }); });
     if (k > 2) { gx('equipe7', 'nk_naruto', { k:'follow', card:'nk_sasuke' }); gx('equipe7', 'nk_sasuke', { k:'follow', card:'nk_naruto' }); kw('equipe7', 'i', ['nk_naruto', 'nk_sasuke']); } }
