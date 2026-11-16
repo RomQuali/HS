@@ -461,8 +461,8 @@ for (const id in ROIMG) { const f = () => `<rect width="100" height="100" fill="
 const NK_IMG = { nk_naruto:'nh_naruto', nk_kakashi:'nh_kakashi', nk_jiraiya:'nh_jiraiya', nk_shikamaru:'nh_shikamaru', nk_itachi:'nh_itachi', nk_deidara:'nh_deidara', nk_sasori:'nh_sasori', nk_kakuzu:'nh_kakuzu', nk_gaara:'nh_gaara', nk_kankuro:'nh_kankuro', nk_rasa:'nh_rasa', nk_sasuke:'nh_sasuke', nk_mei:'nh_mei', nk_haku:'nh_haku' };
 const NK_WAIT = { nk_konohamaru:'n_f1', nk_sakura:'n_f2', nk_lee:'n_f3', nk_neji:'n_f5', nk_gai:'n_f7', nk_tsunade:'n_f9',
   nk_zetsu:'n_o1', nk_tobi:'n_o2', nk_hidan:'n_o4', nk_kisame:'n_o7', nk_konan:'n_o5', nk_pain:'n_o10',
-  nk_matsuri:'n_v1', nk_yashamaru:'n_v2', nk_baki:'n_v3', nk_ebizo:'n_v4', nk_pakura:'n_v6', nk_temari:'n_v7', nk_chiyo:'n_v8',
-  nk_zaku:'n_t1', nk_dosu:'n_t2', nk_tayuya:'n_t3', nk_kidomaru:'n_t4', nk_jirobo:'n_t5', nk_sakon:'n_t6', nk_kabuto:'n_t7', nk_kimimaro:'n_t8', nk_orochimaru:'n_t10',
+  nk_maki:'n_v1', nk_shira:'n_v2', nk_baki:'n_v3', nk_kazekage3:'n_v4', nk_pakura:'n_v6', nk_temari:'n_v7', nk_chiyo:'n_v8',
+  nk_kin:'n_t1', nk_dosu:'n_t2', nk_tayuya:'n_t3', nk_kidomaru:'n_t4', nk_jirobo:'n_t5', nk_sakon:'n_t6', nk_kabuto:'n_t7', nk_kimimaro:'n_t8', nk_orochimaru:'n_t10',
   nk_chojuro:'n_e1', nk_suigetsu:'n_e2', nk_ao:'n_e3', nk_ameyuri:'n_e4', nk_jinpachi:'n_e6', nk_zabuza:'n_e7', nk_mangetsu:'n_e8', nk_yagura:'n_e10',
   tk_crapaud:'tk_toad', tk_gamabunta:'tk_toad', tk_katsuyu:'tk_slug', tk_manda:'tk_snake', tk_karasu:'tk_puppet', tk_serpent:'tk_snake' };
 (function () {
