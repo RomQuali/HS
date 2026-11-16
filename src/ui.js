@@ -1605,9 +1605,9 @@ function showPeek(t, touch) {
     peekFor = t; peekEl.innerHTML = cardH({ c, a:+t.dataset.a, h:+t.dataset.h, g:+t.dataset.g, f:t.dataset.f || '', tf:+t.dataset.tf || 0, tfn:t.dataset.tfn || '', it:t.dataset.it || '' }, 'p', 0); peekEl.hidden = false;   // la grande carte suit la transformation (image et nom de la forme)
     { const mc = findMine(t.dataset.u); if (mc && isComp(mc)) { const lv = (V.me && V.me.eqlv) || {}; const eq = mc.eq || [];
       peekEl.insertAdjacentHTML('beforeend', compSheetH(mc, lv, eq)); } }
-    if (/^nk_/.test(c)) { const g0 = +t.dataset.g, full = cardTextH(c, g0, true, +t.dataset.tf || 0), grp = typeof NK_GOF !== 'undefined' && NK_GOF[c] ? [...new Set(NK_GOF[c].map(x => x.n))] : []; peekEl.insertAdjacentHTML('beforeend', `<div class="cd-full"><b class="cdf-h">Détails · ${esc(CD(c).n)}</b>${grp.length ? `<p><b>Groupes</b> : ${esc(grp.join(', '))}.</p>` : ''}<p>${full.replace(/<b>Groupe<\/b> : [^.]*\. ?/, '')}</p></div>`); }   // le texte complet à côté de la carte
+    if (/^nk_/.test(c)) { const g0 = +t.dataset.g, full = cardTextH(c, g0, true, +t.dataset.tf || 0), grp = typeof NK_GOF !== 'undefined' && NK_GOF[c] ? [...new Set(NK_GOF[c].map(x => x.n))] : []; peekEl.insertAdjacentHTML('beforeend', nkDetailH(c, g0, +t.dataset.tf || 0, t.dataset.it || '')); }   // le texte complet à côté de la carte
     const [pw, ph] = peekSize(); placePeek(r, pw, ph + (peekEl.querySelector('.peq') ? peekEl.querySelector('.peq').offsetHeight + 8 : 0), touch);
-    { const cf = peekEl.querySelector('.cd-full'); if (cf) { const pr = peekEl.getBoundingClientRect(); cf.classList.toggle('left', pr.right + cf.offsetWidth + 14 > innerWidth); } }
+    { const cf = peekEl.querySelector('.cd-full'); if (cf) { const pr = peekEl.getBoundingClientRect(); cf.classList.toggle('left', pr.right + cf.offsetWidth + 14 > innerWidth); nkdFit(cf); } }
     // après un instant de survol : la bulle des améliorations
     clearTimeout(TIPT); const mm = findMine(t.dataset.u);
     if (mm) TIPT = setTimeout(() => {
@@ -3863,3 +3863,45 @@ function hpPowMedH(h, x) {
     const L = [...hrefs]; let i = 0; const next = () => { if (i < L.length) decode(L[i++]).then(() => setTimeout(next, 20)); }; next(); next(); };
   addEventListener('load', () => setTimeout(() => (window.requestIdleCallback ? requestIdleCallback(pre, { timeout:5000 }) : pre()), 2500));
 })();
+
+/* ===== Naruto : fiche de détail d'un ninja au survol (maquette « 01 · Fiche à sections », 16/11/2026) ===== */
+function nkDetailH(c, g, tf, its) {
+  const b = CD(c), k = g ? 2 : 1, J = jutOf({ c }), ST = J ? tfSt(J) : [], done = Math.min(tf || 0, ST.length);
+  const split = t => { t = String(t).replace(/\.$/, ''); const i = t.indexOf(' : '); return i > 0 && i < 34 ? [t.slice(0, i), t.slice(i + 3)] : ['', t]; };
+  const cap = t => t ? t.charAt(0).toUpperCase() + t.slice(1) : t;
+  const drop = n => `<span class="nkd-ck"><i class="nkd-drop"></i><b>${n == null ? '—' : n}</b></span>`;
+  // groupes : autres membres
+  const gs = typeof NK_GOF !== 'undefined' && NK_GOF[c] ? NK_GOF[c].filter((x, i, a) => a.findIndex(y => y.id === x.id) === i) : [];
+  const grpH = gs.length ? `<section class="nkd-sec"><h4 class="nkd-rb">${gs.length > 1 ? 'Groupes' : 'Groupe'}</h4><div class="nkd-box">${gs.map(G => `<div class="nkd-gn">${esc(G.n)}</div>${gs.length > 1 ? '' : '<small class="nkd-sub">Autres ninjas du groupe</small>'}<div class="nkd-names">${G.m.filter(x => x !== c && C[x]).map(x => `<span class="nkd-nm${V.me && [...(V.me.bd || []), ...(V.me.hd || [])].some(m => m && m.c === x) ? ' on' : ''}">${esc(nkdShort(CD(x).n))}</span>`).join('')}</div>`).join('<i class="nkd-sep"></i>')}</div></section>` : '';
+  // effets passifs (mots-clés, effets de la carte, effets gagnés par les transformations faites)
+  const kws = (b.kw || []).map(x => SET.kw[x] && SET.kw[x].n).filter(Boolean);
+  const pas = (b.fx || []).filter(e => e.k !== 'jutsu' && ET[e.k]).map(e => fxText(e, k)).concat(ST.slice(0, done).flatMap(T => (T.x || []).filter(o => ET[o.k]).map(o => ET[o.k].txt(o, k))));
+  const shieldy = t => /Bouclier divin/.test(t);
+  const pasH = kws.length || pas.length ? `<section class="nkd-sec"><h4 class="nkd-rb">Effet passif</h4><div class="nkd-box nkd-pas">${kws.length ? `<div class="nkd-row"><i class="nkd-ico${kws.some(shieldy) ? ' sh' : ''}"></i><div><b>Mots-clés</b><p>${esc(kws.join(', '))}.</p></div></div>` : ''}${pas.map(t => { const [h, x] = split(t); return `<div class="nkd-row"><i class="nkd-ico${shieldy(t) ? ' sh' : ''}"></i><div>${h ? `<b>${esc(h)}</b>` : ''}<p>${esc(cap(x))}.</p></div></div>`; }).join('')}</div></section>` : '';
+  // capacité (jutsu)
+  let capH = '';
+  if (J && !J.none) { const FX = done ? jutFx(J, done) : J.fx || [], CB = done ? jutCb(J, done) : J.cb || [], cost = V.me && typeof jutCost === 'function' ? jutCost(V.me, { c, it:its }) : b.t;
+    const body = [FX.length ? cap(jutBody(FX, k)) + '.' : '', CB.length ? (FX.length ? 'Au combat : ' : 'Au prochain combat : ') + jutBody(CB, k) + '.' : ''].filter(Boolean).join(' ');
+    capH = `<section class="nkd-sec"><h4 class="nkd-rb">Capacité</h4><div class="nkd-box nkd-cap"><div><b class="nkd-cn">${esc(J.nm)}</b><p>${esc(body)}</p></div><div class="nkd-cost">${drop(cost)}<small>Coût en chakra</small></div></div></section>`; }
+  // transformations restantes
+  const rest = ST.slice(done);
+  const tfH = rest.length ? `<section class="nkd-sec"><h4 class="nkd-rb">${done ? (rest.length > 1 ? 'Transformations suivantes' : 'Transformation suivante') : (rest.length > 1 ? 'Transformations' : 'Transformation')}</h4><div class="nkd-tfs">${rest.map((T, i) => { const last = done + i === ST.length - 1;
+    const lines = [(T.a || T.h ? sign(T.a * k, T.h * k) : '') + (T.kw ? (T.a || T.h ? ', ' : '') + ((SET.kw[T.kw] || {}).n || '') : '')].concat((T.x || []).filter(o => ET[o.k]).map(o => cap(ET[o.k].txt(o, k).replace(/\.$/, '')) + '.'), T.fx ? ['Son jutsu devient : ' + jutBody(T.fx, k) + '.'] : [], T.cb ? ['Son jutsu de combat devient : ' + jutBody(T.cb, k) + '.'] : []).filter(Boolean);
+    return `<div class="nkd-tf"><div class="nkd-tfh"><b>${esc(T.nm)}</b>${drop(T.c)}${last ? '<span class="nkd-gold">Carte dorée</span>' : ''}</div>${lines.map(l => `<p>${esc(l)}</p>`).join('')}</div>`; }).join('')}</div></section>` : '';
+  return `<div class="cd-full nkd"><header class="nkd-head"><span class="nkd-por"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-${artOf({ c, tf })}" width="100" height="100"/></svg><i></i></span><div class="nkd-ttl"><b>${esc(b.n)}</b><small>Détails du ninja</small></div></header>${grpH}${pasH}${capH}${tfH}</div>`;
+}
+
+const NKD_CLANS = /\s+(Uzumaki|Uchiha|Hatake|Nara|Yamanaka|Akimichi|Hyūga|Haruno|Inuzuka|Aburame|Sarutobi|Senju|Hōshigaki|Terumī|Hōzuki|Yakushi|Rock)$/;
+function nkdShort(n) { return n.replace(NKD_CLANS, ''); }
+/* la fiche reste dans l'écran : on la remonte, puis on la réduit si elle est plus haute que la fenêtre */
+function nkdFit(cf) {
+  if (!cf || !cf.classList.contains('nkd')) return;
+  cf.style.top = '0px'; cf.style.transform = ''; cf.style.transformOrigin = 'top left';
+  const r = cf.getBoundingClientRect(), H = innerHeight - 16, sc = Math.min(1, H / r.height);
+  if (sc < 1) cf.style.transform = `scale(${sc})`;
+  const h = r.height * sc; let dy = 0;
+  if (r.top + h > innerHeight - 8) dy = innerHeight - 8 - h - r.top;
+  if (r.top + dy < 8) dy = 8 - r.top;
+  cf.style.top = dy / sc * (sc < 1 ? sc : 1) + 'px';
+  if (cf.classList.contains('left')) cf.style.transformOrigin = 'top right';
+}
