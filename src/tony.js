@@ -128,7 +128,7 @@ function installerBureau() {
   }
   function arreterVoix(){if(lecture){try{lecture.stop()}catch{}lecture.disconnect();lecture=null}arreterBruits()}
   // Bruitages de la trappe (16/11/2026) : bouton, verrou, battants, cri de Kenny, chute, impact, rire de Tony, plongée, fermeture
-  const BRUITS=['tony-bouton','trappe-verrou','trappe-ouverture','kenny-surprise','kenny-cri-chute','chute-souffle','chute-impact','tony-rire','transition-plongee','trappe-fermeture'],tampons={},enCours=new Set();let bruitsCharges=null;
+  const BRUITS=['tony-bouton','trappe-verrou','trappe-ouverture','kenny-surprise','kenny-cri-chute','chute-souffle','chute-impact','transition-plongee','trappe-fermeture'],tampons={},enCours=new Set();let bruitsCharges=null;
   const bruitsOk=()=>typeof SFX==='undefined'||SFX.on!==false;
   const volBruits=()=>typeof SFX!=='undefined'&&SFX.vol!=null?SFX.vol:1;
   function chargerBruits(){
@@ -317,13 +317,13 @@ function installerBureau() {
   function reset(){generation++;cancelAnimationFrame(flight);flight=0;playing=false;arreterVoix();camera.style.transform='';stage.classList.remove('chute');stage.style.removeProperty('--disparition');stage.style.removeProperty('--voile-chute');repos();actualiser()}
   let aJoue=false;
   function activer(on){active=on;repos();actualiser();if(on){void chargerBruits();if(aJoue){aJoue=false;bruit('trappe-fermeture',performance.now(),350,.8)}}if(on&&prefs.dialogue)void chargerVoix()}
-  function run(done){reset();playing=true;actualiser();const gen=generation,start=performance.now(),mini=reduced(),entree=mini?300:2500;   /* la réplique part après l'impact, pour ne pas couvrir le cri de Kenny */
+  function run(done){reset();playing=true;actualiser();const gen=generation,start=performance.now(),mini=reduced(),entree=mini?300:2350;   /* la réplique part juste après l'impact (à la place du rire de Tony) */
     const duree=prefs.dialogue?entree+3200:mini?540:2450;
     stage.classList.add('chute');void programmerVoix(start,entree,gen);aJoue=true;
     if(!mini){   // bruitages calés sur l'animation (ms depuis l'appui)
       bruit('tony-bouton',start,0,1,gen);bruit('trappe-verrou',start,330,.9,gen);bruit('trappe-ouverture',start,500,1,gen);
       bruit('kenny-surprise',start,560,.9,gen);bruit('kenny-cri-chute',start,780,.95,gen);bruit('chute-souffle',start,800,.7,gen);
-      bruit('chute-impact',start,2250,.8,gen);bruit('tony-rire',start,prefs.dialogue?entree+3050:2350,.85,gen);bruit('transition-plongee',start,duree-830,.8,gen);
+      bruit('chute-impact',start,2250,.8,gen);bruit('transition-plongee',start,duree-830,.8,gen);
     }else{bruit('tony-bouton',start,0,1,gen);bruit('trappe-ouverture',start,150,.8,gen)}
     function tick(now){
       if(gen!==generation)return;const ms=now-start;
