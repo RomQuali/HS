@@ -614,7 +614,7 @@ const DEFAULT_CARD_LIST = [
   ['tk_doki3', 'Doki enchaîné', 0, 'nk_inv', 1, 3, 't', []],
   ['tk_ukon', 'Ukon', 0, 'nk_oto', 3, 3, '', []],
   ['tk_ninken', 'Meute de ninken', 0, 'nk_inv', 4, 4, '', [{ k:'soc_bind', who:'face' }]],
-  ['tk_katsuyu', 'Katsuyu', 0, 'nk_inv', 3, 10, 't', [{ k:'surv_heal', n:2 }, { k:'dr_summon2', card:'tk_katsuyu2', n:2 }]],
+  ['tk_katsuyu', 'Katsuyu', 0, 'nk_inv', 3, 10, 't', [{ k:'surv_heal', n:2, once:1 }, { k:'dr_summon2', card:'tk_katsuyu2', n:2 }]],
   ['tk_katsuyu2', 'Petite Katsuyu', 0, 'nk_inv', 1, 5, 't', []],
   ['tk_rashomon', 'Rashōmon', 0, 'nk_inv', 0, 12, 't', []],
   ['tk_serpent', 'Serpent d’Orochimaru', 0, 'nk_inv', 3, 2, '', []],
@@ -699,7 +699,7 @@ const DEFAULT_CARD_LIST = [
   ['tk_kamatari', 'Kamatari', 0, 'nk_inv', 5, 3, 'w', [{ k:'sickle' }]],
   ['tk_cerbere', 'Chien géant de Pain', 0, 'nk_inv', 7, 7, '', [{ k:'surv_split', n:3 }]],
   ['nk_konohamaru', 'Konohamaru', 1, 'nk_kon', 1, 3, '', [{ k:'soc_weak', a:2, nm:'Sexy no jutsu' }, { k:'jutsu', nm:'Rasengan', cb:[{ k:'soc_face', d:2 }] }]],
-  ['nk_sakura', 'Sakura Haruno', 1, 'nk_kon', 1, 4, '', [{ k:'aft_heal', n:2 }, { k:'jutsu', nm:'Ninjutsu médical', fx:[{ k:'bc_buff_rand', a:0, h:2, tb:'' }], tf:[{ c:3, nm:'Force de Tsunade', a:1, h:1, x:[{ k:'cleave' }] }, { c:5, nm:'Sceau du Byakugō', a:1, h:2, kw:'r' }] }]],
+  ['nk_sakura', 'Sakura Haruno', 1, 'nk_kon', 1, 4, '', [{ k:'aft_heal', n:2, once:1 }, { k:'jutsu', nm:'Ninjutsu médical', fx:[{ k:'bc_buff_rand', a:0, h:2, tb:'' }], tf:[{ c:3, nm:'Force de Tsunade', a:1, h:1, x:[{ k:'cleave' }] }, { c:5, nm:'Sceau du Byakugō', a:1, h:2, kw:'r' }] }]],
   ['nk_lee', 'Rock Lee', 2, 'nk_kon', 3, 4, '', [{ k:'atk_self', a:2, h:0 }, { k:'jutsu', nm:'', none:1, tf:[{ c:4, nm:'Ouverture des Portes', a:1, h:1, kw:'w' }, { c:6, nm:'Lotus verso', a:2, h:1, x:[{ k:'soc_first', x:2 }, { k:'aft_selfdmg', d:2 }] }] }]],
   ['nk_shikamaru', 'Shikamaru Nara', 2, 'nk_kon', 2, 4, '', [{ k:'jutsu', nm:'Manipulation des ombres', cb:[{ k:'soc_bind', who:'top' }] }]],
   ['nk_ino', 'Ino Yamanaka', 2, 'nk_kon', 2, 3, '', [{ k:'jutsu', nm:'Shintenshin', cb:[{ k:'soc_genj', who:'face', n:1 }] }]],
@@ -709,7 +709,7 @@ const DEFAULT_CARD_LIST = [
   ['nk_neji', 'Neji Hyūga', 3, 'nk_kon', 3, 6, '', [{ k:'soc_kwself', kw:'s', nm:'Hakkeshō Kaiten' }, { k:'pierce' }, { k:'jutsu', nm:'64 poings', cb:[{ k:'soc_seal', who:'face' }] }]],
   ['nk_kakashi', 'Kakashi Hatake', 4, 'nk_kon', 4, 7, '', [{ k:'soc_copykw' }, { k:'jutsu', nm:'Raikiri', cb:[{ k:'soc_face', d:6 }], tf:[{ c:4, nm:'Sharingan dévoilé', a:1, h:1, x:[{ k:'soc_summon', card:'tk_ninken', n:1 }] }, { c:6, nm:'Kamui', a:2, h:2, x:[{ k:'soc_kill_low' }] }, { c:9, nm:'Double Sharingan', a:3, h:3, x:[{ k:'soc_copyall' }] }] }]],
   ['nk_gai', 'Gaï Maito', 4, 'nk_kon', 5, 6, '', [{ k:'jutsu', nm:'Paon du matin', cb:[{ k:'soc_aoe', d:2 }], tf:[{ c:5, nm:'Sixième Porte', a:2, h:2, cb:[{ k:'soc_aoe', d:4 }] }, { c:7, nm:'Septième Porte', a:3, h:1, x:[{ k:'soc_first', x:3 }] }, { c:9, nm:'Huitième Porte', a:10, h:0, kw:'w', x:[{ k:'aft_burnout', n:3 }] }] }]],
-  ['nk_tsunade', 'Tsunade', 5, 'nk_kon', 4, 10, '', [{ k:'aft_heal', n:4 }, { k:'jutsu', nm:'Invocation : Katsuyu', fx:[{ k:'bc_summon', card:'tk_katsuyu', n:1 }], tf:{ c:8, nm:'Création et renaissance', a:3, h:6, kw:'r' } }]],
+  ['nk_tsunade', 'Tsunade', 5, 'nk_kon', 4, 10, '', [{ k:'aft_heal', n:4, once:1 }, { k:'jutsu', nm:'Invocation : Katsuyu', fx:[{ k:'bc_summon', card:'tk_katsuyu', n:1 }], tf:{ c:8, nm:'Création et renaissance', a:3, h:6, kw:'r' } }]],
   ['nk_jiraiya', 'Jiraiya', 5, 'nk_kon', 5, 9, '', [{ k:'jutsu', nm:'Invocation : Gamabunta', fx:[{ k:'bc_summon', card:'tk_gamabunta', n:1 }], tf:{ c:9, nm:'Ermite des crapauds', a:5, h:5, x:[{ k:'soc_face', d:8 }] } }]],
   ['nk_naruto', 'Naruto Uzumaki', 6, 'nk_kon', 6, 9, '', [{ k:'jut_any', a:2, h:2 }, { k:'jutsu', nm:'Multi-clonage', fx:[{ k:'bc_clone', n:2 }], tf:[{ c:6, nm:'Mode Ermite', a:3, h:3, x:[{ k:'soc_aoe', d:4 }] }, { c:8, nm:'Manteau de Kyūbi', a:6, h:6, kw:'w' }, { c:10, nm:'Mode Rikudō', a:3, h:3, fx:[{ k:'bc_clone', n:2, full:1 }] }] }]],
   ['nk_zetsu', 'Zetsu', 1, 'nk_aka', 2, 3, 'c', [{ k:'dr_summon', card:'tk_zetsub', n:1, nm:'Zetsu blanc' }, { k:'jutsu', nm:'Spores', cb:[{ k:'soc_steal', a:2, h:2 }] }]],
@@ -1356,7 +1356,7 @@ const ET = {
   imm:{ tr:'pas', l:'Insensible aux illusions', ps:[], w:1, mag:() => 2, txt:() => `Insensible au Genjutsu, à l'Entrave et au Scellement.` },
   fr3:{ tr:'pas', l:'Fratrie', ps:[], w:1, mag:() => 4, txt:() => `Quand un membre de la fratrie est attaqué, les autres ripostent.` },
   follow:{ tr:'pas', l:'Attaque enchaînée', ps:[], w:1, mag:() => 5, txt:e => `Attaque aussitôt après ${CD(e.card).n}.` },
-  aft_heal:{ tr:'aft', l:'Soin', ps:[], w:1, mag:e => e.n, txt:(e, k) => `Soin : après son attaque, rend ${e.n * k} PV à ton serviteur le plus blessé.` },
+  aft_heal:{ tr:'aft', l:'Soin', ps:[], w:1, mag:e => e.n, txt:(e, k) => `Soin : après son attaque, rend ${e.n * k} PV à ton serviteur le plus blessé${e.once ? ' (une fois par combat)' : ''}.` },
   aft_full:{ tr:'aft', l:'Régénération', ps:[], w:1, mag:() => 6, txt:() => `Régénération : après son attaque, récupère tous ses PV.` },
   aft_selfdmg:{ tr:'aft', l:'Contrecoup', ps:[], w:1, mag:e => -e.d, txt:(e, k) => `Perd ${e.d * k} PV après chacune de ses attaques.` },
   aft_aoe:{ tr:'aft', l:'Brume acide', ps:[], w:1, mag:e => 3 * e.d, txt:(e, k) => `Après son attaque, inflige ${e.d * k} dégâts à tous les ennemis.` },
@@ -1404,7 +1404,7 @@ const ET = {
   aft_burnout:{ tr:'aft', l:'Huitième Porte', ps:[], w:1, mag:() => -4, txt:e => `Gaï de la nuit : il s'effondre après sa ${e.n}e attaque du combat.` },
   soc_aoe_if:{ tr:'soc', l:'Huile enflammée', ps:[], w:1, mag:e => 2 * e.d, txt:(e, k) => `Huile enflammée : si ${CD(e.card).n} est à tes côtés, inflige ${e.d * k} dégâts à tous les ennemis au début du combat.` },
   surv_regen:{ tr:'surv', l:'Byakugō', ps:['n'], w:1, mag:e => 2 * e.n, txt:(e, k) => `Byakugō : quand il est blessé et survit, récupère ${e.n * k} PV.` },
-  surv_heal:{ tr:'surv', l:'Soin de Katsuyu', ps:[], w:1, mag:e => 2 * e.n, txt:(e, k) => `Quand elle est blessée et survit, rend ${e.n * k} PV à tes autres serviteurs.` },
+  surv_heal:{ tr:'surv', l:'Soin de Katsuyu', ps:[], w:1, mag:e => 2 * e.n, txt:(e, k) => `Quand elle est blessée et survit, rend ${e.n * k} PV à tes autres serviteurs${e.once ? ' (une fois par combat)' : ''}.` },
   surv_split:{ tr:'surv', l:'Cerbère', ps:[], w:1, mag:() => 8, txt:e => `Cerbère : chaque fois qu'il est blessé et survit, une nouvelle tête naît (une copie, ${e.n} par combat au plus).` },
   dr_summon2:{ tr:'dr', l:'Division', ps:[], w:1, mag:() => 5, txt:e => `Râle d'agonie : se divise en ${e.n} ${CD(e.card).n}.` },
   dr_kill_tok:{ tr:'dr', l:'Flûte brisée', ps:[], w:1, mag:() => -2, txt:() => `Si elle meurt en combat, ses Doki disparaissent.` },
@@ -2208,7 +2208,7 @@ function runCombat(S, s, m, e, pos, ctx) {
     case 'soc_edo': if (m.edo && C[m.edo]) { const nm = simSummon(S, s, al.indexOf(m) + 1, m.edo, 0); if (nm) nm.hm = nm.h; } break;
     case 'soc_copyfx': al.filter(x => x !== m && x.c !== m.c && CD(x.c).tr === 'nk_kir').forEach(x => { m.x = (m.x || []).concat(nkSword(x.c).map(o => Object.assign({ src:CD(x.c).n }, o))); }); break;
     case 'soc_strike': if (m.a > 0 && en.some(x => x.h > 0)) nkStrike(S, s, m, null); break;
-    case 'aft_heal': { const o = al.filter(x => x.h > 0 && (nkHas(m, 'heal2') || x.h < (x.hm || x.h))).sort((a, b) => (a.h - (a.hm || a.h)) - (b.h - (b.hm || b.h)))[0]; if (o) { const n = e.n * k * (nkHas(m, 'heal2') ? 2 : 1); o.h = nkHas(m, 'heal2') ? o.h + n : Math.min(o.hm || o.h, o.h + n); } break; }
+    case 'aft_heal': { if (e.once && (m.hu || (m.hu = {}))[e.k]) break; const o = al.filter(x => x.h > 0 && (nkHas(m, 'heal2') || x.h < (x.hm || x.h))).sort((a, b) => (a.h - (a.hm || a.h)) - (b.h - (b.hm || b.h)))[0]; if (o) { const n = e.n * k * (nkHas(m, 'heal2') ? 2 : 1); o.h = nkHas(m, 'heal2') ? o.h + n : Math.min(o.hm || o.h, o.h + n); if (e.once) m.hu[e.k] = 1; } break; }   // soin limité à 1 fois par combat
     case 'aft_full': if (m.h < (m.hm || m.h)) m.h = m.hm; break;
     case 'aft_selfdmg': simDamage(S, m, e.d * k, null); break;
     case 'aft_shield': if (m.h > 0 && !has(m, 's')) m.f = (m.f || '') + 's'; break;
@@ -2216,7 +2216,7 @@ function runCombat(S, s, m, e, pos, ctx) {
     case 'soc_copyall': { const t = nkFace(S, s, m); if (t && !t.sld) { const fx = nkSword(t.c).concat((t.x || []).filter(o => ET[o.k] && ['pas', 'atk', 'aft', 'dr', 'surv'].includes(ET[o.k].tr) && o.k !== 'guard')); if (fx.length) m.x = (m.x || []).concat(fx.map(o => Object.assign({}, o, { src:'Double Sharingan' }))); } break; }
     case 'soc_aoe_if': if (al.some(x => x.c === e.card && x.h > 0)) en.filter(x => x.h > 0).forEach(x => simDamage(S, x, e.d * k, null)); break;
     case 'surv_regen': if (m.h > 0) m.h = Math.min(Math.max(m.hm || m.h, m.h), m.h + e.n * k); break;
-    case 'surv_heal': al.filter(x => x !== m && x.h > 0 && x.h < (x.hm || x.h)).forEach(x => { x.h = Math.min(x.hm || x.h, x.h + e.n * k); }); break;
+    case 'surv_heal': { if (e.once && (m.hu || (m.hu = {}))[e.k]) break; const hs = al.filter(x => x !== m && x.h > 0 && x.h < (x.hm || x.h)); hs.forEach(x => { x.h = Math.min(x.hm || x.h, x.h + e.n * k); }); if (e.once && hs.length) m.hu[e.k] = 1; break; }
     case 'surv_split': { S.spl = S.spl || [0, 0]; if (S.spl[s] < e.n && al.length < 7) { S.spl[s]++; const nm = simSummon(S, s, al.indexOf(m) + 1, m.c, m.g); if (nm) { nm.a = m.a; nm.h = m.h; nm.hm = m.h; nm.f = m.f || ''; } } break; }
     case 'dr_summon2': for (let i = 0; i < e.n; i++) { const nm = simSummon(S, s, pos + i, e.card, m.g); if (nm) nm.hm = nm.h; } break;
     case 'dr_kill_tok': al.filter(x => e.cards.includes(x.c) && x.h > 0).forEach(x => { remF(x, 's'); x.h = 0; }); break;
