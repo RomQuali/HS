@@ -2315,14 +2315,15 @@ html body #peek .cd-full.nkd{width:340px;padding:0 12px 12px;border-radius:14px;
 /* fiche de détail : elle se déplie étape par étape (cadre puis chaque section, puis chaque transformation) */
 @keyframes nkdUnroll{from{clip-path:inset(-30px -30px 100% -30px)}to{clip-path:inset(-30px -30px -30px -30px)}}
 @keyframes nkdStep{from{opacity:0;transform:translateY(-8px) scaleY(.6)}to{opacity:1;transform:none}}
-html body #peek .cd-full.nkd{animation:nkdUnroll .75s cubic-bezier(.3,.7,.3,1) both}
-#peek .nkd>*{transform-origin:top center;animation:nkdStep .3s ease-out both}
-#peek .nkd>*:nth-child(2){animation-delay:.12s}
-#peek .nkd>*:nth-child(3){animation-delay:.24s}
-#peek .nkd>*:nth-child(4){animation-delay:.36s}
-#peek .nkd>*:nth-child(5){animation-delay:.48s}
-#peek .nkd .nkd-tf{transform-origin:top center;animation:nkdStep .28s ease-out both}
-#peek .nkd .nkd-tf:nth-child(1){animation-delay:.58s}
-#peek .nkd .nkd-tf:nth-child(2){animation-delay:.7s}
-#peek .nkd .nkd-tf:nth-child(3){animation-delay:.82s}
+html body #peek .cd-full.nkd{animation:nkdUnroll .5s cubic-bezier(.3,.7,.3,1) both}
+#peek .nkd>*{transform-origin:top center;animation:nkdStep .5s ease-out both}
+#peek .nkd>*:nth-child(1){animation-delay:.25s}
+#peek .nkd>*:nth-child(2){animation-delay:.9s}
+#peek .nkd>*:nth-child(3){animation-delay:1.6s}
+#peek .nkd>*:nth-child(4){animation-delay:2.3s}
+#peek .nkd>*:nth-child(5){animation-delay:3s}
+#peek .nkd .nkd-tf{transform-origin:top center;animation:nkdStep .45s ease-out both}
+#peek .nkd .nkd-tf:nth-child(1){animation-delay:3.4s}
+#peek .nkd .nkd-tf:nth-child(2){animation-delay:4s}
+#peek .nkd .nkd-tf:nth-child(3){animation-delay:4.6s}
 @media (prefers-reduced-motion:reduce){html body #peek .cd-full.nkd,#peek .nkd>*,#peek .nkd .nkd-tf{animation:none}}
