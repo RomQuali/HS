@@ -3913,13 +3913,13 @@ function nkdHave(x) { return !!V.me && [...(V.me.bd || []), ...(V.me.hd || [])].
 /* la fiche se déplie comme un tiroir : chaque section pousse le fond vers le bas, une étape à la fois */
 function nkdAnim(cf) {
   if (cf.dataset.anim) return; cf.dataset.anim = 1;
-  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) { cf.animate([{ visibility: 'hidden' }, { visibility: 'visible' }], { duration: 1, delay: 2000, fill: 'backwards' }); return; }
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) { cf.animate([{ visibility: 'hidden' }, { visibility: 'visible' }], { duration: 1, delay: 1200, fill: 'backwards' }); return; }
   const steps = [];
   [...cf.children].forEach(el => { const tfs = el.querySelector('.nkd-tfs'); if (tfs) { steps.push(el.querySelector('.nkd-rb')); steps.push(...tfs.children); } else steps.push(el); });
   const grow = (el, delay, dur) => { const h = el.offsetHeight, cs = getComputedStyle(el); el.style.overflow = 'hidden';
     const a = el.animate([{ height: '0px', marginTop: '0px', marginBottom: '0px', paddingTop: '0px', paddingBottom: '0px', opacity: 0 }, { height: h + 'px', marginTop: cs.marginTop, marginBottom: cs.marginBottom, paddingTop: cs.paddingTop, paddingBottom: cs.paddingBottom, opacity: 1 }], { duration: dur, delay, easing: 'cubic-bezier(.3,.7,.3,1)', fill: 'backwards' });
     a.onfinish = a.oncancel = () => { el.style.overflow = ''; }; };
-  /* 2e niveau de survol : la fiche n'arrive qu'après 2 s passées sur la carte */
-  const D = 2000; cf.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, delay: D, fill: 'backwards' });
+  /* 2e niveau de survol : la fiche n'arrive qu'après 1,2 s passée sur la carte */
+  const D = 1200; cf.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, delay: D, fill: 'backwards' });
   let t = D; steps.forEach((el, i) => { if (!el) return; grow(el, t, i ? 550 : 350); t += i ? 750 : 400; });
 }
