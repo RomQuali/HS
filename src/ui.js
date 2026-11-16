@@ -1060,6 +1060,7 @@ function detailH(canAct) {
     if (canAct && s.z === 'hd' && id === 'lo_anneau') acts = ''; else
     if (canAct && s.z === 'hd') acts = S.tg && (me.bd.length || !dbNoTgt(S)) ? `<button class="btn pri" data-act="aim" ${me.bd.length ? '' : 'disabled'}>${S.db ? 'Choisir le lanceur' : 'Lancer sur un serviteur'}</button>` : `<button class="btn pri" data-act="cast">${S.db ? 'Lancer la technique' : 'Lancer le sort'}</button>`;
     if (canAct && s.z === 'hd') acts += passBtnH(me, id === 'lo_anneau');
+    if (canAct && s.z === 'hd' && S.ni) acts += `<button class="btn" data-act="sellit">Revendre · +1 or</button>`;
     return `<div class="det">${spellCardH(id, 'd', 0)}<div class="det-s"><b>${esc(S.n)}</b><span class="meta">${S.ni ? 'Objet' : 'Sort'} · ${esc(SP_TYPES[S.ty].n)} · ${s.z === 'ss' ? 'sur l\'étagère de la taverne' : 'dans ta main'}</span><div class="acts">${acts}</div></div></div>`;
   }
   const z = s.z === 'sh' ? me.sh : s.z === 'bd' ? me.bd : me.hd, m = z[s.i]; if (!m) return '';
@@ -1400,6 +1401,7 @@ function doAct(act, btn) {
     case 'aview': V.allyView = !V.allyView; V.sel = null; render(); break;
     case 'play': if (s) { sendAct({ t:'play', i:s.i }); V.sel = null; } break;
     case 'sell': if (s) { sendAct({ t:'sell', i:s.i }); V.sel = null; } break;
+    case 'sellit': if (s) { sendAct({ t:'sellit', i:s.i }); V.sel = null; } break;
     case 'mvl': if (s) { sendAct({ t:'move', i:s.i, to:s.i - 1 }); V.sel = { z:'bd', i:s.i - 1 }; } break;
     case 'mvr': if (s) { sendAct({ t:'move', i:s.i, to:s.i + 1 }); V.sel = { z:'bd', i:s.i + 1 }; } break;
     case 'rdy': { const r = btn.getBoundingClientRect(), on = !btn.classList.contains('rung'); if (!FX_OFF()) { fxRing(r.left + r.width / 2, r.top + r.height / 2, on ? '#b8ff8a' : '#ffd86a', 1.8); if (on) fxBurst(r.left + r.width / 2, r.top + r.height / 2, 'buff', 18, 1.3); } btn.closest('.bellwrap') && btn.closest('.bellwrap').classList.add('bump'); sendAct({ t:'rdy' }); break; }
@@ -1409,7 +1411,7 @@ function doAct(act, btn) {
 // glisser-déposer : la carte décolle et suit le pointeur (souris comme doigt)
 let DRAG = null, DC = null;
 // achat : la main ou le plateau ; jouer depuis la main : le plateau ou la taverne
-const dropAllowed = (from, to, sp) => (from === 'hd' && to === 'pt') || ((from === 'sh' || from === 'ss') && (to === 'hd' || to === 'bd')) || (from === 'hd' && (to === 'bd' || (to === 'sh' && !(sp && SPELLS[sp] && SPELLS[sp].tg)))) || (from === 'bd' && (to === 'bd' || to === 'sh'));
+const dropAllowed = (from, to, sp) => (from === 'hd' && to === 'pt') || ((from === 'sh' || from === 'ss') && (to === 'hd' || to === 'bd')) || (from === 'hd' && (to === 'bd' || (to === 'sh' && (!(sp && SPELLS[sp] && SPELLS[sp].tg) || (sp && SPELLS[sp] && SPELLS[sp].ni))))) || (from === 'bd' && (to === 'bd' || to === 'sh'));
 const dragLayer = (() => { const l = document.createElement('div'); l.id = 'dragl'; l.setAttribute('aria-hidden', 'true'); l.hidden = true; document.body.appendChild(l); return l; })();
 document.addEventListener('dragstart', e => { if (V.screen === 'game') e.preventDefault(); });
 document.addEventListener('pointerdown', e => {
@@ -1490,6 +1492,8 @@ function aimTarget(x, y) {
   document.querySelectorAll('.board-zone .mn:not(.cp-tok)').forEach(el => { const r = el.getBoundingClientRect(); if (x > r.left - 12 && x < r.right + 12 && y > r.top - 16 && y < r.bottom + 16) best = el; });
   return best;
 }
+const overShop = (x, y) => { const k = document.querySelector('.keeper-zone'); if (!k) return false; const r = k.getBoundingClientRect(); return x >= r.left && x <= r.right && y >= r.top && y <= r.bottom; };
+const niSp = sp => !!(sp && SPELLS[sp] && SPELLS[sp].ni);
 function dragMove(x, y) {
   const D = DRAG;
   if (D.aim) {
@@ -1499,7 +1503,7 @@ function dragMove(x, y) {
     let ex = x, ey = y;
     if (tgt) { tgt.classList.add('tg-hover'); const r = tgt.getBoundingClientRect(); ex = r.left + r.width / 2; ey = r.top + r.height * .45; }
     aimDraw(D.ax + D.w / 2, D.ay + D.h * .12, ex, ey, !!tgt);
-    const tg = dragLayer.querySelector('.dragtag'); if (tg) { tg.hidden = false; tg.textContent = tgt ? `Lancer sur ${CD(tgt.dataset.c).n}` : 'Choisis une cible'; tg.classList.toggle('ok', !!tgt); }
+    const tg = dragLayer.querySelector('.dragtag'); if (tg) { tg.hidden = false; const sell = !tgt && niSp(D.sp) && overShop(x, y); tg.textContent = tgt ? `Équiper ${CD(tgt.dataset.c).n}` : sell ? 'Revendre · +1 or' : niSp(D.sp) ? 'Choisis un ninja (ou la taverne pour revendre)' : 'Choisis une cible'; tg.classList.toggle('ok', !!tgt); tg.classList.toggle('sell', sell); }
     return;
   }
   D.vx += (x - D.x) * 0.5; D.x = x; D.y = y;
@@ -1513,11 +1517,11 @@ function dragMove(x, y) {
   if (to === 'pt') tag = 'Passer à ' + ((V.me.ally || {}).n || 'ton allié') + (V.me.passfree || (D.sp === 'lo_anneau' && (((HEROES[V.me.hero] || {}).pw || {}).k === 'pring')) ? ' · gratuit' : ' · 1 or');
   else if (to === 'bd' && D.sp) { const tm = t.closest('.mn'); if (SPELLS[D.sp] && SPELLS[D.sp].tg) { if (tm && tm.dataset.z === 'bd') { tm.classList.add('tg-hover'); tag = 'Lancer'; } else tag = 'Vise un serviteur'; } else tag = 'Lancer'; }
   else if (to === 'bd' && (D.z === 'sh' || D.z === 'ss')) tag = D.z === 'ss' ? 'Acheter le sort' : 'Acheter · 3 or';
-  else if (to === 'sh' && D.z === 'hd') tag = D.sp ? 'Lancer' : 'Jouer';
+  else if (to === 'sh' && D.z === 'hd') tag = D.sp && SPELLS[D.sp] && SPELLS[D.sp].ni ? 'Revendre · +1 or' : D.sp ? 'Lancer' : 'Jouer';
   else if (to === 'bd') { const { cards, pos } = boardPos(ok, x); if (cards[pos - 1]) cards[pos - 1].classList.add('mk-l'); if (cards[pos]) cards[pos].classList.add('mk-r'); tag = D.z === 'hd' ? 'Jouer' : 'Déplacer'; }
   else if (to === 'hd') tag = D.z === 'ss' ? 'Acheter le sort' : 'Acheter · 3 or';
   else if (to === 'sh') tag = 'Vendre · +1 or';
-  const tg = dragLayer.querySelector('.dragtag'); if (tg) { tg.hidden = !tag; tg.textContent = tag; tg.classList.toggle('sell', to === 'sh' && D.z === 'bd'); }
+  const tg = dragLayer.querySelector('.dragtag'); if (tg) { tg.hidden = !tag; tg.textContent = tag; tg.classList.toggle('sell', to === 'sh' && (D.z === 'bd' || (D.z === 'hd' && D.sp && SPELLS[D.sp] && SPELLS[D.sp].ni))); }
 }
 function dragEnd(x, y, cancel) {
   const D = DRAG; DRAG = null;
@@ -1532,6 +1536,7 @@ function dragEnd(x, y, cancel) {
   aimHide(); dragLayer.classList.remove('aimcard');
   if (D.aim) {
     const tgt = cancel ? null : aimTarget(x, y);
+    if (!tgt && !cancel && niSp(D.sp) && overShop(x, y)) { V.sel = null; sendAct({ t:'sellit', i:D.i }); sent = true; }   // objet glissé sur la taverne : revendu
     if (tgt) { const r = tgt.getBoundingClientRect(); V.sel = null; sendAct({ t:'cast', i:D.i, tg:+tgt.dataset.i }); fxRing(r.left + r.width / 2, r.top + r.height * .45, '#d8b8ff', 1.6); fxBurst(r.left + r.width / 2, r.top + r.height * .45, 'magic', 22, 1.2); sent = true; }
   } else if (zi && dropAllowed(D.z, zi.drop, D.sp)) {
     V.dropFrom = cr ? { u:D.u, r:cr, z:D.z, at:Date.now() } : null;
@@ -1558,6 +1563,7 @@ function doDrop(to, D, t, x, z) {
   }
   if (from === 'sh') { sendAct({ t:'buy', i }); return true; }
   if (from === 'bd' && to === 'sh') { sendAct({ t:'sell', i }); return true; }
+  if (from === 'hd' && to === 'sh' && V.me && V.me.hd[i] && V.me.hd[i].sp && SPELLS[V.me.hd[i].sp] && SPELLS[V.me.hd[i].sp].ni) { sendAct({ t:'sellit', i }); return true; }   // objet glissé de la main vers la taverne : revendu 1 or
   if (from === 'hd' && to === 'sh') { sendAct({ t:'play', i, pos:(V.me && V.me.bd ? V.me.bd.length : 0) }); return true; }
   const { pos } = boardPos(z, x);
   if (from === 'hd') sendAct({ t:'play', i, pos }); else { if (pos === i) return false; sendAct({ t:'move', i, to:pos }); }
