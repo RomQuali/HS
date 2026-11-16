@@ -1466,10 +1466,14 @@ function budgetState(raw) {
 }
 function cardTextH(id, g, full, tf) {
   const c = CD(id), k = g ? 2 : 1, parts = [], short = !full && /^nk_/.test(id); TX_SHORT = short; TX_TF = tf || 0;   // tf : transformations déjà faites (on ne montre que la forme actuelle et la suite)
-  const kws = (c.kw || []).map(x => `<b>${esc(SET.kw[x].n)}</b>`);
+  // effets et mots-clés gagnés par les transformations déjà faites : visibles sur la carte (avec le bon multiplicateur si elle est dorée)
+  const J0 = (c.fx || []).find(e => e.k === 'jutsu'), done0 = J0 ? Math.min(tf || 0, tfSt(J0).length) : 0, ST0 = J0 ? tfSt(J0).slice(0, done0) : [];
+  const kwAll = [...new Set([...(c.kw || []), ...ST0.map(T => T.kw).filter(Boolean)])].filter(x => SET.kw[x]);
+  const kws = kwAll.map(x => `<b>${esc(SET.kw[x].n)}</b>`);
   if (kws.length) parts.push(kws.join(', ') + '.');
   if (!short && typeof NK_GOF !== 'undefined' && NK_GOF[id]) parts.push('<b>Groupe</b> : ' + [...new Set(NK_GOF[id].map(g => esc(g.n)))].join(', ') + '.');
-  (c.fx || []).forEach(e => { if (ET[e.k]) { const t = esc(fxText(e, k)); const i = t.indexOf(' : '); parts.push(i > 0 && i < 24 ? `<b>${t.slice(0, i)}</b>${t.slice(i)}` : t); } });
+  const pushFx = e => { if (ET[e.k]) { const t = esc(fxText(e, k)); const i = t.indexOf(' : '); parts.push(i > 0 && i < 24 ? `<b>${t.slice(0, i)}</b>${t.slice(i)}` : t); } };
+  (c.fx || []).forEach(e => { if (e.k === 'jutsu' && short) ST0.flatMap(T => T.x || []).forEach(pushFx); pushFx(e); });   // carte : pouvoirs acquis juste avant le jutsu
   TX_SHORT = false; TX_TF = 0;
   return parts.join(' ');
 }

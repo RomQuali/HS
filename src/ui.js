@@ -1624,7 +1624,7 @@ function showPeek(t, touch) {
     clearTimeout(TIPT); const mm = findMine(t.dataset.u);
     if (mm) TIPT = setTimeout(() => {
       if (peekFor !== t || peekEl.hidden) return; const h = bonusTipH(mm); if (!h) return;
-      peekEl.insertAdjacentHTML('beforeend', h); const tip = peekEl.querySelector('.btip'), pr = peekEl.getBoundingClientRect(); { const cf = peekEl.querySelector('.cd-full'); if (cf && tip) tip.style.top = (cf.offsetTop + cf.offsetHeight + 10) + 'px'; }
+      peekEl.insertAdjacentHTML('beforeend', h); const tip = peekEl.querySelector('.btip'), pr = peekEl.getBoundingClientRect(); { const cf = peekEl.querySelector('.cd-full'); if (cf && tip) { if (cf.classList.contains('nkd')) nkdTipPlace(peekEl, cf, tip); else tip.style.top = (cf.offsetTop + cf.offsetHeight + 10) + 'px'; } }
       if (pr.right + tip.offsetWidth + 14 > innerWidth) tip.classList.add('left');
       const tr = tip.getBoundingClientRect(); if (tr.bottom > innerHeight - 8) tip.style.top = f1(innerHeight - 8 - tr.height - pr.top) + 'px';
     }, touch ? 650 : 900);
@@ -4017,3 +4017,14 @@ function butinH(me) {
 
 /* fin du combat vue (et duel des compagnons fini) : on prévient l'hôte pour repasser tout de suite à la taverne */
 function fightSeen(F) { if (!F || F.sent || !F.done || (F.dr && !F.ddone)) return; F.sent = true; setTimeout(() => { if (V.fight === F) sendAct({ t:'fdone', rd:F.rd }); }, 700); }
+
+/* « Améliorations » à côté de la fiche de détail : de l'autre côté de la carte, pour ne jamais se chevaucher */
+function nkdTipPlace(peekEl, cf, tip) {
+  requestAnimationFrame(() => {
+    const pr = peekEl.getBoundingClientRect(), tw = tip.offsetWidth || 270, detLeft = cf.classList.contains('left');
+    tip.style.top = '0px';
+    if (!detLeft && pr.left - tw - 14 > 4) { tip.style.left = 'auto'; tip.style.right = 'calc(100% + 12px)'; }
+    else if (detLeft && pr.right + tw + 14 < innerWidth - 4) { tip.style.right = 'auto'; tip.style.left = 'calc(100% + 12px)'; }
+    else { tip.style.left = '0'; tip.style.right = 'auto'; tip.style.top = (peekEl.offsetHeight + 10) + 'px'; }
+  });
+}
