@@ -2061,15 +2061,30 @@ html body .hp-ov.nkv .hp-rb{background:url(assets/naruto/ui/bouton2.webp) center
 .hp-ov.nkv .nk-deco{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
 .hp-ov.nkv .nk-deco .sw{position:absolute;left:8%;top:22%;width:84%;height:50%;background:url(assets/naruto/ui/tourbillon.webp) center/100% 100% no-repeat;opacity:.55;animation:nkSw 9s ease-in-out infinite}
 @keyframes nkSw{0%,100%{transform:rotate(-3deg) scale(1);opacity:.45}50%{transform:rotate(3deg) scale(1.04);opacity:.7}}
-.hp-ov.nkv .nk-deco .lf{position:absolute;left:-8%;top:calc(10% + var(--k) * 6.5%);width:clamp(28px,3.2vw,56px);aspect-ratio:1.6;background:url(assets/naruto/ui/feuille1.webp) center/contain no-repeat;animation:nkLeaf calc(9s + var(--k) * .7s) linear infinite;animation-delay:calc(var(--k) * -1.9s);filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}
-.hp-ov.nkv .nk-deco .lf[style*="--n:2"]{background-image:url(assets/naruto/ui/feuille2.webp)}
-.hp-ov.nkv .nk-deco .lf[style*="--n:3"]{background-image:url(assets/naruto/ui/feuille3.webp)}
-.hp-ov.nkv .nk-deco .lf[style*="--n:4"]{background-image:url(assets/naruto/ui/feuille4.webp)}
-.hp-ov.nkv .nk-deco .lf[style*="--n:5"]{background-image:url(assets/naruto/ui/feuille5.webp)}
-.hp-ov.nkv .nk-deco .lf[style*="--n:6"]{background-image:url(assets/naruto/ui/feuille6.webp)}
-@keyframes nkLeaf{0%{transform:translate(0,0) rotate(0deg)}25%{transform:translate(30vw,6vh) rotate(90deg)}50%{transform:translate(60vw,-4vh) rotate(180deg)}75%{transform:translate(90vw,8vh) rotate(270deg)}100%{transform:translate(120vw,2vh) rotate(360deg)}}
+.hp-ov.nkv .nk-deco .lf,.hp-ov.nkv .nk-deco .vl{position:absolute;width:calc(clamp(30px,3.2vw,60px) * var(--w,1));aspect-ratio:1.6;background:url(assets/naruto/ui/feuille1.webp) center/contain no-repeat;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}
+.hp-ov.nkv .nk-deco [style*="--n:2"]{background-image:url(assets/naruto/ui/feuille2.webp)}
+.hp-ov.nkv .nk-deco [style*="--n:3"]{background-image:url(assets/naruto/ui/feuille3.webp)}
+.hp-ov.nkv .nk-deco [style*="--n:4"]{background-image:url(assets/naruto/ui/feuille4.webp)}
+.hp-ov.nkv .nk-deco [style*="--n:5"]{background-image:url(assets/naruto/ui/feuille5.webp)}
+.hp-ov.nkv .nk-deco [style*="--n:6"]{background-image:url(assets/naruto/ui/feuille6.webp)}
+/* rafales : les feuilles filent de gauche à droite en ondulant et en tournoyant */
+.hp-ov.nkv .nk-deco .lf{left:-10%;top:calc(var(--y) * 1%);animation:nkLeaf calc(var(--d) * 1s) linear infinite;animation-delay:calc(var(--dl) * 1s)}
+@keyframes nkLeaf{0%{transform:translate(0,0) rotate(0deg)}20%{transform:translate(24vw,-7vh) rotate(160deg)}40%{transform:translate(48vw,5vh) rotate(330deg)}60%{transform:translate(72vw,-6vh) rotate(500deg)}80%{transform:translate(96vw,6vh) rotate(650deg)}100%{transform:translate(122vw,-2vh) rotate(800deg)}}
+/* tourbillon : un anneau de feuilles qui tourne autour des héros, aplati pour donner de la profondeur */
+.hp-ov.nkv .nk-deco .vx{position:absolute;left:50%;top:40%;width:0;height:0;transform:rotate(-6deg)}
+.hp-ov.nkv .nk-deco .vo{position:absolute;left:0;top:0;width:0;height:0;animation:nkOx calc(var(--d) * .5s) ease-in-out infinite alternate;animation-delay:calc(var(--dl) * 1s)}
+.hp-ov.nkv .nk-deco .vl{left:0;top:0;animation:nkOy calc(var(--d) * .5s) ease-in-out infinite alternate,nkSpin .8s linear infinite;animation-delay:calc(var(--dl) * 1s - var(--d) * .25s),0s}
+@keyframes nkOx{from{transform:translateX(calc(var(--rx) * -1))}to{transform:translateX(var(--rx))}}
+@keyframes nkOy{from{translate:-50% calc(-50% - var(--ry))}to{translate:-50% calc(-50% + var(--ry))}}
+@keyframes nkSpin{to{rotate:360deg}}
+.hp-ov.nkv .nk-deco .sw2{left:2%;top:30%;width:96%;height:46%;opacity:.4;animation-duration:6s;animation-direction:reverse;transform:scaleX(-1)}
+/* quelques grandes feuilles floues au premier plan, devant les héros */
+.hp-ov.nkv .nk-front{z-index:5}
+.hp-ov.nkv .nk-front .lf{filter:blur(1.5px) drop-shadow(0 3px 3px rgba(0,0,0,.4));opacity:.9}
 html.lite .hp-ov.nkv .nk-deco .sw{animation:none}
-html.lite .hp-ov.nkv .nk-deco .lf{animation:none;transform:translate(calc(var(--k) * 8vw + 4vw),calc(var(--n) * 3vh)) rotate(calc(var(--k) * 37deg))}
+html.lite .hp-ov.nkv .nk-deco .vo,html.lite .hp-ov.nkv .nk-deco .vl{animation:none}
+html.lite .hp-ov.nkv .nk-deco .lf{animation:none;transform:translate(calc(var(--d) * 30vw - 60vw + var(--y) * 1vw),0) rotate(calc(var(--r) * 1deg))}
+html.lite .hp-ov.nkv .nk-front{display:none}
 html body .hp-ov.nkv .hp-pc .hpc-mc{display:inline-block!important;width:auto!important;padding:2px 12px!important;margin-top:6px}
 html body .hp-ov.nkv .hp-infos{order:3}
 html body .hp-ov.nkv .hp-ok{order:4}
@@ -2085,3 +2100,12 @@ html body .hp-ov.nkv .hp-col.on::after{top:calc(100% - 6px)!important}
 /* le chrono posé sur le bouton « Fin du tour » suit le bouton quand il grossit au survol */
 html body .table .hud .timer{transition:translate .15s ease,scale .15s ease}
 :root:root:root:root body .table .hud .timer.bh{translate:0 -3px!important;scale:1.04!important}
+/* panneau du héros : le prénom reste à gauche du séparateur dessiné dans l'image */
+html body .hp-ov.nkv .hp-pc{grid-template-columns:auto minmax(0,1fr) 60%!important}
+html body .hp-ov.nkv .hp-pc .hpc-who{border-right:0!important;padding-right:0!important;text-align:center;font-size:clamp(16px,3.4vh,36px)!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+html body .hp-ov.nkv .hp-pc .hpc-side{padding-left:clamp(16px,2.4vw,40px)!important}
+
+/* implosion de la tempête de feuilles au clic sur « Confirmer » */
+.nk-imp{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+.nk-imp i{position:absolute;background:center/contain no-repeat;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}
+.nk-imp b{position:absolute;width:40vmin;height:40vmin;border-radius:50%;background:radial-gradient(circle,rgba(255,255,230,.95) 0,rgba(120,255,120,.7) 30%,rgba(40,200,80,.25) 55%,transparent 70%);opacity:0}

@@ -1183,7 +1183,7 @@ function heroPickRowH(d, me) {
   const fams = [...new Set((Array.isArray(d.univ) ? d.univ : d.univ ? [d.univ] : d.us || []).flatMap(nm => ((SET.univ || []).find(u => u.n === (nm && nm.n || nm)) || {}).tribes || []).filter(t => !me.camp || !/^lo_/.test(t) || LO_SHADOW_TR.includes(t) === (me.camp === 'O')).map(t => TRIBES[t] && TRIBES[t].n).filter(Boolean))];
   const tab = V.ruleTab || 'tour', rules = false, por = (d.laws || []).some(l => l.k === 'chakra') ? njCardH : (d.laws || []).some(l => l.k === 'portail') ? rmCardH : (d.laws || []).some(l => l.k === 'bande') ? spCardH : (d.laws || []).some(l => l.k === 'gag') ? simCardH : null;
   const nkv = (d.laws || []).some(l => l.k === 'chakra') && !me.camp;   // Naruto : écran « Vallée de la Fin »
-  return `<div class="ov hp-ov${nkv ? ' nkv' : ''}">${nkv ? '<div class="nk-deco" aria-hidden="true"><i class="sw"></i>' + [1, 2, 3, 4, 5, 6, 1, 3, 5, 2, 4, 6].map((n, k) => `<i class="lf" style="--n:${n};--k:${k}"></i>`).join('') + '</div>' : ''}<div class="hp-wrap">
+  return `<div class="ov hp-ov${nkv ? ' nkv' : ''}">${nkv && !chosen ? nkStorm() : ''}<div class="hp-wrap">
     <header class="hp-head"><h2 class="hp-t">${me.camp ? 'Choisis ton duo' : 'Choisis ton héros'}</h2>${me.camp ? `<p class="hp-camp ${me.camp === 'O' ? 'o' : 'l'}">${me.camp === 'O' ? 'Ton duo combat pour l’Ombre' : 'Ton duo combat pour les Peuples libres'} <small>${me.ally ? 'avec ' + esc(me.ally.n) + ' · ' : ''}choisis ton héros, ton allié prend l’autre</small></p>` : ''}${fams.length ? `<p class="hp-fams">${esc(fams.join(', '))}</p>` : ''}</header>
     <div class="hp-row${me.camp && typeof LO_DUOS !== 'undefined' ? ' hp-duos' : ''}">${me.camp && typeof LO_DUOS !== 'undefined' ? loDuoRowH(me, card) : me.ho.map(card).join('')}</div>
     <button class="hp-ok${chosen && sel === chosen ? ' done' : ''}" data-act="hero" data-h="${sel || ''}" ${sel ? '' : 'disabled'}>${chosen && sel === chosen ? 'Prêt ✓' : nkv ? (sel ? 'Confirmer ' + esc(HEROES[sel].n.split(' ')[0]) : 'Choisis ton héros') : 'OK'}</button>
@@ -3784,3 +3784,47 @@ document.addEventListener('mouseout', e => { const col = e.target.closest && e.t
 
 /* le chrono suit le bouton « Fin du tour » quand il grossit au survol */
 document.addEventListener('pointerover', e => { const t = document.querySelector('.hud .timer'); if (!t) return; const b = e.target.closest && e.target.closest('.hero-zone .bell'); t.classList.toggle('bh', !!b && !b.disabled); });
+
+/* Écran de choix du héros Naruto : tempête de feuilles façon « Konoha Senpū » de Lee.
+   Rafales qui traversent l'écran + tourbillon de feuilles autour du centre + quelques feuilles au premier plan. */
+function nkStorm() {
+  const R = (i, m) => { const x = Math.sin(i * 127.1 + m * 311.7) * 43758.5453; return x - Math.floor(x); };   /* pseudo-hasard stable */
+  const lf = (cls, i, d, w) => `<i class="${cls}" style="--n:${1 + (i * 7 + 3) % 6};--y:${(R(i, 1) * 96 - 3).toFixed(1)};--d:${d.toFixed(2)};--w:${w.toFixed(2)};--dl:${(-R(i, 3) * d).toFixed(2)};--r:${(R(i, 4) * 360) | 0}"></i>`;
+  let back = '<div class="nk-deco" aria-hidden="true"><i class="sw"></i><i class="sw sw2"></i>';
+  for (let i = 0; i < 46; i++) back += lf('lf', i, 2.4 + R(i, 2) * 3.2, .8 + R(i, 5) * .9);
+  /* tourbillon : chaque feuille décrit une ellipse (aller-retour horizontal + vertical décalés d'un quart de tour) */
+  back += '<div class="vx">';
+  for (let i = 0; i < 30; i++) { const d = 2.2 + R(i, 7) * 1.4; back += `<span class="vo" style="--rx:${(24 + R(i, 6) * 20).toFixed(1)}vw;--ry:${(7 + R(i, 9) * 9).toFixed(1)}vh;--d:${d.toFixed(2)};--dl:${(-(i / 30) * d).toFixed(2)}"><i class="vl" style="--n:${1 + i % 6};--w:${(.7 + R(i, 8) * .8).toFixed(2)}"></i></span>`; }
+  back += '</div></div>';
+  let front = '<div class="nk-deco nk-front" aria-hidden="true">';
+  for (let i = 0; i < 10; i++) front += lf('lf big', i + 80, 1.8 + R(i, 9) * 1.8, 1.6 + R(i, 10) * 1.1);
+  return back + front + '</div>';
+}
+
+/* Tempête de feuilles : elle accélère quand on survole le bouton de confirmation, et implose quand on clique dessus. */
+(() => {
+  let rate = 1, goal = 1, raf = 0;
+  const anims = () => { const d = document.querySelector('.hp-ov.nkv .nk-deco'); return d ? [...document.querySelectorAll('.hp-ov.nkv .nk-deco')].flatMap(x => x.getAnimations({ subtree: true })) : []; };
+  const step = () => { rate += (goal - rate) * .12; if (Math.abs(goal - rate) < .02) rate = goal; anims().forEach(a => { a.playbackRate = rate; }); raf = rate !== goal ? requestAnimationFrame(step) : 0; };
+  const aim = g => { if (g === goal) return; goal = g; if (!raf) raf = requestAnimationFrame(step); };
+  document.addEventListener('pointerover', e => { const b = e.target.closest && e.target.closest('.hp-ov.nkv .hp-ok'); aim(b && !b.disabled && !b.classList.contains('done') ? 3.2 : 1); });
+  document.addEventListener('click', e => {
+    const b = e.target.closest && e.target.closest('.hp-ov.nkv .hp-ok');
+    if (!b || b.disabled || b.classList.contains('done')) return;
+    const decos = [...document.querySelectorAll('.hp-ov.nkv .nk-deco')]; if (!decos.length) return;
+    const cx = innerWidth / 2, cy = innerHeight * .42, box = document.createElement('div');
+    box.className = 'nk-imp'; box.setAttribute('aria-hidden', 'true');
+    decos.forEach(d => d.querySelectorAll('.lf,.vl').forEach((l, k) => {
+      const r = l.getBoundingClientRect(); if (r.right < 0 || r.left > innerWidth || r.bottom < 0 || r.top > innerHeight) return;
+      const c = document.createElement('i'), dx = cx - (r.left + r.width / 2), dy = cy - (r.top + r.height / 2);
+      c.style.cssText = `left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;background-image:${getComputedStyle(l).backgroundImage}`;
+      box.appendChild(c);
+      c.animate([{ transform: 'translate(0,0) rotate(0deg) scale(1)', opacity: 1 }, { transform: `translate(${dx * .55}px,${dy * .55}px) rotate(300deg) scale(.8)`, opacity: 1, offset: .55 }, { transform: `translate(${dx}px,${dy}px) rotate(720deg) scale(.05)`, opacity: 0 }], { duration: 520 + (k % 7) * 40, easing: 'cubic-bezier(.55,0,.85,.35)', fill: 'forwards' });
+    }));
+    const f = document.createElement('b'); f.style.cssText = `left:${cx}px;top:${cy}px`; box.appendChild(f);
+    f.animate([{ transform: 'translate(-50%,-50%) scale(0)', opacity: 0 }, { transform: 'translate(-50%,-50%) scale(.2)', opacity: 1, offset: .6 }, { transform: 'translate(-50%,-50%) scale(3)', opacity: 0 }], { duration: 1000, easing: 'ease-out', fill: 'forwards' });
+    decos.forEach(d => { d.style.visibility = 'hidden'; });
+    document.body.appendChild(box); goal = rate = 1;
+    setTimeout(() => box.remove(), 1200);
+  }, true);
+})();
