@@ -889,7 +889,7 @@ const HEROES = {
   grumbo:  {fam:['ogre', 'gob'], n:'Grumbo le glouton', cost:2, tx:'Donne +3/+3 à ton serviteur qui a le plus d\'attaque.' },
   vaskor:  {fam:['mort', 'spec'], n:'Vaskor le nécromancien', cost:1, tx:'Invoque un Squelette 1/1 avec Réincarnation sur ton plateau.' },
   // ----- univers Ninja : 8 héros par village (sans élément) -----
-  nh_naruto: {diff:1, stars:4, fam:NJV, pv:'nk_kon', mc:'tok', n:'Naruto Uzumaki', pwn:'Multi-clonage', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'nclone' }] }, tx:'Clone : invoque une copie 1/1 de ton serviteur le plus fort, avec ses mots-clés.' },
+  nh_naruto: {diff:1, stars:4, fam:NJV, pv:'nk_kon', mc:'tok', n:'Naruto Uzumaki', pwn:'Multi-clonage', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'nclone' }] }, tx:'Clone : invoque une copie 1/1 de ton serviteur le plus fort, avec ses mots-clés et son Ralliement.' },
   nh_kakashi: {diff:1, stars:4, fam:NJV, pv:'nk_kon', mc:'cbt', n:'Kakashi Hatake', pwn:'Ninja copieur', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'hx', who:'top', fx:[{ k:'soc_copykw' }] }] }, tx:'Prochain combat : ton serviteur le plus fort gagne Sharingan (il copie les mots-clés de l’ennemi d’en face).' },
   nh_jiraiya: {diff:1, stars:4, fam:NJV, pv:'nk_kon', mc:'tok', n:'Jiraiya', pwn:'Invocation', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'toad' }] }, tx:'Invoque un Crapaud : ses caractéristiques grandissent avec le niveau de ta taverne (2/3 au niveau 1, 7/8 au niveau 6).' },
   nh_itachi: {diff:1, stars:5, fam:NJV, pv:'nk_aka', mc:'cbt', n:'Itachi Uchiha', pwn:'Tsukuyomi', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'foegenj', n:1 }] }, tx:'Genjutsu : au prochain combat, l’ennemi le plus fort saute sa première attaque.' },
@@ -1927,7 +1927,7 @@ function nkGroupsEot(G, p) {
     if (k > 2) sw.forEach((m, i) => { const pv = sw[(i - 1 + sw.length) % sw.length]; if (pv !== m && pv.c !== m.c) m.gx = (m.gx || []).concat([{ k:'follow', card:pv.c, src:name('epees') }]); }); }
 }
 // Clone : copie 1/1 du ninja, avec ses mots-clés
-function nkClone(p, m, n, full) { for (let i = 0; i < n && p.bd.length < 7; i++) { const c = mk('tk_kclone', m.g); c.f = m.f || ''; c.of = m.c; if (full) { c.a = m.a; c.h = m.h; } p.bd.splice(p.bd.indexOf(m) + 1, 0, c); } }
+function nkClone(p, m, n, full) { for (let i = 0; i < n && p.bd.length < 7; i++) { const c = mk('tk_kclone', m.g); c.f = m.f || ''; c.of = m.c; { const rl = fxOf(m, 'atk').map(e => Object.assign({}, e)); if (rl.length) c.x = (c.x || []).concat(rl); }   /* le Clone garde aussi le Ralliement de l'original */ if (full) { c.a = m.a; c.h = m.h; } p.bd.splice(p.bd.indexOf(m) + 1, 0, c); } }
 // ----- combat : aides des mots-clés Naruto -----
 const nkHas = (m, k) => !!m && !m.sld && fxOf(m, 'pas').some(e => e.k === k);
 const nkVal = (m, k, f = 'd') => (!m || m.sld) ? 0 : fxOf(m, 'pas').filter(e => e.k === k).reduce((t, e) => t + (e[f] || 0) * mult(m), 0);
