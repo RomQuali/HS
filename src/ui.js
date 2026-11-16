@@ -219,11 +219,16 @@ function ufIn(m, id, up) {
     .then(() => { UF_OK = true; if (V.screen === 'game') render(); }, () => {});
 } catch (e) {} })();
 // Naruto : objet porté par un serviteur (pastille en haut à droite, avec le chakra produit)
-const itBadgeH = m => { const S = SPELLS[m.it], n = itProd(m); return `<g class="itb${S.ex ? ' ex' : ''}"><title>${esc(S.n)} : +${n} chakra à chaque début de tour</title><circle cx="50" cy="110" r="12" fill="#10283e" stroke="${S.ex ? '#ffd86a' : '#6fd0ff'}" stroke-width="2.4"/><clipPath id="itc-${m.u}"><circle cx="50" cy="110" r="10.8"/></clipPath><g clip-path="url(#itc-${m.u})"><svg x="39" y="99" width="22" height="22" viewBox="0 0 100 100"><use href="#sp-${m.it}"/></svg></g><text x="50" y="122" dy=".36em" text-anchor="middle" font-size="9" font-weight="800" fill="#bfefff" stroke="#08131f" stroke-width="2.4" paint-order="stroke">+${n}</text></g>`; };
+// objet en cours de pose : halo bleu sur les serviteurs qui peuvent le porter (propriétaires qui ne l'ont pas encore)
+const niAimSp = () => { const d = typeof DRAG !== 'undefined' && DRAG && DRAG.aim && DRAG.sp; if (d) return d; const h = V.aim != null && V.me && V.me.hd && V.me.hd[V.aim]; return h && h.sp || null; };
+const niAimOk = m => { const id = niAimSp(), S = id && SPELLS[id]; return !!(S && S.ni && S.ow.includes(m.c) && !itL(m).includes(id)); };
+const niAimMark = on => document.querySelectorAll('.board-zone .mn[data-z="bd"]').forEach(e => { const m = V.me && V.me.bd[+e.dataset.i]; e.classList.toggle('it-tgt', !!(on && m && niAimOk(m))); });
+const itBadgeH = m => { const L = itL(m); return L.map((id, i) => itBadge1(m, id, 50 + (i - (L.length - 1) / 2) * 22)).join(''); };
+const itBadge1 = (m, id, X) => { const S = SPELLS[id], n = S.ow.includes(m.c) ? S.v : 0; return `<g class="itb${S.ex ? ' ex' : ''}" transform="translate(${f1(X - 50)} 0)"><title>${esc(S.n)} : +${n} chakra à chaque début de tour</title><circle cx="50" cy="110" r="12" fill="#10283e" stroke="${S.ex ? '#ffd86a' : '#6fd0ff'}" stroke-width="2.4"/><clipPath id="itc-${m.u}-${id}"><circle cx="50" cy="110" r="10.8"/></clipPath><g clip-path="url(#itc-${m.u}-${id})"><svg x="39" y="99" width="22" height="22" viewBox="0 0 100 100"><use href="#sp-${id}"/></svg></g><text x="50" y="122" dy=".36em" text-anchor="middle" font-size="9" font-weight="800" fill="#bfefff" stroke="#08131f" stroke-width="2.4" paint-order="stroke">+${n}</text></g>`; };
 function tokenH(m, z, i, o = {}) {
   const b = CD(m.c), f = (m.f || '') + (m.tmp && m.tmp.f ? m.tmp.f : ''), g = !!m.g;   // mots-clés permanents + ceux du prochain combat
   const sel = V.sel && V.sel.z === z && V.sel.i === i;
-  const cls = ['mn', z === 'f' && C[m.c] && (C[m.c].comp || /^nb_/.test(m.c)) && 'cp-join', ...['s', 't', 'r', 'w', 'v', 'c', 'l', 'i'].filter(k => f.includes(k)).map(k => 'kw-' + k), o.trip && 'tripok', o.pair && 'pairok', z === 'f' && m.gj && 'st-gj', z === 'f' && m.ent && 'st-ent', m.awk && !isComp(m) && 'mn-awk', g && 'g', ufOf(m) && 'rf', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
+  const cls = ['mn', z === 'f' && C[m.c] && (C[m.c].comp || /^nb_/.test(m.c)) && 'cp-join', ...['s', 't', 'r', 'w', 'v', 'c', 'l', 'i'].filter(k => f.includes(k)).map(k => 'kw-' + k), o.trip && 'tripok', o.pair && 'pairok', z === 'f' && m.gj && 'st-gj', z === 'bd' && niAimOk(m) && 'it-tgt', z === 'f' && m.ent && 'st-ent', m.awk && !isComp(m) && 'mn-awk', g && 'g', ufOf(m) && 'rf', f.includes('r') && 'rb', sel && 'sel', m.tmp && 'tmp', V.aim != null && z === 'bd' && 'aimable', o.cls].filter(Boolean).join(' ');
   const ics = kwIcons(m);
   const up = (v, base) => v > base * (g ? GOLD_K : 1) ? ' up' : '';
   const uf = ufOf(m);
@@ -239,7 +244,7 @@ function tokenH(m, z, i, o = {}) {
     + (isComp(m) ? `<g><title>Niveau d'entraînement ${compLv(m)} · ${m.xp || 0} expérience${compLv(m) < 5 ? ' (prochain niveau à ' + XP_LV[compLv(m)] + ')' : ''}</title><rect x="38" y="113" width="24" height="12" rx="6" fill="#2a6ad8" stroke="#120a06" stroke-width="1.8"/><text x="50" y="119" dy=".36em" text-anchor="middle" font-size="8.5" font-weight="700" fill="#fff">Nv ${compLv(m)}</text></g>` : '')
     + (hasGag(m) || m.gag ? gagBadgeH(m) : '')
     + (m.sl ? `<g class="slb"><title>${m.sl} sceau${m.sl > 1 ? 'x' : ''}${m.sl >= 5 ? ' : Bouclier divin obtenu' : ' (5 : Bouclier divin)'}</title><path d="M4 4 h20 v14 l-10 7 l-10 -7 Z" fill="${m.sl >= 5 ? '#ffd86a' : '#c8304a'}" stroke="#120a06" stroke-width="2"/><text x="14" y="13" dy=".36em" text-anchor="middle" font-size="10" font-weight="700" fill="${m.sl >= 5 ? '#120a06' : '#fff3c0'}">${m.sl}</text></g>` : '')
-    + (m.it && SPELLS[m.it] ? itBadgeH(m) : '')
+    + (itL(m).some(id => SPELLS[id]) ? itBadgeH(m) : '')
     + (m.eq && m.eq.length ? `<g><title>Équipements : ${m.eq.map(e => SPELLS[e] ? SPELLS[e].n : e).join(', ')}</title><rect x="72" y="4" width="22" height="14" rx="7" fill="#8a6a3a" stroke="#120a06" stroke-width="2"/><text x="83" y="11" dy=".36em" text-anchor="middle" font-size="9" font-weight="700" fill="#fff3c0">⚒${m.eq.length}</text></g>` : '')
     + (uf ? '</svg>' : `<use href="#fr-atk" x="-9" y="76" width="41" height="50.3"/><text class="gt${up(m.a, b.a)}" x="15.6" y="103" dy=".36em">${m.a}</text>`
     + `<use href="#fr-hp" x="67" y="80" width="36" height="44.5"/><text class="gt${up(m.h, b.h)}" x="85" y="103.4" dy=".36em">${m.h}</text></svg>`);
@@ -1445,7 +1450,7 @@ function dragStart(d, x, y) {
   if (DRAG.z === 'hd' && DRAG.sp && SPELLS[DRAG.sp] && SPELLS[DRAG.sp].tg) {
     // carte à cible : elle se pose au-dessus de la main, une flèche la relie au viseur
     const tb = (document.querySelector('.table') || document.body).getBoundingClientRect();
-    DRAG.aim = true; DRAG.ax = Math.max(8, tb.left + 14); DRAG.ay = Math.max(8, innerHeight - r.height * .78);
+    DRAG.aim = true; DRAG.ax = Math.max(8, tb.left + 14); DRAG.ay = Math.max(8, innerHeight - r.height * .78); niAimMark(true);
     dragLayer.classList.add('aimcard');
     dragLayer.animate([{ transform:`translate(${f1(r.left)}px,${f1(r.top)}px)` }, { transform:`translate(${f1(DRAG.ax)}px,${f1(DRAG.ay)}px)` }], { duration:220, easing:'cubic-bezier(.2,1.2,.4,1)' });
     dragLayer.style.transform = `translate(${f1(DRAG.ax)}px,${f1(DRAG.ay)}px)`;
@@ -1534,7 +1539,7 @@ function dragEnd(x, y, cancel) {
   const zi = cancel ? null : dzAt(x, y, D.z), z = zi ? zi.el : null; dzHide();
   const cr = dragLayer.firstChild ? dragLayer.firstChild.getBoundingClientRect() : null;
   let sent = false;
-  aimHide(); dragLayer.classList.remove('aimcard');
+  aimHide(); dragLayer.classList.remove('aimcard'); niAimMark(false);
   if (D.aim) {
     const tgt = cancel ? null : aimTarget(x, y);
     if (!tgt && !cancel && niSp(D.sp) && overShop(x, y)) { V.sel = null; sendAct({ t:'sellit', i:D.i }); sent = true; }   // objet glissé sur la taverne : revendu

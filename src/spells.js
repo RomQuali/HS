@@ -223,10 +223,11 @@ function itRes(G) { if (!G.itr) { G.itr = {}; SPELL_IDS.forEach(id => { if (SPEL
 function itDraw(G, t) { const R = itRes(G), P = typeof DRAWP !== 'undefined' ? DRAWP : null, ids = Object.keys(R).filter(id => R[id] > 0 && SPELLS[id].t <= t); const w = id => itHave(P, id) ? 0 : R[id] * (P && (P.bd || []).concat(P.hd || []).some(m => SPELLS[id].ow.includes(m.c)) ? 3 : 1); /* jamais un objet que tu as déjà */ const tot = ids.reduce((a, id) => a + w(id), 0); if (!tot) return null; let r = Math.random() * tot; for (const id of ids) { r -= w(id); if (r <= 0) { R[id]--; return { sp:id, u:UID++ }; } } const id = ids[ids.length - 1]; R[id]--; return { sp:id, u:UID++ }; }
 function itBack(G, id) { if (id && SPELLS[id] && SPELLS[id].ni) { const R = itRes(G); R[id] = (R[id] || 0) + 1; } }
 // chakra produit par un objet : plus sur son vrai propriétaire
-const itProd = m => { const S = m && m.it && SPELLS[m.it]; return !S || !S.ow.includes(m.c) ? 0 : S.v; };   // seuls ses propriétaires peuvent porter un objet
+const itL = m => m && m.it ? String(m.it).split(',').filter(Boolean) : [];   // objets portés (plusieurs objets différents par serviteur, un exemplaire de chacun)
+const itProd = m => itL(m).reduce((t, id) => { const S = SPELLS[id]; return t + (S && S.ow.includes(m.c) ? S.v : 0); }, 0);   // seuls ses propriétaires peuvent porter un objet
 const itPow = id => { const S = SPELLS[id]; return S ? S.v * 10 + (S.ex ? 50 : 0) : 0; };
 const itOwnerIn = (p, id) => !!p && (p.bd || []).concat(p.hd || []).some(m => m.c && SPELLS[id].ow.includes(m.c));   // un propriétaire sur le plateau ou dans la main
-const itHave = (p, id) => !!p && ((p.hd || []).some(m => m.sp === id) || (p.bd || []).some(m => m.it === id));   // objet déjà en main ou déjà porté
+const itHave = (p, id) => !!p && ((p.hd || []).some(m => m.sp === id) || (p.bd || []).some(m => itL(m).includes(id)));   // objet déjà en main ou déjà porté
 const itOwners = id => { const S = SPELLS[id]; return S && S.ow ? S.ow.map(c => C[c] ? C[c].n.split(' ')[0] : c) : []; };
 function drawSpell(t, el) { if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'voyage')) return null; if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra')) return itDraw(H.G, t); const nin = typeof H !== 'undefined' && H.G && inMechAny(H.G, 'chakra');
   if (typeof H !== 'undefined' && H.G && inMechAny(H.G, 'ki')) { const ids = SPELL_IDS.filter(id => SPELLS[id].db && SPELLS[id].t <= t); return ids.length ? { sp:pickR(ids), u:UID++ } : null; }
@@ -251,6 +252,7 @@ function spellBlock(p, id, tgt) {
   if (S.rm && S.fx && S.fx.some(s => s.k === 'portal') && tgt && (CD(tgt.c).tok || isComp(tgt))) return 'Un jeton ne peut pas passer le portail.';
   if ((id === 'nj_doubles' || id === 'nj_invoc') && p.bd.length >= 7) return 'Ton plateau est plein.';
   if (S.eq && !(C[tgt.c] && C[tgt.c].comp)) return 'Un équipement se pose sur ton compagnon.';
+  if (S.ni && tgt && itL(tgt).includes(Object.keys(SPELLS).find(k => SPELLS[k] === S))) return 'Ce serviteur porte déjà cet objet.';
   if (S.ni && tgt && !S.ow.includes(tgt.c)) return `Seul${S.ow.length > 1 ? 's' : ''} ${itOwners(Object.keys(SPELLS).find(k => SPELLS[k] === S)).join(', ')} ${S.ow.length > 1 ? 'peuvent' : 'peut'} porter cet objet.`;
 
   if (S.eq && (tgt.eq || []).includes(id)) return 'Ton compagnon porte déjà cet équipement.';
@@ -385,7 +387,7 @@ function castSpell0(G, p, hi, tg) {
   if (S.nin && (HX(p) && HX(p).pw && HX(p).pw.k === 'ptechc') && !(p.rsv || []).length) p.g += 1;
   p.lastCast = id;
   if (S.lo) { techSteps(G, p, S.fx || [], tgt, tg, 1); if (tgt && S.sig && S.sig.includes(tgt.c)) withSrc('Porteur légitime · ' + S.n, () => techSteps(G, p, S.sgx || [], tgt, tg, 1)); }
-  else if (S.ni) { if (tgt.it) itBack(G, tgt.it); tgt.it = id; }
+  else if (S.ni) { tgt.it = itL(tgt).concat(id).join(','); }   // s'ajoute aux objets déjà portés
   else if (S.db && S.fx) { techSteps(G, p, S.fx, tgt, tg, 1); if (tgt && S.sig && S.sig.includes(tgt.c)) withSrc('Signature · ' + S.n, () => techSteps(G, p, S.sgx, tgt, tg, 1)); }
   else if ((S.rm || S.spk || S.sim || S.gem || S.craft) && S.fx) techSteps(G, p, S.fx, tgt, tg, 1);
   else if (S.nin && S.fx) techRun(G, p, S, it0, tgt, tg, sage0);
@@ -510,7 +512,7 @@ function aiTarget(p, id) {
   const pool = p.bd.map((m, i) => ({ m, i }));
   const by = (f, ok = () => true) => { const c = pool.filter(x => ok(x.m)); if (!c.length) return null; c.sort((a, b) => f(b.m) - f(a.m)); return c[0].i; };
   const S = SPELLS[id] || {}, st = (S.fx || []).map(x => x.k);
-  if (S.ni) { const i = by(m => tierOf(m) * 5 + m.a + m.h, m => S.ow.includes(m.c) && !m.it); return i != null ? i : by(m => itPow(id) - itPow(m.it), m => S.ow.includes(m.c) && itPow(m.it) < itPow(id)); }
+  if (S.ni) return by(m => tierOf(m) * 5 + m.a + m.h, m => S.ow.includes(m.c) && !itL(m).includes(id));
   if (S.sig && p.bd.some(m => S.sig.includes(m.c) && !m.med)) return by(m => m.a + m.h, m => S.sig.includes(m.c) && !m.med);
   if (S.db) return by(m => m.a + m.h + tierOf(m) * 2, m => !m.med);
   if (st.includes('henge')) return by(m => -tierOf(m) * 10 + m.a + m.h, m => tierOf(m) < 6 && !CD(m.c).tok);
@@ -552,7 +554,7 @@ function aiCanCast(G, p, it) {
 // ordre : mode ermite d'abord (avant de dépenser), techniques combinées en dernier
 function aiCastPrio(G, p, it) { const S = SPELLS[it.sp] || {}; return (S.sage && sageOn(p) ? 30 : 0) + (S.comb ? ((p.castEls || []).some(e => e !== S.el) ? 25 : -10) : 0) + (S.t || 0); }
 // achat : pas de hiden sans clan, pas de kinjutsu à petite vie
-function aiWantSpell(p, S) { if (S.ni) { const id = SPELL_IDS.find(k => SPELLS[k] === S); return !itHave(p, id) && itOwnerIn(p, id) && p.bd.some(m => S.ow.includes(m.c) && itPow(m.it) < itPow(id)); } if (S.sim && (S.fx || []).some(s => s.k === 'gagnow') && !p.bd.some(m => fxOf(m, 'eot').some(isGag))) return false; if (S.hid && p.bd.filter(m => tribeOk(m, 'n_' + S.el)).length < Math.max(1, S.hid - 1)) return false; if (S.hp && p.hp <= S.hp + 10) return false; return true; }
+function aiWantSpell(p, S) { if (S.ni) { const id = SPELL_IDS.find(k => SPELLS[k] === S); return !itHave(p, id) && p.bd.some(m => S.ow.includes(m.c) && !itL(m).includes(id)); } if (S.sim && (S.fx || []).some(s => s.k === 'gagnow') && !p.bd.some(m => fxOf(m, 'eot').some(isGag))) return false; if (S.hid && p.bd.filter(m => tribeOk(m, 'n_' + S.el)).length < Math.max(1, S.hid - 1)) return false; if (S.hp && p.hp <= S.hp + 10) return false; return true; }
 function aiSpells(G, p) {
   const bad = new Set();
   for (let guard = 0; guard < 8; guard++) {
@@ -743,7 +745,7 @@ function spellTokenH(id, z, i, o = {}) {
     <rect x="14.5" y="14" width="71" height="76" rx="4" fill="none" stroke="#3a2410" stroke-width="3.4"/><rect x="14.5" y="14" width="71" height="76" rx="4" fill="none" stroke="#c89a52" stroke-width="1.4"/>${S.ex ? `<defs><linearGradient id="lgf-${z}-${i}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff2b0"/><stop offset=".35" stop-color="#ffb02e"/><stop offset=".7" stop-color="#e8661a"/><stop offset="1" stop-color="#ffd86a"/></linearGradient><linearGradient id="lgs-${z}-${i}" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".75"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect class="lg-fr" x="12.5" y="12" width="75" height="80" rx="6" fill="none" stroke="url(#lgf-${z}-${i})" stroke-width="3.6"/><g clip-path="url(#spc-${z}-${i})"><rect class="lg-sw" x="-30" y="0" width="26" height="110" fill="url(#lgs-${z}-${i})" transform="skewX(-18)"/></g>` : ''}
     <circle cx="14" cy="104" r="12" fill="url(#gr-badge)" stroke="#e2b452" stroke-width="2.2"/><text class="gt" x="14" y="104" dy=".36em" style="fill:${spellCostFor(id, z) < S.c ? '#b8ff8a' : '#ffe39a'}">${spellCostFor(id, z)}</text>
     ${S.ni ? '' : `<g><title>Niveau ${S.t}</title><use href="#fr-star" x="35" y="-13" width="30" height="28.4"/><text class="gt st" x="50" y="2.2" dy=".36em">${S.t}</text></g>`}${S.el ? elBadgeG(S.el, 50, 102, 13) : ''}${S.kc != null ? ckMarkG(V.me ? kiCost(V.me, S) : S.kc, 86, 101, 13, '#fff') : ''}${S.ck ? ckMarkG(V.me ? ckCost(V.me, S) : S.ck, 86, 101, 13, V.me && ckCost(V.me, S) < S.ck ? '#b8ff8a' : '#fff') : ''}</svg>
-    <span class="mn-nm">${esc(S.n)}</span>${S.ni && z === 'ss' && V.me ? (itHave(V.me, id) ? `<span class="it-own">${(V.me.bd || []).some(m => m.it === id) ? 'Déjà équipé' : 'Déjà en main'}</span>` : '') : ''}</div>`;
+    <span class="mn-nm">${esc(S.n)}</span>${S.ni && z === 'ss' && V.me ? (itHave(V.me, id) ? `<span class="it-own">${(V.me.bd || []).some(m => itL(m).includes(id)) ? 'Déjà équipé' : 'Déjà en main'}</span>` : '') : ''}</div>`;
 }
 // coût réel pour le joueur (réductions actives), et coût de base
 function spellCostFor(id, z) { const S = SPELLS[id]; if (V.me && V.me.sp === id && V.me.spc != null && (z === 'ss' || z === 'p')) return V.me.spc; return S.c; }
@@ -858,7 +860,7 @@ const niOwnerOn = cid => !!(V.me && [...(V.me.bd || []), ...(V.me.hd || [])].som
 const niFaces = (id, big) => { const ow = (SPELLS[id].ow || []).slice(0, 3); return (big ? ow : [0, 1, 2].map(k => ow[k])).map((c, k) => { if (!c) return '<i class="nif nif-0"></i>';
   const on = niOwnerOn(c), nm = C[c] ? C[c].n.split(' ')[0] : c;
   return big ? `<span class="nio${on ? ' on' : ''}"><span class="nif">${faceH('art-' + c, 'face')}</span><b>${esc(nm)}</b></span>` : `<i class="nif owf${on ? ' on' : ''}" data-c="${c}" aria-label="${esc(nm)}">${faceH('art-' + c, 'face')}</i>`; }).join(''); };
-const niStatus = id => { if (!V.me) return ['Disponible', 'ok']; if (itHave(V.me, id)) return [(V.me.bd || []).some(m => m.it === id) ? 'Équipé' : 'Dans ta main', 'ok'];
+const niStatus = id => { if (!V.me) return ['Disponible', 'ok']; if (itHave(V.me, id)) return [(V.me.bd || []).some(m => itL(m).includes(id)) ? 'Équipé' : 'Dans ta main', 'ok'];
   if (!itOwnerIn(V.me, id)) return ['Disponible · à poser sur ' + itOwners(id).join(' ou '), 'ok']; return ['Disponible', 'ok']; };
 function niMedH(id, z, i, o = {}) {
   const S = SPELLS[id], sel = V.sel && V.sel.z === z && V.sel.i === i, c = spellCostFor(id, z);
@@ -866,7 +868,7 @@ function niMedH(id, z, i, o = {}) {
   return `<div class="spt nim${sel ? ' sel' : ''}${S.ex ? ' spx lg' : ''}${ok}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="Objet ${esc(S.n)}, coût ${c} or, pour ${esc(itOwners(id).join(', '))}">
     <span class="nim-m"><span class="nim-art"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#sp-${id}" width="100" height="100"/></svg></span><i class="nim-fr"></i>${S.ex ? '' : '<i class="nim-sh"></i>'}
     <span class="nim-rb"><b style="--k:${Math.max(.66, Math.min(1, 9 / S.n.length)).toFixed(2)}">${esc(S.n)}</b></span><span class="nim-pl2">${niFaces(id)}</span><span class="nim-co${c < S.c ? ' aff' : ''}"><b>${c}</b></span></span>
-    ${S.ni && z === 'ss' && V.me && itHave(V.me, id) ? `<span class="it-own">${(V.me.bd || []).some(m => m.it === id) ? 'Déjà équipé' : 'Déjà en main'}</span>` : ''}</div>`;
+    ${S.ni && z === 'ss' && V.me && itHave(V.me, id) ? `<span class="it-own">${(V.me.bd || []).some(m => itL(m).includes(id)) ? 'Déjà équipé' : 'Déjà en main'}</span>` : ''}</div>`;
 }
 function niCardH(id, z, i, o = {}) {
   const S = SPELLS[id], c = spellCostFor(id, z), st = niStatus(id), n = (S.ow || []).length;

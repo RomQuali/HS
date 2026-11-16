@@ -1641,7 +1641,7 @@ function jutTxt(e, k) {
   const got = tfSt(e).slice(0, done).flatMap(T => (T.x || []).map(o => ET[o.k] ? ET[o.k].txt(o, k).replace(/\.$/, '') : '').filter(Boolean));   // effets gagnés par les transformations déjà faites
   return j + (got.length ? ` Pouvoirs acquis : ${got.join(' ; ')}.` : '') + (ST.length ? `${j ? ' ' : ''}${lab} · ${ST.map((T, i) => (last(i) ? 'carte dorée seulement · ' : '') + tfStTxt(T, k)).join(' → ')}.` : '');
 }
-function jutCost(p, m) { const J = jutOf(m); if (!J || J.none) return null; if (m.it === 'ni_kusanagi' && itProd(m)) return 0; if (false) return 0; return Math.max(1, tierOf(m) - ((htr(p, 'pjutc') || {}).n || 0)); }
+function jutCost(p, m) { const J = jutOf(m); if (!J || J.none) return null; if (itL(m).includes('ni_kusanagi') && SPELLS.ni_kusanagi.ow.includes(m.c)) return 0; if (false) return 0; return Math.max(1, tierOf(m) - ((htr(p, 'pjutc') || {}).n || 0)); }
 // le dernier palier d'un ninja à plusieurs transformations est réservé à la carte dorée (triple)
 const nkTfLock = m => { const st = tfSt(jutOf(m)), i = m.tf || 0; return st.length >= 1 && i === st.length - 1 && !m.g; };   // la dernière transformation (ou l'unique) demande la carte dorée
 function nkTfCost(p, m) { const T = tfSt(jutOf(m))[m.tf || 0]; if (!T || nkTfLock(m)) return null; return Math.max(1, T.c - ((htr(p, 'pnktf') || {}).n || 0)); }
@@ -2539,7 +2539,7 @@ function checkTriple(G, p) {
     { const f = copies.find(m => m.fam === '*') || copies.find(m => m.fam); if (f) { gm.fam = f.fam; if (f.famOf) gm.famOf = f.famOf; } }   // la conversion (cohésion) suit le doré
     { const gg = copies.reduce((t, m) => t + (m.gag || 0), 0); if (gg) gm.gag = gg; }   // gags récurrents : les compteurs s'additionnent dans le doré
     { const tf = Math.max(0, ...copies.map(m => m.tf || 0)); if (tf) { gm.tf = tf; gm.tfn = (copies.find(m => (m.tf || 0) === tf) || {}).tfn; } if (copies.some(m => m.awk)) gm.awk = 1; if (copies.some(m => m.ring)) { gm.ring = 1; gm.rc = Math.max(...copies.map(m => m.rc || 0)); } }   // le doré garde son palier de transformation et son éveil
-    { const its = copies.map(m => m.it).filter(Boolean).sort((x, y) => itPow(y) - itPow(x)); if (its.length) { gm.it = its[0]; its.slice(1).forEach(id => itBack(G, id)); } }   // objets : le doré garde le meilleur
+    { const its = copies.flatMap(itL), keep = [...new Set(its)]; if (keep.length) gm.it = keep.join(','); its.slice().forEach((id, i) => { if (its.indexOf(id) !== i) itBack(G, id); }); }   // objets : le doré garde un exemplaire de chaque objet
     p.hd.push(gm); p.trc = (p.trc || 0) + 1;
     if (C[id].t === 0) qAdd(p, 'tripTok');
     { const t = htr(p, 'ptrip'); if (t && C[id].t === 0) withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => { p.ck = Math.min(ckMax(p), (p.ck || 0) + (t.ck || 0)); }); }
@@ -2762,7 +2762,7 @@ const sellValue = m => 1 + fxOf(m, 'sell').reduce((t, e) => t + e.n * mult(m), 0
 const OPS = {
   buy(G, p, a) { const i = a.i; if (p.g < 3 || p.hd.length >= 10 || !p.sh[i]) return false; p.g -= 3; qAdd(p, 'buys'); const m0 = p.sh.splice(i, 1)[0]; p.hd.push(m0); if (!m0.sp) { p.bt = p.bt || {}; p.bt[tribe(m0)] = (p.bt[tribe(m0)] || 0) + 1; p.btN = (p.btN || 0) + 1; } p.bd.slice().forEach(x => fxOf(x, 'buy').forEach(e => runRecruit(G, p, x, e, m0))); spent(G, p, 3); handIn(p); checkTriple(G, p); return true; },
   sellit(G, p, a) { const x = p.hd[a.i]; if (!x || !x.sp || !SPELLS[x.sp] || !SPELLS[x.sp].ni) return false; p.hd.splice(a.i, 1); itBack(G, x.sp); p.g += 1; qAdd(p, 'sells'); return true; },   // Naruto : revendre un objet depuis la main (1 or, il retourne dans la réserve)
-  sell(G, p, a) { const m = p.bd[a.i]; if (!m) return false; if (m.it) { itBack(G, m.it); delete m.it; } if (m.ring && p.hd.length >= 10) return false; p.bd.splice(a.i, 1); if (m.ring) { delete m.ring; delete m.rc; p.hd.push({ sp:LO_RING, u:UID++ }); } if (p.ck) p.ck = Math.min(p.ck, ckMax(p)); p.g += 1; if (inMech(G, 'marche', m) && (p.mkt || 0) < 2) { p.g += 1; p.mkt = (p.mkt || 0) + 1; } fxOf(m, 'sell').forEach(e => runRecruit(G, p, m, e)); p.bd.slice().forEach(x => fxOf(x, 'osell').forEach(e => runRecruit(G, p, x, e, m))); { const t = htr(p, 'pturn'); if (t && t.sell) p.g += t.sell; } { const w = htr(p, 'psell'); if (w && !(w.once && p.soldT)) { p.inc = p.inc || []; p.inc[0] = (p.inc[0] || 0) + (w.n || 1); } p.soldT = 1; } { const w = htr(p, 'psellshop'); if (w) withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => { for (let i = 0; i < (w.n || 2); i++) { const o = p.sh.filter(x => !x.sp); if (o.length) buff(pickR(o), w.a || 1, w.h || 1); } }); } qAdd(p, 'sells'); toPool(G, m); return true; },
+  sell(G, p, a) { const m = p.bd[a.i]; if (!m) return false; if (m.it) { itL(m).forEach(id => itBack(G, id)); delete m.it; } if (m.ring && p.hd.length >= 10) return false; p.bd.splice(a.i, 1); if (m.ring) { delete m.ring; delete m.rc; p.hd.push({ sp:LO_RING, u:UID++ }); } if (p.ck) p.ck = Math.min(p.ck, ckMax(p)); p.g += 1; if (inMech(G, 'marche', m) && (p.mkt || 0) < 2) { p.g += 1; p.mkt = (p.mkt || 0) + 1; } fxOf(m, 'sell').forEach(e => runRecruit(G, p, m, e)); p.bd.slice().forEach(x => fxOf(x, 'osell').forEach(e => runRecruit(G, p, x, e, m))); { const t = htr(p, 'pturn'); if (t && t.sell) p.g += t.sell; } { const w = htr(p, 'psell'); if (w && !(w.once && p.soldT)) { p.inc = p.inc || []; p.inc[0] = (p.inc[0] || 0) + (w.n || 1); } p.soldT = 1; } { const w = htr(p, 'psellshop'); if (w) withSrc('Pouvoir de ' + HEROES[p.hero].n.split(' ')[0], () => { for (let i = 0; i < (w.n || 2); i++) { const o = p.sh.filter(x => !x.sp); if (o.length) buff(pickR(o), w.a || 1, w.h || 1); } }); } qAdd(p, 'sells'); toPool(G, m); return true; },
   play(G, p, a) {
     const m = p.hd[a.i]; if (!m || m.sp) return false;
     if (lkd(p, m)) return false; delete m.lk;   // carte du héros : verrouillée tant que la taverne n'a pas son niveau
@@ -3386,7 +3386,7 @@ function chakraSteal(p, q, pb, qb, r) {
   const dead = (side, k) => r.dead[side].reduce((t, c) => t + ((C[c] && C[c].fxAll) || []).filter(e => e.k === k).reduce((u, e) => u + e.n, 0), 0);
   // le voleur gagne toujours le chakra volé ; la victime perd ce qu'elle a (souvent peu : on dépense son chakra avant le combat)
   const take = (from, to, x) => { if (x <= 0) return 0; const v = Math.min(from.ck || 0, x); from.ck = (from.ck || 0) - v; to.ck = Math.min(ckMax(to), (to.ck || 0) + x); return x; };
-  const sh = b => b.filter(m => m.it === 'ni_samehada' && (m.c === 'nk_kisame' || m.c === 'nk_bee')).length * 2;   // Samehada sur Kisame : dévore 2 chakra
+  const sh = b => b.filter(m => itL(m).includes('ni_samehada') && (m.c === 'nk_kisame' || m.c === 'nk_bee')).length * 2;   // Samehada sur Kisame : dévore 2 chakra
   const a = take(q, p, n(pb, 'soc_steal') + dead(0, 'dr_steal') + sh(pb)), b = take(p, q, n(qb, 'soc_steal') + dead(1, 'dr_steal') + sh(qb));
   return [a, b];
 }
@@ -3412,7 +3412,7 @@ function lawsAfterFight(G, p, r, side) {
 const inMechAny = (G, k) => !!(G && G.mx && G.mx[k]);
 // Naruto : celui qui élimine un joueur choisit un objet parmi ses 3 plus puissants ; le reste retourne dans la réserve
 function nkLoot(G, p) {
-  const its = p.bd.concat(p.hd).map(m => m.it || (m.sp && SPELLS[m.sp] && SPELLS[m.sp].ni ? m.sp : null)).filter(Boolean).sort((x, y) => itPow(y) - itPow(x));
+  const its = p.bd.concat(p.hd).flatMap(m => m.sp ? (SPELLS[m.sp] && SPELLS[m.sp].ni ? [m.sp] : []) : itL(m)).sort((x, y) => itPow(y) - itPow(x));
   [p.sp, p.sp2].forEach(x => { if (x) itBack(G, x.sp); }); p.sp = p.sp2 = null;
   p.bd.concat(p.hd).forEach(m => { delete m.it; }); p.hd = p.hd.filter(m => !(m.sp && SPELLS[m.sp] && SPELLS[m.sp].ni));
   const hit = G.pend.find(x => x.pid === p.pid && x.by != null), k = hit && G.ps[hit.by];

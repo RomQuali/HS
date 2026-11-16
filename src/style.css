@@ -2261,3 +2261,8 @@ html body .spt.nim .nim-rb b{text-overflow:ellipsis!important}
 html.lite .mn .st-fx{animation:none}
 .mn.rf.kw-s::after{display:none!important}.mn.rf.kw-s .bub-ov{animation:kwShieldOv 2.4s ease-in-out infinite;transform-origin:50px 57px}@keyframes kwShieldOv{50%{opacity:.75}}
 html body #peek .hc-only .hp-hcards .cd{width:clamp(200px,16vw,280px)!important}html body #peek .hc-only .hp-hcards small{font-size:14px}   /* survol d'un adversaire : cartes plus grandes */
+
+/* pose d'un objet : halo bleu sur les propriétaires qui peuvent le recevoir */
+html body .mn.it-tgt .mn-svg{filter:drop-shadow(0 0 4px #4ab8ff) drop-shadow(0 0 12px rgba(70,170,255,.9)) drop-shadow(0 0 22px rgba(70,170,255,.55))!important;animation:itTgt 1.2s ease-in-out infinite}
+@keyframes itTgt{50%{filter:drop-shadow(0 0 6px #7fd0ff) drop-shadow(0 0 18px rgba(90,190,255,1)) drop-shadow(0 0 30px rgba(70,170,255,.7))}}
+html.lite .mn.it-tgt .mn-svg{animation:none}
