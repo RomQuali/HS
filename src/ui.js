@@ -2003,6 +2003,7 @@ function oppPeekH(p) {
 }
 function heroCardH(hid, o = {}) {
   const h0 = HEROES[hid]; if (!h0) return ''; const h = o.aw && h0.awd ? h0.awd : h0;
+  if (h0.mc && typeof nkPowCardH === 'function') return nkPowCardH(hid, h0, h, o);   // Naruto : carte « arche de bronze »
   const th = HTHEME[hid] || 'spark', col = THC[th];
   const [ptitle, body, aff] = powerTitle(h);
   return `<div class="hcard th-${th}" style="--hc:${col}">
@@ -3923,3 +3924,28 @@ function nkdAnim(cf) {
   const D = 1200; cf.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, delay: D, fill: 'backwards' });
   let t = D; steps.forEach((el, i) => { if (!el) return; grow(el, t, i ? 550 : 350); t += i ? 750 : 400; });
 }
+
+/* ===== Naruto : survol du pouvoir du héros, carte « arche de bronze » (pack Roni-Arche-de-bronze, 16/11/2026) ===== */
+function nkPowCardH(hid, h0, h, o) {
+  const [ptitle, body] = powerTitle(h), ck = h.cost && h.pay !== 'g';
+  const kws = Object.values(SET.kw || {}).map(k => k && k.n).filter(Boolean).sort((a, b) => b.length - a.length).map(n => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  const rich = t => esc(cap1(t)).replace(/([+-]\d+\/[+-]\d+)/g, '<b>$1</b>').replace(kws.length ? new RegExp('(' + kws.join('|') + ')', 'g') : /$^/, '<b>$1</b>');
+  const tag = !h.cost ? 'Passif' : /combat/i.test(body) ? 'Combat' : 'Recrutement';
+  const extra = (h0.q ? `<p class="nkpc-x"><b>${o.aw ? 'Éveillé · ' + esc(h0.aw.nm) : 'Quête d\'éveil' + (o.qp != null ? ' · ' + Math.min(o.qp || 0, h0.q.n) + '/' + h0.q.n : '')}</b> ${o.aw ? '' : esc(h0.q.tx)}</p>` : '')
+    + (h.pw && /^nh_/.test(hid) && NJ_AWK ? `<p class="nkpc-x${awakeUI() ? ' on' : ''}"><b>Éveil :</b> ${esc(heroAwkTx(h))}</p>` : '');
+  return `<div class="nkpc">
+    <span class="nkpc-por">${faceH(heroArt(hid, o.aw), 'face')}</span>
+    ${h.cost ? `<span class="nkpc-cost${ck ? ' ck' : ''}" title="${ck ? h.cost + ' chakra' : h.cost + ' or'}"><b>${h.cost}</b></span>` : ''}
+    <div class="nkpc-nm"><b>${esc(h.n)}</b></div>
+    ${h.stars ? `<div class="nkpc-st">${'<i></i>'.repeat(h.stars)}</div>` : ''}
+    <div class="nkpc-body">
+      <div class="nkpc-kind"><i></i>${h.cost ? 'Pouvoir héroïque' : 'Pouvoir passif'}<i></i></div>
+      <span class="nkpc-tag">${tag}</span>
+      ${ptitle ? `<div class="nkpc-pt">${esc(ptitle)}</div>` : ''}
+      <p class="nkpc-tx">${rich(body)}</p>${extra}
+      ${o.who && o.who !== h.n ? `<div class="nkpc-who">joué par ${esc(o.who)}</div>` : ''}
+      <div class="nkpc-foot">${esc(o.foot || (h.cost ? 'Pouvoir héroïque' : 'Toujours actif'))}</div>
+    </div>
+  </div>`;
+}
+function cap1(t) { t = String(t || ''); return t.charAt(0).toUpperCase() + t.slice(1); }
