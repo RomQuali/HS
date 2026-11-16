@@ -2014,3 +2014,4 @@ html body .spt .nk-tag.it-ow{position:absolute;top:auto;bottom:27%;left:50%;tran
 html body .hud .timer .td{display:inline-flex;white-space:nowrap}
 html body .hud .timer i{display:inline-block;width:.62em;text-align:center;font-style:normal}
 html body .hud .timer i.tc{width:.3em}
+html body .hud .timer.off{visibility:hidden}   /* pas de chrono pendant le combat */
