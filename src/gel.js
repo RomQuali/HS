@@ -569,8 +569,12 @@ function fitCdTx(root) {
   if (!root) return;
   root.querySelectorAll('.cd-tx').forEach(tx => {
     if (!tx.offsetParent) return;
+    // perf : on ne recalcule que si le texte ou la taille de la zone a changé (évite des dizaines de mises en page forcées à chaque rendu)
+    const key = tx.textContent + '|' + tx.clientWidth + '|' + tx.clientHeight;
+    if (tx._fk === key && tx.style.fontSize === (tx._fs || '')) return;
     tx.style.fontSize = ''; let fs = parseFloat(getComputedStyle(tx).fontSize) || 12, n = 0;
     while (tx.scrollHeight > tx.clientHeight + 1 && fs > 6.5 && n++ < 16) { fs *= 0.95; tx.style.fontSize = fs + 'px'; }
+    tx._fk = key; tx._fs = tx.style.fontSize;
   });
 }
 (function () {

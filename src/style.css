@@ -2315,7 +2315,7 @@ html body #peek .cd-full.nkd{width:340px;padding:0 12px 12px;border-radius:14px;
 /* objet : propriétaire présent mais pas assez d'or -> halo bleu */
 html body .spt.nim.it-ok.it-poor .nim-m{filter:drop-shadow(0 0 3px #4ab8ff) drop-shadow(0 0 8px rgba(60,150,255,.8))}
 /* pas de surlignage du texte à la souris (sauf dans les champs de saisie) */
-html,body,body *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+html,body{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 body input,body textarea,body [contenteditable="true"],body [contenteditable="true"] *{-webkit-user-select:text;user-select:text}
 
 /* Naruto : carte du pouvoir du héros « arche de bronze » (survol en jeu et à la sélection) */
