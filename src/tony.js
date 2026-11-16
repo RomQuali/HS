@@ -154,7 +154,7 @@ function installerBureau() {
       voix??=await ctxAudio.decodeAudioData(donnees.slice(0));await reveil;
       if(generation!==version||!playing||!prefs.dialogue)return;
       const source=ctxAudio.createBufferSource();source.buffer=voix;
-      const niveau=ctxAudio.createGain();niveau.gain.value=.8;source.connect(niveau);niveau.connect(ctxAudio.destination);
+      const niveau=ctxAudio.createGain();niveau.gain.value=1;source.connect(niveau);niveau.connect(ctxAudio.destination);
       source.onended=()=>{source.disconnect();niveau.disconnect();if(lecture===source)lecture=null};
       lecture=source;source.start(ctxAudio.currentTime+Math.max(0,(depart+retard-performance.now())/1000));
     }catch{/* Une sortie audio indisponible ne doit pas interrompre le départ. */}
@@ -318,7 +318,7 @@ function installerBureau() {
   let aJoue=false;
   function activer(on){active=on;repos();actualiser();if(on){void chargerBruits();if(aJoue){aJoue=false;bruit('trappe-fermeture',performance.now(),350,.8)}}if(on&&prefs.dialogue)void chargerVoix()}
   function run(done){reset();playing=true;actualiser();const gen=generation,start=performance.now(),mini=reduced(),entree=mini?300:2350;   /* la réplique part juste après l'impact (à la place du rire de Tony) */
-    const duree=prefs.dialogue?entree+3200:mini?540:2450;
+    const duree=mini?540:3300;   /* la réplique continue pendant le choix de l'univers : la scène n'attend plus sa fin */
     stage.classList.add('chute');void programmerVoix(start,entree,gen);aJoue=true;
     if(!mini){   // bruitages calés sur l'animation (ms depuis l'appui)
       bruit('tony-bouton',start,0,1,gen);bruit('trappe-verrou',start,330,.9,gen);bruit('trappe-ouverture',start,500,1,gen);
@@ -341,7 +341,7 @@ function installerBureau() {
       stage.style.setProperty('--disparition',String(1-ease((ms-(mini?170:480))/(mini?200:500))));
       if(!mini)camera.style.transform='scale('+(1+.075*ease((ms-675)/1200)+fall*3.9)+')';
       stage.style.setProperty('--voile-chute',String(fade));
-      if(ms>=duree){const garde=[...enCours];enCours.clear();reset();garde.forEach(x=>enCours.add(x));done()}   /* fin naturelle : on laisse finir le rire et la plongée */else flight=requestAnimationFrame(tick);
+      if(ms>=duree){const garde=[...enCours],voixEnCours=lecture;enCours.clear();lecture=null;reset();garde.forEach(x=>enCours.add(x));lecture=voixEnCours;done()}   /* fin naturelle : on laisse finir le rire et la plongée */else flight=requestAnimationFrame(tick);
     }
     flight=requestAnimationFrame(tick);
   }
@@ -356,6 +356,7 @@ const prefs={son:false,dialogue:true,reduit:matchMedia('(prefers-reduced-motion:
 try {
   const valeurs=JSON.parse(localStorage.getItem('roni.menu.prefs')||'{}');
   for(const k of Object.keys(prefs)) if(typeof valeurs?.[k]==='boolean') prefs[k]=valeurs[k];
+  if(localStorage.getItem('roni.menu.v')!=='2'){prefs.dialogue=true;localStorage.setItem('roni.menu.v','2');localStorage.setItem('roni.menu.prefs',JSON.stringify(prefs));}   // la réplique est remise en marche une fois (16/11)
 } catch {}
 function savePrefs(){
   try{localStorage.setItem('roni.menu.prefs',JSON.stringify(prefs));}catch{}
