@@ -679,6 +679,8 @@ function gameH() {
     const portal = !fighting && me.ally ? duoPortalH(me) : '', allyV = me.obs ? `<div class="obs-b" role="status">👁 Tu observes <b>${esc(me.ally.n)}</b><button class="btn sm" data-act="aview">Revenir à mon plateau</button></div>` : '';
     table = `<div class="table${fighting ? ' fighting arena' + (V.fight.duel ? '' : (me.cp ? ' joined' : '')) : ''}${awakeUI() && (d.laws || []).some(l => l.k === 'chakra') ? ' awakened' + awkElCls(me) : ''}">${RN_LAYERS}${duelCol}${hud}${topZone}${board}${allyV}${portal}${banner}${heroZone}${hand}${det}</div>${bigChestH(d, me)}${choiceH(d, me)}`;
   } else if (myInfo) {
+    // solo : une fois éliminé, retour direct au choix de l'univers (après 2,5 s pour voir sa place)
+    if (Net.role === 'solo' && !V.elimT) V.elimT = setTimeout(() => { V.elimT = null; if (Net.role !== 'solo') return; leaveGame().then(() => doAct('m-solo')); }, 2500);
     table = `<div class="table">${RN_LAYERS}${hud}<section class="plaque solo-msg"><h2>Éliminé · ${myInfo.pl}e place</h2><p class="note">Tu peux suivre la fin de la partie à gauche ou retourner au menu.</p><div class="btns"><button class="btn" data-act="leave">Retour au menu</button></div></section></div>`;
   } else {
     table = `<div class="table">${RN_LAYERS}${hud}<section class="plaque solo-msg"><h2>Spectateur</h2><p class="note">Tu observes cette partie.</p></section></div>`;

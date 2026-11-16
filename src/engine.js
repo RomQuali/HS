@@ -3365,7 +3365,7 @@ function endRecruit() {
   }
   G.ph = 'combat';
   const anyWatcher = G.ps.some(p => p.human && !p.bot && p.peer);
-  G.end = Date.now() + (anyWatcher ? Math.min(50000, 3500 + maxFrames * 700) : 800);
+  G.end = Date.now() + (anyWatcher ? Math.min(90000, 6000 + maxFrames * 950) : 800);   // assez de temps pour voir le combat jusqu'au bout (une attaque ≈ 0,9 s à l'écran)
   broadcast();
 }
 // domination : un compagnon dont l'élément l'emporte sur celui d'en face gagne +4/+4 pour ce combat (×2 avec le Talisman des cycles)
