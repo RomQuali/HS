@@ -1176,7 +1176,7 @@ function heroPickRowH(d, me) {
         ${heroArchHS('art-h-' + h, +RU().hp || 40)}
         <span class="hp-nm${x.n.length > 14 && !nkv ? ' lg' : ''}"><i>${esc(nkv ? x.n.split(' ')[0] : x.n)}</i></span>
         ${x.stars || x.diff ? `<span class="hp-st">${'★'.repeat(x.stars || x.diff)}</span>` : ''}
-      </button>
+      </button>${(d.laws || []).some(l => l.k === 'chakra') && !me.camp ? `<span class="hp-tipb tb-st" aria-hidden="true"><b>Rang · ${'★'.repeat(x.stars || x.diff || 0)}</b>${x.stars || x.diff || 0} étoile${(x.stars || x.diff) > 1 ? 's' : ''} sur 5 : plus il y a d'étoiles, plus le héros est fort.</span><span class="hp-tipb tb-hp" aria-hidden="true"><b>${+RU().hp || 40} points de vie${x.ar ? ' · ' + x.ar + ' d\'armure' : ''}</b>${x.ar ? `L'armure encaisse les dégâts en premier : ce héros peut subir ${(+RU().hp || 40) + x.ar} dégâts avant d'être vaincu.` : 'Pas d\'armure : chaque dégât subi enlève des points de vie.'}</span>` : ''}
       ${(d.laws || []).some(l => l.k === 'chakra') && !me.camp ? `<div class="hp-pop hp-cards" aria-hidden="true">${nhPairH(h, 'Ta carte de héros')}</div><div class="hp-pwz">${hpPowMedH(h, x)}<div class="hp-pwtip" aria-hidden="true">${heroCardH(h, { foot:x.cost ? 'Pouvoir héroïque' : 'Toujours actif' })}</div></div>` : `<div class="hp-pop" aria-hidden="true">${powBannerH(x, h, nin)}${nhPairH(h, 'Ta carte de héros')}</div>`}
       ${me.hrm === 0 ? '' : `<button class="hp-rr${left ? '' : ' off'}" data-act="hroll" data-i="${i}" ${left ? '' : 'disabled'} aria-label="Relancer ce héros (${me.hrr || 0} relance${(me.hrr || 0) > 1 ? 's' : ''} restante${(me.hrr || 0) > 1 ? 's' : ''})"><span class="hp-rrn">${me.hrr || 0}</span><b>Relancer</b></button>`}
     </div>`; };

@@ -2115,3 +2115,10 @@ html body .hp-ov.nkv .hp-col:has(.hp-pwz:hover) .hp-pop{opacity:0!important;visi
 html body .hp-ov.nkv .hp-pwtip .hcard{width:clamp(250px,19vw,300px)!important;max-width:none!important}
 html body .hp-ov.nkv .hp-pwtip .hcard .hc-tx{font-size:clamp(14px,1.1vw,17px)!important;line-height:1.35!important}
 html body .hp-ov.nkv .hp-pwtip .hcard .hc-nm{font-size:clamp(20px,1.5vw,26px)!important}
+/* Naruto, choix du héros : survol de l'étoile (rang) ou de la goutte (PV) = leur info, pas les cartes */
+html body .hp-ov.nkv .hp-tipb{position:absolute;z-index:12;width:max-content;max-width:240px;padding:9px 13px;border-radius:10px;background:linear-gradient(#2a1a0e,#160d06);border:2px solid #c89a52;box-shadow:0 8px 18px rgba(0,0,0,.6);color:#f6e6c4;font:500 14px/1.35 var(--f-ui,sans-serif);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .12s;left:50%;transform:translateX(-50%)}
+html body .hp-ov.nkv .hp-tipb b{display:block;color:#ffd98a;font:700 15px var(--f-disp),serif;margin-bottom:3px}
+html body .hp-ov.nkv .hp-tipb.tb-st{bottom:calc(100% + 6px)}
+html body .hp-ov.nkv .hp-tipb.tb-hp{top:56%;left:auto;right:-14px;transform:translateX(100%)}
+html body .hp-ov.nkv .hp-col:has(.hp-st:hover) .tb-st,html body .hp-ov.nkv .hp-col:has(.harch-hp:hover) .tb-hp{opacity:1;visibility:visible}
+html body .hp-ov.nkv .hp-col:has(.hp-st:hover) .hp-pop,html body .hp-ov.nkv .hp-col:has(.harch-hp:hover) .hp-pop{opacity:0!important;visibility:hidden!important}
