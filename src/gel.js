@@ -301,7 +301,7 @@ html:root:root:root:root:root:root:root:root body.rn[class] .rn-tb,html:root:roo
 § .hz-hero .face.hf svg{position:absolute;left:11%;top:10%;width:78%;height:82%}
 § .hz-hero .haw-fr{display:none}
 § .hz-hero .hpg{left:94u;top:100u;width:50u;height:66u;z-index:4;background:url(assets/hs/b-vie.webp) center/contain no-repeat}
-§ .hz-hero .hq{left:100u;top:50u;width:50u;height:58u;z-index:4;background:url(assets/hs/b-armure.webp) 0 0/100% 100% no-repeat}
+§ .hz-hero .hq{left:112u;top:46u;width:46u;height:53u;padding:0;z-index:4;background:url(assets/hs/b-armure.webp) 0 0/100% 100% no-repeat;font:400 fs(18,9)/1 'Lilita One','Arial Black',Impact,sans-serif;color:#fff;-webkit-text-stroke:3px #2a1205;paint-order:stroke fill;text-shadow:none}   /* armure au-dessus de la vie, même police que les PV */
 § .hero-zone .hz-right > .hov{left:929u;top:14u;width:114u;height:114u}
 § .hero-zone .powm:not(.pwh-nh_sasuke)::after{background-image:url(assets/hs/heros-medaillon.webp)}
 § .hero-zone .powm:not(.pwh-nh_sasuke):not(:disabled):not(.passive):hover::after{background-image:url(assets/hs/heros-medaillon.webp);filter:brightness(1.25) drop-shadow(0 0 5u #ffe08a)}
