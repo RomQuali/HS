@@ -2217,3 +2217,29 @@ html body .spt.nim .nim-co{width:29%;left:16%;bottom:-6%}
 html body .spt.nim .nim-rb b{font-size:clamp(7px,9.5cqi,13px)}
 html body .nim-pl .nif:not(.on):not(.nif-0){filter:grayscale(.55) brightness(.88)}
 .nic .nic-rb b{font-size:calc(9.5cqi * var(--k,1))!important;white-space:nowrap}
+
+/* ===== médaillon d'objet v3 : reprise fidèle de la maquette « 06 — Médaillon ovale » ===== */
+html body .spt.nim .nim-m{aspect-ratio:371/461}
+html body .spt.nim .nim-fr,html body .spt.nim .nim-art{top:0;height:100%;left:0;width:100%}
+html body .spt.nim .nim-art{clip-path:ellipse(36% 38.2% at 50% 47.3%)}
+html body .spt.nim.lg .nim-fr{left:-2.5%;top:-3%;width:105%;height:104%}
+html body .spt.nim .nim-sh{top:-7%;width:22%}
+html body .spt.nim .nim-rb{top:58%;width:78%;padding:0 13% 7%}
+html body .spt.nim .nim-rb b{font-size:clamp(7px,10cqi,15px)}
+.spt.nim .nim-pl2{position:absolute;left:24%;width:70%;top:75.5%;height:18%;box-sizing:border-box;border-radius:999px;z-index:2;
+  background:linear-gradient(#b08a58,#7a5530 60%,#5a3c1e);box-shadow:inset 0 0 0 1.4cqi #3a2412,inset 0 2cqi 2cqi rgba(255,230,180,.35),0 1.5cqi 2.5cqi rgba(0,0,0,.55);
+  display:flex;align-items:center;justify-content:flex-end;gap:1.6cqi;padding:0 2.6cqi 0 0}
+.spt.nim .nim-pl2::before,.spt.nim .nim-pl2::after{content:"";position:absolute;left:47%;width:6cqi;height:6cqi;transform:translateX(-50%) rotate(45deg);background:linear-gradient(135deg,#f6dc8a,#a87420);box-shadow:0 0 0 .6cqi #3a2412}
+.spt.nim .nim-pl2::before{top:-3.4cqi}.spt.nim .nim-pl2::after{bottom:-3.4cqi}
+.spt.nim.lg .nim-pl2{background:linear-gradient(#ffe08a,#d39a2a 55%,#9a6410);box-shadow:inset 0 0 0 1.4cqi #6a4410,inset 0 2cqi 2cqi rgba(255,250,210,.5),0 0 3cqi rgba(255,170,50,.7)}
+.spt.nim .nim-pl2 .nif{position:relative!important;left:auto!important;top:auto!important;transform:none!important;z-index:1;flex:none;width:17.5cqi;height:17.5cqi;border-radius:50%;overflow:hidden;
+  box-shadow:0 0 0 1cqi #3a2412,0 0 0 1.8cqi #c89a52;background:radial-gradient(circle at 50% 36%,#a88e6c 0 17%,transparent 18%),radial-gradient(ellipse at 50% 98%,#a88e6c 0 40%,transparent 41%),#7a6448}
+.spt.nim.lg .nim-pl2 .nif{box-shadow:0 0 0 1cqi #6a4410,0 0 0 1.8cqi #ffd86a}
+.spt.nim .nim-pl2 .nif .face,.spt.nim .nim-pl2 .nif svg{display:block;width:100%;height:100%}
+.spt.nim .nim-pl2 .nif:not(.on):not(.nif-0){filter:grayscale(.5) brightness(.9)}
+.spt.nim .nim-pl2 .owf{cursor:help;pointer-events:auto}
+html body .spt.nim .nim-co{left:15%;top:84.5%;bottom:auto;width:27%;transform:translate(-50%,-50%);z-index:3}
+html body .spt.nim .nim-co b{font-size:clamp(10px,16cqi,26px)}
+.spt.nim .nim-pl2::before,.spt.nim .nim-pl2::after{display:none}
+html body .spt.nim .nim-rb b{font-size:calc(clamp(7px,10.5cqi,16px) * var(--k,1))!important;text-overflow:clip}
+html body .spt.nim .nim-rb b{text-overflow:ellipsis!important}

@@ -845,7 +845,7 @@ function rsvFill(G, p, el) {
 
 /* ===== Naruto : objets en médaillon ovale (cadre gris ; cadre doré « légendaire » pour les plus rares) ===== */
 const niOwnerOn = cid => !!(V.me && [...(V.me.bd || []), ...(V.me.hd || [])].some(m => m && m.c === cid));
-const niFaces = (id, big) => { const ow = (SPELLS[id].ow || []).slice(0, 3); return ow.map((c, k) => {
+const niFaces = (id, big) => { const ow = (SPELLS[id].ow || []).slice(0, 3); return (big ? ow : [0, 1, 2].map(k => ow[k])).map((c, k) => { if (!c) return '<i class="nif nif-0"></i>';
   const on = niOwnerOn(c), nm = C[c] ? C[c].n.split(' ')[0] : c;
   return big ? `<span class="nio${on ? ' on' : ''}"><span class="nif">${faceH('art-' + c, 'face')}</span><b>${esc(nm)}</b></span>` : `<i class="nif owf${on ? ' on' : ''}" data-c="${c}" aria-label="${esc(nm)}">${faceH('art-' + c, 'face')}</i>`; }).join(''); };
 const niStatus = id => { if (!V.me) return ['Disponible', 'ok']; if (itHave(V.me, id)) return [(V.me.bd || []).some(m => m.it === id) ? 'Équipé' : 'Dans ta main', 'ok'];
@@ -855,7 +855,7 @@ function niMedH(id, z, i, o = {}) {
   const ok = z === 'ss' && V.me ? (itOwnerIn(V.me, id) && !itHave(V.me, id) && (V.me.g || 0) >= c ? ' it-ok' : ' it-no') : '';
   return `<div class="spt nim${sel ? ' sel' : ''}${S.ex ? ' spx lg' : ''}${ok}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="Objet ${esc(S.n)}, coût ${c} or, pour ${esc(itOwners(id).join(', '))}">
     <span class="nim-m"><span class="nim-art"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#sp-${id}" width="100" height="100"/></svg></span><i class="nim-fr"></i>${S.ex ? '' : '<i class="nim-sh"></i>'}
-    <span class="nim-rb"><b>${esc(S.n)}</b></span><span class="nim-pl p${Math.min(3, Math.max(1, (S.ow || []).length))}">${niFaces(id)}</span><span class="nim-co${c < S.c ? ' aff' : ''}"><b>${c}</b></span></span>
+    <span class="nim-rb"><b style="--k:${Math.max(.66, Math.min(1, 9 / S.n.length)).toFixed(2)}">${esc(S.n)}</b></span><span class="nim-pl2">${niFaces(id)}</span><span class="nim-co${c < S.c ? ' aff' : ''}"><b>${c}</b></span></span>
     ${S.ni && z === 'ss' && V.me && itHave(V.me, id) ? `<span class="it-own">${(V.me.bd || []).some(m => m.it === id) ? 'Déjà équipé' : 'Déjà en main'}</span>` : ''}</div>`;
 }
 function niCardH(id, z, i, o = {}) {
