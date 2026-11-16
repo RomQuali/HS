@@ -2023,3 +2023,62 @@ html body .hero-zone .bell:not(:disabled):hover{filter:drop-shadow(0 0 4px #38ff
 /* boutons du haut à droite : images qui correspondent à leur action (porte = quitter la partie, flèches = plein écran) */
 :root:root:root:root body.rn .hud .btn.lv-b,html body .hud .btn.lv-b{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22b%22%20cx%3D%2250%25%22%20cy%3D%2240%25%22%20r%3D%2260%25%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%235a3a22%22/%3E%3Cstop%20offset%3D%22.7%22%20stop-color%3D%22%232e1c10%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%231a0f08%22/%3E%3C/radialGradient%3E%3ClinearGradient%20id%3D%22r%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23e8e2d4%22/%3E%3Cstop%20offset%3D%22.5%22%20stop-color%3D%22%238a8378%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%234a463f%22/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%22i%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f6e6c4%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23c8a878%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2247%22%20fill%3D%22url%28%23r%29%22/%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2241%22%20fill%3D%22%231a0f08%22/%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2239%22%20fill%3D%22url%28%23b%29%22/%3E%3Cg%20fill%3D%22url%28%23i%29%22%20stroke%3D%22%232a1608%22%20stroke-width%3D%222.2%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M32%2024%20h26%20v52%20h-26%20z%22/%3E%3Cpath%20d%3D%22M58%2024%20l14%206%20v40%20l-14%206%20z%22%20fill%3D%22%23a8835a%22/%3E%3Ccircle%20cx%3D%2262%22%20cy%3D%2252%22%20r%3D%222.6%22%20fill%3D%22%232a1608%22%20stroke%3D%22none%22/%3E%3Cpath%20d%3D%22M44%2050%20h-16%20M34%2044%20l-7%206%20l7%206%22%20fill%3D%22none%22%20stroke%3D%22%23f6e6c4%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22/%3E%3Cpath%20d%3D%22M44%2050%20h-16%20M34%2044%20l-7%206%20l7%206%22%20fill%3D%22none%22%20stroke%3D%22%232a1608%22%20stroke-width%3D%221.6%22%20stroke-linecap%3D%22round%22%20opacity%3D%22.0%22/%3E%3C/g%3E%3C/svg%3E")!important}
 :root:root:root:root body.rn .hud .btn.fs-b,html body .hud .btn.fs-b{background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Cdefs%3E%3CradialGradient%20id%3D%22b%22%20cx%3D%2250%25%22%20cy%3D%2240%25%22%20r%3D%2260%25%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%235a3a22%22/%3E%3Cstop%20offset%3D%22.7%22%20stop-color%3D%22%232e1c10%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%231a0f08%22/%3E%3C/radialGradient%3E%3ClinearGradient%20id%3D%22r%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23e8e2d4%22/%3E%3Cstop%20offset%3D%22.5%22%20stop-color%3D%22%238a8378%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%234a463f%22/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%22i%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%221%22%3E%3Cstop%20offset%3D%220%22%20stop-color%3D%22%23f6e6c4%22/%3E%3Cstop%20offset%3D%221%22%20stop-color%3D%22%23c8a878%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2247%22%20fill%3D%22url%28%23r%29%22/%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2241%22%20fill%3D%22%231a0f08%22/%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2239%22%20fill%3D%22url%28%23b%29%22/%3E%3Cg%20fill%3D%22url%28%23i%29%22%20stroke%3D%22%232a1608%22%20stroke-width%3D%222.2%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M26%2040%20V26%20H40%20M60%2026%20H74%20V40%20M74%2060%20V74%20H60%20M40%2074%20H26%20V60%22%20fill%3D%22none%22%20stroke%3D%22%232a1608%22%20stroke-width%3D%2210%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3Cpath%20d%3D%22M26%2040%20V26%20H40%20M60%2026%20H74%20V40%20M74%2060%20V74%20H60%20M40%2074%20H26%20V60%22%20fill%3D%22none%22%20stroke%3D%22url%28%23i%29%22%20stroke-width%3D%226%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3C/g%3E%3C/svg%3E")!important}
+
+/* ===== Naruto : écran de choix du héros « Vallée de la Fin » (images fournies le 16/11/2026, assets/naruto/ui/) ===== */
+html body .hp-ov.nkv{background:url(assets/naruto/ui/vallee.webp) center/cover no-repeat!important;overflow:hidden}
+html body .hp-ov.nkv .hp-wrap{background:none!important;border:0!important;box-shadow:none!important;position:relative;z-index:2}
+html body .hp-ov.nkv .hp-wrap::before,html body .hp-ov.nkv .hp-wrap::after{display:none!important}
+/* titre */
+html body .hp-ov.nkv .hp-head{background:url(assets/naruto/ui/titre.webp) center/100% 100% no-repeat!important;min-width:min(760px,80vw)!important;padding:clamp(22px,4.4vh,46px) clamp(80px,10vw,170px) clamp(16px,3.2vh,34px)!important;filter:drop-shadow(0 6px 10px rgba(0,0,0,.55))!important}
+html body .hp-ov.nkv .hp-t{color:#fff3d6!important;text-shadow:0 2px 0 #0c2a14,0 0 8px rgba(0,0,0,.7)!important}
+html body .hp-ov.nkv .hp-head p,html body .hp-ov.nkv .hp-head small{color:#f6e6c4!important}
+/* portraits : arche verte et dorée ; sélectionné : arche lumineuse verte et gemme */
+html body .hp-ov.nkv .hsarch .hsa-fr{background-image:url(assets/naruto/ui/arche.webp)!important}
+html body .hp-ov.nkv .hsarch .hsa-im{clip-path:inset(8% 9% 7% 9% round 44% 44% 4% 4% / 34% 34% 4% 4%)!important}
+html body .hp-ov.nkv .hsarch .hsa-im svg{left:8%!important;top:6%!important;width:84%!important;height:88%!important}
+html body .hp-ov.nkv .hsarch .hsa-gl{background:url(assets/naruto/ui/arche_on.webp) center/100% 100% no-repeat!important;inset:-3%!important;width:106%!important;height:106%!important}
+html body .hp-ov.nkv .hp-col .hp-card:hover .hsa-gl{opacity:.55!important}
+html body .hp-ov.nkv .hp-col.on .hsa-gl{opacity:1!important}
+html body .hp-ov.nkv .hp-col.on .hp-card{filter:drop-shadow(0 0 8px rgba(60,255,90,.55))!important}
+html body .hp-ov.nkv .hp-col.on::after{content:"";position:absolute;left:50%;top:calc(var(--gemtop, 100%) - 2%);width:12%;aspect-ratio:116/129;transform:translateX(-50%);background:url(assets/naruto/ui/gemme.webp) center/contain no-repeat;z-index:6;filter:drop-shadow(0 0 6px #46ff5a)}
+html body .hp-ov.nkv .hp-card .hp-nm{background:url(assets/naruto/ui/plaque.webp) center/100% 100% no-repeat!important}
+html body .hp-ov.nkv .hp-card .hp-nm i{color:#fff3d6!important;text-shadow:0 2px 0 #0c2a14,0 0 4px #000!important}
+/* panneau d'information du héros */
+html body .hp-ov.nkv .hp-infos{width:min(980px,92vw)!important}
+html body .hp-ov.nkv .hp-pc{background:url(assets/naruto/ui/panneau.webp) center/100% 100% no-repeat!important;border:0!important;border-radius:0!important;box-shadow:none!important;grid-template-columns:auto auto 1fr!important;align-items:center!important;padding:clamp(14px,3vh,30px) clamp(30px,4vw,60px)!important;column-gap:clamp(10px,2vw,30px)!important;min-height:clamp(90px,19vh,180px);color:#f6e6c4!important}
+html body .hp-ov.nkv .hp-pc .hpc-sh{grid-row:1/3;width:clamp(48px,8vh,84px);aspect-ratio:170/188;background:url(assets/naruto/ui/bouclier.webp) center/contain no-repeat;filter:drop-shadow(0 3px 4px rgba(0,0,0,.6))}
+html body .hp-ov.nkv .hp-pc .hpc-who{grid-row:1/3;font:800 clamp(20px,4vh,40px)/1 var(--f-disp),serif!important;color:#fff3d6!important;text-shadow:0 2px 0 #0c2a14!important;padding-right:clamp(10px,2vw,28px);border-right:2px solid rgba(232,190,110,.6)}
+html body .hp-ov.nkv .hp-pc .hpc-side{grid-row:1/3}
+html body .hp-ov.nkv .hp-pc .hpc-pw{color:#f6e6c4!important;font-size:clamp(12px,2.1vh,19px)!important;line-height:1.35!important}
+html body .hp-ov.nkv .hp-pc .hpc-pw b{display:block;color:#ffd98a!important;font:800 clamp(16px,3vh,28px) var(--f-disp),serif!important;margin-bottom:2px}
+html body .hp-ov.nkv .hp-pc .hpc-mc{background:rgba(10,30,16,.6)!important;border:1.5px solid #c89a52!important;color:#ffd98a!important;border-radius:99px!important}
+/* boutons */
+html body .hp-ov.nkv .hp-ok{background:url(assets/naruto/ui/bouton.webp) center/100% 100% no-repeat!important;min-width:clamp(220px,26vw,420px)!important;height:clamp(52px,9vh,96px)!important;color:#3a1c04!important;text-shadow:0 1px 0 rgba(255,240,200,.7)!important;font:800 clamp(18px,3.4vh,32px) var(--f-disp),serif!important;filter:none!important}
+html body .hp-ov.nkv .hp-ok:disabled{filter:grayscale(.5) brightness(.8)!important}
+html body .hp-ov.nkv .hp-ok:not(:disabled):hover,html body .hp-ov.nkv .hp-ok.done{box-shadow:none!important;filter:drop-shadow(0 0 8px #46ff5a) drop-shadow(0 0 18px rgba(60,255,90,.75))!important}
+html body .hp-ov.nkv .hp-rb{background:url(assets/naruto/ui/bouton2.webp) center/100% 100% no-repeat!important;color:#fff3d6!important;position:absolute!important;right:clamp(10px,3vw,50px);bottom:clamp(10px,3vh,30px);padding:10px 28px!important}
+/* décor : tourbillon de vent et feuilles qui volent */
+.hp-ov.nkv .nk-deco{position:absolute;inset:0;pointer-events:none;z-index:1;overflow:hidden}
+.hp-ov.nkv .nk-deco .sw{position:absolute;left:8%;top:22%;width:84%;height:50%;background:url(assets/naruto/ui/tourbillon.webp) center/100% 100% no-repeat;opacity:.55;animation:nkSw 9s ease-in-out infinite}
+@keyframes nkSw{0%,100%{transform:rotate(-3deg) scale(1);opacity:.45}50%{transform:rotate(3deg) scale(1.04);opacity:.7}}
+.hp-ov.nkv .nk-deco .lf{position:absolute;left:-8%;top:calc(10% + var(--k) * 6.5%);width:clamp(28px,3.2vw,56px);aspect-ratio:1.6;background:url(assets/naruto/ui/feuille1.webp) center/contain no-repeat;animation:nkLeaf calc(9s + var(--k) * .7s) linear infinite;animation-delay:calc(var(--k) * -1.9s);filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}
+.hp-ov.nkv .nk-deco .lf[style*="--n:2"]{background-image:url(assets/naruto/ui/feuille2.webp)}
+.hp-ov.nkv .nk-deco .lf[style*="--n:3"]{background-image:url(assets/naruto/ui/feuille3.webp)}
+.hp-ov.nkv .nk-deco .lf[style*="--n:4"]{background-image:url(assets/naruto/ui/feuille4.webp)}
+.hp-ov.nkv .nk-deco .lf[style*="--n:5"]{background-image:url(assets/naruto/ui/feuille5.webp)}
+.hp-ov.nkv .nk-deco .lf[style*="--n:6"]{background-image:url(assets/naruto/ui/feuille6.webp)}
+@keyframes nkLeaf{0%{transform:translate(0,0) rotate(0deg)}25%{transform:translate(30vw,6vh) rotate(90deg)}50%{transform:translate(60vw,-4vh) rotate(180deg)}75%{transform:translate(90vw,8vh) rotate(270deg)}100%{transform:translate(120vw,2vh) rotate(360deg)}}
+html.lite .hp-ov.nkv .nk-deco .sw{animation:none}
+html.lite .hp-ov.nkv .nk-deco .lf{animation:none;transform:translate(calc(var(--k) * 8vw + 4vw),calc(var(--n) * 3vh)) rotate(calc(var(--k) * 37deg))}
+html body .hp-ov.nkv .hp-pc .hpc-mc{display:inline-block!important;width:auto!important;padding:2px 12px!important;margin-top:6px}
+html body .hp-ov.nkv .hp-infos{order:3}
+html body .hp-ov.nkv .hp-ok{order:4}
+html body .hp-ov.nkv .hp-row{order:2}
+html body .hp-ov.nkv .hp-head{order:1}
+html body .hp-ov.nkv .hp-col{position:relative}
+html body .hp-ov.nkv .hp-pc .hpc-mc{justify-self:start!important;max-width:max-content!important}
+html body .hp-ov.nkv .hp-pc .hpc-side{display:grid!important;justify-items:start!important}
+html body .hp-ov.nkv .hp-infos{margin-top:clamp(18px,4vh,44px)!important}
+html body .hp-ov.nkv .hp-pc .hpc-side{padding-left:clamp(14px,2vw,30px)!important}
+html body .hp-ov.nkv .hp-pc{padding-right:clamp(70px,9vw,150px)!important}
+html body .hp-ov.nkv .hp-col.on::after{top:calc(100% - 6px)!important}
