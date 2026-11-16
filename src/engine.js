@@ -617,6 +617,7 @@ const DEFAULT_CARD_LIST = [
   ['tk_katsuyu', 'Katsuyu', 0, 'nk_inv', 3, 10, 't', [{ k:'surv_heal', n:2 }, { k:'dr_summon2', card:'tk_katsuyu2', n:2 }]],
   ['tk_katsuyu2', 'Petite Katsuyu', 0, 'nk_inv', 1, 5, 't', []],
   ['tk_rashomon', 'Rashōmon', 0, 'nk_inv', 0, 12, 't', []],
+  ['tk_serpent', 'Serpent d’Orochimaru', 0, 'nk_inv', 3, 2, '', []],
   ['tk_aoda', 'Aoda', 0, 'nk_inv', 5, 5, '', []],
   ['tk_requin', 'Requin d’eau', 0, 'nk_inv', 3, 2, '', []],
   // ----- Le Seigneur des Anneaux -----
@@ -728,15 +729,15 @@ const DEFAULT_CARD_LIST = [
   ['nk_rasa', 'Rasa', 5, 'nk_sun', 4, 7, '', [{ k:'soc_weaktop', a:3, nm:'Poussière d’or' }, { k:'jutsu', nm:'Sable d’or', cb:[{ k:'soc_bind', who:'top' }] }]],
   ['nk_gaara', 'Gaara', 6, 'nk_sun', 6, 8, 't', [{ k:'soc_kwself', kw:'s' }, { k:'jutsu', nm:'Sarcophage de sable', cb:[{ k:'soc_crush' }], tf:[{ c:6, nm:'Demi-Shukaku', a:4, h:4, x:[{ k:'riposte', d:2 }] }, { c:10, nm:'Shukaku', a:4, h:4, x:[{ k:'soc_aoe', d:3 }] }] }]],
   ['nk_zaku', 'Zaku Abumi', 1, 'nk_oto', 2, 1, '', [{ k:'jutsu', nm:'Zankūha', cb:[{ k:'soc_dmg', d:2, n:2 }] }]],
-  ['nk_dosu', 'Dosu Kinuta', 1, 'nk_oto', 1, 3, '', [{ k:'dev_self', a:2, h:2 }, { k:'jutsu', nm:'Onde sonore', cb:[{ k:'soc_weak', a:3 }] }]],
-  ['nk_tayuya', 'Tayuya', 2, 'nk_oto', 2, 3, '', [{ k:'soc_genj', who:'face', n:1 }, { k:'dev_self', a:2, h:2 }, { k:'dr_kill_tok', cards:['tk_doki', 'tk_doki2', 'tk_doki3'] }, { k:'jutsu', nm:'Doki', fx:[{ k:'bc_fill_tok', cards:['tk_doki', 'tk_doki2', 'tk_doki3'] }], tf:{ c:5, nm:'Marque maudite', a:3, h:3 } }]],
+  ['nk_dosu', 'Dosu Kinuta', 1, 'nk_oto', 2, 3, '', [{ k:'jutsu', nm:'Onde sonore', cb:[{ k:'soc_weak', a:3 }] }]],
+  ['nk_tayuya', 'Tayuya', 2, 'nk_oto', 3, 3, '', [{ k:'soc_genj', who:'face', n:1 }, { k:'dr_kill_tok', cards:['tk_doki', 'tk_doki2', 'tk_doki3'] }, { k:'jutsu', nm:'Doki', fx:[{ k:'bc_fill_tok', cards:['tk_doki', 'tk_doki2', 'tk_doki3'] }], tf:{ c:5, nm:'Marque maudite', a:3, h:3 } }]],
   ['nk_kidomaru', 'Kidōmaru', 2, 'nk_oto', 3, 2, 'i', [{ k:'jutsu', nm:'Toile d’araignée', cb:[{ k:'soc_bind', who:'face' }], tf:{ c:5, nm:'Marque maudite', a:4, h:2 } }]],
-  ['nk_jirobo', 'Jirōbō', 3, 'nk_oto', 3, 5, 't', [{ k:'jutsu', nm:'Dévoreur de chakra', fx:[{ k:'bc_devour' }], tf:{ c:5, nm:'Marque maudite', a:3, h:4 } }]],
+  ['nk_jirobo', 'Jirōbō', 3, 'nk_oto', 3, 5, 't', [{ k:'jutsu', nm:'Dévoreur de chakra', cb:[{ k:'soc_steal', a:3, h:0 }], tf:{ c:5, nm:'Marque maudite', a:3, h:4 } }]],
   ['nk_sakon', 'Sakon et Ukon', 3, 'nk_oto', 3, 3, '', [{ k:'dr_twin', card:'tk_ukon' }, { k:'jutsu', nm:'Parasite', fx:[{ k:'bc_self', a:1, h:1 }], tf:[{ c:4, nm:'Marque de niveau 1', a:2, h:2 }, { c:7, nm:'Marque de niveau 2', a:2, h:2, kw:'w' }] }]],
-  ['nk_kabuto', 'Kabuto Yakushi', 4, 'nk_oto', 3, 6, '', [{ k:'aft_full' }, { k:'jutsu', nm:'Expérience interdite', fx:[{ k:'bc_devour' }], tf:[{ c:6, nm:'Mode serpent', a:4, h:4 }, { c:8, nm:'Edo Tensei', a:0, h:0, x:[{ k:'soc_edo' }] }] }]],
+  ['nk_kabuto', 'Kabuto Yakushi', 4, 'nk_oto', 3, 6, '', [{ k:'aft_full' }, { k:'jutsu', nm:'Ninjutsu médical', fx:[{ k:'bc_buff_tribe', a:0, h:3 }], tf:[{ c:6, nm:'Mode serpent', a:4, h:4 }, { c:8, nm:'Edo Tensei', a:0, h:0, x:[{ k:'soc_edo' }] }] }]],
   ['nk_kimimaro', 'Kimimaro', 4, 'nk_oto', 5, 4, '', [{ k:'riposte', d:2 }, { k:'jutsu', nm:'Danse des os', fx:[{ k:'bc_self', a:2, h:1 }], tf:[{ c:4, nm:'Marque de niveau 1', a:2, h:2 }, { c:7, nm:'Marque de niveau 2', a:2, h:2, x:[{ k:'riposte', d:2 }, { k:'cleave' }] }] }]],
   ['nk_sasuke', 'Sasuke Uchiha', 5, 'nk_oto', 5, 5, '', [{ k:'soc_copykw' }, { k:'jutsu', nm:'Chidori', cb:[{ k:'soc_face', d:5 }], tf:[{ c:5, nm:'Marque maudite', a:3, h:3 }, { c:7, nm:'Mangekyō', a:2, h:2, x:[{ k:'burn', d:3 }, { k:'soc_summon', card:'tk_aoda', n:1 }] }, { c:9, nm:'Susano’o', a:2, h:2, x:[{ k:'aft_shield' }] }] }]],
-  ['nk_orochimaru', 'Orochimaru', 6, 'nk_oto', 6, 7, 'r', [{ k:'bc_devour' }, { k:'jutsu', nm:'Invocation : Manda', fx:[{ k:'bc_manda' }], tf:[{ c:7, nm:'Serpent blanc', a:3, h:3, kw:'n', x:[{ k:'soc_summon', card:'tk_rashomon', n:1 }] }, { c:10, nm:'Yamata no Orochi', a:4, h:4, fx:[{ k:'bc_manda' }, { k:'bc_devour' }] }] }]],
+  ['nk_orochimaru', 'Orochimaru', 6, 'nk_oto', 6, 7, 'r', [{ k:'bc_summon', card:'tk_rashomon', n:1, nm:'Kuchiyose : Rashōmon' }, { k:'jutsu', nm:'Invocation : Manda', fx:[{ k:'bc_manda' }], tf:[{ c:7, nm:'Serpent blanc', a:3, h:3, kw:'n', x:[{ k:'soc_summon', card:'tk_rashomon', n:1 }] }, { c:10, nm:'Yamata no Orochi', a:4, h:4, fx:[{ k:'bc_manda' }, { k:'bc_summon', card:'tk_rashomon', n:1 }] }] }]],
   ['nk_chojuro', 'Chōjūrō', 1, 'nk_kir', 2, 2, '', [{ k:'atk_self', a:1, h:0 }, { k:'jutsu', nm:'Hiramekarei', cb:[{ k:'soc_first', x:2 }] }]],
   ['nk_suigetsu', 'Suigetsu Hōzuki', 1, 'nk_kir', 1, 3, '', [{ k:'armor', d:2 }, { k:'jutsu', nm:'Corps liquide', fx:[{ k:'bc_self', a:0, h:1 }] }]],
   ['nk_ao', 'Ao', 2, 'nk_kir', 2, 3, '', [{ k:'see_camo' }, { k:'jutsu', nm:'Byakugan', fx:[{ k:'bc_buff_rand', a:2, h:0, tb:'' }] }]],
@@ -908,7 +909,7 @@ const HEROES = {
   nh_omoi: {diff:1, stars:3, fam:NJV, pv:'nk_kir', mc:'cbt', n:'Omoi', pwn:'Lame de foudre', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'hx', who:'atk', fx:[{ k:'soc_first', x:2 }] }] }, tx:'Prochain combat : la première attaque de ton serviteur qui a le plus d’ATQ inflige le double.' },
   nh_deidara: {diff:1, stars:5, fam:NJV, pv:'nk_aka', mc:'tok', n:'Deidara', pwn:'Argile explosive', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'summon', card:'tk_argile', n:1 }] }, tx:'Invoque une Araignée d’argile 1/1 avec « Râle d’agonie : inflige 3 dégâts à un ennemi aléatoire ».' },
   nh_roshi: {diff:1, stars:4, fam:NJV, pv:'nk_kon', mc:'tf', n:'Rōshi', pwn:'Armure de lave', pw:{ k:'pnktf', n:3 }, tx:'Passif : tes transformations coûtent 3 chakra de moins.' },
-  nh_orochimaru: {diff:1, stars:5, fam:NJV, pv:'nk_oto', mc:'tok', n:'Orochimaru', pwn:'Transfert de corps', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'devlow' }] }, tx:'Ton serviteur le plus faible engloutit un serviteur de la taverne (il gagne ses caractéristiques).' },
+  nh_orochimaru: {diff:1, stars:5, fam:NJV, pv:'nk_oto', mc:'tok', n:'Orochimaru', pwn:'Kuchiyose : serpent', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'snake' }] }, tx:'Invoque un serpent : ses caractéristiques grandissent avec le niveau de ta taverne (3/2 au niveau 1, 8/7 au niveau 6).' },
   nh_zabuza: {diff:1, stars:4, fam:NJV, pv:'nk_kir', mc:'cbt', n:'Zabuza Momochi', pwn:'Brume cachée', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'tkw', kw:'c', n:7 }] }, tx:'Prochain combat : tous tes serviteurs ont Camouflage.' },
   // ----- Le Seigneur des Anneaux : héros (ceux des 12 duos célèbres sont proposés ; les autres ne le sont plus) -----
   lh_frodon: {diff:1, stars:5, fam:LOV, pv:'lo_nah', mc:'ann', n:'Frodon Sacquet', pwn:'Porteur de l’Anneau', pw:{ k:'pring' }, tx:'Passif : c’est toi qui reçois l’Anneau à la manche 3. Le passer à ton allié ne te coûte rien.' },
@@ -2916,7 +2917,7 @@ function powCanW(p, w) {
 function powStepCan(p, s) {
   switch (s.k) {
     case 'nclone': return (p.bd || []).length < 7 && (p.bd || []).some(x => x.c !== 'tk_kclone');
-    case 'toad': case 'summonr': return (p.bd || []).length < 7;
+    case 'toad': case 'snake': case 'summonr': return (p.bd || []).length < 7;
     case 'hx': return !!nhPick(p, s.who, x => !(x.nhx || []).some(e => e.k === s.fx[0].k));
     case 'hguard': { const a = nhPick(p, 'atk'); return !!(a && nhPick(p, 'hp', x => x !== a && x.c !== a.c)); }
     case 'hbee': return (p.bd || []).length > 0;
@@ -2972,6 +2973,7 @@ function powStep(G, p, s) {
     case 'fire': p.njf = (p.njf || 0) + s.d; break;
     // ----- héros Naruto : pouvoirs fidèles à l'animé -----
     case 'nclone': { const m = nhPick(p, 'top', x => x.c !== 'tk_kclone'); if (m) nkClone(p, m, 1); break; }
+    case 'snake': { const b = p.bd.length; recruitSummon(p, 'tk_serpent', 0, p.bd[b - 1]); const m = p.bd.length > b ? p.bd[p.bd.length - 1] : null; if (m && m.c === 'tk_serpent') { m.a = p.t + 2; m.h = p.t + 1; } break; }
     case 'toad': { const b = p.bd.length; recruitSummon(p, 'tk_crapaud', 0, p.bd[b - 1]); const m = p.bd.length > b ? p.bd[p.bd.length - 1] : null; if (m && m.c === 'tk_crapaud') { m.a = p.t + 1; m.h = p.t + 2; } break; }
     case 'summonr': if (p.bd.length < 7) recruitSummon(p, pickR(s.cards), 0, p.bd[p.bd.length - 1]); break;
     case 'hx': { const m = nhPick(p, s.who, x => !(x.nhx || []).some(e => e.k === s.fx[0].k)); if (m) m.nhx = (m.nhx || []).concat(s.fx.map(o => Object.assign({ src:BSRC || 'Pouvoir du héros' }, o))); break; }

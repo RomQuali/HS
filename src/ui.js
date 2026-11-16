@@ -452,7 +452,7 @@ function chakraLawH(big) {
 }
 function njCardH() { return chakraLawH(true); }
 // style de jeu de chaque village (étendard, cartes de héros)
-const NJ_STYLE = { nk_kon:'Maîtres et élèves', nk_aka:'Binômes', nk_sun:'Vente et revente', nk_oto:'Engloutir', nk_kir:'Épéistes', n_feu:'Explosions', n_vent:'Kugutsu et sable', n_eau:'Survie et soins', n_foudre:'Jinchūriki', n_terre:'Forteresse' };
+const NJ_STYLE = { nk_kon:'Maîtres et élèves', nk_aka:'Binômes', nk_sun:'Vente et revente', nk_oto:'Marques maudites', nk_kir:'Épéistes', n_feu:'Explosions', n_vent:'Kugutsu et sable', n_eau:'Survie et soins', n_foudre:'Jinchūriki', n_terre:'Forteresse' };
 const NJ_VIC = { nk_kon:'🍃', nk_aka:'☁️', nk_sun:'🏜️', nk_oto:'🐍', nk_kir:'🌫️', n_feu:'🔥', n_vent:'🏜️', n_eau:'🌫️', n_foudre:'⚡', n_terre:'⛰️' };
 // fiche de l'univers Ninja : cinq règles courtes (le détail est sur l'écran du héros)
 function dbCardH() {

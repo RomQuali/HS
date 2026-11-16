@@ -464,7 +464,7 @@ const NK_WAIT = { nk_konohamaru:'n_f1', nk_sakura:'n_f2', nk_lee:'n_f3', nk_neji
   nk_matsuri:'n_v1', nk_yashamaru:'n_v2', nk_baki:'n_v3', nk_ebizo:'n_v4', nk_pakura:'n_v6', nk_temari:'n_v7', nk_chiyo:'n_v8',
   nk_zaku:'n_t1', nk_dosu:'n_t2', nk_tayuya:'n_t3', nk_kidomaru:'n_t4', nk_jirobo:'n_t5', nk_sakon:'n_t6', nk_kabuto:'n_t7', nk_kimimaro:'n_t8', nk_orochimaru:'n_t10',
   nk_chojuro:'n_e1', nk_suigetsu:'n_e2', nk_ao:'n_e3', nk_ameyuri:'n_e4', nk_jinpachi:'n_e6', nk_zabuza:'n_e7', nk_mangetsu:'n_e8', nk_yagura:'n_e10',
-  tk_crapaud:'tk_toad', tk_gamabunta:'tk_toad', tk_katsuyu:'tk_slug', tk_manda:'tk_snake', tk_karasu:'tk_puppet' };
+  tk_crapaud:'tk_toad', tk_gamabunta:'tk_toad', tk_katsuyu:'tk_slug', tk_manda:'tk_snake', tk_karasu:'tk_puppet', tk_serpent:'tk_snake' };
 (function () {
   const img = src => () => `<rect width="100" height="100" fill="#1a120c"/><image href="${src}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`;
   for (const id in NK_IMG) { const h = NK_IMG[id]; if (ROIMG[h]) ART[id] = img(ROIMG[h]); if (ROIMG[h + '_aw']) ART[id + '_tf1'] = img(ROIMG[h + '_aw']); }
@@ -557,7 +557,7 @@ const NK_PACK2 = {
 (function () { const img = src => () => `<rect width="100" height="100" fill="#1a120c"/><image href="${src}" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`; for (const id in NK_PACK2) ART[id] = img(NK_PACK2[id]); ['tk_doki2', 'tk_doki3'].forEach(t => { ART[t] = ART.tk_doki; }); })();
 
 // ===== Naruto : 9 images fournies le 15/11/2026 (Rashōmon, Aoda, Requin d'eau, Petite Katsuyu, Doki aux griffes, Doki enchaîné, formes transformées de Jirōbō, Kidōmaru, Tayuya), servies depuis assets/naruto/jeu/ =====
-(function () { const pic = f => () => `<rect width="100" height="100" fill="#1a120c"/><image href="assets/naruto/jeu/${f}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`; ['tk_rashomon', 'tk_aoda', 'tk_requin', 'tk_katsuyu2', 'tk_doki2', 'tk_doki3', 'nk_jirobo_tf1', 'nk_kidomaru_tf1', 'nk_tayuya_tf1'].forEach(id => { ART[id] = pic(id); }); })();
+(function () { const pic = f => () => `<rect width="100" height="100" fill="#1a120c"/><image href="assets/naruto/jeu/${f}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`; ['tk_rashomon', 'tk_aoda', 'tk_requin', 'tk_katsuyu2', 'tk_doki2', 'tk_doki3', 'nk_jirobo_tf1', 'nk_kidomaru_tf1', 'nk_tayuya_tf1'].forEach(id => { ART[id] = pic(id); }); ART.tk_serpent = pic('tk_aoda'); })();   /* serpent d'Orochimaru : image d'Aoda en attendant la sienne */
 
 // ===== Le Seigneur des Anneaux : illustrations d'attente (silhouette aux couleurs de la famille + initiales), en attendant les images de l'utilisateur =====
 (function () {
