@@ -1056,7 +1056,7 @@ function detailH(canAct) {
     const S = SPELLS[id];
     let acts = '';
     if (canAct && s.z === 'ss') { const c = me.spc != null ? me.spc : S.c;
-      acts = S.ni && itHave(me, id) ? `<button class="btn pri" disabled>Tu l'as déjà</button>` : S.ni && !itOwnerIn(me, id) ? `<button class="btn pri" disabled>Il te faut ${esc(itOwners(id).join(' ou '))}</button>` : `<button class="btn pri" data-act="buysp" data-k="${s.i || 0}" ${me.g < c || me.hd.length >= 10 ? 'disabled' : ''}>Acheter · ${c} or</button>`; }
+      acts = S.ni && itHave(me, id) ? `<button class="btn pri" disabled>Tu l'as déjà</button>` : `<button class="btn pri" data-act="buysp" data-k="${s.i || 0}" ${me.g < c || me.hd.length >= 10 ? 'disabled' : ''}>Acheter · ${c} or</button>`; }
     if (canAct && s.z === 'hd' && id === 'lo_anneau') acts = ''; else
     if (canAct && s.z === 'hd') acts = S.tg && (me.bd.length || !dbNoTgt(S)) ? `<button class="btn pri" data-act="aim" ${me.bd.length ? '' : 'disabled'}>${S.db ? 'Choisir le lanceur' : 'Lancer sur un serviteur'}</button>` : `<button class="btn pri" data-act="cast">${S.db ? 'Lancer la technique' : 'Lancer le sort'}</button>`;
     if (canAct && s.z === 'hd') acts += passBtnH(me, id === 'lo_anneau');

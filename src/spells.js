@@ -730,7 +730,7 @@ const ckMarkH = (n, cls = '', title = '', col) => `<svg class="ckm ${cls}" viewB
 function spellTokenH(id, z, i, o = {}) {
   if (SPELLS[id] && SPELLS[id].ni) return niMedH(id, z, i, o);   // Naruto : objet en médaillon ovale
   const S = SPELLS[id], sel = V.sel && V.sel.z === z && V.sel.i === i;
-  const niOk = S.ni && z === 'ss' && V.me ? (itOwnerIn(V.me, id) && !itHave(V.me, id) && (V.me.g || 0) >= spellCostFor(id, z) ? ' it-ok' : ' it-no') : '';
+  const niOk = S.ni && z === 'ss' && V.me ? (!itHave(V.me, id) && (V.me.g || 0) >= spellCostFor(id, z) ? ' it-ok' : ' it-no') : '';
   return `<div class="spt${sel ? ' sel' : ''}${S.ex ? ' spx' : ''}${niOk}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="Sort ${esc(S.n)}, coût ${S.c} or">
     <svg class="spt-svg" viewBox="-4 -6 108 124" aria-hidden="true"><use href="#fr-parch" x="0" y="0" width="100" height="104"/>
     <clipPath id="spc-${z}-${i}"><rect x="14.5" y="14" width="71" height="76" rx="4"/></clipPath><g clip-path="url(#spc-${z}-${i})"><use href="#sp-${id}" x="12" y="5" width="76" height="94"/></g>
@@ -849,10 +849,10 @@ const niFaces = (id, big) => { const ow = (SPELLS[id].ow || []).slice(0, 3); ret
   const on = niOwnerOn(c), nm = C[c] ? C[c].n.split(' ')[0] : c;
   return big ? `<span class="nio${on ? ' on' : ''}"><span class="nif">${faceH('art-' + c, 'face')}</span><b>${esc(nm)}</b></span>` : `<i class="nif owf${on ? ' on' : ''}" data-c="${c}" aria-label="${esc(nm)}">${faceH('art-' + c, 'face')}</i>`; }).join(''); };
 const niStatus = id => { if (!V.me) return ['Disponible', 'ok']; if (itHave(V.me, id)) return [(V.me.bd || []).some(m => m.it === id) ? 'Équipé' : 'Dans ta main', 'ok'];
-  if (!itOwnerIn(V.me, id)) return ['Il te faut ' + itOwners(id).join(' ou '), 'no']; return ['Disponible', 'ok']; };
+  if (!itOwnerIn(V.me, id)) return ['Disponible · à poser sur ' + itOwners(id).join(' ou '), 'ok']; return ['Disponible', 'ok']; };
 function niMedH(id, z, i, o = {}) {
   const S = SPELLS[id], sel = V.sel && V.sel.z === z && V.sel.i === i, c = spellCostFor(id, z);
-  const ok = z === 'ss' && V.me ? (itOwnerIn(V.me, id) && !itHave(V.me, id) && (V.me.g || 0) >= c ? ' it-ok' : ' it-no') : '';
+  const ok = z === 'ss' && V.me ? (!itHave(V.me, id) && (V.me.g || 0) >= c ? ' it-ok' : ' it-no') : '';
   return `<div class="spt nim${sel ? ' sel' : ''}${S.ex ? ' spx lg' : ''}${ok}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="Objet ${esc(S.n)}, coût ${c} or, pour ${esc(itOwners(id).join(', '))}">
     <span class="nim-m"><span class="nim-art"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#sp-${id}" width="100" height="100"/></svg></span><i class="nim-fr"></i>${S.ex ? '' : '<i class="nim-sh"></i>'}
     <span class="nim-rb"><b style="--k:${Math.max(.66, Math.min(1, 9 / S.n.length)).toFixed(2)}">${esc(S.n)}</b></span><span class="nim-pl2">${niFaces(id)}</span><span class="nim-co${c < S.c ? ' aff' : ''}"><b>${c}</b></span></span>
