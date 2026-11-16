@@ -3781,3 +3781,6 @@ document.addEventListener('mouseover', e => { const col = e.target.closest && e.
   w.classList.add('hpd'); w.dataset.hk = [...w.querySelectorAll('.hp-col')].indexOf(col); });
 document.addEventListener('mouseout', e => { const col = e.target.closest && e.target.closest('.hp-duos .hp-col'); if (!col || col.contains(e.relatedTarget)) return; const w = col.closest('.hp-wrap'); if (w) delete w.dataset.hk; });
 (function () { const st = document.createElement('style'); st.textContent = '.hp-wrap.hpd .hp-pc{opacity:0!important;visibility:hidden!important;display:none!important}.hp-wrap.hpd:not([data-hk]) .hp-pc.on' + [0, 1, 2, 3, 4, 5, 6, 7].map(k => `,.hp-wrap.hpd[data-hk="${k}"] .hp-pc.k${k}`).join('') + '{opacity:1!important;visibility:visible!important;display:grid!important}.hp-wrap.hpd[data-hk] .hp-ph{opacity:0}'; document.head.appendChild(st); })();
+
+/* le chrono suit le bouton « Fin du tour » quand il grossit au survol */
+document.addEventListener('pointerover', e => { const t = document.querySelector('.hud .timer'); if (!t) return; const b = e.target.closest && e.target.closest('.hero-zone .bell'); t.classList.toggle('bh', !!b && !b.disabled); });

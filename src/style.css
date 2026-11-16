@@ -2082,3 +2082,6 @@ html body .hp-ov.nkv .hp-infos{margin-top:clamp(18px,4vh,44px)!important}
 html body .hp-ov.nkv .hp-pc .hpc-side{padding-left:clamp(14px,2vw,30px)!important}
 html body .hp-ov.nkv .hp-pc{padding-right:clamp(70px,9vw,150px)!important}
 html body .hp-ov.nkv .hp-col.on::after{top:calc(100% - 6px)!important}
+/* le chrono posé sur le bouton « Fin du tour » suit le bouton quand il grossit au survol */
+html body .table .hud .timer{transition:translate .15s ease,scale .15s ease}
+:root:root:root:root body .table .hud .timer.bh{translate:0 -3px!important;scale:1.04!important}
