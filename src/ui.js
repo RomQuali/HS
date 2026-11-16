@@ -1595,7 +1595,7 @@ function showPeek(t, touch) {
   if (t.matches('.mn,.cd')) {
     if (t.dataset.sp) { peekFor = t; peekEl.innerHTML = spellCardH(t.dataset.sp, 'p', 0); peekEl.hidden = false; const [pw, ph] = peekSize(); placePeek(r, pw, ph, touch); return true; }
     const c = t.dataset.c; if (!c || (!C[c] && c !== '__edit')) return false;
-    if (!touch && t.classList.contains('cd') && r.width >= 200) return false;   // carte déjà grande (découverte, atelier) : pas d'agrandissement
+    if (!touch && t.classList.contains('cd') && r.width >= 200 && !t.closest('.hand')) return false;   // carte déjà grande (découverte, atelier) : pas d'agrandissement
     peekFor = t; peekEl.innerHTML = cardH({ c, a:+t.dataset.a, h:+t.dataset.h, g:+t.dataset.g, f:t.dataset.f || '', tf:+t.dataset.tf || 0, tfn:t.dataset.tfn || '', it:t.dataset.it || '' }, 'p', 0); peekEl.hidden = false;   // la grande carte suit la transformation (image et nom de la forme)
     { const mc = findMine(t.dataset.u); if (mc && isComp(mc)) { const lv = (V.me && V.me.eqlv) || {}; const eq = mc.eq || [];
       peekEl.insertAdjacentHTML('beforeend', compSheetH(mc, lv, eq)); } }

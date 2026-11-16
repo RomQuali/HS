@@ -2197,7 +2197,9 @@ html body .hp-ov.nkv .hp-pc .hpc-mc2{font:700 clamp(10px,1.45vh,15px)/1 var(--f-
 .nim-pl.p2 .nif{width:19.8%}.nim-pl.p2 .nif:nth-child(1){left:37.1%}.nim-pl.p2 .nif:nth-child(2){left:63.9%}
 .spt.nim.lg .nim-pl .nif{top:47.5%}
 .nim-pl .owf{cursor:help;pointer-events:auto}
-:root:root:root:root body .table .keeper-zone:has(.spt.nim){z-index:3!important}   /* le bas du médaillon d'objet (plaque des propriétaires) déborde sur le plateau : il doit rester survolable */
+html body .table .board-zone:has(~ .keeper-zone .spt.nim),html body .table .keeper-zone:has(.spt.nim) ~ .board-zone{pointer-events:none}
+html body .table .board-zone > *{pointer-events:auto}
+html body .table .board-zone > .line{pointer-events:none}html body .table .board-zone > .line > *{pointer-events:auto}   /* le bas du médaillon d'objet (plaque des propriétaires) déborde sur le plateau : il doit rester survolable */
 /* médaillon d'objet calé sur la maquette Karasu : ruban et plaque des propriétaires posés sur le bas de l'ovale, pièce à gauche de la plaque */
 html body .spt.nim .nim-m{aspect-ratio:371/500}
 html body .spt.nim .nim-fr,html body .spt.nim .nim-art{top:4%;height:92%}
@@ -2243,3 +2245,4 @@ html body .spt.nim .nim-co b{font-size:clamp(10px,16cqi,26px)}
 .spt.nim .nim-pl2::before,.spt.nim .nim-pl2::after{display:none}
 html body .spt.nim .nim-rb b{font-size:calc(clamp(7px,10.5cqi,16px) * var(--k,1))!important;text-overflow:clip}
 html body .spt.nim .nim-rb b{text-overflow:ellipsis!important}
+:root:root:root:root body .table.fighting .hero-zone .bellwrap,:root:root:root:root body .table.fighting .hero-zone .bell{visibility:hidden!important}   /* pas de bouton Prêt (plaque « Combat ») pendant le combat */
