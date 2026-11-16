@@ -2275,7 +2275,7 @@ html body .hp-ov.nkv .hp-col:last-child .hp-pwz{left:auto!important;right:-175px
 html body .hp-ov.nkv .hp-col:has(.hp-card:hover) .hp-pwz{opacity:0;pointer-events:none}
 
 /* fiche de détail d'un ninja (survol) */
-html body #peek .cd-full.nkd{width:340px;padding:0 12px 12px;border-radius:14px;background:linear-gradient(180deg,#f5e8cc,#ead6ae);border:3px solid #a8743a;box-shadow:0 0 0 2px #4a2c10,inset 0 0 0 2px #e8c58a,0 12px 28px rgba(0,0,0,.6);color:#3a2412;font:14px/1.35 var(--f-ui,Georgia),serif}
+html body #peek .cd-full.nkd{width:340px;padding:0 12px 12px;border-radius:14px;background:url(assets/naruto/detail/parchemin.webp) center/100% 100% #e9d3a6;border:3px solid #a8743a;box-shadow:0 0 0 2px #4a2c10,inset 0 0 0 2px #e8c58a,0 12px 28px rgba(0,0,0,.6);color:#3a2412;font:14px/1.35 var(--f-ui,Georgia),serif}
 #peek .nkd-head{display:flex;align-items:center;gap:6px;margin:0 -12px 6px;padding:10px 14px 10px 10px;background:url(assets/naruto/detail/plaque-entete.webp) center/100% 100% no-repeat;min-height:92px}
 #peek .nkd-por{position:relative;flex:none;width:84px;height:84px;margin:-4px 0 -4px -2px}
 #peek .nkd-por svg{position:absolute;left:12%;top:11%;width:76%;height:76%;border-radius:50%;background:#1a120c}
@@ -2285,7 +2285,7 @@ html body #peek .cd-full.nkd{width:340px;padding:0 12px 12px;border-radius:14px;
 #peek .nkd-ttl small{display:block;margin-top:3px;font:italic 600 13px var(--f-disp),serif;color:#f1d79a}
 #peek .nkd-sec{margin-top:8px;position:relative}
 #peek .nkd-rb{position:relative;z-index:1;width:72%;margin:0 auto -9px;padding:5px 0 6px;text-align:center;background:url(assets/naruto/detail/ruban-section.webp) center/100% 100% no-repeat;font:800 12.5px/1 var(--f-disp),serif;letter-spacing:.08em;text-transform:uppercase;color:#f4e2b4}
-#peek .nkd-box{padding:14px 12px 9px;border:2px solid #b88a48;border-radius:6px;background:rgba(255,248,232,.55);box-shadow:inset 0 0 0 1px #f6e0b0}
+#peek .nkd-box{padding:14px 12px 9px;border:2px solid #b88a48;border-radius:6px;background:url(assets/naruto/detail/parchemin.webp) center/cover;box-shadow:inset 0 0 0 1px #f6e0b0,inset 0 0 14px rgba(120,70,20,.25)}
 #peek .nkd-gn{text-align:center;margin-bottom:3px;font:800 16px var(--f-disp),serif;color:#3a2412}
 #peek .nkd-sub{display:block;text-align:center;font-style:italic;color:#6a4a2a;font-size:12px;margin:1px 0 6px}
 #peek .nkd-names{display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px 5px;margin-bottom:2px}
@@ -2307,7 +2307,7 @@ html body #peek .cd-full.nkd{width:340px;padding:0 12px 12px;border-radius:14px;
 #peek .nkd-ck{display:inline-flex;align-items:center;gap:3px}
 #peek .nkd-ck b{font:800 18px var(--f-num,serif);color:#1a2a3a}
 #peek .nkd-drop{display:inline-block;width:16px;height:22px;background:url(assets/naruto/detail/goutte-chakra.webp) center/contain no-repeat}
-#peek .nkd-tfs{display:grid;gap:6px;padding:14px 6px 6px;border:2px solid #b88a48;border-radius:6px;background:rgba(255,248,232,.35)}
+#peek .nkd-tfs{display:grid;gap:6px;padding:14px 6px 6px;border:2px solid #b88a48;border-radius:6px;background:url(assets/naruto/detail/parchemin.webp) center/cover;box-shadow:inset 0 0 14px rgba(120,70,20,.25)}
 #peek .nkd-tf{padding:9px 16px 8px;background:url(assets/naruto/detail/fond-transformation.webp) center/100% 100% no-repeat}
 #peek .nkd-tfh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 #peek .nkd-tfh>b{font:800 15px var(--f-disp),serif;margin-right:auto}
