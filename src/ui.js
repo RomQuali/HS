@@ -3785,29 +3785,19 @@ document.addEventListener('mouseout', e => { const col = e.target.closest && e.t
 /* le chrono suit le bouton « Fin du tour » quand il grossit au survol */
 document.addEventListener('pointerover', e => { const t = document.querySelector('.hud .timer'); if (!t) return; const b = e.target.closest && e.target.closest('.hero-zone .bell'); t.classList.toggle('bh', !!b && !b.disabled); });
 
-/* Écran de choix du héros Naruto : tempête de feuilles façon « Konoha Senpū » de Lee.
-   Rafales qui traversent l'écran + tourbillon de feuilles autour du centre + quelques feuilles au premier plan. */
+/* Écran de choix du héros Naruto : feuilles posées le long du tourbillon de vent, comme sur la maquette (immobiles).
+   [x %, y %, taille, rotation, image] ; « f » = premier plan */
+const NK_LEAVES = [[26,20,1,-25,1],[17,31,1,20,2],[24,35,.9,-40,3],[9,37,.9,30,4],[19,41,1,-10,5],[26,45,.9,65,6],[13,47,.8,15,1],[7,44,.8,-30,2],[19,50,.9,40,3],[11,57,1,-20,4],[20,57,1.3,-15,5],[25,61,.9,30,6],
+  [78,9,1,-20,1],[74,27,.9,20,2],[71,23,.8,-35,3],[86,22,1,10,4],[91,35,1,-30,5],[93,48,.9,25,6],[90,45,1.4,-15,1],[76,45,1,40,2],[78,52,.9,-25,3],[77,57,1.3,-10,4],[83,57,1,30,5],[72,61,.9,-40,6],[50.5,60,.8,15,1],[62,38,.7,-30,2],[36,30,.7,50,3]];
+const NK_LEAVES_F = [[25,77,1.5,-20,4],[2,3,2.2,30,5],[97,6,2.4,-30,6],[94,99,2.4,20,1]];
 function nkStorm() {
-  const R = (i, m) => { const x = Math.sin(i * 127.1 + m * 311.7) * 43758.5453; return x - Math.floor(x); };   /* pseudo-hasard stable */
-  const lf = (cls, i, d, w) => `<i class="${cls}" style="--n:${1 + (i * 7 + 3) % 6};--y:${(R(i, 1) * 96 - 3).toFixed(1)};--d:${d.toFixed(2)};--w:${w.toFixed(2)};--dl:${(-R(i, 3) * d).toFixed(2)};--r:${(R(i, 4) * 360) | 0}"></i>`;
-  let back = '<div class="nk-deco" aria-hidden="true"><i class="sw"></i><i class="sw sw2"></i>';
-  for (let i = 0; i < 46; i++) back += lf('lf', i, 2.4 + R(i, 2) * 3.2, .8 + R(i, 5) * .9);
-  /* tourbillon : chaque feuille décrit une ellipse (aller-retour horizontal + vertical décalés d'un quart de tour) */
-  back += '<div class="vx">';
-  for (let i = 0; i < 30; i++) { const d = 2.2 + R(i, 7) * 1.4; back += `<span class="vo" style="--rx:${(24 + R(i, 6) * 20).toFixed(1)}vw;--ry:${(7 + R(i, 9) * 9).toFixed(1)}vh;--d:${d.toFixed(2)};--dl:${(-(i / 30) * d).toFixed(2)}"><i class="vl" style="--n:${1 + i % 6};--w:${(.7 + R(i, 8) * .8).toFixed(2)}"></i></span>`; }
-  back += '</div></div>';
-  let front = '<div class="nk-deco nk-front" aria-hidden="true">';
-  for (let i = 0; i < 10; i++) front += lf('lf big', i + 80, 1.8 + R(i, 9) * 1.8, 1.6 + R(i, 10) * 1.1);
-  return back + front + '</div>';
+  const lf = (L, f) => `<i class="lf${f ? ' big' : ''}" style="left:${L[0]}%;top:${L[1]}%;--w:${L[2]};--r:${L[3]}deg;--n:${L[4]}"></i>`;
+  return '<div class="nk-deco" aria-hidden="true"><i class="sw"></i><i class="sw sw2"></i>' + NK_LEAVES.map(L => lf(L)).join('') + '</div>'
+    + '<div class="nk-deco nk-front" aria-hidden="true">' + NK_LEAVES_F.map(L => lf(L, 1)).join('') + '</div>';
 }
 
-/* Tempête de feuilles : elle accélère quand on survole le bouton de confirmation, et implose quand on clique dessus. */
+/* Feuilles du choix du héros : elles implosent vers le héros quand on clique sur « Confirmer ». */
 (() => {
-  let rate = 1, goal = 1, raf = 0;
-  const anims = () => { const d = document.querySelector('.hp-ov.nkv .nk-deco'); return d ? [...document.querySelectorAll('.hp-ov.nkv .nk-deco')].flatMap(x => x.getAnimations({ subtree: true })) : []; };
-  const step = () => { rate += (goal - rate) * .12; if (Math.abs(goal - rate) < .02) rate = goal; anims().forEach(a => { a.playbackRate = rate; }); raf = rate !== goal ? requestAnimationFrame(step) : 0; };
-  const aim = g => { if (g === goal) return; goal = g; if (!raf) raf = requestAnimationFrame(step); };
-  document.addEventListener('pointerover', e => { const b = e.target.closest && e.target.closest('.hp-ov.nkv .hp-ok'); aim(b && !b.disabled && !b.classList.contains('done') ? 3.2 : 1); });
   document.addEventListener('click', e => {
     const b = e.target.closest && e.target.closest('.hp-ov.nkv .hp-ok');
     if (!b || b.disabled || b.classList.contains('done')) return;
@@ -3824,7 +3814,7 @@ function nkStorm() {
     const f = document.createElement('b'); f.style.cssText = `left:${cx}px;top:${cy}px`; box.appendChild(f);
     f.animate([{ transform: 'translate(-50%,-50%) scale(0)', opacity: 0 }, { transform: 'translate(-50%,-50%) scale(.2)', opacity: 1, offset: .6 }, { transform: 'translate(-50%,-50%) scale(3)', opacity: 0 }], { duration: 1000, easing: 'ease-out', fill: 'forwards' });
     decos.forEach(d => { d.style.visibility = 'hidden'; });
-    document.body.appendChild(box); goal = rate = 1;
+    document.body.appendChild(box);
     setTimeout(() => box.remove(), 1200);
   }, true);
 })();
