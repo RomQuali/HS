@@ -3850,7 +3850,7 @@ function hpPowMedH(h, x) {
       else { const tb = document.querySelector('.table'); if (tb) gate(tb, 'table:' + (V.pub && (V.pub.us || V.pub.univ) || '')); } } catch (e) {}
     return out; };
   const st = document.createElement('style');
-  st.textContent = '.gate-wait{opacity:0!important}.gate-in{animation:gateIn .22s ease-out both}@keyframes gateIn{from{opacity:0}to{opacity:1}}html.lite .gate-in{animation:none}';
+  st.textContent = '.hp-ov.gate-wait{opacity:1!important;background-color:#0b130d!important}.hp-ov.gate-wait>*{opacity:0!important}.hp-ov.gate-in>*{animation:gateIn .22s ease-out both}.hp-ov.gate-in{animation:none!important}.table.gate-wait{opacity:0!important}.gate-in{animation:gateIn .22s ease-out both}@keyframes gateIn{from{opacity:0}to{opacity:1}}html.lite .gate-in{animation:none}';
   document.head.appendChild(st);
   /* sur l'accueil, au repos : décode à l'avance les portraits (images intégrées) des héros et des serviteurs */
   const pre = () => { const hrefs = new Set(); document.querySelectorAll('symbol[id^="art-h-nh_"] image, symbol[id^="art-nk_"] image').forEach(im => hrefs.add(im.getAttribute('href')));
