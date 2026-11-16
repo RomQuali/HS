@@ -894,6 +894,7 @@ const HEROES = {
   nh_kankuro: {diff:1, stars:3, fam:NJV, pv:'nk_sun', mc:'tok', n:'Kankurō', pwn:'Kugutsu', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'summonr', cards:['tk_karasu', 'tk_kuroari', 'tk_sanshouo'] }] }, tx:'Invoque une marionnette au hasard : Karasu (Venimosité), Kuroari (Entrave) ou Sanshōuo (Provocation).' },
   nh_sasori: {diff:1, stars:4, fam:NJV, pv:'nk_aka', mc:'cbt', n:'Sasori', pwn:'Poison de Sasori', cost:3, pay:'g', pw:{ k:'multi', s:[{ k:'kw', kw:'n', n:1 }] }, tx:'Un de tes serviteurs gagne Venimosité.' },
   nh_rasa: {diff:1, stars:4, fam:NJV, pv:'nk_sun', mc:'eco', n:'Rasa', pwn:'Poussière d’or', pw:{ k:'pturn', g:1 }, tx:'Passif : au début de chaque tour, gagne 1 or de plus.' },
+  nh_tsunade: {diff:1, stars:4, fam:NJV, pv:'nk_kon', mc:'cbt', n:'Tsunade', pwn:'Byakugō', cost:2, pay:'g', pw:{ k:'multi', s:[{ k:'hxall', fx:[{ k:'surv_regen', n:2 }] }] }, tx:'Prochain combat : tes serviteurs récupèrent 2 PV chaque fois qu’ils sont blessés et survivent.' },
   nh_mei: {diff:1, stars:4, fam:NJV, pv:'nk_kir', mc:'cbt', n:'Mei Terumi', pwn:'Brume acide', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'hx', who:'atk', fx:[{ k:'burn', d:2 }] }] }, tx:'Prochain combat : ton serviteur qui a le plus d’ATQ gagne Brûlure de 2 (l’ennemi qu’il frappe perd 2 PV après chacune de ses attaques).' },
   nh_haku: {diff:1, stars:4, fam:NJV, pv:'nk_kir', mc:'cbt', n:'Haku', pwn:'Garde du corps', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'hguard' }] }, tx:'Prochain combat : ton serviteur qui a le plus de PV encaisse les attaques qui visent ton serviteur qui a le plus d’ATQ.' },
   nh_bee: {diff:1, stars:4, fam:NJV, pv:'nk_kir', mc:'cbt', n:'Killer Bee', pwn:'Style des sept lames', cost:1, pay:'g', pw:{ k:'multi', s:[{ k:'hbee', a:2 }] }, tx:'Prochain combat : ton serviteur qui a le plus d’ATQ gagne +2 ATQ et Furie des vents.' },
@@ -996,7 +997,7 @@ const HEROES = {
 ['nh_hashirama', 'nh_kushina', 'nh_roshi', 'nh_bee', 'nh_yugito', 'nh_omoi'].forEach(h => delete HEROES[h]);
 // armure de départ (à la Hearthstone), réglée sur 300 parties d'IA le 15/11/2026 : les héros les plus faibles en ont le plus
 delete HEROES.nh_rasa;   // retiré le 16/11 (tri des personnages)
-Object.entries({ nh_kakuzu:0, nh_deidara:0, nh_zabuza:2, nh_sasori:2, nh_jiraiya:3, nh_orochimaru:4, nh_haku:5, nh_kankuro:5, nh_rasa:6, nh_naruto:6, nh_kakashi:6, nh_gaara:7, nh_mei:7, nh_shikamaru:7, nh_sasuke:8, nh_itachi:10 }).forEach(([h, a]) => { if (HEROES[h]) HEROES[h].ar = a; });
+Object.entries({ nh_tsunade:6, nh_kakuzu:0, nh_deidara:0, nh_zabuza:2, nh_sasori:2, nh_jiraiya:3, nh_orochimaru:4, nh_haku:5, nh_kankuro:5, nh_rasa:6, nh_naruto:6, nh_kakashi:6, nh_gaara:7, nh_mei:7, nh_shikamaru:7, nh_sasuke:8, nh_itachi:10 }).forEach(([h, a]) => { if (HEROES[h]) HEROES[h].ar = a; });
 // héros Ninja : le bonus (trx) s'ajoute au texte du pouvoir
 for (const h in HEROES) if (HEROES[h].trx && !HEROES[h].tx.includes(HEROES[h].trx)) HEROES[h].tx += ' Bonus : ' + HEROES[h].trx;
 // éveil des héros (quête) : version du héros avec son nouveau pouvoir (le bonus reste, sauf s'il est remplacé)
@@ -1402,6 +1403,7 @@ const ET = {
   soc_copyall:{ tr:'soc', l:'Double Sharingan', ps:[], w:1, mag:() => 5, txt:() => `Double Sharingan : au début du combat, copie aussi les effets de combat de l'ennemi d'en face.` },
   aft_burnout:{ tr:'aft', l:'Huitième Porte', ps:[], w:1, mag:() => -4, txt:e => `Gaï de la nuit : il s'effondre après sa ${e.n}e attaque du combat.` },
   soc_aoe_if:{ tr:'soc', l:'Huile enflammée', ps:[], w:1, mag:e => 2 * e.d, txt:(e, k) => `Huile enflammée : si ${CD(e.card).n} est à tes côtés, inflige ${e.d * k} dégâts à tous les ennemis au début du combat.` },
+  surv_regen:{ tr:'surv', l:'Byakugō', ps:['n'], w:1, mag:e => 2 * e.n, txt:(e, k) => `Byakugō : quand il est blessé et survit, récupère ${e.n * k} PV.` },
   surv_heal:{ tr:'surv', l:'Soin de Katsuyu', ps:[], w:1, mag:e => 2 * e.n, txt:(e, k) => `Quand elle est blessée et survit, rend ${e.n * k} PV à tes autres serviteurs.` },
   surv_split:{ tr:'surv', l:'Cerbère', ps:[], w:1, mag:() => 8, txt:e => `Cerbère : chaque fois qu'il est blessé et survit, une nouvelle tête naît (une copie, ${e.n} par combat au plus).` },
   dr_summon2:{ tr:'dr', l:'Division', ps:[], w:1, mag:() => 5, txt:e => `Râle d'agonie : se divise en ${e.n} ${CD(e.card).n}.` },
@@ -2213,6 +2215,7 @@ function runCombat(S, s, m, e, pos, ctx) {
     case 'aft_burnout': m.bo = (m.bo || 0) + 1; if (m.bo >= e.n && m.h > 0) { remF(m, 's'); m.h = 0; } break;
     case 'soc_copyall': { const t = nkFace(S, s, m); if (t && !t.sld) { const fx = nkSword(t.c).concat((t.x || []).filter(o => ET[o.k] && ['pas', 'atk', 'aft', 'dr', 'surv'].includes(ET[o.k].tr) && o.k !== 'guard')); if (fx.length) m.x = (m.x || []).concat(fx.map(o => Object.assign({}, o, { src:'Double Sharingan' }))); } break; }
     case 'soc_aoe_if': if (al.some(x => x.c === e.card && x.h > 0)) en.filter(x => x.h > 0).forEach(x => simDamage(S, x, e.d * k, null)); break;
+    case 'surv_regen': if (m.h > 0) m.h = Math.min(Math.max(m.hm || m.h, m.h), m.h + e.n * k); break;
     case 'surv_heal': al.filter(x => x !== m && x.h > 0 && x.h < (x.hm || x.h)).forEach(x => { x.h = Math.min(x.hm || x.h, x.h + e.n * k); }); break;
     case 'surv_split': { S.spl = S.spl || [0, 0]; if (S.spl[s] < e.n && al.length < 7) { S.spl[s]++; const nm = simSummon(S, s, al.indexOf(m) + 1, m.c, m.g); if (nm) { nm.a = m.a; nm.h = m.h; nm.hm = m.h; nm.f = m.f || ''; } } break; }
     case 'dr_summon2': for (let i = 0; i < e.n; i++) { const nm = simSummon(S, s, pos + i, e.card, m.g); if (nm) nm.hm = nm.h; } break;
@@ -2906,6 +2909,7 @@ function powStepCan(p, s) {
   switch (s.k) {
     case 'nclone': return (p.bd || []).length < 7 && (p.bd || []).some(x => x.c !== 'tk_kclone');
     case 'toad': case 'snake': case 'summonr': return (p.bd || []).length < 7;
+    case 'hxall': return (p.bd || []).length > 0;
     case 'hx': return !!nhPick(p, s.who, x => !(x.nhx || []).some(e => e.k === s.fx[0].k));
     case 'hguard': { const a = nhPick(p, 'atk'); return !!(a && nhPick(p, 'hp', x => x !== a && x.c !== a.c)); }
     case 'hbee': return (p.bd || []).length > 0;
@@ -2964,6 +2968,7 @@ function powStep(G, p, s) {
     case 'snake': { const b = p.bd.length; recruitSummon(p, 'tk_serpent', 0, p.bd[b - 1]); const m = p.bd.length > b ? p.bd[p.bd.length - 1] : null; if (m && m.c === 'tk_serpent') { m.a = p.t + 2; m.h = p.t + 1; } break; }
     case 'toad': { const b = p.bd.length; recruitSummon(p, 'tk_crapaud', 0, p.bd[b - 1]); const m = p.bd.length > b ? p.bd[p.bd.length - 1] : null; if (m && m.c === 'tk_crapaud') { m.a = p.t + 1; m.h = p.t + 2; } break; }
     case 'summonr': if (p.bd.length < 7) recruitSummon(p, pickR(s.cards), 0, p.bd[p.bd.length - 1]); break;
+    case 'hxall': p.bd.forEach(m => { m.nhx = (m.nhx || []).concat(s.fx.map(o => Object.assign({ src:BSRC || 'Pouvoir du héros' }, o))); }); break;
     case 'hx': { const m = nhPick(p, s.who, x => !(x.nhx || []).some(e => e.k === s.fx[0].k)); if (m) m.nhx = (m.nhx || []).concat(s.fx.map(o => Object.assign({ src:BSRC || 'Pouvoir du héros' }, o))); break; }
     case 'hguard': { const a = nhPick(p, 'atk'), g = a && nhPick(p, 'hp', x => x !== a && x.c !== a.c); if (g) g.nhx = (g.nhx || []).concat([{ k:'guard', card:a.c, n:99, src:BSRC || 'Pouvoir du héros' }]); break; }
     case 'devlow': { const o = (p.bd || []).slice(); if (!o.length) break; const m = o.reduce((w, x) => x.a + x.h < w.a + w.h ? x : w); devour(G, p, m, mult(m)); break; }

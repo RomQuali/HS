@@ -479,7 +479,7 @@ function combatBoard(p) {
     if (m.tmp) { c.a += m.tmp.a || 0; c.h = Math.max(1, c.h + (m.tmp.h || 0)); if (m.tmp.f) addF(c, m.tmp.f); }
     if (p.tma) { c.a += p.tma.a; c.h += p.tma.h; }
     if (m.ring) { addF(c, 'c'); c.x = (c.x || []).concat([{ k:'camo_keep', src:'L’Anneau unique' }]); }
-    if (ninja || (G && inMechAny(G, 'voyage'))) { if (m.jp && G && m.jp === G.rd) c.jp = 1; else delete c.jp; if (m.gx) c.x = (c.x || []).concat(m.gx); delete c.gx; if (m.nhx) c.x = (c.x || []).concat(m.nhx); delete c.nhx; if (p.ld) c.edo = p.ld; }
+    if (ninja || (G && inMechAny(G, 'voyage'))) { if (m.jp && G && m.jp === G.rd) c.jp = 1; else delete c.jp; if (m.gx) c.x = (c.x || []).concat(m.gx); delete c.gx; if (m.nhx) c.x = (c.x || []).concat(m.nhx); delete c.nhx; if (c.hm == null) c.hm = c.h; if (p.ld) c.edo = p.ld; }
     if (ninja) {
       { const el = CLAN_EL[CD(m.c).tr], t = el && NJ_MK ? mkTier(p, el) : 0; if (t && !(C[m.c] && C[m.c].comp)) { const B = MK_TIER[el][t - 1]; c.a += B[0]; c.h += B[1]; if (B[2]) addF(c, B[2]); } }
       const tr = CD(m.c).tr, k = m.g ? 2 : 1, x = c.x = (c.x || []).slice();

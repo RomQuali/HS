@@ -590,3 +590,6 @@ const NK_PACK2 = {
 (function () { if (typeof ART === 'undefined') return; const pic = f => () => `<rect width="100" height="100" fill="#1a120c"/><image href="assets/naruto/jeu/${f}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`;
   ['nk_gaara_tf2', 'nk_gai_tf2', 'nk_gai_tf3', 'nk_itachi_tf2', 'nk_kabuto_tf2', 'nk_kakashi_tf2', 'nk_kakashi_tf3', 'nk_kimimaro_tf2', 'nk_lee_tf2', 'nk_naruto_tf2', 'nk_naruto_tf3', 'nk_orochimaru_tf2', 'nk_sakon_tf2', 'nk_sakura_tf2', 'nk_sasuke_tf2', 'nk_sasuke_tf3', 'nk_tobi_tf2', 'nk_yagura_tf2'].forEach(id => { ART[id] = pic(id); });
 })();
+
+// héros Tsunade (16/11/2026) : portrait repris de sa carte de taverne en attendant le sien
+(function () { if (typeof HART !== 'undefined' && typeof ART !== 'undefined' && ART.nk_tsunade && !HART.nh_tsunade) HART.nh_tsunade = ART.nk_tsunade; })();
