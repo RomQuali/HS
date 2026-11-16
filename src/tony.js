@@ -128,7 +128,7 @@ function installerBureau() {
   }
   function arreterVoix(){if(lecture){try{lecture.stop()}catch{}lecture.disconnect();lecture=null}arreterBruits()}
   // Bruitages de la trappe (16/11/2026) : bouton, verrou, battants, cri de Kenny, chute, impact, rire de Tony, plongée, fermeture
-  const BRUITS=['tony-bouton','trappe-verrou','trappe-ouverture','kenny-surprise','kenny-cri-chute','chute-souffle','chute-impact','transition-plongee','trappe-fermeture'],tampons={},enCours=new Set();let bruitsCharges=null;
+  const BRUITS=['tony-bouton','trappe-verrou','trappe-ouverture','kenny-cri-chute','chute-souffle','chute-impact','transition-plongee','trappe-fermeture'],tampons={},enCours=new Set();let bruitsCharges=null;
   const bruitsOk=()=>typeof SFX==='undefined'||SFX.on!==false;
   const volBruits=()=>typeof SFX!=='undefined'&&SFX.vol!=null?SFX.vol:1;
   function chargerBruits(){
@@ -322,7 +322,7 @@ function installerBureau() {
     stage.classList.add('chute');void programmerVoix(start,entree,gen);aJoue=true;
     if(!mini){   // bruitages calés sur l'animation (ms depuis l'appui)
       bruit('tony-bouton',start,0,1,gen);bruit('trappe-verrou',start,330,.9,gen);bruit('trappe-ouverture',start,500,1,gen);
-      bruit('kenny-surprise',start,560,.9,gen);bruit('kenny-cri-chute',start,780,.95,gen);bruit('chute-souffle',start,800,.7,gen);
+      bruit('kenny-cri-chute',start,780,.95,gen);bruit('chute-souffle',start,800,.7,gen);
       bruit('chute-impact',start,2250,.8,gen);bruit('transition-plongee',start,duree-830,.8,gen);
     }else{bruit('tony-bouton',start,0,1,gen);bruit('trappe-ouverture',start,150,.8,gen)}
     function tick(now){
