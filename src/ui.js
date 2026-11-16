@@ -593,6 +593,8 @@ function timerTxt() {
   const s = Math.ceil(Math.max(0, d.rem - (Date.now() - V.pubAt)) / 1000);
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 }
+// chrono : chaque chiffre dans une case de largeur fixe, pour que le texte ne bouge pas pendant le décompte
+const timerHtml = () => { const t = timerTxt(); return t ? '<span class="td">' + t.split('').map(c => c === ':' ? '<i class="tc">:</i>' : `<i>${c}</i>`).join('') + '</span>' : ''; };
 function ringP() {
   const d = V.pub; if (!d || d.ph !== 'recruit') return 0;
   return Math.min(1, Math.max(0, d.rem - (Date.now() - V.pubAt)) / (V.phTotal || 1)).toFixed(3);
@@ -609,7 +611,7 @@ function gameH() {
       <span class="op-face${p.haw ? ' haw' : ''}">${faceH(playerSym(p))}<b class="op-hp">${p.al ? Math.max(0, p.hp) : p.pl + 'e'}</b>${p.al && p.ar ? `<b class="op-ar" title="Armure">${p.ar}</b>` : ''}<span class="op-t">${p.t}</span>${d.ph === 'recruit' && p.r && p.al ? '<span class="op-r">✓</span>' : ''}${p.el && ELS[p.el] && p.al ? `<span class="op-el" style="--c:${ELS[p.el].col}" title="${esc('Compagnon ' + ELS[p.el].n + ' · ' + p.mk + ' ' + MK_N[p.el].toLowerCase())}"><svg viewBox="-12 -12 24 24">${EL_ICON[p.el]}</svg></span>` : ''}</span>
       <span class="op-n">${esc(p.n)}</span></li>`).join('');
   const myInfo = d.pl.find(p => p.pid === myPid), alive = !!(myInfo && myInfo.al);
-  const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span>${d.ev && d.rd >= d.ev ? '<span class="eveil" data-tip="Éveil : la moitié des ninjas sont tombés à 20 PV ou moins. Les clans libèrent leur pouvoir ultime, ton compagnon prend sa forme éveillée, le pouvoir de ton héros est renforcé, chaque technique gagne son effet d\'Éveil et des techniques interdites apparaissent.">Éveil</span>' : ''}${d.laws && d.laws.length && d.ph !== 'end' ? `<span class="hud-laws">${d.laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<span class="hl" data-hov="law" data-tip="${esc(M.n + ' : ' + M.d)}">${icon(M.ic)}</span>`; }).join('')}${V.me && V.me.souls ? `<span class="souls" data-tip="Âmes récoltées : toutes les 3 âmes, tes serviteurs des Ténèbres gagnent +1/+1 au début du tour.">${icon('skull')}<b>${V.me.souls}</b></span>` : ''}</span>` : ''}<span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerTxt()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran" title="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm lv-b" data-act="leave" title="Quitter la partie">Quitter</button></div>`;
+  const hud = `<div class="hud"><span class="round">Manche<b>${d.rd || 0}</b></span><span class="phase">${PH[d.ph] || ''}</span>${d.ev && d.rd >= d.ev ? '<span class="eveil" data-tip="Éveil : la moitié des ninjas sont tombés à 20 PV ou moins. Les clans libèrent leur pouvoir ultime, ton compagnon prend sa forme éveillée, le pouvoir de ton héros est renforcé, chaque technique gagne son effet d\'Éveil et des techniques interdites apparaissent.">Éveil</span>' : ''}${d.laws && d.laws.length && d.ph !== 'end' ? `<span class="hud-laws">${d.laws.map(l => { const M = MECHS[l.k] || MECHS.none; return `<span class="hl" data-hov="law" data-tip="${esc(M.n + ' : ' + M.d)}">${icon(M.ic)}</span>`; }).join('')}${V.me && V.me.souls ? `<span class="souls" data-tip="Âmes récoltées : toutes les 3 âmes, tes serviteurs des Ténèbres gagnent +1/+1 au début du tour.">${icon('skull')}<b>${V.me.souls}</b></span>` : ''}</span>` : ''}<span class="sp"></span><span class="timer" id="tm">${d.ph === 'end' ? '' : timerHtml()}</span><span class="rot-hint">${icon('roll')}Tourne ton téléphone</span>${document.fullscreenEnabled ? `<button class="btn sm fs-b" data-act="fs" aria-label="Plein écran" title="Plein écran">${document.fullscreenElement ? 'Réduire' : 'Plein écran'}</button>` : ''}<button class="btn sm lv-b" data-act="leave" title="Quitter la partie">Quitter</button></div>`;
   let table;
   if (me && alive) {
     const canAct = d.ph === 'recruit' && !me.obs;
@@ -1659,7 +1661,7 @@ document.addEventListener('pointerout', e => { const t = e.target.closest ? e.ta
 setInterval(() => {
   if (!V.pub || V.screen !== 'game') return;
   const left = V.pub.rem - (Date.now() - V.pubAt);
-  const t = $('#tm'); if (t && V.pub.ph !== 'end') { t.textContent = timerTxt(); t.classList.toggle('low', left < 10000); }
+  const t = $('#tm'); if (t && V.pub.ph !== 'end') { { const h = timerHtml(); if (t.innerHTML !== h) t.innerHTML = h; } t.classList.toggle('low', left < 10000); }
   const b = $('#bellw'); if (b) { b.style.setProperty('--p', ringP()); b.classList.toggle('low', V.pub.ph === 'recruit' && left < 10000); }
 }, 250);
 

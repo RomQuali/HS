@@ -2010,3 +2010,7 @@ html body .spt.spx.it-ok .spt-svg{animation:none;filter:drop-shadow(0 0 3px #38f
 /* étiquette des propriétaires posée dans l'objet, en bas de l'image */
 html body .spt .nk-tag.it-ow{position:absolute;top:auto;bottom:27%;left:50%;transform:translateX(-50%);margin:0;z-index:4;max-width:84%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 #peek .hc-only .hp-hcards{margin-top:0}
+/* chrono : chiffres à largeur fixe (ils ne bougent plus pendant le décompte) */
+html body .hud .timer .td{display:inline-flex;white-space:nowrap}
+html body .hud .timer i{display:inline-block;width:.62em;text-align:center;font-style:normal}
+html body .hud .timer i.tc{width:.3em}
