@@ -1236,6 +1236,7 @@ function overlayH() {
   const d = V.pub, me = V.me;
   if (me && me.cho && d.ph === 'recruit') return `<div class="ov"><div class="ov-box"><h2 class="ov-t">Choix des armes</h2><p class="ov-s">${esc(C[me.cho.c] ? CD(me.cho.c).n : '')} : choisis un des deux effets. À la fin du chrono, le premier est pris.</p>
     <div class="cho">${me.cho.o.map((o, i) => `<button class="cho-b" data-act="choose" data-i="${i}">${esc(ET[o.k] ? ET[o.k].txt(o, 1).replace(/^Cri de guerre : /, '').replace(/^./, c => c.toUpperCase()) : '?')}</button>`).join('')}</div></div></div>`;
+  if (me && me.disc && d.ph === 'recruit' && me.disc.length && me.disc.every(m => m.sp && /^ni_/.test(m.sp))) return butinH(me);   // Naruto : écran « Butin de victoire »
   if (me && me.disc && d.ph === 'recruit') return `<div class="ov"><div class="ov-box"><h2 class="ov-t">${me.dsc && /^Ninja vaincu/.test(me.dsc) ? 'Butin · ' + esc(me.dsc.replace(/^Ninja vaincu : /, '')) : me.dsc ? 'Butin de bataille · ' + esc(me.dsc) : 'Découverte'}</h2><p class="ov-s">${me.dsc && /^Ninja vaincu/.test(me.dsc) ? 'Tu as éliminé ce joueur : prends un de ses trois meilleurs objets. Les autres retournent dans la taverne.' : me.dsc ? 'Tu as gagné la bataille : choisis un objet légendaire. Il est plus fort sur son porteur du film.' : 'Choisis un serviteur. Les deux autres retournent dans la réserve.'}</p>
     <div class="disc">${me.disc.map((m, i) => `<button class="disc-b" data-act="pick" data-i="${i}" aria-label="Choisir ${esc(m.sp ? (SPELLS[m.sp] || {}).n : CD(m.c).n)}">${m.sp ? loObjH(m.sp) : cardH(m, 'disc', i)}</button>`).join('')}</div></div></div>`;
   if (d.ph === 'hero' && me) {
@@ -1378,6 +1379,7 @@ function doAct(act, btn) {
     case 'copycode': { const c = H.code || ''; try { navigator.clipboard.writeText(c).then(() => toast('Code copié : ' + c), () => toast('Code : ' + c)); } catch (e) { toast('Code : ' + c); } break; }
     case 'launch': hostLaunch(); break;
     case 'leave': leaveGame(); break;
+    case 'bsel': { const i = +btn.dataset.i; if (V.dsel === i && V.dselT && Date.now() - V.dselT < 450) { sendAct({ t:'pick', i }); V.dselT = 0; break; } V.dsel = i; V.dselT = Date.now(); render(); break; }   // 2e clic rapide = récupérer
     case 'hero': sendAct({ t:'hero', h:btn.dataset.h }); V.heroSel = null; break;
     case 'hsel': V.heroSel = btn.dataset.h; render(); break;
     case 'ckm': sendAct({ t:'ckm', i:+btn.dataset.i }); break;
@@ -3991,3 +3993,29 @@ function cap1(t) { t = String(t || ''); return t.charAt(0).toUpperCase() + t.sli
   const r0 = render; render = function () { const out = r0.apply(this, arguments); try { sync(); } catch (e) {} return out; };
   setInterval(sync, 700); sync();
 })();
+
+/* ===== Naruto : écran « Butin de victoire » (pack Roni-HS-Pack-Ecran-Recompense, 16/11/2026) =====
+   On choisit un objet (clic), puis « Récupérer l'objet » ; double-clic = récupérer directement. */
+function butinH(me) {
+  const key = me.disc.map(m => m.u).join(',');
+  if (V.dselK !== key) { V.dselK = key; V.dsel = 0; }
+  const sel = Math.min(V.dsel || 0, me.disc.length - 1), n = me.disc.length;
+  const who = me.dsc && /^Ninja vaincu/.test(me.dsc) ? 'Adversaire éliminé · ' + me.dsc.replace(/^Ninja vaincu : /, '') : me.dsc ? 'Bataille gagnée · ' + me.dsc : 'Butin';
+  const rich = t => esc(t).replace(/([+-]?\d+ chakra)/gi, '<i class="bt-ck"></i><b>$1</b>').replace(/([+-]\d+\/[+-]\d+)/g, '<b>$1</b>');
+  const cards = me.disc.map((m, i) => { const S = SPELLS[m.sp] || {};
+    return `<button class="bt-c${i === sel ? ' on' : ''}${S.ex ? ' lg' : ''}" data-act="bsel" data-i="${i}" aria-pressed="${i === sel}" aria-label="${esc(S.n || '')}">
+      <span class="bt-art"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#sp-${m.sp}" width="100" height="100"/></svg></span>
+      <i class="bt-fr"></i>
+      <b class="bt-n" style="--k:${Math.min(1, 15 / Math.max(8, (S.n || '').length)).toFixed(2)}">${esc(S.n || m.sp)}</b>
+      <span class="bt-tx">${rich(S.tx || '')}</span>
+      ${i === sel ? '<i class="bt-ok"></i><span class="bt-rb">Sélectionné</span>' : ''}
+    </button>`; }).join('');
+  return `<div class="ov bt-ov"><section class="bt" role="dialog" aria-label="Butin de victoire" style="--n:${n}">
+    <h2 class="bt-t">Butin de victoire</h2>
+    <p class="bt-s">${esc(who)}</p>
+    <p class="bt-i">Choisis un objet à récupérer.</p>
+    <div class="bt-row">${cards}</div>
+    <p class="bt-f"><i></i>${n > 1 ? 'Les autres objets retournent à la taverne.' : 'Cet objet rejoint ta main.'}<i></i></p>
+    <button class="bt-go" data-act="pick" data-i="${sel}">Récupérer l'objet</button>
+  </section></div>`;
+}
