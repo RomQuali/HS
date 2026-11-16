@@ -126,7 +126,26 @@ function installerBureau() {
     if(!chargement)chargement=fetch(piste).then(r=>{if(!r.ok)throw Error('Extrait indisponible');return r.arrayBuffer()}).catch(()=>{chargement=null;return null});
     return chargement;
   }
-  function arreterVoix(){if(lecture){try{lecture.stop()}catch{}lecture.disconnect();lecture=null}}
+  function arreterVoix(){if(lecture){try{lecture.stop()}catch{}lecture.disconnect();lecture=null}arreterBruits()}
+  // Bruitages de la trappe (16/11/2026) : bouton, verrou, battants, cri de Kenny, chute, impact, rire de Tony, plongée, fermeture
+  const BRUITS=['tony-bouton','trappe-verrou','trappe-ouverture','kenny-surprise','kenny-cri-chute','chute-souffle','chute-impact','tony-rire','transition-plongee','trappe-fermeture'],tampons={},enCours=new Set();let bruitsCharges=null;
+  const bruitsOk=()=>typeof SFX==='undefined'||SFX.on!==false;
+  const volBruits=()=>typeof SFX!=='undefined'&&SFX.vol!=null?SFX.vol:1;
+  function chargerBruits(){
+    if(bruitsCharges)return bruitsCharges;
+    try{ctxAudio??=new AudioContext()}catch{return Promise.resolve()}
+    bruitsCharges=Promise.all(BRUITS.map(n=>fetch('assets/tony/sons/'+n+'.mp3').then(r=>r.ok?r.arrayBuffer():null).then(b=>b&&new Promise(ok=>ctxAudio.decodeAudioData(b,d=>{tampons[n]=d;ok()},()=>ok()))).catch(()=>{})));
+    return bruitsCharges;
+  }
+  // joue un bruitage « at » ms après « depart » (horloge performance.now)
+  function bruit(n,depart,at,vol=1,version=generation){
+    if(!bruitsOk())return;
+    try{ctxAudio??=new AudioContext()}catch{return}
+    const go=()=>{if(version!==generation||!tampons[n])return;const src=ctxAudio.createBufferSource(),g=ctxAudio.createGain();src.buffer=tampons[n];g.gain.value=vol*volBruits();src.connect(g);g.connect(ctxAudio.destination);enCours.add(src);src.onended=()=>{enCours.delete(src);src.disconnect();g.disconnect()};src.start(ctxAudio.currentTime+Math.max(0,(depart+at-performance.now())/1000))};
+    ctxAudio.resume().catch(()=>{});
+    if(tampons[n])go();else chargerBruits().then(go);
+  }
+  function arreterBruits(){for(const s of enCours){try{s.stop()}catch{}}enCours.clear()}
   async function programmerVoix(depart,retard,version){
     if(!prefs.dialogue)return;
     try{
@@ -296,10 +315,16 @@ function installerBureau() {
     panel(topR,lowR,Math.max(0,(f-.032)/.968),shadow);g.restore();
   }
   function reset(){generation++;cancelAnimationFrame(flight);flight=0;playing=false;arreterVoix();camera.style.transform='';stage.classList.remove('chute');stage.style.removeProperty('--disparition');stage.style.removeProperty('--voile-chute');repos();actualiser()}
-  function activer(on){active=on;repos();actualiser();if(on&&prefs.dialogue)void chargerVoix()}
-  function run(done){reset();playing=true;actualiser();const gen=generation,start=performance.now(),mini=reduced(),entree=mini?300:1480;
+  let aJoue=false;
+  function activer(on){active=on;repos();actualiser();if(on){void chargerBruits();if(aJoue){aJoue=false;bruit('trappe-fermeture',performance.now(),350,.8)}}if(on&&prefs.dialogue)void chargerVoix()}
+  function run(done){reset();playing=true;actualiser();const gen=generation,start=performance.now(),mini=reduced(),entree=mini?300:2500;   /* la réplique part après l'impact, pour ne pas couvrir le cri de Kenny */
     const duree=prefs.dialogue?entree+3200:mini?540:2450;
-    stage.classList.add('chute');void programmerVoix(start,entree,gen);
+    stage.classList.add('chute');void programmerVoix(start,entree,gen);aJoue=true;
+    if(!mini){   // bruitages calés sur l'animation (ms depuis l'appui)
+      bruit('tony-bouton',start,0,1,gen);bruit('trappe-verrou',start,330,.9,gen);bruit('trappe-ouverture',start,500,1,gen);
+      bruit('kenny-surprise',start,560,.9,gen);bruit('kenny-cri-chute',start,780,.95,gen);bruit('chute-souffle',start,800,.7,gen);
+      bruit('chute-impact',start,2250,.8,gen);bruit('tony-rire',start,prefs.dialogue?entree+3050:2350,.85,gen);bruit('transition-plongee',start,duree-830,.8,gen);
+    }else{bruit('tony-bouton',start,0,1,gen);bruit('trappe-ouverture',start,150,.8,gen)}
     function tick(now){
       if(gen!==generation)return;const ms=now-start;
       if(!mini&&now-lastAir>=48){lastAir=now;peindreAir(now)}
@@ -316,7 +341,7 @@ function installerBureau() {
       stage.style.setProperty('--disparition',String(1-ease((ms-(mini?170:480))/(mini?200:500))));
       if(!mini)camera.style.transform='scale('+(1+.075*ease((ms-675)/1200)+fall*3.9)+')';
       stage.style.setProperty('--voile-chute',String(fade));
-      if(ms>=duree){reset();done()}else flight=requestAnimationFrame(tick);
+      if(ms>=duree){const garde=[...enCours];enCours.clear();reset();garde.forEach(x=>enCours.add(x));done()}   /* fin naturelle : on laisse finir le rire et la plongée */else flight=requestAnimationFrame(tick);
     }
     flight=requestAnimationFrame(tick);
   }
