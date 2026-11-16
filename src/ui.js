@@ -336,7 +336,7 @@ function timerSync() { const t = document.querySelector('.hud .timer'), b = docu
   for (const k in v) t.style.setProperty(k, v[k], 'important'); }
 addEventListener('resize', () => requestAnimationFrame(timerSync));
 function render0() {
-  V.pendingRender = false; const hadPeek = !peekEl.hidden && peekFor && peekFor.matches('.mn,.cd,.spt,.eqm,[data-hov]'); hidePeek();
+  V.pendingRender = false; const hadPeek = !peekEl.hidden && peekFor && peekFor.matches('.owf,.mn,.cd,.spt,.eqm,[data-hov]'); hidePeek();
   const act = document.activeElement, fid = act && act !== document.body ? act.id : '';
   let keep = null; try { if (fid && typeof act.selectionStart === 'number') keep = [act.selectionStart, act.selectionEnd]; } catch (e) {}
   const ks = {}; document.querySelectorAll('[data-ks]').forEach(el => { if (el.id) ks[el.id] = el.scrollTop; });
@@ -361,7 +361,7 @@ function render0() {
   for (const id in ks) { const el = document.getElementById(id); if (el) el.scrollTop = ks[id]; }
   if (fid) { const n = document.getElementById(fid); if (n) { try { n.focus({ preventScroll:true }); if (keep) n.setSelectionRange(keep[0], keep[1]); } catch (e) {} } }
   // le survol reste ouvert quand l'écran se redessine (combat animé) : on le recalcule sous la souris
-  if (hadPeek && PTR.x != null && !DRAG) { const el = document.elementFromPoint(PTR.x, PTR.y), n = el && el.closest ? el.closest('.mn,.cd,.spt,.eqm,[data-hov]') : null; if (n && !n.closest('#peek')) { V.peekKey = (n.dataset.u || '') + '|' + (n.dataset.c || n.dataset.sp || '') + '|' + (n.dataset.a || '') + '|' + (n.dataset.h || ''); showPeek(n, false); } }
+  if (hadPeek && PTR.x != null && !DRAG) { const el = document.elementFromPoint(PTR.x, PTR.y), n = el && el.closest ? el.closest('.owf,.mn,.cd,.spt,.eqm,[data-hov]') : null; if (n && !n.closest('#peek')) { V.peekKey = (n.dataset.u || '') + '|' + (n.dataset.c || n.dataset.sp || '') + '|' + (n.dataset.a || '') + '|' + (n.dataset.h || ''); showPeek(n, false); } }
 }
 
 const STEPS = [
@@ -1583,6 +1583,7 @@ function peekSize() { const c = peekEl.firstElementChild, w = c ? c.getBoundingC
 const nhPairH = (h, lab) => { const cc = typeof nhCard === 'function' && nhCard(h); if (!cc) return ''; const b = C[cc]; return `<div class="hp-hcards"><small>${esc(lab)} · jouable en taverne ${b.t}</small><div>${cardH({ c:cc, a:b.a, h:b.h, f:b.f || '' }, 'p', 0)}${cardH({ c:cc, a:b.a * GOLD_K, h:b.h * GOLD_K, g:1, f:b.f || '' }, 'p', 1)}</div></div>`; };
 function showPeek(t, touch) {
   const r = t.getBoundingClientRect();
+  if (t.classList.contains('owf') && t.dataset.c && C[t.dataset.c]) { const b = C[t.dataset.c]; peekFor = t; peekEl.innerHTML = cardH({ c:t.dataset.c, a:b.a, h:b.h, f:b.f || '' }, 'p', 0); peekEl.hidden = false; const [pw, ph] = peekSize(); placePeek(r, pw, ph, touch); return true; }   // Naruto : survol du visage d'un propriétaire d'objet = sa carte
   if (t.classList.contains('eqm') && t.dataset.sp) { peekFor = t; peekEl.innerHTML = spellCardH(t.dataset.sp, 'p', 0) + `<div class="peek-note">${esc(t.dataset.why || '')}</div>`; peekEl.hidden = false; const [pw, ph] = peekSize(); placePeek(r, pw, ph + 40, touch); return true; }
   if (t.classList.contains('spt') && t.dataset.sp) { peekFor = t; peekEl.innerHTML = spellCardH(t.dataset.sp, 'p', 0); peekEl.hidden = false; const [pw, ph] = peekSize(); placePeek(r, pw, ph, touch); return true; }
   if (t.matches('.mn,.cd')) {
@@ -1634,7 +1635,7 @@ var PTR = { x:null, y:null };
 document.addEventListener('pointermove', e => { if (!e.pointerType || e.pointerType === 'mouse') { PTR.x = e.clientX; PTR.y = e.clientY; } }, { passive:true });
 document.addEventListener('pointerover', e => {
   if (e.pointerType && e.pointerType !== 'mouse') return;
-  const t = e.target.closest ? e.target.closest('.mn,.cd,.spt,.eqm,[data-hov]') : null;
+  const t = e.target.closest ? e.target.closest('.owf,.mn,.cd,.spt,.eqm,[data-hov]') : null;
   if (!t || DRAG || t.closest('#peek') || t.closest('.det') || t.closest('.parade') || t.closest('.atl') || t.closest('.ed')) { if (!t) hidePeek(); return; }
   // le DOM est recyclé d'un rendu à l'autre : le même élément peut porter une autre carte, on compare donc aussi son contenu
   const pk = (t.dataset.u || '') + '|' + (t.dataset.c || t.dataset.sp || '') + '|' + (t.dataset.a || '') + '|' + (t.dataset.h || '');
@@ -1643,7 +1644,7 @@ document.addEventListener('pointerover', e => {
   if (!showPeek(t, false)) hidePeek();
 });
 /* téléphone : appui long = aperçu (carte, créature, pouvoir, compagnon, héros, adversaire…) */
-const LP_SEL = '.mn,.cd,.spt,.eqm,[data-hov],.medal,.bell,.kc,.purse';
+const LP_SEL = '.owf,.mn,.cd,.spt,.eqm,[data-hov],.medal,.bell,.kc,.purse';
 let LP = null;
 document.addEventListener('pointerdown', e => {
   if (e.pointerType === 'mouse') return;
@@ -1658,7 +1659,7 @@ const lpEnd = () => { if (!LP) return; clearTimeout(LP.tm); if (LP.on) { V.lpBlo
 document.addEventListener('pointerup', lpEnd); document.addEventListener('pointercancel', lpEnd);
 document.addEventListener('contextmenu', e => { if (e.target.closest && e.target.closest(LP_SEL)) e.preventDefault(); });
 document.addEventListener('click', e => { if (V.lpBlock && Date.now() - V.lpBlock < 450) { e.preventDefault(); e.stopPropagation(); V.lpBlock = 0; } }, true);
-document.addEventListener('pointerout', e => { const t = e.target.closest ? e.target.closest('.mn,.cd,.spt,.eqm,[data-hov]') : null; if (t && t === peekFor && !t.contains(e.relatedTarget)) hidePeek(); });
+document.addEventListener('pointerout', e => { const t = e.target.closest ? e.target.closest('.owf,.mn,.cd,.spt,.eqm,[data-hov]') : null; if (t && t === peekFor && !t.contains(e.relatedTarget)) hidePeek(); });
 setInterval(() => {
   if (!V.pub || V.screen !== 'game') return;
   const left = V.pub.rem - (Date.now() - V.pubAt);

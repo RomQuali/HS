@@ -2188,3 +2188,13 @@ html body .hp-ov.nkv .hp-pc .hpc-side>.hpc-mc{display:none!important}
 html body .hp-ov.nkv .hp-pc .hpc-hd{display:flex;align-items:center;flex-wrap:wrap;gap:4px 16px;margin-bottom:2px}
 html body .hp-ov.nkv .hp-pc .hpc-hd b{margin:0!important}
 html body .hp-ov.nkv .hp-pc .hpc-mc2{font:700 clamp(10px,1.45vh,15px)/1 var(--f-disp),serif;letter-spacing:.06em;text-transform:uppercase;color:#ffd98a;padding:4px 14px;border:1.5px solid #c89a52;border-radius:99px;background:rgba(10,30,16,.6);white-space:nowrap}
+/* plaque des propriétaires : 1, 2 ou 3 emplacements selon le nombre de propriétaires */
+.spt.nim .nim-pl.p1{left:20%;width:68%;aspect-ratio:275/129;background-image:url(assets/naruto/obj/plaque1.webp)}
+.spt.nim .nim-pl.p2{left:16%;width:76%;aspect-ratio:284/130;background-image:url(assets/naruto/obj/plaque2.webp)}
+.spt.nim.lg .nim-pl.p1{background-image:url(assets/naruto/obj/plaque1_or.webp)}
+.spt.nim.lg .nim-pl.p2{background-image:url(assets/naruto/obj/plaque2_or.webp)}
+.nim-pl.p1 .nif{width:20.5%}.nim-pl.p1 .nif:nth-child(1){left:50.4%}
+.nim-pl.p2 .nif{width:19.8%}.nim-pl.p2 .nif:nth-child(1){left:37.1%}.nim-pl.p2 .nif:nth-child(2){left:63.9%}
+.spt.nim.lg .nim-pl .nif{top:47.5%}
+.nim-pl .owf{cursor:help;pointer-events:auto}
+:root:root:root:root body .table .keeper-zone:has(.spt.nim){z-index:3!important}   /* le bas du médaillon d'objet (plaque des propriétaires) déborde sur le plateau : il doit rester survolable */
