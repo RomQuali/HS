@@ -3872,7 +3872,7 @@ function nkDetailH(c, g, tf, its) {
   const drop = n => `<span class="nkd-ck"><i class="nkd-drop"></i><b>${n == null ? '—' : n}</b></span>`;
   // groupes : autres membres
   const gs = typeof NK_GOF !== 'undefined' && NK_GOF[c] ? NK_GOF[c].filter((x, i, a) => a.findIndex(y => y.id === x.id) === i) : [];
-  const grpH = gs.length ? `<section class="nkd-sec"><h4 class="nkd-rb">${gs.length > 1 ? 'Groupes' : 'Groupe'}</h4><div class="nkd-box">${gs.map(G => `<div class="nkd-gn">${esc(G.n)}</div>${gs.length > 1 ? '' : '<small class="nkd-sub">Autres ninjas du groupe</small>'}<div class="nkd-names">${G.m.filter(x => x !== c && C[x]).map(x => `<span class="nkd-nm${V.me && [...(V.me.bd || []), ...(V.me.hd || [])].some(m => m && m.c === x) ? ' on' : ''}">${esc(nkdShort(CD(x).n))}</span>`).join('')}</div>`).join('<i class="nkd-sep"></i>')}</div></section>` : '';
+  const grpH = gs.length ? `<section class="nkd-sec"><h4 class="nkd-rb">${gs.length > 1 ? 'Groupes' : 'Groupe'}</h4><div class="nkd-box">${gs.map(G => `<div class="nkd-gn">${esc(G.n)}</div>${gs.length > 1 ? '' : '<small class="nkd-sub">Autres ninjas du groupe</small>'}<div class="nkd-names">${G.m.filter(x => x !== c && C[x]).map(x => `<span class="nkd-nm${nkdHave(x) ? ' on' : ''}">${esc(nkdShort(CD(x).n))}</span>`).join('')}</div>`).join('<i class="nkd-sep"></i>')}</div></section>` : '';
   // effets passifs (mots-clés, effets de la carte, effets gagnés par les transformations faites)
   const kws = (b.kw || []).map(x => SET.kw[x] && SET.kw[x].n).filter(Boolean);
   const pas = (b.fx || []).filter(e => e.k !== 'jutsu' && ET[e.k]).map(e => fxText(e, k)).concat(ST.slice(0, done).flatMap(T => (T.x || []).filter(o => ET[o.k]).map(o => ET[o.k].txt(o, k))));
@@ -3905,3 +3905,6 @@ function nkdFit(cf) {
   cf.style.top = dy / sc * (sc < 1 ? sc : 1) + 'px';
   if (cf.classList.contains('left')) cf.style.transformOrigin = 'top right';
 }
+
+/* ce ninja est-il à moi (plateau ou main) ? */
+function nkdHave(x) { return !!V.me && [...(V.me.bd || []), ...(V.me.hd || [])].some(m => m && (m.c || m) === x); }
