@@ -87,7 +87,7 @@ const DEFAULT_SETTINGS = {
     n:{ n:'Venimosité', d:'À chaque combat, détruit le premier serviteur blessé par celui-ci.', c:2 },
     r:{ n:'Réincarnation', d:'À sa première mort, revient sous la forme d\'une nouvelle copie à 1 PV s\'il reste une place.', c:2 },
     c:{ n:'Camouflage', d:'Les attaques ennemies ne peuvent pas le viser tant qu\'il n\'a pas attaqué.', c:2 },
-    l:{ n:'Vol de vie', d:'Les dégâts qu\'il inflige soignent ton héros (5 PV au plus par combat).', c:2 },
+    l:{ n:'Vol de vie', d:'Les dégâts qu\'il inflige le soignent lui-même (jusqu\'à ses PV max).', c:2 },
     i:{ n:'Insensible', d:'Ne subit aucun dégât pendant qu\'il attaque.', c:3 },
     w:{ n:'Furie des vents', d:'Quand vient son tour d\'attaquer, attaque deux fois de suite.', c:3 },
     k_ferveur:{ n:'Ferveur', d:'Fin de tour : gagne +1/+1.', c:3, fx:{ k:'eot_self', a:1, h:1 } },
@@ -2153,7 +2153,7 @@ function simSummon(S, s, pos, id, g) {
   const arr = S.sides[s]; if (arr.length >= 7 || !C[id]) return null;
   const b = C[id]; const m = { c:id, a:b.a * (g ? GOLD_K : 1), h:b.h * (g ? GOLD_K : 1), g:g ? 1 : 0, f:b.f, u:S.uid++ };
   if (S.hx && S.hx[s] && b.tr === 'si_hor') m.a += S.hx[s];
-  arr.splice(Math.min(pos, arr.length), 0, m); return m;
+  m.lsm = m.h; arr.splice(Math.min(pos, arr.length), 0, m); return m;
 }
 const sideOf = (S, m) => S.sides[0].includes(m) ? 0 : 1;
 function runCombat(S, s, m, e, pos, ctx) {
@@ -2275,7 +2275,7 @@ function simDamage(S, m, n, src) {
   if (has(m, 's')) { remF(m, 's'); const s = sideOf(S, m); S.sides[s].forEach(al => { if (al.h > 0) fxOf(al, 'shield').forEach(e => runCombat(S, s, al, e, 0, m)); }); return; }
   m.h -= n;
   if (m.link && !S._lk) { const t = S.sides[1 - sideOf(S, m)].find(x => x.u === m.link && x.h > 0); if (t) { S._lk = 1; simDamage(S, t, n, null); S._lk = 0; } }   // Rituel de Jashin
-  if (src && has(src, 'l')) { const ss = sideOf(S, src); if (ss >= 0) { S.heal = S.heal || [0, 0]; S.heal[ss] += n; } }   // Vol de vie : les dégâts infligés soignent le héros
+  if (src && has(src, 'l') && n > 0) src.ls = (src.ls || 0) + n;   // Vol de vie : soigne le serviteur lui-même, appliqué juste après l'échange (voir lsApply)
   if (src && has(src, 'v')) m.h = Math.min(m.h, 0);
   else if (src && has(src, 'n')) { m.h = Math.min(m.h, 0); remF(src, 'n'); }   // Venimosité : une seule fois
   if (m.h <= 0 && !m.crw && fxOf(m, 'pas').some(e => e.k === 'crow1')) { m.h = 1; m.crw = 1; }   // Itachi : Clone de corbeaux
@@ -2285,7 +2285,10 @@ function simDamage(S, m, n, src) {
 // camp de l'attaquant d'abord (f), puis l'autre, chaque camp de gauche à droite : « quand un allié meurt », Râle d'agonie
 // (invoqué à la place du mort), puis Réincarnation (1 PV, à droite des invocations du râle). Les morts causées par ces effets
 // forment la vague suivante.
+// Vol de vie : le serviteur encore en vie récupère les PV infligés, sans dépasser ses PV max (ceux du début du combat, buffs compris)
+function lsApply(S) { for (const arr of S.sides) for (const m of arr) if (m.ls) { if (m.h > 0) { const cap = Math.max(m.hm || 0, m.lsm || 0); m.h = Math.max(m.h, Math.min(cap, m.h + m.ls)); } m.ls = 0; } }
 function simDeaths(S, f = 0) {
+  lsApply(S);
   for (let guard = 0; guard < 50; guard++) {
     const batch = [];
     for (const s of [f, 1 - f]) for (const m of S.sides[s]) if (m.h <= 0) batch.push({ s, m });
@@ -2311,6 +2314,7 @@ function simulate(bA, bB, seed, tA, tB, fire, mx) {
 function simulate0(bA, bB, seed, tA, tB, fire, mx) {
   const S = { sides:[clone(bA), clone(bB)], rng:mulberry(seed), uid:1000000, frames:[], mx:mx || {}, dead:[[], []] };
   S.hx = S.sides.map(arr => arr.reduce((t, m) => Math.max(t, m.hx || 0), 0));   // Horror Show : bonus d'attaque « pour le reste de la partie », aussi pour les invoqués
+  S.sides.forEach(arr => arr.forEach(m => { m.lsm = m.h; }));   // PV max de référence pour le Vol de vie
   S.frames.push({ s:snap(S) });
   // Ordre de résolution « Champs de bataille » : le camp qui a le plus de serviteurs est prioritaire (égalité : au hasard)
   const nA = S.sides[0].length, nB = S.sides[1].length;
