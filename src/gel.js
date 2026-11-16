@@ -66,9 +66,9 @@ html.lite .keeper-zone .mn.tripok > .ptag::before{animation:none}
   document.head.appendChild(st); })();
 
 // ----- sélection du héros (pack Roni-Selection-Heros) : cadre en arche de Champs de bataille autour des portraits du jeu -----
-function heroArchHS(art, hp) {
+function heroArchHS(art, hp, ar) {
   const base = heroArchH(art, hp, 'hp-arch'), k = base.indexOf('<span class="harch-hp">'), tail = k < 0 ? '</span>' : base.slice(k);
-  return `<span class="harch hp-arch hsarch"><span class="hsa-im"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${art}" width="100" height="100"/></svg></span><i class="hsa-fr"></i><i class="hsa-gl"></i>${tail}`;
+  return `<span class="harch hp-arch hsarch"><span class="hsa-im"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#${art}" width="100" height="100"/></svg></span><i class="hsa-fr"></i><i class="hsa-gl"></i>${ar ? `<span class="harch-ar"><b>${ar}</b></span>` : ''}${tail}`;
 }
 (function () { const st = document.createElement('style'); st.id = 'hs-hero-css'; st.textContent = `
 .hp-card{aspect-ratio:400/480!important}
@@ -194,7 +194,10 @@ html.lite .mn-svg .hs-rb{animation:none}
 .hp-card .hp-nm.lg i{font-size:clamp(10px,min(1.55vw,2.7vh),23px)!important;white-space:nowrap;padding:0 2%!important}
 .hp-card .hp-nm i{display:block;margin-top:-10%;padding:0 8%;font:800 clamp(12px,min(1.9vw,3.2vh),28px)/1.05 var(--f-label),serif;font-style:normal;color:#fff;text-shadow:0 0 2px #000,0 2px 0 #1c0830,0 0 6px #1c0830;text-wrap:balance}
 .hp-card .hp-st{top:-4%!important;z-index:4}
-.hp-card .hsarch .harch-hp{right:-9%!important;top:44%!important;bottom:auto!important;width:29%!important;z-index:4}
+.hp-card .hsarch .harch-hp{left:-9%!important;right:auto!important;top:auto!important;bottom:11%!important;width:29%!important;z-index:4}   /* vie en bas à gauche */
+/* armure du héros dans la sélection : bouclier au-dessus de la goutte de vie, même police que les PV */
+.hp-card .hsarch .harch-ar{position:absolute;right:-7%;top:22%;width:25%;aspect-ratio:50/58;z-index:5;display:grid;place-items:center;background:url(assets/hs/b-armure.webp) 0 0/100% 100% no-repeat;filter:drop-shadow(0 3px 3px rgba(0,0,0,.6))}
+.hp-card .hsarch .harch-ar b{font:700 clamp(17px,2.6vh,26px)/1 var(--f-disp),serif;color:#fff;text-shadow:0 0 3px #000,0 2px 0 #000}
 .hp-rr{position:relative;display:flex;align-items:center;margin-top:calc(26% + 6px);padding:0 14px 0 0;height:clamp(28px,5vh,46px);width:88%;border:0;border-radius:8px;cursor:pointer;font:inherit;
   background:linear-gradient(180deg,#f7e6b4,#dcc081 55%,#b7955a);box-shadow:inset 0 0 0 2px #7a5c2c,inset 0 0 0 4px rgba(255,246,210,.5),0 4px 8px rgba(0,0,0,.6);transition:filter .15s,transform .15s}
 .hp-rr:hover{filter:brightness(1.1);transform:translateY(-1px)}
@@ -300,7 +303,7 @@ html:root:root:root:root:root:root:root:root body.rn[class] .rn-tb,html:root:roo
 § .hz-hero .face.hf{left:0;top:0;width:100%;height:100%;border-radius:0;box-shadow:none;clip-path:polygon(50% 12%,63% 15%,73% 20%,80% 28%,84% 37%,87% 46%,87% 90%,13% 90%,13% 48%,15% 38%,19% 28%,25% 21%,36% 15%)}
 § .hz-hero .face.hf svg{position:absolute;left:11%;top:10%;width:78%;height:82%}
 § .hz-hero .haw-fr{display:none}
-§ .hz-hero .hpg{left:94u;top:100u;width:50u;height:66u;z-index:4;background:url(assets/hs/b-vie.webp) center/contain no-repeat}
+§ .hz-hero .hpg{left:-14u;top:100u;width:50u;height:66u;z-index:4;background:url(assets/hs/b-vie.webp) center/contain no-repeat}
 § .hz-hero .hq{left:112u;top:46u;width:46u;height:53u;padding:0;z-index:4;background:url(assets/hs/b-armure.webp) 0 0/100% 100% no-repeat;font:400 fs(18,9)/1 'Lilita One','Arial Black',Impact,sans-serif;color:#fff;-webkit-text-stroke:3px #2a1205;paint-order:stroke fill;text-shadow:none}   /* armure au-dessus de la vie, même police que les PV */
 § .hero-zone .hz-right > .hov{left:929u;top:14u;width:114u;height:114u}
 § .hero-zone .powm:not(.pwh-nh_sasuke)::after{background-image:url(assets/hs/heros-medaillon.webp)}

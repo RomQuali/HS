@@ -1180,7 +1180,7 @@ function heroPickRowH(d, me) {
     const left = (me.hrr || 0) > 0;
     return `<div class="hp-col${on ? ' on' : ''}" style="--c:${col};--k:${i}">
       <button class="hp-card" data-act="hsel" data-h="${h}" aria-pressed="${on}" aria-label="${esc(x.n + ' : ' + pw + '. ' + main)}">
-        ${heroArchHS('art-h-' + h, +RU().hp || 40)}
+        ${heroArchHS('art-h-' + h, +RU().hp || 40, x.ar)}
         <span class="hp-nm${x.n.length > 14 && !nkv ? ' lg' : ''}"><i>${esc(nkv ? x.n.split(' ')[0] : x.n)}</i></span>
         ${x.stars || x.diff ? `<span class="hp-st">${'★'.repeat(x.stars || x.diff)}</span>` : ''}
       </button>${(d.laws || []).some(l => l.k === 'chakra') && !me.camp ? `<span class="hp-tipb tb-st" aria-hidden="true"><b>Rang · ${'★'.repeat(x.stars || x.diff || 0)}</b>${x.stars || x.diff || 0} étoile${(x.stars || x.diff) > 1 ? 's' : ''} sur 5 : plus il y a d'étoiles, plus le héros est fort.</span><span class="hp-tipb tb-hp" aria-hidden="true"><b>${+RU().hp || 40} points de vie${x.ar ? ' · ' + x.ar + ' d\'armure' : ''}</b>${x.ar ? `L'armure encaisse les dégâts en premier : ce héros peut subir ${(+RU().hp || 40) + x.ar} dégâts avant d'être vaincu.` : 'Pas d\'armure : chaque dégât subi enlève des points de vie.'}</span>` : ''}
