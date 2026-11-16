@@ -2312,7 +2312,7 @@ function simDeaths(S, f = 0) {
     }
   }
 }
-const snap = S => S.sides.map(arr => arr.map(m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g, f:m.f, u:m.u }; if (m.tf) o.tf = m.tf; if (m.fam) o.fam = m.fam; if (m.gag) o.gag = m.gag; return o; }));   // tf : l'image transformée reste en combat
+const snap = S => S.sides.map((arr, si) => arr.map(m => { const o = { c:m.c, a:m.a, h:m.h, g:m.g, f:m.f, u:m.u }; if (m.gj > 0) o.gj = 1; if (m.ent && S.sides[1 - si] && S.sides[1 - si].some(x => x.u === m.ent && x.h > 0)) o.ent = 1; if (m.tf) o.tf = m.tf; if (m.fam) o.fam = m.fam; if (m.gag) o.gag = m.gag; return o; }));   // tf : l'image transformée reste en combat
 function simulate(bA, bB, seed, tA, tB, fire, mx) {
   const BS0 = BSRC; BSRC = null;
   try { return simulate0(bA, bB, seed, tA, tB, fire, mx); } finally { BSRC = BS0; }

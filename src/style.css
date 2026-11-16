@@ -2246,3 +2246,18 @@ html body .spt.nim .nim-co b{font-size:clamp(10px,16cqi,26px)}
 html body .spt.nim .nim-rb b{font-size:calc(clamp(7px,10.5cqi,16px) * var(--k,1))!important;text-overflow:clip}
 html body .spt.nim .nim-rb b{text-overflow:ellipsis!important}
 :root:root:root:root body .table.fighting .hero-zone .bellwrap,:root:root:root:root body .table.fighting .hero-zone .bell{visibility:hidden!important}   /* pas de bouton Prêt (plaque « Combat ») pendant le combat */
+
+/* combat : effets d'immobilisation visibles sur les serviteurs. Entrave = ombres qui enserrent le médaillon ; Genjutsu = spirale violette légère (il perd sa prochaine attaque) */
+.mn .st-fx{position:absolute;left:-4%;top:-3%;width:108%;height:96%;border-radius:50%;pointer-events:none;z-index:6}
+.mn .st-entfx{background:repeating-conic-gradient(from -20deg at 50% 50%,rgba(8,5,3,.9) 0 7deg,transparent 7deg 30deg);
+  -webkit-mask:radial-gradient(ellipse at 50% 50%,transparent 0 52%,#000 56% 70%,transparent 72%);mask:radial-gradient(ellipse at 50% 50%,transparent 0 52%,#000 56% 70%,transparent 72%);filter:drop-shadow(0 0 3px #000);animation:stEnt 1.6s ease-in-out infinite alternate}
+.mn.st-ent .mn-svg{filter:brightness(.72) saturate(.75)}
+.mn .st-gjfx{background:repeating-conic-gradient(from 0deg,rgba(200,90,255,.42) 0 12deg,transparent 12deg 36deg);
+  -webkit-mask:radial-gradient(circle at 50% 50%,transparent 0 18%,#000 30% 58%,transparent 66%);mask:radial-gradient(circle at 50% 50%,transparent 0 18%,#000 30% 58%,transparent 66%);mix-blend-mode:screen;animation:stGj 3s linear infinite}
+.mn .st-lab{position:absolute;left:50%;top:-14%;transform:translateX(-50%);z-index:7;font:700 11px/1 var(--f-label,serif);white-space:nowrap;padding:2px 7px;border-radius:99px;background:#140c08;color:#e8d8b8;border:1px solid #8a6a48;pointer-events:none}
+.mn.st-gj .st-lab{background:#2a0838;color:#f0c8ff;border-color:#a050c8}
+@keyframes stEnt{from{transform:scale(1)}to{transform:scale(.96)}}
+@keyframes stGj{to{transform:rotate(360deg)}}
+html.lite .mn .st-fx{animation:none}
+.mn.rf.kw-s::after{display:none!important}.mn.rf.kw-s .bub-ov{animation:kwShieldOv 2.4s ease-in-out infinite;transform-origin:50px 57px}@keyframes kwShieldOv{50%{opacity:.75}}
+html body #peek .hc-only .hp-hcards .cd{width:clamp(200px,16vw,280px)!important}html body #peek .hc-only .hp-hcards small{font-size:14px}   /* survol d'un adversaire : cartes plus grandes */
