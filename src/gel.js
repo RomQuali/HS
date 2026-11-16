@@ -197,7 +197,8 @@ html.lite .mn-svg .hs-rb{animation:none}
 .hp-card .hsarch .harch-hp{left:-9%!important;right:auto!important;top:auto!important;bottom:11%!important;width:29%!important;z-index:4}   /* vie en bas à gauche */
 /* armure du héros dans la sélection : bouclier au-dessus de la goutte de vie, même police que les PV */
 .hp-card .hsarch .harch-ar{position:absolute;right:-7%;top:22%;width:25%;aspect-ratio:50/58;z-index:5;display:grid;place-items:center;background:url(assets/hs/b-armure.webp) 0 0/100% 100% no-repeat;filter:drop-shadow(0 3px 3px rgba(0,0,0,.6))}
-.hp-card .hsarch .harch-ar b{font:700 clamp(17px,2.6vh,26px)/1 var(--f-disp),serif;color:#fff;text-shadow:0 0 3px #000,0 2px 0 #000}
+/* sélection : vie et armure avec la police des PV en jeu (Lilita One, contour brun) */
+html body .hp-card .hsarch .harch-hp b,html body .hp-card .hsarch .harch-ar b{font:400 clamp(17px,2.6vh,27px)/1 'Lilita One','Arial Black',Impact,sans-serif!important;color:#fff;-webkit-text-stroke:4px #2a1205;paint-order:stroke fill;text-shadow:none!important}
 .hp-rr{position:relative;display:flex;align-items:center;margin-top:calc(26% + 6px);padding:0 14px 0 0;height:clamp(28px,5vh,46px);width:88%;border:0;border-radius:8px;cursor:pointer;font:inherit;
   background:linear-gradient(180deg,#f7e6b4,#dcc081 55%,#b7955a);box-shadow:inset 0 0 0 2px #7a5c2c,inset 0 0 0 4px rgba(255,246,210,.5),0 4px 8px rgba(0,0,0,.6);transition:filter .15s,transform .15s}
 .hp-rr:hover{filter:brightness(1.1);transform:translateY(-1px)}
@@ -304,7 +305,7 @@ html:root:root:root:root:root:root:root:root body.rn[class] .rn-tb,html:root:roo
 § .hz-hero .face.hf svg{position:absolute;left:11%;top:10%;width:78%;height:82%}
 § .hz-hero .haw-fr{display:none}
 § .hz-hero .hpg{left:-14u;top:100u;width:50u;height:66u;z-index:4;background:url(assets/hs/b-vie.webp) center/contain no-repeat}
-§ .hz-hero .hq{left:112u;top:46u;width:46u;height:53u;padding:0;z-index:4;background:url(assets/hs/b-armure.webp) 0 0/100% 100% no-repeat;font:400 fs(18,9)/1 'Lilita One','Arial Black',Impact,sans-serif;color:#fff;-webkit-text-stroke:3px #2a1205;paint-order:stroke fill;text-shadow:none}   /* armure au-dessus de la vie, même police que les PV */
+§ .hz-hero .hq{left:112u;top:46u;width:46u;height:53u;padding:0;z-index:4;background:url(assets/hs/b-armure.webp) 0 0/100% 100% no-repeat;font-family:'Lilita One','Arial Black',Impact,sans-serif;font-weight:400;font-size:fs(19,9.5);line-height:1;color:#fff;-webkit-text-stroke:4.5px #2a1205;paint-order:stroke fill;text-shadow:none}   /* armure au-dessus de la vie, même police que les PV */
 § .hero-zone .hz-right > .hov{left:929u;top:14u;width:114u;height:114u}
 § .hero-zone .powm:not(.pwh-nh_sasuke)::after{background-image:url(assets/hs/heros-medaillon.webp)}
 § .hero-zone .powm:not(.pwh-nh_sasuke):not(:disabled):not(.passive):hover::after{background-image:url(assets/hs/heros-medaillon.webp);filter:brightness(1.25) drop-shadow(0 0 5u #ffe08a)}
