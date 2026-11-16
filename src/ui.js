@@ -3803,3 +3803,20 @@ function hpPowMedH(h, x) {
   const ck = x.cost && x.pay !== 'g';
   return `<div class="hero-zone hpz">${x.cost ? `<span class="powm pwh-${h}"><span class="pcost${ck ? ' ck' : ''}">${ck ? ckMarkH(x.cost, 'pc-ck', 'Coût : ' + x.cost + ' chakra') : x.cost}</span>${powArtH(h, false)}<small>${esc(powerTitle(x)[0] || 'Pouvoir')}</small></span>` : `<span class="powm passive pwh-${h}">${powArtH(h, false)}<small>Passif</small></span>`}</div>`;
 }
+
+/* Préchargement : les images des écrans de jeu (plateaux, cadres, choix du héros Naruto, objets) sont téléchargées et décodées
+   pendant qu'on est sur l'accueil, pour que le choix de l'univers et le passage au plateau après « Prêt » ne saccadent pas. */
+(() => {
+  const KEEP = [], PRE = ['assets/plateaux/', 'assets/plateau/', 'assets/hs/', 'assets/cadres/', 'assets/pouvoir/', 'assets/naruto/ui/', 'assets/naruto/obj/'];
+  const urls = () => { const out = new Set(), re = /url\(["']?([^"')]+)["']?\)/g;
+    const walk = rs => { for (const r of rs) { try { if (r.cssRules && !r.style) walk(r.cssRules); else if (r.style && r.cssText.includes('url(')) { let m; re.lastIndex = 0; while ((m = re.exec(r.cssText))) { const u = m[1].replace(location.href.replace(/[^/]*$/, ''), ''); if (PRE.some(p => u.startsWith(p))) out.add(u); } } } catch (e) {} } };
+    for (const s of document.styleSheets) { try { walk(s.cssRules); } catch (e) {} }
+    ['assets/naruto/ui/vallee.webp', 'assets/plateaux/naruto.webp', 'assets/illus/pouvoirs.webp', 'assets/hs/k-declenchement.webp', 'assets/hs/f-cadre-serviteur.webp', 'assets/hs/k-ralliement.webp'].forEach(u => out.add(u));
+    return [...out].sort((a, b) => (b.includes('/naruto/') ? 1 : 0) - (a.includes('/naruto/') ? 1 : 0)); };
+  const go = () => { const list = urls(); let i = 0;
+    const next = () => { if (i >= list.length) return; const im = new Image(); im.decoding = 'async'; im.src = list[i++]; KEEP.push(im); (im.decode ? im.decode() : Promise.resolve()).catch(() => {}).then(() => setTimeout(next, 30)); };
+    for (let k = 0; k < 4; k++) next();
+    ['assets/sons/interface.mp3', 'assets/sons/combat.mp3'].forEach(u => { try { fetch(u).catch(() => {}); } catch (e) {} }); };
+  const start = () => (window.requestIdleCallback ? requestIdleCallback(go, { timeout:4000 }) : setTimeout(go, 1500));
+  if (document.readyState === 'complete') setTimeout(start, 1200); else addEventListener('load', () => setTimeout(start, 1200));
+})();
