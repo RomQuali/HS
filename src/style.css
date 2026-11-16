@@ -2005,5 +2005,5 @@ html.lite .spt.spx .lg-fr,html.lite .spt.spx .lg-sw,html.lite .cd.spc.spx .lg-ca
 html body .spt.spx.it-no .spt-svg{animation:none;filter:drop-shadow(0 0 3px #ff4a3a) drop-shadow(0 0 6px rgba(255,70,50,.6)) saturate(.8)}
 html body .spt.spx.it-ok .spt-svg{animation:none;filter:drop-shadow(0 0 3px #38ff4a) drop-shadow(0 0 8px rgba(60,255,90,.8))}
 /* objet de la taverne agrandi */
-.spt[data-sp^="ni_"]{width:calc(var(--tw) * 1.3)}
+.spt[data-sp^="ni_"]{width:calc(var(--tw) * 1.5)}
 .spt[data-sp^="ni_"] .mn-nm{display:none}   /* pas de nom sous l'objet : l'étiquette des propriétaires suffit (le nom est sur la grande carte au survol) */
