@@ -728,6 +728,7 @@ const ckMarkH = (n, cls = '', title = '', col) => `<svg class="ckm ${cls}" viewB
 
 /* ---------- rendu ---------- */
 function spellTokenH(id, z, i, o = {}) {
+  if (SPELLS[id] && SPELLS[id].ni) return niMedH(id, z, i, o);   // Naruto : objet en médaillon ovale
   const S = SPELLS[id], sel = V.sel && V.sel.z === z && V.sel.i === i;
   const niOk = S.ni && z === 'ss' && V.me ? (itOwnerIn(V.me, id) && !itHave(V.me, id) && (V.me.g || 0) >= spellCostFor(id, z) ? ' it-ok' : ' it-no') : '';
   return `<div class="spt${sel ? ' sel' : ''}${S.ex ? ' spx' : ''}${niOk}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="Sort ${esc(S.n)}, coût ${S.c} or">
@@ -741,6 +742,7 @@ function spellTokenH(id, z, i, o = {}) {
 // coût réel pour le joueur (réductions actives), et coût de base
 function spellCostFor(id, z) { const S = SPELLS[id]; if (V.me && V.me.sp === id && V.me.spc != null && (z === 'ss' || z === 'p')) return V.me.spc; return S.c; }
 function spellCardH(id, z, i, o = {}) {
+  if (SPELLS[id] && SPELLS[id].ni && z !== 'hd') return niCardH(id, z, i, o);   // Naruto : grande carte d'objet (survol, détail)
   const S = SPELLS[id], sel = V.sel && V.sel.z === z && V.sel.i === i, ty = SP_TYPES[S.ty];
   const it = z === 'hd' && V.me && V.me.hd ? V.me.hd[i] : null, badge = S.chg ? `<span class="tx-tag">Charge ×${1 + Math.min(2, (it && it.ch) || 0)}</span> ` : S.uses ? `<span class="tx-tag">Rouleau ${(it && it.us) || S.uses}/${S.uses}</span> ` : S.hp ? `<span class="tx-tag kin">${S.hp} PV</span> ` : S.hid ? `<span class="tx-tag hid">Hiden</span> ` : '';
   const n = S.tx.length + (S.n.length > 16 ? 30 : 0);   // un nom sur deux lignes laisse moins de place au texte
@@ -840,3 +842,29 @@ function rsvFill(G, p, el) {
   for (const id in IC) if (SPELLS[id]) SPART[id] = () => `<image href="assets/naruto/jeu/${id}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>${SPELLS[id].ex ? '<circle cx="50" cy="50" r="47" fill="none" stroke="#ffd86a" stroke-width="2.4" opacity=".85"/>' : ''}`;   // images fournies le 15/11/2026
   if (0) for (const id in IC) if (SPELLS[id]) SPART[id] = () => { const o = SPELLS[id].ow[0], a = typeof ART !== 'undefined' && ART[o] ? ART[o]() : ''; return `<g opacity=".5">${a}</g><rect width="100" height="100" fill="#06121e" opacity=".35"/><text x="50" y="56" dy=".36em" text-anchor="middle" font-size="44">${IC[id]}</text>${SPELLS[id].ex ? '<circle cx="50" cy="50" r="46" fill="none" stroke="#ffd86a" stroke-width="3" opacity=".8"/>' : ''}`; };
 })();
+
+/* ===== Naruto : objets en médaillon ovale (cadre gris ; cadre doré « légendaire » pour les plus rares) ===== */
+const niOwnerOn = cid => !!(V.me && [...(V.me.bd || []), ...(V.me.hd || [])].some(m => m && m.c === cid));
+const niFaces = (id, big) => { const ow = (SPELLS[id].ow || []).slice(0, 3); return [0, 1, 2].map(k => { const c = ow[k]; if (!c) return big ? '' : '<i class="nif nif-0"></i>';
+  const on = niOwnerOn(c), nm = C[c] ? C[c].n.split(' ')[0] : c;
+  return big ? `<span class="nio${on ? ' on' : ''}"><span class="nif">${faceH('art-' + c, 'face')}</span><b>${esc(nm)}</b></span>` : `<i class="nif${on ? ' on' : ''}" title="${esc(nm)}">${faceH('art-' + c, 'face')}</i>`; }).join(''); };
+const niStatus = id => { if (!V.me) return ['Disponible', 'ok']; if (itHave(V.me, id)) return [(V.me.bd || []).some(m => m.it === id) ? 'Déjà équipé' : 'Déjà en main', 'no'];
+  if (!itOwnerIn(V.me, id)) return ['Il te faut ' + itOwners(id).join(' ou '), 'no']; return ['Disponible', 'ok']; };
+function niMedH(id, z, i, o = {}) {
+  const S = SPELLS[id], sel = V.sel && V.sel.z === z && V.sel.i === i, c = spellCostFor(id, z);
+  const ok = z === 'ss' && V.me ? (itOwnerIn(V.me, id) && !itHave(V.me, id) && (V.me.g || 0) >= c ? ' it-ok' : ' it-no') : '';
+  return `<div class="spt nim${sel ? ' sel' : ''}${S.ex ? ' spx lg' : ''}${ok}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.drag ? ' data-drag="1"' : ''} tabindex="0" role="button" aria-label="Objet ${esc(S.n)}, coût ${c} or, pour ${esc(itOwners(id).join(', '))}">
+    <span class="nim-m"><span class="nim-art"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#sp-${id}" width="100" height="100"/></svg></span><i class="nim-fr"></i>${S.ex ? '' : '<i class="nim-sh"></i>'}
+    <span class="nim-rb"><b>${esc(S.n)}</b></span><span class="nim-pl">${niFaces(id)}</span><span class="nim-co${c < S.c ? ' aff' : ''}"><b>${c}</b></span></span>
+    ${S.ni && z === 'ss' && V.me && itHave(V.me, id) ? `<span class="it-own">${(V.me.bd || []).some(m => m.it === id) ? 'Déjà équipé' : 'Déjà en main'}</span>` : ''}</div>`;
+}
+function niCardH(id, z, i, o = {}) {
+  const S = SPELLS[id], c = spellCostFor(id, z), st = niStatus(id), n = (S.ow || []).length;
+  return `<div class="cd spc nic${S.ex ? ' spx lg' : ''}" data-z="${z}" data-i="${i}" data-sp="${id}"${o.style ? ` style="${o.style}"` : ''} tabindex="0" role="button" aria-label="Objet ${esc(S.n)}">
+    <span class="nic-art"><svg viewBox="0 0 100 100" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#sp-${id}" width="100" height="100"/></svg></span><i class="nic-fr"></i>
+    <span class="nim-co nic-co${c < S.c ? ' aff' : ''}"><b>${c}</b></span>
+    <span class="nic-rb"><b>${esc(S.n)}</b></span><span class="nic-ty">${S.ex ? 'Objet légendaire' : 'Objet'}</span>
+    <span class="nic-oh">${n > 1 ? 'Propriétaires' : 'Propriétaire'}</span><span class="nic-ow">${niFaces(id, 1)}</span>
+    <span class="nic-dh">Effet de l'objet</span><p class="nic-tx">${esc(S.tx)}</p>
+    <span class="nic-st ${st[1]}"><i></i>${esc(st[0])}</span></div>`;
+}

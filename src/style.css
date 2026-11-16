@@ -2122,3 +2122,69 @@ html body .hp-ov.nkv .hp-tipb.tb-st{bottom:calc(100% + 6px)}
 html body .hp-ov.nkv .hp-tipb.tb-hp{top:56%;left:auto;right:-14px;transform:translateX(100%)}
 html body .hp-ov.nkv .hp-col:has(.hp-st:hover) .tb-st,html body .hp-ov.nkv .hp-col:has(.harch-hp:hover) .tb-hp{opacity:1;visibility:visible}
 html body .hp-ov.nkv .hp-col:has(.hp-st:hover) .hp-pop,html body .hp-ov.nkv .hp-col:has(.harch-hp:hover) .hp-pop{opacity:0!important;visibility:hidden!important}
+/* ===== Naruto : objets en médaillon ovale (assets/naruto/obj/, planche du 16/11/2026) ===== */
+html body .spt.nim{width:calc(var(--tw) * 1.12);gap:0}
+html body .spt.nim .nk-tag.it-ow,html body .spt.nim .mn-nm{display:none!important}
+.spt.nim .nim-m{position:relative;display:block;width:100%;aspect-ratio:371/600;transition:filter .15s}
+.spt.nim .nim-art{position:absolute;left:0;top:4%;width:100%;height:76.8%;clip-path:ellipse(36.5% 38.5% at 50% 47.3%);background:#20140c}
+.nim-art svg,.nic-art svg{display:block;width:100%;height:100%}
+.spt.nim .nim-fr{position:absolute;left:0;top:4%;width:100%;height:76.8%;background:url(assets/naruto/obj/ovale.webp) center/100% 100% no-repeat}
+.spt.nim.lg .nim-fr{left:-2%;top:-.6%;width:104%;height:79.2%;background-image:url(assets/naruto/obj/ovale_or.webp)}
+.spt.nim .nim-sh{position:absolute;left:50%;top:-3%;width:24%;aspect-ratio:91/99;transform:translateX(-50%);background:url(assets/naruto/obj/bouclier.webp) center/contain no-repeat;filter:drop-shadow(0 2px 2px rgba(0,0,0,.5))}
+.spt.nim .nim-rb{position:absolute;left:50%;top:60%;width:94%;aspect-ratio:364/116;transform:translateX(-50%);background:url(assets/naruto/obj/ruban.webp) center/100% 100% no-repeat;display:grid;place-items:center;padding:0 14% 9%;box-sizing:border-box}
+.spt.nim .nim-rb b{font:700 clamp(8px,11cqi,15px)/1 var(--f-disp),serif;color:#fff1d6;text-shadow:0 1px 0 #3a1a0c,0 0 3px #000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.spt.nim .nim-pl{position:absolute;left:12%;top:76%;width:86%;aspect-ratio:311/129;background:url(assets/naruto/obj/plaque3.webp) center/100% 100% no-repeat}
+.spt.nim.lg .nim-pl{background-image:url(assets/naruto/obj/plaque3_or.webp)}
+.nim-pl .nif{position:absolute;top:50%;width:17.5%;aspect-ratio:1;border-radius:50%;overflow:hidden;transform:translate(-50%,-50%);z-index:-1;background:radial-gradient(circle at 50% 38%,#8a7458 0 18%,transparent 19%),radial-gradient(ellipse at 50% 100%,#8a7458 0 42%,transparent 43%),#5a4630}
+.nim-pl .nif:nth-child(1){left:28.1%}.nim-pl .nif:nth-child(2){left:50.5%}.nim-pl .nif:nth-child(3){left:73.2%}
+.nim-pl .nif .face,.nio .nif .face{display:block;width:100%;height:100%}.nim-pl .nif svg,.nio .nif svg{display:block;width:100%;height:100%}
+.nim-pl .nif:not(.on):not(.nif-0){filter:grayscale(.75) brightness(.7)}
+.spt.nim .nim-pl{isolation:isolate}
+.nim-co{position:absolute;left:-7%;top:74%;width:30%;aspect-ratio:1;background:url(assets/naruto/obj/piece.webp) center/contain no-repeat;display:grid;place-items:center;filter:drop-shadow(0 2px 3px rgba(0,0,0,.6))}
+.nim-co b{font:800 clamp(10px,15cqi,24px)/1 var(--f-num),serif;color:#fff3cf;text-shadow:0 2px 0 #4a2a06,0 0 4px #000}
+.nim-co.aff b{color:#b8ff8a}
+/* survol, achat possible ou non (vert / rouge), légendaire : halo doré */
+html body .spt.nim.it-ok .nim-m{filter:drop-shadow(0 0 3px #38ff4a) drop-shadow(0 0 8px rgba(60,255,90,.7))}
+html body .spt.nim.it-no .nim-m{filter:drop-shadow(0 0 3px #ff4a3a) drop-shadow(0 0 6px rgba(255,70,50,.55))}
+html body .spt.nim.lg .nim-fr{filter:drop-shadow(0 0 4px #ffb02e) drop-shadow(0 0 9px rgba(255,170,50,.8))}
+html body .spt.nim.sel .nim-m{filter:drop-shadow(0 0 3px var(--gold)) drop-shadow(0 0 12px rgba(242,193,78,.75))}
+html body .spt.nim .it-own{top:auto;bottom:-14px}
+/* grande carte d'objet (survol) */
+html body .cd.spc.nic{width:var(--hw,220px);height:auto!important;aspect-ratio:480/894;background:none!important;border:0!important;box-shadow:none!important;container-type:inline-size;overflow:visible;padding:0!important;filter:drop-shadow(0 8px 14px rgba(0,0,0,.6))}
+html body .cd.spc.nic::before,html body .cd.spc.nic::after{display:none!important}
+.nic>*{position:absolute}
+.nic .nic-art{left:0;top:0;width:100%;height:100%;clip-path:ellipse(35% 19.2% at 49.6% 27.4%);background:#20140c}
+.nic .nic-art svg{position:absolute;left:12%;top:7%;width:76%;height:41%}
+.nic .nic-fr{inset:0;background:url(assets/naruto/obj/carte.webp) center/100% 100% no-repeat}
+.nic .nic-co{left:-3%;top:-1%;width:24%}
+.nic .nic-co b{font-size:15cqi}
+.nic .nic-rb{left:-4%;top:40.5%;width:108%;aspect-ratio:478/149;background:url(assets/naruto/obj/grand_ruban.webp) center/100% 100% no-repeat;display:grid;place-items:center;padding:0 16% 6%;box-sizing:border-box}
+.nic .nic-rb b{font:700 9.5cqi/1 var(--f-disp),serif;color:#fff1d6;text-shadow:0 2px 0 #3a1a0c,0 0 4px #000;text-align:center}
+.nic .nic-ty{left:50%;top:50.5%;transform:translateX(-50%);min-width:40%;padding:1.6cqi 5cqi;background:url(assets/naruto/obj/etiq.webp) center/100% 100% no-repeat;font:800 4.6cqi/1 var(--f-label),serif;letter-spacing:.06em;text-transform:uppercase;color:#4a2a12;text-align:center;white-space:nowrap}
+.nic .nic-oh{left:12%;right:12%;top:56.5%;display:flex;align-items:center;gap:3cqi;font:700 5.4cqi/1 var(--f-disp),serif;color:#5a2e14}
+.nic .nic-oh::before,.nic .nic-oh::after{content:"";flex:1;height:1px;background:#8a5a32}
+.nic .nic-ow{left:8%;right:8%;top:60.5%;display:flex;justify-content:center;gap:4cqi}
+.nio{position:relative!important;display:grid;justify-items:center;width:22cqi}
+.nio .nif{display:block;width:19cqi;aspect-ratio:1;border-radius:50%;overflow:hidden;box-shadow:0 0 0 2px #6a4a2a,0 0 0 4px #c89a52;background:#5a4630}
+.nio:not(.on) .nif{filter:grayscale(.7) brightness(.8)}
+.nio b{margin-top:-2cqi;padding:.8cqi 2.6cqi;background:url(assets/naruto/obj/pastille.webp) center/100% 100% no-repeat;font:700 3.6cqi/1.1 var(--f-disp),serif;color:#3a1a0c;white-space:nowrap;position:relative}
+.nio.on b{color:#1e5a14}
+.nic .nic-dh{left:50%;top:73.5%;transform:translateX(-50%);padding:1.6cqi 6cqi;background:url(assets/naruto/obj/etiq_sombre.webp) center/100% 100% no-repeat;font:700 4.8cqi/1 var(--f-disp),serif;color:#ffe9c4;white-space:nowrap}
+.nic .nic-tx{left:11%;right:11%;top:78.5%;margin:0;font:italic 500 5cqi/1.3 var(--f-disp),serif;color:#3a2412;text-align:center}
+.nic .nic-st{left:50%;bottom:6.5%;transform:translateX(-50%);display:flex;align-items:center;gap:2cqi;padding:1.6cqi 6cqi;background:url(assets/naruto/obj/barre.webp) center/100% 100% no-repeat;font:700 4.6cqi/1 var(--f-disp),serif;color:#ffe9c4;white-space:nowrap}
+.nic .nic-st i{width:4.4cqi;aspect-ratio:1;background:url(assets/naruto/obj/point_vert.webp) center/contain no-repeat}
+.nic .nic-st.no i{filter:hue-rotate(-100deg) saturate(1.4)}
+html body .cd.spc.nic.lg .nic-fr{filter:drop-shadow(0 0 5px #ffb02e) drop-shadow(0 0 12px rgba(255,170,50,.7))}
+/* choix du héros Naruto : comme la maquette, sans animation ; étiquette de mécanique à droite du nom du pouvoir ; PV et ATQ en doré */
+html body .hp-ov.nkv .nk-deco .sw{animation:none!important}
+html body .hp-ov.nkv .hp-pc .hpc-side{position:relative;display:block!important}
+html body .hp-ov.nkv .hp-pc .hpc-mc{position:absolute!important;top:.15em;right:0;margin:0!important}
+html body .hp-ov.nkv .hp-pc .hpc-pw em.hk{font-style:normal;font-weight:800;color:#ffd24a}
+html body .hp-ov.nkv .hp-pc .hpc-pw{font-family:var(--f-disp),serif!important}
+html body .hp-ov.nkv .hp-pc .hpc-who{font-size:calc(min(3.6vh,28px) * var(--k,1))!important}
+html body .hp-ov.nkv .hp-pc .hpc-mc{font-size:clamp(10px,1.45vh,15px)!important;padding:3px 14px!important}
+html body .hp-ov.nkv .hp-pc .hpc-pw{font-size:clamp(13px,2.2vh,21px)!important}
+html body .hp-ov.nkv .hp-pc .hpc-side>.hpc-mc{display:none!important}
+html body .hp-ov.nkv .hp-pc .hpc-hd{display:flex;align-items:center;flex-wrap:wrap;gap:4px 16px;margin-bottom:2px}
+html body .hp-ov.nkv .hp-pc .hpc-hd b{margin:0!important}
+html body .hp-ov.nkv .hp-pc .hpc-mc2{font:700 clamp(10px,1.45vh,15px)/1 var(--f-disp),serif;letter-spacing:.06em;text-transform:uppercase;color:#ffd98a;padding:4px 14px;border:1.5px solid #c89a52;border-radius:99px;background:rgba(10,30,16,.6);white-space:nowrap}

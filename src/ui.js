@@ -1169,7 +1169,7 @@ function heroPickRowH(d, me) {
         ${x.q && A ? `<div class="hpc-q"><span class="hpc-qh"><b>Quête d'éveil</b> ${esc(x.q.tx)}</span>
           <div class="hpc-aw">${HART[h + '_aw'] ? faceH('art-h-' + h + '_aw', 'face hpc-awf') : ''}<span><b>Éveil · ${esc(A.nm)}</b><small>${esc(A.tx)}</small></span></div></div>` : ''}
         ${c && (!nin || NJ_COMP) ? `<span class="hp-cp">${faceH('art-' + cid)}<em>${esc(c.n)}</em></span>` : ''}`;
-    pcs[i] = `<div class="hp-pc k${i}${on ? ' on' : ''}" style="--c:${col}">${nkv ? '<i class="hpc-sh" aria-hidden="true"></i>' : ''}<b class="hpc-who">${esc(nkv ? x.n.split(' ')[0] : x.n)}</b><div class="hpc-side"><p class="hpc-pw"><b>${esc(pw)}</b> ${esc(main)}</p>${side}</div></div>`;
+    pcs[i] = `<div class="hp-pc k${i}${on ? ' on' : ''}" style="--c:${col}">${nkv ? '<i class="hpc-sh" aria-hidden="true"></i>' : ''}<b class="hpc-who"${nkv ? ` style="--k:${Math.min(1, 7 / x.n.split(' ')[0].length).toFixed(2)}"` : ''}>${esc(nkv ? x.n.split(' ')[0] : x.n)}</b><div class="hpc-side"><p class="hpc-pw">${nkv ? `<span class="hpc-hd"><b>${esc(pw)}</b>${x.mc && NJ_MC[x.mc] ? `<span class="hpc-mc2">Mécanique · ${esc(NJ_MC[x.mc][0])}</span>` : ''}</span>` : `<b>${esc(pw)}</b>`} ${nkv ? esc(main).replace(/\b(PV|ATQ)\b/g, '<em class="hk">$1</em>') : esc(main)}</p>${side}</div></div>`;
     const left = (me.hrr || 0) > 0;
     return `<div class="hp-col${on ? ' on' : ''}" style="--c:${col};--k:${i}">
       <button class="hp-card" data-act="hsel" data-h="${h}" aria-pressed="${on}" aria-label="${esc(x.n + ' : ' + pw + '. ' + main)}">
@@ -1186,7 +1186,7 @@ function heroPickRowH(d, me) {
   return `<div class="ov hp-ov${nkv ? ' nkv' : ''}">${nkv && !chosen ? nkStorm() : ''}<div class="hp-wrap">
     <header class="hp-head"><h2 class="hp-t">${me.camp ? 'Choisis ton duo' : 'Choisis ton héros'}</h2>${me.camp ? `<p class="hp-camp ${me.camp === 'O' ? 'o' : 'l'}">${me.camp === 'O' ? 'Ton duo combat pour l’Ombre' : 'Ton duo combat pour les Peuples libres'} <small>${me.ally ? 'avec ' + esc(me.ally.n) + ' · ' : ''}choisis ton héros, ton allié prend l’autre</small></p>` : ''}${fams.length ? `<p class="hp-fams">${esc(fams.join(', '))}</p>` : ''}</header>
     <div class="hp-row${me.camp && typeof LO_DUOS !== 'undefined' ? ' hp-duos' : ''}">${me.camp && typeof LO_DUOS !== 'undefined' ? loDuoRowH(me, card) : me.ho.map(card).join('')}</div>
-    <button class="hp-ok${chosen && sel === chosen ? ' done' : ''}" data-act="hero" data-h="${sel || ''}" ${sel ? '' : 'disabled'}>${chosen && sel === chosen ? 'Prêt ✓' : nkv ? (sel ? 'Confirmer ' + esc(HEROES[sel].n.split(' ')[0]) : 'Choisis ton héros') : 'OK'}</button>
+    <button class="hp-ok${chosen && sel === chosen ? ' done' : ''}" data-act="hero" data-h="${sel || ''}" ${sel ? '' : 'disabled'}>${chosen && sel === chosen ? 'Prêt ✓' : nkv ? (sel ? 'Prêt' : 'Choisis ton héros') : 'OK'}</button>
     <div class="hp-infos">${pcs.join('')}</div>
     ${false ? `<button class="btn sm hp-rb" data-act="hprules">${rules ? 'Masquer les règles' : 'Comment on joue ?'}</button>` : ''}
     ${por ? `<button class="btn sm hp-rb" data-act="hprules">${V.hpRules ? 'Masquer les règles' : 'Comment on joue ?'}</button>${V.hpRules ? `<div class="hpick-r hp-rules hp-rm">${por()}</div>` : ''}` : ''}
@@ -3796,28 +3796,7 @@ function nkStorm() {
     + '<div class="nk-deco nk-front" aria-hidden="true">' + NK_LEAVES_F.map(L => lf(L, 1)).join('') + '</div>';
 }
 
-/* Feuilles du choix du héros : elles implosent vers le héros quand on clique sur « Confirmer ». */
-(() => {
-  document.addEventListener('click', e => {
-    const b = e.target.closest && e.target.closest('.hp-ov.nkv .hp-ok');
-    if (!b || b.disabled || b.classList.contains('done')) return;
-    const decos = [...document.querySelectorAll('.hp-ov.nkv .nk-deco')]; if (!decos.length) return;
-    const cx = innerWidth / 2, cy = innerHeight * .42, box = document.createElement('div');
-    box.className = 'nk-imp'; box.setAttribute('aria-hidden', 'true');
-    decos.forEach(d => d.querySelectorAll('.lf,.vl').forEach((l, k) => {
-      const r = l.getBoundingClientRect(); if (r.right < 0 || r.left > innerWidth || r.bottom < 0 || r.top > innerHeight) return;
-      const c = document.createElement('i'), dx = cx - (r.left + r.width / 2), dy = cy - (r.top + r.height / 2);
-      c.style.cssText = `left:${r.left}px;top:${r.top}px;width:${r.width}px;height:${r.height}px;background-image:${getComputedStyle(l).backgroundImage}`;
-      box.appendChild(c);
-      c.animate([{ transform: 'translate(0,0) rotate(0deg) scale(1)', opacity: 1 }, { transform: `translate(${dx * .55}px,${dy * .55}px) rotate(300deg) scale(.8)`, opacity: 1, offset: .55 }, { transform: `translate(${dx}px,${dy}px) rotate(720deg) scale(.05)`, opacity: 0 }], { duration: 520 + (k % 7) * 40, easing: 'cubic-bezier(.55,0,.85,.35)', fill: 'forwards' });
-    }));
-    const f = document.createElement('b'); f.style.cssText = `left:${cx}px;top:${cy}px`; box.appendChild(f);
-    f.animate([{ transform: 'translate(-50%,-50%) scale(0)', opacity: 0 }, { transform: 'translate(-50%,-50%) scale(.2)', opacity: 1, offset: .6 }, { transform: 'translate(-50%,-50%) scale(3)', opacity: 0 }], { duration: 1000, easing: 'ease-out', fill: 'forwards' });
-    decos.forEach(d => { d.style.visibility = 'hidden'; });
-    document.body.appendChild(box);
-    setTimeout(() => box.remove(), 1200);
-  }, true);
-})();
+
 
 /* Naruto, choix du héros : au survol, le pouvoir tel qu'il apparaît en jeu (le rond, en plus petit) et sa bulle de survol */
 function hpPowMedH(h, x) {
