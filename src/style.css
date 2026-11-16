@@ -2101,12 +2101,17 @@ html body .hp-ov.nkv .nk-deco .sw{opacity:.85;filter:brightness(1.25) drop-shado
 html body .hp-ov.nkv .nk-deco .sw2{opacity:.6}
 @keyframes nkSw{0%,100%{transform:rotate(-2deg) scale(1)}50%{transform:rotate(2deg) scale(1.03)}}
 html body .hp-ov.nkv .hp-pc .hpc-who{font-size:min(3.2vh,1.3vw,20px)!important;text-overflow:clip}
-/* Naruto, choix du héros : bulle de survol = le rond du pouvoir (plus petit) + la bulle du pouvoir en jeu, taille lisible */
-html body .hp-ov.nkv .hp-pop.hp-pow{display:flex!important;flex-direction:column;align-items:center;gap:22px;width:auto!important;background:none!important;border:0!important;box-shadow:none!important;padding:0!important}
-html body .hp-ov.nkv .hp-pop .hpz,:root:root:root:root:root body .hp-ov.nkv .hp-pop .hero-zone.hpz{position:relative!important;inset:auto!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;width:auto!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;transform:none!important;display:flex!important;justify-content:center;grid-template-columns:none!important}
-html body .hp-ov.nkv .hp-pop .hpz::before,html body .hp-ov.nkv .hp-pop .hpz::after,:root:root:root:root:root body .hp-ov.nkv .hp-pop .hero-zone.hpz::before,:root:root:root:root:root body .hp-ov.nkv .hp-pop .hero-zone.hpz::after{display:none!important}
-:root:root:root:root body .hp-ov.nkv .hp-pop .hpz .powm{width:66px!important;height:66px!important;margin:12px 0 18px!important;position:relative!important;pointer-events:none}
-:root:root:root:root body .hp-ov.nkv .hp-pop .hpz .powm small{bottom:-18px!important;font-size:10px!important}
-html body .hp-ov.nkv .hp-pop .hcard{width:clamp(250px,19vw,300px)!important;max-width:none!important;font-size:15px}
-html body .hp-ov.nkv .hp-pop .hcard .hc-tx{font-size:clamp(14px,1.1vw,17px)!important;line-height:1.35!important}
-html body .hp-ov.nkv .hp-pop .hcard .hc-nm{font-size:clamp(20px,1.5vw,26px)!important}
+/* Naruto, choix du héros : survol du héros = ses cartes ; à côté de chaque héros, le rond de son pouvoir en taille normale (survol = bulle du pouvoir) */
+html body .hp-ov.nkv .hp-col{position:relative}
+html body .hp-ov.nkv .hp-pwz{position:absolute;z-index:7;top:46%;left:-92px}
+html body .hp-ov.nkv .hp-col:last-child .hp-pwz{left:auto;right:-92px}
+html body .hp-ov.nkv .hp-pwz .hpz,:root:root:root:root:root body .hp-ov.nkv .hp-pwz .hero-zone.hpz{position:relative!important;inset:auto!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;width:auto!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;transform:none!important;display:block!important}
+:root:root:root:root:root body .hp-ov.nkv .hp-pwz .hero-zone.hpz::before,:root:root:root:root:root body .hp-ov.nkv .hp-pwz .hero-zone.hpz::after{display:none!important}
+:root:root:root:root body .hp-ov.nkv .hp-pwz .hpz .powm{position:relative!important;margin:0!important;cursor:help;width:clamp(70px,5.8vw,92px)!important;height:clamp(70px,5.8vw,92px)!important;display:grid!important;place-items:center;border-radius:50%;pointer-events:auto!important}
+html body .hp-ov.nkv .hp-pwtip{position:absolute;top:50%;left:calc(100% + 14px);transform:translateY(-50%) scale(.96);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .14s,transform .14s;z-index:9}
+html body .hp-ov.nkv .hp-col:first-child .hp-pwtip{left:auto;right:calc(100% + 14px)}
+html body .hp-ov.nkv .hp-pwz:hover .hp-pwtip{opacity:1;visibility:visible;transform:translateY(-50%)}
+html body .hp-ov.nkv .hp-col:has(.hp-pwz:hover) .hp-pop{opacity:0!important;visibility:hidden!important}
+html body .hp-ov.nkv .hp-pwtip .hcard{width:clamp(250px,19vw,300px)!important;max-width:none!important}
+html body .hp-ov.nkv .hp-pwtip .hcard .hc-tx{font-size:clamp(14px,1.1vw,17px)!important;line-height:1.35!important}
+html body .hp-ov.nkv .hp-pwtip .hcard .hc-nm{font-size:clamp(20px,1.5vw,26px)!important}

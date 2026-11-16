@@ -1177,7 +1177,7 @@ function heroPickRowH(d, me) {
         <span class="hp-nm${x.n.length > 14 && !nkv ? ' lg' : ''}"><i>${esc(nkv ? x.n.split(' ')[0] : x.n)}</i></span>
         ${x.stars || x.diff ? `<span class="hp-st">${'★'.repeat(x.stars || x.diff)}</span>` : ''}
       </button>
-      ${(d.laws || []).some(l => l.k === 'chakra') && !me.camp ? `<div class="hp-pop hp-pow" aria-hidden="true">${hpPowMedH(h, x)}${heroCardH(h, { foot:x.cost ? 'Pouvoir héroïque' : 'Toujours actif' })}</div>` : `<div class="hp-pop" aria-hidden="true">${powBannerH(x, h, nin)}${nhPairH(h, 'Ta carte de héros')}</div>`}
+      ${(d.laws || []).some(l => l.k === 'chakra') && !me.camp ? `<div class="hp-pop hp-cards" aria-hidden="true">${nhPairH(h, 'Ta carte de héros')}</div><div class="hp-pwz">${hpPowMedH(h, x)}<div class="hp-pwtip" aria-hidden="true">${heroCardH(h, { foot:x.cost ? 'Pouvoir héroïque' : 'Toujours actif' })}</div></div>` : `<div class="hp-pop" aria-hidden="true">${powBannerH(x, h, nin)}${nhPairH(h, 'Ta carte de héros')}</div>`}
       ${me.hrm === 0 ? '' : `<button class="hp-rr${left ? '' : ' off'}" data-act="hroll" data-i="${i}" ${left ? '' : 'disabled'} aria-label="Relancer ce héros (${me.hrr || 0} relance${(me.hrr || 0) > 1 ? 's' : ''} restante${(me.hrr || 0) > 1 ? 's' : ''})"><span class="hp-rrn">${me.hrr || 0}</span><b>Relancer</b></button>`}
     </div>`; };
   const fams = [...new Set((Array.isArray(d.univ) ? d.univ : d.univ ? [d.univ] : d.us || []).flatMap(nm => ((SET.univ || []).find(u => u.n === (nm && nm.n || nm)) || {}).tribes || []).filter(t => !me.camp || !/^lo_/.test(t) || LO_SHADOW_TR.includes(t) === (me.camp === 'O')).map(t => TRIBES[t] && TRIBES[t].n).filter(Boolean))];
