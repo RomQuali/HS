@@ -389,10 +389,10 @@ function tipSync() {
     const roll = q('.keeper .medal[data-act="roll"]'), rc = roll && roll.querySelector('.cost') ? roll.querySelector('.cost').textContent.trim() : '1';
     set(roll, `Actualiser : remplace les serviteurs proposés par la taverne pour ${rc} or.`);
     set(q('.keeper .medal[data-act="frz"]'), me.fz ? 'Dégeler : la taverne sera de nouveau renouvelée au prochain tour.' : 'Geler : garde les serviteurs de la taverne pour le prochain tour. Gratuit.');
-    const bell = q('.hero-zone .bell'); set(bell, V.pub.ph === 'combat' ? 'Combat : le combat se joue tout seul. Le recrutement reprend juste après.' : bell && bell.classList.contains('rung') ? 'Prêt : tu attends les autres joueurs. Clique pour reprendre ton tour.' : 'Prêt : termine ton tour. Le combat commence quand tout le monde est prêt ou à la fin du chrono.');
+    { const bell = q('.hero-zone .bell'); if (bell) { delete bell.dataset.tip; bell.removeAttribute('title'); } }   // bouton Prêt : pas de bulle au survol, seulement le halo vert
     const pu = q('.hero-zone .purses .purse:not(.ckp):not(.kip):not(.pfp)'); set(pu, `Or : ${me.g != null ? me.g : '?'} pièce${me.g > 1 ? 's' : ''} à dépenser ce tour. Tu en reçois une de plus à chaque tour, jusqu'à 10. L'or non dépensé est perdu.`);
     set(q('.keeper .kc'), `Tavernier : taverne de niveau ${me.t || 1}. Il propose de nouveaux serviteurs à chaque tour ; fais glisser un serviteur vers lui pour le vendre 1 or.`);
-    set(q('.hud .timer'), V.pub.ph === 'combat' ? 'Temps avant la fin du combat.' : 'Temps restant pour ce tour. À la fin du chrono, le combat démarre.');
+    { const tm = q('.hud .timer'); if (tm) { delete tm.dataset.tip; tm.removeAttribute('title'); } }
     set(q('.hz-hero .hpg'), `Points de vie : ${me.hp != null ? Math.max(0, me.hp) : '?'}. À 0, tu es éliminé.`);
     document.querySelectorAll('.table .fan .cd').forEach((el, i) => el.classList.toggle('tmpc', !!(me.hd && me.hd[i] && me.hd[i].tmpc)));
     const ek = q('.keeper-zone.enemy .keeper'); if (ek) { const b = ek.querySelector('.kn-en b'); if (b && b.textContent) { ek.dataset.hov = 'op'; ek.dataset.n = b.textContent; } }
