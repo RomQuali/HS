@@ -593,3 +593,8 @@ const NK_PACK2 = {
 
 // héros Tsunade (16/11/2026) : portrait repris de sa carte de taverne en attendant le sien
 (function () { if (typeof HART !== 'undefined' && typeof ART !== 'undefined' && ART.nk_tsunade && !HART.nh_tsunade) HART.nh_tsunade = ART.nk_tsunade; })();
+
+// Tobi (16/11/2026) : paliers renommés (1 Obito démasqué, 2 Jinchūriki de Jūbi) ; le palier 1 prend l'image d'Obito, le palier 2 la garde en attendant celle de Jūbi
+(function () { if (typeof ART !== 'undefined' && ART.nk_tobi_tf2) ART.nk_tobi_tf1 = ART.nk_tobi_tf2; })();
+// Ino, Chōji, Yondaime Raikage : portraits fournis le 16/11/2026
+(function () { if (typeof ART === 'undefined') return; ['nk_ino', 'nk_choji', 'nk_raikage'].forEach(id => { ART[id] = () => `<rect width="100" height="100" fill="#1a120c"/><image href="assets/naruto/jeu/${id}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`; }); })();

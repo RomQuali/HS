@@ -44,7 +44,7 @@ const SPELLS = {
   ni_hiruko:{ ni:1, n:'Hiruko', t:1, c:2, ty:'nobj', tg:1, ow:['nk_sasori'], v:3, cp:2, tx:'+3 chakra à chaque début de tour.' },
   ni_masques:{ ni:1, n:'Masques des cinq cœurs', t:1, c:2, ty:'nobj', tg:1, ow:['nk_kakuzu'], v:3, cp:2, tx:'+3 chakra à chaque début de tour.' },
   ni_chapeau:{ ni:1, n:'Chapeau de Kage', t:3, c:4, ty:'nobj', tg:1, ow:['nk_mei', 'nk_raikage', 'nk_gaara'], v:4, cp:1, tx:'+4 chakra à chaque début de tour.' },
-  ni_samehada:{ ni:1, n:'Samehada', t:5, c:6, ty:'nobj', tg:1, ow:['nk_kisame'], v:6, cp:1, ex:1, tx:'+6 chakra à chaque début de tour. Au début de chaque combat, Kisame vole aussi 2 chakra à l’adversaire.' },
+  ni_samehada:{ ni:1, n:'Samehada', t:5, c:6, ty:'nobj', tg:1, ow:['nk_kisame', 'nk_bee'], v:6, cp:1, ex:1, tx:'+6 chakra à chaque début de tour. Au début de chaque combat, son porteur vole aussi 2 chakra à l’adversaire.' },
   ni_kusanagi:{ ni:1, n:'Épée de Kusanagi', t:5, c:7, ty:'nobj', tg:1, ow:['nk_orochimaru', 'nk_sasuke'], v:6, cp:1, ex:1, tx:'+6 chakra à chaque début de tour. Son porteur lance son jutsu sans chakra.' },
   // ----- Le Seigneur des Anneaux : l'Anneau unique, armes et objets légendaires (récompenses d'étape, liés à leur porteur du film) -----
   lo_anneau:{ lo:1, n:'L’Anneau unique', t:1, c:3, ty:'leg', ring:1, fx:[{ k:'tring' }], tx:'Un Anneau pour les gouverner tous. Tant qu’il est dans ta main, chaque serviteur que tu poses réagit à l’Anneau à sa façon. Il ne se joue pas : passe-le à ton allié par le portail. Si ton duo perd un combat, il passe au duo vainqueur.' },
@@ -847,7 +847,8 @@ function rsvFill(G, p, el) {
   const IC = { ni_bandeau:'🍃', ni_poids:'🏋️', ni_eventail:'🪭', ni_hirame:'⚔️', ni_argile:'💥', ni_karasu:'🎭', ni_kubiki:'🗡️', ni_flute:'🎶', ni_gourde:'🏺', ni_crapauds:'🐸', ni_bague:'💍', ni_byakugo:'💠', ni_samehada:'🦈', ni_kusanagi:'🐍' };
   for (const id in IC) if (SPELLS[id]) SPART[id] = () => `<image href="assets/naruto/jeu/${id}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>${SPELLS[id].ex ? '<circle cx="50" cy="50" r="47" fill="none" stroke="#ffd86a" stroke-width="2.4" opacity=".85"/>' : ''}`;   // images fournies le 15/11/2026
   /* objets sans image fournie : portrait du propriétaire estompé + pictogramme, en attendant l'image */
-  const IC2 = { ni_ichaicha:'📙', ni_asuma:'🔪', ni_senbon:'📍', ni_hiruko:'🦂', ni_masques:'🎭', ni_chapeau:'👒' };
+  const IC2 = {};   /* images fournies le 16/11/2026 */
+  ['ni_ichaicha', 'ni_asuma', 'ni_senbon', 'ni_hiruko', 'ni_masques', 'ni_chapeau'].forEach(id => { if (SPELLS[id]) SPART[id] = () => `<image href="assets/naruto/jeu/${id}.webp" x="0" y="0" width="100" height="100" preserveAspectRatio="xMidYMid slice"/>`; });
   for (const id in IC2) if (SPELLS[id]) SPART[id] = () => { const o = SPELLS[id].ow[0], a = typeof ART !== 'undefined' && ART[o] ? ART[o]() : ''; return `<g opacity=".55">${a}</g><rect width="100" height="100" fill="#06121e" opacity=".35"/><text x="50" y="56" dy=".36em" text-anchor="middle" font-size="44">${IC2[id]}</text>`; };
   if (0) for (const id in IC) if (SPELLS[id]) SPART[id] = () => { const o = SPELLS[id].ow[0], a = typeof ART !== 'undefined' && ART[o] ? ART[o]() : ''; return `<g opacity=".5">${a}</g><rect width="100" height="100" fill="#06121e" opacity=".35"/><text x="50" y="56" dy=".36em" text-anchor="middle" font-size="44">${IC[id]}</text>${SPELLS[id].ex ? '<circle cx="50" cy="50" r="46" fill="none" stroke="#ffd86a" stroke-width="3" opacity=".8"/>' : ''}`; };
 })();
