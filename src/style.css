@@ -2381,3 +2381,46 @@ html body .hp-ov.nkv .hp-pwtip .nkpc{width:300px}
 .bt .bt-c .bt-ok{right:-4%;top:-1%;width:20%}
 .bt .bt-c .bt-rb{bottom:-5%;height:5%}
 .bt .bt-c .nic-co{display:none}   /* le butin est gratuit : pas de prix */
+
+/* ===== Naruto : survol clarifié (carte = noms des effets ; fiche = groupes détaillés, jutsu typés) ===== */
+#peek .cd-tx.nkn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:15px!important;line-height:1.15;overflow:visible}
+#peek .cd-tx.nkn>span{display:flex;flex-direction:column;align-items:center;gap:2px}
+#peek .nkn-kw{font:700 13px var(--f-disp),serif;color:#5a3a1a}
+#peek .nkn-fx{font:800 15px var(--f-disp),serif}
+#peek .nkn-j{font:italic 800 15px var(--f-disp),serif;color:#1f4f8a}
+#peek .nkn-j.cb{color:#8a2f2f}
+#peek .nkn-tf{font:italic 700 12px var(--f-disp),serif;color:#6a4a2a;margin-top:2px}
+#peek .nkd-bd{display:inline-block;margin:0 4px 3px 0;padding:1px 7px;border-radius:5px;font:800 10.5px var(--f-disp),serif;letter-spacing:.03em;color:#fff;background:#2f5f8f}
+#peek .nkd-bd.cb{background:#8a2f2f}
+#peek .nkd-g+.nkd-g{margin-top:6px}
+#peek .nkd-gh{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:5px}
+#peek .nkd-gh .nkd-gn{margin:0;text-align:left}
+#peek .nkd-pg{flex:none;padding:0 9px;border-radius:99px;font:800 13px var(--f-num,serif);background:#d9c9a0;color:#4a3a22}
+#peek .nkd-pg.ok{background:#e3bf63;color:#2a1606}
+#peek .nkd-nm small{display:block;font:italic 600 10px var(--f-disp),serif;color:#6a4a2a;margin-top:-1px}
+#peek .nkd-nm.on small{color:#1e4a10}
+#peek .nkd-nm.off{opacity:.78}
+#peek .nkd-tier{display:flex;gap:8px;align-items:flex-start;padding:5px 4px;border-top:1px dashed rgba(168,116,58,.5)}
+#peek .nkd-tier .nkd-tn{flex:none;margin-top:2px;padding:0 7px;border-radius:99px;font:800 11px var(--f-disp),serif;background:#d9c9a0;color:#4a3a22;white-space:nowrap}
+#peek .nkd-tier.ok{background:rgba(227,191,99,.28);border-radius:6px}
+#peek .nkd-tier.ok .nkd-tn{background:#e3bf63;color:#2a1606}
+#peek .nkd-tier p{margin:0;font-size:13px;line-height:1.3}
+#peek .nkd-tier em{font-style:normal;font-weight:800;color:#2a5a1a;margin-left:4px}
+#peek .nkd-tier small{display:block;margin-top:2px;font:italic 700 12px var(--f-disp),serif;color:#6b3f1d}
+#peek .nkg-tip{width:360px}
+#peek .nkg-head{min-height:92px}
+
+/* capacité activable : bloc dans le texte de la carte agrandie (remplace la section « Capacité » de la fiche) */
+#peek .cd-tx.nkn{justify-content:flex-start;gap:3px;padding-top:2px}
+#peek .nkn-fx{font:800 12px/1.15 var(--f-disp),serif;text-align:center;color:#3a2412}
+#peek .nkn-cap{display:flex;flex-direction:column;gap:2px;width:100%;box-sizing:border-box;padding:3px 6px 4px;border-radius:7px;background:linear-gradient(180deg,#e6f4f4,#aed6de);border:2px solid #2f6f9f;box-shadow:inset 0 0 0 1px #f4ffff;text-align:left}
+#peek .nkn-cap.cb{background:linear-gradient(180deg,#f6e8e2,#e0b7ab);border-color:#8a2f2f;box-shadow:inset 0 0 0 1px #fff4ef}
+#peek .nkn-cb{align-self:flex-start;padding:0 6px;border-radius:4px;font:800 8.5px/1.5 var(--f-disp),serif;letter-spacing:.02em;color:#fff;background:#2f5f8f}
+#peek .nkn-cap.cb .nkn-cb{background:#8a2f2f}
+#peek .nkn-cm{display:flex;gap:6px;align-items:center}
+#peek .nkn-ct{flex:1;min-width:0;display:flex;flex-direction:column}
+#peek .nkn-ct b{font:italic 800 13px/1.1 var(--f-disp),serif;color:#10283a}
+#peek .nkn-cap.cb .nkn-ct b{color:#3a1410}
+#peek .nkn-ct small{font:600 10.5px/1.18 var(--f-ui,Georgia),serif;color:#23323c}
+#peek .nkn-ck{flex:none;display:flex;align-items:center;gap:1px;padding-left:5px;border-left:1px solid rgba(40,70,100,.4)}
+#peek .nkn-ck b{font:800 17px var(--f-num,serif);color:#1a2a3a}

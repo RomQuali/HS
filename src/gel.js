@@ -531,8 +531,8 @@ function nkGroupsSync() {
   if (!on) { if (el) el.remove(); return; }
   const L = nkLv(V.me), rows = NK_GROUPS.filter(g => /^lo_/.test(g.id) === lo && L[g.id] && (L[g.id].l || L[g.id].n >= 1)).sort((a, b) => (L[b.id].l - L[a.id].l) || (L[b.id].n - L[a.id].n));
   const h = rows.slice(0, 9).map(g => { const x = L[g.id], next = g.th[x.l], names = g.m.map(c => CD(c).n.split(' ')[0]).join(', ');
-    const tip = g.n + ' (' + names + '). ' + g.th.map((t, i) => (g.th.length > 1 ? t + ' : ' : '') + g.tx[i]).join(' ') + (x.l ? '' : ' Il te manque ' + (g.th[0] - x.n) + ' membre' + (g.th[0] - x.n > 1 ? 's' : '') + '.');
-    return `<span class="nkg${x.l ? ' on' : ''}" data-tip="${esc(tip)}"><b>${esc(g.n + (g.el ? ' · ' + CD(g.el).n.split(' ')[0] : ''))}</b><i>${x.n}/${next || g.th[g.th.length - 1]}</i></span>`; }).join('');
+    const tip = nkgName(g) + ' (' + names + '). ' + g.th.map((t, i) => (g.th.length > 1 ? t + ' : ' : '') + g.tx[i]).join(' ') + (x.l ? '' : ' Il te manque ' + (g.th[0] - x.n) + ' membre' + (g.th[0] - x.n > 1 ? 's' : '') + '.');
+    return `<span class="nkg${x.l ? ' on' : ''}" data-hov="nkg" data-gid="${g.id}" data-tip="${esc(tip)}"><b>${esc(nkgName(g) + (g.el && g.n !== 'Maître et disciple' ? ' · ' + CD(g.el).n.split(' ')[0] : ''))}</b><i>${x.n}/${next || g.th[g.th.length - 1]} ninjas</i></span>`; }).join('');
   if (!el) { el = document.createElement('div'); el.id = 'nk-groups'; }
   if (el.parentNode !== tb) tb.appendChild(el);
   if (el.innerHTML !== h) el.innerHTML = h;
@@ -542,7 +542,7 @@ function nkGroupsSync() {
   tb.querySelectorAll('.mn[data-z="bd"]').forEach(e => { const m = (V.me.bd || [])[+e.dataset.i]; e.classList.toggle('nk-in', !!(m && act.has(m.c))); });
   const mark = (e, m) => { const gs = m && !m.sp && !have.has(m.c) ? (NK_GOF[m.c] || []).filter(g => g.m.some(c => c !== m.c && have.has(c))) : []; let t = e.querySelector(':scope > .nk-tag');
     if (!gs.length) { if (t) t.remove(); return; }
-    const done = gs.some(g => { const n = g.m.filter(c => have.has(c)).length + 1; return g.th.includes(n); }), tx = (done ? '★ ' : '') + gs[0].n + (gs[0].el ? ' · ' + CD(gs[0].el).n.split(' ')[0] : '') + (gs.length > 1 ? ' +' + (gs.length - 1) : '');
+    const done = gs.some(g => { const n = g.m.filter(c => have.has(c)).length + 1; return g.th.includes(n); }), tx = (done ? '★ ' : '') + nkgName(gs[0]) + (gs[0].el && gs[0].n !== 'Maître et disciple' ? ' · ' + CD(gs[0].el).n.split(' ')[0] : '') + (gs.length > 1 ? ' +' + (gs.length - 1) : '');
     if (!t) { t = document.createElement('span'); t.className = 'nk-tag'; e.appendChild(t); } t.classList.toggle('done', done); if (t.textContent !== tx) t.textContent = tx; };
   tb.querySelectorAll('.mn[data-z="sh"]').forEach(e => mark(e, (V.me.sh || [])[+e.dataset.i]));
   tb.querySelectorAll('.cd[data-z="hd"]').forEach(e => mark(e, (V.me.hd || [])[+e.dataset.i]));
@@ -602,4 +602,23 @@ function fitCdTx(root) {
 #nk-groups .nkg.on{background-image:url(assets/hs/v2/rec-etiquette.webp)!important;color:#2a1606!important;text-shadow:none;opacity:1;box-shadow:none!important;filter:drop-shadow(0 0 7px rgba(255,205,70,.75))}
 .ckp .coinrow .ckc{background:url(assets/hs/v2/ic-ck.webp) center/contain no-repeat!important;box-shadow:none!important;border:0!important;border-radius:0!important}
 .ckp .coinrow .ckc.off{background-image:url(assets/hs/v2/ic-ck0.webp)!important;filter:none!important;opacity:1!important}
+`; document.head.appendChild(st); })();
+
+
+/* ===== Naruto : la goutte du jutsu devient une plaque « goutte · coût · nom du jutsu » (bleue = soutien, rouge = jutsu de combat) ===== */
+(function () { const st = document.createElement('style'); st.id = 'nk-jutpl-css'; st.textContent = `
+.mn .ckm-b.jut-pl{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;position:absolute;left:50%;top:auto;bottom:19%;transform:translateX(-50%);width:auto;max-width:92%;aspect-ratio:auto;height:auto;padding:1px 8px 2px;border-radius:10px;background:linear-gradient(180deg,#e4f4f4,#a9d3dc);border:2px solid #2f6f9f;box-shadow:0 2px 4px rgba(0,0,0,.55);color:#10283a;white-space:nowrap;filter:none;animation:none;z-index:6}
+.mn .ckm-b.jut-pl.cmb{background:linear-gradient(180deg,#f4e4de,#dcb0a4);border-color:#8a2f2f;color:#3a1410}
+.mn .ckm-b.jut-pl .jp-d{display:none}
+.mn .ckm-b.jut-pl em{order:-1;max-width:100%;overflow:hidden;text-overflow:ellipsis;font:italic 800 clamp(8px,1.2vh,11px)/1.1 var(--f-disp),serif;font-style:italic}
+.mn .ckm-b.jut-pl b{display:flex;align-items:center;font:800 clamp(11px,1.65vh,16px)/1.1 var(--f-num),serif}
+.mn .ckm-b.jut-pl b::before{content:'';flex:none;width:clamp(8px,1.3vh,12px);height:clamp(11px,1.8vh,16px);margin-right:3px;background:url(assets/naruto/detail/goutte-chakra.webp) center/contain no-repeat}
+.mn .ckm-b.jut-pl.ok{filter:drop-shadow(0 0 4px #bfeaff) drop-shadow(0 0 9px #2f9bff);animation:nkBlueJ 1.15s ease-in-out infinite alternate}
+.mn .ckm-b.jut-pl.cmb.ok{filter:drop-shadow(0 0 4px #ffd8cc) drop-shadow(0 0 9px #ff4a3a);animation:nkRedJ 1.15s ease-in-out infinite alternate}
+.mn .ckm-b.jut-pl.ok:hover{transform:translateX(-50%) scale(1.1)}
+.mn .ckm-b.jut-pl.low{filter:grayscale(.85) brightness(.82)}.mn .ckm-b.jut-pl.low b{color:#a3201a}
+.mn .ckm-b.jut-pl.prep{filter:drop-shadow(0 0 6px #ffd84a);border-color:#d9a82a;opacity:1;cursor:default}
+.mn .ckm-b.jut-pl.used{opacity:.4;filter:grayscale(1);cursor:default}
+@keyframes nkRedJ{from{filter:drop-shadow(0 0 2px #ffd8cc) drop-shadow(0 0 5px #ff4a3a)}to{filter:drop-shadow(0 0 5px #ffeae4) drop-shadow(0 0 12px #ff4a3a) drop-shadow(0 0 22px rgba(255,74,58,.95))}}
+html.lite .mn .ckm-b.jut-pl.ok{animation:none}
 `; document.head.appendChild(st); })();

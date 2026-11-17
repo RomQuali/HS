@@ -1875,6 +1875,8 @@ function loGroupsEot(G, p, H0) {
   if (lv('lo_harad')) p.bd.filter(m => m.c === 'tl_mumak').forEach(m => nkTmp(m, 3, 3, '', name('lo_harad')));
 }
 const NK_GOF = {}; NK_GROUPS.forEach(g => g.m.forEach(c => (NK_GOF[c] = NK_GOF[c] || []).push(g)));
+/* nom d'un groupe à l'écran : les cinq « Maître et disciple » prennent le nom de leur duo (Jiraiya et Naruto, Gaï et Lee…) */
+function nkgName(g) { if (g.n !== 'Maître et disciple') return g.n; const f = c => { const n = CD(c).n; return /^Rock /.test(n) ? n.slice(5) : n.split(' ')[0]; }; return g.m.map(f).join(' et '); }
 const NK_BEAST = { nk_jiraiya:'tk_gamabunta', nk_tsunade:'tk_katsuyu', nk_orochimaru:'tk_manda' };
 // palier atteint par chaque groupe (0 = inactif) : nombre de membres différents présents sur le plateau
 function nkLv(p) { const on = new Set(((p && p.bd) || []).map(m => m.c)), o = {}; NK_GROUPS.forEach(g => { const n = g.m.filter(c => on.has(c)).length; let l = 0; g.th.forEach((t, i) => { if (n >= t) l = i + 1; }); if (n >= 1) o[g.id] = { l, n }; }); return o; }

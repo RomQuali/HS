@@ -264,7 +264,7 @@ function tokenH(m, z, i, o = {}) {
   const nkCb = nkJ ? jutCb(nkJ, m.tf) : [], nkFx = nkJ ? jutFx(nkJ, m.tf) : [], nkK = nkJ ? mult(m) : 1;
   const nkTip = nkJ && nkC != null ? (nkCb.length && !nkFx.length ? 'Jutsu de combat · ' + nkJ.nm + ' (' + nkC + ' chakra) : au début du prochain combat, ' + jutBody(nkCb, nkK) + '.' : 'Jutsu · ' + nkJ.nm + ' (' + nkC + ' chakra, une fois par tour) : ' + jutBody(nkFx, nkK) + (nkCb.length ? ' ; au combat : ' + jutBody(nkCb, nkK) : '') + '.') + (nkUsed ? (nkCb.length ? ' Prêt : il partira au début du combat.' : ' Déjà lancé ce tour.') : '') : '';
   const nkST = nkJ ? tfSt(nkJ) : [], nkT0 = nkST[m.tf || 0];
-  const nkH = nkJ ? (nkC != null && (nkUsed || (V.me.ck || 0) >= nkC) ? `<span class="ckm-b jut-b${nkOk ? ' ok' : ''}${nkUsed ? (nkCb.length ? ' prep' : ' used') : ''}" role="button" tabindex="0" data-act="jutsu" data-i="${i}" data-tip="${esc(nkTip)}" aria-label="Lancer le jutsu">${ckMarkH(nkC)}</span>` : '')
+  const nkH = nkJ ? (nkC != null ? `<span class="ckm-b jut-b jut-pl${nkCb.length && !nkFx.length ? ' cmb' : ''}${nkOk ? ' ok' : ''}${nkUsed ? (nkCb.length ? ' prep' : ' used') : (V.me.ck || 0) < nkC ? ' low' : ''}" role="button" tabindex="0" data-act="jutsu" data-i="${i}" data-tip="${esc(nkTip)}" aria-label="${esc('Lancer ' + nkJ.nm + ' (' + nkC + ' chakra)')}"><i class="jp-d" aria-hidden="true"></i><b>${nkC}</b><em>${esc(nkJ.nm)}</em></span>` : '')
     + (nkT != null ? `<span class="tf-b nk-tf${recr && (V.me.ck || 0) >= nkT ? ' ok' : ''}" role="button" tabindex="0" data-act="nktf" data-i="${i}" data-tip="${esc('Transformation' + (nkST.length > 1 ? ' ' + ((m.tf || 0) + 1) + '/' + nkST.length : '') + ' · ' + tfStTxt(nkT0, nkK).replace('(' + nkT0.c + ' chakra)', '(' + nkT + ' chakra, une seule fois)') + '.')}" aria-label="Transformer"><i class="tf-up" aria-hidden="true"></i><b>${nkT}</b></span>` : '')
     + (nkT == null && nkT0 && nkTfLock(m) ? `<span class="tf-b nk-tf lock" data-tip="${esc((nkST.length > 1 ? 'Dernière transformation · ' : 'Transformation · ') + nkT0.nm + ' : réservée à la carte dorée. Réunis trois ' + b.n + ' pour la débloquer.')}" aria-label="Transformation verrouillée"><b>🔒</b></span>` : '')
     + (m.tfn ? `<span class="tf-n">${esc(m.tfn)}</span>` : '') : '';
@@ -1590,7 +1590,8 @@ function doDrop(to, D, t, x, z) {
 const peekEl = document.createElement('div'); peekEl.id = 'peek'; peekEl.hidden = true; peekEl.setAttribute('aria-hidden', 'true'); document.body.appendChild(peekEl);
 let peekFor = null;
 let TIPT = null;
-function hidePeek() { peekFor = null; peekEl.hidden = true; clearTimeout(TIPT); }
+let GRPT = null;
+function hidePeek() { peekFor = null; peekEl.hidden = true; clearTimeout(TIPT); clearTimeout(GRPT); }
 function placePeek(r, pw, ph, touch) {
   let x, y;
   if (touch) { x = Math.max(8, Math.min(innerWidth - pw - 8, r.left + r.width / 2 - pw / 2)); y = r.top - ph - 12; if (y < 8) { x = r.right + 12; if (x + pw > innerWidth - 8) x = r.left - pw - 12; x = Math.max(8, Math.min(innerWidth - pw - 8, x)); y = Math.max(8, Math.min(innerHeight - ph - 8, r.top + r.height / 2 - ph / 2)); } }
@@ -1617,7 +1618,7 @@ function showPeek(t, touch) {
     peekFor = t; peekEl.innerHTML = cardH({ c, a:+t.dataset.a, h:+t.dataset.h, g:+t.dataset.g, f:t.dataset.f || '', tf:+t.dataset.tf || 0, tfn:t.dataset.tfn || '', it:t.dataset.it || '' }, 'p', 0); peekEl.hidden = false;   // la grande carte suit la transformation (image et nom de la forme)
     { const mc = findMine(t.dataset.u); if (mc && isComp(mc)) { const lv = (V.me && V.me.eqlv) || {}; const eq = mc.eq || [];
       peekEl.insertAdjacentHTML('beforeend', compSheetH(mc, lv, eq)); } }
-    if (/^nk_/.test(c)) { const g0 = +t.dataset.g, full = cardTextH(c, g0, true, +t.dataset.tf || 0), grp = typeof NK_GOF !== 'undefined' && NK_GOF[c] ? [...new Set(NK_GOF[c].map(x => x.n))] : []; peekEl.insertAdjacentHTML('beforeend', nkDetailH(c, g0, +t.dataset.tf || 0, t.dataset.it || '')); }   // le texte complet à côté de la carte
+    if (/^nk_/.test(c)) { const g0 = +t.dataset.g, tx = peekEl.querySelector('.cd-tx'); if (tx) { tx.className = 'cd-tx nkn'; tx.innerHTML = `<span>${nkNamesH(c, g0, +t.dataset.tf || 0)}</span>`; tx.style.fontSize = ''; nkFitCap(tx); } peekEl.insertAdjacentHTML('beforeend', nkDetailH(c, g0, +t.dataset.tf || 0, t.dataset.it || '')); clearTimeout(GRPT); GRPT = setTimeout(() => nkGroupsShow(t, c), touch ? 900 : 2000); }   // le texte complet à côté de la carte
     const [pw, ph] = peekSize(); placePeek(r, pw, ph + (peekEl.querySelector('.peq') ? peekEl.querySelector('.peq').offsetHeight + 8 : 0), touch);
     { const cf = peekEl.querySelector('.cd-full'); if (cf) { const pr = peekEl.getBoundingClientRect(); cf.classList.toggle('left', pr.right + cf.offsetWidth + 14 > innerWidth); nkdFit(cf); } }
     // après un instant de survol : la bulle des améliorations
@@ -1641,6 +1642,7 @@ function showPeek(t, touch) {
     if (hv === 'op' && V.pub) { const p = V.pub.pl.find(x => x.n === t.dataset.n); if (p && HEROES[p.h]) html = nhPairH(p.h, 'Sa carte de héros') ? `<div class="hc-only">${nhPairH(p.h, 'Sa carte de héros')}</div>` : oppPeekH(p); }   // Naruto : au survol d'un héros, seulement sa carte (pas son pouvoir)
     else if ((hv === 'pow' || hv === 'hero') && HEROES[V.me.hero]) { const h = HX(V.me); html = heroCardH(V.me.hero, { aw:V.me.haw, qp:V.me.qp, foot:h.cost ? (V.me.pu ? 'Déjà utilisé ce tour' : h.minRound && (V.me.rd || 0) < h.minRound ? `Disponible dès la manche ${h.minRound}` : 'Disponible') : 'Toujours actif' }); }
     else if (hv === 'comp' && compOf(V.me.hero) && C[compOf(V.me.hero)]) html = compCardH(V.me.hero, compOf(V.me.hero), V.me);
+    else if (hv === 'nkg') html = nkgPeekH(t.dataset.gid);
     else if (hv === 'rsv') html = rsvPeekH(V.me);
     else if (hv === 'mk') html = mkPeekH(V.me);
     else if (hv === 'upm') html = upPeekH(V.me, +t.dataset.i);
@@ -3883,9 +3885,9 @@ function nkDetailH(c, g, tf, its) {
   const split = t => { t = String(t).replace(/\.$/, ''); const i = t.indexOf(' : '); return i > 0 && i < 34 ? [t.slice(0, i), t.slice(i + 3)] : ['', t]; };
   const cap = t => t ? t.charAt(0).toUpperCase() + t.slice(1) : t;
   const drop = n => `<span class="nkd-ck"><i class="nkd-drop"></i><b>${n == null ? '—' : n}</b></span>`;
-  // groupes : autres membres
+  // groupes : effet, avancement et membres (possédés / manquants)
   const gs = typeof NK_GOF !== 'undefined' && NK_GOF[c] ? NK_GOF[c].filter((x, i, a) => a.findIndex(y => y.id === x.id) === i) : [];
-  const grpH = gs.length ? `<section class="nkd-sec"><h4 class="nkd-rb">${gs.length > 1 ? 'Groupes' : 'Groupe'}</h4><div class="nkd-box">${gs.map(G => `<div class="nkd-gn">${esc(G.n)}</div>${gs.length > 1 ? '' : '<small class="nkd-sub">Autres ninjas du groupe</small>'}<div class="nkd-names">${G.m.filter(x => x !== c && C[x]).map(x => `<span class="nkd-nm${nkdHave(x) ? ' on' : ''}">${esc(nkdShort(CD(x).n))}</span>`).join('')}</div>`).join('<i class="nkd-sep"></i>')}</div></section>` : '';
+  const grpH = gs.length ? `<section class="nkd-sec"><h4 class="nkd-rb">${gs.length > 1 ? 'Groupes' : 'Groupe'}</h4><div class="nkd-box">${gs.map(G => nkgBoxH(G, c)).join('<i class="nkd-sep"></i>')}</div></section>` : '';
   // effets passifs (mots-clés, effets de la carte, effets gagnés par les transformations faites)
   const kws = (b.kw || []).map(x => SET.kw[x] && SET.kw[x].n).filter(Boolean);
   const pas = (b.fx || []).filter(e => e.k !== 'jutsu' && ET[e.k]).map(e => fxText(e, k)).concat(ST.slice(0, done).flatMap(T => (T.x || []).filter(o => ET[o.k]).map(o => ET[o.k].txt(o, k))));
@@ -3895,13 +3897,80 @@ function nkDetailH(c, g, tf, its) {
   let capH = '';
   if (J && !J.none) { const FX = done ? jutFx(J, done) : J.fx || [], CB = done ? jutCb(J, done) : J.cb || [], cost = V.me && typeof jutCost === 'function' ? jutCost(V.me, { c, it:its }) : b.t;
     const body = [FX.length ? cap(jutBody(FX, k)) + '.' : '', CB.length ? (FX.length ? 'Au combat : ' : 'Au prochain combat : ') + jutBody(CB, k) + '.' : ''].filter(Boolean).join(' ');
-    capH = `<section class="nkd-sec"><h4 class="nkd-rb">Capacité</h4><div class="nkd-box nkd-cap"><div><b class="nkd-cn">${esc(J.nm)}</b><p>${esc(body)}</p></div><div class="nkd-cost">${drop(cost)}<small>Coût en chakra</small></div></div></section>`; }
+    const bd = CB.length && !FX.length ? '<span class="nkd-bd cb">Combat · part au début du prochain combat</span>' : CB.length ? '<span class="nkd-bd">Soutien · immédiat, une fois par tour</span><span class="nkd-bd cb">Combat · part au prochain combat</span>' : '<span class="nkd-bd">Soutien · immédiat, une fois par tour</span>';
+    capH = `<section class="nkd-sec"><h4 class="nkd-rb">Capacité</h4><div class="nkd-box nkd-cap"><div>${bd}<b class="nkd-cn">${esc(J.nm)}</b><p>${esc(body)}</p></div><div class="nkd-cost">${drop(cost)}<small>Coût en chakra</small></div></div></section>`; }
   // transformations restantes
   const rest = ST.slice(done);
   const tfH = rest.length ? `<section class="nkd-sec"><h4 class="nkd-rb">${done ? (rest.length > 1 ? 'Transformations suivantes' : 'Transformation suivante') : (rest.length > 1 ? 'Transformations' : 'Transformation')}</h4><div class="nkd-tfs">${rest.map((T, i) => { const last = done + i === ST.length - 1;
     const lines = [(T.a || T.h ? sign(T.a * k, T.h * k) : '') + (T.kw ? (T.a || T.h ? ', ' : '') + ((SET.kw[T.kw] || {}).n || '') : '')].concat((T.x || []).filter(o => ET[o.k]).map(o => cap(ET[o.k].txt(o, k).replace(/\.$/, '')) + '.'), T.fx ? ['Son jutsu devient : ' + jutBody(T.fx, k) + '.'] : [], T.cb ? ['Son jutsu de combat devient : ' + jutBody(T.cb, k) + '.'] : []).filter(Boolean);
     return `<div class="nkd-tf"><div class="nkd-tfh"><b>${esc(T.nm)}</b>${drop(T.c)}${last ? '<span class="nkd-gold">Carte dorée</span>' : ''}</div>${lines.map(l => `<p>${esc(l)}</p>`).join('')}</div>`; }).join('')}</div></section>` : '';
-  return `<div class="cd-full nkd"><header class="nkd-head"><span class="nkd-por"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-${artOf({ c, tf })}" width="100" height="100"/></svg><i></i></span><div class="nkd-ttl"><b>${esc(b.n)}</b><small>Détails du ninja</small></div></header>${grpH}${pasH}${capH}${tfH}</div>`;
+  return `<div class="cd-full nkd"><header class="nkd-head"><span class="nkd-por"><svg viewBox="12 8 76 76" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><use href="#art-${artOf({ c, tf })}" width="100" height="100"/></svg><i></i></span><div class="nkd-ttl"><b>${esc(b.n)}</b><small>Détails du ninja</small></div></header>${pasH}${tfH}</div>`;
+}
+
+
+/* ===== Naruto : texte de la carte agrandie (noms des effets seulement) et fiche de groupe ===== */
+function nkNamesH(c, g, tf) {
+  const b = CD(c), k = g ? 2 : 1, J = jutOf({ c }), ST = J ? tfSt(J) : [], done = Math.min(tf || 0, ST.length);
+  const head = t => { t = String(t).replace(/\.$/, ''); const i = t.indexOf(' : '); return i > 0 && i < 34 ? t.slice(0, i) : null; };
+  const cap = t => t ? t.charAt(0).toUpperCase() + t.slice(1) : t;
+  const names = [];
+  const kws = [...new Set([...(b.kw || []), ...ST.slice(0, done).map(T => T.kw).filter(Boolean)])].map(x => SET.kw[x] && SET.kw[x].n).filter(Boolean);
+  names.push(...kws);
+  const fxs = (b.fx || []).filter(e => e.k !== 'jutsu' && ET[e.k]).map(e => fxText(e, k)).concat(ST.slice(0, done).flatMap(T => (T.x || []).filter(o => ET[o.k]).map(o => ET[o.k].txt(o, k))));
+  fxs.forEach(t => { const h = head(t); names.push(h || t.replace(/\.$/, '').split(' ').slice(0, 4).join(' ') + '…'); });
+  let out = names.length ? `<span class="nkn-fx">${esc(names.join(' · '))}</span>` : '';
+  if (J && !J.none) {
+    const FX = done ? jutFx(J, done) : J.fx || [], CB = done ? jutCb(J, done) : J.cb || [], cost = V.me && typeof jutCost === 'function' ? jutCost(V.me, { c }) : b.t;
+    const cmb = CB.length && !FX.length;
+    const body = [FX.length ? cap(jutBody(FX, k)) + '.' : '', CB.length ? (FX.length ? 'Au combat : ' : 'Au prochain combat : ') + jutBody(CB, k) + '.' : ''].filter(Boolean).join(' ');
+    out += `<span class="nkn-cap${cmb ? ' cb' : ''}"><span class="nkn-cb">${cmb ? 'Combat · part au début du prochain combat' : CB.length ? 'Soutien + combat' : 'Soutien · immédiat, une fois par tour'}</span><span class="nkn-cm"><span class="nkn-ct"><b>${esc(J.nm)}</b><small>${esc(body)}</small></span><span class="nkn-ck"><i class="nkd-drop"></i><b>${cost == null ? '—' : cost}</b></span></span></span>`;
+  }
+  return out;
+}
+function nkgBoxH(G, c) {
+  const where = x => { const bd = (V.me && V.me.bd) || [], hd = (V.me && V.me.hd) || []; return bd.some(m => m && m.c === x) ? 'bd' : hd.some(m => m && (m.c || m) === x) ? 'hd' : ''; };
+  const on = G.m.filter(x => where(x) === 'bd').length, th = G.th, lv = th.filter(t => on >= t).length, next = th[lv], full = G.m.length;
+  const miss = G.m.filter(x => where(x) !== 'bd' && x !== c);
+  const names = G.m.map(x => { const w = x === c ? 'bd' : where(x); const st = x === c ? (nkdHave(c) ? 'possédé' : 'cette carte') : w === 'bd' ? 'possédé' : w === 'hd' ? 'en main' : 'manque'; return `<span class="nkd-nm${w === 'bd' && x !== c ? ' on' : ''}${st === 'manque' ? ' off' : ''}" title="${esc(CD(x).n)}">${esc(nkdShort(CD(x).n))}<small>${st}</small></span>`; }).join('');
+  const tiers = th.map((t, i) => { const ok = on >= t, nx = i === lv; const top = ok && i === lv - 1;
+    return `<div class="nkd-tier${ok ? ' ok' : ''}${nx ? ' nx' : ''}"><span class="nkd-tn">${t} ninjas</span><p>${esc(G.tx[i])}${top ? ' <em>Actif</em>' : ''}${nx ? `<small>Prochain palier : il te manque ${t - on} ninja${t - on > 1 ? 's' : ''}${G.m.filter(x => where(x) !== 'bd').length <= 3 ? ' (' + G.m.filter(x => where(x) !== 'bd').map(x => nkdShort(CD(x).n)).join(', ') + ')' : ''}.</small>` : ''}</p></div>`; }).join('');
+  return `<div class="nkd-g"><div class="nkd-gh"><span class="nkd-gn">${esc(nkgName(G))}${G.el && G.n !== 'Maître et disciple' ? ' · ' + esc(CD(G.el).n.split(' ')[0]) : ''}</span><span class="nkd-pg${lv ? ' ok' : ''}">${on}/${th.length > 1 ? next || th[th.length - 1] : th[0]}</span></div><div class="nkd-names">${names}</div>${tiers}</div>`;
+}
+function nkgPeekH(id) {
+  const G = NK_GROUPS.find(x => x.id === id); if (!G) return '';
+  const bd = (V.me && V.me.bd) || [], on = G.m.filter(x => bd.some(m => m && m.c === x)).length, lv = G.th.filter(t => on >= t).length;
+  return `<div class="cd-full nkd nkg-tip"><header class="nkd-head nkg-head"><div class="nkd-ttl"><b>${esc(nkgName(G))}</b><small>${lv ? 'Palier ' + G.th[lv - 1] + ' actif' : 'Groupe incomplet'} · ${on} ninja${on > 1 ? 's' : ''} possédé${on > 1 ? 's' : ''}</small></div></header><section class="nkd-sec"><div class="nkd-box">${nkgBoxH(G, null).replace(/<div class="nkd-gh">.*?<\/div><div class="nkd-names">/, '<div class="nkd-names">')}</div></section></div>`;
+}
+
+
+/* fiche des groupes d'un ninja : second panneau, de l'autre côté de la carte, qui arrive après un court délai de survol */
+function nkGroupsPanelH(c) {
+  const gs = typeof NK_GOF !== 'undefined' && NK_GOF[c] ? NK_GOF[c].filter((x, i, a) => a.findIndex(y => y.id === x.id) === i) : [];
+  if (!gs.length) return '';
+  return `<div class="cd-full nkd nkd-gp"><header class="nkd-head nkg-head"><div class="nkd-ttl"><b>${gs.length > 1 ? 'Groupes' : 'Groupe'}</b><small>${esc(CD(c).n)}</small></div></header><section class="nkd-sec"><div class="nkd-box">${gs.map(G => nkgBoxH(G, c)).join('<i class="nkd-sep"></i>')}</div></section></div>`;
+}
+function nkGroupsShow(t, c) {
+  if (peekFor !== t || peekEl.hidden || peekEl.querySelector('.nkd-gp')) return;
+  const h = nkGroupsPanelH(c); if (!h) return;
+  const main = peekEl.querySelector('.cd-full.nkd'); if (!main) return;
+  peekEl.insertAdjacentHTML('beforeend', h);
+  const gp = peekEl.querySelector('.nkd-gp'), pr = peekEl.getBoundingClientRect(), mainLeft = main.classList.contains('left'), w = gp.offsetWidth || 340, bt = peekEl.querySelector('.btip');
+  const roomL = pr.left - w - 14 > 4, roomR = pr.right + w + 14 < innerWidth - 4;
+  let side = mainLeft ? 'r' : 'l'; if (side === 'l' && !roomL) side = roomR ? 'r' : 'b'; else if (side === 'r' && !roomR) side = roomL ? 'l' : 'b';
+  gp.style.top = '0px';
+  if (side === 'l') { gp.classList.add('left'); } else if (side === 'r') { gp.classList.remove('left'); } else { gp.classList.remove('left'); gp.style.left = '0'; gp.style.top = (peekEl.offsetHeight + 10) + 'px'; }
+  if (bt && side !== 'b' && ((side === 'l') === bt.classList.contains('left') || (side === 'l' && bt.style.right && bt.style.right !== 'auto') || (side === 'r' && bt.style.left && bt.style.left !== 'auto'))) gp.style.top = (bt.offsetTop + bt.offsetHeight + 10) + 'px';
+  const r = gp.getBoundingClientRect(); let dy = 0; if (r.bottom > innerHeight - 8) dy = innerHeight - 8 - r.bottom; if (r.top + dy < 8) dy = 8 - r.top; if (dy) gp.style.top = (parseFloat(gp.style.top) + dy) + 'px';
+  gp.animate([{ opacity: 0, transform: 'translateY(8px) scale(.97)' }, { opacity: 1, transform: 'none' }], { duration: 320, easing: 'ease-out' });
+}
+
+
+/* la capacité tient dans le cadre de texte de la carte : on réduit un peu le texte si elle dépasse */
+function nkFitCap(tx) {
+  const sm = tx.querySelector('.nkn-ct small'), cap = tx.querySelector('.nkn-cap'); if (!sm || !cap) return;
+  let fs = 10.5; const over = () => cap.getBoundingClientRect().bottom - tx.getBoundingClientRect().bottom > 0.5;
+  while (over() && fs > 8) { fs -= 0.5; sm.style.fontSize = fs + 'px'; }
+  if (over()) { const f = tx.querySelector('.nkn-fx'); if (f) f.style.display = 'none'; }
 }
 
 const NKD_CLANS = /\s+(Uzumaki|Uchiha|Hatake|Nara|Yamanaka|Akimichi|Hyūga|Haruno|Inuzuka|Aburame|Sarutobi|Senju|Hōshigaki|Terumī|Hōzuki|Yakushi|Rock)$/;
